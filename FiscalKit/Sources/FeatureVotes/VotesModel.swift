@@ -55,7 +55,11 @@ public final class VotesModel {
 
     public var isEmpty: Bool { votes.isEmpty && agendaHouses.isEmpty }
 
-    public var hasFilter: Bool { house != .all || theme != nil }
+    public var hasFilter: Bool { activeFilterCount > 0 }
+
+    public var activeFilterCount: Int {
+        (house == .all ? 0 : 1) + (theme == nil ? 0 : 1)
+    }
 
     public var filtered: [VoteSummary] {
         votes.filter { vote in
@@ -84,6 +88,10 @@ public final class VotesModel {
         return lens.stance ?? .preferNotToSay
     }
 
+    public var lensThemeChoices: [Theme] { themeChoices.filter(isLensTheme) }
+
+    public var otherThemeChoices: [Theme] { themeChoices.filter { !isLensTheme($0) } }
+
     public func isLensTheme(_ theme: Theme) -> Bool { lens?.contains(theme) ?? false }
 
     public var highlights: [VoteSummary] {
@@ -108,10 +116,6 @@ public final class VotesModel {
     public func clearFilters() {
         house = .all
         theme = nil
-    }
-
-    public func toggle(_ theme: Theme) {
-        self.theme = self.theme == theme ? nil : theme
     }
 
     public func load() async {
