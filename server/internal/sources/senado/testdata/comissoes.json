@@ -1,0 +1,49 @@
+{
+ "MembroComissaoParlamentar": {
+  "noNamespaceSchemaLocation": "https://legis.senado.leg.br/dadosabertos/dados/MembroComissaoParlamentarv5.xsd",
+  "Metadados": {
+   "Versao": "25/10/2026 14:38:38",
+   "VersaoServico": "5",
+   "DataVersaoServico": "2021-09-09",
+   "DescricaoDataSet": "Retorna a relação das Comissões das quais um Senador é membro."
+  },
+  "Parlamentar": {
+   "Codigo": "5672",
+   "Nome": "Alan Rick",
+   "MembroComissoes": {
+    "Comissao": [
+     {
+      "IdentificacaoComissao": {
+       "CodigoComissao": "1664",
+       "SiglaComissao": "CMO",
+       "NomeComissao": "Comissão Mista de Planos, Orçamentos Públicos e Fiscalização",
+       "SiglaCasaComissao": "CN"
+      },
+      "DescricaoParticipacao": "Titular",
+      "DataInicio": "2026-06-15"
+     },
+     {
+      "IdentificacaoComissao": {
+       "CodigoComissao": "2307",
+       "SiglaComissao": "GPISRAEL",
+       "NomeComissao": "Grupo Parlamentar Brasil - Israel",
+       "SiglaCasaComissao": "CN"
+      },
+      "DescricaoParticipacao": "Titular",
+      "DataInicio": "2023-02-27"
+     },
+     {
+      "IdentificacaoComissao": {
+       "CodigoComissao": "34",
+       "SiglaComissao": "CCJ",
+       "NomeComissao": "Comissão de Constituição, Justiça e Cidadania",
+       "SiglaCasaComissao": "SF"
+      },
+      "DescricaoParticipacao": "Suplente",
+      "DataInicio": "2026-04-07"
+     }
+    ]
+   }
+  }
+ }
+}
