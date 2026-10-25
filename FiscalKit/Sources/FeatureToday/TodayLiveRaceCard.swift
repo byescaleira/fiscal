@@ -7,6 +7,7 @@ struct TodayLiveRaceCard: View {
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(PortraitStore.self) private var portraits: PortraitStore?
     let board: TodayRaceBoard
 
     var body: some View {
@@ -37,6 +38,11 @@ struct TodayLiveRaceCard: View {
         .clipShape(.rect(cornerRadius: .radiusGroup))
         .fontDesign(.rounded)
         .opacity(board.isStale ? .opacityStrong : 1)
+        .task(id: board.race.id) {
+            for side in board.sides {
+                portraits?.shelve(slug: side.slug, party: side.candidate.party)
+            }
+        }
     }
 }
 
@@ -173,8 +179,6 @@ private struct RaceCenterStatus: View {
             Text(verbatim: board.centerCaption)
                 .font(.caption2.weight(.semibold))
                 .opacity(.opacityStrong)
-            ProgressBar(value: board.countedFraction, color: .white)
-                .frame(width: .badgeXL)
         }
         .frame(minWidth: .badgeXL + .spaceL)
     }
@@ -215,16 +219,26 @@ private struct RaceShareBar: View {
         let second = sides.dropFirst().first?.candidate.percent ?? 0
         let total = first + second
         let share = total > 0 ? first / total : 0.5
+        let firstColor = PartyPalette.of(party: sides.first?.candidate.party ?? "", fallback: 0)
+        let secondColor = PartyPalette.of(
+            party: sides.dropFirst().first?.candidate.party ?? "", fallback: 1)
         GeometryReader { proxy in
-            HStack(spacing: .spaceHairline) {
-                Capsule()
+            ZStack {
+                HStack(spacing: .zero) {
+                    Rectangle()
+                        .fill(total > 0 ? firstColor.primary : .white.opacity(.opacityTint))
+                        .frame(width: proxy.size.width * share)
+                    Rectangle()
+                        .fill(total > 0 ? secondColor.primary : .white.opacity(.opacityTint))
+                }
+                .clipShape(.capsule)
+                .overlay { Capsule().strokeBorder(.white, lineWidth: .spaceHairline) }
+                Rectangle()
                     .fill(.white)
-                    .frame(width: max(.spaceS, (proxy.size.width - .spaceHairline) * share))
-                Capsule()
-                    .fill(.white.opacity(.opacitySoft))
+                    .frame(width: .spaceHairline, height: proxy.size.height + .spaceS)
             }
         }
-        .frame(height: .spaceS)
+        .frame(height: .spaceM)
         .animation(reduceMotion ? nil : .smooth(duration: 1), value: share)
         .accessibilityHidden(true)
     }
@@ -240,8 +254,6 @@ private struct RaceLastPlay: View {
                 .frame(width: .space2XS)
                 .frame(maxHeight: .infinity)
             VStack(alignment: .leading, spacing: .spaceHairline) {
-                Text(verbatim: board.marginText)
-                    .font(.subheadline.weight(.bold))
                 Text(verbatim: board.sourceText)
                     .font(.caption.weight(.medium))
                     .opacity(.opacityStrong)

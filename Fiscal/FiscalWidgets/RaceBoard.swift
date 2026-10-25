@@ -5,11 +5,10 @@ import SwiftUI
 import WidgetKit
 
 enum RaceStyle {
-    static let background = Color.scoreboard
     static let accent = Color.scoreboardAccent
-    static let primary = Color.white
-    static let secondary = Color.white.opacity(.opacityStrong)
-    static let track = Color.white.opacity(.opacityTint)
+    static let primary = Color.primary
+    static let secondary = Color.secondary
+    static let track = Color.secondary.opacity(.opacityTint)
 }
 
 struct RaceBoard {

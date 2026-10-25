@@ -2,14 +2,14 @@ import ActivityKit
 import FiscalDesignSystem
 import FiscalDomain
 import SwiftUI
+import UIKit
 import WidgetKit
 
 struct RaceLiveActivity: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: RaceActivityAttributes.self) { context in
             RaceLockScreen(context: context)
-                .activityBackgroundTint(RaceStyle.background)
-                .activitySystemActionForegroundColor(.white)
+                .activityBackgroundTint(nil)
                 .widgetURL(URL(string: "fiscal://home"))
         } dynamicIsland: { context in
             let board = RaceBoard(context: context)
@@ -36,7 +36,7 @@ struct RaceLiveActivity: Widget {
                 }
                 DynamicIslandExpandedRegion(.bottom) {
                     VStack(spacing: .spaceXS) {
-                        ShareBar(board: board, height: 8)
+                        ShareBar(board: board, height: .spaceS)
                         BoardFooter(board: board)
                     }
                     .padding(.horizontal, .space2XS)
@@ -62,81 +62,100 @@ private struct RaceLockScreen: View {
     var body: some View {
         let board = RaceBoard(context: context)
         VStack(alignment: .leading, spacing: .spaceM) {
+            HStack(spacing: .spaceS) {
+                Text(verbatim: board.title)
+                    .font(.subheadline.weight(.bold))
+                    .foregroundStyle(RaceStyle.primary)
+                    .lineLimit(1)
+                Spacer(minLength: .spaceS)
+                Text(verbatim: board.officeText)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(RaceStyle.secondary)
+                    .lineLimit(1)
+            }
             HStack(alignment: .center, spacing: .spaceXS) {
                 if let first = board.first {
-                    ScoreColumn(score: board.score(first), alignment: .leading)
+                    ScoreColumn(row: first, score: board.score(first), alignment: .leading)
                 }
                 Spacer(minLength: 0)
                 CenterStatus(board: board)
                 Spacer(minLength: 0)
                 if let second = board.second {
-                    ScoreColumn(score: board.score(second), alignment: .trailing)
+                    ScoreColumn(row: second, score: board.score(second), alignment: .trailing)
                 }
             }
-            HStack(spacing: .spaceS) {
-                Capsule()
-                    .fill(RaceStyle.primary)
-                    .frame(width: 3, height: 30)
-                VStack(alignment: .leading, spacing: 0) {
-                    Text(verbatim: board.marginText)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(RaceStyle.primary)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.8)
-                    Text(verbatim: board.sourceText)
-                        .font(.caption2.weight(.medium))
-                        .foregroundStyle(RaceStyle.secondary)
-                        .lineLimit(1)
-                }
-                Spacer(minLength: 0)
-            }
-            .accessibilityElement(children: .combine)
+            ShareBar(board: board, height: .spaceM)
+            Text(verbatim: board.sourceText)
+                .font(.caption2.weight(.medium))
+                .foregroundStyle(RaceStyle.secondary)
+                .lineLimit(1)
         }
         .padding(.spaceL)
         .frame(maxWidth: .infinity)
-        .background {
-            ZStack {
-                LinearGradient(
-                    colors: [board.firstPalette.primary, board.secondPalette.primary],
-                    startPoint: .leading, endPoint: .trailing)
-                Color.black.opacity(.opacityTint)
+        .fontDesign(.rounded)
+        .partyMarksStill()
+        .opacity(board.isStale ? .opacityStrong : 1)
+    }
+}
+
+private struct CandidatePhoto: View {
+    let row: RaceActivityRow
+    let side: CGFloat
+
+    var body: some View {
+        Group {
+            if let url = PortraitShelf.url(for: PortraitShelf.slug(row.name)),
+                let image = UIImage(contentsOfFile: url.path(percentEncoded: false))
+            {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: side, height: side)
+                    .clipShape(.circle)
+            } else {
+                PersonPortrait(slug: "", name: row.name, party: row.party, size: side)
             }
         }
-        .fontDesign(.rounded)
-        .opacity(board.isStale ? 0.75 : 1)
+        .overlay(alignment: .topTrailing) {
+            if row.elected {
+                Image(systemName: "checkmark.seal.fill")
+                    .font(.system(size: side * 0.32))
+                    .symbolRenderingMode(.palette)
+                    .foregroundStyle(.white, RaceStyle.accent)
+            }
+        }
+        .accessibilityHidden(true)
     }
 }
 
 private struct ScoreColumn: View {
+    let row: RaceActivityRow
     let score: CandidateScoreText
     let alignment: HorizontalAlignment
 
     var body: some View {
         VStack(alignment: alignment, spacing: .space2XS) {
-            HStack(spacing: .spaceXS) {
-                if alignment == .leading { badge }
-                Text(verbatim: score.percent)
-                    .font(.scoreboardNumber)
-                    .monospacedDigit()
-                    .contentTransition(.numericText(value: score.value))
-                    .foregroundStyle(RaceStyle.primary)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.6)
-                if alignment == .trailing { badge }
-            }
-            Text(verbatim: score.name.uppercased())
-                .font(.caption2.weight(.heavy))
-                .foregroundStyle(RaceStyle.secondary)
+            CandidatePhoto(row: row, side: .badgeL)
+            Text(verbatim: score.percent)
+                .font(.scoreboardNumber)
+                .monospacedDigit()
+                .contentTransition(.numericText(value: score.value))
+                .foregroundStyle(RaceStyle.primary)
                 .lineLimit(1)
-                .minimumScaleFactor(0.7)
+                .minimumScaleFactor(0.6)
+            HStack(spacing: .spaceXS) {
+                if alignment == .trailing { PartyMark(row.party) }
+                Text(verbatim: score.name.uppercased())
+                    .font(.caption2.weight(.heavy))
+                    .foregroundStyle(RaceStyle.secondary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+                if alignment == .leading { PartyMark(row.party) }
+            }
         }
-        .opacity(score.dimmed ? 0.5 : 1)
+        .opacity(score.dimmed ? .opacitySoft : 1)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: score.accessibility))
-    }
-
-    private var badge: some View {
-        NumberBadge(number: score.number, palette: score.palette, elected: score.elected, side: 38)
     }
 }
 
@@ -145,10 +164,6 @@ private struct CenterStatus: View {
 
     var body: some View {
         VStack(spacing: .space2XS) {
-            Text(verbatim: board.officeText)
-                .font(.caption2.weight(.semibold))
-                .foregroundStyle(RaceStyle.secondary)
-                .lineLimit(1)
             Text(verbatim: board.centerValue)
                 .font(.headline.weight(.bold))
                 .foregroundStyle(RaceStyle.primary)
@@ -159,16 +174,8 @@ private struct CenterStatus: View {
                 .font(.caption2.weight(.medium))
                 .foregroundStyle(RaceStyle.secondary)
                 .lineLimit(1)
-            Capsule()
-                .fill(RaceStyle.track)
-                .frame(width: 44, height: 3)
-                .overlay(alignment: .leading) {
-                    Capsule()
-                        .fill(RaceStyle.primary)
-                        .frame(width: 44 * min(max(board.state.sectionsPercent / 100, 0), 1))
-                }
         }
-        .frame(minWidth: 60)
+        .frame(minWidth: .badgeXL)
         .accessibilityElement(children: .combine)
     }
 }
@@ -213,7 +220,7 @@ private struct CandidateSide: View {
     private var badge: some View {
         NumberBadge(
             number: row.number, palette: row.palette, elected: row.elected,
-            side: size == .lockScreen ? 48 : 34)
+            side: size == .lockScreen ? .badgeXL : .badgeM)
     }
 }
 
@@ -224,8 +231,8 @@ private struct NumberBadge: View {
     let side: CGFloat
 
     var body: some View {
-        RoundedRectangle(cornerRadius: side * 0.28, style: .continuous)
-            .fill(palette.gradient)
+        PartyStripes(palette: palette)
+            .clipShape(.rect(cornerRadius: side * 0.28, style: .continuous))
             .frame(width: side, height: side)
             .overlay {
                 Text(verbatim: number)
@@ -255,19 +262,18 @@ private struct ShareBar: View {
             let second = board.second?.percent ?? 0
             let total = first + second
             let share = total > 0 ? first / total : 0.5
-            HStack(spacing: .spaceHairline) {
-                Capsule()
-                    .fill(
-                        total > 0
-                            ? AnyShapeStyle(board.firstPalette.gradient)
-                            : AnyShapeStyle(RaceStyle.track)
-                    )
-                    .frame(width: max(height, (proxy.size.width - .spaceHairline) * share))
-                Capsule()
-                    .fill(
-                        total > 0
-                            ? AnyShapeStyle(board.secondPalette.gradient)
-                            : AnyShapeStyle(RaceStyle.track))
+            ZStack {
+                HStack(spacing: .zero) {
+                    Rectangle()
+                        .fill(total > 0 ? board.firstPalette.primary : RaceStyle.track)
+                        .frame(width: proxy.size.width * share)
+                    Rectangle()
+                        .fill(total > 0 ? board.secondPalette.primary : RaceStyle.track)
+                }
+                .clipShape(.capsule)
+                Rectangle()
+                    .fill(RaceStyle.primary)
+                    .frame(width: .spaceHairline, height: proxy.size.height + .spaceXS)
             }
         }
         .frame(height: height)
