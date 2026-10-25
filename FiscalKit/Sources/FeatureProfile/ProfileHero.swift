@@ -87,7 +87,9 @@ private struct ProfileHeroActions: View {
                         profile.isFollowing ? LocalizedStringKey("Following") : "Follow",
                         systemImage: profile.isFollowing ? "checkmark" : "plus"
                     )
-                    .frame(maxWidth: .infinity)
+                    .lineLimit(1)
+                    .minimumScaleFactor(.opacitySoft * 2)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
                 .heroGlassButton()
                 .sensoryFeedback(.selection, trigger: profile.isFollowing)
@@ -97,11 +99,14 @@ private struct ProfileHeroActions: View {
                     open(route, in: section)
                 } label: {
                     Label("Share", systemImage: "square.and.arrow.up")
-                        .frame(maxWidth: .infinity)
+                        .lineLimit(1)
+                        .minimumScaleFactor(.opacitySoft * 2)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
                 .heroGlassButton()
             }
         }
+        .fixedSize(horizontal: false, vertical: true)
     }
 }
 
