@@ -8,7 +8,7 @@ struct SectionScreen: View {
 
     @ViewBuilder var body: some View {
         switch section {
-        case .home: ModelHost(FiscalServices.shared.liveResults()) { LiveResultsScreen() }
+        case .today: ModelHost(FiscalServices.shared.liveResults()) { LiveResultsScreen() }
         case .settings: SettingsScreen()
         }
     }

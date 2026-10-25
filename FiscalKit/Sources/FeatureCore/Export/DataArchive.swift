@@ -5,11 +5,9 @@ import UniformTypeIdentifiers
 
 public struct DataArchive: Codable, Equatable, Sendable, Transferable {
     public let exportedAt: Date
-    public let items: [Item]
 
-    public init(exportedAt: Date, items: [Item]) {
+    public init(exportedAt: Date) {
         self.exportedAt = exportedAt
-        self.items = items
     }
 
     public static var transferRepresentation: some TransferRepresentation {

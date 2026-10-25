@@ -16,13 +16,8 @@ public final class DataExportModel {
     }
 
     public func prepare() async {
-        do {
-            let items = try await repositories.items.items()
-            archive = DataArchive(exportedAt: now(), items: items)
-            isExporting = true
-        } catch {
-            self.error = .onFetch
-        }
+        archive = DataArchive(exportedAt: now())
+        isExporting = true
     }
 
     public func finish(_ result: Result<URL, any Error>) {

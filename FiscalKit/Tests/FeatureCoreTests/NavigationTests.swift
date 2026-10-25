@@ -6,26 +6,26 @@ import Testing
 struct NavigationTests {
     @Test func pushesInCompactWidth() {
         let navigation = FiscalNavigation()
-        navigation.open(.item(id: nil), in: .home, beside: false)
-        #expect(navigation.paths[.home] == [.item(id: nil)])
-        navigation.close(in: .home, inspecting: false)
-        #expect(navigation.paths[.home]?.isEmpty == true)
+        navigation.open(.races, in: .today, beside: false)
+        #expect(navigation.paths[.today] == [.races])
+        navigation.close(in: .today, inspecting: false)
+        #expect(navigation.paths[.today]?.isEmpty == true)
     }
 
     @Test func opensBesideInRegularWidthAndStacksInside() {
         let navigation = FiscalNavigation()
-        navigation.open(.item(id: "a"), in: .home, beside: true)
-        #expect(navigation.inspector?.route == .item(id: "a"))
-        navigation.open(.item(id: "b"), in: .home, beside: true)
-        #expect(navigation.inspectorPath == [.item(id: "b")])
-        navigation.close(in: .home, inspecting: true)
-        navigation.close(in: .home, inspecting: true)
+        navigation.open(.races, in: .today, beside: true)
+        #expect(navigation.inspector?.route == .races)
+        navigation.open(.races, in: .today, beside: true)
+        #expect(navigation.inspectorPath == [.races])
+        navigation.close(in: .today, inspecting: true)
+        navigation.close(in: .today, inspecting: true)
         #expect(navigation.inspector == nil)
     }
 
     @Test func switchingTabsClosesTheInspectorOfAnotherTab() {
         let navigation = FiscalNavigation()
-        navigation.open(.item(id: "a"), in: .home, beside: true)
+        navigation.open(.races, in: .today, beside: true)
         navigation.selectedSection = .settings
         navigation.closeInspectorOutsideSelection()
         #expect(navigation.inspector == nil)

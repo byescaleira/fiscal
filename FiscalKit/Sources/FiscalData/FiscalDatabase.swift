@@ -34,6 +34,6 @@ public struct FiscalDatabase: RepositoryProvider {
     public var storeURL: URL? { modelContainer.configurations.first?.url }
 
     public var repositories: Repositories {
-        Repositories(items: SwiftDataItemRepository(store: store))
+        Repositories()
     }
 }

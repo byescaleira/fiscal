@@ -5,10 +5,10 @@ import Testing
 
 struct DeepLinkTests {
     @Test(arguments: [
-        ("fiscal://items/new", DeepLink.route(.item(id: nil), in: .home)),
-        ("fiscal://items/abc", DeepLink.route(.item(id: "abc"), in: .home)),
+        ("fiscal://races", DeepLink.route(.races, in: .today)),
         ("fiscal://settings", DeepLink.section(.settings)),
-        ("fiscal://unknown", DeepLink.section(.home)),
+        ("fiscal://items/new", DeepLink.section(.today)),
+        ("fiscal://unknown", DeepLink.section(.today)),
     ])
     func opensTheRightPlace(link: String, expected: DeepLink) throws {
         let url = try #require(URL(string: link))

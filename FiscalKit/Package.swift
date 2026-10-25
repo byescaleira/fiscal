@@ -29,9 +29,6 @@ let package = Package(
             name: "FeatureGuides",
             dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
         .target(
-            name: "FeatureHome",
-            dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
-        .target(
             name: "FeatureLiveResults",
             dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
         .target(
@@ -41,7 +38,7 @@ let package = Package(
             name: "AppShell",
             dependencies: [
                 "FiscalDomain", "FiscalData", "FiscalDesignSystem", "FeatureCore",
-                "FeatureGuides", "FeatureHome", "FeatureLiveResults", "FeatureSettings",
+                "FeatureGuides", "FeatureLiveResults", "FeatureSettings",
             ]),
         .testTarget(name: "FiscalDomainTests", dependencies: ["FiscalDomain"]),
         .testTarget(name: "FiscalDataTests", dependencies: ["FiscalDomain", "FiscalData"]),
@@ -56,9 +53,6 @@ let package = Package(
         .testTarget(
             name: "FeatureGuidesTests",
             dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureGuides"]),
-        .testTarget(
-            name: "FeatureHomeTests",
-            dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureHome"]),
         .testTarget(
             name: "FeatureLiveResultsTests",
             dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureLiveResults"]),

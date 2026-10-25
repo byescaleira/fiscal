@@ -91,26 +91,6 @@
         }
       }
     },
-    "Add Item" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Adicionar Item"
-          }
-        }
-      }
-    },
-    "Add the first item and it shows up here, newest first." : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Adicione o primeiro item e ele aparece aqui, do mais novo para o mais antigo."
-          }
-        }
-      }
-    },
     "Animations · Apache License 2.0" : {
       "localizations" : {
         "pt-BR" : {
@@ -371,22 +351,22 @@
         }
       }
     },
-    "Current month" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mês atual"
-          }
-        }
-      }
-    },
     "Current Version" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Versão atual"
+          }
+        }
+      }
+    },
+    "Current month" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mês atual"
           }
         }
       }
@@ -491,16 +471,6 @@
         }
       }
     },
-    "Edit Item" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Editar Item"
-          }
-        }
-      }
-    },
     "Eggplant" : {
       "localizations" : {
         "pt-BR" : {
@@ -601,16 +571,6 @@
         }
       }
     },
-    "First idea" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Primeira ideia"
-          }
-        }
-      }
-    },
     "Fiscal" : {
       "localizations" : {
         "pt-BR" : {
@@ -692,16 +652,6 @@
         }
       }
     },
-    "Give it a short name you'll recognize in the list." : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dê um nome curto que você reconheça na lista."
-          }
-        }
-      }
-    },
     "Governor" : {
       "localizations" : {
         "pt-BR" : {
@@ -742,16 +692,6 @@
         }
       }
     },
-    "Help and Feedback" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajuda e opinião"
-          }
-        }
-      }
-    },
     "Help Center" : {
       "localizations" : {
         "pt-BR" : {
@@ -762,12 +702,12 @@
         }
       }
     },
-    "Home" : {
+    "Help and Feedback" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Início"
+            "value" : "Ajuda e opinião"
           }
         }
       }
@@ -818,26 +758,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Conhece alguém que ia gostar do Fiscal?"
-          }
-        }
-      }
-    },
-    "Last added on %@" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Último adicionado em %@"
-          }
-        }
-      }
-    },
-    "Latest" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mais recente"
           }
         }
       }
@@ -972,16 +892,6 @@
         }
       }
     },
-    "New Item" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Novo Item"
-          }
-        }
-      }
-    },
     "Next Year" : {
       "localizations" : {
         "pt-BR" : {
@@ -1008,16 +918,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sem conexão. Mostrando os últimos números recebidos."
-          }
-        }
-      }
-    },
-    "No items yet" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nenhum item ainda"
           }
         }
       }
@@ -1062,16 +962,6 @@
         }
       }
     },
-    "Nothing yet" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nada ainda"
-          }
-        }
-      }
-    },
     "OK" : {
       "localizations" : {
         "pt-BR" : {
@@ -1098,16 +988,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abrindo Fiscal"
-          }
-        }
-      }
-    },
-    "Opens Fiscal on a new item." : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abre o Fiscal em um novo item."
           }
         }
       }
@@ -1352,16 +1232,6 @@
         }
       }
     },
-    "Some records in storage have conflicting IDs." : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alguns registros salvos têm IDs em conflito."
-          }
-        }
-      }
-    },
     "Start Here" : {
       "localizations" : {
         "pt-BR" : {
@@ -1392,22 +1262,22 @@
         }
       }
     },
-    "Stop following %@" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Parar de acompanhar %@"
-          }
-        }
-      }
-    },
     "Stop Simulating" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Parar simulação"
+          }
+        }
+      }
+    },
+    "Stop following %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parar de acompanhar %@"
           }
         }
       }
@@ -1452,22 +1322,32 @@
         }
       }
     },
+    "TSE" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TSE"
+          }
+        }
+      }
+    },
+    "TSE file from %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arquivo do TSE das %@"
+          }
+        }
+      }
+    },
     "Tangerine" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tangerina"
-          }
-        }
-      }
-    },
-    "Tap an item to edit or delete it." : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toque em um item para editar ou apagar."
           }
         }
       }
@@ -1592,22 +1472,22 @@
         }
       }
     },
-    "This device's rollout group: %lld. Only shown in development builds." : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Grupo de lançamento deste aparelho: %lld. Só aparece em versões de desenvolvimento."
-          }
-        }
-      }
-    },
     "This Month" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Este mês"
+          }
+        }
+      }
+    },
+    "This device's rollout group: %lld. Only shown in development builds." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grupo de lançamento deste aparelho: %lld. Só aparece em versões de desenvolvimento."
           }
         }
       }
@@ -1632,16 +1512,6 @@
         }
       }
     },
-    "Title" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Título"
-          }
-        }
-      }
-    },
     "Today" : {
       "localizations" : {
         "pt-BR" : {
@@ -1658,26 +1528,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tentar novamente"
-          }
-        }
-      }
-    },
-    "TSE" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "TSE"
-          }
-        }
-      }
-    },
-    "TSE file from %@" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Arquivo do TSE das %@"
           }
         }
       }
@@ -1792,16 +1642,6 @@
         }
       }
     },
-    "Weekend plan" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Plano do fim de semana"
-          }
-        }
-      }
-    },
     "Welcome to Fiscal" : {
       "localizations" : {
         "pt-BR" : {
@@ -1853,16 +1693,6 @@
         }
       }
     },
-    "Yesterday" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ontem"
-          }
-        }
-      }
-    },
     "Your Data Stays Yours" : {
       "localizations" : {
         "pt-BR" : {
@@ -1889,16 +1719,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Seu iCloud, sua escolha"
-          }
-        }
-      }
-    },
-    "Your Items" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seus Itens"
           }
         }
       }

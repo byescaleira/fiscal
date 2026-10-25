@@ -5,11 +5,11 @@ final class LaunchTests: XCTestCase {
         continueAfterFailure = false
     }
 
-    @MainActor func testLaunchShowsLiveResultsAndOpensSettings() {
+    @MainActor func testLaunchShowsTodayAndOpensSettings() {
         let app = XCUIApplication.fiscal()
         app.launch()
         XCTAssertTrue(app.waitForSections())
-        XCTAssertTrue(app.buttons["Apuração"].firstMatch.exists)
+        XCTAssertTrue(app.buttons["Hoje"].firstMatch.exists)
         XCTAssertTrue(app.staticTexts["Presidente · Brasil"].waitForExistence(timeout: 10))
         capture(app, "live-results")
         #if !os(tvOS)

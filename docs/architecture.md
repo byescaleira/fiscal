@@ -20,25 +20,21 @@ fiscal/
 
 | Target | Responsabilidade | Depende de |
 | --- | --- | --- |
-| `FiscalDomain` | Entidades (`Item`), valores (`YearMonth`), protocolos de repositório, `FiscalError`, `AppLanguage`/`String(appLocalized:)`, `RemoteFlag` | nada |
+| `FiscalDomain` | Valores (`YearMonth`), protocolos de repositório, `FiscalError`, `AppLanguage`/`String(appLocalized:)`, `RemoteFlag` | nada |
 | `FiscalData` | `FiscalDatabase` (SwiftData + CloudKit `iCloud.fiscal`), `FiscalStore` (`@ModelActor`), entidades `@Model`, schema versionado, repositórios, `CloudKitFlagSource` | Domain |
 | `FiscalDesignSystem` | Tokens, estilos, modifiers, layouts e componentes sem regra de negócio | nada |
 | `FiscalResource` | Prévia do ícone e animações Lottie embutidas (`FiscalResourceAnimation`) | nada |
 | `FeatureCore` | `SessionModel`, navegação (`Route`, `AppSection`, `FiscalNavigation`, `\.open`, `\.close`), `FeatureFlag`/`FeatureFlags`, guias (`Guide*`), `EmptyStateView`, `MonthPicker`, editor (`EditorStatus`, `EditorActions`, `editorLifecycle`), `errorAlert`, cores retrô, `FiscalAnimationView` | Domain, DesignSystem, Resource, Lottie |
-| `FeatureHome` | Início: herói, lista e estado vazio; editor de exemplo (`ItemEditorModel`) | Domain, DesignSystem, FeatureCore |
 | `FeatureGuides` | `GuideScreen` e páginas dos tutoriais | Domain, DesignSystem, FeatureCore |
-| `FeatureSettings` | Ajustes: Aparência (tema, cor de destaque), Idioma, Guias, Sobre, Desenvolvedor (flags) | Domain, DesignSystem, Resource, FeatureCore |
+| `FeatureSettings` | Ajustes: Aparência (tema, cor de destaque), Guias, Sobre, Desenvolvedor (flags) | Domain, DesignSystem, Resource, FeatureCore |
 | `AppShell` | `FiscalWindow`, `MainScreen`, `SectionStack`, `SectionScreen`, `RouteScreen`, `InspectorScreen`, `SplashScreen`/`LaunchProgress`, `DeepLinks`, `FiscalServices` | todas as features |
-
-`Item` é o exemplo vertical que nasce com o template (domínio → dados → feature → testes). Renomeie para a primeira entidade real ou remova quando ela existir.
 
 ## Links
 
 | Link | Abre |
 | --- | --- |
-| `fiscal://home` | Início |
-| `fiscal://items/new` | Editor de item novo |
-| `fiscal://items/<id>` | Editor do item |
+| `fiscal://today` | Hoje |
+| `fiscal://races` | Apuração |
 | `fiscal://settings` | Ajustes |
 
 ## Receita: nova feature

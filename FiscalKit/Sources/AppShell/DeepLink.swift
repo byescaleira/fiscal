@@ -7,17 +7,16 @@ enum DeepLink: Equatable {
 
     init(url: URL) {
         guard url.scheme == "fiscal" else {
-            self = .section(.home)
+            self = .section(.today)
             return
         }
-        let path = url.pathComponents.dropFirst().first
         switch url.host() {
-        case "items":
-            self = .route(.item(id: path == "new" ? nil : path), in: .home)
+        case "races":
+            self = .route(.races, in: .today)
         case "settings":
             self = .section(.settings)
         default:
-            self = .section(.home)
+            self = .section(.today)
         }
     }
 
