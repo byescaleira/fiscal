@@ -75,7 +75,7 @@ private struct ProfileHeroActions: View {
     @Environment(\.navigationSection) private var section
 
     var body: some View {
-        HStack(spacing: .spaceM) {
+        AdaptiveRow(spacing: .spaceM) {
             if profile.canFollow {
                 Button {
                     Task {

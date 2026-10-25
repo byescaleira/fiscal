@@ -8,7 +8,7 @@ import Testing
 
 @MainActor
 struct ProfileModelTests {
-    private static let instant = Date(timeIntervalSince1970: 1_792_917_720)
+    nonisolated private static let instant = Date(timeIntervalSince1970: 1_792_917_720)
     private let showcase = ShowcasePublicData(scenario: .normal, now: instant)
 
     private func makeModel(

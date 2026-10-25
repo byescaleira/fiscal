@@ -100,7 +100,7 @@ struct MineModelTests {
         let model = try makeModel()
         await model.loadPlaces()
         #expect(model.placeResults.count == 27)
-        #expect(model.placeResults.allSatisfy(\.isState))
+        #expect(model.placeResults.allSatisfy { $0.isState })
         model.query = "sao"
         let results = model.placeResults
         #expect(results.first?.code == "sp")
