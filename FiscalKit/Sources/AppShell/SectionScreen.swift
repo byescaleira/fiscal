@@ -25,7 +25,8 @@ struct SectionScreen: View {
             ModelHost(VotesModel(service: data, lens: session.repositories.lens)) {
                 VotesScreen()
             }
-        case .money: ModelHost(MoneyModel(service: data)) { MoneyScreen() }
+        case .money:
+            ModelHost(MoneyModel(service: data, lens: session.repositories.lens)) { MoneyScreen() }
         case .search: ModelHost(SearchModel(service: data)) { SearchScreen() }
         }
     }

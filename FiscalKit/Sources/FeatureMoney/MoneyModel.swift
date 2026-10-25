@@ -5,51 +5,167 @@ import Observation
 
 @MainActor @Observable
 public final class MoneyModel {
-    public struct Line: Identifiable, Equatable {
+    public enum Section: String, CaseIterable, Identifiable, Sendable {
+        case quota, salaries, campaigns, revenue
+
+        public var id: String { rawValue }
+
+        public var title: String {
+            switch self {
+            case .quota: String(appLocalized: "Office allowance")
+            case .salaries: String(appLocalized: "Salaries")
+            case .campaigns: String(appLocalized: "Campaigns")
+            case .revenue: String(appLocalized: "Federal revenue")
+            }
+        }
+
+        public static func order(for stance: PoliticalStance?) -> [Section] {
+            switch stance?.effective {
+            case .right, .centerRight: [.quota, .salaries, .revenue, .campaigns]
+            case .center: [.revenue, .quota, .salaries, .campaigns]
+            case .centerLeft, .left: [.campaigns, .revenue, .quota, .salaries]
+            case .impartial, .preferNotToSay, nil: allCases
+            }
+        }
+    }
+
+    public struct Salary: Identifiable, Equatable, Sendable {
         public let id: String
         public let title: String
-        public let detail: String?
+        public let law: String
+        public let symbol: String
         public let value: String
     }
 
+    public struct Hero: Equatable, Sendable {
+        public let chip: String
+        public let value: String
+        public let cents: Int
+        public let caption: String
+        public let chamber: String
+        public let senate: String
+        public let chamberShare: Double
+    }
+
     public private(set) var overview: MoneyOverview?
+    public private(set) var stance: PoliticalStance?
     public private(set) var phase: PublicDataPhase = .idle
     @ObservationIgnored private let service: (any PublicDataService)?
+    @ObservationIgnored private let lensRepository: (any LensRepository)?
 
-    public init(service: (any PublicDataService)?) {
+    public init(service: (any PublicDataService)?, lens: (any LensRepository)? = nil) {
         self.service = service
+        lensRepository = lens
     }
 
     public var isEmpty: Bool {
         guard let overview else { return true }
-        return overview.salaries.isEmpty && overview.quota.federalDeputiesCents == 0
-            && overview.quota.senatorsCents == 0 && (overview.campaigns?.revenueCents ?? 0) == 0
+        return overview.salaries.isEmpty && quotaCents == 0
+            && (overview.campaigns?.revenueCents ?? 0) == 0 && overview.revenue == nil
     }
 
-    public var quota: [Line] {
-        guard let overview else { return [] }
-        let year = String(appLocalized: "Total in \(String(overview.year))")
-        return [
-            Line(
-                id: "deputies", title: String(appLocalized: "All federal deputies"), detail: year,
-                value: PublicFormat.compactMoney(cents: overview.quota.federalDeputiesCents)),
-            Line(
-                id: "senators", title: String(appLocalized: "All senators"), detail: year,
-                value: PublicFormat.compactMoney(cents: overview.quota.senatorsCents)),
-        ]
+    public var sections: [Section] { Section.order(for: stance) }
+
+    public var lensNote: String? {
+        guard stance != nil, let first = sections.first, sections != Section.allCases else {
+            return nil
+        }
+        return String(appLocalized: "Your lens shows \(first.title) first.")
     }
 
-    public var salaries: [Line] {
+    private var quotaCents: Int {
+        guard let quota = overview?.quota else { return 0 }
+        return quota.federalDeputiesCents + quota.senatorsCents
+    }
+
+    public var hero: Hero? {
+        guard let overview, quotaCents > 0 else { return nil }
+        let year = String(overview.year)
+        return Hero(
+            chip: String(appLocalized: "Office allowance · \(year)").uppercased(with: .app),
+            value: PublicFormat.compactMoney(cents: quotaCents), cents: quotaCents,
+            caption: String(appLocalized: "Spent by federal deputies and senators in \(year)"),
+            chamber: PublicFormat.compactMoney(cents: overview.quota.federalDeputiesCents),
+            senate: PublicFormat.compactMoney(cents: overview.quota.senatorsCents),
+            chamberShare: Double(overview.quota.federalDeputiesCents) / Double(quotaCents))
+    }
+
+    public var categories: [AmountBar] {
+        MoneyText.bars(
+            overview?.quota.byCategory ?? [], id: \.category, title: \.category, cents: \.cents,
+            kind: { MoneyKind.category($0.category) })
+    }
+
+    public var categoriesHeadline: String? {
+        guard let first = categories.first else { return nil }
+        return String(appLocalized: "\(first.title) was the largest item: \(first.value)")
+    }
+
+    public var salaries: [Salary] {
         (overview?.salaries ?? []).map { salary in
-            Line(
-                id: salary.office.rawValue, title: salary.office.title, detail: salary.law,
+            Salary(
+                id: salary.office.rawValue, title: salary.office.title,
+                law: salary.law ?? PublicFormat.missing,
+                symbol: MoneyKind.office(salary.office),
                 value: PublicFormat.money(cents: salary.monthlyCents))
         }
+    }
+
+    public var campaigns: MoneyOverview.Campaigns? { overview?.campaigns }
+
+    public var campaignOrigins: [AmountBar] {
+        MoneyText.bars(
+            campaigns?.byOrigin ?? [], id: \.origin, title: \.origin, cents: \.cents,
+            kind: { MoneyKind.origin($0.origin) })
+    }
+
+    public var campaignsHeadline: String {
+        guard let campaigns else {
+            return String(appLocalized: "The electoral court hasn't published campaign money yet.")
+        }
+        let year = String(campaigns.year)
+        let raised = PublicFormat.compactMoney(cents: campaigns.revenueCents)
+        return String(appLocalized: "Campaigns in \(year) raised \(raised)")
+    }
+
+    public var campaignFigures: (raised: String, spent: String) {
+        (
+            PublicFormat.compactMoney(cents: campaigns?.revenueCents),
+            PublicFormat.compactMoney(cents: campaigns?.expenseCents)
+        )
+    }
+
+    public var revenue: MoneyOverview.Revenue? { overview?.revenue }
+
+    public var revenueStates: [AmountBar] {
+        MoneyText.bars(
+            revenue?.byState ?? [], id: \.uf, title: { RaceText.scope($0.uf) }, cents: \.cents,
+            kind: { _ in MoneyKind.state })
+    }
+
+    public var revenueHeadline: String {
+        guard let revenue else {
+            return String(
+                appLocalized: "The federal revenue service hasn't closed a full year yet.")
+        }
+        let total = PublicFormat.compactMoney(cents: revenue.totalCents)
+        return String(appLocalized: "Federal revenue in \(String(revenue.year)): \(total)")
+    }
+
+    public func sourceLine(for section: Section) -> String {
+        let ids: [String] =
+            switch section {
+            case .quota, .salaries: ["camara", "senado"]
+            case .campaigns: ["tse"]
+            case .revenue: ["receita"]
+            }
+        return MoneyText.sourceLine(MoneyText.sources(overview?.sources ?? [], ids: ids))
     }
 
     public func load() async {
         if overview == nil { phase = .loading }
         phase = await PublicDataPhase.settle(after: phase) {
+            stance = (try? await lensRepository?.lens())?.stance
             guard let service else { throw PublicDataError.unavailable }
             overview = try await service.money()
         }

@@ -105,7 +105,9 @@
         }
 
         public func expenses(slug: String, year: Int) async throws -> ExpenseList {
-            ShowcaseMoney.expenses(for: try legislator(slug), year: year)
+            ShowcaseExpenses.list(
+                for: try legislator(slug), year: year, now: now, calendar: calendar,
+                longText: longText)
         }
 
         public func checks(slug: String) async throws -> FactCheckList? {
