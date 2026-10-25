@@ -248,4 +248,5 @@ type Dataset struct {
 	Revenue        *RevenueBlock
 	Salaries       []OfficeSalary
 	SalarySource   map[string]string
+	Checks         []RawCheck
 }

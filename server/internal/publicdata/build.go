@@ -13,8 +13,9 @@ type File struct {
 }
 
 type Output struct {
-	Files []File
-	Slugs map[*Person]string
+	Files   []File
+	Slugs   map[*Person]string
+	Reviews []CheckReview
 }
 
 const RecentVotes = 60
@@ -74,12 +75,40 @@ func Build(ds *Dataset, registry *Slugs) Output {
 	counts.Places = len(places)
 	b.add("index/places.json", places)
 	b.placeFiles(people)
+	reviews := b.checks(people)
 	b.votes()
 	b.agenda()
 	b.money()
 	b.today()
 	b.add("meta.json", Meta{GeneratedAt: stamp(ds.GeneratedAt), Sources: b.sources(sortedSourceIDs(ds.Sources)...), Counts: counts})
-	return Output{Files: b.files, Slugs: b.slugs}
+	return Output{Files: b.files, Slugs: b.slugs, Reviews: reviews}
+}
+
+func (b *builder) checks(people []*Person) []CheckReview {
+	if len(b.ds.Checks) == 0 {
+		return []CheckReview{}
+	}
+	m := MatchChecks(people, b.slugs, b.ds.Checks)
+	srcIDs := map[string]bool{}
+	for _, c := range b.ds.Checks {
+		srcIDs[c.Source] = true
+	}
+	for _, p := range people {
+		items := m.ByPerson[p]
+		if len(items) == 0 {
+			continue
+		}
+		ids := make([]string, 0, len(srcIDs))
+		for id := range srcIDs {
+			ids = append(ids, id)
+		}
+		sort.Strings(ids)
+		b.add("people/"+b.slugs[p]+"/checks.json", CheckList{Items: items, Sources: b.sources(ids...)})
+	}
+	if m.Reviews == nil {
+		return []CheckReview{}
+	}
+	return m.Reviews
 }
 
 func (b *builder) add(path string, v any) {
