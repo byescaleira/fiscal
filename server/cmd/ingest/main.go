@@ -23,7 +23,7 @@ import (
 	"liveresults/internal/sources/tse"
 )
 
-var knownSources = []string{"camara", "senado", "tse", "ibge", "receita", "assembleias", "comprova", "cidades", "repercussao"}
+var knownSources = []string{"camara", "senado", "tse", "ibge", "receita", "assembleias", "comprova", "cidades", "repercussao", "anp", "sidra"}
 
 var knownUFs = map[string]bool{}
 

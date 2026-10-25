@@ -289,6 +289,9 @@ func (in *Ingest) Full(ctx context.Context) (Report, error) {
 	if in.cfg.Enabled("repercussao") {
 		ds.Signals = in.loadSignals(ctx, &rep, ds, srcs)
 	}
+	if in.cfg.Enabled("anp") || in.cfg.Enabled("sidra") {
+		ds.Indicators = in.loadIndicators(ctx, &rep, srcs)
+	}
 	if err := srcs.settle(filepath.Join(in.cfg.DataDir, "sources.json")); err != nil {
 		return rep, err
 	}

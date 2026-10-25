@@ -55,7 +55,9 @@ public final class FiscalServices {
 
     func publicData() -> (any PublicDataService)? {
         #if DEBUG
-            if let showcase = ShowcasePublicData.fromLaunchArguments(roster: .bundled) {
+            if let showcase = ShowcasePublicData.fromLaunchArguments(
+                roster: .bundled, indicators: .bundled)
+            {
                 return showcase
             }
         #endif

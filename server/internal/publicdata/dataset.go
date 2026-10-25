@@ -259,4 +259,5 @@ type Dataset struct {
 	Checks         []RawCheck
 	Cities         []City
 	Signals        *Signals
+	Indicators     []RawIndicator
 }

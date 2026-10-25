@@ -15,6 +15,8 @@ public final class ProfileModel {
     public private(set) var expenses: ExpenseList?
     public private(set) var actions: ActionList?
     public private(set) var weightMethod: WeightMethod?
+    public private(set) var context: PersonContext?
+    public var selectedIndicatorID: String?
     public private(set) var isFollowing = false
     public private(set) var phase: PublicDataPhase = .idle
     public var error: FiscalError?
@@ -126,13 +128,18 @@ public final class ProfileModel {
         }
         async let actions = Self.fetch(true) { try await service.actions(slug: slug) }
         async let method = Self.fetch(true) { try await service.weightMethod() }
-        let loaded = await (votes, proposals, speeches, expenses)
+
+        async let context = Self.fetch(true) {
+            try await Self.context(for: profile, service: service)
+        }
+        let loaded = await (votes, proposals, speeches, expenses, context)
         self.votes = loaded.0
         self.proposals = loaded.1
         self.speeches = loaded.2
         self.expenses = loaded.3
         self.actions = await actions ?? nil
         weightMethod = await method ?? nil
+        self.context = loaded.4 ?? nil
     }
 
     nonisolated private static func fetch<Value: Sendable>(

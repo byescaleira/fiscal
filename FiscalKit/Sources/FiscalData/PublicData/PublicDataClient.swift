@@ -116,7 +116,19 @@ public struct PublicDataClient: PublicDataService {
         try await optional(PublicDataPath.weightMethod)
     }
 
-    private func optional<Value: Decodable>(_ path: String) async throws -> Value? {
+    public func indicators() async throws -> IndicatorCatalog? {
+        try await optional(PublicDataPath.indicators)
+    }
+
+    public func indicator(id: String) async throws -> Indicator? {
+        try await optional(PublicDataPath.indicator(id: id))
+    }
+
+    public func context(slug: String) async throws -> PersonContext? {
+        try await optional(PublicDataPath.context(slug: slug))
+    }
+
+    func optional<Value: Decodable>(_ path: String) async throws -> Value? {
         do {
             return try await get(path)
         } catch PublicDataError.notFound {

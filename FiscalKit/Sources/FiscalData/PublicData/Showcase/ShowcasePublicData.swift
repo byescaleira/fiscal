@@ -7,22 +7,25 @@
         private let now: Date
         private let calendar: Calendar
         private let roster: ShowcaseRoster
+        private let series: ShowcaseIndicators
 
         public init(
             scenario: PublicDataScenario, now: Date = .now,
-            calendar: Calendar = FiscalCalendar.current, roster: ShowcaseRoster = .curated
+            calendar: Calendar = FiscalCalendar.current, roster: ShowcaseRoster = .curated,
+            indicators: ShowcaseIndicators = .none
         ) {
             self.scenario = scenario
             self.now = now
             self.calendar = calendar
             self.roster = roster
+            series = indicators
         }
 
-        public static func fromLaunchArguments(roster: ShowcaseRoster = .curated)
-            -> ShowcasePublicData?
-        {
+        public static func fromLaunchArguments(
+            roster: ShowcaseRoster = .curated, indicators: ShowcaseIndicators = .none
+        ) -> ShowcasePublicData? {
             PublicDataScenario.fromLaunchArguments().map {
-                ShowcasePublicData(scenario: $0, roster: roster)
+                ShowcasePublicData(scenario: $0, roster: roster, indicators: indicators)
             }
         }
 
@@ -228,6 +231,23 @@
         public func money() async throws -> MoneyOverview {
             try check()
             return ShowcaseMoney.overview(year: year, empty: isEmpty, sources: sources)
+        }
+
+        public func indicators() async throws -> IndicatorCatalog? {
+            try check()
+            return isEmpty ? nil : series.catalog()
+        }
+
+        public func indicator(id: String) async throws -> Indicator? {
+            try check()
+            return isEmpty ? nil : series.indicator(id: id)
+        }
+
+        public func context(slug: String) async throws -> PersonContext? {
+            try check()
+            guard !isEmpty, let card = everyone.first(where: { $0.slug == slug }) ?? municipal(slug)
+            else { return nil }
+            return series.context(for: card)
         }
 
         public func today() async throws -> TodayDigest {

@@ -151,6 +151,16 @@
         }
       }
     },
+    "%@ since taking office" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ desde a posse"
+          }
+        }
+      }
+    },
     "%@ voted" : {
       "localizations" : {
         "pt-BR" : {
@@ -221,6 +231,16 @@
         }
       }
     },
+    "%@ · until %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · até %@"
+          }
+        }
+      }
+    },
     "%@, %@, %@. Yes: %@. No: %@. Other: %@. %@." : {
       "localizations" : {
         "pt-BR" : {
@@ -237,6 +257,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@, %2$@, número %3$@, %4$@, %5$@"
+          }
+        }
+      }
+    },
+    "%@, %@: %@ in %@, %@ in 12 months" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, %@: %@ em %@, %@ em 12 meses"
           }
         }
       }
@@ -391,6 +421,16 @@
         }
       }
     },
+    "12 months · %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "12 meses · %@"
+          }
+        }
+      }
+    },
     "2 TO 3 PEOPLE" : {
       "localizations" : {
         "pt-BR" : {
@@ -417,6 +457,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uma emenda à Constituição precisa de três quintos das cadeiras votando Sim, não só de mais Sim do que Não."
+          }
+        }
+      }
+    },
+    "a cooking gas cylinder" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "o botijão de gás"
           }
         }
       }
@@ -1087,6 +1137,56 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Barra com mais votações: %1$@, %2$@"
+          }
+        }
+      }
+    },
+    "Base" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Base"
+          }
+        }
+      }
+    },
+    "Before" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antes"
+          }
+        }
+      }
+    },
+    "before %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "antes %@"
+          }
+        }
+      }
+    },
+    "Before and During the Term" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antes e durante o mandato"
+          }
+        }
+      }
+    },
+    "Before · %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antes · %@"
           }
         }
       }
@@ -2231,6 +2331,46 @@
         }
       }
     },
+    "During the term" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No mandato"
+          }
+        }
+      }
+    },
+    "During the term · %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No mandato · %@"
+          }
+        }
+      }
+    },
+    "During the term, %@ %@ changed %@." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No mandato, %@ %@ variou %@."
+          }
+        }
+      }
+    },
+    "During the term, %@ %@ went from %@ to %@ (%@)." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No mandato, %@ %@ passou de %@ para %@ (%@)."
+          }
+        }
+      }
+    },
     "Dusty Rose" : {
       "localizations" : {
         "pt-BR" : {
@@ -2487,6 +2627,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Espírito Santo"
+          }
+        }
+      }
+    },
+    "ethanol" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "o etanol"
           }
         }
       }
@@ -3172,6 +3322,16 @@
         }
       }
     },
+    "gasoline" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "a gasolina"
+          }
+        }
+      }
+    },
     "Gave %@ speeches on record." : {
       "localizations" : {
         "pt-BR" : {
@@ -3502,6 +3662,16 @@
         }
       }
     },
+    "in %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "em %@"
+          }
+        }
+      }
+    },
     "In alphabetical order inside each office. Nobody is ranked." : {
       "localizations" : {
         "pt-BR" : {
@@ -3518,6 +3688,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Em ordem alfabética."
+          }
+        }
+      }
+    },
+    "in Brazil" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "no Brasil"
           }
         }
       }
@@ -3578,6 +3758,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Em Ajustes › Aparência, escolha o tema e a cor de destaque."
+          }
+        }
+      }
+    },
+    "In the %lld months before, %@." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nos %lld meses antes, %@."
           }
         }
       }
@@ -3758,6 +3948,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Último voto · %@ · %@"
+          }
+        }
+      }
+    },
+    "Latest" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Último mês"
           }
         }
       }
@@ -4212,12 +4412,32 @@
         }
       }
     },
+    "Monthly average price, %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preço médio mensal, %@"
+          }
+        }
+      }
+    },
     "Monthly average: %@" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Média mensal: %@"
+          }
+        }
+      }
+    },
+    "Monthly IPCA index (IBGE)" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Índice mensal do IPCA (IBGE)"
           }
         }
       }
@@ -5012,6 +5232,16 @@
         }
       }
     },
+    "official inflation (IPCA)" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "a inflação oficial (IPCA)"
+          }
+        }
+      }
+    },
     "Official page" : {
       "localizations" : {
         "pt-BR" : {
@@ -5558,6 +5788,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "por mês"
+          }
+        }
+      }
+    },
+    "Period" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Período"
           }
         }
       }
@@ -6622,6 +6862,16 @@
         }
       }
     },
+    "S10 diesel" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "o diesel S10"
+          }
+        }
+      }
+    },
     "Sage" : {
       "localizations" : {
         "pt-BR" : {
@@ -7058,6 +7308,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mostra as votações recentes deste tema"
+          }
+        }
+      }
+    },
+    "Shows this indicator in the chart" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra este indicador no gráfico"
           }
         }
       }
@@ -8212,6 +8472,46 @@
         }
       }
     },
+    "the price of electricity" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "o preço da energia elétrica"
+          }
+        }
+      }
+    },
+    "the price of food at home" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "o preço da alimentação no domicílio"
+          }
+        }
+      }
+    },
+    "the price of gasoline in the IPCA" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "o preço da gasolina no IPCA"
+          }
+        }
+      }
+    },
+    "the price of rent" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "o preço do aluguel"
+          }
+        }
+      }
+    },
     "The public data came in a format Fiscal can't read." : {
       "localizations" : {
         "pt-BR" : {
@@ -8292,6 +8592,16 @@
         }
       }
     },
+    "The term starts at the month before taking office and runs to the latest month published; before is the same number of months ahead of it. It shows what changed, not why." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O mandato vai do mês anterior à posse até o último mês publicado; o antes são os mesmos meses que antecedem a posse. Mostra o que mudou, não o porquê."
+          }
+        }
+      }
+    },
     "Theme" : {
       "localizations" : {
         "pt-BR" : {
@@ -8338,6 +8648,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Temas das propostas e dos discursos, na ordem em que os dados chegam. Os números são os mesmos para todo mundo."
+          }
+        }
+      }
+    },
+    "There's no data for the %lld months before." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não há dado para os %lld meses antes."
           }
         }
       }
@@ -8498,6 +8818,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hoje, Votações e Dinheiro abrem com estes temas. Todo o resto fica a um toque."
+          }
+        }
+      }
+    },
+    "Took office" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posse"
+          }
+        }
+      }
+    },
+    "Took office · %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posse · %@"
           }
         }
       }
@@ -8738,6 +9078,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Votos válidos não contam brancos e nulos."
+          }
+        }
+      }
+    },
+    "Value" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valor"
           }
         }
       }

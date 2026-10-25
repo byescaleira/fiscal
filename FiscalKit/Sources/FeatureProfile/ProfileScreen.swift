@@ -18,6 +18,7 @@ public struct ProfileScreen: View {
                 ProfileNumbersSection()
                 ProfileActionsSection()
                 ProfileLensSection()
+                ProfileContextSection()
                 ProfileVotesSection()
                 ProfileProposalsSection()
                 ProfileSpeechesSection()
