@@ -16,6 +16,7 @@ type Output struct {
 	Files   []File
 	Slugs   map[*Person]string
 	Reviews []CheckReview
+	Cities  []string
 }
 
 const RecentVotes = 60
@@ -32,6 +33,7 @@ type builder struct {
 	byKey   map[string]*Person
 	votesBy map[string][]personBallot
 	files   []File
+	cities  []string
 }
 
 type personBallot struct {
@@ -42,6 +44,7 @@ type personBallot struct {
 func Build(ds *Dataset, registry *Slugs) Output {
 	b := &builder{ds: ds, byKey: map[string]*Person{}, votesBy: map[string][]personBallot{}}
 	b.slugs = registry.Assign(ds.People)
+	b.assignCities(registry)
 	for _, p := range ds.People {
 		for _, k := range p.Keys {
 			b.byKey[k] = p
@@ -75,13 +78,14 @@ func Build(ds *Dataset, registry *Slugs) Output {
 	counts.Places = len(places)
 	b.add("index/places.json", places)
 	b.placeFiles(people)
+	b.cityFiles()
 	reviews := b.checks(people)
 	b.votes()
 	b.agenda()
 	b.money()
 	b.today()
 	b.add("meta.json", Meta{GeneratedAt: stamp(ds.GeneratedAt), Sources: b.sources(sortedSourceIDs(ds.Sources)...), Counts: counts})
-	return Output{Files: b.files, Slugs: b.slugs, Reviews: reviews}
+	return Output{Files: b.files, Slugs: b.slugs, Reviews: reviews, Cities: b.cities}
 }
 
 func (b *builder) checks(people []*Person) []CheckReview {
@@ -431,7 +435,11 @@ func (b *builder) electoral(p *Person, nums *Numbers) ([]AssetYear, []Campaign, 
 		if nums.LastElectionVotes == nil && c.Votes != nil {
 			nums.LastElectionVotes = ptr(*c.Votes)
 		}
-		timeline = append(timeline, TimelineEntry{Year: c.Year, Office: c.Office, Place: b.placeName(c.UF), Party: strPtr(c.Party), Result: strPtr(ResultLabel(c.Result)), Votes: c.Votes})
+		place := c.Place
+		if place == "" {
+			place = b.placeName(c.UF)
+		}
+		timeline = append(timeline, TimelineEntry{Year: c.Year, Office: c.Office, Place: place, Party: strPtr(c.Party), Result: strPtr(ResultLabel(c.Result)), Votes: c.Votes})
 	}
 	return assets, campaigns, timeline
 }

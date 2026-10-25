@@ -165,6 +165,69 @@ func (s *Slugs) Assign(people []*Person) map[*Person]string {
 	return out
 }
 
+func (s *Slugs) AssignScoped(people []*Person, base func(*Person) string, taken map[string]bool) map[*Person]string {
+	bases := map[*Person]string{}
+	for _, p := range people {
+		b := base(p)
+		if b == "" {
+			b = "pessoa"
+		}
+		bases[p] = b
+	}
+	sorted := append([]*Person(nil), people...)
+	sort.SliceStable(sorted, func(i, j int) bool {
+		if bases[sorted[i]] != bases[sorted[j]] {
+			return bases[sorted[i]] < bases[sorted[j]]
+		}
+		return firstKey(sorted[i]) < firstKey(sorted[j])
+	})
+	owners := s.owners()
+	used := map[string]bool{}
+	for slug := range taken {
+		used[slug] = true
+	}
+	out := map[*Person]string{}
+	for _, p := range sorted {
+		for _, k := range p.Keys {
+			slug, ok := s.byKey[k]
+			if !ok || used[slug] {
+				continue
+			}
+			out[p] = slug
+			used[slug] = true
+			break
+		}
+	}
+	free := func(slug string, p *Person) bool {
+		if used[slug] {
+			return false
+		}
+		for k := range owners[slug] {
+			if !hasKey(p, k) {
+				return false
+			}
+		}
+		return true
+	}
+	for _, p := range sorted {
+		if _, ok := out[p]; ok {
+			continue
+		}
+		slug := bases[p]
+		for n := 2; !free(slug, p); n++ {
+			slug = fmt.Sprintf("%s-%d", bases[p], n)
+		}
+		out[p] = slug
+		used[slug] = true
+	}
+	for p, slug := range out {
+		for _, k := range p.Keys {
+			s.byKey[k] = slug
+		}
+	}
+	return out
+}
+
 func firstKey(p *Person) string {
 	if len(p.Keys) == 0 {
 		return ""

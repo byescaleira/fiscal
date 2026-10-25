@@ -124,6 +124,17 @@ func (t *Tree) Write(rel string, data []byte) error {
 	return nil
 }
 
+func (t *Tree) Retain(rels []string) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	for _, rel := range rels {
+		clean := filepath.ToSlash(filepath.Clean(filepath.FromSlash(rel)))
+		if Exists(filepath.Join(t.root, filepath.FromSlash(clean))) {
+			t.seen[clean] = true
+		}
+	}
+}
+
 func (t *Tree) Prune(dirs ...string) error {
 	for _, dir := range dirs {
 		base := filepath.Join(t.root, filepath.FromSlash(dir))
