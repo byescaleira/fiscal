@@ -81,6 +81,16 @@
         }
       }
     },
+    "%@ means %@ of %@ sessions." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ quer dizer %2$@ de %3$@ sessões."
+          }
+        }
+      }
+    },
     "%@ more than in %@" : {
       "localizations" : {
         "pt-BR" : {
@@ -107,6 +117,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ de %@ sessões"
+          }
+        }
+      }
+    },
+    "%@ of ballot boxes have been counted." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ das urnas foram apuradas."
           }
         }
       }
@@ -251,6 +271,16 @@
         }
       }
     },
+    "%@: %@ votes, %@ approved" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@: %2$@ votações, %3$@ aprovadas"
+          }
+        }
+      }
+    },
     "%@: count finished" : {
       "localizations" : {
         "pt-BR" : {
@@ -351,6 +381,26 @@
         }
       }
     },
+    "A bill is a text sent to the house to be analyzed, and it only becomes law after being approved in the votes." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma proposta é um texto enviado para a casa analisar, e ela só vira lei depois de aprovada nas votações."
+          }
+        }
+      }
+    },
+    "A constitutional amendment needs three fifths of the seats voting yes, not just more yes than no." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma emenda à Constituição precisa de três quintos das cadeiras votando Sim, não só de mais Sim do que Não."
+          }
+        }
+      }
+    },
     "A dash means the source doesn't publish this number." : {
       "localizations" : {
         "pt-BR" : {
@@ -367,6 +417,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Um traço quer dizer que a fonte não publica esse número. Cada número mostra de onde vem."
+          }
+        }
+      }
+    },
+    "A day without a bar had no votes on these topics." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dia sem barra não teve votação nestes temas."
           }
         }
       }
@@ -407,6 +467,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Um tema mostra as últimas votações do Congresso sobre ele."
+          }
+        }
+      }
+    },
+    "A week without a bar had no votes on these topics." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semana sem barra não teve votação nestes temas."
           }
         }
       }
@@ -497,6 +567,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Adicionar"
+          }
+        }
+      }
+    },
+    "After: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Depois: %@"
           }
         }
       }
@@ -761,6 +841,16 @@
         }
       }
     },
+    "Approved means the text got the votes it needed in this vote." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aprovado quer dizer que o texto teve os votos de que precisava nesta votação."
+          }
+        }
+      }
+    },
     "Approved: %lld" : {
       "localizations" : {
         "pt-BR" : {
@@ -851,12 +941,42 @@
         }
       }
     },
+    "Attendance counts the sessions with roll call where they were present, not how they voted." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A presença conta em quantas sessões com chamada a pessoa esteve, não como ela votou."
+          }
+        }
+      }
+    },
     "Attendance, votes, proposals, expenses and assets show up here, each with its official source." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Presença, votos, propostas, gastos e patrimônio aparecem aqui, cada um com a fonte oficial."
+          }
+        }
+      }
+    },
+    "Attendance: %@ of %@ sessions with roll call (%@)" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presença: %1$@ de %2$@ sessões com chamada (%3$@)"
+          }
+        }
+      }
+    },
+    "Attendance: not published" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presença: não publicada"
           }
         }
       }
@@ -877,6 +997,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Média"
+          }
+        }
+      }
+    },
+    "Average per bar: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Média por barra: %@"
           }
         }
       }
@@ -921,6 +1051,46 @@
         }
       }
     },
+    "Ballot boxes counted: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Urnas apuradas: %@"
+          }
+        }
+      }
+    },
+    "Bar with the most votes: %@, %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Barra com mais votações: %1$@, %2$@"
+          }
+        }
+      }
+    },
+    "Before: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antes: %@"
+          }
+        }
+      }
+    },
+    "Being approved here doesn't mean it is law yet: the text may still go through other votes or be signed into law." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ser aprovado aqui não quer dizer que já é lei: o texto ainda pode passar por outras votações ou pela sanção."
+          }
+        }
+      }
+    },
     "Biggest month in %@: %@, %@" : {
       "localizations" : {
         "pt-BR" : {
@@ -931,12 +1101,42 @@
         }
       }
     },
+    "Bills are texts sent to the house to be analyzed, and speeches count the times they spoke on record, not what they said." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Propostas são textos enviados para a casa analisar, e os discursos contam as vezes em que a pessoa falou com registro, não o que ela disse."
+          }
+        }
+      }
+    },
     "Bills filed" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Propostas apresentadas"
+          }
+        }
+      }
+    },
+    "Bills presented: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Propostas apresentadas: %@"
+          }
+        }
+      }
+    },
+    "Bills that became law: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Propostas que viraram lei: %@"
           }
         }
       }
@@ -1297,6 +1497,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mudar os temas"
+          }
+        }
+      }
+    },
+    "Change: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Variação: %@"
           }
         }
       }
@@ -2011,12 +2221,72 @@
         }
       }
     },
+    "Each bar counts the latest votes that touched a topic, and one vote can count in more than one topic." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada barra conta as últimas votações que tocaram num tema, e uma mesma votação pode contar em mais de um tema."
+          }
+        }
+      }
+    },
+    "Each bar is a day, and its height is the number of votes on these topics." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada barra é um dia, e a altura é o número de votações nestes temas."
+          }
+        }
+      }
+    },
+    "Each bar is a week, and its height is the number of votes on these topics." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada barra é uma semana, e a altura é o número de votações nestes temas."
+          }
+        }
+      }
+    },
+    "Each bar: one day" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada barra: um dia"
+          }
+        }
+      }
+    },
+    "Each bar: one week" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada barra: uma semana"
+          }
+        }
+      }
+    },
     "Each dot is one receipt, from the smallest to the largest. The dashed line is the median. Touch the chart to see a receipt." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cada ponto é uma nota, da menor para a maior. A linha tracejada é a mediana. Toque no gráfico para ver uma nota."
+          }
+        }
+      }
+    },
+    "Each expense needs a receipt, and the house publishes it." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada gasto precisa de nota fiscal, e a casa publica essa nota."
           }
         }
       }
@@ -2301,6 +2571,46 @@
         }
       }
     },
+    "Explanation generated by Apple Intelligence on your Apple Vision Pro · impartial" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explicação gerada pela Apple Intelligence no seu Apple Vision Pro · imparcial"
+          }
+        }
+      }
+    },
+    "Explanation generated by Apple Intelligence on your iPad · impartial" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explicação gerada pela Apple Intelligence no seu iPad · imparcial"
+          }
+        }
+      }
+    },
+    "Explanation generated by Apple Intelligence on your iPhone · impartial" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explicação gerada pela Apple Intelligence no seu iPhone · imparcial"
+          }
+        }
+      }
+    },
+    "Explanation generated by Apple Intelligence on your Mac · impartial" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explicação gerada pela Apple Intelligence no seu Mac · imparcial"
+          }
+        }
+      }
+    },
     "Explore" : {
       "localizations" : {
         "pt-BR" : {
@@ -2487,6 +2797,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Encontrar sua cidade"
+          }
+        }
+      }
+    },
+    "First place: %@, %@ of valid votes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Primeiro lugar: %1$@, %2$@ dos votos válidos"
           }
         }
       }
@@ -2812,6 +3132,16 @@
         }
       }
     },
+    "Gave %@ speeches on record." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fez %@ discursos registrados."
+          }
+        }
+      }
+    },
     "General" : {
       "localizations" : {
         "pt-BR" : {
@@ -2998,6 +3328,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Casa"
+          }
+        }
+      }
+    },
+    "House average attendance: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Média de presença da casa: %@"
+          }
+        }
+      }
+    },
+    "House: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Casa: %@"
           }
         }
       }
@@ -3212,12 +3562,32 @@
         }
       }
     },
+    "It was a voice vote: the result was announced without recording each person's vote." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foi uma votação simbólica: o resultado foi anunciado sem registrar o voto de cada um."
+          }
+        }
+      }
+    },
     "Item" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Item"
+          }
+        }
+      }
+    },
+    "Item: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Item: %@"
           }
         }
       }
@@ -3238,6 +3608,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Manter minha lente"
+          }
+        }
+      }
+    },
+    "Kind: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipo: %@"
           }
         }
       }
@@ -3298,6 +3678,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Últimas votações do Plenário"
+          }
+        }
+      }
+    },
+    "Latest votes in the update: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Últimas votações da atualização: %@"
           }
         }
       }
@@ -4012,6 +4402,16 @@
         }
       }
     },
+    "No bill was presented in the period the house publishes." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma proposta foi apresentada no período que a casa publica."
+          }
+        }
+      }
+    },
     "No connection. Check the internet and try again." : {
       "localizations" : {
         "pt-BR" : {
@@ -4242,6 +4642,16 @@
         }
       }
     },
+    "No votes: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votos Não: %@"
+          }
+        }
+      }
+    },
     "Nobody followed yet" : {
       "localizations" : {
         "pt-BR" : {
@@ -4382,6 +4792,16 @@
         }
       }
     },
+    "Of the %@ bills presented, %@ became law." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das %1$@ propostas apresentadas, %2$@ viraram lei."
+          }
+        }
+      }
+    },
     "Office" : {
       "localizations" : {
         "pt-BR" : {
@@ -4432,6 +4852,16 @@
         }
       }
     },
+    "Office allowance used: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cota parlamentar usada: %@"
+          }
+        }
+      }
+    },
     "Office allowance · %@" : {
       "localizations" : {
         "pt-BR" : {
@@ -4442,12 +4872,32 @@
         }
       }
     },
+    "Office allowance: not published" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cota parlamentar: não publicada"
+          }
+        }
+      }
+    },
     "Office allowances, salaries and campaign money show up here, each with its official source." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cota parlamentar, salários e dinheiro de campanha aparecem aqui, cada um com a fonte oficial."
+          }
+        }
+      }
+    },
+    "Office: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cargo: %@"
           }
         }
       }
@@ -4468,6 +4918,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ementa oficial"
+          }
+        }
+      }
+    },
+    "Official summary: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ementa oficial: %@"
           }
         }
       }
@@ -4792,6 +5252,26 @@
         }
       }
     },
+    "Other votes are people present who chose neither yes nor no, such as abstention." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outros votos são de quem estava presente e não escolheu Sim nem Não, como na abstenção."
+          }
+        }
+      }
+    },
+    "Other votes, such as abstention and obstruction: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outros votos, como abstenção e obstrução: %@"
+          }
+        }
+      }
+    },
     "OTHERS" : {
       "localizations" : {
         "pt-BR" : {
@@ -4962,6 +5442,16 @@
         }
       }
     },
+    "Period: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Período: %@"
+          }
+        }
+      }
+    },
     "Pernambuco" : {
       "localizations" : {
         "pt-BR" : {
@@ -5112,12 +5602,32 @@
         }
       }
     },
+    "Place: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lugar: %@"
+          }
+        }
+      }
+    },
     "Places" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lugares"
+          }
+        }
+      }
+    },
+    "Plain summary: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resumo em palavras simples: %@"
           }
         }
       }
@@ -5218,6 +5728,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Preparando seus dados"
+          }
+        }
+      }
+    },
+    "Presented %@ bills in this term." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apresentou %@ propostas neste mandato."
           }
         }
       }
@@ -5378,6 +5898,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Propostas: %@ · Discursos: %@"
+          }
+        }
+      }
+    },
+    "Proposition: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Proposição: %@"
           }
         }
       }
@@ -5672,6 +6202,16 @@
         }
       }
     },
+    "Rejected means the text didn't get the votes it needed in this vote." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rejeitado quer dizer que o texto não teve os votos de que precisava nesta votação."
+          }
+        }
+      }
+    },
     "Remove the party filter %@" : {
       "localizations" : {
         "pt-BR" : {
@@ -5718,6 +6258,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Voltar aos valores padrão"
+          }
+        }
+      }
+    },
+    "Result: approved" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resultado: aprovado"
+          }
+        }
+      }
+    },
+    "Result: not published yet" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resultado: ainda não publicado"
+          }
+        }
+      }
+    },
+    "Result: rejected" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resultado: rejeitado"
+          }
+        }
+      }
+    },
+    "Result: voice vote, without names" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resultado: votação simbólica, sem nomes"
           }
         }
       }
@@ -5798,6 +6378,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Votações nominais"
+          }
+        }
+      }
+    },
+    "Roll-call votes taken part in: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votações nominais em que votou: %@"
           }
         }
       }
@@ -6492,12 +7082,32 @@
         }
       }
     },
+    "Speeches count how many times they spoke on record at the house, not what they said." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os discursos contam quantas vezes a pessoa falou com registro na casa, não o que ela disse."
+          }
+        }
+      }
+    },
     "Speeches in %@: %@" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Discursos em %@: %@"
+          }
+        }
+      }
+    },
+    "Speeches on record: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discursos registrados: %@"
           }
         }
       }
@@ -6992,6 +7602,16 @@
         }
       }
     },
+    "That's why this vote has no list of names." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por isso esta votação não tem a lista de nomes."
+          }
+        }
+      }
+    },
     "The accent color appears on buttons, tabs, selections and charts." : {
       "localizations" : {
         "pt-BR" : {
@@ -7022,6 +7642,16 @@
         }
       }
     },
+    "The bar with the most votes is %@, with %@." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A barra com mais votações é %1$@, com %2$@."
+          }
+        }
+      }
+    },
     "The cap changes by state" : {
       "localizations" : {
         "pt-BR" : {
@@ -7048,6 +7678,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O card desta página está a caminho."
+          }
+        }
+      }
+    },
+    "The change shows how much the price moved in the period, not why." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A variação mostra quanto o preço mudou no período, não o motivo."
           }
         }
       }
@@ -7112,12 +7752,52 @@
         }
       }
     },
+    "The house average is %@." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A média da casa é de %@."
+          }
+        }
+      }
+    },
+    "The house doesn't publish the office allowance spending for this term." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A casa não publica os gastos da cota deste mandato."
+          }
+        }
+      }
+    },
     "The house doesn't publish this" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "A casa não publica"
+          }
+        }
+      }
+    },
+    "The house hasn't published attendance for this term." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A casa não publicou a presença deste mandato."
+          }
+        }
+      }
+    },
+    "The house hasn't published the result of this vote yet." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A casa ainda não publicou o resultado desta votação."
           }
         }
       }
@@ -7202,6 +7882,16 @@
         }
       }
     },
+    "The office allowance reimburses term expenses, such as travel and office rent, and is not salary." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A cota reembolsa gastos do mandato, como passagens e aluguel de escritório, e não é salário."
+          }
+        }
+      }
+    },
     "The office pays and asks to be refunded with an invoice. The Chamber and the Senate publish each one." : {
       "localizations" : {
         "pt-BR" : {
@@ -7232,6 +7922,16 @@
         }
       }
     },
+    "The order can still change until every ballot box is counted." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A ordem ainda pode mudar até todas as urnas serem apuradas."
+          }
+        }
+      }
+    },
     "The palette colors buttons and highlights. Charts, scoreboards and politicians keep their own colors." : {
       "localizations" : {
         "pt-BR" : {
@@ -7252,6 +7952,36 @@
         }
       }
     },
+    "The price of %@ stayed at %@." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O preço de %1$@ ficou em %2$@."
+          }
+        }
+      }
+    },
+    "The price of %@ went from %@ to %@, down %@." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O preço de %1$@ foi de %2$@ para %3$@, queda de %4$@."
+          }
+        }
+      }
+    },
+    "The price of %@ went from %@ to %@, up %@." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O preço de %1$@ foi de %2$@ para %3$@, alta de %4$@."
+          }
+        }
+      }
+    },
     "The public data came in a format Fiscal can't read." : {
       "localizations" : {
         "pt-BR" : {
@@ -7268,6 +7998,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Os mesmos fatos para todo mundo, na ordem que importa para você."
+          }
+        }
+      }
+    },
+    "The scoreboard shows how deputies voted on %@: yes is for the text and no is against it." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O placar mostra como os deputados votaram sobre %@: Sim é a favor do texto e Não é contra."
+          }
+        }
+      }
+    },
+    "The scoreboard shows how senators voted on %@: yes is for the text and no is against it." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O placar mostra como os senadores votaram sobre %@: Sim é a favor do texto e Não é contra."
           }
         }
       }
@@ -7448,6 +8198,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Esta votação não tem nomes: a casa não publicou quem votou como."
+          }
+        }
+      }
+    },
+    "To win in the first round, a candidate needs more than half of the valid votes." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para vencer no primeiro turno, é preciso mais da metade dos votos válidos."
           }
         }
       }
@@ -7722,6 +8482,16 @@
         }
       }
     },
+    "Valid votes don't include blank and spoiled ballots." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votos válidos não contam brancos e nulos."
+          }
+        }
+      }
+    },
     "Version %@" : {
       "localizations" : {
         "pt-BR" : {
@@ -7982,6 +8752,16 @@
         }
       }
     },
+    "Votes that touch none of these topics are left out." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votações que não tocam nenhum destes temas ficam de fora."
+          }
+        }
+      }
+    },
     "votes up to %@" : {
       "localizations" : {
         "pt-BR" : {
@@ -8128,6 +8908,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O que as fontes publicam"
+          }
+        }
+      }
+    },
+    "What This Means" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que isso quer dizer"
           }
         }
       }
@@ -8293,6 +9083,26 @@
         }
       }
     },
+    "With %@ of ballot boxes counted, %@ is first with %@ of valid votes." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Com %1$@ das urnas apuradas, %2$@ está em primeiro com %3$@ dos votos válidos."
+          }
+        }
+      }
+    },
+    "With all ballot boxes counted, %@ finished first with %@ of valid votes." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Com todas as urnas apuradas, %1$@ terminou em primeiro com %2$@ dos votos válidos."
+          }
+        }
+      }
+    },
     "With the %@ lens" : {
       "localizations" : {
         "pt-BR" : {
@@ -8399,6 +9209,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sim %1$@, não %2$@, outros %3$@"
+          }
+        }
+      }
+    },
+    "Yes votes a constitutional amendment needs: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votos Sim que uma emenda à Constituição precisa: %@"
+          }
+        }
+      }
+    },
+    "Yes votes: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votos Sim: %@"
           }
         }
       }
@@ -8609,6 +9439,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Seus temas vêm primeiro. Os números são os mesmos para todo mundo."
+          }
+        }
+      }
+    },
+    "“Approved” counts how many of those votes ended approved." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Aprovadas” conta quantas dessas votações terminaram aprovadas."
           }
         }
       }
