@@ -34,12 +34,7 @@ public enum AppLanguage: String, CaseIterable, Identifiable, Sendable {
     }
 
     public var code: String {
-        guard self == .system else { return rawValue }
-        let preferences =
-            UserDefaults.standard.stringArray(forKey: "AppleLanguages") ?? Locale.preferredLanguages
-        let available = Bundle.main.localizations.filter { $0 != "Base" }
-        return Bundle.preferredLocalizations(from: available, forPreferences: preferences).first
-            ?? "en"
+        self == .system ? AppLanguage.portuguese.rawValue : rawValue
     }
 
     public var locale: Locale {

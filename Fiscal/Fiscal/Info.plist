@@ -29,12 +29,6 @@
 	<string></string>
 	<key>FiscalWebsiteURL</key>
 	<string></string>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
-	<key>NSSupportsLiveActivities</key>
-	<true/>
-	<key>NSSupportsLiveActivitiesFrequentUpdates</key>
-	<true/>
 	<key>NSUbiquitousContainers</key>
 	<dict>
 		<key>iCloud.fiscal</key>
