@@ -176,38 +176,48 @@ func retryAfter(v string, fallback time.Duration) time.Duration {
 }
 
 func (c *Client) Bytes(ctx context.Context, rawURL string, accept string, limit int64) ([]byte, error) {
+	data, _, err := c.bytesWithHeader(ctx, rawURL, accept, limit)
+	return data, err
+}
+
+func (c *Client) bytesWithHeader(ctx context.Context, rawURL string, accept string, limit int64) ([]byte, http.Header, error) {
 	h := http.Header{}
 	if accept != "" {
 		h.Set("Accept", accept)
 	}
 	resp, err := c.Do(ctx, http.MethodGet, rawURL, h)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
 		io.Copy(io.Discard, io.LimitReader(resp.Body, 4096))
-		return nil, &StatusError{URL: rawURL, Status: resp.StatusCode}
+		return nil, nil, &StatusError{URL: rawURL, Status: resp.StatusCode}
 	}
 	data, err := io.ReadAll(io.LimitReader(resp.Body, limit+1))
 	if err != nil {
-		return nil, fmt.Errorf("GET %s: %w", rawURL, err)
+		return nil, nil, fmt.Errorf("GET %s: %w", rawURL, err)
 	}
 	if int64(len(data)) > limit {
-		return nil, fmt.Errorf("GET %s: response larger than %d bytes", rawURL, limit)
+		return nil, nil, fmt.Errorf("GET %s: response larger than %d bytes", rawURL, limit)
 	}
-	return data, nil
+	return data, resp.Header, nil
 }
 
 func (c *Client) JSON(ctx context.Context, rawURL string, v any) error {
-	data, err := c.Bytes(ctx, rawURL, "application/json", maxJSONBytes)
+	_, err := c.JSONHeader(ctx, rawURL, v)
+	return err
+}
+
+func (c *Client) JSONHeader(ctx context.Context, rawURL string, v any) (http.Header, error) {
+	data, header, err := c.bytesWithHeader(ctx, rawURL, "application/json", maxJSONBytes)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if err := json.Unmarshal(data, v); err != nil {
-		return fmt.Errorf("decode %s: %w", rawURL, err)
+		return nil, fmt.Errorf("decode %s: %w", rawURL, err)
 	}
-	return nil
+	return header, nil
 }
 
 type cacheMeta struct {

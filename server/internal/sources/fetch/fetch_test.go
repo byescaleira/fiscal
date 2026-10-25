@@ -57,6 +57,21 @@ func TestJSONReportsNotFound(t *testing.T) {
 	}
 }
 
+func TestJSONHeaderReturnsTheResponseHeaders(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("X-WP-TotalPages", "12")
+		w.Write([]byte(`[1,2]`))
+	}))
+	defer srv.Close()
+	c := New("", 5*time.Second)
+	c.Gap = 0
+	var v []int
+	h, err := c.JSONHeader(context.Background(), srv.URL, &v)
+	if err != nil || len(v) != 2 || h.Get("X-Wp-Totalpages") != "12" {
+		t.Fatalf("err=%v v=%v header=%v", err, v, h)
+	}
+}
+
 func TestBytesEnforcesLimit(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write(bytes.Repeat([]byte("x"), 100))
