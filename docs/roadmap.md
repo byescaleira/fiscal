@@ -70,3 +70,13 @@ Correto no HIG não basta: a seção não pode parecer genérica.
   - pesquisar o que está em alta na internet nos argumentos políticos dos dois lados (comparações de governo, preços, gastos, votos, promessas contra entregas);
   - transformar cada argumento recorrente numa comparação com dado oficial e fonte, sem ranking nem conclusão pronta;
   - a pesquisa vem antes do desenho de cada comparação (skill `research`).
+- **Base histórica de tudo:**
+  - todas as apurações das eleições passadas: presidente, governador, senador, deputados, prefeito e vereador, por turno, UF, município e zona, desde o início da série digital do TSE;
+  - os outros dados históricos relevantes, com a mesma regra de fonte oficial e arquivo estático:
+    - candidaturas, bens e prestação de contas de cada eleição (TSE);
+    - mandatos, votações nominais, proposições, discursos e gastos de legislaturas anteriores (Câmara e Senado);
+    - composição das casas e das bancadas ao longo do tempo;
+    - presidentes, governadores e mandatos (quem governou o quê, e quando);
+    - arrecadação e indicadores (IBGE, Receita, Banco Central), para servir às comparações e ao acompanhamento de preços;
+  - o perfil de cada político ganha a linha do tempo completa, e cada lugar a sua história eleitoral;
+  - antes de carregar, pesquisar o que cada fonte tem de série e formato (skill `research`) e medir o tamanho publicado, porque a VPS é pequena (ADR 0002).
