@@ -53,6 +53,8 @@ Peça compartilhada pelas frentes paralelas da mudança [`app-1.0`](proposal.md)
 | `agenda/today.json` | `{ date, houses: [{ house, inSession, nextSession, items: [AgendaItem] }] }` | a cada 10 min |
 | `money/overview.json` | `MoneyOverview` | diária |
 | `today.json` | `TodayDigest` (o que aconteceu, para a aba Hoje) | a cada 10 min |
+| `avatars/index.json` | `{ rigVersion, people: [{ slug, updatedAt }] }`: quem já tem retrato desenhado | quando muda |
+| `avatars/{slug}.json` | Lottie do retrato animado (esqueleto do Fiscal com os traços da pessoa e a cor do partido); sem arquivo, o app mostra o retrato genérico | quando muda |
 | `races.json`, `races/{id}.json` | apuração (já existe, fase `live-results`) | 20 s em eleição |
 
 ### Tipos

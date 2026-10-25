@@ -37,6 +37,7 @@ Cobre as fases 2 a 8 do [roadmap](../../roadmap.md), seguindo o [brief](../../br
    - o setup em 3 passos e a aparência (paletas espelhadas, ícones alternativos);
    - o acervo em domínio público com `art-credits.json`;
    - a galeria de artistas.
+   - retratos animados dos políticos e selos dos partidos em Lottie, no estilo do Fiscal (brief, "Aparência pela Lente"), com o retrato genérico para quem ainda não tem traços.
 5. **Compartilhar:** cards de Stories, feed e mensagem para perfil, votação, gastos, apuração e comparação, com o crédito gravado na imagem.
 6. **Integrações:**
    - widgets (meus representantes, votação do dia);

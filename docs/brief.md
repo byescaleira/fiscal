@@ -73,6 +73,22 @@ O app tem a cara da pessoa; os dados continuam com a cara dos fatos.
 - **Bandeira e brasões:** nunca recoloridos, com inscrição ou usados como produto (Lei 5.700/1971; Lei 9.279/1996, art. 191).
 - **Símbolos:** um conjunto de SF Symbols por tema e por estilo, usado nos chips da Lente, nos cards e nos ícones alternativos do app. Sem logotipo de partido: é marca registrada e transformaria o app em material de campanha.
 - **Ícone do app:** ícones alternativos combinando com as paletas.
+- **Retratos e marcas animados (pedido do usuário em 2026-10-25):** candidatos e partidos aparecem com imagem desenhada no estilo do Fiscal, em Lottie, nunca com a foto ou a logo oficial:
+  - **Retrato de cada político:**
+    - montado por um esqueleto de avatar único (rosto, olhos, boca, cabelo, barba, óculos, roupa), com os traços de cada pessoa num arquivo de dados;
+    - a foto pública serve só de referência; nada é decalcado nem gerado por IA a partir dela;
+    - anima em loop com piscar, respiração, leve giro de cabeça e expressões;
+    - a roupa e o fundo usam a cor do partido (`PartyPalette`).
+  - **Mesmas regras para todos:**
+    - o mesmo esqueleto, as mesmas expressões e o mesmo ritmo para todo mundo, inclusive pela Lente;
+    - as expressões são neutras ou simpáticas (piscar, sorriso leve, aceno), sem raiva, choro ou deboche;
+    - a expressão nunca muda conforme o dado (gasto, falta, voto);
+    - nada de balão de fala nem frase que a pessoa não disse;
+    - o nome aparece sempre ao lado, e o retrato é marcado como "Ilustração do Fiscal".
+  - **Marca do partido:** um selo próprio com a sigla e as cores do partido, com movimento simples (pulso, onda). A forma da logo (estrela, tucano, número, mascote) não é recriada nem "no nosso estilo": continua sendo a marca registrada do partido e faria o app parecer material de campanha.
+  - **Escala:** quem ainda não tem traços cadastrados aparece com um retrato genérico (silhueta, iniciais e cor do partido). A ordem de cadastro é presidente e candidatos, governadores, senadores e deputados.
+  - **Publicação:** os retratos saem do servidor como arquivo estático (`v1/avatars/{slug}.json`), para crescer sem atualizar o app.
+  - **Nos cards:** o retrato animado vira imagem parada no compartilhamento, com a marca "Ilustração do Fiscal". Nas 72 horas antes e nas 24 horas depois de uma votação, os cards de candidato saem sem retrato (Res. TSE sobre conteúdo sintético; confirmar com a pesquisa jurídica).
 - **O que a paleta nunca toca:** gráficos, placares e listas de políticos. Neles a cor marca o partido de cada candidato (`PartyPalette`) ou o dado (sim, não, ausente), e nunca segue a paleta da pessoa. O mesmo gráfico tem a mesma cor para todo mundo.
 
 ## Compartilhar com arte
@@ -167,4 +183,5 @@ O manifesto `art-credits.json` vai junto com o app e lista, por obra: autor, @, 
 | LGPD (opinião política) | A Lente só no aparelho, com consentimento explícito para o posicionamento e "Prefiro não dizer" |
 | Revisão da App Store | Fonte em cada tela, sem se apresentar como app do governo, sem brasão |
 | Fontes instáveis | Carga que para e avisa em vez de gravar dado errado; "—" e a data da última carga |
+| Retrato desenhado ser lido como deboche ou propaganda | Mesmo esqueleto, expressões e ritmo para todos, sem expressão ligada a dado, marca "Ilustração do Fiscal" e nome sempre visível; retrato fora dos cards perto da votação |
 | Resumo por IA errar | Gerado só a partir do texto oficial, marcado como resumo do aparelho, com o original ao lado; desligável |
