@@ -50,6 +50,16 @@ public struct PartyPalette: Sendable, Equatable {
         case "solidariedade": (0xF58220, 0x005BAA)
         case "cidadania": (0xEC008C, 0x2E3192)
         case "missao": (0x111827, 0xF59E0B)
+        case "prd": (0x008D45, 0x1B3F7B)
+        case "agir": (0x0033A1, 0x2670CB)
+        case "pco": (0xC90B1C, 0xFFE600)
+        case "dc": (0x0060B4, 0xF0C018)
+        case "prtb": (0x2448C0, 0x60A854)
+        case "mobiliza": (0xD81818, 0x3C0C48)
+        case "democrata": (0x0C3C78, 0x3C9C60)
+        case "pstu": (0xE41824, 0xF0E418)
+        case "pcb": (0x9C2418, 0xE4CC24)
+        case "up": (0x111111, 0xE8E8E8)
         default: nil
         }
     }
