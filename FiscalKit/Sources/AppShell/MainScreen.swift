@@ -1,5 +1,6 @@
 import FeatureCore
 import FeatureGuides
+import FeatureLens
 import FiscalDesignSystem
 import FiscalDomain
 import SwiftUI
@@ -60,5 +61,6 @@ public struct MainScreen: View {
         .onChange(of: navigation.selectedSection) { navigation.closeInspectorOutsideSelection() }
         .modifier(DeepLinks())
         .modifier(UpdateRecommendation())
+        .lensExperience(isReady: launch.isDismissed)
     }
 }

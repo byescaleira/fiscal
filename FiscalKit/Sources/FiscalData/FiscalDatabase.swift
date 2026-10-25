@@ -32,6 +32,7 @@ public struct FiscalDatabase: RepositoryProvider {
                 for: Schema(versionedSchema: FiscalSchemaV1.self),
                 migrationPlan: FiscalMigrationPlan.self, configurations: configurations)
         }
+        try excludeDeviceStoreFromBackup(container)
         return FiscalDatabase(modelContainer: container)
     }
 

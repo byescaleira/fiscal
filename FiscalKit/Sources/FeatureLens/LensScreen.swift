@@ -5,65 +5,127 @@ import SwiftUI
 
 public struct LensScreen: View {
     @Environment(LensModel.self) private var lens
-    @Environment(\.dismiss) private var dismiss
 
     public init() {}
 
     public var body: some View {
         @Bindable var lens = lens
+        @Bindable var context = lens.context
         AdaptiveList {
-            LensThemesSection()
+            LensHeroSection()
+            if lens.hasLens {
+                LensStanceSection()
+                LensThemesSection()
+                LensLookSection()
+                LensOtherSection()
+            }
+            LensPrivacySection()
         }
         .fontDesign(.rounded)
         .navigationTitle("Lens")
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
         #endif
-        .toolbar { LensToolbar() }
-        .task { await lens.load() }
-        .onChange(of: lens.isSaved) { if lens.isSaved { dismiss() } }
-        .errorAlert($lens.error)
+        .sheet(item: $lens.editing) { step in
+            LensEditorHost(step: step).environment(lens)
+        }
+        .sheet(isPresented: $lens.isConfirmingErase) {
+            LensEraseGuide().environment(lens)
+        }
+        .errorAlert($context.error)
     }
 }
 
-private struct LensThemesSection: View {
+private struct LensEditorHost: View {
     @Environment(LensModel.self) private var lens
+    let step: LensSetupModel.Step
 
     var body: some View {
+        ModelHost(lens.editor(for: step)) { LensSetupScreen() }
+            .presentationDetents([.large])
+    }
+}
+
+private struct LensHeroSection: View {
+    var body: some View {
         Section {
-            ForEach(lens.themes) { theme in
-                Button {
-                    lens.toggle(theme)
-                } label: {
-                    HStack(spacing: .spaceM) {
-                        IconRow(verbatim: theme.title, symbol: theme.symbol, color: .retroTeal)
-                        SelectionMark(isSelected: lens.isChosen(theme))
-                    }
-                }
-                .buttonStyle(.plain)
-                .disabled(!lens.canToggle(theme))
-                .accessibilityAddTraits(lens.isChosen(theme) ? .isSelected : [])
-            }
-        } header: {
-            Text(verbatim: lens.countText).sectionTitle()
+            LensHero()
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
         } footer: {
             Text(
-                "Choose 3 to 5 topics and Fiscal puts them first. The numbers stay the same for everyone, and your lens never leaves this device."
+                "Fiscal adapts the order, the highlights, the colors and the art. The facts are the same for everyone."
             )
         }
     }
 }
 
-private struct LensToolbar: ToolbarContent {
+private struct LensHero: View {
     @Environment(LensModel.self) private var lens
-    @Environment(\.appTint) private var appTint
+    @Environment(\.appTint) private var tint
 
-    var body: some ToolbarContent {
-        ToolbarItem(placement: .primaryAction) {
-            Button("Save", systemImage: "checkmark") { Task { await lens.save() } }
-                .prominentButton()
-                .disabled(!lens.canSave)
-                .tint(lens.canSave ? appTint : .disabled)
+    var body: some View {
+        Color.clear
+            .frame(height: .artBanner)
+            .frame(maxWidth: .infinity)
+            .background {
+                if let work = lens.leadWork {
+                    work.image.resizable().scaledToFill()
+                } else {
+                    LinearGradient(
+                        colors: [tint, tint.opacity(.opacitySoft)], startPoint: .topLeading,
+                        endPoint: .bottomTrailing)
+                }
+            }
+            .overlay {
+                LinearGradient(
+                    colors: [.clear, .black.opacity(.opacityStrong)], startPoint: .top,
+                    endPoint: .bottom)
+            }
+            .overlay(alignment: .bottomLeading) { LensHeroText() }
+            .clipShape(.rect(cornerRadius: .radiusL))
+            .accessibilityElement(children: .combine)
+    }
+}
+
+private struct LensHeroText: View {
+    @Environment(LensModel.self) private var lens
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: .spaceS) {
+            if let stance = lens.stance {
+                LensBadge(stance)
+            }
+            Text(verbatim: lens.stanceTitle)
+                .font(.amountHero)
+                .contentTransition(.opacity)
+            if let work = lens.leadWork {
+                Text(verbatim: "\(work.artist) · \(work.caption) · \(work.licenseTitle)")
+                    .font(.caption2)
+                    .lineLimit(2)
+            }
+        }
+        .foregroundStyle(.white)
+        .padding(.spaceL)
+    }
+}
+
+private struct LensEraseGuide: View {
+    @Environment(LensModel.self) private var lens
+
+    var body: some View {
+        GuideSheet(
+            index: 0, count: 1, isWorking: lens.isErasing,
+            primary: GuideAction("Delete My Choice") { Task { await lens.erase() } },
+            secondary: GuideAction("Keep My Lens") { lens.isConfirmingErase = false }
+        ) {
+            GuidePage(
+                title: "Delete your lens?",
+                message:
+                    "Your side, topics and look leave this iPhone for good. Then Fiscal asks for them again."
+            ) {
+                FiscalAnimationView(.privacy)
+            }
         }
     }
 }

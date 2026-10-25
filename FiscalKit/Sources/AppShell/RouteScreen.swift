@@ -35,10 +35,10 @@ struct RouteScreen: View {
 }
 
 private struct LensDestination: View {
-    @Environment(SessionModel.self) private var session
+    @Environment(LensContext.self) private var lens
 
     var body: some View {
-        ModelHost(LensModel(repository: session.repositories.lens)) { LensScreen() }
+        ModelHost(LensModel(context: lens)) { LensScreen() }
     }
 }
 
