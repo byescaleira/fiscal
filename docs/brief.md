@@ -72,7 +72,23 @@ O app tem a cara da pessoa; os dados continuam com a cara dos fatos.
 - **Paletas:** cada uma tem cor de destaque, fundo dos cards e um par de cores para o compartilhamento. Há paletas inspiradas no imaginário de cada público, sempre em pares espelhados, paletas neutras e paletas tiradas das obras dos artistas parceiros, com crédito. Nenhuma paleta se apresenta como "a neutra", e o verde-amarelo não fica sem contraparte, porque os dois campos disputam essas cores. O posicionamento sugere uma paleta, mas qualquer pessoa pode escolher qualquer uma.
 - **Bandeira e brasões:** nunca recoloridos, com inscrição ou usados como produto (Lei 5.700/1971; Lei 9.279/1996, art. 191).
 - **Símbolos:** um conjunto de SF Symbols por tema e por estilo, usado nos chips da Lente, nos cards e nos ícones alternativos do app. Sem logotipo de partido: é marca registrada e transformaria o app em material de campanha.
-- **Ícone do app:** ícones alternativos combinando com as paletas.
+- **Ícone do app** (pedido do usuário em 2026-10-25: "design do ícone seguindo a identidade do projeto"):
+  - **Ciclo de design próprio:**
+    - referências reais: ícones de vencedores do Apple Design Award, dos apps da Apple (Sports, News, Notícias, Stocks) e de apps de notícia e cívicos, mais a HIG de ícones e o Icon Composer com Liquid Glass;
+    - de 3 a 4 conceitos em `.icon`, com camadas e as variantes clara, escura e tingida;
+    - os conceitos instalados no iPhone como ícones alternativos, para o usuário escolher vendo na tela de início;
+    - iteração até o "agora sim".
+  - **Identidade:**
+    - o verbo do app (fiscalizar: lupa, olhar atento, conferência, voto);
+    - forma simples e legível em 29 pt;
+    - cores que não são de nenhum partido nem de um lado só.
+  - **Proibido no ícone:**
+    - estrela (símbolo do PT; o ícone do template é uma estrela e sai);
+    - número de partido, mão em L, arma ou dedos;
+    - bandeira ou brasão (Lei 5.700/1971);
+    - verde-amarelo sem contraparte;
+    - vermelho ou azul puros como cor principal.
+  - **Ícones alternativos** combinando com as paletas da Lente, sempre em pares espelhados entre os lados, com o principal neutro.
 - **Retratos e marcas animados (pedido do usuário em 2026-10-25):** candidatos e partidos aparecem com imagem desenhada no estilo do Fiscal, em Lottie, nunca com a foto ou a logo oficial:
   - **Retrato de cada político:**
     - montado por um esqueleto de avatar único (rosto, olhos, boca, cabelo, barba, óculos, roupa), com os traços de cada pessoa num arquivo de dados;

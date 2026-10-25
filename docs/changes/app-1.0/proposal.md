@@ -36,6 +36,7 @@ Cobre as fases 2 a 8 do [roadmap](../../roadmap.md), seguindo o [brief](../../br
    - cada uma passa pelo ciclo de design por seção (referência visual real e dados de teste), com a revisão visual do usuário numa rodada só, no fim.
 4. **Lente e arte:**
    - o setup em 3 passos e a aparência (paletas espelhadas, ícones alternativos);
+   - o ícone do app com a identidade do Fiscal, pelo ciclo de design (referências, conceitos instalados no iPhone como ícones alternativos, escolha do usuário), no lugar da estrela do template;
    - o acervo em domínio público com `art-credits.json`;
    - a galeria de artistas.
    - retratos animados dos políticos e selos dos partidos em Lottie, no estilo do Fiscal (brief, "Aparência pela Lente"), com o retrato genérico para quem ainda não tem traços.
