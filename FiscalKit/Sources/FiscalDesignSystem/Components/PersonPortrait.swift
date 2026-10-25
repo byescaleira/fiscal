@@ -58,14 +58,14 @@ struct GenericPortrait: View {
 
     var body: some View {
         ZStack {
-            Circle().fill(PartyPalette.of(party: party).gradient)
+            Circle().fill(.fill.secondary)
             Ellipse()
-                .fill(.white.opacity(.opacityTint))
+                .fill(.fill.tertiary)
                 .frame(width: size * Self.shouldersWidth, height: size * Self.shouldersHeight)
                 .offset(y: size * Self.shouldersDrop)
             Text(initials)
                 .font(.system(size: size * Self.initialsScale, weight: .bold, design: .rounded))
-                .foregroundStyle(.white)
+                .foregroundStyle(.secondary)
                 .minimumScaleFactor(Self.minimumScale)
                 .offset(y: -size * Self.initialsLift)
         }
