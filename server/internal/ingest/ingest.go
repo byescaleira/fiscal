@@ -2,9 +2,13 @@ package ingest
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
+	"os"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -104,15 +108,61 @@ func (in *Ingest) stamp() string {
 }
 
 type sourceSet struct {
-	mu   sync.Mutex
-	at   string
-	list map[string]publicdata.Source
+	mu     sync.Mutex
+	at     string
+	list   map[string]publicdata.Source
+	hashes map[string]string
 }
 
-func (s *sourceSet) add(id, name, url string) {
+func newSourceSet(at string) *sourceSet {
+	return &sourceSet{at: at, list: map[string]publicdata.Source{}, hashes: map[string]string{}}
+}
+
+func (s *sourceSet) add(id, name, url string, data any) {
+	sum := sha256.New()
+	json.NewEncoder(sum).Encode(data)
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.list[id] = publicdata.Source{ID: id, Name: name, URL: url, UpdatedAt: s.at}
+	s.hashes[id] = hex.EncodeToString(sum.Sum(nil))
+}
+
+type sourceState struct {
+	Hash      string `json:"hash"`
+	UpdatedAt string `json:"updatedAt"`
+}
+
+func (s *sourceSet) settle(path string) error {
+	if err := os.MkdirAll(filepath.Dir(path), 0o700); err != nil {
+		return err
+	}
+	prev := map[string]sourceState{}
+	if data, err := os.ReadFile(path); err == nil {
+		json.Unmarshal(data, &prev)
+	}
+	next := map[string]sourceState{}
+	for id, src := range s.list {
+		h := s.hashes[id]
+		if p, ok := prev[id]; ok && p.Hash == h && p.UpdatedAt != "" {
+			src.UpdatedAt = p.UpdatedAt
+			s.list[id] = src
+		}
+		next[id] = sourceState{Hash: h, UpdatedAt: s.list[id].UpdatedAt}
+	}
+	for id, p := range prev {
+		if _, ok := next[id]; !ok {
+			next[id] = p
+		}
+	}
+	data, err := json.Marshal(next)
+	if err != nil {
+		return err
+	}
+	tmp := path + ".tmp"
+	if err := os.WriteFile(tmp, data, 0o600); err != nil {
+		return err
+	}
+	return os.Rename(tmp, path)
 }
 
 type Report struct {
@@ -138,7 +188,7 @@ func (in *Ingest) warn(r *Report, format string, args ...any) {
 func (in *Ingest) Full(ctx context.Context) (Report, error) {
 	start := in.now()
 	var rep Report
-	srcs := &sourceSet{at: in.stamp(), list: map[string]publicdata.Source{}}
+	srcs := newSourceSet(in.stamp())
 	ds := &publicdata.Dataset{GeneratedAt: in.now(), Today: in.today(), Years: in.cfg.Years}
 	for _, s := range ibge.States {
 		ds.States = append(ds.States, publicdata.PlaceEntry{Code: strings.ToLower(s.UF), Name: s.Name, UF: strings.ToLower(s.UF)})
@@ -149,7 +199,7 @@ func (in *Ingest) Full(ctx context.Context) (Report, error) {
 			return rep, fmt.Errorf("ibge: %w", err)
 		}
 		ds.Municipalities = muns
-		srcs.add("ibge", "IBGE", ibge.SiteURL)
+		srcs.add("ibge", "IBGE", ibge.SiteURL, muns)
 	}
 	var people []*publicdata.Person
 	if in.cfg.Enabled("camara") {
@@ -162,7 +212,7 @@ func (in *Ingest) Full(ctx context.Context) (Report, error) {
 		ds.Laws = append(ds.Laws, cam.laws...)
 		ds.Quota.FederalDeputies = cam.quotaTotal
 		mergeCategories(&ds.Quota, cam.quotaByCategory)
-		srcs.add("camara", "Câmara dos Deputados", "https://dadosabertos.camara.leg.br")
+		srcs.add("camara", "Câmara dos Deputados", "https://dadosabertos.camara.leg.br", []any{cam.people, cam.votes, cam.laws, cam.quotaTotal, cam.quotaByCategory})
 	}
 	if in.cfg.Enabled("senado") {
 		sen, err := in.loadSenado(ctx, &rep)
@@ -173,7 +223,7 @@ func (in *Ingest) Full(ctx context.Context) (Report, error) {
 		ds.Votes = append(ds.Votes, sen.votes...)
 		ds.Quota.Senators = sen.quotaTotal
 		mergeCategories(&ds.Quota, sen.quotaByCategory)
-		srcs.add("senado", "Senado Federal", "https://legis.senado.leg.br/dadosabertos")
+		srcs.add("senado", "Senado Federal", "https://legis.senado.leg.br/dadosabertos", []any{sen.people, sen.votes, sen.quotaTotal, sen.quotaByCategory})
 	}
 	ds.Quota.Year = in.currentYear()
 	states := map[string]string{"br": "Brasil"}
@@ -189,7 +239,7 @@ func (in *Ingest) Full(ctx context.Context) (Report, error) {
 		}
 		cands = t.candidacies
 		campaigns = t.campaigns
-		srcs.add("tse", "Tribunal Superior Eleitoral", "https://dadosabertos.tse.jus.br")
+		srcs.add("tse", "Tribunal Superior Eleitoral", "https://dadosabertos.tse.jus.br", []any{t.candidacies, t.campaigns})
 	}
 	prev, next := electionYears(in.cfg.TSEYears)
 	people = publicdata.Link(publicdata.LinkInput{People: people, Candidacies: cands, PreviousYear: prev, ElectionYear: next, StateNames: states})
@@ -204,15 +254,18 @@ func (in *Ingest) Full(ctx context.Context) (Report, error) {
 			in.warn(&rep, "receita: %v (revenue published as null)", err)
 		} else if rev != nil {
 			ds.Revenue = rev
-			srcs.add("receita", "Receita Federal", "https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/dados-abertos")
+			srcs.add("receita", "Receita Federal", "https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/dados-abertos", rev)
 		}
 	}
 	ds.Salaries, ds.SalarySource = salaries()
-	srcs.add("legislacao", salaryLaw, salaryLawURL)
+	srcs.add("legislacao", salaryLaw, salaryLawURL, ds.Salaries)
 	for _, p := range people {
 		applyCoverage(p)
 	}
 	ds.People = people
+	if err := srcs.settle(filepath.Join(in.cfg.DataDir, "sources.json")); err != nil {
+		return rep, err
+	}
 	ds.Sources = srcs.list
 	in.refreshLive(ctx, ds, &rep)
 	if err := in.publish(ds, &rep); err != nil {

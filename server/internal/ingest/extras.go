@@ -91,7 +91,7 @@ func (in *Ingest) loadAssemblies(ctx context.Context, rep *Report, people []*pub
 			in.warn(rep, "assembleia %s: no member matched the TSE", h.UF)
 			continue
 		}
-		srcs.add(id, h.Name, h.Base)
+		srcs.add(id, h.Name, h.Base, data)
 		matters := data.Matters
 		loaded := map[int]bool{year: true}
 		for _, y := range in.cfg.Years {

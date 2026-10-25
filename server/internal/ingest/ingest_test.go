@@ -307,3 +307,26 @@ func TestHelpers(t *testing.T) {
 		t.Fatal("days")
 	}
 }
+
+func TestSourceDatesMoveOnlyWhenTheDataChanges(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "state", "sources.json")
+	first := newSourceSet("2026-10-24T06:30:00-03:00")
+	first.add("camara", "Câmara", "u", []int{1, 2})
+	first.add("senado", "Senado", "u", []int{3})
+	if err := first.settle(path); err != nil {
+		t.Fatal(err)
+	}
+	second := newSourceSet("2026-10-25T06:30:00-03:00")
+	second.add("camara", "Câmara", "u", []int{1, 2})
+	second.add("senado", "Senado", "u", []int{4})
+	if err := second.settle(path); err != nil {
+		t.Fatal(err)
+	}
+	if second.list["camara"].UpdatedAt != "2026-10-24T06:30:00-03:00" || second.list["senado"].UpdatedAt != "2026-10-25T06:30:00-03:00" {
+		t.Fatalf("sources = %+v", second.list)
+	}
+	info, _ := os.Stat(path)
+	if info.Mode().Perm() != 0o600 {
+		t.Fatalf("mode = %v", info.Mode().Perm())
+	}
+}
