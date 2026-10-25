@@ -192,7 +192,7 @@ def check(source, found):
         accepted = accepted and not reasons
         size = remote_size(info["thumburl"]) if info and not reasons else 0
         status = "ok" if not reasons else "recusada: " + "; ".join(reasons)
-        print("%-44s %-10s %5s KB  %s" % (work["id"], work["collection"], size // 1024, status))
+        print("%-44s %-10s %5s KB  %s" % (work["id"], work["series"], size // 1024, status))
     return accepted
 
 
@@ -201,8 +201,8 @@ def fetch(source, found):
     staging = os.path.join(scratch, "Art.xcassets")
     os.makedirs(staging)
     write_json(os.path.join(staging, "Contents.json"), CATALOG_INFO)
-    works, palettes, total = [], {}, 0
-    leads = {collection["leadWork"]: collection["id"] for collection in source["collections"]}
+    works, lead_palette, total = [], None, 0
+    collection = source["collection"]
     for work in source["works"]:
         artist = source["artists"][work["artist"]]
         info = found[work["file"]]
@@ -216,24 +216,38 @@ def fetch(source, found):
         write_json(os.path.join(imageset, "Contents.json"), dict(
             images=[{"filename": asset + ".jpg", "idiom": "universal"}], **CATALOG_INFO))
         total += os.path.getsize(image)
-        if work["id"] in leads:
-            palettes[leads[work["id"]]] = palette(image, scratch)
+        if work["id"] == collection["leadWork"]:
+            lead_palette = palette(image, scratch)
         works.append({
             "id": work["id"], "asset": asset, "title": work["title"], "artist": artist["name"],
             "artistLife": "%d–%d" % (artist["born"], artist["died"]), "year": work["year"],
-            "collection": work["collection"], "holder": work["holder"],
+            "collection": collection["id"], "series": work["series"], "holder": work["holder"],
             "sourceUrl": info["descriptionurl"], "fileUrl": fetched.split("?")[0], "license": work["license"],
-            "licenseUrl": license_url(work, info), "credit": credit(work, artist),
+            "licenseUrl": license_url(work, info), "credit": credit(work, artist), "kind": "artwork",
         })
         print("%-44s %6d KB  %s" % (asset, os.path.getsize(image) // 1024, fetched))
     if total > source["maxTotalBytes"]:
         raise SystemExit("Collection is %d bytes, above the %d limit" % (total, source["maxTotalBytes"]))
-    collections = [dict(collection, palette=palettes[collection["id"]]) for collection in source["collections"]]
-    shutil.rmtree(CATALOG, ignore_errors=True)
-    shutil.copytree(staging, CATALOG)
-    write_json(MANIFEST, {"collections": collections, "works": works})
+    install(collection, lead_palette, source["series"], works, staging)
     shutil.rmtree(scratch)
     print("Total: %.1f MB in %d works" % (total / 1e6, len(works)))
+
+
+def install(collection, lead_palette, series, works, staging):
+    empty = {"collections": [], "works": []}
+    manifest = json.load(open(MANIFEST, encoding="utf-8")) if os.path.exists(MANIFEST) else empty
+    os.makedirs(CATALOG, exist_ok=True)
+    write_json(os.path.join(CATALOG, "Contents.json"), CATALOG_INFO)
+    for work in manifest["works"]:
+        if work["collection"] == collection["id"]:
+            shutil.rmtree(os.path.join(CATALOG, work["asset"] + ".imageset"), ignore_errors=True)
+    for work in works:
+        shutil.copytree(os.path.join(staging, work["asset"] + ".imageset"),
+                        os.path.join(CATALOG, work["asset"] + ".imageset"))
+    others = [item for item in manifest["collections"] if item["id"] != collection["id"]]
+    kept = [work for work in manifest["works"] if work["collection"] != collection["id"]]
+    write_json(MANIFEST, {"collections": others + [dict(collection, palette=lead_palette)], "series": series,
+                          "works": kept + works})
 
 
 def main():

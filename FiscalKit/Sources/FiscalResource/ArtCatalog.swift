@@ -4,10 +4,12 @@ import SwiftUI
 public struct ArtCatalog: Codable, Sendable, Hashable {
     public let collections: [ArtCollection]
     public let works: [ArtWork]
+    public let series: [ArtSeries]?
 
-    public init(collections: [ArtCollection], works: [ArtWork]) {
+    public init(collections: [ArtCollection], works: [ArtWork], series: [ArtSeries]? = nil) {
         self.collections = collections
         self.works = works
+        self.series = series
     }
 
     public static func bundled() throws -> ArtCatalog {
@@ -25,6 +27,10 @@ public struct ArtCatalog: Codable, Sendable, Hashable {
         Set(works.map(\.asset))
     }
 
+    public var featuredCollections: [ArtCollection] {
+        collections.filter { !$0.isReserve }
+    }
+
     public func collection(id: ArtCollection.ID) -> ArtCollection? {
         collections.first { $0.id == id }
     }
@@ -35,6 +41,14 @@ public struct ArtCatalog: Codable, Sendable, Hashable {
 
     public func works(in collectionID: ArtCollection.ID) -> [ArtWork] {
         works.filter { $0.collection == collectionID }
+    }
+
+    public func works(inSeries seriesID: ArtSeries.ID) -> [ArtWork] {
+        works.filter { $0.series == seriesID }
+    }
+
+    public func works(forState uf: String) -> [ArtWork] {
+        works.filter { $0.uf == uf.lowercased() }
     }
 
     public func leadWork(of collection: ArtCollection) -> ArtWork? {
@@ -51,16 +65,39 @@ public struct ArtCollection: Codable, Sendable, Hashable, Identifiable {
     public let name: String
     public let leadWork: ArtWork.ID
     public let palette: [String]
+    public let reserve: Bool?
 
-    public init(id: String, name: String, leadWork: ArtWork.ID, palette: [String]) {
+    public init(
+        id: String, name: String, leadWork: ArtWork.ID, palette: [String], reserve: Bool? = nil
+    ) {
         self.id = id
         self.name = name
         self.leadWork = leadWork
         self.palette = palette
+        self.reserve = reserve
+    }
+
+    public var isReserve: Bool {
+        reserve ?? false
+    }
+}
+
+public struct ArtSeries: Codable, Sendable, Hashable, Identifiable {
+    public let id: String
+    public let name: String
+
+    public init(id: String, name: String) {
+        self.id = id
+        self.name = name
     }
 }
 
 public struct ArtWork: Codable, Sendable, Hashable, Identifiable {
+    public enum Kind: String, Codable, Sendable {
+        case artwork
+        case photo
+    }
+
     public let id: String
     public let asset: String
     public let title: String
@@ -74,8 +111,22 @@ public struct ArtWork: Codable, Sendable, Hashable, Identifiable {
     public let license: String
     public let licenseUrl: URL
     public let credit: String
+    public let kind: Kind?
+    public let series: ArtSeries.ID?
+    public let author: String?
+    public let event: String?
+    public let uf: String?
+    public let place: String?
 
     public var image: Image {
         Image(asset, bundle: .module)
+    }
+
+    public var isPhoto: Bool {
+        kind == .photo
+    }
+
+    public var lifeSpan: String? {
+        artistLife.isEmpty ? nil : artistLife
     }
 }
