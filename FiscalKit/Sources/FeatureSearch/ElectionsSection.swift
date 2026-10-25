@@ -74,7 +74,7 @@ private struct RoundChip: View {
     var body: some View {
         HStack(spacing: .space2XS) {
             Image(systemName: round.symbol)
-            Text(verbatim: round.text)
+            Text(verbatim: round.text).fixedSize(horizontal: false, vertical: true)
         }
         .font(.chipLabel)
         .foregroundStyle(round.color)

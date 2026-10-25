@@ -115,6 +115,23 @@ struct ThemeActivityTests {
         #expect(shown.first == activity.periods.first)
     }
 
+    @Test func longSeriesScrollAndStartAtTheLatestPeriods() {
+        let votes = (1...30).map { day in
+            vote("v\(day)", day: day, month: day.isMultiple(of: 2) ? 7 : 9, themes: [.health])
+        }
+        let activity = ThemeActivity(votes: votes, themes: [.health], calendar: calendar)
+        #expect(activity.grain == .week)
+        #expect(activity.isScrollable)
+        #expect(activity.visibleLength == 12 * 604_800)
+        #expect(activity.scrollStart == activity.periods[activity.periods.count - 12].start)
+        let short = ThemeActivity(
+            votes: [vote("a", day: 20, themes: [.health]), vote("b", day: 22, themes: [.health])],
+            themes: [.health], calendar: calendar)
+        #expect(!short.isScrollable)
+        #expect(short.scrollStart == short.periods.first?.start)
+        #expect(short.visibleLength == 3 * 86_400)
+    }
+
     @Test func placeholderHasOneDecreasingBarPerTopic() {
         let activity = ThemeActivity.placeholder(themes: [.health, .education, .economy])
         #expect(activity.slices.map(\.count) == [3, 2, 1])

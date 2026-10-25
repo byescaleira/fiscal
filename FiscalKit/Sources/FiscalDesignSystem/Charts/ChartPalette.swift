@@ -19,6 +19,11 @@ public enum ChartPalette {
 
 extension CGFloat {
     public static let chartCompactHeight: CGFloat = 140
-    public static let chartRowHeight: CGFloat = 46
     public static let chartRuleWidth: CGFloat = 1
+}
+
+extension Animation {
+    public static func chartReveal(_ index: Int) -> Animation {
+        .smooth(duration: 1).delay(Double(index) * 0.04)
+    }
 }

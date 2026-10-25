@@ -23,6 +23,13 @@ public struct ThemeActivity: Equatable, Sendable {
     public enum Grain: Equatable, Sendable {
         case day, week
 
+        public var seconds: TimeInterval {
+            switch self {
+            case .day: 86_400
+            case .week: 604_800
+            }
+        }
+
         public var unit: Calendar.Component {
             switch self {
             case .day: .day
@@ -70,6 +77,17 @@ public struct ThemeActivity: Equatable, Sendable {
     }
 
     public static let axisLabelLimit = 5
+    public static let visiblePeriods = 12
+
+    public var isScrollable: Bool { periods.count > Self.visiblePeriods }
+
+    public var visibleLength: TimeInterval {
+        grain.seconds * Double(min(max(periods.count, 1), Self.visiblePeriods))
+    }
+
+    public var scrollStart: Date? {
+        periods.dropLast(Self.visiblePeriods - 1).last?.start ?? periods.first?.start
+    }
 
     public func slot(of theme: Theme) -> Int {
         slices.first { $0.theme == theme }?.slot ?? slices.count
@@ -77,7 +95,8 @@ public struct ThemeActivity: Equatable, Sendable {
 
     public func showsLabel(at date: Date) -> Bool {
         guard let index = periods.firstIndex(where: { $0.start == date }) else { return false }
-        let step = (periods.count + Self.axisLabelLimit - 1) / Self.axisLabelLimit
+        let visible = min(periods.count, Self.visiblePeriods)
+        let step = (visible + Self.axisLabelLimit - 1) / Self.axisLabelLimit
         return index.isMultiple(of: max(step, 1))
     }
 

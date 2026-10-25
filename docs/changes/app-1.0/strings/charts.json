@@ -1,0 +1,19 @@
+{
+  "%@ had the most votes": "%@ teve mais votações",
+  "Approved: %lld": "Aprovadas: %lld",
+  "Dashed line: average of %@ per day": "Linha tracejada: média de %@ por dia",
+  "Dashed line: average of %@ per week": "Linha tracejada: média de %@ por semana",
+  "Date": "Data",
+  "More than one topic tied in the latest votes": "Mais de um tema empatou nas últimas votações",
+  "No votes on these topics in the latest update.": "Nenhuma votação nestes temas na última carga.",
+  "None of the latest votes touched these topics": "Nenhuma das últimas votações tocou nestes temas",
+  "RECENT VOTES · %lld": "VOTAÇÕES RECENTES · %lld",
+  "Selected": "Selecionado",
+  "Tap a topic to see its votes. Slide across the bars to see each day.": "Toque num tema para ver as votações dele. Deslize pelas barras para ver cada dia.",
+  "Topic": "Tema",
+  "Votes on these topics per day": "Votações nestes temas por dia",
+  "Votes on these topics per week": "Votações nestes temas por semana",
+  "Votes: %lld": "Votações: %lld",
+  "Votes: %lld, approved: %lld, rejected: %lld": "Votações: %1$lld, aprovadas: %2$lld, rejeitadas: %3$lld",
+  "Week of %@": "Semana de %@"
+}

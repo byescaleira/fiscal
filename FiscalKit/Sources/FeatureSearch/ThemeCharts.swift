@@ -7,75 +7,63 @@ import SwiftUI
 struct ThemeBarsChart: View {
     @Environment(SearchModel.self) private var search
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @ScaledMetric(relativeTo: .subheadline) private var rowHeight: CGFloat = .chartRowHeight
     @State private var revealed = false
     @State private var opened: Theme?
     let activity: ThemeActivity
 
     var body: some View {
-        Chart(activity.slices) { slice in
-            BarMark(
-                xStart: .value("Start", 0),
-                xEnd: .value("Votes", revealed ? slice.count : 0),
-                y: .value("Topic", slice.id),
-                height: .fixed(.barHeight)
-            )
-            .foregroundStyle(ChartPalette.color(at: slice.slot).gradient)
-            .clipShape(.capsule)
-            .offset(y: barOffset)
-            .annotation(
-                position: .top, alignment: .leading, spacing: .space2XS,
-                overflowResolution: .init(x: .fit(to: .chart), y: .disabled)
-            ) {
-                ThemeBarLabel(slice: slice, lines: labelLines)
-            }
-            .accessibilityLabel(slice.theme.title)
-            .accessibilityValue(search.accessibilityValue(for: slice))
-        }
-        .chartXScale(domain: 0...max(activity.maxCount, 1), range: .plotDimension(endPadding: 0))
-        .chartYScale(domain: activity.slices.map(\.id))
-        .chartXAxis(.hidden)
-        .chartYAxis(.hidden)
-        .chartGesture { proxy in
-            SpatialTapGesture()
-                .onEnded { value in
-                    guard let id: String = proxy.value(atY: value.location.y),
-                        let theme = Theme(rawValue: id)
-                    else { return }
-                    open(theme)
+        VStack(alignment: .leading, spacing: .spaceM) {
+            ForEach(Array(activity.slices.enumerated()), id: \.element.id) { index, slice in
+                Button {
+                    opened = slice.theme
+                    search.apply(.theme(slice.theme))
+                } label: {
+                    ThemeBarRow(slice: slice, maxCount: activity.maxCount, revealed: revealed)
+                        .animation(reduceMotion ? nil : .chartReveal(index), value: revealed)
                 }
+                .buttonStyle(.plain)
+                .accessibilityLabel(slice.theme.title)
+                .accessibilityValue(search.accessibilityValue(for: slice))
+                .accessibilityHint(Text("Shows the recent votes on this topic"))
+            }
         }
         .sensoryFeedback(.selection, trigger: opened)
-        .accessibilityActions {
-            ForEach(activity.slices) { slice in
-                Button(String(appLocalized: "Show votes about \(slice.theme.title)")) {
-                    open(slice.theme)
-                }
+        .onAppear { revealed = true }
+    }
+}
+
+private struct ThemeBarRow: View {
+    let slice: ThemeActivity.Slice
+    let maxCount: Int
+    let revealed: Bool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: .spaceXS) {
+            ThemeBarLabel(slice: slice)
+            Chart {
+                BarMark(
+                    xStart: .value("Start", 0),
+                    xEnd: .value("Votes", revealed ? slice.count : 0),
+                    y: .value("Topic", slice.id),
+                    height: .fixed(.barHeight)
+                )
+                .foregroundStyle(ChartPalette.color(at: slice.slot).gradient)
+                .clipShape(.capsule)
             }
+            .chartXScale(domain: 0...max(maxCount, 1), range: .plotDimension(endPadding: 0))
+            .chartXAxis(.hidden)
+            .chartYAxis(.hidden)
+            .chartLegend(.hidden)
+            .frame(height: .barHeight)
+            .accessibilityHidden(true)
         }
-        .frame(height: rowHeight * CGFloat(labelLines) * CGFloat(max(activity.slices.count, 1)))
-        .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
-        }
-    }
-
-    private var labelLines: Int { dynamicTypeSize.isAccessibilitySize ? 2 : 1 }
-
-    private var barOffset: CGFloat {
-        max((rowHeight * CGFloat(labelLines) - .barHeight) / 2 - .spaceXS, 0)
-    }
-
-    private func open(_ theme: Theme) {
-        opened = theme
-        search.apply(.theme(theme))
+        .contentShape(.rect)
     }
 }
 
 private struct ThemeBarLabel: View {
     @Environment(SearchModel.self) private var search
     let slice: ThemeActivity.Slice
-    let lines: Int
 
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: .space2XS) {
@@ -84,7 +72,7 @@ private struct ThemeBarLabel: View {
                 .accessibilityHidden(true)
             Text(verbatim: slice.theme.title)
                 .foregroundStyle(.primary)
-                .lineLimit(lines)
+                .fixedSize(horizontal: false, vertical: true)
             Text(verbatim: "·").foregroundStyle(.tertiary)
             Text(verbatim: PublicFormat.number(slice.count))
                 .fontWeight(.semibold)
@@ -107,6 +95,7 @@ private struct ThemeBarLabel: View {
 struct ThemeCadenceChart: View {
     @Environment(SearchModel.self) private var search
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @ScaledMetric(relativeTo: .caption) private var height: CGFloat = .chartCompactHeight
     @State private var revealed = false
     @State private var scrubbed: Date?
@@ -151,11 +140,14 @@ struct ThemeCadenceChart: View {
             }
         }
         .chartXSelection(value: $scrubbed)
+        .chartScrollableAxes(activity.isScrollable ? .horizontal : [])
+        .chartXVisibleDomain(length: activity.visibleLength)
+        .chartScrollPosition(initialX: activity.scrollStart ?? .now)
         .sensoryFeedback(.selection, trigger: selected?.start)
         .chartXAxis {
             AxisMarks(values: .stride(by: activity.grain.unit)) { value in
                 if let date = value.as(Date.self), activity.showsLabel(at: date) {
-                    AxisValueLabel(format: .dateTime.day().month(.abbreviated))
+                    AxisValueLabel(format: axisFormat)
                 }
             }
         }
@@ -169,6 +161,10 @@ struct ThemeCadenceChart: View {
         .onAppear {
             withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
         }
+    }
+
+    private var axisFormat: Date.FormatStyle {
+        dynamicTypeSize.isAccessibilitySize ? .dateTime.day() : .dateTime.day().month(.abbreviated)
     }
 
     private func style(for period: ThemeActivity.Period) -> AnyShapeStyle {
