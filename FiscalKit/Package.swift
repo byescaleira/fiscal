@@ -18,7 +18,8 @@ let package = Package(
         .target(name: "FiscalDomain"),
         .target(name: "FiscalData", dependencies: ["FiscalDomain"]),
         .target(name: "FiscalDesignSystem"),
-        .target(name: "FiscalResource", resources: [.process("Assets")]),
+        .target(
+            name: "FiscalResource", resources: [.process("Assets"), .process("art-credits.json")]),
         .target(
             name: "FeatureCore",
             dependencies: [
