@@ -30,6 +30,9 @@
             case .governor: "Governador"
             case .viceGovernor: "Vice-governador"
             case .stateDeputy: "Deputado estadual"
+            case .mayor: "Prefeito"
+            case .viceMayor: "Vice-prefeito"
+            case .cityCouncilor: "Vereador"
             }
         }
 
@@ -59,7 +62,30 @@
                     : Profile.Mandate(
                         start: CalendarDay(year: 2_023, month: 2, day: 1),
                         end: CalendarDay(year: 2_027, month: 1, day: 31))
+            case .mayor, .viceMayor, .cityCouncilor: municipalMandate
             }
+        }
+
+        static let municipalMandate = Profile.Mandate(
+            start: CalendarDay(year: 2_025, month: 1, day: 1),
+            end: CalendarDay(year: 2_028, month: 12, day: 31))
+
+        static func minimal(for card: PersonCard, sources: [Source]) -> Profile {
+            Profile(
+                card: card, civilName: nil,
+                mandate: card.office.isMunicipal ? municipalMandate : nil, birthDate: nil,
+                birthPlace: nil, education: nil, contact: nil, salary: nil,
+                numbers: Profile.Numbers(
+                    attendance: nil, proposals: nil, laws: nil, speeches: nil, votes: nil,
+                    quotaCents: nil, assetsCents: nil, campaignRevenueCents: nil,
+                    lastElectionVotes: nil),
+                history: Profile.History(
+                    years: [], themes: [], committees: [], assets: [], campaigns: [],
+                    timeline: [],
+                    coverage: ["assets", "campaigns", "salary"].map {
+                        Profile.Coverage(kind: $0, status: .notLoaded, source: nil)
+                    }),
+                sources: sources)
         }
 
         private static func contact(for card: PersonCard) -> Profile.Contact {
@@ -83,7 +109,7 @@
             case .president, .vicePresident:
                 Profile.Salary(
                     monthlyCents: federalSalaryCents, law: "Decreto Legislativo 173/2022")
-            case .governor, .viceGovernor, .stateDeputy:
+            case .governor, .viceGovernor, .stateDeputy, .mayor, .viceMayor, .cityCouncilor:
                 nil
             }
         }

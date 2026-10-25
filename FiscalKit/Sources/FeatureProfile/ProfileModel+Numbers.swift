@@ -69,7 +69,8 @@ extension ProfileModel {
     func sourceID(for kind: String) -> String? {
         guard let profile else { return nil }
         switch kind {
-        case "assets", "campaigns", "timeline": return "tse"
+        case "assets", "campaigns", "timeline":
+            return profile.office.isMunicipal ? Source.municipalElectionID : Source.electionID
         default:
             if let source = profile.coverage.first(where: { $0.kind == kind })?.source {
                 return source

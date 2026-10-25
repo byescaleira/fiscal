@@ -141,7 +141,9 @@ public struct ShareCardBuilder: Sendable {
             switch office {
             case .senator: "senado"
             case .federalDeputy: "camara"
-            case .president, .vicePresident, .governor, .viceGovernor, .stateDeputy: "tse"
+            case .president, .vicePresident, .governor, .viceGovernor, .stateDeputy:
+                Source.electionID
+            case .mayor, .viceMayor, .cityCouncilor: Source.municipalElectionID
             }
         return sources.first { $0.id == preferred } ?? sources.first
     }

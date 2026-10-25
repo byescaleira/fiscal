@@ -82,7 +82,7 @@ struct ProfileTimelineSection: View {
                             .monospacedDigit()
                             .frame(width: .badgeXL, alignment: .leading)
                         VStack(alignment: .leading, spacing: .space2XS) {
-                            Text(verbatim: career.office).font(.rowTitle)
+                            Text(verbatim: profile.careerOffice(career)).font(.rowTitle)
                             Text(verbatim: profile.careerDetail(career))
                                 .font(.footnote)
                                 .foregroundStyle(.secondary)

@@ -54,6 +54,14 @@ public struct PublicDataClient: PublicDataService {
         try await get(PublicDataPath.representatives(uf: uf))
     }
 
+    public func cityRepresentatives(code: String) async throws -> PlaceRepresentatives? {
+        do {
+            return try await get(PublicDataPath.cityRepresentatives(code: code))
+        } catch PublicDataError.notFound {
+            return nil
+        }
+    }
+
     public func profile(slug: String) async throws -> Profile {
         try await get(PublicDataPath.profile(slug: slug))
     }

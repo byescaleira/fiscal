@@ -88,6 +88,26 @@ struct PublicDataClientTests {
         #expect(votes.first?.tally.total == nil)
     }
 
+    @Test func decodesACityFileAndTreatsAMissingOneAsNotYetPublished() async throws {
+        let harness = try Harness()
+        harness.reply(
+            "places/city/1200708.json",
+            #"{ "code": "1200708", "name": "Xapuri", "uf": "ac", "note": null, "sources": [], "groups": [{ "level": "city", "office": "mayor", "title": "Prefeitura", "people": [{ "slug": "maxsuel-maia-xapuri-ac", "name": "Maxsuel Maia", "office": "mayor", "uf": "ac", "party": "PP", "photo": null, "status": "inOffice" }, { "slug": "vanio-miranda-xapuri-ac", "name": "Vânio Miranda", "office": "viceMayor", "uf": "ac", "party": "PSDB", "photo": null, "status": "inOffice" }] }] }"#
+        )
+        let city = try #require(try await harness.client.cityRepresentatives(code: "1200708"))
+        #expect(city.code == "1200708")
+        #expect(city.note == nil)
+        #expect(city.groups.first?.level == .city)
+        #expect(city.groups.first?.people.map(\.office) == [.mayor, .viceMayor])
+        #expect(harness.paths == ["/api/v1/places/city/1200708.json"])
+        harness.everything(.init(status: 404))
+        #expect(try await harness.client.cityRepresentatives(code: "9999999") == nil)
+        harness.everything(.init(failure: .notConnectedToInternet))
+        await #expect(throws: PublicDataError.offline) {
+            try await harness.client.cityRepresentatives(code: "1100098")
+        }
+    }
+
     @Test func tellsMissingFilesFromRejectionsAndOutages() async throws {
         let harness = try Harness()
         harness.everything(.init(status: 404))
