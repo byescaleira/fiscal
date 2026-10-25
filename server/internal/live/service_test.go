@@ -86,7 +86,7 @@ func token(c byte) string {
 
 func newStore(t *testing.T, tokens ...string) *store.Store {
 	t.Helper()
-	st, err := store.Open(t.TempDir(), 100)
+	st, err := store.Open(t.TempDir(), store.Options{Max: 100})
 	if err != nil {
 		t.Fatal(err)
 	}

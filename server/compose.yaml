@@ -25,6 +25,12 @@ services:
     security_opt:
       - no-new-privileges:true
     mem_limit: 256m
+    pids_limit: 128
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     healthcheck:
       test: ["CMD", "/usr/local/bin/liveresults-server", "-check"]
       interval: 30s

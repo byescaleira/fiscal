@@ -27,8 +27,13 @@ private final class StubProtocol: URLProtocol, @unchecked Sendable {
             body = data
         }
         Self.requests.append((request.httpMethod ?? "", request.url?.path ?? "", body))
-        let response = HTTPURLResponse(
-            url: request.url!, statusCode: Self.status, httpVersion: nil, headerFields: nil)!
+        guard let url = request.url,
+            let response = HTTPURLResponse(
+                url: url, statusCode: Self.status, httpVersion: nil, headerFields: nil)
+        else {
+            client?.urlProtocol(self, didFailWithError: URLError(.badURL))
+            return
+        }
         client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
         client?.urlProtocol(self, didLoad: Self.body)
         client?.urlProtocolDidFinishLoading(self)

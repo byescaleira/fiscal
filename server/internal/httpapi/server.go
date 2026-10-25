@@ -2,7 +2,10 @@ package httpapi
 
 import (
 	"context"
+	"crypto/rand"
+	"crypto/sha256"
 	"crypto/subtle"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"io"
@@ -40,6 +43,7 @@ type Config struct {
 	Registrations Registrations
 	AdminToken    string
 	Limiter       *RateLimiter
+	Salt          []byte
 	Now           func() time.Time
 	Logger        *log.Logger
 }
@@ -49,6 +53,7 @@ type server struct {
 	regs       Registrations
 	adminToken string
 	limiter    *RateLimiter
+	salt       []byte
 	now        func() time.Time
 	logger     *log.Logger
 }
@@ -61,15 +66,19 @@ func New(c Config) http.Handler {
 		c.Logger = log.Default()
 	}
 	if c.Limiter == nil {
-		c.Limiter = NewRateLimiter(c.Now, 120, 30)
+		c.Limiter = NewRateLimiter(c.Now, 120, 120)
 	}
-	s := &server{races: c.Races, regs: c.Registrations, adminToken: c.AdminToken, limiter: c.Limiter, now: c.Now, logger: c.Logger}
+	if len(c.Salt) == 0 {
+		c.Salt = make([]byte, 32)
+		rand.Read(c.Salt)
+	}
+	s := &server{races: c.Races, regs: c.Registrations, adminToken: c.AdminToken, limiter: c.Limiter, salt: c.Salt, now: c.Now, logger: c.Logger}
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/health", s.health)
 	mux.HandleFunc("GET /api/v1/races", s.limit(ClassRead, s.listRaces))
 	mux.HandleFunc("GET /api/v1/races/{id}", s.limit(ClassRead, s.getRace))
 	mux.HandleFunc("POST /api/v1/live-activities", s.limit(ClassWrite, s.register))
-	mux.HandleFunc("DELETE /api/v1/live-activities/{pushToken}", s.limit(ClassWrite, s.unregister))
+	mux.HandleFunc("DELETE /api/v1/live-activities", s.limit(ClassWrite, s.unregister))
 	mux.HandleFunc("POST /api/v1/admin/push-test", s.limit(ClassWrite, s.pushTest))
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusNotFound, "not_found", "route not found")
@@ -258,20 +267,40 @@ func (s *server) register(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusUnprocessableEntity, "invalid_request", "environment must be development or production")
 		return
 	}
-	err := s.regs.Put(store.Registration{RaceID: body.RaceID, PushToken: strings.ToLower(body.PushToken), Environment: body.Environment, CreatedAt: s.now().UTC()})
-	if errors.Is(err, store.ErrCapacity) {
+	err := s.regs.Put(store.Registration{RaceID: body.RaceID, PushToken: strings.ToLower(body.PushToken), Environment: body.Environment, Source: s.sourceKey(ClientIP(r))})
+	switch {
+	case err == nil:
+		w.WriteHeader(http.StatusNoContent)
+	case errors.Is(err, store.ErrBound):
+		writeError(w, http.StatusConflict, "token_bound_to_other_race", "pushToken is already registered for another race or environment")
+	case errors.Is(err, store.ErrSourceLimit):
+		writeError(w, http.StatusTooManyRequests, "too_many_registrations", "too many live registrations from this address")
+	case errors.Is(err, store.ErrCapacity):
 		writeError(w, http.StatusInsufficientStorage, "capacity_reached", "registration capacity reached")
-		return
-	}
-	if err != nil {
+	default:
 		writeError(w, http.StatusInternalServerError, "internal_error", "internal error")
-		return
 	}
-	w.WriteHeader(http.StatusNoContent)
+}
+
+func (s *server) sourceKey(ip string) string {
+	h := sha256.New()
+	h.Write(s.salt)
+	h.Write([]byte(ip))
+	return hex.EncodeToString(h.Sum(nil)[:16])
 }
 
 func (s *server) unregister(w http.ResponseWriter, r *http.Request) {
-	s.regs.Delete(r.PathValue("pushToken"))
+	var body struct {
+		PushToken string `json:"pushToken"`
+	}
+	if !readBody(w, r, &body) {
+		return
+	}
+	if !ValidToken(body.PushToken) {
+		writeError(w, http.StatusUnprocessableEntity, "invalid_request", "pushToken must be 32 to 400 hexadecimal characters")
+		return
+	}
+	s.regs.Delete(strings.ToLower(body.PushToken))
 	w.WriteHeader(http.StatusNoContent)
 }
 

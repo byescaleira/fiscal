@@ -86,7 +86,7 @@ public protocol RaceActivityTracking: AnyObject {
         }
 
         private func forget(_ id: String) -> String? {
-            tasks.removeValue(forKey: id)?.forEach { $0.cancel() }
+            for task in tasks.removeValue(forKey: id) ?? [] { task.cancel() }
             return tokens.removeValue(forKey: id)
         }
 

@@ -9,6 +9,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -28,6 +29,8 @@ import (
 
 const (
 	maxRegistrations = 50000
+	maxPerSource     = 20
+	registrationTTL  = 12 * time.Hour
 	topicSuffix      = ".push-type.liveactivity"
 	simDuration      = 10 * time.Minute
 )
@@ -82,8 +85,8 @@ func loadConfig(getenv func(string) string) (config, error) {
 	if c.tseBase == "" {
 		c.tseBase = "https://resultados.tse.jus.br/oficial/ele2026"
 	}
-	if !strings.HasPrefix(c.tseBase, "https://") && !strings.HasPrefix(c.tseBase, "http://") {
-		return c, fmt.Errorf("TSE_BASE_URL must be an http(s) URL")
+	if u, err := url.Parse(c.tseBase); err != nil || u.Host == "" || (u.Scheme != "https" && !(c.simulate && u.Scheme == "http")) {
+		return c, errors.New("TSE_BASE_URL must be an https URL (http only with SIMULATE=1)")
 	}
 	if v := strings.TrimSpace(getenv("POLL_INTERVAL")); v != "" {
 		d, err := time.ParseDuration(v)
@@ -118,6 +121,13 @@ func loadConfig(getenv func(string) string) (config, error) {
 		}
 	}
 	return c, nil
+}
+
+func (c config) publishDir() string {
+	if c.simulate {
+		return ""
+	}
+	return c.publicDir
 }
 
 func checkAddress(host, port string) string {
@@ -170,7 +180,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("config: %v", err)
 	}
-	regs, err := store.Open(cfg.dataDir, maxRegistrations)
+	regs, err := store.Open(cfg.dataDir, store.Options{Max: maxRegistrations, PerSource: maxPerSource, TTL: registrationTTL})
 	if err != nil {
 		log.Fatalf("store: %v", err)
 	}
@@ -190,9 +200,12 @@ func main() {
 		source = tse.NewHTTPSource(cfg.tseBase, &http.Client{Timeout: 10 * time.Second})
 		statePath = filepath.Join(cfg.dataDir, "state.json")
 	}
-	svc := live.New(live.Options{Source: source, Sender: sender, Registry: regs, StatePath: statePath, PublishDir: cfg.publicDir})
+	svc := live.New(live.Options{Source: source, Sender: sender, Registry: regs, StatePath: statePath, PublishDir: cfg.publishDir()})
 	if err := svc.LoadState(); err != nil {
 		log.Fatalf("state: %v", err)
+	}
+	if err := svc.ResetPublished(); err != nil {
+		log.Fatalf("publish: %v", err)
 	}
 
 	handler := httpapi.New(httpapi.Config{Races: svc, Registrations: regs, AdminToken: cfg.adminToken})
@@ -234,7 +247,7 @@ func main() {
 	if cfg.apnsDisabled {
 		apnsMode = "disabled"
 	}
-	log.Printf("listening on %s source=%s apns=%s poll=%s registrations=%d admin=%v", address, mode, apnsMode, cfg.poll, regs.Count(), cfg.adminToken != "")
+	log.Printf("listening on %s source=%s apns=%s poll=%s registrations=%d admin=%v publish=%v", address, mode, apnsMode, cfg.poll, regs.Count(), cfg.adminToken != "", cfg.publishDir() != "")
 
 	<-ctx.Done()
 	log.Printf("shutting down")

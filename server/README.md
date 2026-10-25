@@ -1,6 +1,6 @@
 # Servidor da apuração ao vivo
 
-Serviço em Go 1.26.5, só com a biblioteca padrão. Lê os arquivos do TSE do 2º turno (presidente e governador de AC, AM, DF, ES, RN e TO), serve o placar em `/api/v1/races` e atualiza as Live Activities por APNs quando os números mudam. O contrato está em `docs/changes/live-results/proposal.md`.
+Serviço em Go 1.26.10, só com a biblioteca padrão. Lê os arquivos do TSE do 2º turno (presidente e governador de AC, AM, DF, ES, RN e TO), serve o placar em `/api/v1/races` e atualiza as Live Activities por APNs quando os números mudam. O contrato está em `docs/changes/live-results/proposal.md`.
 
 ## Variáveis
 
@@ -9,15 +9,16 @@ Serviço em Go 1.26.5, só com a biblioteca padrão. Lê os arquivos do TSE do 2
 | `HOST` | `127.0.0.1` (`0.0.0.0` no container) | Endereço de escuta |
 | `PORT` | `3130` | Porta |
 | `DATA_DIR` | `./data` (`/data` no container) | `registrations.json` e `state.json`, pasta `0700`, arquivos `0600` |
-| `TSE_BASE_URL` | `https://resultados.tse.jus.br/oficial/ele2026` | Base dos arquivos do TSE |
+| `PUBLIC_DIR` | `./public` (`/public` no container) | Onde o poller grava os arquivos estáticos que o Caddy serve; com `SIMULATE=1` nada é gravado |
+| `TSE_BASE_URL` | `https://resultados.tse.jus.br/oficial/ele2026` | Base dos arquivos do TSE; só `https://` (`http://` só com `SIMULATE=1`) |
 | `POLL_INTERVAL` | `20s` | Intervalo de leitura do TSE (`20s` ou `20`; de 5 s a 10 min) |
-| `SIMULATE` | vazio | `1` troca o TSE por dados sintéticos que andam por ~10 min e terminam com um eleito em cada disputa |
+| `SIMULATE` | vazio | `1` troca o TSE por dados sintéticos que andam por ~10 min e terminam com um eleito em cada disputa; os dados simulados ficam só na memória e em `GET /api/v1/races` do Go, nunca em `PUBLIC_DIR` |
 | `APNS_KEY_FILE` | vazio (`/secrets/apns.p8` no container) | Chave `.p8` (PKCS#8 PEM) |
 | `APNS_KEY_ID` | vazio | Key ID da chave |
 | `APNS_TEAM_ID` | vazio | Team ID |
 | `APNS_TOPIC` | vazio | Tópico completo, com o sufixo: `com.byescaleira.fiscal.push-type.liveactivity` |
 | `APNS_DISABLED` | vazio | `1` sobe sem APNs e só loga o resumo dos pushes (sem token) |
-| `ADMIN_TOKEN` | vazio | Liga `POST /api/v1/admin/push-test` (32+ caracteres); vazio, a rota responde 404 |
+| `ADMIN_TOKEN` | vazio | Liga `POST /api/v1/admin/push-test` (32+ caracteres); vazio, a rota responde 404. Gere na VPS com `openssl rand -hex 32` e guarde só no `.env` |
 
 Sem `APNS_KEY_FILE`, `APNS_KEY_ID`, `APNS_TEAM_ID` e `APNS_TOPIC` o servidor não sobe, a menos que `APNS_DISABLED=1`. A chave é carregada e um JWT é assinado no boot.
 
@@ -28,11 +29,22 @@ Sem `APNS_KEY_FILE`, `APNS_KEY_ID`, `APNS_TEAM_ID` e `APNS_TOPIC` o servidor nã
 | `GET /api/health` | `{"ok":true}` |
 | `GET /api/v1/races` | `{"races":[Race],"fetchedAt":"…"}`; `503 not_ready` antes do primeiro dado |
 | `GET /api/v1/races/{id}` | `Race`; `404 race_not_found`; `503 not_ready` |
-| `POST /api/v1/live-activities` | `{"raceId","pushToken","environment"}` → `204`; `422 invalid_request`, `413 body_too_large`, `507 capacity_reached` |
-| `DELETE /api/v1/live-activities/{pushToken}` | `204` |
+| `POST /api/v1/live-activities` | `{"raceId","pushToken","environment"}` → `204`; `422 invalid_request`, `413 body_too_large`, `409 token_bound_to_other_race`, `429 too_many_registrations`, `429 rate_limited`, `507 capacity_reached` |
+| `DELETE /api/v1/live-activities` | corpo `{"pushToken":"<hex>"}` (até 4 KiB) → `204` sempre que o corpo for válido, exista ou não o registro; `422 invalid_request`, `413 body_too_large`, `429 rate_limited` |
 | `POST /api/v1/admin/push-test` | `Authorization: Bearer $ADMIN_TOKEN`, `{"raceId"}` → `{"registrations","sent","failed","removed","event"}` |
 
-Ids: `presidente-br`, `governador-ac`, `governador-am`, `governador-df`, `governador-es`, `governador-rn`, `governador-to`. Rate limit por IP (último `X-Forwarded-For`): 120 GET e 30 POST/DELETE por minuto, `429` acima.
+O token vai no corpo do `DELETE`, nunca na URL: o log do Caddy grava a URI inteira. A rota antiga `DELETE /api/v1/live-activities/{pushToken}` não existe mais (responde `404 not_found`, e o log do Go continua cortando o token em 6 caracteres).
+
+Ids: `presidente-br`, `governador-ac`, `governador-am`, `governador-df`, `governador-es`, `governador-rn`, `governador-to`.
+
+Registros:
+- Cada registro guarda `createdAt` e vale 12 h. Registrar de novo o mesmo token renova o prazo. Registros vencidos são ignorados no envio e removidos na varredura que roda junto do flush, a cada 2 s.
+- Um token já registrado não troca de `raceId` nem de `environment`: o pedido diferente recebe `409 token_bound_to_other_race` e o original fica.
+- No máximo 20 registros vivos por IP de origem (IPv6 agrupado por /64), `429 too_many_registrations` acima disso. O IP só é guardado como SHA-256 truncado com um sal aleatório gerado no boot, em memória; `registrations.json` não leva IP nem hash, e ao reiniciar o teto recomeça.
+
+Rate limit por IP: 120 GET e 120 POST/DELETE por minuto (CGNAT), `429 rate_limited` acima. IPv6 conta por /64. `X-Forwarded-For` (último valor) só é aceito quando a conexão vem de loopback ou de rede privada (gateway do Docker, `10/8`, `172.16/12`, `192.168/16`, `fc00::/7`); de qualquer outro endereço vale o `RemoteAddr`. Quando o mapa de buckets lota (100 000), o mais antigo é descartado.
+
+Arquivos estáticos (`PUBLIC_DIR/v1`): no boot do modo TSE a pasta `v1` é apagada e republicada a partir do `state.json`. A cada leitura, os arquivos das disputas são gravados antes dos pushes e só quando o conteúdo muda; `races.json` só é regravado quando alguma disputa muda, então o `fetchedAt` dele é o da última mudança, e o `ETag`/`304` do Caddy se mantém entre leituras sem novidade.
 
 ## Rodar local
 
@@ -47,16 +59,30 @@ Com APNs de verdade, aponte `APNS_KEY_FILE` para a `.p8` e preencha `APNS_KEY_ID
 
 ## Deploy
 
-Em `/opt/fiscal-api` na VPS, com o conteúdo desta pasta, o `.env` (`chmod 600`, nomes em `.env.example`), `secrets/apns.p8` e `data/` (dono 1000, pastas `700`, chave `600`):
+Em `/opt/fiscal-api` na VPS, com o `.env` (`chmod 600`, nomes em `.env.example`), `secrets/apns.p8` e `data/` (dono 1000, pastas `700`, chave `600`). O código sobe com `rsync -a`, **sem `--delete`**, e sem tocar no que só existe na VPS:
+
+```sh
+rsync -a --exclude .env --exclude secrets/ --exclude data/ --exclude public/ server/ vps:/opt/fiscal-api/
+```
+
+`.env`, `secrets/`, `data/` e `public/` nunca saem da máquina local nem são sobrescritos ou apagados na VPS. O `ADMIN_TOKEN` é gerado na própria VPS e vai só para o `.env`:
 
 ```sh
 cd /opt/fiscal-api
+echo "ADMIN_TOKEN=$(openssl rand -hex 32)" >> .env
+chmod 600 .env
 docker compose up -d --build
 docker compose ps
 curl -s http://127.0.0.1:3130/api/health
 ```
 
-O Caddy encaminha `/api/*` de `fiscal.byescaleira.com` para `127.0.0.1:3130`.
+A rota de teste do admin não passa pelo Caddy (ele responde 404 em `/api/v1/admin/*`); use só por SSH, direto no loopback:
+
+```sh
+ssh vps 'set -a; . /opt/fiscal-api/.env; curl -s -X POST http://127.0.0.1:3130/api/v1/admin/push-test -H "Authorization: Bearer $ADMIN_TOKEN" -d "{\"raceId\":\"presidente-br\"}"'
+```
+
+O Caddy encaminha `/api/*` de `fiscal.byescaleira.com` para `127.0.0.1:3130`. O container tem `pids_limit: 128` e log `json-file` com 3 arquivos de 10 MB.
 
 ## Caddy (no ar desde 2026-10-25)
 
@@ -82,6 +108,10 @@ fiscal.byescaleira.com {
 		}
 	}
 
+	handle /api/v1/admin/* {
+		respond 404
+	}
+
 	handle /api/* {
 		encode zstd gzip
 		reverse_proxy 127.0.0.1:3130
@@ -96,9 +126,16 @@ fiscal.byescaleira.com {
 			roll_size 100mb
 			roll_keep 10
 		}
-		format json
+		format filter {
+			wrap json
+			fields {
+				request>uri regexp ^/api/v1/live-activities/[0-9A-Fa-f]+ /api/v1/live-activities/REDACTED
+			}
+		}
 	}
 }
 ```
+
+O `filter` do log troca um token hex que ainda chegue na URI (de um app antigo usando a rota removida) por `REDACTED`; o contrato novo já não põe token na URL. Rode `caddy validate --config /etc/caddy/Caddyfile` antes de recarregar.
 
 O `rewrite` roda antes de `uri` no Caddy, por isso os matchers usam o caminho original com `/api`.

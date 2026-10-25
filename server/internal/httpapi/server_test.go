@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -211,20 +212,63 @@ func TestRegisterCapacity(t *testing.T) {
 	}
 }
 
-func TestUnregisterAndLogRedaction(t *testing.T) {
+func TestUnregisterTakesTheTokenInTheBody(t *testing.T) {
+	tok := strings.Repeat("ABCDEF0123", 7)
+	cases := []struct {
+		name   string
+		body   string
+		status int
+		code   string
+	}{
+		{"ok", `{"pushToken":"` + tok + `"}`, 204, ""},
+		{"unknown token still 204", `{"pushToken":"` + strings.Repeat("0", 64) + `"}`, 204, ""},
+		{"missing", `{}`, 422, "invalid_request"},
+		{"non hex", `{"pushToken":"` + strings.Repeat("zz", 32) + `"}`, 422, "invalid_request"},
+		{"short", `{"pushToken":"` + strings.Repeat("a", 31) + `"}`, 422, "invalid_request"},
+		{"not json", `hello`, 422, "invalid_request"},
+		{"empty body", ``, 422, "invalid_request"},
+		{"too large", `{"pushToken":"` + strings.Repeat("a", 5000) + `"}`, 413, "body_too_large"},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			e := newEnv(t, "")
+			rec := e.do("DELETE", "/api/v1/live-activities", tc.body, nil)
+			if rec.Code != tc.status {
+				t.Fatalf("status %d, want %d: %s", rec.Code, tc.status, rec.Body.String())
+			}
+			if tc.code != "" && errorCode(t, rec) != tc.code {
+				t.Fatalf("code mismatch: %s", rec.Body.String())
+			}
+			if tc.status == 204 && (len(e.regs.deleted) != 1 || e.regs.deleted[0] != strings.ToLower(e.regs.deleted[0])) {
+				t.Fatalf("deleted %v", e.regs.deleted)
+			}
+			if tc.status != 204 && len(e.regs.deleted) != 0 {
+				t.Fatal("invalid request deleted")
+			}
+		})
+	}
+	e := newEnv(t, "")
+	e.do("DELETE", "/api/v1/live-activities", `{"pushToken":"`+tok+`"}`, nil)
+	if e.regs.deleted[0] != strings.ToLower(tok) {
+		t.Fatalf("deleted %v", e.regs.deleted)
+	}
+}
+
+func TestOldDeleteRouteIsGoneAndStaysRedacted(t *testing.T) {
 	e := newEnv(t, "")
 	tok := strings.Repeat("abcdef0123", 7)
 	rec := e.do("DELETE", "/api/v1/live-activities/"+tok, "", nil)
-	if rec.Code != 204 || len(e.regs.deleted) != 1 || e.regs.deleted[0] != tok {
-		t.Fatalf("delete %d %v", rec.Code, e.regs.deleted)
+	if rec.Code != 404 || errorCode(t, rec) != "not_found" || len(e.regs.deleted) != 0 {
+		t.Fatalf("old route %d %v", rec.Code, e.regs.deleted)
 	}
+	e.do("DELETE", "/api/v1/live-activities", `{"pushToken":"`+tok+`"}`, nil)
 	e.do("POST", "/api/v1/live-activities", `{"raceId":"presidente-br","pushToken":"`+tok+`","environment":"development"}`, nil)
 	logs := e.logs.String()
 	if strings.Contains(logs, tok) || strings.Contains(logs, tok[:7]) {
 		t.Fatalf("token leaked in logs: %s", logs)
 	}
-	if !strings.Contains(logs, "DELETE /api/v1/live-activities/abcdef… 204") {
-		t.Fatalf("log line %s", logs)
+	if !strings.Contains(logs, "DELETE /api/v1/live-activities/abcdef… 404") || !strings.Contains(logs, "DELETE /api/v1/live-activities 204") {
+		t.Fatalf("log lines %s", logs)
 	}
 }
 
@@ -245,13 +289,14 @@ func TestRateLimit(t *testing.T) {
 	if rec := e.do("GET", "/api/health", "", map[string]string{"X-Forwarded-For": "1.2.3.4"}); rec.Code != 200 {
 		t.Fatal("health must not be limited")
 	}
-	for i := 0; i < 30; i++ {
-		if rec := e.do("DELETE", "/api/v1/live-activities/"+strings.Repeat("a", 64), "", map[string]string{"X-Forwarded-For": "1.2.3.4"}); rec.Code != 204 {
+	del := `{"pushToken":"` + strings.Repeat("a", 64) + `"}`
+	for i := 0; i < 120; i++ {
+		if rec := e.do("DELETE", "/api/v1/live-activities", del, map[string]string{"X-Forwarded-For": "1.2.3.4"}); rec.Code != 204 {
 			t.Fatalf("write %d limited early: %d", i, rec.Code)
 		}
 	}
 	if rec := e.do("POST", "/api/v1/live-activities", `{}`, map[string]string{"X-Forwarded-For": "1.2.3.4"}); rec.Code != 429 {
-		t.Fatalf("31st write must be limited, got %d", rec.Code)
+		t.Fatalf("121st write must be limited, got %d", rec.Code)
 	}
 	*e.now = e.now.Add(time.Minute)
 	if rec := e.do("GET", "/api/v1/races/senador-sp", "", map[string]string{"X-Forwarded-For": "1.2.3.4"}); rec.Code == 429 {
@@ -259,16 +304,176 @@ func TestRateLimit(t *testing.T) {
 	}
 }
 
-func TestClientIP(t *testing.T) {
-	r := httptest.NewRequest("GET", "/", nil)
-	r.RemoteAddr = "127.0.0.1:1234"
-	if ClientIP(r) != "127.0.0.1" {
-		t.Fatal(ClientIP(r))
+func TestRateLimiterEvictsOldestWhenFull(t *testing.T) {
+	now := time.Date(2026, 10, 25, 20, 0, 0, 0, time.UTC)
+	l := NewRateLimiter(func() time.Time { return now }, 1, 1)
+	l.max = 2
+	if !l.Allow("a", ClassRead) {
+		t.Fatal("a")
 	}
-	r.Header.Add("X-Forwarded-For", "1.1.1.1, 2.2.2.2")
-	r.Header.Add("X-Forwarded-For", "3.3.3.3 ")
-	if ClientIP(r) != "3.3.3.3" {
-		t.Fatal(ClientIP(r))
+	now = now.Add(time.Second)
+	if !l.Allow("b", ClassRead) {
+		t.Fatal("b")
+	}
+	now = now.Add(time.Second)
+	if !l.Allow("c", ClassRead) {
+		t.Fatal("a new address must be accepted when the map is full")
+	}
+	if len(l.buckets) != 2 || l.order.Len() != 2 {
+		t.Fatalf("buckets %d", len(l.buckets))
+	}
+	if l.Allow("b", ClassRead) || l.Allow("c", ClassRead) {
+		t.Fatal("newer buckets must be kept")
+	}
+	if !l.Allow("a", ClassRead) {
+		t.Fatal("oldest bucket must have been evicted")
+	}
+	now = now.Add(time.Minute)
+	l.Allow("d", ClassRead)
+	if len(l.buckets) != 1 {
+		t.Fatalf("expired buckets must be swept, have %d", len(l.buckets))
+	}
+}
+
+func TestClientIP(t *testing.T) {
+	cases := []struct {
+		remote string
+		xff    []string
+		want   string
+	}{
+		{"127.0.0.1:1234", nil, "127.0.0.1"},
+		{"127.0.0.1:1234", []string{"1.1.1.1, 2.2.2.2", "3.3.3.3 "}, "3.3.3.3"},
+		{"172.17.0.1:1234", []string{"4.4.4.4"}, "4.4.4.4"},
+		{"10.1.2.3:1234", []string{"4.4.4.4"}, "4.4.4.4"},
+		{"192.168.1.1:1234", []string{"4.4.4.4"}, "4.4.4.4"},
+		{"[fd00::1]:1234", []string{"4.4.4.4"}, "4.4.4.4"},
+		{"[::1]:1234", []string{"4.4.4.4"}, "4.4.4.4"},
+		{"[::ffff:10.0.0.1]:1234", []string{"4.4.4.4"}, "4.4.4.4"},
+		{"8.8.8.8:1234", []string{"4.4.4.4"}, "8.8.8.8"},
+		{"172.32.0.1:1234", []string{"4.4.4.4"}, "172.32.0.1"},
+		{"[2001:db8::1]:1234", []string{"4.4.4.4"}, "2001:db8::/64"},
+		{"127.0.0.1:1234", []string{"2001:db8:1:2:aaaa::1"}, "2001:db8:1:2::/64"},
+		{"127.0.0.1:1234", []string{"2001:db8:1:2:bbbb::9"}, "2001:db8:1:2::/64"},
+		{"127.0.0.1:1234", []string{"::ffff:5.5.5.5"}, "5.5.5.5"},
+		{"127.0.0.1:1234", []string{"garbage"}, "127.0.0.1"},
+	}
+	for _, tc := range cases {
+		r := httptest.NewRequest("GET", "/", nil)
+		r.RemoteAddr = tc.remote
+		for _, v := range tc.xff {
+			r.Header.Add("X-Forwarded-For", v)
+		}
+		if got := ClientIP(r); got != tc.want {
+			t.Errorf("remote %s xff %v: got %s, want %s", tc.remote, tc.xff, got, tc.want)
+		}
+	}
+}
+
+type storeEnv struct {
+	h   http.Handler
+	st  *store.Store
+	now *time.Time
+}
+
+func newStoreEnv(t *testing.T, perSource int) *storeEnv {
+	t.Helper()
+	now := time.Date(2026, 10, 25, 20, 0, 0, 0, time.UTC)
+	e := &storeEnv{now: &now}
+	clock := func() time.Time { return *e.now }
+	st, err := store.Open(t.TempDir(), store.Options{Max: 1000, PerSource: perSource, Now: clock})
+	if err != nil {
+		t.Fatal(err)
+	}
+	e.st = st
+	e.h = New(Config{Races: &fakeRaces{}, Registrations: st, Now: clock, Limiter: NewRateLimiter(clock, 1000, 1000), Logger: log.New(io.Discard, "", 0)})
+	return e
+}
+
+func (e *storeEnv) register(race, tok, env, forwarded string) *httptest.ResponseRecorder {
+	req := httptest.NewRequest("POST", "/api/v1/live-activities", strings.NewReader(`{"raceId":"`+race+`","pushToken":"`+tok+`","environment":"`+env+`"}`))
+	req.RemoteAddr = "127.0.0.1:5555"
+	req.Header.Set("X-Forwarded-For", forwarded)
+	rec := httptest.NewRecorder()
+	e.h.ServeHTTP(rec, req)
+	return rec
+}
+
+func hexToken(i int) string {
+	return fmt.Sprintf("%064x", i+1)
+}
+
+func TestRegistrationCapPerAddress(t *testing.T) {
+	e := newStoreEnv(t, 20)
+	for i := 0; i < 20; i++ {
+		if rec := e.register("presidente-br", hexToken(i), "development", "200.1.1.1"); rec.Code != 204 {
+			t.Fatalf("registration %d: %d %s", i, rec.Code, rec.Body.String())
+		}
+	}
+	rec := e.register("presidente-br", hexToken(20), "development", "200.1.1.1")
+	if rec.Code != 429 || errorCode(t, rec) != "too_many_registrations" {
+		t.Fatalf("21st registration %d %s", rec.Code, rec.Body.String())
+	}
+	if rec := e.register("presidente-br", hexToken(0), "development", "200.1.1.1"); rec.Code != 204 {
+		t.Fatalf("renewal at the cap %d", rec.Code)
+	}
+	if rec := e.register("presidente-br", hexToken(20), "development", "200.1.1.2"); rec.Code != 204 {
+		t.Fatalf("other address %d", rec.Code)
+	}
+	for i := 0; i < 20; i++ {
+		if rec := e.register("presidente-br", hexToken(100+i), "development", fmt.Sprintf("2001:db8:7:7::%x", i+1)); rec.Code != 204 {
+			t.Fatalf("ipv6 %d: %d", i, rec.Code)
+		}
+	}
+	if rec := e.register("presidente-br", hexToken(200), "development", "2001:db8:7:7:ffff::1"); rec.Code != 429 {
+		t.Fatalf("same /64 must share the cap, got %d", rec.Code)
+	}
+	*e.now = e.now.Add(store.DefaultTTL)
+	e.st.Flush()
+	if rec := e.register("presidente-br", hexToken(300), "development", "200.1.1.1"); rec.Code != 204 {
+		t.Fatalf("expired registrations must free the cap, got %d", rec.Code)
+	}
+	for _, r := range e.st.ForRace("presidente-br") {
+		if r.Source == "" || strings.Contains(r.Source, "200.1.1.1") || len(r.Source) != 32 {
+			t.Fatalf("source must be a truncated hash, got %q", r.Source)
+		}
+	}
+}
+
+func TestSourceHashUsesBootSalt(t *testing.T) {
+	a := &server{salt: []byte("one")}
+	b := &server{salt: []byte("two")}
+	if a.sourceKey("200.1.1.1") == b.sourceKey("200.1.1.1") || a.sourceKey("200.1.1.1") != a.sourceKey("200.1.1.1") {
+		t.Fatal("hash must depend on the salt and be stable within a boot")
+	}
+	body := `{"raceId":"presidente-br","pushToken":"` + hexToken(1) + `","environment":"development"}`
+	fwd := map[string]string{"X-Forwarded-For": "200.1.1.1"}
+	first, second := newEnv(t, ""), newEnv(t, "")
+	first.do("POST", "/api/v1/live-activities", body, fwd)
+	first.do("POST", "/api/v1/live-activities", body, fwd)
+	second.do("POST", "/api/v1/live-activities", body, fwd)
+	if len(first.regs.put) != 2 || len(second.regs.put) != 1 {
+		t.Fatal("registrations not recorded")
+	}
+	if first.regs.put[0].Source != first.regs.put[1].Source || first.regs.put[0].Source == second.regs.put[0].Source {
+		t.Fatal("each boot must draw its own random salt")
+	}
+}
+
+func TestTokenStaysBoundToItsRace(t *testing.T) {
+	e := newStoreEnv(t, 20)
+	tok := hexToken(1)
+	if rec := e.register("presidente-br", tok, "development", "200.1.1.1"); rec.Code != 204 {
+		t.Fatalf("first %d", rec.Code)
+	}
+	for _, tc := range []struct{ race, env string }{{"governador-df", "development"}, {"presidente-br", "production"}} {
+		rec := e.register(tc.race, tok, tc.env, "200.9.9.9")
+		if rec.Code != 409 || errorCode(t, rec) != "token_bound_to_other_race" {
+			t.Fatalf("%v: %d %s", tc, rec.Code, rec.Body.String())
+		}
+	}
+	got := e.st.ForRace("presidente-br")
+	if len(got) != 1 || got[0].Environment != "development" || len(e.st.ForRace("governador-df")) != 0 {
+		t.Fatalf("original changed %+v", got)
 	}
 }
 

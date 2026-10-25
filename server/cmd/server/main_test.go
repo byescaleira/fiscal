@@ -55,11 +55,29 @@ func TestConfigRejectsInvalidValues(t *testing.T) {
 		{"APNS_DISABLED": "1", "PORT": "99999"},
 		{"APNS_DISABLED": "1", "ADMIN_TOKEN": "short"},
 		{"APNS_DISABLED": "1", "TSE_BASE_URL": "file:///etc"},
+		{"APNS_DISABLED": "1", "TSE_BASE_URL": "http://resultados.tse.jus.br/oficial/ele2026"},
+		{"APNS_DISABLED": "1", "TSE_BASE_URL": "https://"},
+		{"APNS_DISABLED": "1", "TSE_BASE_URL": "ftp://x", "SIMULATE": "1"},
 	}
 	for _, m := range bad {
 		if _, err := loadConfig(envFrom(m)); err == nil {
 			t.Errorf("expected error for %v", m)
 		}
+	}
+	c, err := loadConfig(envFrom(map[string]string{"APNS_DISABLED": "1", "TSE_BASE_URL": "http://127.0.0.1:9000", "SIMULATE": "1"}))
+	if err != nil || c.tseBase != "http://127.0.0.1:9000" {
+		t.Fatalf("http must be allowed with SIMULATE=1: %v", err)
+	}
+}
+
+func TestSimulateNeverPublishes(t *testing.T) {
+	sim, _ := loadConfig(envFrom(map[string]string{"APNS_DISABLED": "1", "SIMULATE": "1", "PUBLIC_DIR": "/public"}))
+	if sim.publishDir() != "" {
+		t.Fatalf("simulate must not publish, got %q", sim.publishDir())
+	}
+	tseCfg, _ := loadConfig(envFrom(map[string]string{"APNS_DISABLED": "1", "PUBLIC_DIR": "/public"}))
+	if tseCfg.publishDir() != "/public" {
+		t.Fatalf("tse mode must publish to PUBLIC_DIR, got %q", tseCfg.publishDir())
 	}
 }
 

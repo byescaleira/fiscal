@@ -219,6 +219,11 @@ func (s *Service) PollOnce(ctx context.Context) {
 		}
 	}
 	s.mu.Unlock()
+	if updated {
+		if err := s.publish(); err != nil {
+			s.logger.Printf("publish: %v", err)
+		}
+	}
 	for _, r := range toPush {
 		if ctx.Err() != nil {
 			break
@@ -232,9 +237,6 @@ func (s *Service) PollOnce(ctx context.Context) {
 	}
 	if updated {
 		s.saveState()
-		if err := s.publish(); err != nil {
-			s.logger.Printf("publish: %v", err)
-		}
 	}
 }
 
