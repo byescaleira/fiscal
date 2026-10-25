@@ -9,13 +9,19 @@ public struct VoteDetailScreen: View {
     public init() {}
 
     public var body: some View {
+        @Bindable var vote = vote
         PublicDataContent(
             phase: vote.phase, isEmpty: vote.isEmpty, retry: { await vote.load() }
         ) {
             AdaptiveList {
+                VoteHeroSection()
                 VoteSummarySection()
-                VoteCountSection()
+                VoteRepresentativesSection()
+                VoteGuidanceSection()
+                VotePartySection()
+                VoteBallotsSection()
             }
+            .searchable(text: $vote.searchText, prompt: Text("Name, party or state"))
         } empty: {
             VoteDetailEmptyState()
         }
@@ -24,7 +30,24 @@ public struct VoteDetailScreen: View {
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
         #endif
+        .toolbar { VoteDetailToolbar() }
+        .refreshable { await vote.load() }
         .task { await vote.load() }
+    }
+}
+
+private struct VoteDetailToolbar: ToolbarContent {
+    @Environment(VoteDetailModel.self) private var vote
+    @Environment(\.open) private var open
+    @Environment(\.navigationSection) private var section
+
+    var body: some ToolbarContent {
+        ToolbarItem(placement: .primaryAction) {
+            Button("Share", systemImage: "square.and.arrow.up") {
+                open(.share(.vote(id: vote.id)), in: section)
+            }
+            .disabled(vote.isEmpty)
+        }
     }
 }
 
@@ -32,34 +55,72 @@ private struct VoteSummarySection: View {
     @Environment(VoteDetailModel.self) private var vote
 
     var body: some View {
-        if let summary = vote.detail?.vote {
-            Section {
-                Text(verbatim: summary.plainSummary ?? summary.summary)
-                if summary.plainSummary != nil {
-                    Text(verbatim: summary.summary)
-                        .font(.footnote)
+        Section {
+            if let plain = vote.plainSummary {
+                Text(verbatim: plain)
+                    .font(.title3.weight(.semibold))
+                    .padding(.vertical, .space2XS)
+                DisclosureGroup {
+                    Text(verbatim: vote.officialSummary)
+                        .font(.callout)
                         .foregroundStyle(.secondary)
+                        .textSelection(.enabled)
+                } label: {
+                    Label("Official text", systemImage: "doc.text")
+                }
+            } else {
+                Text(verbatim: vote.officialSummary)
+                    .textSelection(.enabled)
+            }
+            if !vote.themes.isEmpty {
+                VoteThemes()
+            }
+        } header: {
+            AdaptiveRow(spacing: .spaceS) {
+                Text("What Changes").sectionTitle()
+                Spacer(minLength: .spaceS)
+                if let stance = vote.lensStance {
+                    LensBadge(stance)
+                }
+            }
+            .textCase(nil)
+        } footer: {
+            VStack(alignment: .leading, spacing: .space2XS) {
+                if vote.plainSummary != nil {
+                    Text("Summary in plain words, written from the official text.")
+                }
+                if let kind = vote.kindText {
+                    Text(verbatim: kind)
                 }
             }
         }
     }
 }
 
-private struct VoteCountSection: View {
+private struct VoteThemes: View {
     @Environment(VoteDetailModel.self) private var vote
+    @Environment(\.appTint) private var tint
 
     var body: some View {
-        Section {
-            ForEach(vote.counts) { count in
-                LabeledContent {
-                    Text(verbatim: count.value).monospacedDigit()
-                } label: {
-                    Text(verbatim: count.title)
+        FlowLayout(spacing: .spaceS) {
+            ForEach(vote.themes) { theme in
+                HStack(spacing: .space2XS) {
+                    Image(systemName: theme.symbol)
+                    Text(verbatim: theme.title)
+                    if vote.isLensTheme(theme) {
+                        Image(systemName: "eyeglasses")
+                            .accessibilityLabel(Text("One of your lens topics"))
+                    }
                 }
+                .font(.chipLabel)
+                .foregroundStyle(tint)
+                .padding(.horizontal, .spaceM)
+                .padding(.vertical, .spaceXS)
+                .background(tint.opacity(.opacityTint), in: .capsule)
+                .accessibilityElement(children: .combine)
             }
-        } header: {
-            Text("Tally").sectionTitle()
         }
+        .padding(.vertical, .space2XS)
     }
 }
 
@@ -70,8 +131,8 @@ private struct VoteDetailEmptyState: View {
             description:
                 "The tally by party and by state, the party guidance and each vote show up here."
         ) {
-            IconRow("Yes", symbol: "hand.thumbsup", color: .retroOlive)
-            IconRow("No", symbol: "hand.thumbsdown", color: .retroRust)
+            IconRow("Yes", symbol: BallotChoice.yes.symbol, color: BallotChoice.yes.color)
+            IconRow("No", symbol: BallotChoice.no.symbol, color: BallotChoice.no.color)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.groupedBackground)
