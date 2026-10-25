@@ -16,34 +16,40 @@ O Fiscal mostra o que os seus representantes fazem com o seu voto, a partir do q
   - viram uma enciclopédia neutra que ninguém abre duas vezes.
 - O Brasil está dividido em dois públicos grandes, com prioridades diferentes, e os dois querem fiscalizar. A direita costuma olhar para gasto público, impostos, segurança, corrupção e liberdade. A esquerda costuma olhar para desigualdade, programas sociais, meio ambiente, direitos e serviços públicos. Os dois olham para corrupção, privilégios de político e emendas.
 
-## A ideia: uma Lente por pessoa, um fato para todos
+## A ideia: o app se adapta ao seu lado, os fatos são os mesmos
 
-A **Lente** é o conjunto de prioridades da pessoa, escolhido no primeiro uso e editável a qualquer momento.
+O Brasil está polarizado, e o Fiscal assume isso de frente: **o app se adapta ao lado da pessoa, e deixa isso claro o tempo todo** (decisão do usuário em 2026-10-25). Quem se vê à direita e quem se vê à esquerda abrem apps que parecem feitos para cada um, com os mesmos dados oficiais por baixo.
 
-1. **"O que mais importa para você?"** A pessoa escolhe de 3 a 5 temas numa grade de 12 cartões com nomes neutros:
-   - Segurança pública
-   - Impostos e gasto público
-   - Combate à corrupção
-   - Economia e emprego
-   - Saúde
-   - Educação
-   - Família e costumes
-   - Desigualdade e programas sociais
-   - Meio ambiente
-   - Agro e campo
-   - Direitos e igualdade
-   - Liberdade de expressão
-2. **"Como você se vê na política?"** É opcional e vem com "Prefiro não dizer" em destaque. A escala vai de esquerda a direita, em 5 pontos. A resposta só **sugere** um pacote de temas, que a pessoa pode editar; ela nunca muda um número.
+### O lado é o primeiro passo do setup
 
-| Muda com a Lente | Nunca muda |
+1. **"De que lado você está?"** É a primeira tela, grande e direta, em cinco opções:
+   - Direita
+   - Centro-direita
+   - Centro
+   - Centro-esquerda
+   - Esquerda
+
+   Embaixo, o app explica em uma frase que adapta o que mostra primeiro, as cores, a arte e os destaques, que os números são os mesmos para todo mundo e que a escolha não sai do iPhone. "Prefiro não dizer" existe, menor, e leva a uma versão neutra.
+2. **"O que mais importa para você?"** Uma grade de 12 temas, já pré-marcada com os temas que costumam importar para aquele lado. A pessoa ajusta: de 3 a 5 temas.
+3. **"O seu visual."** Coleção de arte, paleta e ícone sugeridos para o lado, com prévia real, e a possibilidade de trocar.
+
+### O que se adapta ao lado (e fica visível)
+
+| Adapta ao lado | Nunca muda |
 |---|---|
-| A ordem dos temas em Hoje e nos perfis | Os números, os votos, os gastos e as fontes |
-| Quais votações aparecem em destaque | O acesso a qualquer dado: tudo está a um toque |
-| Os destaques do resumo de Hoje | A ordem dos candidatos e dos políticos (por voto ou alfabética) |
-| O resumo do perfil ("nos seus temas, ele votou assim") | A ausência de nota, ranking ou adjetivo |
+| A ordem e os destaques de Hoje, de Votações e de Dinheiro: primeiro o que importa para aquele lado | Os números, os votos, os gastos e as fontes |
+| As votações em destaque e as comparações sugeridas | O acesso a tudo: qualquer dado está a um toque |
+| O resumo do perfil ("nos seus temas, ele votou assim") | A ordem dos candidatos e dos políticos (por voto ou alfabética) |
+| A paleta do app, a coleção de arte, o ícone e os cards de compartilhar | A cor de cada candidato (a do partido) e a ausência de nota ou ranking |
+| O tom dos textos de apoio (o que chama atenção), sem adjetivo sobre ninguém | O texto oficial, sempre ao lado do resumo |
+
+**Clareza:**
+- Um selo fixo no topo de Hoje e de cada lista mostra a lente ativa ("Lente: Direita"). Um toque abre o que ela muda e a opção de trocar.
+- Todo card e todo destaque que mudou por causa da lente leva uma marca discreta ("pela sua lente").
+- Na loja e no setup, o app diz com todas as letras que se adapta ao lado de quem usa.
 
 - **Outra lente:** em qualquer votação ou perfil, um botão mostra o mesmo fato pelos temas do outro público. É o recurso de ponte do app: entender por que o outro lado se importa com aquela votação.
-- **Privacidade:** a Lente e o posicionamento ficam **só no aparelho**. Nunca vão para o servidor, nunca entram em telemetria e nunca saem no backup do servidor. Opinião política é dado pessoal sensível na LGPD (art. 5º, II, e art. 11).
+- **Privacidade:** o lado, a Lente e as escolhas visuais ficam **só no aparelho**, com consentimento explícito no setup. Nunca vão para o servidor, nunca entram em telemetria e nunca saem no backup do servidor. Opinião política é dado pessoal sensível na LGPD (art. 5º, II, e art. 11).
   - Notificações não são personalizadas (decisão do usuário em 2026-10-25): são por feature, iguais para todo mundo, por canal de broadcast do APNs, e só quando há necessidade ou variação significativa dos dados. A Lente nunca vira alerta, então nada da Lente sai do aparelho.
 
 ## Aparência pela Lente
@@ -143,7 +149,7 @@ O manifesto `art-credits.json` vai junto com o app e lista, por obra: autor, @, 
 
 | Risco | Como tratar |
 |---|---|
-| Parecer de um lado | Mesmo fato para todos, revisão de neutralidade em cada texto e "Outra lente" |
+| Parecer de um lado | O app adapta a apresentação ao lado de cada pessoa e diz isso às claras; por baixo, mesmo fato para todos, sem adjetivo, e "Outra lente" a um toque |
 | Lei eleitoral em ano de eleição | Sem pesquisa, sem projeção, sem enquete e sem recomendação de voto; no 2º turno, candidatos em ordem de voto ou alfabética |
 | LGPD (opinião política) | A Lente só no aparelho, com consentimento explícito para o posicionamento e "Prefiro não dizer" |
 | Revisão da App Store | Fonte em cada tela, sem se apresentar como app do governo, sem brasão |

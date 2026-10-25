@@ -137,14 +137,14 @@ TodayDigest {
 | `FeatureVotes` | aba Votações: recentes, pauta do dia e detalhe (`Route.vote(id)`) |
 | `FeatureMoney` | aba Dinheiro |
 | `FeatureSearch` | aba Fiscalizar: busca no índice, Comparar, Eleições |
-| `FeatureLens` | setup inicial (3 passos), edição da Lente, Aparência, coleções de arte |
+| `FeatureLens` | setup inicial (3 passos: lado, temas, visual), edição da Lente, Aparência, coleções de arte, o selo "Lente: …" usado pelas outras abas (via `FeatureCore`) |
 | `FeatureShare` | cards de compartilhar (`ImageRenderer`/`ShareLink`) e galeria de artistas |
 
 - **Rotas:** `Route` ganha `.person(slug:)`, `.vote(id:)`, `.compare(slugs:)`, `.races`, `.lens`, `.artists` e `.settings`. O caso `.item` sai com o exemplo do template.
 - **Domínio** (`FiscalDomain/PublicData/`):
   - os tipos da seção 2 em Swift, `Codable` e `Sendable`;
   - `Theme` (as 17 chaves, com nome e símbolo);
-  - `Lens` (temas escolhidos, posicionamento opcional, coleção de arte, paleta);
+  - `Lens` (lado: `right`, `centerRight`, `center`, `centerLeft`, `left` ou `preferNotToSay`, escolhido no primeiro passo do setup; temas escolhidos, de 3 a 5, pré-marcados pelo lado; coleção de arte; paleta). O lado adapta a ordem, os destaques, a paleta, a arte e os cards, e aparece num selo visível ("Lente: Direita"). Os fatos nunca mudam (brief, "A ideia");
   - o protocolo `PublicDataService`.
 - **Dados:**
   - `FiscalData/PublicData/PublicDataClient`, com `URLCache` e `ETag`, a partir da base `FiscalAPIURL` do Info.plist;
