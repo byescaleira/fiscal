@@ -3,7 +3,7 @@
 Go 1.26.10, só com a biblioteca padrão. Dois processos na mesma imagem:
 
 - **`liveresults-server`** (`cmd/server`): a apuração ao vivo. Lê os arquivos do TSE do 2º turno (presidente e governador de AC, AM, DF, ES, RN e TO), serve o placar em `/api/v1/races` e atualiza as Live Activities por APNs quando os números mudam. Contrato em `docs/changes/live-results/proposal.md`.
-- **`fiscal-ingest`** (`cmd/ingest`): a carga de dados da 1.0. Lê Câmara, Senado, TSE, IBGE, Receita e as assembleias com SAPL e publica os arquivos estáticos do contrato (`docs/changes/app-1.0/contract.md`, seção 2) em `PUBLIC_DIR/v1`. Detalhes em [Carga de dados](#carga-de-dados-fiscal-ingest).
+- **`fiscal-ingest`** (`cmd/ingest`): a carga de dados da 1.0. Lê Câmara, Senado, TSE, IBGE, Receita, as assembleias com SAPL e as checagens do Projeto Comprova e publica os arquivos estáticos do contrato (`docs/changes/app-1.0/contract.md`, seção 2) em `PUBLIC_DIR/v1`. Detalhes em [Carga de dados](#carga-de-dados-fiscal-ingest).
 
 ## Apuração ao vivo (`liveresults-server`)
 
@@ -154,15 +154,16 @@ Cada arquivo sai com o `.gz` ao lado, por escrita atômica (`internal/publish`, 
 | Variável | Padrão | Uso |
 | --- | --- | --- |
 | `PUBLIC_DIR` | `./public` (`/public` no container) | Raiz pública; os arquivos vão para `PUBLIC_DIR/v1` |
-| `DATA_DIR` | `./data` (`/data` no container, volume `./ingest-data`) | `slugs.json`, `sources.json`, `ingest-status.json` e `cache/` (downloads condicionais e agregados do TSE); pasta `0700`, arquivos `0600` |
+| `DATA_DIR` | `./data` (`/data` no container, volume `./ingest-data`) | `slugs.json`, `sources.json`, `ingest-status.json`, `comprova.json` (checagens lidas), `checks-review.json` (lista interna de revisão) e `cache/` (downloads condicionais e agregados do TSE); pasta `0700`, arquivos `0600` |
 | `INGEST_YEARS` | de `2023` até o ano corrente (a legislatura) | Anos de atividade da Câmara, do Senado e das assembleias: `2026`, `2023-2026` ou `2025,2026` |
 | `TSE_YEARS` | `2022,2026` | Eleições lidas por inteiro (candidaturas, bens, votos por município e contas). A penúltima é a do mandato atual, a última é a dos eleitos aguardando posse |
 | `TSE_CANDIDATE_YEARS` | `2018` | Eleições lidas só para candidaturas e bens (ligação dos senadores eleitos em 2018 e linha do tempo) |
 | `INGEST_UFS` | vazio (todas) | Limita a carga a UFs (`ac,sp`). O presidente e o vice entram sempre. Os arquivos anuais da Câmara são nacionais e são baixados inteiros mesmo assim |
-| `INGEST_SOURCES` | vazio (todas) | Subconjunto de `camara,senado,tse,ibge,receita,assembleias` |
+| `INGEST_SOURCES` | vazio (todas) | Subconjunto de `camara,senado,tse,ibge,receita,assembleias,comprova` |
 | `INGEST_FULL_AT` | `06:30` | Hora (Brasília) da carga completa diária; a Câmara regera os arquivos anuais entre 00h e 04h |
 | `INGEST_LIVE_INTERVAL` | `10m` | Intervalo da atualização ao vivo (de 2 min a 1 h) |
 | `INGEST_WORKERS` | `4` | Requisições paralelas às APIs (1 a 16) |
+| `COMPROVA_SINCE` | `2022-01-01` | Início da janela de checagens do Comprova (`AAAA-MM-DD`, de 2018 até hoje) |
 | `INGEST_REQUEST_GAP` | `150ms` | Intervalo mínimo entre requisições ao mesmo host (o Senado devolve 429 acima de 10 por segundo) |
 
 Configuração inválida derruba o processo no boot (falha fechada). Nenhuma variável é segredo.
@@ -178,6 +179,7 @@ Configuração inválida derruba o processo no boot (falha fechada). Nenhuma var
 | IBGE | municípios (`view=nivelado`) | `index/places.json` |
 | Receita | `arrecadacao-estado.csv` (último ano com 12 meses; as colunas de detalhe substituem os totais) | `money/overview.json` › `revenue`, ou `null` |
 | Assembleias (SAPL) | AC, AM, PB, PI e RO: parlamentares, legislatura atual e mandatos, autores, tipos e matérias de cada ano | quem está em exercício (com os suplentes no cargo), propostas, contato e foto. Nas outras UFs a cobertura é `notPublished` |
+| Projeto Comprova (CC BY-ND 4.0) | API pública do WordPress, `/wp-json/wp/v2/publicacoes` (100 por página, até `X-WP-TotalPages`, só os campos usados). A primeira carga lê a janela inteira; as seguintes pedem só o que mudou (`modified_after`, com 1 h de folga) e a cada 7 dias a janela é relida inteira, para tirar o que saiu do ar | `people/{slug}/checks.json` (título, selo, data e link; o corpo da checagem não é guardado nem publicado) |
 
 ### Regras
 
@@ -188,7 +190,22 @@ Configuração inválida derruba o processo no boot (falha fechada). Nenhuma var
 - **Temas e linguagem simples:** radicais escritos para o Fiscal (`internal/publicdata/themes.go`) e regras próprias (`internal/publicdata/plain.go`); a ementa oficial vai sempre ao lado.
 - **Slugs:** nome de urna em kebab-case, com `-uf` só quando o nome se repete em mais de uma UF; o registro em `DATA_DIR/slugs.json` mantém o slug de cada pessoa entre cargas e nunca o passa para outra.
 - **Neutralidade e ausência:** listas em ordem alfabética, sem ranking; dado que a fonte não publica ou que não foi carregado é `null`, com o motivo em `coverage`. Gasto de fornecedor pessoa física sai sem documento (só CNPJ é publicado).
-- **Falha:** se a Câmara listar menos de 400 deputados, o Senado menos de 70 senadores, o IBGE menos de 5.000 municípios, ou uma fonte obrigatória (Câmara, Senado, TSE das eleições inteiras, IBGE) falhar, a carga para sem publicar. Receita e assembleias que falham viram `null` ou `notLoaded`, com aviso no log.
+- **Falha:** se a Câmara listar menos de 400 deputados, o Senado menos de 70 senadores, o IBGE menos de 5.000 municípios, ou uma fonte obrigatória (Câmara, Senado, TSE das eleições inteiras, IBGE) falhar, a carga para sem publicar. Receita e assembleias que falham viram `null` ou `notLoaded`, com aviso no log. Se o Comprova falhar, a carga segue com as checagens da última leitura boa (`DATA_DIR/comprova.json`), e os arquivos publicados ficam iguais.
+
+### Checagens (Projeto Comprova)
+
+Piloto do item "Checagens no perfil" do brief (`docs/brief.md`), com a pesquisa em `docs/research/2026-10-25-fact-checks.md`. Licença CC BY-ND 4.0, conferida na [metodologia](https://projetocomprova.com.br/about/metodologia/) em 2026-10-25: o título vai como o Comprova escreveu, com crédito e link da licença em cada item.
+
+- **Selo:** o rótulo da agência como veio, nunca um nosso. Sinais lidos de cada publicação: a tag (`tags[].tag`), a frase de definição do texto ("Enganoso, para o Comprova, é…"), o cabeçalho da seção (`<b>Contextualizando</b>:`, `<b>Comprova Explica</b>:`) e o nome do arquivo da imagem do selo (`02-Site-FALSO-…` em `image-masked` e `og:image`). Rótulos achados: Falso, Enganoso, Comprovado, Verdadeiro, Sátira, Contextualizando, Comprova Explica e Golpe. Sem sinal, ou com sinais que discordam, o selo é `null` (e a discordância vai para a revisão).
+- **Fora:** publicações institucionais (comunicados, lançamentos, relatórios, imagem `01-Site-…`) e links fora de `https://projetocomprova.com.br`.
+- **Associação** (`internal/publicdata/checks.go`): o nome de urna ou o nome civil completo, sem acento e sem caixa, por palavras inteiras, no título ou na explicação da tag, escrito com inicial maiúscula e identificando uma única pessoa do escopo. Nome de uma palavra só liga apenas quando é o nome de urna exato e único (Lula). Não ligam e vão para `DATA_DIR/checks-review.json`, que não é publicado:
+  - `ambiguousName`: homônimos no escopo;
+  - `partOfLongerName`: o nome colado em outro nome com maiúscula ("ACM Neto", "Comando Vermelho", "Forte do Pinheirinho", "Governo Lula"), salvo nomes de três palavras ou mais;
+  - `surnameOnly`: só o sobrenome ("Bolsonaro" não liga a Flávio Bolsonaro);
+  - `officeMismatch`: um cargo antes do nome que a pessoa não tem ("o ministro da Economia, Paulo Guedes" para o deputado Paulo Guedes); "ex-", "então" e "pré-" anulam o cargo, e "presidente da/do …" não conta;
+  - `possibleHomonym`: as outras checagens de quem teve cargo contraditório e nenhuma confirmação (cargo certo antes do nome ou partido entre parênteses depois dele);
+  - `verdictConflict`: selos que discordam.
+- **Publicação:** `people/{slug}/checks.json` só quando há ao menos uma checagem, em ordem de data decrescente; quem é citado por nome em várias checagens recebe todas, sem contagem nem ranking.
 
 ### Rodar a carga local
 
@@ -201,6 +218,8 @@ PUBLIC_DIR=/tmp/fiscal/public DATA_DIR=/tmp/fiscal/data INGEST_UFS=ac INGEST_YEA
 `-once` faz uma carga completa e sai (código 1 se falhar); sem a flag, o processo fica no agendamento. `-check` é o healthcheck do container (heartbeat a cada minuto em `DATA_DIR/ingest-status.json`).
 
 Carga real limitada de 2026-10-25 (AC, ano de 2026, TSE 2018, 2022 e 2026): 2 min 44 s, 51 pessoas, 974 votações, 1.127 arquivos, 7,8 MiB de JSON e 1,6 MiB em `.gz`; repetida sem mudança nas fontes, regravou só `meta.json`. A carga nacional baixa por volta de 100 MiB de arquivos da Câmara por ano e algumas centenas de MiB dos ZIPs do TSE (só os CSVs necessários), que ficam em `DATA_DIR/cache` e só são baixados de novo quando mudam.
+
+Checagens reais de 2026-10-25, com os 513 deputados federais, os 81 senadores e o presidente e o vice no escopo: as 4 primeiras páginas (400 publicações de 2022 a março de 2023) deram 396 checagens, 174 ligadas a 20 pessoas (187 ligações) e 122 casos na revisão, em 3 s de leitura; a janela inteira (12 páginas, 1.152 checagens) ligou 404 checagens a 37 pessoas (424 ligações), com 269 casos na revisão e 112 checagens sem selo.
 
 ### Deploy da carga
 
