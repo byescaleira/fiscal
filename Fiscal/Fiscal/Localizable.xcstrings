@@ -1011,6 +1011,16 @@
         }
       }
     },
+    "Both sides, balanced and side by side." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os dois lados, equilibrados e lado a lado."
+          }
+        }
+      }
+    },
     "Brazil" : {
       "localizations" : {
         "pt-BR" : {
@@ -1337,6 +1347,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Escolha de 3 a 5 temas. O Fiscal mostra esses temas primeiro."
+          }
+        }
+      }
+    },
+    "Choose an option to see what comes first for you." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha uma opção para ver o que vem primeiro para você."
           }
         }
       }
@@ -2251,6 +2271,16 @@
         }
       }
     },
+    "Example: a floor vote on %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exemplo: uma votação em plenário sobre %@"
+          }
+        }
+      }
+    },
     "Expenses" : {
       "localizations" : {
         "pt-BR" : {
@@ -2461,12 +2491,32 @@
         }
       }
     },
+    "First: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Primeiro: %@"
+          }
+        }
+      }
+    },
     "First: %@. The facts are the same for everyone." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Primeiro: %@. Os fatos são os mesmos para todos."
+          }
+        }
+      }
+    },
+    "First: %@…" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Primeiro: %@…"
           }
         }
       }
@@ -2742,6 +2792,16 @@
         }
       }
     },
+    "From left to right" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Da esquerda à direita"
+          }
+        }
+      }
+    },
     "From the president to the state assembly" : {
       "localizations" : {
         "pt-BR" : {
@@ -2898,6 +2958,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Central de ajuda"
+          }
+        }
+      }
+    },
+    "Highlights take turns between both sides, comparisons sit side by side and Another lens stays open." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os destaques alternam entre os dois lados, as comparações ficam lado a lado e a Outra lente fica sempre aberta."
           }
         }
       }
@@ -3232,6 +3302,16 @@
         }
       }
     },
+    "Latest votes on %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Últimas votações sobre %@"
+          }
+        }
+      }
+    },
     "Lavender" : {
       "localizations" : {
         "pt-BR" : {
@@ -3278,6 +3358,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Esquerda"
+          }
+        }
+      }
+    },
+    "Left to right scale" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escala da esquerda à direita"
           }
         }
       }
@@ -3582,6 +3672,16 @@
         }
       }
     },
+    "Mirrored pairs side by side. Any palette fits any side." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pares espelhados lado a lado. Qualquer paleta serve para qualquer lado."
+          }
+        }
+      }
+    },
     "Mirrored pairs. Any palette fits any side." : {
       "localizations" : {
         "pt-BR" : {
@@ -3702,6 +3802,26 @@
         }
       }
     },
+    "Move Down" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mover para Baixo"
+          }
+        }
+      }
+    },
+    "Move Up" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mover para Cima"
+          }
+        }
+      }
+    },
     "Mustard" : {
       "localizations" : {
         "pt-BR" : {
@@ -3768,6 +3888,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nomes em ordem alfabética. Busque por nome, partido ou UF."
+          }
+        }
+      }
+    },
+    "Never changes: the numbers, the votes, the spending and the sources." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nunca muda: os números, os votos, os gastos e as fontes."
           }
         }
       }
@@ -4382,6 +4512,16 @@
         }
       }
     },
+    "One icon for each palette, or the Amazon at dawn." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um ícone para cada paleta, ou a Amazônia ao amanhecer."
+          }
+        }
+      }
+    },
     "One of your lens topics" : {
       "localizations" : {
         "pt-BR" : {
@@ -4552,6 +4692,16 @@
         }
       }
     },
+    "Ordered by how often each topic shows up in the latest votes of the Chamber and the Senate. Tap a topic to see its votes." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em ordem de quanto cada tema aparece nas últimas votações da Câmara e do Senado. Toque num tema para ver as votações."
+          }
+        }
+      }
+    },
     "Ordered by the size of each bench in this vote. Tap a party to see its names." : {
       "localizations" : {
         "pt-BR" : {
@@ -4718,6 +4868,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Partido %@"
+          }
+        }
+      }
+    },
+    "Party colors never change" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A cor do partido nunca muda"
           }
         }
       }
@@ -5102,6 +5262,16 @@
         }
       }
     },
+    "Preview" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prévia"
+          }
+        }
+      }
+    },
     "Preview of your look" : {
       "localizations" : {
         "pt-BR" : {
@@ -5218,6 +5388,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Domínio público"
+          }
+        }
+      }
+    },
+    "Public domain works by Brazilian artists, always with credit." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obras em domínio público de artistas brasileiros, sempre com crédito."
+          }
+        }
+      }
+    },
+    "Public domain works by Brazilian artists, always with credit. The art dresses your cards; the data stays the same." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obras em domínio público de artistas brasileiros, sempre com crédito. A arte veste os seus cards; o dado continua o mesmo."
           }
         }
       }
@@ -6522,6 +6712,26 @@
         }
       }
     },
+    "Suggested" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sugerido"
+          }
+        }
+      }
+    },
+    "Suggested for your side" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sugerida para o seu lado"
+          }
+        }
+      }
+    },
     "Summary in plain words, written from the official text." : {
       "localizations" : {
         "pt-BR" : {
@@ -6628,6 +6838,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Toque num lugar para ver quem o representa."
+          }
+        }
+      }
+    },
+    "Tap a point on the line" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque num ponto da linha"
           }
         }
       }
@@ -7132,6 +7352,16 @@
         }
       }
     },
+    "These topics come first in Today, Votes and Money, in this order. Touch and hold to reorder. Nothing is hidden." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estes temas vêm primeiro em Hoje, Votações e Dinheiro, nesta ordem. Toque e segure para reordenar. Nada fica escondido."
+          }
+        }
+      }
+    },
     "These topics come first in Today, Votes and Money. Nothing is hidden." : {
       "localizations" : {
         "pt-BR" : {
@@ -7258,6 +7488,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pauta de hoje"
+          }
+        }
+      }
+    },
+    "Today, Votes and Money open with these topics. Everything else stays one tap away." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoje, Votações e Dinheiro abrem com estes temas. Todo o resto fica a um toque."
           }
         }
       }
@@ -7822,6 +8062,16 @@
         }
       }
     },
+    "What changes in Fiscal" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que muda no Fiscal"
+          }
+        }
+      }
+    },
     "What each party's leader asked the bench to vote. Parties in alphabetical order." : {
       "localizations" : {
         "pt-BR" : {
@@ -8043,12 +8293,32 @@
         }
       }
     },
+    "With the %@ lens" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pela lente %@"
+          }
+        }
+      }
+    },
     "With the impartial lens, every other lens stays one tap away. Nothing is saved and the numbers do not change." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Na lente imparcial, as outras lentes ficam sempre a um toque. Nada é salvo e os números não mudam."
+          }
+        }
+      }
+    },
+    "Without picking a side, just as valid" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem escolher um lado, tão válido quanto"
           }
         }
       }
@@ -8069,6 +8339,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Funciona como Imparcial."
+          }
+        }
+      }
+    },
+    "Works like Impartial. Nothing else is asked." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Funciona como Imparcial. Nada mais é perguntado."
           }
         }
       }
