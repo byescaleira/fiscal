@@ -27,11 +27,15 @@ public struct FiscalDatabase: RepositoryProvider {
                 deviceStoreName, models: FiscalSchemaV1.deviceModels, inMemory: inMemory,
                 directory: directory, cloud: .none),
         ]
-        return FiscalDatabase(
-            modelContainer: try ModelContainer(
+        let container = try opening.withLock {
+            try ModelContainer(
                 for: Schema(versionedSchema: FiscalSchemaV1.self),
-                migrationPlan: FiscalMigrationPlan.self, configurations: configurations))
+                migrationPlan: FiscalMigrationPlan.self, configurations: configurations)
+        }
+        return FiscalDatabase(modelContainer: container)
     }
+
+    private static let opening = NSLock()
 
     private static func configuration(
         _ name: String, models: [any PersistentModel.Type], inMemory: Bool, directory: URL?,
