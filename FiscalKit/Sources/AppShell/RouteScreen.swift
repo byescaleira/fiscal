@@ -18,7 +18,9 @@ struct RouteScreen: View {
         switch route {
         case .person(let slug):
             ModelHost(
-                ProfileModel(slug: slug, service: data, follows: session.repositories.follows)
+                ProfileModel(
+                    slug: slug, service: data, follows: session.repositories.follows,
+                    lens: session.repositories.lens)
             ) {
                 ProfileScreen()
             }

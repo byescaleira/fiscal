@@ -14,8 +14,20 @@ public struct ProfileScreen: View {
             phase: profile.phase, isEmpty: profile.isEmpty, retry: { await profile.load() }
         ) {
             AdaptiveList {
-                ProfileSummarySection()
-                ProfileFactsSection()
+                ProfileHeroSection()
+                ProfileNumbersSection()
+                ProfileLensSection()
+                ProfileVotesSection()
+                ProfileProposalsSection()
+                ProfileSpeechesSection()
+                ProfileExpensesSection()
+                ProfileAssetsSection()
+                ProfileCampaignsSection()
+                ProfileTimelineSection()
+                ProfileCommitteesSection()
+                ProfileFactChecksSection()
+                ProfileCoverageSection()
+                ProfileAboutSection()
             }
         } empty: {
             ProfileEmptyState()
@@ -25,67 +37,141 @@ public struct ProfileScreen: View {
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
         #endif
-        .toolbar { ProfileToolbar() }
+        .refreshable { await profile.load() }
         .task { await profile.load() }
         .errorAlert($profile.error)
     }
 }
 
-private struct ProfileSummarySection: View {
+struct ProfileNumbersSection: View {
     @Environment(ProfileModel.self) private var profile
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         Section {
-            if let subtitle = profile.subtitle {
-                Text(verbatim: subtitle)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+            LazyVGrid(
+                columns: Array(
+                    repeating: GridItem(.flexible(), spacing: .spaceS, alignment: .top),
+                    count: dynamicTypeSize.isAccessibilitySize ? 1 : 2),
+                spacing: .spaceS
+            ) {
+                ForEach(profile.facts) { NumberTileView(tile: $0) }
             }
-        }
-    }
-}
-
-private struct ProfileFactsSection: View {
-    @Environment(ProfileModel.self) private var profile
-
-    var body: some View {
-        Section {
-            ForEach(profile.facts) { fact in
-                LabeledContent {
-                    Text(verbatim: fact.value).monospacedDigit()
-                } label: {
-                    Text(verbatim: fact.title)
-                }
-            }
+            .listRowInsets(EdgeInsets())
+            .listRowBackground(Color.clear)
         } header: {
-            Text("In Numbers").sectionTitle()
+            Text("Term in Numbers").sectionTitle()
         } footer: {
-            Text("A dash means the source doesn't publish this number.")
+            Text(verbatim: profile.numbersFootnote)
         }
     }
 }
 
-private struct ProfileToolbar: ToolbarContent {
-    @Environment(ProfileModel.self) private var profile
-    @Environment(SessionModel.self) private var session
+private struct NumberTileView: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var filled = false
+    let tile: ProfileModel.NumberTile
 
-    var body: some ToolbarContent {
-        ToolbarItem(placement: .primaryAction) {
-            if profile.canFollow {
-                Button {
-                    Task {
-                        await profile.toggleFollow()
-                        session.reload()
-                    }
-                } label: {
-                    if profile.isFollowing {
-                        Label("Following", systemImage: "checkmark")
-                    } else {
-                        Label("Follow", systemImage: "plus")
-                    }
-                }
-                .tint(Color.primary)
+    var body: some View {
+        VStack(alignment: .leading, spacing: .spaceXS) {
+            Label(tile.title, systemImage: tile.symbol)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .textCase(.uppercase)
+            Text(verbatim: tile.value)
+                .font(.amountTitle)
+                .monospacedDigit()
+                .foregroundStyle(tile.isMissing ? .tertiary : .primary)
+                .amountLine()
+            if let fraction = tile.fraction {
+                ProgressBar(value: filled ? fraction : 0, color: .retroTeal)
+                    .animation(reduceMotion ? nil : .smooth(duration: 1), value: filled)
+                    .onAppear { filled = true }
             }
+            if let caption = tile.caption {
+                Text(verbatim: caption).font(.caption).foregroundStyle(.secondary)
+            }
+            Spacer(minLength: 0)
+            if let source = tile.source {
+                Text(verbatim: source).font(.caption2).foregroundStyle(.tertiary)
+            }
+        }
+        .padding(.spaceM)
+        .frame(maxWidth: .infinity, minHeight: .ring + .spaceXL, alignment: .topLeading)
+        .background(.groupedRow, in: .rect(cornerRadius: .radiusM))
+        .accessibilityElement(children: .combine)
+    }
+}
+
+struct ProfileLensSection: View {
+    @Environment(ProfileModel.self) private var profile
+    @Environment(\.appTint) private var tint
+
+    var body: some View {
+        if !profile.themeLines.isEmpty {
+            Section {
+                if let headline = profile.lensVotesHeadline {
+                    VStack(alignment: .leading, spacing: .spaceS) {
+                        Text(verbatim: headline).font(.headline)
+                        FlowLayout(spacing: .spaceXS) {
+                            ForEach(profile.lensBallots) { item in
+                                BallotCountChip(item: item)
+                            }
+                        }
+                    }
+                    .padding(.vertical, .space2XS)
+                    .accessibilityElement(children: .combine)
+                }
+                ForEach(profile.themeLines) { line in
+                    HStack(spacing: .spaceM) {
+                        Image(systemName: line.theme.symbol)
+                            .font(.icon(.s, weight: .medium))
+                            .foregroundStyle(line.isLensTheme ? tint : .secondary)
+                            .frame(width: .badgeM, height: .badgeM)
+                            .background(
+                                (line.isLensTheme ? tint : .secondary).opacity(.opacityTint),
+                                in: .rect(cornerRadius: .radiusS)
+                            )
+                            .accessibilityHidden(true)
+                        VStack(alignment: .leading, spacing: .spaceHairline) {
+                            Text(verbatim: line.theme.title).font(.rowTitle)
+                            Text(verbatim: profile.themeDetail(line))
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer(minLength: .spaceS)
+                        if line.isLensTheme {
+                            Image(systemName: "eyeglasses")
+                                .foregroundStyle(tint)
+                                .accessibilityLabel(Text("By your lens"))
+                        }
+                    }
+                    .accessibilityElement(children: .combine)
+                }
+            } header: {
+                AdaptiveStack(spacing: .spaceS) {
+                    Text(profile.lensThemes.isEmpty ? LocalizedStringKey("Themes") : "By Your Lens")
+                        .sectionTitle()
+                    Spacer(minLength: 0)
+                    if let stance = profile.lensStance { LensBadge(stance) }
+                }
+                .textCase(nil)
+            } footer: {
+                Text(verbatim: profile.lensFootnote)
+            }
+        }
+    }
+}
+
+private struct BallotCountChip: View {
+    let item: ProfileModel.BallotCount
+
+    var body: some View {
+        HStack(spacing: .space2XS) {
+            BallotChip(ballot: item.ballot)
+            Text(verbatim: PublicFormat.number(item.count))
+                .font(.headline)
+                .monospacedDigit()
         }
     }
 }
