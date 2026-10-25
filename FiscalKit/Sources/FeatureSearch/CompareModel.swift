@@ -5,62 +5,114 @@ import Observation
 
 @MainActor @Observable
 public final class CompareModel {
-    public struct Cell: Identifiable, Equatable {
-        public let id: String
-        public let name: String
-        public let value: String
-    }
+    public static let range = 2...3
 
-    public struct Row: Identifiable, Equatable {
-        public let id: String
-        public let title: String
-        public let cells: [Cell]
-    }
-
-    public let slugs: [String]
+    public private(set) var slugs: [String]
     public private(set) var profiles: [Profile] = []
+    public private(set) var people: [PersonCard] = []
+    public private(set) var lens: Lens?
     public private(set) var phase: PublicDataPhase = .idle
+    public var isPicking = false
+    public var pickerQuery = ""
+    @ObservationIgnored private var index = SearchIndex()
     @ObservationIgnored private let service: (any PublicDataService)?
+    @ObservationIgnored private let lensRepository: (any LensRepository)?
 
-    public init(slugs: [String], service: (any PublicDataService)? = nil) {
-        self.slugs = slugs
+    public init(
+        slugs: [String], service: (any PublicDataService)? = nil,
+        lens: (any LensRepository)? = nil
+    ) {
+        var unique: [String] = []
+        for slug in slugs where !unique.contains(slug) { unique.append(slug) }
+        self.slugs = Array(unique.prefix(Self.range.upperBound))
         self.service = service
-        phase = slugs.count >= 2 ? .idle : .loaded
+        lensRepository = lens
+        phase = self.slugs.count >= Self.range.lowerBound ? .idle : .loaded
     }
 
-    public var canCompare: Bool { slugs.count >= 2 }
+    public var canCompare: Bool { slugs.count >= Self.range.lowerBound }
 
-    public var isEmpty: Bool { !canCompare || profiles.count < 2 }
+    public var isEmpty: Bool { !canCompare || profiles.count < Self.range.lowerBound }
 
-    public var rows: [Row] {
-        guard !isEmpty else { return [] }
-        return [
-            row("attendance", String(appLocalized: "Attendance")) {
-                PublicFormat.percent($0.numbers.attendance?.fraction)
-            },
-            row("proposals", String(appLocalized: "Proposals")) {
-                PublicFormat.number($0.numbers.proposals)
-            },
-            row("quota", String(appLocalized: "Office allowance")) {
-                PublicFormat.money(cents: $0.numbers.quotaCents)
-            },
-        ]
+    public var table: CompareTable { CompareTable(profiles: profiles, lens: lens) }
+
+    public var badgeStance: PoliticalStance? {
+        guard let lens, !lens.themes.isEmpty else { return nil }
+        return lens.stance ?? .preferNotToSay
     }
 
-    private func row(_ id: String, _ title: String, value: (Profile) -> String) -> Row {
-        Row(
-            id: id, title: title,
-            cells: profiles.map { Cell(id: $0.slug, name: $0.name, value: value($0)) })
+    public var sourceLine: String? { SourceLine.text(profiles.flatMap(\.sources)) }
+
+    public var share: Route? { canCompare && !isEmpty ? .share(.compare(slugs: slugs)) : nil }
+
+    public var canAdd: Bool { slugs.count < Self.range.upperBound }
+
+    public var choiceText: String {
+        String(appLocalized: "\(slugs.count) of \(Self.range.upperBound) chosen")
+    }
+
+    public var pickerResults: [PersonCard] {
+        let terms = SearchText.words(pickerQuery)
+        guard !terms.isEmpty else { return people }
+        return index.people.filter { SearchText.matches(terms, in: $0.words) }.map(\.value)
+    }
+
+    public var chosen: [PersonCard] {
+        slugs.compactMap { slug in people.first { $0.slug == slug } }
+    }
+
+    public func detail(for card: PersonCard) -> String {
+        card.uf == "br" ? card.office.title : "\(card.office.title) · \(card.uf.uppercased())"
+    }
+
+    public func isChosen(_ card: PersonCard) -> Bool { slugs.contains(card.slug) }
+
+    public func canToggle(_ card: PersonCard) -> Bool { isChosen(card) || canAdd }
+
+    public func toggle(_ card: PersonCard) {
+        if let position = slugs.firstIndex(of: card.slug) {
+            slugs.remove(at: position)
+        } else if canAdd {
+            slugs.append(card.slug)
+        }
+    }
+
+    public func pick() async {
+        isPicking = true
+        await loadPeople()
+    }
+
+    public func confirm() async {
+        isPicking = false
+        pickerQuery = ""
+        await load()
     }
 
     public func load() async {
-        guard canCompare else { return }
-        if profiles.isEmpty { phase = .loading }
+        lens = try? await lensRepository?.lens()
+        guard canCompare else {
+            profiles = []
+            phase = .loaded
+            await loadPeople()
+            return
+        }
+        let wanted = Set(slugs)
+        guard Set(profiles.map(\.slug)) != wanted else { return }
+        phase = .loading
         phase = await PublicDataPhase.settle(after: phase) {
             guard let service else { throw PublicDataError.unavailable }
             var loaded: [Profile] = []
             for slug in slugs { loaded.append(try await service.profile(slug: slug)) }
-            profiles = loaded
+            profiles = SearchIndex.alphabetical(loaded, by: \.name)
         }
+    }
+
+    private func loadPeople() async {
+        guard people.isEmpty, let service, let cards = try? await service.people() else {
+            return
+        }
+        let built = await Task.detached { SearchIndex(people: cards) }.value
+        index = built
+        people = built.people.map(\.value)
     }
 }
