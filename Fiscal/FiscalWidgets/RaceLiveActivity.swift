@@ -56,116 +56,120 @@ struct RaceLiveActivity: Widget {
     }
 }
 
-enum RaceStyle {
-    static let background = Color.scoreboard
-    static let accent = Color.scoreboardAccent
-    static let primary = Color.white
-    static let secondary = Color.white.opacity(.opacityStrong)
-    static let track = Color.white.opacity(.opacityTint)
-}
-
-struct RaceBoard {
-    let title: String
-    let rows: [RaceActivityRow]
-    let state: RaceActivityState
-    let isStale: Bool
-
-    init(context: ActivityViewContext<RaceActivityAttributes>) {
-        title = RaceText.title(office: context.attributes.office, uf: context.attributes.uf)
-        rows = context.state.rows(with: context.attributes.candidates)
-        state = context.state
-        isStale = context.isStale
-    }
-
-    var first: RaceActivityRow? { rows.first }
-    var second: RaceActivityRow? { rows.dropFirst().first }
-    var hasStarted: Bool { state.sectionsPercent > 0 }
-    var firstPalette: PartyPalette { first.map(palette) ?? PartyPalette.of(party: "", fallback: 0) }
-    var secondPalette: PartyPalette {
-        second.map(palette) ?? PartyPalette.of(party: "", fallback: 1)
-    }
-
-    func palette(_ row: RaceActivityRow) -> PartyPalette {
-        let index = rows.firstIndex { $0.number == row.number } ?? 0
-        return PartyPalette.of(party: row.party, fallback: index)
-    }
-
-    var countText: String {
-        state.final
-            ? String(appLocalized: "Final result")
-            : String(appLocalized: "\(RaceText.shortPercent(state.sectionsPercent)) counted")
-    }
-
-    var sourceText: String {
-        let time = RaceText.time(state.updatedDate)
-        return isStale
-            ? String(appLocalized: "No update since \(time) · TSE")
-            : String(appLocalized: "TSE file from \(time)")
-    }
-
-    func score(_ row: RaceActivityRow) -> CandidateScoreText {
-        CandidateScoreText(
-            number: row.number,
-            palette: palette(row),
-            name: row.name,
-            detail: "\(row.party) · \(row.number)",
-            percent: hasStarted ? RaceText.percent(row.percent) : "—",
-            shortPercent: hasStarted ? RaceText.shortPercent(row.percent) : "—",
-            value: row.percent,
-            elected: row.elected,
-            dimmed: state.final && !row.elected,
-            accessibility: RaceWidgetText.row(row))
-    }
-}
-
-struct CandidateScoreText {
-    let number: String
-    let palette: PartyPalette
-    let name: String
-    let detail: String
-    let percent: String
-    let shortPercent: String
-    let value: Double
-    let elected: Bool
-    let dimmed: Bool
-    let accessibility: String
-}
-
 private struct RaceLockScreen: View {
     let context: ActivityViewContext<RaceActivityAttributes>
 
     var body: some View {
         let board = RaceBoard(context: context)
-        VStack(spacing: .spaceM) {
-            HStack(alignment: .firstTextBaseline) {
-                Label {
-                    Text(verbatim: "Fiscal")
-                } icon: {
-                    Image(systemName: "checkmark.seal.fill")
-                }
-                .font(.caption.weight(.bold))
-                .foregroundStyle(RaceStyle.accent)
-                Spacer(minLength: .spaceS)
-                Text(verbatim: board.title)
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(RaceStyle.secondary)
-                    .lineLimit(1)
-            }
-            HStack(alignment: .center, spacing: .spaceS) {
+        VStack(alignment: .leading, spacing: .spaceM) {
+            HStack(alignment: .center, spacing: .spaceXS) {
                 if let first = board.first {
-                    CandidateSide(row: board.score(first), alignment: .leading, size: .lockScreen)
+                    ScoreColumn(score: board.score(first), alignment: .leading)
                 }
                 Spacer(minLength: 0)
+                CenterStatus(board: board)
+                Spacer(minLength: 0)
                 if let second = board.second {
-                    CandidateSide(row: board.score(second), alignment: .trailing, size: .lockScreen)
+                    ScoreColumn(score: board.score(second), alignment: .trailing)
                 }
             }
-            ShareBar(board: board, height: 12)
-            BoardFooter(board: board)
+            HStack(spacing: .spaceS) {
+                Capsule()
+                    .fill(RaceStyle.primary)
+                    .frame(width: 3, height: 30)
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(verbatim: board.marginText)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(RaceStyle.primary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                    Text(verbatim: board.sourceText)
+                        .font(.caption2.weight(.medium))
+                        .foregroundStyle(RaceStyle.secondary)
+                        .lineLimit(1)
+                }
+                Spacer(minLength: 0)
+            }
+            .accessibilityElement(children: .combine)
         }
         .padding(.spaceL)
+        .frame(maxWidth: .infinity)
+        .background {
+            ZStack {
+                LinearGradient(
+                    colors: [board.firstPalette.primary, board.secondPalette.primary],
+                    startPoint: .leading, endPoint: .trailing)
+                Color.black.opacity(.opacityTint)
+            }
+        }
         .fontDesign(.rounded)
         .opacity(board.isStale ? 0.75 : 1)
+    }
+}
+
+private struct ScoreColumn: View {
+    let score: CandidateScoreText
+    let alignment: HorizontalAlignment
+
+    var body: some View {
+        VStack(alignment: alignment, spacing: .space2XS) {
+            HStack(spacing: .spaceXS) {
+                if alignment == .leading { badge }
+                Text(verbatim: score.percent)
+                    .font(.scoreboardNumber)
+                    .monospacedDigit()
+                    .contentTransition(.numericText(value: score.value))
+                    .foregroundStyle(RaceStyle.primary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                if alignment == .trailing { badge }
+            }
+            Text(verbatim: score.name.uppercased())
+                .font(.caption2.weight(.heavy))
+                .foregroundStyle(RaceStyle.secondary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+        }
+        .opacity(score.dimmed ? 0.5 : 1)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(verbatim: score.accessibility))
+    }
+
+    private var badge: some View {
+        NumberBadge(number: score.number, palette: score.palette, elected: score.elected, side: 38)
+    }
+}
+
+private struct CenterStatus: View {
+    let board: RaceBoard
+
+    var body: some View {
+        VStack(spacing: .space2XS) {
+            Text(verbatim: board.officeText)
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(RaceStyle.secondary)
+                .lineLimit(1)
+            Text(verbatim: board.centerValue)
+                .font(.headline.weight(.bold))
+                .foregroundStyle(RaceStyle.primary)
+                .monospacedDigit()
+                .contentTransition(.numericText(value: board.state.sectionsPercent))
+                .lineLimit(1)
+            Text(verbatim: board.centerCaption)
+                .font(.caption2.weight(.medium))
+                .foregroundStyle(RaceStyle.secondary)
+                .lineLimit(1)
+            Capsule()
+                .fill(RaceStyle.track)
+                .frame(width: 44, height: 3)
+                .overlay(alignment: .leading) {
+                    Capsule()
+                        .fill(RaceStyle.primary)
+                        .frame(width: 44 * min(max(board.state.sectionsPercent / 100, 0), 1))
+                }
+        }
+        .frame(minWidth: 60)
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -331,13 +335,5 @@ private struct CompactStanding: View {
         .monospacedDigit()
         .lineLimit(1)
         .minimumScaleFactor(0.7)
-    }
-}
-
-enum RaceWidgetText {
-    static func row(_ row: RaceActivityRow) -> String {
-        let votes = String(appLocalized: "\(RaceText.votes(row.votes)) votes")
-        let base = "\(row.name), \(row.party), \(RaceText.percent(row.percent)), \(votes)"
-        return row.elected ? "\(base), \(String(appLocalized: "Elected"))" : base
     }
 }

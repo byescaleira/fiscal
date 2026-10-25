@@ -2,6 +2,7 @@ import SwiftUI
 
 extension Font {
     public static let amountHero = Font.largeTitle.weight(.black)
+    public static let scoreboardNumber = Font.system(size: 34, weight: .bold).width(.condensed)
     public static let amountTitle = Font.title.weight(.bold)
     public static let amountRow = Font.title3.weight(.bold)
     public static let amountInput = Font.system(size: 40, weight: .black)
