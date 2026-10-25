@@ -4,6 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>pt-BR</string>
+	<key>FiscalAPIURL</key>
+	<string>https://fiscal.byescaleira.com/api</string>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionPointIdentifier</key>

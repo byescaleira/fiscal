@@ -6,7 +6,8 @@ let package = Package(
     defaultLocalization: "pt-BR",
     platforms: [.iOS("27.0"), .macOS("27.0"), .visionOS("27.0")],
     products: [
-        .library(name: "FiscalWidgetKit", targets: ["FiscalDomain", "FiscalDesignSystem"]),
+        .library(
+            name: "FiscalWidgetKit", targets: ["FiscalDomain", "FiscalData", "FiscalDesignSystem"]),
         .library(
             name: "FiscalKit",
             targets: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureSettings", "AppShell"]),

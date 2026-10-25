@@ -32,6 +32,70 @@
         }
       }
     },
+    "%@, %@, %@. Yes: %@. No: %@. Other: %@. %@." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %2$@, %3$@. Sim: %4$@. Não: %5$@. Outros: %6$@. %7$@."
+          }
+        }
+      }
+    },
+    "%lld federal deputies" : {
+      "localizations" : {
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld deputado federal"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld deputados federais"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld state deputies" : {
+      "localizations" : {
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld deputado estadual"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld deputados estaduais"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Approved" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aprovada"
+          }
+        }
+      }
+    },
     "Brazil" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -43,12 +107,92 @@
         }
       }
     },
+    "Chamber" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Câmara"
+          }
+        }
+      }
+    },
+    "Chamber of Deputies" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Câmara dos Deputados"
+          }
+        }
+      }
+    },
+    "Couldn't load the votes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não deu para carregar as votações"
+          }
+        }
+      }
+    },
+    "Couldn't load your representatives" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não deu para carregar seus representantes"
+          }
+        }
+      }
+    },
+    "counted" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "apuradas"
+          }
+        }
+      }
+    },
+    "EARLIER" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ANTES"
+          }
+        }
+      }
+    },
     "Elected" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Eleito"
+          }
+        }
+      }
+    },
+    "Federal Deputy" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deputado federal"
+          }
+        }
+      }
+    },
+    "Federal Senate" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senado Federal"
           }
         }
       }
@@ -73,6 +217,36 @@
         }
       }
     },
+    "Fiscal shows the latest vote in Congress as soon as it's published." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Fiscal mostra a votação mais recente do Congresso assim que ela é publicada."
+          }
+        }
+      }
+    },
+    "Fiscal tries again in a while." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Fiscal tenta de novo daqui a pouco."
+          }
+        }
+      }
+    },
+    "Fiscal tries again in a while. Open the app to see the last saved data." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Fiscal tenta de novo daqui a pouco. Abra o app para ver os últimos dados salvos."
+          }
+        }
+      }
+    },
     "Governor" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -84,12 +258,72 @@
         }
       }
     },
+    "My Representatives" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meus representantes"
+          }
+        }
+      }
+    },
+    "NO" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NÃO"
+          }
+        }
+      }
+    },
+    "No representatives yet" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum representante ainda"
+          }
+        }
+      }
+    },
     "No update since %@ · TSE" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sem atualização desde %@ · TSE"
+          }
+        }
+      }
+    },
+    "No votes yet" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma votação ainda"
+          }
+        }
+      }
+    },
+    "Open Fiscal and choose your state in Mine." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abra o Fiscal e escolha seu estado em Meus."
+          }
+        }
+      }
+    },
+    "Pick your state" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha seu estado"
           }
         }
       }
@@ -105,12 +339,102 @@
         }
       }
     },
+    "Rejected" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rejeitada"
+          }
+        }
+      }
+    },
+    "Senate" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senado"
+          }
+        }
+      }
+    },
+    "Senator" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senador"
+          }
+        }
+      }
+    },
+    "Source: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fonte: %@"
+          }
+        }
+      }
+    },
+    "Source: %@ · %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fonte: %1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "Source: %@ · updated %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fonte: %1$@ · atualizado %2$@"
+          }
+        }
+      }
+    },
     "Starts at 5 PM Brasília time" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Começa às 17h (Brasília)"
+          }
+        }
+      }
+    },
+    "State Deputy" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deputado estadual"
+          }
+        }
+      }
+    },
+    "The latest vote in Congress, with the Yes and No score and the result." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A votação mais recente do Congresso, com o placar de Sim e Não e o resultado."
+          }
+        }
+      }
+    },
+    "This state's list isn't published yet." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A lista deste estado ainda não foi publicada."
           }
         }
       }
@@ -135,6 +459,36 @@
         }
       }
     },
+    "Vice Governor" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vice-governador"
+          }
+        }
+      }
+    },
+    "Vice President" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vice-presidente"
+          }
+        }
+      }
+    },
+    "Vote of the Day" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votação do dia"
+          }
+        }
+      }
+    },
     "Votes apart: %@" : {
       "localizations" : {
         "pt-BR" : {
@@ -145,12 +499,22 @@
         }
       }
     },
-    "counted" : {
+    "Who represents your state, with a tap to each profile." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "apuradas"
+            "value" : "Quem representa o seu estado, com um toque para cada perfil."
+          }
+        }
+      }
+    },
+    "YES" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SIM"
           }
         }
       }
