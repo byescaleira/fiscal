@@ -18,18 +18,25 @@ O Fiscal mostra o que os seus representantes fazem com o seu voto, a partir do q
 
 ## A ideia: o app se adapta ao seu lado, os fatos são os mesmos
 
-O Brasil está polarizado, e o Fiscal assume isso de frente: **o app se adapta ao lado da pessoa, e deixa isso claro o tempo todo** (decisão do usuário em 2026-10-25). Quem se vê à direita e quem se vê à esquerda abrem apps que parecem feitos para cada um, com os mesmos dados oficiais por baixo.
+O Brasil está polarizado, e o Fiscal assume isso de frente: **o app se adapta ao lado da pessoa, e deixa isso claro o tempo todo** (decisão do usuário em 2026-10-25). Quem se vê à direita, à esquerda ou no centro, ou quem prefere ser imparcial, abre um app que parece feito para si, com os mesmos dados oficiais por baixo.
 
 ### O lado é o primeiro passo do setup
 
-1. **"De que lado você está?"** É a primeira tela, grande e direta, em cinco opções:
+1. **"De que lado você está?"** É a primeira tela, grande e direta, com seis opções do mesmo tamanho e com o mesmo peso:
    - Direita
    - Centro-direita
    - Centro
    - Centro-esquerda
    - Esquerda
+   - **Imparcial**
 
-   Embaixo, o app explica em uma frase que adapta o que mostra primeiro, as cores, a arte e os destaques, que os números são os mesmos para todo mundo e que a escolha não sai do iPhone. "Prefiro não dizer" existe, menor, e leva a uma versão neutra.
+   **Centro** é uma lente própria, com os temas que costumam importar a quem se vê no centro. **Imparcial** é para quem quer ver os dois lados equilibrados:
+   - os destaques alternam entre os temas dos dois públicos;
+   - as comparações aparecem lado a lado;
+   - a paleta e a arte são neutras;
+   - a "Outra lente" fica sempre aberta.
+
+   Embaixo, o app explica em uma frase que adapta o que mostra primeiro, as cores, a arte e os destaques, que os números são os mesmos para todo mundo e que a escolha não sai do iPhone. "Prefiro não dizer" existe, menor, e funciona como Imparcial.
 2. **"O que mais importa para você?"** Uma grade de 12 temas, já pré-marcada com os temas que costumam importar para aquele lado. A pessoa ajusta: de 3 a 5 temas.
 3. **"O seu visual."** Coleção de arte, paleta e ícone sugeridos para o lado, com prévia real, e a possibilidade de trocar.
 

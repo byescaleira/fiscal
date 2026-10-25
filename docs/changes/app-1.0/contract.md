@@ -144,7 +144,7 @@ TodayDigest {
 - **Domínio** (`FiscalDomain/PublicData/`):
   - os tipos da seção 2 em Swift, `Codable` e `Sendable`;
   - `Theme` (as 17 chaves, com nome e símbolo);
-  - `Lens` (lado: `right`, `centerRight`, `center`, `centerLeft`, `left` ou `preferNotToSay`, escolhido no primeiro passo do setup; temas escolhidos, de 3 a 5, pré-marcados pelo lado; coleção de arte; paleta). O lado adapta a ordem, os destaques, a paleta, a arte e os cards, e aparece num selo visível ("Lente: Direita"). Os fatos nunca mudam (brief, "A ideia");
+  - `Lens` (lado: `right`, `centerRight`, `center`, `centerLeft`, `left`, `impartial` ou `preferNotToSay` (que se comporta como `impartial`), escolhido no primeiro passo do setup, com as seis primeiras opções do mesmo tamanho; `center` tem pacote de temas próprio; `impartial` alterna os destaques dos dois públicos, mostra as comparações lado a lado, usa paleta e arte neutras e deixa a "Outra lente" sempre aberta; temas escolhidos, de 3 a 5, pré-marcados pelo lado; coleção de arte; paleta). O lado adapta a ordem, os destaques, a paleta, a arte e os cards, e aparece num selo visível ("Lente: Direita"). Os fatos nunca mudam (brief, "A ideia");
   - o protocolo `PublicDataService`.
 - **Dados:**
   - `FiscalData/PublicData/PublicDataClient`, com `URLCache` e `ETag`, a partir da base `FiscalAPIURL` do Info.plist;
