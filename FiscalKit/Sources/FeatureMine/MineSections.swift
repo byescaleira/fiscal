@@ -38,8 +38,8 @@ private struct MineGroupSection: View {
         Section {
             ForEach(group.people) { card in
                 RepresentativeRow(
-                    card: card, detail: group.isSingle ? card.office.title : nil,
-                    status: mine.status(of: card), prominent: group.isSingle,
+                    card: card, detail: group.showsOffice ? card.office.title : nil,
+                    status: mine.status(of: card), prominent: group.isProminent,
                     accessibility: mine.accessibilityLabel(for: card))
             }
         } header: {

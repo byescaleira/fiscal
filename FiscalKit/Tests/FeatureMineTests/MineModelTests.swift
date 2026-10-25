@@ -80,20 +80,92 @@ struct MineModelTests {
         #expect(model.cityNote == nil)
     }
 
-    @Test func aCityResolvesToItsStateAndIsRemembered() async throws {
+    private static let roster = ShowcaseRoster(
+        people: { [] },
+        places: {
+            [
+                Place(code: "3550308", name: "São Paulo", uf: "sp"),
+                Place(code: "2111300", name: "São Luís", uf: "ma"),
+                Place(code: "1100098", name: "Espigão D'Oeste", uf: "ro"),
+                Place(code: "3304557", name: "Rio de Janeiro", uf: "rj"),
+                Place(code: "9999999", name: "Cidade Sem Lista", uf: "sp"),
+            ]
+        },
+        city: { code in
+            guard code == "1100098" else { return nil }
+            let place = Place(code: code, name: "Espigão D'Oeste", uf: "ro")
+            return ShowcaseRoster.City(
+                place: place,
+                officials: ShowcaseRoster.cards(
+                    [
+                        (.viceMayor, "Vice da Silva", "PL"), (.cityCouncilor, "Zuleide", "PT"),
+                        (.mayor, "Prefeito Exemplo", "MDB"), (.cityCouncilor, "Ademir", "PP"),
+                    ], in: place),
+                note: nil)
+        })
+
+    private func makeRosterModel(code: String? = nil) throws -> MineModel {
+        MineModel(
+            service: ShowcasePublicData(scenario: .normal, now: now, roster: Self.roster),
+            follows: nil, memory: try makeMemory(code))
+    }
+
+    @Test func aCityShowsItsCityHallAndCouncilBeforeTheState() async throws {
         let memory = try makeMemory()
         let service = ShowcasePublicData(scenario: .normal, now: now)
         let model = MineModel(service: service, follows: nil, memory: memory)
-        await model.choose(Place(code: "3106200", name: "Belo Horizonte", uf: "mg"))
-        #expect(memory.code == "3106200")
+        await model.choose(Place(code: "1200401", name: "Rio Branco", uf: "ac"))
+        #expect(memory.code == "1200401")
         #expect(model.place?.isState == false)
-        #expect(model.placeTitle == "Belo Horizonte")
-        #expect(model.representatives?.uf == "mg")
-        #expect(model.cityNote != nil)
+        #expect(model.placeTitle == "Rio Branco")
+        #expect(model.representatives?.uf == "ac")
+        #expect(model.cityRepresentatives?.code == "1200401")
+        #expect(
+            Array(model.groups.map(\.office).prefix(3)) == [.mayor, .cityCouncilor, .president])
+        let hall = try #require(model.groups.first)
+        #expect(hall.title == "Prefeitura")
+        #expect(hall.people.map(\.office) == [.mayor, .viceMayor])
+        #expect(hall.showsOffice)
+        #expect(hall.isProminent)
+        let council = try #require(model.groups.dropFirst().first)
+        #expect(council.title == "Câmara Municipal")
+        #expect(council.people.count == 21)
+        #expect(!council.showsOffice)
+        #expect(model.cityNote == nil)
+        #expect(model.representativeCount == 23 + 2)
+        #expect(model.sourceText != nil)
         let again = MineModel(service: service, follows: nil, memory: memory)
         await again.load()
-        #expect(again.place?.name == "Belo Horizonte")
-        #expect(again.groups.flatMap(\.people).contains { $0.slug == "nikolas-ferreira" })
+        #expect(again.place?.name == "Rio Branco")
+        #expect(again.groups.first?.people.first?.name == "Tião Bocalom")
+    }
+
+    @Test func theCityHallListsTheMayorFirstAndTheCouncilAlphabetically() async throws {
+        let model = try makeRosterModel()
+        await model.loadPlaces()
+        model.query = "espigao d oeste"
+        let place = try #require(model.placeResults.first)
+        await model.choose(place)
+        #expect(model.groups.first?.people.map(\.name) == ["Prefeito Exemplo", "Vice da Silva"])
+        #expect(model.groups.dropFirst().first?.people.map(\.name) == ["Ademir", "Zuleide"])
+        #expect(model.groups.dropFirst(2).first?.office == .president)
+    }
+
+    @Test func aCityWithoutAPublishedListFallsBackToTheState() async throws {
+        let model = try makeRosterModel(code: "9999999")
+        await model.load()
+        #expect(model.phase == .loaded)
+        #expect(model.cityRepresentatives == nil)
+        #expect(model.groups.first?.office == .president)
+        #expect(model.cityNote != nil)
+    }
+
+    @Test func brasiliaExplainsThereIsNoCityHall() async throws {
+        let model = try makeModel(code: "5300108")
+        await model.load()
+        #expect(model.cityRepresentatives?.groups.isEmpty == true)
+        #expect(model.cityNote?.contains("Distrito Federal") == true)
+        #expect(model.groups.contains { $0.office == .senator })
     }
 
     @Test func searchesPlacesOnTheDeviceIgnoringAccents() async throws {
@@ -101,16 +173,48 @@ struct MineModelTests {
         await model.loadPlaces()
         #expect(model.placeResults.count == 27)
         #expect(model.placeResults.allSatisfy { $0.isState })
-        model.query = "sao"
-        let results = model.placeResults
-        #expect(results.first?.code == "sp")
-        #expect(results.contains { $0.code == "3550308" })
-        model.query = "  BELO  "
-        #expect(model.placeResults.map(\.code) == ["3106200"])
+        model.query = "  RIO  "
+        #expect(model.placeResults.map(\.code).contains("1200401"))
         model.query = "ms"
         #expect(model.placeResults.first?.code == "ms")
         model.query = "zzz"
         #expect(model.placeResults.isEmpty)
+    }
+
+    @Test func findsAnyCityWithoutAccentsOrPunctuation() async throws {
+        let model = try makeRosterModel()
+        await model.loadPlaces()
+        model.query = "sao paulo"
+        #expect(model.placeResults.map(\.code) == ["sp", "3550308"])
+        model.query = "SAO LUIS"
+        #expect(model.placeResults.map(\.code) == ["2111300"])
+        model.query = "espigão d'oeste"
+        #expect(model.placeResults.map(\.code) == ["1100098"])
+        model.query = "espigao"
+        #expect(model.placeResults.map(\.code) == ["1100098"])
+        let espigao = try #require(model.placeResults.first)
+        #expect(model.placeDetail(espigao).hasSuffix("· RO"))
+    }
+
+    @Test func anEmptySearchOffersTheCapitalsAndTheWayToFindACity() async throws {
+        let model = try makeRosterModel()
+        await model.loadPlaces()
+        #expect(model.hasCities)
+        #expect(model.capitals.map(\.code) == ["3304557", "2111300", "3550308"])
+        #expect(!model.isSearchingPlaces)
+        #expect(model.placeResults.allSatisfy { $0.isState })
+    }
+
+    @Test func aCityOfflineOrEmptyFailsWithoutInventingAList() async throws {
+        let offline = try makeModel(.offline, code: "1200401")
+        await offline.load()
+        #expect(offline.phase == .failed(.offline))
+        #expect(offline.groups.isEmpty)
+        #expect(offline.cityNote == nil)
+        let empty = try makeModel(.empty, code: "1200401")
+        await empty.load()
+        #expect(empty.groups.isEmpty)
+        #expect(empty.cityRepresentatives == nil)
     }
 
     @Test func offlineKeepsWhoYouFollow() async throws {

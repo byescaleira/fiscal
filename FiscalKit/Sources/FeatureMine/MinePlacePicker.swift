@@ -6,12 +6,18 @@ import SwiftUI
 struct MinePlacePicker: View {
     @Environment(MineModel.self) private var mine
     @Environment(\.dismiss) private var dismiss
+    @FocusState private var isSearching: Bool
 
     var body: some View {
         @Bindable var mine = mine
         NavigationStack {
             List {
-                MinePlaceResults()
+                if mine.isSearchingPlaces || mine.places.isEmpty {
+                    MinePlaceResults()
+                } else {
+                    MineCitySection { isSearching = true }
+                    MineStateSection()
+                }
                 if mine.hasPlace {
                     Section {
                         Button("Forget This Place", role: .destructive) {
@@ -25,6 +31,7 @@ struct MinePlacePicker: View {
                 }
             }
             .searchable(text: $mine.query, prompt: Text("State or city"))
+            .searchFocused($isSearching)
             .fontDesign(.rounded)
             .navigationTitle("Your Place")
             #if os(iOS)
@@ -67,6 +74,48 @@ private struct MinePlaceResults: View {
             }
         } header: {
             Text(mine.isSearchingPlaces ? LocalizedStringKey("States and Cities") : "States")
+        } footer: {
+            Text("Search runs on this device, over the official list of places from IBGE.")
+        }
+    }
+}
+
+private struct MineCitySection: View {
+    @Environment(MineModel.self) private var mine
+    let search: () -> Void
+
+    var body: some View {
+        Section {
+            Button(action: search) {
+                IconRow(
+                    "Find Your City",
+                    detail:
+                        "Type the name of any city in the search field. Every municipality in Brazil is there, with its mayor and city councilors.",
+                    symbol: "magnifyingglass", color: .retroDenim)
+            }
+            .buttonStyle(.plain)
+            .accessibilityHint(Text("Opens the search field"))
+            ForEach(mine.capitals) { place in
+                MinePlaceRow(place: place)
+            }
+        } header: {
+            Text("Cities")
+        } footer: {
+            if !mine.capitals.isEmpty { Text("State capitals first. Search finds any other city.") }
+        }
+    }
+}
+
+private struct MineStateSection: View {
+    @Environment(MineModel.self) private var mine
+
+    var body: some View {
+        Section {
+            ForEach(mine.states) { place in
+                MinePlaceRow(place: place)
+            }
+        } header: {
+            Text("States")
         } footer: {
             Text("Search runs on this device, over the official list of places from IBGE.")
         }
