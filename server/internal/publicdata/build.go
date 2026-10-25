@@ -71,6 +71,7 @@ func Build(ds *Dataset, registry *Slugs) Output {
 			counts.State++
 		}
 		b.person(p)
+		b.context(p, b.slugs[p])
 	}
 	counts.People = len(cards)
 	b.add("index/people.json", cards)
@@ -84,6 +85,7 @@ func Build(ds *Dataset, registry *Slugs) Output {
 	b.agenda()
 	b.money()
 	b.today()
+	b.indicators()
 	b.add("meta.json", Meta{GeneratedAt: stamp(ds.GeneratedAt), Sources: b.sources(sortedSourceIDs(ds.Sources)...), Counts: counts})
 	return Output{Files: b.files, Slugs: b.slugs, Reviews: reviews, Cities: b.cities}
 }

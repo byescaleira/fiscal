@@ -285,6 +285,9 @@ func (in *Ingest) Full(ctx context.Context) (Report, error) {
 	if in.cfg.Enabled("comprova") {
 		ds.Checks = in.loadChecks(ctx, &rep, srcs)
 	}
+	if in.cfg.Enabled("anp") || in.cfg.Enabled("sidra") {
+		ds.Indicators = in.loadIndicators(ctx, &rep, srcs)
+	}
 	if err := srcs.settle(filepath.Join(in.cfg.DataDir, "sources.json")); err != nil {
 		return rep, err
 	}

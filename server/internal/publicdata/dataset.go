@@ -257,4 +257,5 @@ type Dataset struct {
 	SalarySource   map[string]string
 	Checks         []RawCheck
 	Cities         []City
+	Indicators     []RawIndicator
 }

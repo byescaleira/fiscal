@@ -6,7 +6,7 @@ import (
 	"liveresults/internal/publish"
 )
 
-var ManagedDirs = []string{"people", "votes", "places", "index", "agenda", "money"}
+var ManagedDirs = []string{"people", "votes", "places", "index", "agenda", "money", "indicators"}
 
 func Publish(out Output, tree *publish.Tree, prune bool) error {
 	for _, f := range out.Files {
