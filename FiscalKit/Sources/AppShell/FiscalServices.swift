@@ -46,6 +46,13 @@ public final class FiscalServices {
         return LiveResultsClient.fromBundle()
     }
 
+    func todayFollows(_ repository: any FollowRepository) -> any FollowRepository {
+        #if DEBUG
+            if let showcase = ShowcaseFollowRepository.fromLaunchArguments() { return showcase }
+        #endif
+        return repository
+    }
+
     func publicData() -> (any PublicDataService)? {
         #if DEBUG
             if let showcase = ShowcasePublicData.fromLaunchArguments() { return showcase }

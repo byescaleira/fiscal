@@ -38,6 +38,10 @@
             stored = scenario.lens
         }
 
+        public init(stance: PoliticalStance?) {
+            stored = stance.flatMap { LensScenario.stance($0).lens }
+        }
+
         public func lens() -> Lens? { stored }
 
         public func save(_ lens: Lens) { stored = lens }
