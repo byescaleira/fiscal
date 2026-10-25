@@ -35,6 +35,19 @@ func TestLimitedRun(t *testing.T) {
 	}
 }
 
+func TestComprovaSource(t *testing.T) {
+	c, err := loadConfig(env(map[string]string{"INGEST_SOURCES": "comprova", "COMPROVA_SINCE": "2024-01-01"}), now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !c.ingest.Sources["comprova"] || c.ingest.ChecksSince != "2024-01-01" {
+		t.Fatalf("config = %+v", c.ingest)
+	}
+	if d, _ := loadConfig(env(nil), now); d.ingest.ChecksSince != "" {
+		t.Fatalf("default since = %q", d.ingest.ChecksSince)
+	}
+}
+
 func TestInvalidConfigFailsClosed(t *testing.T) {
 	for name, e := range map[string]map[string]string{
 		"future year":   {"INGEST_YEARS": "2030"},
@@ -47,6 +60,9 @@ func TestInvalidConfigFailsClosed(t *testing.T) {
 		"live too fast": {"INGEST_LIVE_INTERVAL": "30s"},
 		"gap":           {"INGEST_REQUEST_GAP": "1ms"},
 		"workers":       {"INGEST_WORKERS": "100"},
+		"checks since":  {"COMPROVA_SINCE": "2017-12-31"},
+		"checks future": {"COMPROVA_SINCE": "2026-12-01"},
+		"checks format": {"COMPROVA_SINCE": "01/01/2022"},
 	} {
 		if _, err := loadConfig(env(e), now); err == nil {
 			t.Errorf("%s accepted", name)

@@ -6,6 +6,7 @@ import (
 	"errors"
 	"io"
 	"log"
+	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -44,6 +45,10 @@ func (f *fixtureFetcher) JSON(_ context.Context, raw string, v any) error {
 		}
 	}
 	return &fetch.StatusError{URL: raw, Status: 404}
+}
+
+func (f *fixtureFetcher) JSONHeader(ctx context.Context, raw string, v any) (http.Header, error) {
+	return nil, f.JSON(ctx, raw, v)
 }
 
 func (f *fixtureFetcher) Cache(context.Context, string, int64) (fetch.Cached, error) {
@@ -328,5 +333,84 @@ func TestSourceDatesMoveOnlyWhenTheDataChanges(t *testing.T) {
 	info, _ := os.Stat(path)
 	if info.Mode().Perm() != 0o600 {
 		t.Fatalf("mode = %v", info.Mode().Perm())
+	}
+}
+
+type comprovaFetcher struct {
+	*fixtureFetcher
+	fail bool
+}
+
+func (c *comprovaFetcher) JSONHeader(ctx context.Context, raw string, v any) (http.Header, error) {
+	if !strings.HasPrefix(raw, "https://projetocomprova.com.br/") {
+		return c.fixtureFetcher.JSONHeader(ctx, raw, v)
+	}
+	if c.fail {
+		return nil, &fetch.StatusError{URL: raw, Status: 503}
+	}
+	body := `[{"id": 7, "date": "2026-10-20T10:00:00", "modified_gmt": "2026-10-20T13:00:00",
+		"link": "https://projetocomprova.com.br/publicações/video-alan-rick/",
+		"title": {"rendered": "Vídeo de Alan Rick foi editado para parecer outra fala"},
+		"content": {"rendered": "<p>Texto.</p>"},
+		"tags": [{"tag": "Enganoso", "explanation": "Corte muda o sentido."}],
+		"image-masked": "https://projetocomprova.com.br/wp-content/uploads/x.png"},
+		{"id": 8, "date": "2026-10-21T10:00:00", "modified_gmt": "2026-10-21T13:00:00",
+		"link": "https://projetocomprova.com.br/publicações/rick/",
+		"title": {"rendered": "Post sobre Rick engana"},
+		"content": {"rendered": ""}, "tags": []}]`
+	if err := json.Unmarshal([]byte(body), v); err != nil {
+		return nil, err
+	}
+	h := http.Header{}
+	h.Set("X-WP-TotalPages", "1")
+	return h, nil
+}
+
+func TestFullPublishesChecksAndKeepsThemWhenTheSourceFails(t *testing.T) {
+	now := time.Date(2026, 10, 25, 18, 0, 0, 0, time.UTC)
+	get := &comprovaFetcher{fixtureFetcher: senadoFixtures(t)}
+	in := testIngest(t, Config{Years: []int{2026}, UFs: []string{"ac"}, Sources: map[string]bool{"senado": true, "comprova": true}}, get, now)
+	rep, err := in.Full(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if rep.Checks != 2 || rep.CheckPeople != 1 || rep.CheckLinks != 1 || rep.Reviews != 1 {
+		t.Fatalf("report = %+v", rep)
+	}
+	path := filepath.Join(in.cfg.PublicDir, "v1", "people", "alan-rick", "checks.json")
+	var list publicdata.CheckList
+	readJSON(t, path, &list)
+	if len(list.Items) != 1 || list.Items[0].ID != "comprova-7" || deref(list.Items[0].Verdict) != "Enganoso" || list.Items[0].Date != "2026-10-20" || list.Items[0].Publisher != "Projeto Comprova" {
+		t.Fatalf("checks = %+v", list)
+	}
+	if len(list.Sources) != 1 || list.Sources[0].ID != "comprova" || list.Sources[0].URL != "https://projetocomprova.com.br" {
+		t.Fatalf("sources = %+v", list.Sources)
+	}
+	first, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var review checkReviewFile
+	readJSON(t, filepath.Join(in.cfg.DataDir, checksReviewFile), &review)
+	if len(review.Items) != 1 || review.Items[0].Reason != publicdata.ReviewSurnameOnly || review.Items[0].Name != "rick" {
+		t.Fatalf("review = %+v", review)
+	}
+	if _, err := os.Stat(filepath.Join(in.cfg.PublicDir, "v1", checksReviewFile)); !os.IsNotExist(err) {
+		t.Fatal("the review list must never be published")
+	}
+	if info, err := os.Stat(filepath.Join(in.cfg.DataDir, checksStoreFile)); err != nil || info.Mode().Perm() != 0o600 {
+		t.Fatalf("store = %v %v", info, err)
+	}
+	get.fail = true
+	rep, err = in.Full(context.Background())
+	if err != nil {
+		t.Fatalf("a failing optional source must not stop the load: %v", err)
+	}
+	if !strings.Contains(strings.Join(rep.Warnings, " "), "comprova") {
+		t.Fatalf("warnings = %v", rep.Warnings)
+	}
+	again, err := os.ReadFile(path)
+	if err != nil || string(again) != string(first) {
+		t.Fatalf("checks must survive a failed fetch: %s %v", again, err)
 	}
 }
