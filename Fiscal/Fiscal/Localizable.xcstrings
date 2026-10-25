@@ -11,6 +11,16 @@
         }
       }
     },
+    "%@ came from %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ veio de %@"
+          }
+        }
+      }
+    },
     "%@ elected" : {
       "localizations" : {
         "pt-BR" : {
@@ -47,6 +57,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aqui, %1$@ aparece pelos eleitos de %2$@. Prefeitos e vereadores entram depois da versão 1.0."
+          }
+        }
+      }
+    },
+    "%@ less than in %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ a menos que em %@"
+          }
+        }
+      }
+    },
+    "%@ more than in %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ a mais que em %@"
           }
         }
       }
@@ -107,6 +137,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ votos"
+          }
+        }
+      }
+    },
+    "%@ vs. average" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ em relação à média"
           }
         }
       }
@@ -491,6 +531,16 @@
         }
       }
     },
+    "All candidates in the last general election, by origin of the money. Touch a column to see its total." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos os candidatos da última eleição geral, pela origem do dinheiro. Toque numa coluna para ver o total."
+          }
+        }
+      }
+    },
     "All federal deputies" : {
       "localizations" : {
         "pt-BR" : {
@@ -527,6 +577,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Todos os temas"
+          }
+        }
+      }
+    },
+    "Allowance spent in each year of the mandate. Touch a year to see its total." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cota gasta em cada ano do mandato. Toque num ano para ver o total."
           }
         }
       }
@@ -1381,6 +1441,16 @@
         }
       }
     },
+    "Column" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coluna"
+          }
+        }
+      }
+    },
     "Committees" : {
       "localizations" : {
         "pt-BR" : {
@@ -1801,6 +1871,16 @@
         }
       }
     },
+    "Each dot is one receipt, from the smallest to the largest. The dashed line is the median. Touch the chart to see a receipt." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada ponto é uma nota, da menor para a maior. A linha tracejada é a mediana. Toque no gráfico para ver uma nota."
+          }
+        }
+      }
+    },
     "Each receipt opens the official document published by the house." : {
       "localizations" : {
         "pt-BR" : {
@@ -2177,6 +2257,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Impostos federais pagos em cada estado no último ano completo."
+          }
+        }
+      }
+    },
+    "Federal taxes paid in each state in the last full year. The darker the state, the more it paid. Touch a state to see its total." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impostos federais pagos em cada estado no último ano completo. Quanto mais escuro o estado, mais ele pagou. Toque num estado para ver o total."
           }
         }
       }
@@ -2642,6 +2732,16 @@
         }
       }
     },
+    "Half of the receipts are below %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metade das notas fica abaixo de %@"
+          }
+        }
+      }
+    },
     "Health" : {
       "localizations" : {
         "pt-BR" : {
@@ -2952,12 +3052,32 @@
         }
       }
     },
+    "Kinds: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipos: %@"
+          }
+        }
+      }
+    },
     "Know someone who'd like Fiscal?" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Conhece alguém que ia gostar do Fiscal?"
+          }
+        }
+      }
+    },
+    "Lane" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faixa"
           }
         }
       }
@@ -3058,6 +3178,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lente: %@"
+          }
+        }
+      }
+    },
+    "Less" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menos"
           }
         }
       }
@@ -3272,6 +3402,16 @@
         }
       }
     },
+    "Median" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mediana"
+          }
+        }
+      }
+    },
     "Meet Fiscal" : {
       "localizations" : {
         "pt-BR" : {
@@ -3378,6 +3518,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Salário mensal"
+          }
+        }
+      }
+    },
+    "More" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais"
           }
         }
       }
@@ -4242,6 +4392,16 @@
         }
       }
     },
+    "Origin" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Origem"
+          }
+        }
+      }
+    },
     "Other" : {
       "localizations" : {
         "pt-BR" : {
@@ -4258,6 +4418,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Outras categorias"
+          }
+        }
+      }
+    },
+    "Other kinds" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outros tipos"
           }
         }
       }
@@ -4408,6 +4578,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pará"
+          }
+        }
+      }
+    },
+    "Pay" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salário"
           }
         }
       }
@@ -4982,6 +5162,16 @@
         }
       }
     },
+    "Receipt sizes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamanho das notas"
+          }
+        }
+      }
+    },
     "Receipts" : {
       "localizations" : {
         "pt-BR" : {
@@ -5248,6 +5438,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lldº turno"
+          }
+        }
+      }
+    },
+    "Row" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Linha"
           }
         }
       }
@@ -6822,6 +7022,16 @@
         }
       }
     },
+    "Total" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total"
+          }
+        }
+      }
+    },
     "Total in %@" : {
       "localizations" : {
         "pt-BR" : {
@@ -6842,12 +7052,32 @@
         }
       }
     },
+    "Totals by kind of expense, adding up every deputy and senator. Touch the bar or a kind to see its share." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Totais por tipo de gasto, somando todos os deputados e senadores. Toque na barra ou num tipo para ver a fatia."
+          }
+        }
+      }
+    },
     "Toucan" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tucano"
+          }
+        }
+      }
+    },
+    "Touch a kind to show only its receipts. Touch it again to show all." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque num tipo para ver só as notas dele. Toque de novo para ver todas."
           }
         }
       }
@@ -7549,6 +7779,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ano"
+          }
+        }
+      }
+    },
+    "Year by year" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ano a ano"
           }
         }
       }
