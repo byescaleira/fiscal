@@ -29,8 +29,11 @@ struct LensTests {
 
     @Test func stanceIsOptionalAndCanBeWithheld() throws {
         #expect(Lens().stance == nil)
-        #expect(PoliticalStance.scale.count == 5)
-        #expect(!PoliticalStance.scale.contains(.preferNotToSay))
+        #expect(PoliticalStance.choices.count == 6)
+        #expect(!PoliticalStance.choices.contains(.preferNotToSay))
+        #expect(PoliticalStance.preferNotToSay.effective == .impartial)
+        #expect(PoliticalStance.preferNotToSay.isImpartial)
+        #expect(!PoliticalStance.center.isImpartial)
         let lens = Lens(themes: [.health, .taxes, .security], stance: .preferNotToSay)
         let data = try JSONEncoder().encode(lens)
         #expect(try JSONDecoder().decode(Lens.self, from: data) == lens)

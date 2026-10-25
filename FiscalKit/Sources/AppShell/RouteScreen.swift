@@ -29,6 +29,7 @@ struct RouteScreen: View {
         case .lens: LensDestination()
         case .artists: ArtistsDestination()
         case .settings: SettingsScreen { SettingsExtraSection() }
+        case .share(let subject): ShareScreen(subject: subject)
         }
     }
 }

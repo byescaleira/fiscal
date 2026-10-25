@@ -1,23 +1,32 @@
 import Foundation
 
 public enum PoliticalStance: String, CaseIterable, Codable, Identifiable, Sendable {
-    case preferNotToSay, left, centerLeft, center, centerRight, right
+    case right, centerRight, center, centerLeft, left, impartial, preferNotToSay
 
     public var id: String { rawValue }
 
-    public static var scale: [PoliticalStance] {
-        [.left, .centerLeft, .center, .centerRight, .right]
+    public static var choices: [PoliticalStance] {
+        [.right, .centerRight, .center, .centerLeft, .left, .impartial]
     }
+
+    public var effective: PoliticalStance { self == .preferNotToSay ? .impartial : self }
+
+    public var isImpartial: Bool { effective == .impartial }
 
     public var title: String {
         switch self {
-        case .preferNotToSay: String(appLocalized: "Prefer not to say")
-        case .left: String(appLocalized: "Left")
-        case .centerLeft: String(appLocalized: "Center-left")
-        case .center: String(appLocalized: "Center")
-        case .centerRight: String(appLocalized: "Center-right")
         case .right: String(appLocalized: "Right")
+        case .centerRight: String(appLocalized: "Center-right")
+        case .center: String(appLocalized: "Center")
+        case .centerLeft: String(appLocalized: "Center-left")
+        case .left: String(appLocalized: "Left")
+        case .impartial: String(appLocalized: "Impartial")
+        case .preferNotToSay: String(appLocalized: "Prefer not to say")
         }
+    }
+
+    public var badge: String {
+        String(appLocalized: "Lens: \(effective.title)")
     }
 }
 

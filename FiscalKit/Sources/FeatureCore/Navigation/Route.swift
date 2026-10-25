@@ -8,4 +8,5 @@ public enum Route: Hashable, Sendable {
     case lens
     case artists
     case settings
+    case share(ShareSubject)
 }

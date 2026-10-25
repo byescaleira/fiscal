@@ -1072,6 +1072,16 @@
         }
       }
     },
+    "Impartial" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imparcial"
+          }
+        }
+      }
+    },
     "In Numbers" : {
       "localizations" : {
         "pt-BR" : {
@@ -1178,6 +1188,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lente"
+          }
+        }
+      }
+    },
+    "Lens: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lente: %@"
           }
         }
       }
@@ -1552,6 +1572,16 @@
         }
       }
     },
+    "Party %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partido %@"
+          }
+        }
+      }
+    },
     "Personalize" : {
       "localizations" : {
         "pt-BR" : {
@@ -1912,6 +1942,26 @@
         }
       }
     },
+    "Share" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartilhar"
+          }
+        }
+      }
+    },
+    "Share card" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card para compartilhar"
+          }
+        }
+      }
+    },
     "Share Fiscal with a friend" : {
       "localizations" : {
         "pt-BR" : {
@@ -2158,6 +2208,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Os artistas dos cards de compartilhar aparecem aqui, com cada obra, a licença e o link para a fonte."
+          }
+        }
+      }
+    },
+    "The card for this page is on its way." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O card desta página está a caminho."
           }
         }
       }
