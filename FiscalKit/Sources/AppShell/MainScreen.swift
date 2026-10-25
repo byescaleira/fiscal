@@ -60,5 +60,6 @@ public struct MainScreen: View {
         .onChange(of: navigation.selectedSection) { navigation.closeInspectorOutsideSelection() }
         .modifier(DeepLinks())
         .modifier(UpdateRecommendation())
+        .modifier(SystemIntegrations())
     }
 }
