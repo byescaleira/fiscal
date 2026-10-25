@@ -46,6 +46,47 @@ A **Lente** é o conjunto de prioridades da pessoa, escolhido no primeiro uso e 
 - **Privacidade:** a Lente e o posicionamento ficam **só no aparelho**. Nunca vão para o servidor, nunca entram em telemetria e nunca saem no backup do servidor. Opinião política é dado pessoal sensível na LGPD (art. 5º, II, e art. 11).
   - Os alertas por tema são filtrados no próprio aparelho. Uma alternativa a decidir é usar canais de push por tema (broadcast do APNs), em que o servidor não sabe quem assinou cada canal.
 
+## Aparência pela Lente
+
+O app tem a cara da pessoa; os dados continuam com a cara dos fatos.
+
+- **Paletas:** cada uma tem cor de destaque, fundo dos cards e um par de cores para o compartilhamento. Há paletas inspiradas no imaginário de cada público, paletas neutras e paletas tiradas das obras dos artistas parceiros, com crédito. O posicionamento sugere uma paleta, mas qualquer pessoa pode escolher qualquer uma.
+- **Símbolos:** um conjunto de SF Symbols por tema e por estilo, usado nos chips da Lente, nos cards e nos ícones alternativos do app. Sem logotipo de partido: é marca registrada e transformaria o app em material de campanha.
+- **Ícone do app:** ícones alternativos combinando com as paletas.
+- **O que a paleta nunca toca:** gráficos, placares e listas de políticos. Neles a cor marca dado (sim, não, ausente), cargo ou lugar, e nunca segue a paleta nem o partido. O mesmo gráfico tem a mesma cor para todo mundo.
+
+## Compartilhar com arte
+
+A parte social é o principal canal de crescimento: o Fiscal vira o lugar de onde sai o card bonito e confiável que circula no WhatsApp, no Instagram e no X.
+
+- **Cards prontos** para Stories (9:16), feed (4:5) e mensagem (1:1):
+  - como o seu deputado votou;
+  - quanto ele gastou;
+  - placar da votação;
+  - apuração ao vivo;
+  - comparação entre políticos;
+  - "meus representantes".
+- **Cada card traz:**
+  - o dado com a fonte oficial e a data;
+  - a arte de um artista, com nome e @, e a licença;
+  - o QR code ou link para o perfil no app.
+- **A arte segue a Lente:** a pessoa escolhe a coleção de artistas que combina com ela. O dado não muda.
+- **Galeria de artistas** dentro do app: quem é cada artista, as obras, a licença e o link para o portfólio. Crédito sempre visível, inclusive na imagem exportada, sem como remover.
+- **Sem montagem enganosa:** o card nunca coloca palavra na boca de político e nunca recorta o placar. O dado sai inteiro ou não sai.
+
+### Direitos das obras (vale para tudo)
+
+Crédito não autoriza o uso. A Lei 9.610/98 exige autorização do autor, e a App Store exige que o app tenha os direitos do que mostra. Cada obra só entra no app com uma destas bases:
+
+| Base | Exemplo | O que guardar |
+|---|---|---|
+| Domínio público | Autor morto há mais de 70 anos (Lei 9.610, art. 41), como Pedro Américo e Victor Meirelles | Data de morte do autor e fonte da imagem (acervo público) |
+| Licença aberta compatível | CC BY ou CC BY-SA, por exemplo fotos da Agência Brasil (CC BY) | Link da licença e versão |
+| Autorização por escrito | Licença de uso digital e de redes sociais, com prazo e escopo | Contrato assinado |
+| Obra encomendada | Coleção feita para o Fiscal por artistas dos dois lados | Contrato de cessão ou licença |
+
+O manifesto `art-credits.json` vai junto com o app e lista, por obra: autor, @, título, ano, base legal, link da licença e onde a obra pode aparecer. Obra sem linha no manifesto não aparece.
+
 ## Públicos
 
 | Público | O que procura | O que o Fiscal entrega primeiro |
@@ -82,6 +123,7 @@ A **Lente** é o conjunto de prioridades da pessoa, escolhido no primeiro uso e 
 | Categoria | O que o Fiscal leva |
 |---|---|
 | Social Impact | Fiscalização para os dois públicos, a Lente com a ponte "Outra lente" e dados oficiais sem viés |
+| Visuals and Graphics | Coleções de artistas brasileiros dos dois lados, com crédito, e cards compartilháveis com dado e arte |
 | Interaction | Live Activity da apuração e de votações, App Intents ("Siri, como meu deputado votou hoje?"), widgets interativos e Spotlight |
 | Inclusivity | VoiceOver nos gráficos (Audio Graphs), Dynamic Type até os tamanhos de acessibilidade, linguagem simples, leitura em voz alta e Reduzir movimento |
 | Innovation | Resumo de projetos com o Foundation Models, no aparelho e sem enviar nada, sempre ao lado do texto oficial; Lente privada no aparelho |
