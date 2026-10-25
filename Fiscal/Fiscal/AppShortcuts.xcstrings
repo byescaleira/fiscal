@@ -1,0 +1,93 @@
+{
+  "sourceLanguage" : "pt-BR",
+  "strings" : {
+    "Election results in ${applicationName}" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Resultado da eleição no ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "How did my deputy vote in ${applicationName}" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Como meu deputado votou no ${applicationName}",
+              "Como votou meu deputado no ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "How did my representatives vote in ${applicationName}" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Como votaram meus representantes no ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Latest vote in ${applicationName}" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Última votação no ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Open a profile in ${applicationName}" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Abrir um perfil no ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Open the profile of ${target} in ${applicationName}" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Abrir o perfil de ${target} no ${applicationName}",
+              "Ver ${target} no ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Show the vote count in ${applicationName}" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Ver a apuração no ${applicationName}",
+              "Mostrar a apuração no ${applicationName}"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
