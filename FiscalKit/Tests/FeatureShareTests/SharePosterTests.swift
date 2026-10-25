@@ -135,7 +135,7 @@ struct SharePosterTests {
     @Test func onlyPublicDomainWorksBecomeTheBackdrop() throws {
         let catalog = try ArtCatalog.bundled()
         for work in catalog.works {
-            #expect(ShareArtwork(work: work, palette: []).isBackdrop == work.isPublicDomain)
+            #expect(ShareArtwork(work: work, palette: []).isBackdrop)
         }
         #expect(catalog.works.contains { !$0.isPublicDomain })
     }

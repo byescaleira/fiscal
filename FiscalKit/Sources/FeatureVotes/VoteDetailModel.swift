@@ -20,6 +20,16 @@ public final class VoteDetailModel {
             }
         }
 
+        public var choice: BallotChoice? {
+            switch self {
+            case .all: nil
+            case .yes: .yes
+            case .no: .no
+            case .other: .abstain
+            case .absent: .absent
+            }
+        }
+
         func matches(_ choice: BallotChoice?) -> Bool {
             switch self {
             case .all: true

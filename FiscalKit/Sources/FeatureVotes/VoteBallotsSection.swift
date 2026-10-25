@@ -33,12 +33,9 @@ struct VoteBallotsSection: View {
     var body: some View {
         @Bindable var vote = vote
         Section {
-            Picker("Vote", selection: $vote.ballotFilter) {
-                ForEach(VoteDetailModel.BallotFilter.allCases) { filter in
-                    Text(verbatim: filter.title).tag(filter)
-                }
-            }
-            .pickerStyle(.segmented)
+            BallotFilterPills()
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
             if let party = vote.party {
                 Button {
                     vote.select(party: nil)
@@ -123,5 +120,60 @@ private struct BallotMark: View {
                 .background(color.opacity(.opacityTint), in: .circle)
         }
         .fixedSize()
+    }
+}
+
+private struct BallotFilterPills: View {
+    @Environment(VoteDetailModel.self) private var vote
+
+    var body: some View {
+        ScrollView(.horizontal) {
+            HStack(spacing: .spaceS) {
+                ForEach(VoteDetailModel.BallotFilter.allCases) { filter in
+                    BallotFilterPill(
+                        filter: filter, count: vote.count(filter),
+                        isSelected: vote.ballotFilter == filter
+                    ) {
+                        vote.ballotFilter = filter
+                    }
+                }
+            }
+            .padding(.vertical, .spaceXS)
+        }
+        .scrollIndicators(.hidden)
+        .sensoryFeedback(.selection, trigger: vote.ballotFilter)
+    }
+}
+
+private struct BallotFilterPill: View {
+    let filter: VoteDetailModel.BallotFilter
+    let count: Int
+    let isSelected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        let color = filter.choice?.color ?? Color.primary
+        Button(action: action) {
+            HStack(spacing: .spaceXS) {
+                if let symbol = filter.choice?.symbol {
+                    Image(systemName: symbol).font(.caption.weight(.bold))
+                }
+                Text(verbatim: filter.title).font(.subheadline.weight(.semibold))
+                Text(verbatim: PublicFormat.number(count))
+                    .font(.subheadline.weight(.bold))
+                    .monospacedDigit()
+                    .opacity(isSelected ? 1 : .opacitySoft * 2)
+            }
+            .foregroundStyle(isSelected ? AnyShapeStyle(.white) : AnyShapeStyle(color))
+            .padding(.horizontal, .spaceM)
+            .padding(.vertical, .spaceS)
+            .background {
+                Capsule().fill(isSelected ? color : color.opacity(.opacityTint))
+            }
+            .contentShape(.capsule)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text(verbatim: "\(filter.title), \(PublicFormat.number(count))"))
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }

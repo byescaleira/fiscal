@@ -36,7 +36,7 @@ private struct ArtistsGallery: View {
                     GalleryGroup(
                         title: "Open license",
                         footer:
-                            "Recent photos under an open license, used without cropping or new colors.",
+                            "Recent photos under an open license, credited and marked as adapted.",
                         sections: artists.openLicense)
                 }
                 if !artists.historical.isEmpty {

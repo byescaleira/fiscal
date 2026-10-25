@@ -12,7 +12,13 @@ public struct ShareArtwork: Hashable, Sendable {
     }
 
     public var credit: String {
-        String(
+        guard work.isPublicDomain else {
+            return String(
+                appLocalized:
+                    "Photo: \(work.artist), \(work.title) (\(work.year)) · \(work.licenseLabel), adapted · \(work.archive)"
+            )
+        }
+        return String(
             appLocalized:
                 "Art: \(work.artist), \(work.title) (\(work.year)) · \(work.licenseLabel) · \(work.archive)"
         )
@@ -22,7 +28,7 @@ public struct ShareArtwork: Hashable, Sendable {
         palette.max { HexColor.saturation($0) < HexColor.saturation($1) }
     }
 
-    public var isBackdrop: Bool { work.isPublicDomain }
+    public var isBackdrop: Bool { true }
 }
 
 public struct ShareCard: Hashable, Sendable {

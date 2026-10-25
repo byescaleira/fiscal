@@ -28,6 +28,9 @@ public struct ExpensesScreen: View {
         .navigationTitle(Text(verbatim: expenses.title))
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
+            if expenses.years.count > 1 {
+                ToolbarItem(placement: .primaryAction) { ExpensesYearMenu() }
+            }
             ToolbarItem(placement: .primaryAction) {
                 Button {
                     open(expenses.shareRoute, in: section)
@@ -55,9 +58,7 @@ private struct ExpensesHeroSection: View {
                     chip: expenses.chip, value: expenses.total, cents: expenses.totalCents,
                     caption: expenses.receiptsCaption, accent: .white)
             }
-            if expenses.years.count > 1 {
-                ExpensesYearPicker()
-            }
+
         } footer: {
             Text(verbatim: expenses.sourceLine)
         }
@@ -94,23 +95,31 @@ private struct ExpensesIdentity: View {
     }
 }
 
-private struct ExpensesYearPicker: View {
+private struct ExpensesYearMenu: View {
     @Environment(ExpensesModel.self) private var expenses
 
     var body: some View {
-        Picker(
-            "Year",
-            selection: Binding(
-                get: { expenses.year },
-                set: { year in Task { await expenses.select(year: year) } })
-        ) {
-            ForEach(expenses.years, id: \.self) { year in
-                Text(verbatim: String(year)).tag(year)
+        Menu {
+            Picker(
+                "Year",
+                selection: Binding(
+                    get: { expenses.year },
+                    set: { year in Task { await expenses.select(year: year) } })
+            ) {
+                ForEach(expenses.years, id: \.self) { year in
+                    Text(verbatim: String(year)).tag(year)
+                }
             }
+            .pickerStyle(.inline)
+        } label: {
+            HStack(spacing: .spaceXS) {
+                Image(systemName: "calendar")
+                Text(verbatim: String(expenses.year)).monospacedDigit()
+            }
+            .font(.subheadline.weight(.semibold))
         }
-        .pickerStyle(.segmented)
-        .listRowInsets(EdgeInsets(top: .spaceM, leading: 0, bottom: 0, trailing: 0))
-        .listRowBackground(Color.clear)
+        .accessibilityLabel(Text("Year"))
+        .accessibilityValue(Text(verbatim: String(expenses.year)))
     }
 }
 

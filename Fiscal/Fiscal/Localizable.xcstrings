@@ -4472,6 +4472,16 @@
         }
       }
     },
+    "Photo: %@, %@ (%@) · %@, adapted · %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto: %1$@, %2$@ (%3$@) · %4$@, adaptada · %5$@"
+          }
+        }
+      }
+    },
     "Piauí" : {
       "localizations" : {
         "pt-BR" : {
@@ -4988,6 +4998,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Notas: %@"
+          }
+        }
+      }
+    },
+    "Recent photos under an open license, credited and marked as adapted." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotos recentes com licença aberta, creditadas e indicadas como adaptadas."
           }
         }
       }

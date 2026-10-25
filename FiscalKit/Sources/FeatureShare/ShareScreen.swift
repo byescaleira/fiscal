@@ -37,12 +37,7 @@ private struct ShareEditor: View {
         ScrollView {
             VStack(spacing: .spaceXL) {
                 ShareCardPreview(rendered: rendered, card: model.card)
-                Picker("Format", selection: $model.format) {
-                    ForEach(ShareFormat.allCases) { format in
-                        Text(format.title).tag(format)
-                    }
-                }
-                .pickerStyle(.segmented)
+                ShareFormatChooser(selection: $model.format)
                 ShareArtPicker()
                 ShareAction(rendered: rendered)
             }
@@ -193,5 +188,43 @@ private struct ShareAction: View {
             .foregroundStyle(.secondary)
             .multilineTextAlignment(.center)
         }
+    }
+}
+
+private struct ShareFormatChooser: View {
+    @Binding var selection: ShareFormat
+    @Environment(\.appTint) private var tint
+
+    var body: some View {
+        HStack(alignment: .bottom, spacing: .spaceXL) {
+            ForEach(ShareFormat.allCases) { format in
+                let isSelected = selection == format
+                Button {
+                    selection = format
+                } label: {
+                    VStack(spacing: .spaceS) {
+                        RoundedRectangle(cornerRadius: .spaceXS, style: .continuous)
+                            .fill(isSelected ? tint.opacity(.opacityTint) : Color.clear)
+                            .strokeBorder(
+                                isSelected ? tint : Color.secondary, lineWidth: .spaceHairline
+                            )
+                            .frame(
+                                width: .badgeXL * format.size.width / format.size.height,
+                                height: .badgeXL)
+                        Text(format.title)
+                            .font(.footnote.weight(isSelected ? .bold : .regular))
+                            .foregroundStyle(
+                                isSelected ? AnyShapeStyle(tint) : AnyShapeStyle(.secondary))
+                    }
+                    .contentShape(.rect)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text(format.title))
+                .accessibilityAddTraits(isSelected ? .isSelected : [])
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .sensoryFeedback(.selection, trigger: selection)
+        .animation(.snappy, value: selection)
     }
 }
