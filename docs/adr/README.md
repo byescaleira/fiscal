@@ -25,3 +25,4 @@ Cada decisão que molda o Fiscal além de uma única mudança ganha um registro 
 | [0002](0002-static-first-server.md) | Servidor estático primeiro: tudo pronto, nada calculado por acesso | Aceito |
 | [0003](0003-portuguese-only.md) | O Fiscal é só em português do Brasil | Aceito |
 | [0004](0004-lens-on-device-store.md) | A Lente fica num banco só do aparelho; os seguidos no iCloud privado | Proposto |
+| [0005](0005-data-ingest-process.md) | Carga de dados num processo próprio, com ligações e slugs guardados no servidor | Proposto |

@@ -1,0 +1,92 @@
+{
+ "dados": [
+  {
+   "ordem": 1,
+   "topico": "Discussão",
+   "regime": "Urgência (Art. 64, CF)",
+   "codRegime": 22,
+   "titulo": "PLP 186/2026",
+   "proposicao_": {
+    "id": 2647695,
+    "uri": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2647695",
+    "siglaTipo": "PEP",
+    "codTipo": 442,
+    "numero": 1,
+    "ano": 0,
+    "ementa": "Parecer às Emendas de Plenário proferido pelo Relator Dep. Rubens Pereira Júnior (PT/MA) pela: • Comissão de Indústria, Comércio e Serviços, que conclui pela aprovação da Emenda de Plenário nº 2, apenas em relação ao caput de seu artigo 4º, com a Subemenda Substitutiva adotada, e rejeição das demais Emendas. • Comissão de Finanças e Tributação, que conclui pela adequação financeira e orçamentária da Emenda de Plenário nº 2, apenas em relação ao caput de seu artigo 4º; e pela inadequação financeira e orçamentária das demais Emendas de Plenário; em, no mérito, pela aprovação parcial da Emenda de Plenário nº 2, na forma da Subemenda Substitutiva aditada pelo relator da Comissão de Indústria, Comércio e Serviços, e pela rejeição das demais emendas. • Comissão de Constituição e Justiça e de Cidadania, que conclui pela constitucionalidade, juridicidade e boa técnica legislativa da Emenda de Plenário nº 2, apenas em relação ao caput de seu artigo 4º, e da Subemenda Substitutiva adotada pelo relatorda Comissão de Indústria, Comércio e Serviços; e pela inconstitucionalidade, injuridicidade e má técnica legislativa das demais as Emendas de Plenário e dos demais dispositivos da Emenda de Plenário nº 2.",
+    "dataApresentacao": "2026-06-29T18:10"
+   },
+   "relator": {
+    "id": 178887,
+    "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/178887",
+    "nome": "Rubens Pereira Júnior",
+    "siglaPartido": "PT",
+    "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/36844",
+    "siglaUf": "MA",
+    "idLegislatura": 57,
+    "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/178887.jpg",
+    "email": "dep.rubenspereirajunior@camara.leg.br"
+   },
+   "textoParecer": null,
+   "proposicaoRelacionada_": {
+    "id": 2635476,
+    "uri": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2635476",
+    "siglaTipo": "PLP",
+    "codTipo": "140",
+    "numero": "186",
+    "ano": "2026",
+    "ementa": "Altera a Lei Complementar nº 123, de 14 de dezembro de 2006, para dispor sobre o limite de receita bruta anual e o número de empregados do Microempreendedor Individual.",
+    "dataApresentacao": null
+   },
+   "uriVotacao": "https://dadosabertos.camara.leg.br/api/v2/votacoes/2635476-23/",
+   "situacaoItem": "Discussão em turno único. Votação do Requerimento do Dep. Kim Kataguiri, que solicita a retirada de pauta deste Projeto de Lei Complementar. Encaminhou a Votação o Deputado Kim Kataguiri (MISSÃO/SP). Rejeitado o Requerimento. Sim: 11; Não: 387; Total: 398. Discutiram a Matéria: os Deputados Denise Pessôa (PT/RS), Adriana Ventura (NOVO/SP), Dandara (PT/MG), Pedro Uczai (PT/SC), Jack Rocha (PT/ES), Kim Kataguiri (MISSÃO/SP), Jilmar Tatto (PT/SP), Rodrigo Rollemberg (PSB/DF), Tadeu Veneri (PT/PR), Pompeo de Mattos (PDT/RS), Augusto Coutinho (REPUBLIC/PE), Paulo Teixeira (PT/SP), Heitor Schuch (PSD/RS) e Sâmia Bomfim (PSOL/SP). Parecer proferido em Plenário pelo Relator Dep. Rubens Pereira Júnior (PT/MA) pela:• Comissão de Indústria, Comércio e Serviços, que conclui pela aprovação do Projeto de Lei Complementar nº 186, de 2026, e do Projeto de Lei Complementar nº 267, de 2026, apensado, na forma do Substitutivo adotado.• Comissão de Finanças e Tributação, que conclui pela compatibilidade e adequação financeira e orçamentária; e, no mérito, pela aprovação do Projeto de Lei Complementar nº 186, de 2026, e do Projeto de Lei Complementar nº 267, de 2026, apensado, na forma do Substitutivo adotado pelo relator da Comissão de Indústria, Comércio e Serviços.• Comissão de Constituição e Justiça e de Cidadania, que conclui pela constitucionalidade, juridicidade e boa técnica legislativa do Projeto de Lei Complementar nº 186, de 2026, do Projeto de Lei Complementar nº 267, de 2026, apensado, e do Substitutivo adotado pelo relator da Comissão de Indústria, Comércio e Serviços. Encerrada a discussão.  Parecer às Emendas de Plenário proferido pelo Relator Dep. Rubens Pereira Júnior (PT/MA) pela:• Comissão de Indústria, Comércio e Serviços, que conclui pela aprovação da Emenda de Plenário nº 2, apenas em relação ao caput de seu artigo 4º, com a Subemenda Substitutiva adotada, e rejeição das demais Emendas.• Comissão de Finanças e Tributação, que conclui pela adequação financeira e orçamentária da Emenda de Plenário nº 2, apenas em relação ao caput de seu artigo 4º; e pela inadequação financeira e orçamentária das demais Emendas de Plenário; em, no mérito, pela aprovação parcial da Emenda de Plenário nº 2, na forma da Subemenda Substitutiva aditada pelo relator da Comissão de Indústria, Comércio e Serviços, e pela rejeição das demais emendas.• Comissão de Constituição e Justiça e de Cidadania, que conclui pela constitucionalidade, juridicidade e boa técnica legislativa da Emenda de Plenário nº 2, apenas em relação ao caput de seu artigo 4º, e da Subemenda Substitutiva adotada pelo relatorda Comissão de Indústria, Comércio e Serviços; e pela inconstitucionalidade, injuridicidade e má técnica legislativa das demais as Emendas de Plenário e dos demais dispositivos da Emenda de Plenário nº 2. Votação em turno único. O Projeto foi emendado. Foram apresentadas as Emendas de Plenário nºs 1 a 5. Encaminhou a Votação da Matéria a Deputada Adriana Ventura (NOVO/SP). Aprovada a Subemenda Substitutiva Global ao Projeto de Lei Complementar nº 186, de 2026, adotada pelo relator da Comissão de Indústria, Comércio e Serviços, ressalvados os destaques. Sim: 461; Não: 4; Total: 465. Em consequência, ficam prejudicados o Substitutivo, a proposição inicial, a apensada e a emenda apresentada. Deixam de ser submetidas a voto as Emendas de Plenário nºs 1, 3, 4 e 5, nos termos do § 6º do artigo 189, do RICD. Votação da Redação Final. Aprovada a Redação Final assinada pelo relator, Dep. Rubens Pereira Júnior (PT/MA). A Matéria vai ao Senado Federal (PLP 186-A/2026). Prejudicado o DTQ 1 (UNIÃO, PP, PSD, REPUBLICANOS, MDB, Federação PSDB CIDADANIA, PODE): Emenda de Plenário n. 4 (161, II).  Prejudicado o DTQ 2 (NOVO): Emenda de Plenário n. 1 (161, II). Prejudicado o DTQ 3 (PL): Emenda de Plenário n. 3 (161, II)."
+  },
+  {
+   "ordem": 1,
+   "topico": "Discussão",
+   "regime": "Urgência (Art. 64, CF)",
+   "codRegime": 22,
+   "titulo": "PLP 186/2026",
+   "proposicao_": {
+    "id": 2647695,
+    "uri": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2647695",
+    "siglaTipo": "PEP",
+    "codTipo": 442,
+    "numero": 1,
+    "ano": 0,
+    "ementa": "Parecer às Emendas de Plenário proferido pelo Relator Dep. Rubens Pereira Júnior (PT/MA) pela: • Comissão de Indústria, Comércio e Serviços, que conclui pela aprovação da Emenda de Plenário nº 2, apenas em relação ao caput de seu artigo 4º, com a Subemenda Substitutiva adotada, e rejeição das demais Emendas. • Comissão de Finanças e Tributação, que conclui pela adequação financeira e orçamentária da Emenda de Plenário nº 2, apenas em relação ao caput de seu artigo 4º; e pela inadequação financeira e orçamentária das demais Emendas de Plenário; em, no mérito, pela aprovação parcial da Emenda de Plenário nº 2, na forma da Subemenda Substitutiva aditada pelo relator da Comissão de Indústria, Comércio e Serviços, e pela rejeição das demais emendas. • Comissão de Constituição e Justiça e de Cidadania, que conclui pela constitucionalidade, juridicidade e boa técnica legislativa da Emenda de Plenário nº 2, apenas em relação ao caput de seu artigo 4º, e da Subemenda Substitutiva adotada pelo relatorda Comissão de Indústria, Comércio e Serviços; e pela inconstitucionalidade, injuridicidade e má técnica legislativa das demais as Emendas de Plenário e dos demais dispositivos da Emenda de Plenário nº 2.",
+    "dataApresentacao": "2026-06-29T18:10"
+   },
+   "relator": {
+    "id": 178887,
+    "uri": "https://dadosabertos.camara.leg.br/api/v2/deputados/178887",
+    "nome": "Rubens Pereira Júnior",
+    "siglaPartido": "PT",
+    "uriPartido": "https://dadosabertos.camara.leg.br/api/v2/partidos/36844",
+    "siglaUf": "MA",
+    "idLegislatura": 57,
+    "urlFoto": "https://www.camara.leg.br/internet/deputado/bandep/178887.jpg",
+    "email": "dep.rubenspereirajunior@camara.leg.br"
+   },
+   "textoParecer": null,
+   "proposicaoRelacionada_": {
+    "id": 2635476,
+    "uri": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2635476",
+    "siglaTipo": "PLP",
+    "codTipo": "140",
+    "numero": "186",
+    "ano": "2026",
+    "ementa": "Altera a Lei Complementar nº 123, de 14 de dezembro de 2006, para dispor sobre o limite de receita bruta anual e o número de empregados do Microempreendedor Individual.",
+    "dataApresentacao": null
+   },
+   "uriVotacao": "https://dadosabertos.camara.leg.br/api/v2/votacoes/2635476-36/",
+   "situacaoItem": "Discussão em turno único. Votação do Requerimento do Dep. Kim Kataguiri, que solicita a retirada de pauta deste Projeto de Lei Complementar. Encaminhou a Votação o Deputado Kim Kataguiri (MISSÃO/SP). Rejeitado o Requerimento. Sim: 11; Não: 387; Total: 398. Discutiram a Matéria: os Deputados Denise Pessôa (PT/RS), Adriana Ventura (NOVO/SP), Dandara (PT/MG), Pedro Uczai (PT/SC), Jack Rocha (PT/ES), Kim Kataguiri (MISSÃO/SP), Jilmar Tatto (PT/SP), Rodrigo Rollemberg (PSB/DF), Tadeu Veneri (PT/PR), Pompeo de Mattos (PDT/RS), Augusto Coutinho (REPUBLIC/PE), Paulo Teixeira (PT/SP), Heitor Schuch (PSD/RS) e Sâmia Bomfim (PSOL/SP). Parecer proferido em Plenário pelo Relator Dep. Rubens Pereira Júnior (PT/MA) pela:• Comissão de Indústria, Comércio e Serviços, que conclui pela aprovação do Projeto de Lei Complementar nº 186, de 2026, e do Projeto de Lei Complementar nº 267, de 2026, apensado, na forma do Substitutivo adotado.• Comissão de Finanças e Tributação, que conclui pela compatibilidade e adequação financeira e orçamentária; e, no mérito, pela aprovação do Projeto de Lei Complementar nº 186, de 2026, e do Projeto de Lei Complementar nº 267, de 2026, apensado, na forma do Substitutivo adotado pelo relator da Comissão de Indústria, Comércio e Serviços.• Comissão de Constituição e Justiça e de Cidadania, que conclui pela constitucionalidade, juridicidade e boa técnica legislativa do Projeto de Lei Complementar nº 186, de 2026, do Projeto de Lei Complementar nº 267, de 2026, apensado, e do Substitutivo adotado pelo relator da Comissão de Indústria, Comércio e Serviços. Encerrada a discussão.  Parecer às Emendas de Plenário proferido pelo Relator Dep. Rubens Pereira Júnior (PT/MA) pela:• Comissão de Indústria, Comércio e Serviços, que conclui pela aprovação da Emenda de Plenário nº 2, apenas em relação ao caput de seu artigo 4º, com a Subemenda Substitutiva adotada, e rejeição das demais Emendas.• Comissão de Finanças e Tributação, que conclui pela adequação financeira e orçamentária da Emenda de Plenário nº 2, apenas em relação ao caput de seu artigo 4º; e pela inadequação financeira e orçamentária das demais Emendas de Plenário; em, no mérito, pela aprovação parcial da Emenda de Plenário nº 2, na forma da Subemenda Substitutiva aditada pelo relator da Comissão de Indústria, Comércio e Serviços, e pela rejeição das demais emendas.• Comissão de Constituição e Justiça e de Cidadania, que conclui pela constitucionalidade, juridicidade e boa técnica legislativa da Emenda de Plenário nº 2, apenas em relação ao caput de seu artigo 4º, e da Subemenda Substitutiva adotada pelo relatorda Comissão de Indústria, Comércio e Serviços; e pela inconstitucionalidade, injuridicidade e má técnica legislativa das demais as Emendas de Plenário e dos demais dispositivos da Emenda de Plenário nº 2. Votação em turno único. O Projeto foi emendado. Foram apresentadas as Emendas de Plenário nºs 1 a 5. Encaminhou a Votação da Matéria a Deputada Adriana Ventura (NOVO/SP). Aprovada a Subemenda Substitutiva Global ao Projeto de Lei Complementar nº 186, de 2026, adotada pelo relator da Comissão de Indústria, Comércio e Serviços, ressalvados os destaques. Sim: 461; Não: 4; Total: 465. Em consequência, ficam prejudicados o Substitutivo, a proposição inicial, a apensada e a emenda apresentada. Deixam de ser submetidas a voto as Emendas de Plenário nºs 1, 3, 4 e 5, nos termos do § 6º do artigo 189, do RICD. Votação da Redação Final. Aprovada a Redação Final assinada pelo relator, Dep. Rubens Pereira Júnior (PT/MA). A Matéria vai ao Senado Federal (PLP 186-A/2026). Prejudicado o DTQ 1 (UNIÃO, PP, PSD, REPUBLICANOS, MDB, Federação PSDB CIDADANIA, PODE): Emenda de Plenário n. 4 (161, II).  Prejudicado o DTQ 2 (NOVO): Emenda de Plenário n. 1 (161, II). Prejudicado o DTQ 3 (PL): Emenda de Plenário n. 3 (161, II)."
+  }
+ ],
+ "links": [
+  {
+   "rel": "self",
+   "href": "https://dadosabertos.camara.leg.br/api/v2/eventos/83057/pauta"
+  }
+ ]
+}

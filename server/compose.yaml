@@ -37,3 +37,43 @@ services:
       timeout: 5s
       retries: 3
       start_period: 15s
+
+  fiscal-ingest:
+    build: .
+    image: fiscal-api
+    container_name: fiscal-ingest
+    restart: unless-stopped
+    entrypoint: ["/usr/local/bin/fiscal-ingest"]
+    environment:
+      DATA_DIR: /data
+      PUBLIC_DIR: /public
+      INGEST_YEARS: ${INGEST_YEARS:-}
+      INGEST_UFS: ${INGEST_UFS:-}
+      INGEST_SOURCES: ${INGEST_SOURCES:-}
+      TSE_YEARS: ${TSE_YEARS:-2022,2026}
+      TSE_CANDIDATE_YEARS: ${TSE_CANDIDATE_YEARS:-2018}
+      INGEST_FULL_AT: ${INGEST_FULL_AT:-06:30}
+      INGEST_LIVE_INTERVAL: ${INGEST_LIVE_INTERVAL:-10m}
+      INGEST_WORKERS: ${INGEST_WORKERS:-4}
+      INGEST_REQUEST_GAP: ${INGEST_REQUEST_GAP:-150ms}
+    volumes:
+      - ./ingest-data:/data
+      - ./public:/public
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 1536m
+    pids_limit: 128
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/fiscal-ingest", "-check"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 30m

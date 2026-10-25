@@ -3,7 +3,8 @@ WORKDIR /src
 COPY go.mod ./
 COPY cmd ./cmd
 COPY internal ./internal
-RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /liveresults-server ./cmd/server
+RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /liveresults-server ./cmd/server \
+ && CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /fiscal-ingest ./cmd/ingest
 
 FROM debian:bookworm-20261005-slim
 RUN apt-get update \
@@ -15,6 +16,7 @@ RUN apt-get update \
  && chmod 700 /data \
  && chmod 755 /public
 COPY --from=build /liveresults-server /usr/local/bin/liveresults-server
+COPY --from=build /fiscal-ingest /usr/local/bin/fiscal-ingest
 ENV HOST=0.0.0.0 \
     PORT=3130 \
     DATA_DIR=/data \

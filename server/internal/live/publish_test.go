@@ -144,6 +144,8 @@ func TestResetPublishedDropsStaleFiles(t *testing.T) {
 	os.MkdirAll(filepath.Dir(stale), 0o755)
 	os.WriteFile(stale, []byte(`{"id":"governador-am"}`), 0o644)
 	os.WriteFile(filepath.Join(dir, "keep.txt"), []byte("x"), 0o644)
+	ingested := filepath.Join(dir, "v1", "meta.json")
+	os.WriteFile(ingested, []byte(`{}`), 0o644)
 	statePath := filepath.Join(t.TempDir(), "state.json")
 	st, _ := json.Marshal(state{Races: []tse.Race{baseRace(10, 600, 400)}, FetchedAt: time.Date(2026, 10, 25, 20, 0, 0, 0, time.UTC)})
 	os.WriteFile(statePath, st, 0o600)
@@ -158,7 +160,10 @@ func TestResetPublishedDropsStaleFiles(t *testing.T) {
 		t.Fatal("stale race file must be removed")
 	}
 	if _, err := os.Stat(filepath.Join(dir, "keep.txt")); err != nil {
-		t.Fatal("only v1 may be removed")
+		t.Fatal("files outside v1 must stay")
+	}
+	if _, err := os.Stat(ingested); err != nil {
+		t.Fatal("files published by the ingest must stay")
 	}
 	if _, err := os.Stat(filepath.Join(dir, "v1", "races", "presidente-br.json")); err != nil {
 		t.Fatal("races from the saved state must be published again")
@@ -167,7 +172,13 @@ func TestResetPublishedDropsStaleFiles(t *testing.T) {
 	if err := empty.ResetPublished(); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := os.Stat(filepath.Join(dir, "v1")); !os.IsNotExist(err) {
-		t.Fatal("with no saved state nothing must be left in v1")
+	if _, err := os.Stat(filepath.Join(dir, "v1", "races")); !os.IsNotExist(err) {
+		t.Fatal("with no saved state no race file may be left")
+	}
+	if _, err := os.Stat(filepath.Join(dir, "v1", "races.json")); !os.IsNotExist(err) {
+		t.Fatal("with no saved state races.json must be removed")
+	}
+	if _, err := os.Stat(ingested); err != nil {
+		t.Fatal("files published by the ingest must survive an empty reset")
 	}
 }

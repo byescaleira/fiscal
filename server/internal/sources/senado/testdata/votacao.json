@@ -1,0 +1,98 @@
+[
+ {
+  "ano": 2019,
+  "casaSessao": "SF",
+  "codigoMateria": 174386,
+  "codigoSessao": 591267,
+  "codigoSessaoLegislativa": 874,
+  "codigoSessaoVotacao": 7106,
+  "dataApresentacao": "2026-05-28",
+  "dataSessao": "2026-10-14",
+  "descricaoVotacao": "Votação nominal da Proposta de Emenda à Constituição nº 221, de 2019, em primeiro turno.",
+  "ementa": "Altera o art. 7º da Constituição Federal para reduzir a duração máxima semanal do trabalho e prever 2 (dois) dias de repouso semanal remunerado, sem qualquer redução salarial; e dá outras providências.",
+  "idProcesso": 9056435,
+  "identificacao": "PEC 221/2019",
+  "informeLegislativo": {
+   "casaColegiado": "SF",
+   "casaEnteAdm": "SF",
+   "codigoColegiado": 1998,
+   "data": "2026-10-14",
+   "id": 2319636,
+   "idEnteAdm": 13594,
+   "idEvento": 11392905,
+   "nomeColegiado": "Plenário do Senado Federal",
+   "nomeEnteAdm": "Secretaria de Atas e Diários",
+   "numeroAutuacao": 1,
+   "siglaColegiado": "PLEN",
+   "siglaEnteAdm": "SEADI",
+   "texto": "(Sessão Deliberativa Ordinária - semipresencial - de 14 de outubro de 2026) \nQuinta e última sessão de discussão da matéria encerrada em 1º turno. \nCalendário especial aprovado para a matéria (Requerimento nº 706/2026). \nEmenda nº 37 encaminhada à publicação.  \nParecer nº 207/2026-Plen/SF proferido pelo Senador Omar Aziz e encaminhado à publicação (contrário à emenda nº 37). \nDestaque retirado pelo autor (Requerimento nº 710/2026 encaminhado à publicação). \nProposta aprovada em 1º turno (Sim: 75; Não: 1; Presidente: 1; Total: 77). \nDiscussão da matéria encerrada em 2º turno. \nProposta aprovada em 2º turno (Sim: 75; Não: 1; Presidente: 1; Total: 77). \nSessão solene do Congresso Nacional será convocada para a promulgação da Emenda à Constituição.  "
+  },
+  "numero": "221",
+  "numeroSessao": 134,
+  "resultadoVotacao": "A",
+  "sequencialSessao": 1,
+  "sequencialVotacao": 4420,
+  "sigla": "PEC",
+  "siglaTipoSessao": "DOR",
+  "totalVotosAbstencao": null,
+  "totalVotosNao": null,
+  "totalVotosSim": null,
+  "votacaoSecreta": "N",
+  "votos": [
+   {
+    "codigoParlamentar": 5672,
+    "descricaoVotoParlamentar": null,
+    "nomeParlamentar": "Alan Rick",
+    "sexoParlamentar": "M",
+    "siglaPartidoParlamentar": "REPUBLICANOS",
+    "siglaUFParlamentar": "AC",
+    "siglaVotoParlamentar": "Sim"
+   },
+   {
+    "codigoParlamentar": 5982,
+    "descricaoVotoParlamentar": null,
+    "nomeParlamentar": "Alessandro Vieira",
+    "sexoParlamentar": "M",
+    "siglaPartidoParlamentar": "MDB",
+    "siglaUFParlamentar": "SE",
+    "siglaVotoParlamentar": "Sim"
+   },
+   {
+    "codigoParlamentar": 6358,
+    "descricaoVotoParlamentar": null,
+    "nomeParlamentar": "Ana Paula Lobato",
+    "sexoParlamentar": "F",
+    "siglaPartidoParlamentar": "PSB",
+    "siglaUFParlamentar": "MA",
+    "siglaVotoParlamentar": "Sim"
+   },
+   {
+    "codigoParlamentar": 5967,
+    "descricaoVotoParlamentar": null,
+    "nomeParlamentar": "Angelo Coronel",
+    "sexoParlamentar": "M",
+    "siglaPartidoParlamentar": "REPUBLICANOS",
+    "siglaUFParlamentar": "BA",
+    "siglaVotoParlamentar": "Sim"
+   },
+   {
+    "codigoParlamentar": 6009,
+    "descricaoVotoParlamentar": null,
+    "nomeParlamentar": "Astronauta Marcos Pontes",
+    "sexoParlamentar": "M",
+    "siglaPartidoParlamentar": "PL",
+    "siglaUFParlamentar": "SP",
+    "siglaVotoParlamentar": "Sim"
+   },
+   {
+    "codigoParlamentar": 4639,
+    "descricaoVotoParlamentar": null,
+    "nomeParlamentar": "Beto Faro",
+    "sexoParlamentar": "M",
+    "siglaPartidoParlamentar": "PT",
+    "siglaUFParlamentar": "PA",
+    "siglaVotoParlamentar": "Sim"
+   }
+  ]
+ }
+]

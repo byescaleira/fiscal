@@ -1,0 +1,53 @@
+{
+ "dados": {
+  "id": "2236186-60",
+  "uri": "https://dadosabertos.camara.leg.br/api/v2/votacoes/2236186-60",
+  "data": "2026-10-14",
+  "dataHoraRegistro": "2026-10-14T20:56:14",
+  "siglaOrgao": "PLEN",
+  "uriOrgao": "https://dadosabertos.camara.leg.br/api/v2/orgaos/180",
+  "idOrgao": 180,
+  "uriEvento": "https://dadosabertos.camara.leg.br/api/v2/eventos/83057",
+  "idEvento": 83057,
+  "descricao": "Rejeitada a Subemenda Substitutiva ao Projeto de Lei Complementar nº 281, de 2019, adotada pelo relator da Comissão Especial. Sim: 252; Não: 176; Total: 428.",
+  "aprovacao": 0,
+  "descUltimaAberturaVotacao": "Votação em turno único.",
+  "dataHoraUltimaAberturaVotacao": "2026-10-14T20:23:27",
+  "ultimaApresentacaoProposicao": {
+   "dataHoraRegistro": "2026-10-14T20:22:22",
+   "descricao": "Parecer às Emendas de Plenário proferido pelo Relator Dep. Marcelo Queiroz (PSDB/RJ) pela:\r\n• Comissão Especial, que conclui pela adequação financeira e orçamentária, constitucionalidade, juridicidade e boa técnica legislativa de todas as Emendas de Plenário; e, no mérito, pela aprovação da Emenda nº 24, com a Subemenda Substitutiva adotada, e pela rejeição das demais Emendas de Plenário.",
+   "uriProposicaoCitada": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2647737"
+  },
+  "efeitosRegistrados": [],
+  "objetosPossiveis": [
+   {
+    "id": 2647740,
+    "uri": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2647740",
+    "siglaTipo": "SSP",
+    "codTipo": 509,
+    "numero": 1,
+    "ano": 0,
+    "ementa": "Dispõe sobre os regimes de resolução das instituições autorizadas a funcionar pelo Banco Central do Brasil, pela Superintendência de Seguros Privados e pela Comissão de Valores Mobiliários.",
+    "dataApresentacao": "2026-10-14T20:25"
+   }
+  ],
+  "proposicoesAfetadas": [
+   {
+    "id": 2236186,
+    "uri": "https://dadosabertos.camara.leg.br/api/v2/proposicoes/2236186",
+    "siglaTipo": "PLP",
+    "codTipo": 140,
+    "numero": 281,
+    "ano": 2019,
+    "ementa": "Dispõe sobre os regimes de resolução das instituições autorizadas a funcionar pelo Banco Central do Brasil, pela Superintendência de Seguros Privados e pela Comissão de Valores Mobiliários.",
+    "dataApresentacao": "2019-12-23T17:10"
+   }
+  ]
+ },
+ "links": [
+  {
+   "rel": "self",
+   "href": "https://dadosabertos.camara.leg.br/api/v2/votacoes/2236186-60"
+  }
+ ]
+}

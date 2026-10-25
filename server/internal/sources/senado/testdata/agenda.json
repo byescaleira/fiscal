@@ -1,0 +1,265 @@
+{
+ "AgendaPlenario": {
+  "noNamespaceSchemaLocation": "https://legis.senado.leg.br/dadosabertos/dados/AgendaPlenariov2.xsd",
+  "Metadados": {
+   "Versao": "25/10/2026 14:39:22",
+   "VersaoServico": "2",
+   "DataVersaoServico": "2019-10-15",
+   "DescricaoDataSet": "Retorna a Agenda do dia nos Plenários do Senado e Congresso."
+  },
+  "Sessoes": {
+   "Sessao": [
+    {
+     "DiaUtil": "14",
+     "Data": "2026-10-14",
+     "DiaSemana": "quarta-feira",
+     "Mes": "Outubro",
+     "Horario": "10 horas ",
+     "Hora": "10:00",
+     "NumeroSessao": "133ª SESSÃO ",
+     "TipoSessao": "SESSÃO ESPECIAL ",
+     "LocalSessao": "Plenário do Senado Federal",
+     "CodigoSessao": "586193",
+     "Casa": "SF",
+     "SessaoLegislativa": "4",
+     "Legislatura": "57",
+     "CodigoSituacaoSessao": "40",
+     "SituacaoSessao": "Encerrada",
+     "Realizada": {
+      "Status": "Sim"
+     },
+     "PautaConfirmada": "Sim",
+     "TipoPresenca": "S",
+     "DescricaoTipoPresenca": "Semipresencial",
+     "Evento": {
+      "DescricaoTipoEvento": "Sessão Especial",
+      "Data": "14 de outubro de 2026",
+      "DiaSemana": "quarta-feira",
+      "Horario": "às 10 horas",
+      "TipoSessao": "(SESSÃO ESPECIAL ) ",
+      "DescricaoEvento": "Celebrar o Dia do Médico.",
+      "OrigemAutor": {
+       "Requerimento": {
+        "Origem": "Requerimento nº 897, de 2025",
+        "NomeAutor": "Senador Dr. Hiran",
+        "DataAprovacao": "2026-07-08",
+        "IndicadorTextoNegrito": "0"
+       }
+      },
+      "FimInscricao": "(Até as 18h57min de 13.10.2026)",
+      "IndicadorPublicaOrador": "0"
+     }
+    },
+    {
+     "DiaUtil": "14",
+     "Data": "2026-10-14",
+     "DiaSemana": "quarta-feira",
+     "Mes": "Outubro",
+     "Horario": "14 horas ",
+     "Hora": "14:00",
+     "NumeroSessao": "134ª SESSÃO ",
+     "TipoSessao": "SESSÃO DELIBERATIVA ORDINÁRIA ",
+     "LocalSessao": "Plenário do Senado Federal",
+     "CodigoSessao": "591267",
+     "Casa": "SF",
+     "SessaoLegislativa": "4",
+     "Legislatura": "57",
+     "CodigoSituacaoSessao": "40",
+     "SituacaoSessao": "Encerrada",
+     "Realizada": {
+      "Status": "Sim"
+     },
+     "PautaConfirmada": "Sim",
+     "TipoPresenca": "S",
+     "DescricaoTipoPresenca": "Semipresencial",
+     "Oradores": {
+      "TipoOrador": [
+       {
+        "DescricaoTipoOrador": "Oradores Inscritos",
+        "CodigoTipoOrador": "13",
+        "OradorSessao": {
+         "Orador": [
+          {
+           "Ordem": "1",
+           "Parlamentar": "Senador Sargento Reginauro",
+           "IndicadorCancelado": "N"
+          },
+          {
+           "Ordem": "2",
+           "Parlamentar": "Senador Paulo Paim",
+           "IndicadorCancelado": "N"
+          },
+          {
+           "Ordem": "3",
+           "Parlamentar": "Senador Esperidião Amin",
+           "IndicadorCancelado": "N"
+          },
+          {
+           "Ordem": "4",
+           "Parlamentar": "Senador Lucas Barreto",
+           "IndicadorCancelado": "N"
+          },
+          {
+           "Ordem": "5",
+           "Parlamentar": "Senador Beto Faro",
+           "IndicadorCancelado": "N"
+          },
+          {
+           "Ordem": "6",
+           "Parlamentar": "Senador Veneziano Vital do Rêgo",
+           "IndicadorCancelado": "N"
+          },
+          {
+           "Ordem": "7",
+           "Parlamentar": "Senador Camilo Santana",
+           "IndicadorCancelado": "N"
+          },
+          {
+           "Ordem": "8",
+           "Parlamentar": "Senador Chico Rodrigues",
+           "IndicadorCancelado": "N"
+          },
+          {
+           "Ordem": "9",
+           "Parlamentar": "Senador Humberto Costa",
+           "IndicadorCancelado": "N"
+          },
+          {
+           "Ordem": "10",
+           "Parlamentar": "Senador Plínio Valério",
+           "IndicadorCancelado": "N"
+          },
+          {
+           "Ordem": "11",
+           "Parlamentar": "Senadora Ana Paula Lobato",
+           "IndicadorCancelado": "N"
+          },
+          {
+           "Ordem": "12",
+           "Parlamentar": "Senadora Zenaide Maia",
+           "IndicadorCancelado": "N"
+          },
+          {
+           "Ordem": "13",
+           "Parlamentar": "Senador Marcelo Castro",
+           "IndicadorCancelado": "N"
+          },
+          {
+           "Ordem": "14",
+           "Parlamentar": "Senadora Leany Lemos",
+           "IndicadorCancelado": "N"
+          },
+          {
+           "Ordem": "15",
+           "Parlamentar": "Senador Marcos do Val",
+           "IndicadorCancelado": "N"
+          },
+          {
+           "Ordem": "16",
+           "Parlamentar": "Senadora Roberta Acioly",
+           "IndicadorCancelado": "N"
+          },
+          {
+           "Ordem": "17",
+           "Parlamentar": "Senador Astronauta Marcos Pontes",
+           "IndicadorCancelado": "N"
+          },
+          {
+           "Ordem": "18",
+           "Parlamentar": "Senador Vanderlan Cardoso",
+           "IndicadorCancelado": "N"
+          },
+          {
+           "Ordem": "19",
+           "Parlamentar": "Senador Magno Malta",
+           "IndicadorCancelado": "N"
+          },
+          {
+           "Ordem": "20",
+           "Parlamentar": "Senador Cleitinho",
+           "IndicadorCancelado": "N"
+          },
+          {
+           "Ordem": "21",
+           "Parlamentar": "Senadora Damares Alves",
+           "IndicadorCancelado": "N"
+          }
+         ]
+        }
+       },
+       {
+        "DescricaoTipoOrador": "Pela Liderança",
+        "CodigoTipoOrador": "32",
+        "OradorSessao": {
+         "Orador": [
+          {
+           "Ordem": "1",
+           "Parlamentar": "Senador Plínio Valério",
+           "IndicadorCancelado": "N"
+          },
+          {
+           "Ordem": "2",
+           "Parlamentar": "Senador Styvenson Valentim",
+           "IndicadorCancelado": "N"
+          },
+          {
+           "Ordem": "3",
+           "Parlamentar": "Senador Jayme Campos",
+           "IndicadorCancelado": "N"
+          },
+          {
+           "Ordem": "4",
+           "Parlamentar": "Senador Veneziano Vital do Rêgo",
+           "IndicadorCancelado": "N"
+          }
+         ]
+        }
+       }
+      ]
+     },
+     "Materias": {
+      "Materia": [
+       {
+        "CodigoMateria": "174386",
+        "Identificacao": "PROPOSTA DE EMENDA À CONSTITUIÇÃO Nº 221, DE 2019\n\n",
+        "SiglaMateria": "PEC",
+        "NumeroMateria": "00221",
+        "AnoMateria": "2019",
+        "DescricaoObjetivoProcesso": "Revisora",
+        "DescricaoIdentificacaoMateria": "PEC 221/2019",
+        "SiglaCasaIniciadora": "CD",
+        "Ementa": "Altera o art. 7º da Constituição Federal para reduzir a duração máxima semanal do trabalho e prever 2 (dois) dias de repouso semanal remunerado, sem qualquer redução salarial; e dá outras providências.",
+        "Parecer": "Pareceres nºs: - 59, de 2026, da Comissão de Constituição, Justiça e Cidadania, Relator: Senador Omar Aziz, favorável à proposta e contrário às Emendas nºs 1 a 36; e -207, de 2026, de Plenário, Relator: Senador Omar Aziz, contrário à Emenda nº 37.\n\n",
+        "Apreciacao": "Quinta e última sessão de discussão, em primeiro turno",
+        "ApreciacaoPapeleta": "Quinta e última sessão de discussão e votação, em primeiro turno, da Proposta de Emenda à Constituição nº 221, de 2019, do Deputado Reginaldo Lopes e outros Deputados, que",
+        "EmentaPapeleta": "altera o art. 7º da Constituição Federal para reduzir a duração máxima semanal do trabalho e prever 2 (dois) dias de repouso semanal remunerado, sem qualquer redução salarial; e dá outras providências.",
+        "Cabecalho": "(Fim da escala 6x1)",
+        "NomeAutor": "Reginaldo Lopes",
+        "TipoPauta": "O",
+        "DescricaoTipoPauta": "Pauta",
+        "SequenciaOrdem": "1"
+       },
+       {
+        "CodigoMateria": "175964",
+        "Identificacao": "REQUERIMENTO Nº 713, DE 2026\n",
+        "SiglaMateria": "RQS",
+        "NumeroMateria": "00713",
+        "AnoMateria": "2026",
+        "DescricaoIdentificacaoMateria": "RQS 713/2026",
+        "SiglaCasaIniciadora": "SF",
+        "Ementa": "Solicita calendário especial para a Proposta de Emenda à Constituição nº 18, de 2025.",
+        "Apreciacao": "Votação, em turno único",
+        "ApreciacaoPapeleta": "Votação, em turno único, do Requerimento nº 713, de 2026, de Líderes, que\n",
+        "EmentaPapeleta": "solicita calendário especial para a Proposta de Emenda à Constituição nº 18, de 2025.",
+        "NomeAutor": "Eduardo Braga",
+        "TipoPauta": "E",
+        "DescricaoTipoPauta": "Extrapauta",
+        "SequenciaOrdem": "1"
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}
