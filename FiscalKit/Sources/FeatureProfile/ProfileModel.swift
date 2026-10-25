@@ -13,6 +13,8 @@ public final class ProfileModel {
     public private(set) var proposals: PublicList<Proposal>?
     public private(set) var speeches: PublicList<Speech>?
     public private(set) var expenses: ExpenseList?
+    public private(set) var context: PersonContext?
+    public var selectedIndicatorID: String?
     public private(set) var isFollowing = false
     public private(set) var phase: PublicDataPhase = .idle
     public var error: FiscalError?
@@ -122,11 +124,15 @@ public final class ProfileModel {
         async let expenses = Self.fetch(wanted.contains("expenses")) {
             try await service.expenses(slug: slug, year: year)
         }
-        let loaded = await (votes, proposals, speeches, expenses)
+        async let context = Self.fetch(true) {
+            try await Self.context(for: profile, service: service)
+        }
+        let loaded = await (votes, proposals, speeches, expenses, context)
         self.votes = loaded.0
         self.proposals = loaded.1
         self.speeches = loaded.2
         self.expenses = loaded.3
+        self.context = loaded.4 ?? nil
     }
 
     nonisolated private static func fetch<Value: Sendable>(

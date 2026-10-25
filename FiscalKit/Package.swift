@@ -24,6 +24,7 @@ let package = Package(
             resources: [
                 .process("Assets"), .process("art-credits.json"),
                 .process("showcase-people.json"), .process("showcase-cities.json"),
+                .process("showcase-indicators.json"),
             ]),
         .target(
             name: "FeatureCore",

@@ -40,7 +40,7 @@
             office == .senator || office == .federalDeputy
         }
 
-        private static func mandate(for card: PersonCard) -> Profile.Mandate {
+        static func mandate(for card: PersonCard) -> Profile.Mandate {
             switch card.office {
             case .president, .vicePresident:
                 Profile.Mandate(
