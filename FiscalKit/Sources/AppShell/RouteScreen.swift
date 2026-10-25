@@ -59,7 +59,13 @@ private struct LensDestination: View {
     @Environment(LensContext.self) private var lens
 
     var body: some View {
-        ModelHost(LensModel(context: lens)) { LensScreen() }
+        ModelHost(
+            LensModel(
+                context: lens, service: FiscalServices.shared.publicData(),
+                icons: SystemAppIconSwitcher())
+        ) {
+            LensScreen()
+        }
     }
 }
 

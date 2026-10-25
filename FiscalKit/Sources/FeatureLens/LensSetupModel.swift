@@ -21,15 +21,22 @@ public final class LensSetupModel {
     public private(set) var isSaving = false
     public private(set) var movesForward = true
     public var showsMoreThemes: Bool
+    public private(set) var appIcon: AppIcon
     public let catalog: ArtCatalog?
     public let editing: Step?
     @ObservationIgnored private let context: LensContext
+    @ObservationIgnored private let icons: (any AppIconSwitching)?
     @ObservationIgnored private var themesTouched: Bool
     @ObservationIgnored private var lookTouched: Bool
 
-    public init(context: LensContext, catalog: ArtCatalog?, editing: Step? = nil) {
+    public init(
+        context: LensContext, catalog: ArtCatalog?, editing: Step? = nil,
+        icons: (any AppIconSwitching)? = nil
+    ) {
         let start = context.saved ?? Lens()
         self.context = context
+        self.icons = icons
+        appIcon = icons?.current ?? .standard
         self.catalog = catalog
         self.editing = editing
         draft = start
@@ -152,6 +159,15 @@ public final class LensSetupModel {
     public func choose(_ collection: ArtCollection) {
         draft.artCollection = collection.id
         lookTouched = true
+    }
+
+    public var supportsIcons: Bool { icons?.supportsAlternateIcons == true }
+
+    public func choose(_ icon: AppIcon) async {
+        guard let icons, icon != appIcon else { return }
+        let previous = appIcon
+        appIcon = icon
+        if (try? await icons.set(icon)) == nil { appIcon = previous }
     }
 
     public func advance() async {

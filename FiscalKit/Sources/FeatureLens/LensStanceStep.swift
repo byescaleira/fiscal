@@ -28,9 +28,6 @@ struct LensWelcomeStep: View {
 }
 
 struct LensStanceStep: View {
-    @Environment(LensSetupModel.self) private var setup
-    @Environment(\.dynamicTypeSize) private var typeSize
-
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceXL) {
             LensStepHeader(
@@ -38,87 +35,11 @@ struct LensStanceStep: View {
                 message: Text(
                     "Fiscal adapts what comes first, the colors, the art and the highlights. The numbers are the same for everyone."
                 ))
-            StanceGrid(columns: typeSize.isAccessibilitySize ? 1 : 2)
-            PreferNotToSayButton()
+            LensSpectrumCard()
+            LensNeutralChoices()
+            LensEffectCard()
             LensPrivacyCard()
         }
-    }
-}
-
-struct StanceGrid: View {
-    @Environment(LensSetupModel.self) private var setup
-    let columns: Int
-
-    var body: some View {
-        let choices = setup.stanceChoices
-        Grid(horizontalSpacing: .spaceM, verticalSpacing: .spaceM) {
-            ForEach(Array(stride(from: 0, to: choices.count, by: columns)), id: \.self) { start in
-                GridRow {
-                    ForEach(choices[start..<min(start + columns, choices.count)]) { stance in
-                        StanceCard(stance: stance)
-                    }
-                }
-            }
-        }
-    }
-}
-
-private struct StanceCard: View {
-    @Environment(LensSetupModel.self) private var setup
-    let stance: PoliticalStance
-
-    var body: some View {
-        let isSelected = setup.isChosen(stance)
-        Button {
-            setup.choose(stance)
-        } label: {
-            VStack(alignment: .leading, spacing: .spaceS) {
-                HStack {
-                    Spacer()
-                    SelectionMark(isSelected: isSelected)
-                }
-                Spacer(minLength: .zero)
-                Text(verbatim: stance.title)
-                    .font(.title2.weight(.bold))
-                    .foregroundStyle(.primary)
-                    .multilineTextAlignment(.leading)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            .padding(.spaceL)
-            .frame(
-                maxWidth: .infinity, minHeight: .choiceCard, maxHeight: .infinity,
-                alignment: .leading
-            )
-            .contentShape(.rect(cornerRadius: .radiusL))
-        }
-        .buttonStyle(.plain)
-        .lensChoice(isSelected: isSelected)
-        .accessibilityLabel(Text(verbatim: stance.title))
-        .accessibilityAddTraits(isSelected ? .isSelected : [])
-    }
-}
-
-private struct PreferNotToSayButton: View {
-    @Environment(LensSetupModel.self) private var setup
-
-    var body: some View {
-        let isSelected = setup.isChosen(.preferNotToSay)
-        Button {
-            setup.choose(.preferNotToSay)
-        } label: {
-            HStack(spacing: .spaceS) {
-                SelectionMark(isSelected: isSelected)
-                VStack(alignment: .leading, spacing: .space2XS) {
-                    Text("Prefer not to say").font(.subheadline.weight(.semibold))
-                    Text("Works like Impartial.").font(.footnote).foregroundStyle(.secondary)
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .contentShape(.rect)
-        }
-        .buttonStyle(.plain)
-        .accessibilityElement(children: .combine)
-        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
 
