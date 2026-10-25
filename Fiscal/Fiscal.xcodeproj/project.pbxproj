@@ -279,20 +279,11 @@
 				};
 			};
 			buildConfigurationList = A10000000000000000000801 /* Build configuration list for PBXProject "Fiscal" */;
-			developmentRegion = en;
+			developmentRegion = "pt-BR";
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
-				Base,
 				"pt-BR",
-				es,
-				de,
-				fr,
-				it,
-				ja,
-				ko,
-				"zh-Hans",
-				ru,
+				Base,
 			);
 			mainGroup = A10000000000000000000600;
 			minimizedProjectReferenceProxies = 1;

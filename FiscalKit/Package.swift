@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "FiscalKit",
-    defaultLocalization: "en",
+    defaultLocalization: "pt-BR",
     platforms: [.iOS("27.0"), .macOS("27.0"), .visionOS("27.0")],
     products: [
         .library(name: "FiscalWidgetKit", targets: ["FiscalDomain", "FiscalDesignSystem"]),

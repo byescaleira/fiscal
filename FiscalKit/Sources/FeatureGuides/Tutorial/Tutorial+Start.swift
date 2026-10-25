@@ -18,7 +18,7 @@ extension Guide {
                         detail: "The official count, straight from the TSE."),
                     GuideStep(
                         "gearshape", color: .retroDenim, title: "Settings",
-                        detail: "Appearance, language, guides and more."),
+                        detail: "Appearance, guides and more."),
                 ]),
         ]
     }
@@ -28,7 +28,7 @@ extension Guide {
             TutorialPage(
                 animation: .editor, title: "Make It Yours",
                 message:
-                    "In Settings › Appearance, pick the theme and the accent color. The language is in Settings › Language."
+                    "In Settings › Appearance, pick the theme and the accent color."
             )
         ]
     }

@@ -22,8 +22,9 @@ extension ReleaseNote {
                 symbol: "book", color: .avocado, title: String(appLocalized: "Guides"),
                 detail: String(appLocalized: "Short guides for every part of the app.")),
             ReleaseNote(
-                symbol: "globe", color: .denim, title: String(appLocalized: "Ten Languages"),
-                detail: String(appLocalized: "Change the app's language right in Settings.")),
+                symbol: "text.bubble", color: .denim, title: String(appLocalized: "In Portuguese"),
+                detail: String(
+                    appLocalized: "Every screen speaks Brazilian Portuguese, in plain words.")),
         ]
     }
 }
