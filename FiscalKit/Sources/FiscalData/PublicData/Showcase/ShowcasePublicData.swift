@@ -6,18 +6,24 @@
         public let scenario: PublicDataScenario
         private let now: Date
         private let calendar: Calendar
+        private let roster: ShowcaseRoster
 
         public init(
             scenario: PublicDataScenario, now: Date = .now,
-            calendar: Calendar = FiscalCalendar.current
+            calendar: Calendar = FiscalCalendar.current, roster: ShowcaseRoster = .curated
         ) {
             self.scenario = scenario
             self.now = now
             self.calendar = calendar
+            self.roster = roster
         }
 
-        public static func fromLaunchArguments() -> ShowcasePublicData? {
-            PublicDataScenario.fromLaunchArguments().map { ShowcasePublicData(scenario: $0) }
+        public static func fromLaunchArguments(roster: ShowcaseRoster = .curated)
+            -> ShowcasePublicData?
+        {
+            PublicDataScenario.fromLaunchArguments().map {
+                ShowcasePublicData(scenario: $0, roster: roster)
+            }
         }
 
         private var isEmpty: Bool { scenario == .empty }
@@ -28,12 +34,26 @@
 
         private var sources: [Source] { ShowcaseMoney.sources(now: now) }
 
-        private var everyone: [PersonCard] {
+        private var curated: [PersonCard] {
             switch scenario {
             case .empty, .offline, .unavailable: []
             case .normal: ShowcasePeople.regular
             case .longNames: ShowcasePeople.long + ShowcasePeople.regular
             }
+        }
+
+        private var everyone: [PersonCard] {
+            isEmpty || curated.isEmpty
+                ? curated : ShowcasePeople.merged(curated, with: roster.people())
+        }
+
+        private var municipalSources: [Source] {
+            [
+                Source(
+                    id: Source.municipalElectionID, name: "Tribunal Superior Eleitoral",
+                    url: URL(string: "https://dadosabertos.tse.jus.br"),
+                    updatedAt: now.addingTimeInterval(-3 * 3_600))
+            ]
         }
 
         private func check() throws {
@@ -54,7 +74,8 @@
 
         private func legislator(_ slug: String) throws -> PersonCard {
             let card = try person(slug)
-            guard ShowcaseProfiles.isFederalLegislator(card.office),
+            guard curated.contains(where: { $0.slug == slug }),
+                ShowcaseProfiles.isFederalLegislator(card.office),
                 card.status != .electedAwaiting
             else { throw PublicDataError.notFound }
             return card
@@ -68,7 +89,7 @@
                 counts: PublicMeta.Counts(
                     people: people.count, federal: people.filter(\.office.isFederal).count,
                     state: people.filter { !$0.office.isFederal }.count,
-                    places: isEmpty ? 0 : ShowcasePeople.places().count))
+                    places: isEmpty ? 0 : ShowcasePeople.places(cities: roster.places()).count))
         }
 
         public func people() async throws -> [PersonCard] {
@@ -80,7 +101,7 @@
 
         public func places() async throws -> [Place] {
             try check()
-            return isEmpty ? [] : ShowcasePeople.places()
+            return isEmpty ? [] : ShowcasePeople.places(cities: roster.places())
         }
 
         public func representatives(uf: String) async throws -> PlaceRepresentatives {
@@ -88,8 +109,58 @@
             return ShowcasePeople.representatives(uf: uf, people: everyone, sources: sources)
         }
 
+        public func cityRepresentatives(code: String) async throws -> PlaceRepresentatives? {
+            try check()
+            guard !isEmpty, let city = roster.city(code) else { return nil }
+            let hall = city.officials.filter { $0.office != .cityCouncilor }
+                .sorted { $0.office == .mayor && $1.office != .mayor }
+            let extra =
+                longText && !city.officials.isEmpty
+                ? ShowcaseRoster.cards(ShowcasePeople.longCouncil, in: city.place)
+                    .map { card in
+                        PersonCard(
+                            slug: "teste-\(card.slug)", name: card.name, office: card.office,
+                            uf: card.uf, party: card.party, photo: nil, status: card.status)
+                    } : []
+            let council = (city.officials.filter { $0.office == .cityCouncilor } + extra)
+                .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+            let groups = [
+                RepresentativeGroup(
+                    level: .city, office: .mayor, title: "Prefeitura", people: hall),
+                RepresentativeGroup(
+                    level: .city, office: .cityCouncilor, title: "Câmara Municipal",
+                    people: council),
+            ]
+            return PlaceRepresentatives(
+                code: city.place.code, uf: city.place.uf, name: city.place.name,
+                groups: groups.filter { !$0.people.isEmpty }, note: city.note,
+                sources: municipalSources)
+        }
+
         public func profile(slug: String) async throws -> Profile {
-            ShowcaseProfiles.profile(for: try person(slug), year: year, sources: sources)
+            try check()
+            if let card = curated.first(where: { $0.slug == slug }) {
+                return ShowcaseProfiles.profile(for: card, year: year, sources: sources)
+            }
+            if let card = everyone.first(where: { $0.slug == slug }) {
+                return ShowcaseProfiles.minimal(for: card, sources: sources)
+            }
+            guard !isEmpty, let card = municipal(slug) else { throw PublicDataError.notFound }
+            return ShowcaseProfiles.minimal(for: card, sources: municipalSources)
+        }
+
+        private func municipal(_ slug: String) -> PersonCard? {
+            if let card = roster.official(slug: slug) { return card }
+            guard longText, slug.hasPrefix("teste-"),
+                let code = ShowcaseRoster.code(in: slug), let city = roster.city(code)
+            else { return nil }
+            return ShowcaseRoster.cards(ShowcasePeople.longCouncil, in: city.place)
+                .first { "teste-\($0.slug)" == slug }
+                .map {
+                    PersonCard(
+                        slug: slug, name: $0.name, office: $0.office, uf: $0.uf, party: $0.party,
+                        photo: nil, status: $0.status)
+                }
         }
 
         public func votes(slug: String, year: Int) async throws -> PublicList<PersonVote> {
