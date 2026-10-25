@@ -40,6 +40,7 @@ type Race struct {
 	Sections          Sections    `json:"sections"`
 	Electorate        int64       `json:"electorate"`
 	Turnout           int64       `json:"turnout"`
+	Abstention        int64       `json:"abstention"`
 	Votes             Votes       `json:"votes"`
 	Candidates        []Candidate `json:"candidates"`
 	Final             bool        `json:"final"`

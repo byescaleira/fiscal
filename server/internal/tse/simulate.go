@@ -79,6 +79,7 @@ func (s *SimSource) Fetch(_ context.Context, d Definition) (Race, bool, error) {
 		r.Sections.Percent = round2(100 * float64(r.Sections.Counted) / float64(ts))
 	}
 	r.Turnout = int64(math.Round(float64(r.Electorate) * 0.78 * f))
+	r.Abstention = int64(math.Round(float64(r.Electorate)*f)) - r.Turnout
 	valid := int64(math.Round(float64(r.Turnout) * 0.94))
 	blank := int64(math.Round(float64(r.Turnout) * 0.02))
 	r.Votes = Votes{Valid: valid, Blank: blank, Null: r.Turnout - valid - blank, Total: r.Turnout}

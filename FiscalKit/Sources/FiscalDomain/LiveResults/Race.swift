@@ -38,6 +38,7 @@ public struct Race: Codable, Hashable, Identifiable, Sendable {
     public let sections: Sections
     public let electorate: Int
     public let turnout: Int
+    public let abstention: Int?
     public let votes: Votes
     public let candidates: [RaceCandidate]
     public let final: Bool
@@ -45,8 +46,8 @@ public struct Race: Codable, Hashable, Identifiable, Sendable {
 
     public init(
         id: String, office: Office, uf: String, round: Int, sections: Sections, electorate: Int,
-        turnout: Int, votes: Votes, candidates: [RaceCandidate], final: Bool,
-        sourceGeneratedAt: String
+        turnout: Int, abstention: Int? = nil, votes: Votes, candidates: [RaceCandidate],
+        final: Bool, sourceGeneratedAt: String
     ) {
         self.id = id
         self.office = office
@@ -55,6 +56,7 @@ public struct Race: Codable, Hashable, Identifiable, Sendable {
         self.sections = sections
         self.electorate = electorate
         self.turnout = turnout
+        self.abstention = abstention
         self.votes = votes
         self.candidates = candidates
         self.final = final
@@ -84,6 +86,13 @@ public struct RaceCandidate: Codable, Hashable, Identifiable, Sendable {
     public let elected: Bool
 
     public var id: String { number }
+
+    public var portraitSlug: String {
+        name.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: nil)
+            .lowercased()
+            .split { !$0.isLetter && !$0.isNumber }
+            .joined(separator: "-")
+    }
 
     public init(
         number: String, name: String, party: String, votes: Int, percent: Double, elected: Bool

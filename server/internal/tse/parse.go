@@ -117,6 +117,7 @@ func Parse(d Definition, data []byte) (Race, error) {
 		},
 		Electorate: p.int(f.E.Te),
 		Turnout:    p.int(f.E.C),
+		Abstention: p.int(f.E.A),
 		Votes: Votes{
 			Valid: p.int(f.V.Vv),
 			Blank: p.int(f.V.Vb),

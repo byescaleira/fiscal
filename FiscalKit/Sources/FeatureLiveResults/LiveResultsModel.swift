@@ -46,6 +46,50 @@ public final class LiveResultsModel {
 
     public var governors: [Race] { races.filter { $0.office == .governor } }
 
+    public var region: RaceRegion?
+    public var status: RaceStatusFilter = .all
+
+    public var featured: Race? { president ?? races.first }
+
+    public var others: [Race] { races.filter { $0.id != featured?.id } }
+
+    public var groups: [RaceGroup] {
+        let shown = others.filter { race in
+            status.includes(race) && (region == nil || RaceRegion.of(uf: race.uf) == region)
+        }
+        let regions: [RaceRegion?] = RaceRegion.allCases.map(Optional.some) + [nil]
+        return regions.compactMap { region in
+            let races = shown.filter { RaceRegion.of(uf: $0.uf) == region }
+            return races.isEmpty ? nil : RaceGroup(region: region, races: races)
+        }
+    }
+
+    public var regionChoices: [RaceRegion] {
+        RaceRegion.allCases.filter { region in
+            others.contains { RaceRegion.of(uf: $0.uf) == region }
+        }
+    }
+
+    public var activeFilterCount: Int { (region == nil ? 0 : 1) + (status == .all ? 0 : 1) }
+
+    public var hasFilter: Bool { activeFilterCount > 0 }
+
+    public var filterSummary: String {
+        [region?.title, status == .all ? nil : status.title].compactMap { $0 }.joined(
+            separator: ", ")
+    }
+
+    public func clearFilters() {
+        region = nil
+        status = .all
+    }
+
+    public func race(id: String) -> Race? { races.first { $0.id == id } }
+
+    public func groupHeader(_ group: RaceGroup) -> String {
+        "\(group.title) · \(group.races.count)"
+    }
+
     public var isWaiting: Bool { hasLoaded && !races.contains(where: \.hasStarted) }
 
     public func run() async {
