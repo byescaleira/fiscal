@@ -48,6 +48,8 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Card ao vivo do Hoje com uma barra de força por lado, sem diferença | no iPhone | TodayLiveRaceCard |
 | Live Activity igual ao card: foto, tag, % apurado, barra de força, fundo do sistema em vidro | no iPhone | RaceLiveActivity |
 | Live Activity cabendo na tela de bloqueio, percentual em destaque | no iPhone | RaceLiveActivity |
+| Card do Hoje igual ao destaque da apuração; Live Activity no mesmo desenho | no iPhone | RaceHeroCard, TodayRaceHero |
+| Resumo do dia sem carregar (dado real ainda não publicado) | na fila: deploy | VPS |
 | Apuração mostrando 87% (era o cenário de teste) | no iPhone, só dado real | launch sem cenário |
 | Tela de apuração menos repetitiva, com brancos, nulos, abstenção e fotos | no iPhone | LiveResultsScreen, RaceDetailScreen |
 
@@ -74,7 +76,8 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Peso de cada ação (repercussão + impacto, regra única) | em andamento | frente weight |
 | Preços com série histórica (gasolina e bens de consumo) | em andamento | frente prices |
 | Antes × durante o mandato para todos | em andamento | frente prices |
-| Explicar em linguagem simples o sentido dos dados, com Foundation Models e selo de interpretação imparcial | em andamento | frente explain |
+| Explicar em linguagem simples o sentido dos dados, com Foundation Models e selo de interpretação imparcial | no iPhone (votação, perfil, Temas; aparece com dados reais) | FeatureCore/Explain |
+| Selo: "Apple Intelligence" em vez de "Siri" | decisão | ExplainerBadge |
 | Repercussão no X, Instagram ou TikTok | decisão (custo) | — |
 
 ## Backend e dados reais
