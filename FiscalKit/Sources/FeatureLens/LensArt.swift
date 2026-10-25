@@ -79,20 +79,24 @@ struct PosterCarousel: View {
 
     var body: some View {
         TimelineView(.animation(paused: reduceMotion)) { timeline in
-            HStack(spacing: .spaceL) {
-                ForEach(Array((works + works).enumerated()), id: \.offset) { index, work in
-                    ArtPoster(work: work)
-                        .rotationEffect(
-                            index.isMultiple(of: 2)
-                                ? .posterTilt : .degrees(-Angle.posterTilt.degrees)
-                        )
-                        .offset(y: index.isMultiple(of: 2) ? .spaceM : -.spaceM)
+            ScrollView(.horizontal) {
+                HStack(spacing: .spaceL) {
+                    ForEach(Array((works + works).enumerated()), id: \.offset) { index, work in
+                        ArtPoster(work: work)
+                            .rotationEffect(
+                                index.isMultiple(of: 2)
+                                    ? .posterTilt : .degrees(-Angle.posterTilt.degrees)
+                            )
+                            .offset(y: index.isMultiple(of: 2) ? .spaceM : -.spaceM)
+                    }
                 }
+                .padding(.vertical, .spaceXL)
+                .offset(x: -shift(at: timeline.date))
             }
-            .offset(x: -shift(at: timeline.date))
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .scrollDisabled(true)
+            .scrollIndicators(.hidden)
+            .scrollClipDisabled()
         }
-        .padding(.vertical, .spaceXL)
         .clipped()
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("Artworks from the Fiscal collection, all in the public domain"))

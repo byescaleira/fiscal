@@ -21,8 +21,9 @@ public struct LensSetupScreen: View {
                     .transition(stepTransition)
                     .padding(.horizontal, .spaceInset)
                     .padding(.bottom, .spaceXL)
+                    .frame(maxWidth: .readableColumn)
+                    .frame(maxWidth: .infinity)
             }
-            .readableWidth()
             .scrollBounceBehavior(.basedOnSize)
             .scrollIndicators(.hidden)
             LensSetupActionBar()
