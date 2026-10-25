@@ -50,7 +50,8 @@ A **Lente** é o conjunto de prioridades da pessoa, escolhido no primeiro uso e 
 
 O app tem a cara da pessoa; os dados continuam com a cara dos fatos.
 
-- **Paletas:** cada uma tem cor de destaque, fundo dos cards e um par de cores para o compartilhamento. Há paletas inspiradas no imaginário de cada público, paletas neutras e paletas tiradas das obras dos artistas parceiros, com crédito. O posicionamento sugere uma paleta, mas qualquer pessoa pode escolher qualquer uma.
+- **Paletas:** cada uma tem cor de destaque, fundo dos cards e um par de cores para o compartilhamento. Há paletas inspiradas no imaginário de cada público, sempre em pares espelhados, paletas neutras e paletas tiradas das obras dos artistas parceiros, com crédito. Nenhuma paleta se apresenta como "a neutra", e o verde-amarelo não fica sem contraparte, porque os dois campos disputam essas cores. O posicionamento sugere uma paleta, mas qualquer pessoa pode escolher qualquer uma.
+- **Bandeira e brasões:** nunca recoloridos, com inscrição ou usados como produto (Lei 5.700/1971; Lei 9.279/1996, art. 191).
 - **Símbolos:** um conjunto de SF Symbols por tema e por estilo, usado nos chips da Lente, nos cards e nos ícones alternativos do app. Sem logotipo de partido: é marca registrada e transformaria o app em material de campanha.
 - **Ícone do app:** ícones alternativos combinando com as paletas.
 - **O que a paleta nunca toca:** gráficos, placares e listas de políticos. Neles a cor marca dado (sim, não, ausente), cargo ou lugar, e nunca segue a paleta nem o partido. O mesmo gráfico tem a mesma cor para todo mundo.
@@ -81,7 +82,7 @@ Crédito não autoriza o uso. A Lei 9.610/98 exige autorização do autor, e a A
 | Base | Exemplo | O que guardar |
 |---|---|---|
 | Domínio público | Autor morto há mais de 70 anos (Lei 9.610, art. 41), como Pedro Américo e Victor Meirelles | Data de morte do autor e fonte da imagem (acervo público) |
-| Licença aberta compatível | CC BY ou CC BY-SA, por exemplo fotos da Agência Brasil (CC BY) | Link da licença e versão |
+| Licença aberta compatível | CC BY ou CC BY-SA, conferida arquivo a arquivo; fotos da Câmara só depois de confirmar a licença na página oficial (Agência Brasil e Agência Senado não servem: uso só jornalístico e veto a uso comercial ou político) | Link da licença e versão |
 | Autorização por escrito | Licença de uso digital e de redes sociais, com prazo e escopo | Contrato assinado |
 | Obra encomendada | Coleção feita para o Fiscal por artistas dos dois lados | Contrato de cessão ou licença |
 
