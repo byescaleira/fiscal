@@ -511,6 +511,36 @@
         }
       }
     },
+    "Amazon Dawn" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amanhecer na Amazônia"
+          }
+        }
+      }
+    },
+    "Amazon Day" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dia na Amazônia"
+          }
+        }
+      }
+    },
+    "Amazon River" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rio na Amazônia"
+          }
+        }
+      }
+    },
     "Amazonas" : {
       "localizations" : {
         "pt-BR" : {
@@ -751,16 +781,6 @@
         }
       }
     },
-    "Ballot Box" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Urna"
-          }
-        }
-      }
-    },
     "Biggest month in %@: %@, %@" : {
       "localizations" : {
         "pt-BR" : {
@@ -827,6 +847,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Brasil"
+          }
+        }
+      }
+    },
+    "Brazilian Wildlife" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fauna do Brasil"
           }
         }
       }
@@ -1081,16 +1111,6 @@
         }
       }
     },
-    "Checked Document" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Documento"
-          }
-        }
-      }
-    },
     "Checks published by fact-checking agencies." : {
       "localizations" : {
         "pt-BR" : {
@@ -1197,16 +1217,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nome civil"
-          }
-        }
-      }
-    },
-    "Classic" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Clássico"
           }
         }
       }
@@ -2352,6 +2362,16 @@
         }
       }
     },
+    "Forest" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mata"
+          }
+        }
+      }
+    },
     "Forest and gold" : {
       "localizations" : {
         "pt-BR" : {
@@ -2422,12 +2442,32 @@
         }
       }
     },
+    "Giant Anteater" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamanduá-bandeira"
+          }
+        }
+      }
+    },
     "Goiás" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Goiás"
+          }
+        }
+      }
+    },
+    "Golden Lion Tamarin" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mico-leão-dourado"
           }
         }
       }
@@ -2568,6 +2608,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Como votaram"
+          }
+        }
+      }
+    },
+    "Hyacinth Macaw" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arara-azul"
           }
         }
       }
@@ -2758,6 +2808,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Item"
+          }
+        }
+      }
+    },
+    "Jaguar" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Onça-pintada"
           }
         }
       }
@@ -3002,12 +3062,12 @@
         }
       }
     },
-    "Magnifier" : {
+    "Main" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lupa"
+            "value" : "Principal"
           }
         }
       }
@@ -3832,6 +3892,16 @@
         }
       }
     },
+    "Only each party's own colors, with no logo or number, for every party registered with the TSE, in alphabetical order." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Só as cores de cada partido, sem logo nem número, para todos os partidos registrados no TSE, em ordem alfabética."
+          }
+        }
+      }
+    },
     "Only on this iPhone" : {
       "localizations" : {
         "pt-BR" : {
@@ -4122,6 +4192,16 @@
         }
       }
     },
+    "Party Icons" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ícones de partido"
+          }
+        }
+      }
+    },
     "Pará" : {
       "localizations" : {
         "pt-BR" : {
@@ -4278,6 +4358,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Escolha seu estado ou sua cidade para ver quem representa você, do presidente à assembleia estadual."
+          }
+        }
+      }
+    },
+    "Pink River Dolphin" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boto-cor-de-rosa"
           }
         }
       }
@@ -5008,6 +5098,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Santa Catarina"
+          }
+        }
+      }
+    },
+    "Savanna" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrado"
           }
         }
       }
@@ -6452,6 +6552,16 @@
         }
       }
     },
+    "Toucan" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tucano"
+          }
+        }
+      }
+    },
     "Touch a month to see its total. The dashed line is the monthly average." : {
       "localizations" : {
         "pt-BR" : {
@@ -6778,16 +6888,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Votações, sessões e leis novas aparecem aqui assim que acontecem."
-          }
-        }
-      }
-    },
-    "Watchful Eye" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Olhar"
           }
         }
       }

@@ -1,0 +1,10 @@
+{
+  "images" : [
+    { "filename" : "FiscalIconFaunaMacaw.png", "idiom" : "universal" },
+    {
+      "appearances" : [ { "appearance" : "luminosity", "value" : "dark" } ],
+      "filename" : "FiscalIconFaunaMacaw-dark.png", "idiom" : "universal"
+    }
+  ],
+  "info" : { "author" : "xcode", "version" : 1 }
+}

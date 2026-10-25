@@ -1,0 +1,10 @@
+{
+  "images" : [
+    { "filename" : "FiscalIconPartyPl.png", "idiom" : "universal" },
+    {
+      "appearances" : [ { "appearance" : "luminosity", "value" : "dark" } ],
+      "filename" : "FiscalIconPartyPl-dark.png", "idiom" : "universal"
+    }
+  ],
+  "info" : { "author" : "xcode", "version" : 1 }
+}

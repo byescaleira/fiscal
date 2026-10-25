@@ -493,8 +493,8 @@
 		A1000000000000000000C003 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "FiscalIconAmazonDay FiscalIconAmazonRiver FiscalIconThemeForest FiscalIconThemeAnnatto FiscalIconThemeIndigo FiscalIconThemeIpe FiscalIconThemeSavanna FiscalIconThemeSea FiscalIconThemeGraphite FiscalIconThemeSand FiscalIconFaunaJaguar FiscalIconFaunaMacaw FiscalIconFaunaToucan FiscalIconFaunaTamarin FiscalIconFaunaDolphin FiscalIconFaunaAnteater FiscalIconPartyAgir FiscalIconPartyAvante FiscalIconPartyCidadania FiscalIconPartyDc FiscalIconPartyDemocrata FiscalIconPartyMdb FiscalIconPartyMissao FiscalIconPartyMobiliza FiscalIconPartyNovo FiscalIconPartyPcb FiscalIconPartyPcdob FiscalIconPartyPco FiscalIconPartyPdt FiscalIconPartyPl FiscalIconPartyPodemos FiscalIconPartyPp FiscalIconPartyPrd FiscalIconPartyPrtb FiscalIconPartyPsb FiscalIconPartyPsd FiscalIconPartyPsdb FiscalIconPartyPsol FiscalIconPartyPstu FiscalIconPartyPt FiscalIconPartyPv FiscalIconPartyRede FiscalIconPartyRepublicanos FiscalIconPartySolidariedade FiscalIconPartyUniao FiscalIconPartyUp";
 				ASSETCATALOG_COMPILER_APPICON_NAME = FiscalIcon;
-				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "FiscalIconLens FiscalIconIris FiscalIconBallot FiscalIconMonogram";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Fiscal/Fiscal.entitlements;
@@ -546,8 +546,8 @@
 		A1000000000000000000C004 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "FiscalIconAmazonDay FiscalIconAmazonRiver FiscalIconThemeForest FiscalIconThemeAnnatto FiscalIconThemeIndigo FiscalIconThemeIpe FiscalIconThemeSavanna FiscalIconThemeSea FiscalIconThemeGraphite FiscalIconThemeSand FiscalIconFaunaJaguar FiscalIconFaunaMacaw FiscalIconFaunaToucan FiscalIconFaunaTamarin FiscalIconFaunaDolphin FiscalIconFaunaAnteater FiscalIconPartyAgir FiscalIconPartyAvante FiscalIconPartyCidadania FiscalIconPartyDc FiscalIconPartyDemocrata FiscalIconPartyMdb FiscalIconPartyMissao FiscalIconPartyMobiliza FiscalIconPartyNovo FiscalIconPartyPcb FiscalIconPartyPcdob FiscalIconPartyPco FiscalIconPartyPdt FiscalIconPartyPl FiscalIconPartyPodemos FiscalIconPartyPp FiscalIconPartyPrd FiscalIconPartyPrtb FiscalIconPartyPsb FiscalIconPartyPsd FiscalIconPartyPsdb FiscalIconPartyPsol FiscalIconPartyPstu FiscalIconPartyPt FiscalIconPartyPv FiscalIconPartyRede FiscalIconPartyRepublicanos FiscalIconPartySolidariedade FiscalIconPartyUniao FiscalIconPartyUp";
 				ASSETCATALOG_COMPILER_APPICON_NAME = FiscalIcon;
-				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "FiscalIconLens FiscalIconIris FiscalIconBallot FiscalIconMonogram";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Fiscal/Fiscal.entitlements;
