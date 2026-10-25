@@ -1,7 +1,6 @@
 import FeatureCore
 import FiscalDesignSystem
 import FiscalResource
-import StoreKit
 import SwiftUI
 
 struct AboutValuesSection: View {
@@ -99,31 +98,13 @@ struct AboutLinksSection: View {
 private struct AboutRateRow: View {
     @Environment(SettingsModel.self) private var settings
     @Environment(\.appTint) private var appTint
-    @Environment(\.openURL) private var openURL
-    #if !os(tvOS)
-        @Environment(\.requestReview) private var requestReview
-    #endif
 
     var body: some View {
-        #if os(tvOS)
-            if let url = settings.info.reviewURL {
-                Button {
-                    openURL(url)
-                } label: {
-                    label
-                }
+        if let url = settings.info.reviewURL {
+            Link(destination: url) {
+                AboutLinkLabel(title: "Rate Fiscal", symbol: "star", color: appTint)
             }
-        #else
-            Button {
-                if let url = settings.info.reviewURL { openURL(url) } else { requestReview() }
-            } label: {
-                label
-            }
-        #endif
-    }
-
-    private var label: some View {
-        AboutLinkLabel(title: "Rate Fiscal", symbol: "star", color: appTint)
+        }
     }
 }
 

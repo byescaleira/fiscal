@@ -672,6 +672,16 @@
         }
       }
     },
+    "Free for Everyone" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratuito para todo mundo"
+          }
+        }
+      }
+    },
     "General" : {
       "localizations" : {
         "pt-BR" : {
@@ -1018,6 +1028,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sem servidores próprios e sem conta para criar."
+          }
+        }
+      }
+    },
+    "No subscription, no paywall and no locked feature." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem assinatura, sem paywall e sem recurso bloqueado."
           }
         }
       }
