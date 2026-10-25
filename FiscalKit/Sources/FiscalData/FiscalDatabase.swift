@@ -4,6 +4,8 @@ import SwiftData
 
 public struct FiscalDatabase: RepositoryProvider {
     public static let cloudContainer = "iCloud.fiscal"
+    public static let cloudStoreName = "Fiscal"
+    public static let deviceStoreName = "Device"
     public let modelContainer: ModelContainer
     let store: FiscalStore
 
@@ -12,28 +14,42 @@ public struct FiscalDatabase: RepositoryProvider {
         store = FiscalStore(modelContainer: modelContainer)
     }
 
-    public static func open(inMemory: Bool = false, cloudSync: Bool = true, storeURL: URL? = nil)
+    public static func open(inMemory: Bool = false, cloudSync: Bool = true, directory: URL? = nil)
         throws -> FiscalDatabase
     {
-        let schema = Schema(versionedSchema: FiscalSchemaV1.self)
-        let database: ModelConfiguration.CloudKitDatabase =
+        let cloud: ModelConfiguration.CloudKitDatabase =
             inMemory || !cloudSync ? .none : .private(cloudContainer)
-        let configuration =
-            if let storeURL {
-                ModelConfiguration(schema: schema, url: storeURL, cloudKitDatabase: database)
-            } else {
-                ModelConfiguration(
-                    schema: schema, isStoredInMemoryOnly: inMemory, cloudKitDatabase: database)
-            }
+        let configurations = [
+            configuration(
+                cloudStoreName, models: FiscalSchemaV1.cloudModels, inMemory: inMemory,
+                directory: directory, cloud: cloud),
+            configuration(
+                deviceStoreName, models: FiscalSchemaV1.deviceModels, inMemory: inMemory,
+                directory: directory, cloud: .none),
+        ]
         return FiscalDatabase(
             modelContainer: try ModelContainer(
-                for: schema, migrationPlan: FiscalMigrationPlan.self,
-                configurations: configuration))
+                for: Schema(versionedSchema: FiscalSchemaV1.self),
+                migrationPlan: FiscalMigrationPlan.self, configurations: configurations))
     }
 
-    public var storeURL: URL? { modelContainer.configurations.first?.url }
+    private static func configuration(
+        _ name: String, models: [any PersistentModel.Type], inMemory: Bool, directory: URL?,
+        cloud: ModelConfiguration.CloudKitDatabase
+    ) -> ModelConfiguration {
+        let schema = Schema(models)
+        if let directory {
+            return ModelConfiguration(
+                name, schema: schema, url: directory.appending(path: "\(name).store"),
+                cloudKitDatabase: cloud)
+        }
+        return ModelConfiguration(
+            name, schema: schema, isStoredInMemoryOnly: inMemory, cloudKitDatabase: cloud)
+    }
 
     public var repositories: Repositories {
-        Repositories()
+        Repositories(
+            lens: SwiftDataLensRepository(store: store),
+            follows: SwiftDataFollowRepository(store: store))
     }
 }

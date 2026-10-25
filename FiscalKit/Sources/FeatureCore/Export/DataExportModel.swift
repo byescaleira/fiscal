@@ -16,8 +16,14 @@ public final class DataExportModel {
     }
 
     public func prepare() async {
-        archive = DataArchive(exportedAt: now())
-        isExporting = true
+        do {
+            let lens = try await repositories.lens.lens()
+            let following = try await repositories.follows.followed()
+            archive = DataArchive(exportedAt: now(), lens: lens, following: following)
+            isExporting = true
+        } catch {
+            self.error = .onFetch
+        }
     }
 
     public func finish(_ result: Result<URL, any Error>) {

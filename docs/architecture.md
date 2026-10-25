@@ -20,8 +20,8 @@ fiscal/
 
 | Target | Responsabilidade | Depende de |
 | --- | --- | --- |
-| `FiscalDomain` | Valores (`YearMonth`), protocolos de repositório, `FiscalError`, `AppLanguage`/`String(appLocalized:)`, `RemoteFlag` | nada |
-| `FiscalData` | `FiscalDatabase` (SwiftData + CloudKit `iCloud.fiscal`), `FiscalStore` (`@ModelActor`), entidades `@Model`, schema versionado, repositórios, `CloudKitFlagSource` | Domain |
+| `FiscalDomain` | Valores (`YearMonth`, `CalendarDay`), protocolos de repositório (`LensRepository`, `FollowRepository`), `FiscalError`, `AppLanguage`/`String(appLocalized:)`, `RemoteFlag`; em `PublicData/`, os tipos do [contrato](changes/app-1.0/contract.md) (`PersonCard`, `Profile`, `VoteSummary`, `VoteDetail`, `MoneyOverview`, `TodayDigest`…), `Theme`, `Lens`, `PublicDataService`, `PublicDataError` e `PublicFormat` (centavos em reais, "—" para dado ausente) | nada |
+| `FiscalData` | `FiscalDatabase` (SwiftData em duas configurações: `Fiscal` com CloudKit `iCloud.fiscal` para os seguidos e `Device`, só no aparelho, para a Lente; [ADR 0004](adr/0004-lens-on-device-store.md)), `FiscalStore` (`@ModelActor`), entidades `@Model`, schema versionado, repositórios, `CloudKitFlagSource`; em `PublicData/`, o `PublicDataClient` (URLSession com `URLCache`, `ETag` e cópia em cache quando falta rede) e, em Debug, o `ShowcasePublicData` com `-FiscalDataScenario normal\|empty\|offline\|longNames\|unavailable` | Domain |
 | `FiscalDesignSystem` | Tokens, estilos, modifiers, layouts e componentes sem regra de negócio | nada |
 | `FiscalResource` | Prévia do ícone e animações Lottie embutidas (`FiscalResourceAnimation`) | nada |
 | `FeatureCore` | `SessionModel`, navegação (`Route`, `AppSection`, `FiscalNavigation`, `\.open`, `\.close`), `FeatureFlag`/`FeatureFlags`, guias (`Guide*`), `EmptyStateView`, `MonthPicker`, editor (`EditorStatus`, `EditorActions`, `editorLifecycle`), `errorAlert`, cores retrô, `FiscalAnimationView` | Domain, DesignSystem, Resource, Lottie |

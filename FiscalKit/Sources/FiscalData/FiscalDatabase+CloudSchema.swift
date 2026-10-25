@@ -13,7 +13,7 @@
                 .appending(path: "CloudSchema-\(UUID().uuidString).store")
             guard
                 let model = NSManagedObjectModel.makeManagedObjectModel(
-                    for: FiscalSchemaV1.models)
+                    for: FiscalSchemaV1.cloudModels)
             else {
                 schemaLogger.error("Cloud schema: model could not be built")
                 return

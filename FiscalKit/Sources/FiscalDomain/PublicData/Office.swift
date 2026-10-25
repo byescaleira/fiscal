@@ -1,0 +1,49 @@
+import Foundation
+
+public enum Office: String, CaseIterable, Codable, Identifiable, Sendable {
+    case president, vicePresident, senator, federalDeputy, governor, viceGovernor, stateDeputy
+
+    public var id: String { rawValue }
+
+    public var title: String {
+        switch self {
+        case .president: String(appLocalized: "President")
+        case .vicePresident: String(appLocalized: "Vice President")
+        case .senator: String(appLocalized: "Senator")
+        case .federalDeputy: String(appLocalized: "Federal Deputy")
+        case .governor: String(appLocalized: "Governor")
+        case .viceGovernor: String(appLocalized: "Vice Governor")
+        case .stateDeputy: String(appLocalized: "State Deputy")
+        }
+    }
+
+    public var isFederal: Bool {
+        switch self {
+        case .president, .vicePresident, .senator, .federalDeputy: true
+        case .governor, .viceGovernor, .stateDeputy: false
+        }
+    }
+}
+
+public enum PersonStatus: String, CaseIterable, Codable, Sendable {
+    case inOffice, electedAwaiting, onLeave
+
+    public var title: String {
+        switch self {
+        case .inOffice: String(appLocalized: "In office")
+        case .electedAwaiting: String(appLocalized: "Elected, awaiting inauguration")
+        case .onLeave: String(appLocalized: "On leave")
+        }
+    }
+}
+
+public enum House: String, CaseIterable, Codable, Sendable {
+    case camara, senado
+
+    public var title: String {
+        switch self {
+        case .camara: String(appLocalized: "Chamber of Deputies")
+        case .senado: String(appLocalized: "Federal Senate")
+        }
+    }
+}

@@ -201,6 +201,36 @@
         }
       }
     },
+    "Center" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Centro"
+          }
+        }
+      }
+    },
+    "Center-left" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Centro-esquerda"
+          }
+        }
+      }
+    },
+    "Center-right" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Centro-direita"
+          }
+        }
+      }
+    },
     "Chamber of Deputies" : {
       "localizations" : {
         "pt-BR" : {
@@ -237,6 +267,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Escolha dois políticos em Fiscalizar e o Fiscal põe os números lado a lado, sem nota nem ranking."
+          }
+        }
+      }
+    },
+    "Cities and housing" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cidades e moradia"
           }
         }
       }
@@ -287,6 +327,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Comparar"
+          }
+        }
+      }
+    },
+    "Consumers" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consumidor"
           }
         }
       }
@@ -351,6 +401,16 @@
         }
       }
     },
+    "Couldn't reach the public data server. Try again in a moment." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível falar com o servidor de dados públicos. Tente de novo daqui a pouco."
+          }
+        }
+      }
+    },
     "Couldn't reach the results server. It tries again on its own." : {
       "localizations" : {
         "pt-BR" : {
@@ -407,6 +467,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Créditos"
+          }
+        }
+      }
+    },
+    "Culture and sports" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cultura e esporte"
           }
         }
       }
@@ -521,12 +591,32 @@
         }
       }
     },
+    "Economy and jobs" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Economia e emprego"
+          }
+        }
+      }
+    },
     "Edit" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Editar"
+          }
+        }
+      }
+    },
+    "Education" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Educação"
           }
         }
       }
@@ -551,12 +641,32 @@
         }
       }
     },
+    "Elected, awaiting inauguration" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eleito(a), aguardando a posse"
+          }
+        }
+      }
+    },
     "Elections" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Eleições"
+          }
+        }
+      }
+    },
+    "Environment" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meio ambiente"
           }
         }
       }
@@ -647,6 +757,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Exportar dados"
+          }
+        }
+      }
+    },
+    "Farming and countryside" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agro e campo"
+          }
+        }
+      }
+    },
+    "Federal Deputy" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deputado federal"
           }
         }
       }
@@ -862,6 +992,16 @@
         }
       }
     },
+    "In office" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em exercício"
+          }
+        }
+      }
+    },
     "In Portuguese" : {
       "localizations" : {
         "pt-BR" : {
@@ -892,6 +1032,16 @@
         }
       }
     },
+    "Internet and technology" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Internet e tecnologia"
+          }
+        }
+      }
+    },
     "Know someone who'd like Fiscal?" : {
       "localizations" : {
         "pt-BR" : {
@@ -908,6 +1058,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lavanda"
+          }
+        }
+      }
+    },
+    "Left" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esquerda"
           }
         }
       }
@@ -1112,6 +1272,16 @@
         }
       }
     },
+    "No connection. Check the internet and try again." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem conexão. Confira a internet e tente de novo."
+          }
+        }
+      }
+    },
     "No connection. Showing the last numbers received." : {
       "localizations" : {
         "pt-BR" : {
@@ -1252,6 +1422,16 @@
         }
       }
     },
+    "On leave" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Licenciado(a)"
+          }
+        }
+      }
+    },
     "Open license" : {
       "localizations" : {
         "pt-BR" : {
@@ -1312,12 +1492,32 @@
         }
       }
     },
+    "Politics and elections" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Política e eleições"
+          }
+        }
+      }
+    },
     "Polling stations counted" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Seções apuradas"
+          }
+        }
+      }
+    },
+    "Prefer not to say" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prefiro não dizer"
           }
         }
       }
@@ -1482,6 +1682,26 @@
         }
       }
     },
+    "Right" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Direita"
+          }
+        }
+      }
+    },
+    "Rights and equality" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Direitos e igualdade"
+          }
+        }
+      }
+    },
     "Rust" : {
       "localizations" : {
         "pt-BR" : {
@@ -1548,6 +1768,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fiscalizar"
+          }
+        }
+      }
+    },
+    "Senator" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senador"
           }
         }
       }
@@ -1622,6 +1852,16 @@
         }
       }
     },
+    "Social assistance" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assistência social"
+          }
+        }
+      }
+    },
     "Start Here" : {
       "localizations" : {
         "pt-BR" : {
@@ -1638,6 +1878,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Começa às 17h (Brasília)"
+          }
+        }
+      }
+    },
+    "State Deputy" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deputado estadual"
           }
         }
       }
@@ -1718,6 +1968,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tangerina"
+          }
+        }
+      }
+    },
+    "Taxes and public spending" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impostos e gasto público"
           }
         }
       }
@@ -1832,6 +2092,16 @@
         }
       }
     },
+    "The public data came in a format Fiscal can't read." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os dados públicos chegaram num formato que o Fiscal não consegue ler."
+          }
+        }
+      }
+    },
     "The server didn't accept this Live Activity. Try following again." : {
       "localizations" : {
         "pt-BR" : {
@@ -1882,6 +2152,16 @@
         }
       }
     },
+    "This data isn't published yet." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este dado ainda não foi publicado."
+          }
+        }
+      }
+    },
     "This device's rollout group: %lld. Only shown in development builds." : {
       "localizations" : {
         "pt-BR" : {
@@ -1928,6 +2208,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hoje"
+          }
+        }
+      }
+    },
+    "Transport" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transporte"
+          }
+        }
+      }
+    },
+    "Tributes and names" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Homenagens e nomes"
           }
         }
       }
@@ -2048,6 +2348,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "A versão %1$@ não tem mais suporte. Atualize para a %2$@ ou mais nova. Você ainda pode exportar seus dados."
+          }
+        }
+      }
+    },
+    "Vice Governor" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vice-governador"
+          }
+        }
+      }
+    },
+    "Vice President" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vice-presidente"
           }
         }
       }
@@ -2179,6 +2499,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quem representa você e quem você segue."
+          }
+        }
+      }
+    },
+    "Women" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mulheres"
           }
         }
       }
