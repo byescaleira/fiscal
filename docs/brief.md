@@ -192,6 +192,25 @@ O manifesto `art-credits.json` vai junto com o app e lista, por obra: autor, @, 
 - **Eleições** (apuração ao vivo, resultados e propostas de governo) aparecem em Hoje durante o período eleitoral e ficam sempre acessíveis em Fiscalizar.
 - **Recomendação de aba proeminente:** usar Fiscalizar porque é o padrão nativo (`role: .search`) e o verbo que dá nome ao app. A alternativa, um "Ao vivo" central, só faz sentido em dia de evento e ficaria vazia no resto do ano.
 
+## Destaque do momento, antes e durante o mandato, e o peso do que cada um faz (pedido do usuário em 2026-10-25)
+
+- **Destaque do momento na aba Hoje, sempre presente:** o assunto, o número de dinheiro ou o dado de maior peso agora. Não precisa ser do dia: "momento" depende do peso e de quanto se fala do assunto. Um exemplo é a alta do preço da gasolina com a série histórica. Quando não houver nada novo, fica o de maior peso recente, e a seção nunca some.
+- **Preços e bens de consumo com base histórica:**
+  - **Fontes:** gasolina, diesel, etanol e GLP pela ANP, e a cesta e os itens do IPCA pelo IBGE (SIDRA), por UF e no Brasil.
+  - **Na tela:** sempre com a série longa.
+- **Antes e durante o mandato, para todos:**
+  - **Comparação:** para cada político, o mesmo indicador no período antes da posse e durante o mandato, na sua jurisdição (Brasil para presidente e vice; a UF para governador, senador e deputados; o município para prefeito e vereadores, quando houver dado), com a data da posse marcada no gráfico.
+  - **Sem causalidade:** o texto diz o que mudou, não que foi por causa do político.
+- **O que cada político está fazendo e o peso disso:**
+  - **O que entra:** projetos apresentados, votos, discursos e cargos, todos com o texto oficial (a ementa, sem resumo opinativo).
+  - **Como se calcula o peso:** a repercussão (volume nas redes e na imprensa) somada ao impacto social (alcance da medida, tipo de proposição, tema).
+  - **Regra única:** a mesma regra, pública e explicada no app, vale para todos os políticos e temas.
+  - **Exemplo do usuário:** um projeto de lei sobre o uso de banheiros por mulheres trans pesa pela repercussão e pelo impacto.
+  - **Neutralidade:** o peso ordena e destaca, nunca qualifica (nada de "polêmico", "bom" ou "ruim").
+- **Fontes de repercussão:**
+  - **Gratuitas e abertas:** volume na imprensa (GDELT), páginas da Wikipédia, Bluesky e YouTube, e o interesse de busca.
+  - **Pagas:** X, Instagram e TikTok não têm busca aberta gratuita. Entrar com uma delas é decisão do usuário, porque tem custo.
+
 ## Apple Design Award: onde competimos
 
 | Categoria | O que o Fiscal leva |
