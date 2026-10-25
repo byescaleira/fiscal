@@ -10,8 +10,6 @@
       "Bash(scripts/test.sh *)",
       "Bash(scripts/ui-test.sh)",
       "Bash(scripts/ui-test.sh *)",
-      "Bash(scripts/store-test.sh)",
-      "Bash(scripts/store-test.sh *)",
       "Bash(scripts/lint.sh)",
       "Bash(scripts/lint.sh *)",
       "Bash(scripts/format.sh)",

@@ -1352,6 +1352,16 @@
         }
       }
     },
+    "No account to create. Your lens never leaves this iPhone." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem conta para criar. Sua lente nunca sai deste iPhone."
+          }
+        }
+      }
+    },
     "No ads, no tracking" : {
       "localizations" : {
         "pt-BR" : {
@@ -1408,16 +1418,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nenhum representante ainda"
-          }
-        }
-      }
-    },
-    "No servers of its own and no account to create." : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sem servidores próprios e sem conta para criar."
           }
         }
       }

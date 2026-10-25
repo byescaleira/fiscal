@@ -7,7 +7,7 @@ struct AboutValuesSection: View {
     var body: some View {
         Section {
             IconRow(
-                "Private by design", detail: "No servers of its own and no account to create.",
+                "Private by design", detail: "No account to create. Your lens never leaves this iPhone.",
                 symbol: "lock", color: .retroDenim)
             IconRow(
                 "Your iCloud, your call",
