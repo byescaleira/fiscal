@@ -8,14 +8,14 @@ public enum AppSection: String, CaseIterable, Identifiable, Sendable {
 
     public var title: String {
         switch self {
-        case .home: String(appLocalized: "Home")
+        case .home: String(appLocalized: "Live Results")
         case .settings: String(appLocalized: "Settings")
         }
     }
 
     public var systemImage: String {
         switch self {
-        case .home: "house"
+        case .home: "chart.bar.xaxis"
         case .settings: "gearshape"
         }
     }

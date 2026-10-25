@@ -2,6 +2,19 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.byescaleira.fiscal</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fiscal</string>
+			</array>
+		</dict>
+	</array>
+	<key>FiscalAPIURL</key>
+	<string>https://fiscal.byescaleira.com/api</string>
 	<key>FiscalAppStoreID</key>
 	<string></string>
 	<key>FiscalHelpURL</key>
@@ -16,17 +29,12 @@
 	<string></string>
 	<key>FiscalWebsiteURL</key>
 	<string></string>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLName</key>
-			<string>com.byescaleira.fiscal</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>fiscal</string>
-			</array>
-		</dict>
-	</array>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
+	<key>NSSupportsLiveActivitiesFrequentUpdates</key>
+	<true/>
 	<key>NSUbiquitousContainers</key>
 	<dict>
 		<key>iCloud.fiscal</key>
@@ -39,8 +47,6 @@
 			<string>Any</string>
 		</dict>
 	</dict>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

@@ -1,5 +1,5 @@
 import FeatureCore
-import FeatureHome
+import FeatureLiveResults
 import FeatureSettings
 import SwiftUI
 
@@ -9,7 +9,7 @@ struct SectionScreen: View {
 
     @ViewBuilder var body: some View {
         switch section {
-        case .home: ModelHost(HomeModel(repositories: session.repositories)) { HomeScreen() }
+        case .home: ModelHost(FiscalServices.shared.liveResults()) { LiveResultsScreen() }
         case .settings: SettingsScreen()
         }
     }

@@ -7,10 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B10000000000000000000010 /* FiscalWidgetKit in Frameworks */ = {isa = PBXBuildFile; productRef = B1000000000000000000000A /* FiscalWidgetKit */; };
+		B10000000000000000000011 /* FiscalWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B10000000000000000000001 /* FiscalWidgets.appex */; platformFilters = (ios, ); settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		A10000000000000000000B01 /* FiscalKit in Frameworks */ = {isa = PBXBuildFile; productRef = A10000000000000000000D01 /* FiscalKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		B10000000000000000000013 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A10000000000000000000901 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B10000000000000000000006;
+			remoteInfo = FiscalWidgets;
+		};
 		A10000000000000000001001 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A10000000000000000000901 /* Project object */;
@@ -27,13 +36,35 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		B10000000000000000000012 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				B10000000000000000000011 /* FiscalWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		B10000000000000000000001 /* FiscalWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FiscalWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		A10000000000000000001002 /* FiscalUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FiscalUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A10000000000000000001102 /* FiscalStoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FiscalStoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A10000000000000000000F01 /* Fiscal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fiscal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		B10000000000000000000015 /* Exceptions for "FiscalWidgets" folder in "FiscalWidgets" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = B10000000000000000000006 /* FiscalWidgets */;
+		};
 		A10000000000000000000E01 /* Exceptions for "Fiscal" folder in "Fiscal" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -44,6 +75,14 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		B10000000000000000000002 /* FiscalWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B10000000000000000000015 /* Exceptions for "FiscalWidgets" folder in "FiscalWidgets" target */,
+			);
+			path = FiscalWidgets;
+			sourceTree = "<group>";
+		};
 		A10000000000000000001003 /* FiscalUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = FiscalUITests;
@@ -65,6 +104,14 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		B10000000000000000000004 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B10000000000000000000010 /* FiscalWidgetKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A10000000000000000001005 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -95,6 +142,7 @@
 			children = (
 				A10000000000000000000601 /* Fiscal */,
 				A10000000000000000001003 /* FiscalUITests */,
+				B10000000000000000000002 /* FiscalWidgets */,
 				A10000000000000000001103 /* FiscalStoreTests */,
 				A10000000000000000000602 /* Products */,
 			);
@@ -104,6 +152,7 @@
 			isa = PBXGroup;
 			children = (
 				A10000000000000000000F01 /* Fiscal.app */,
+				B10000000000000000000001 /* FiscalWidgets.appex */,
 				A10000000000000000001002 /* FiscalUITests.xctest */,
 				A10000000000000000001102 /* FiscalStoreTests.xctest */,
 			);
@@ -113,6 +162,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		B10000000000000000000006 /* FiscalWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B10000000000000000000007 /* Build configuration list for PBXNativeTarget "FiscalWidgets" */;
+			buildPhases = (
+				B10000000000000000000003 /* Sources */,
+				B10000000000000000000004 /* Frameworks */,
+				B10000000000000000000005 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				B10000000000000000000002 /* FiscalWidgets */,
+			);
+			name = FiscalWidgets;
+			packageProductDependencies = (
+				B1000000000000000000000A /* FiscalWidgetKit */,
+			);
+			productName = FiscalWidgets;
+			productReference = B10000000000000000000001 /* FiscalWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		A10000000000000000001008 /* FiscalUITests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A10000000000000000001009 /* Build configuration list for PBXNativeTarget "FiscalUITests" */;
@@ -162,10 +234,12 @@
 				A10000000000000000000701 /* Sources */,
 				A10000000000000000000702 /* Frameworks */,
 				A10000000000000000000703 /* Resources */,
+				B10000000000000000000012 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				B10000000000000000000014 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				A10000000000000000000601 /* Fiscal */,
@@ -188,6 +262,9 @@
 				LastSwiftUpdateCheck = 2700;
 				LastUpgradeCheck = 2700;
 				TargetAttributes = {
+					B10000000000000000000006 = {
+						CreatedOnToolsVersion = 27.0;
+					};
 					A10000000000000000000A01 = {
 						CreatedOnToolsVersion = 27.0;
 					};
@@ -230,11 +307,19 @@
 				A10000000000000000000A01 /* Fiscal */,
 				A10000000000000000001008 /* FiscalUITests */,
 				A10000000000000000001108 /* FiscalStoreTests */,
+				B10000000000000000000006 /* FiscalWidgets */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		B10000000000000000000005 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A10000000000000000001006 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -259,6 +344,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		B10000000000000000000003 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A10000000000000000001004 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -283,6 +375,14 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		B10000000000000000000014 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			platformFilters = (
+				ios,
+			);
+			target = B10000000000000000000006 /* FiscalWidgets */;
+			targetProxy = B10000000000000000000013 /* PBXContainerItemProxy */;
+		};
 		A10000000000000000001007 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = A10000000000000000000A01 /* Fiscal */;
@@ -296,6 +396,70 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		B10000000000000000000008 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Q7QLR2PH2X;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FiscalWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Fiscal;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.byescaleira.fiscal.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B10000000000000000000009 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Q7QLR2PH2X;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FiscalWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Fiscal;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.byescaleira.fiscal.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		A10000000000000000001021 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -621,6 +785,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		B10000000000000000000007 /* Build configuration list for PBXNativeTarget "FiscalWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B10000000000000000000008 /* Debug */,
+				B10000000000000000000009 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		A10000000000000000001009 /* Build configuration list for PBXNativeTarget "FiscalUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -667,6 +840,10 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		B1000000000000000000000A /* FiscalWidgetKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FiscalWidgetKit;
+		};
 		A10000000000000000000D01 /* FiscalKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FiscalKit;

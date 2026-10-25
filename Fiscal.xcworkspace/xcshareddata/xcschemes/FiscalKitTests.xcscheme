@@ -86,6 +86,16 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "FeatureLiveResultsTests"
+               BuildableName = "FeatureLiveResultsTests"
+               BlueprintName = "FeatureLiveResultsTests"
+               ReferencedContainer = "container:FiscalKit">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "FeatureSettingsTests"
                BuildableName = "FeatureSettingsTests"
                BlueprintName = "FeatureSettingsTests"

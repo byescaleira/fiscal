@@ -1,4 +1,6 @@
+import FeatureLiveResults
 import FiscalData
+import FiscalDomain
 import Foundation
 import Observation
 
@@ -24,6 +26,17 @@ public final class FiscalServices {
             opening = nil
             throw error
         }
+    }
+
+    func liveResults() -> LiveResultsModel {
+        #if DEBUG
+            let environment = PushEnvironment.development
+        #else
+            let environment = PushEnvironment.production
+        #endif
+        return LiveResultsModel(
+            service: LiveResultsClient.fromBundle(), activities: RaceActivities(),
+            environment: environment)
     }
 
     public static var launchCloudSync: Bool {
