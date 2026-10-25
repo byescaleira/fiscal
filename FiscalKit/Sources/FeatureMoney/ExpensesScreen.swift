@@ -17,7 +17,9 @@ public struct ExpensesScreen: View {
             AdaptiveList {
                 ExpensesHeroSection()
                 ExpensesMonthsSection()
+                ExpensesYearsSection()
                 ExpensesCategoriesSection()
+                ExpensesSpreadSection()
                 ExpensesFilterSection()
                 ForEach(expenses.groups) { ExpensesMonthSection(group: $0) }
             }
@@ -160,16 +162,68 @@ private struct ExpensesMonthsSection: View {
     }
 }
 
+private struct ExpensesYearsSection: View {
+    @Environment(ExpensesModel.self) private var expenses
+
+    var body: some View {
+        if !expenses.yearPoints.isEmpty {
+            Section {
+                VStack(alignment: .leading, spacing: .spaceM) {
+                    if let headline = expenses.yearHeadline {
+                        Text(verbatim: headline).font(.headline)
+                    }
+                    YearTrendChart(points: expenses.yearPoints)
+                }
+                .padding(.vertical, .spaceXS)
+            } header: {
+                Text("Year by year").sectionTitle()
+            } footer: {
+                Text("Allowance spent in each year of the mandate. Touch a year to see its total.")
+            }
+        }
+    }
+}
+
 private struct ExpensesCategoriesSection: View {
     @Environment(ExpensesModel.self) private var expenses
 
     var body: some View {
+        @Bindable var expenses = expenses
         if !expenses.categories.isEmpty {
             Section {
-                AmountBarsChart(bars: expenses.categories)
+                RankedBarsChart(bars: expenses.categories, selection: $expenses.categoryFilter)
                     .padding(.vertical, .spaceXS)
             } header: {
                 Text("By kind of expense").sectionTitle()
+            } footer: {
+                Text("Touch a kind to show only its receipts. Touch it again to show all.")
+            }
+        }
+    }
+}
+
+private struct ExpensesSpreadSection: View {
+    @Environment(ExpensesModel.self) private var expenses
+
+    var body: some View {
+        if expenses.receipts.count > 1 {
+            Section {
+                VStack(alignment: .leading, spacing: .spaceM) {
+                    if let headline = expenses.receiptsHeadline {
+                        Text(verbatim: headline).font(.headline)
+                    }
+                    ReceiptStripChart(
+                        receipts: expenses.receipts,
+                        medianReais: expenses.medianCents.map { Double($0) / 100 },
+                        category: expenses.categoryFilter)
+                }
+                .padding(.vertical, .spaceXS)
+            } header: {
+                Text("Receipt sizes").sectionTitle()
+            } footer: {
+                Text(
+                    "Each dot is one receipt, from the smallest to the largest. The dashed line is the median. Touch the chart to see a receipt."
+                )
             }
         }
     }

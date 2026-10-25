@@ -9,6 +9,8 @@ struct SalariesSection: View {
     var body: some View {
         if !money.salaries.isEmpty {
             Section {
+                SalaryLollipopChart(salaries: money.salaries)
+                    .padding(.vertical, .spaceXS)
                 ForEach(money.salaries) { SalaryRow(salary: $0) }
             } header: {
                 Text("Salaries").sectionTitle()
@@ -66,7 +68,10 @@ struct CampaignsSection: View {
                     MoneyFigure(label: "Spent", value: money.campaignFigures.spent)
                 }
                 if !money.campaignOrigins.isEmpty {
-                    AmountBarsChart(bars: money.campaignOrigins)
+                    if let headline = money.campaignOriginsHeadline {
+                        Text(verbatim: headline).font(.subheadline.weight(.semibold))
+                    }
+                    OriginColumnsChart(bars: money.campaignOrigins)
                 }
             }
             .padding(.vertical, .spaceXS)
@@ -74,7 +79,9 @@ struct CampaignsSection: View {
             Text("Where campaign money comes from").sectionTitle()
         } footer: {
             VStack(alignment: .leading, spacing: .space2XS) {
-                Text("All candidates in the last general election, by origin of the money.")
+                Text(
+                    "All candidates in the last general election, by origin of the money. Touch a column to see its total."
+                )
                 Text(verbatim: money.sourceLine(for: .campaigns))
             }
         }
@@ -91,7 +98,7 @@ struct RevenueSection: View {
                 if money.revenueStates.isEmpty {
                     MoneyFigure(label: "Collected", value: PublicFormat.missing)
                 } else {
-                    AmountBarsChart(bars: money.revenueStates)
+                    StateTileMap(tiles: money.revenueTiles)
                 }
             }
             .padding(.vertical, .spaceXS)
@@ -99,7 +106,9 @@ struct RevenueSection: View {
             Text("Taxes collected by state").sectionTitle()
         } footer: {
             VStack(alignment: .leading, spacing: .space2XS) {
-                Text("Federal taxes paid in each state in the last full year.")
+                Text(
+                    "Federal taxes paid in each state in the last full year. The darker the state, the more it paid. Touch a state to see its total."
+                )
                 Text(verbatim: money.sourceLine(for: .revenue))
             }
         }
