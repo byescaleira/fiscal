@@ -126,16 +126,11 @@ fiscal.byescaleira.com {
 			roll_size 100mb
 			roll_keep 10
 		}
-		format filter {
-			wrap json
-			fields {
-				request>uri regexp ^/api/v1/live-activities/[0-9A-Fa-f]+ /api/v1/live-activities/REDACTED
-			}
-		}
+		format json
 	}
 }
 ```
 
-O `filter` do log troca um token hex que ainda chegue na URI (de um app antigo usando a rota removida) por `REDACTED`; o contrato novo já não põe token na URL. Rode `caddy validate --config /etc/caddy/Caddyfile` antes de recarregar.
+O contrato não põe token na URL (o DELETE leva o token no corpo), por isso o log JSON do Caddy não precisa de filtro. Rode `caddy validate --config /etc/caddy/Caddyfile` antes de recarregar.
 
 O `rewrite` roda antes de `uri` no Caddy, por isso os matchers usam o caminho original com `/api`.
