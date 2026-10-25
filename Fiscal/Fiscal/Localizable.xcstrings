@@ -571,6 +571,16 @@
         }
       }
     },
+    "App Icon" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ícone do app"
+          }
+        }
+      }
+    },
     "Appearance" : {
       "localizations" : {
         "pt-BR" : {
@@ -4188,6 +4198,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Piauí"
+          }
+        }
+      }
+    },
+    "Pick the icon you like best on your Home Screen." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha o ícone que você prefere na tela de início."
           }
         }
       }

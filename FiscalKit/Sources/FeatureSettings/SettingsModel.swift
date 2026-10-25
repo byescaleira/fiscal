@@ -11,16 +11,20 @@ public final class SettingsModel {
     public var tint: String {
         didSet { defaults.set(tint, forKey: Key.tint) }
     }
-    public let appIcon = AppIcon.standard
+    public private(set) var appIcon: AppIcon
     public let info: AppInfo
     @ObservationIgnored private let defaults: UserDefaults
     @ObservationIgnored private let languageSetting: LanguageSetting
+    @ObservationIgnored private let iconSwitcher: any AppIconSwitching
 
     public init(
         defaults: UserDefaults = .standard, info: AppInfo = .main,
-        languageSetting: LanguageSetting = .shared
+        languageSetting: LanguageSetting = .shared,
+        iconSwitcher: any AppIconSwitching = SystemAppIconSwitcher()
     ) {
         self.defaults = defaults
+        self.iconSwitcher = iconSwitcher
+        appIcon = iconSwitcher.current
         self.info = info
         self.languageSetting = languageSetting
         appearance =
@@ -29,6 +33,18 @@ public final class SettingsModel {
     }
 
     public var locale: Locale { languageSetting.locale }
+
+    public var supportsAlternateIcons: Bool { iconSwitcher.supportsAlternateIcons }
+
+    public func setAppIcon(_ icon: AppIcon) async {
+        guard icon != appIcon else { return }
+        do {
+            try await iconSwitcher.set(icon)
+            appIcon = icon
+        } catch {
+            appIcon = iconSwitcher.current
+        }
+    }
 
     private enum Key {
         static let appearance = "fiscal.settings.appearance"

@@ -7,6 +7,7 @@ struct AppearanceScreen: View {
         SettingsPage("Appearance") {
             ThemeSection()
             AccentColorSection()
+            AppIconSection()
         }
     }
 }

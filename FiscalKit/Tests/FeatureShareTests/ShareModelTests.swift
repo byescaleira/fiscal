@@ -54,7 +54,9 @@ struct ShareModelTests {
         for stance in PoliticalStance.allCases {
             let repositories = try FiscalDatabase.open(inMemory: true).repositories
             try await repositories.lens.save(
-                Lens(themes: [.health, .taxes, .security], stance: stance, artCollection: "brasil-agora"))
+                Lens(
+                    themes: [.health, .taxes, .security], stance: stance,
+                    artCollection: "brasil-agora"))
             for subject in subjects {
                 let model = model(subject, lens: repositories.lens)
                 await model.load()
@@ -76,7 +78,9 @@ struct ShareModelTests {
     @Test func theLensOnlyChangesTheArt() async throws {
         let repositories = try FiscalDatabase.open(inMemory: true).repositories
         try await repositories.lens.save(
-            Lens(themes: [.health, .taxes, .security], stance: .left, artCollection: "acervo-historico"))
+            Lens(
+                themes: [.health, .taxes, .security], stance: .left,
+                artCollection: "acervo-historico"))
         let adapted = model(.person(slug: "lula"), lens: repositories.lens)
         await adapted.load()
         let plain = model(.person(slug: "lula"))
