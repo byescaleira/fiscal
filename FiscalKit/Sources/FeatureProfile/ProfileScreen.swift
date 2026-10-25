@@ -59,6 +59,7 @@ struct ProfileNumbersSection: View {
             }
             .listRowInsets(EdgeInsets())
             .listRowBackground(Color.clear)
+            ProfileNumbersExplainer()
         } header: {
             Text("Term in Numbers").sectionTitle()
         } footer: {

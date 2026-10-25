@@ -15,6 +15,7 @@ public struct VoteDetailScreen: View {
         ) {
             AdaptiveList {
                 VoteHeroSection()
+                VoteExplainSection()
                 VoteSummarySection()
                 VoteRepresentativesSection()
                 VoteGuidanceSection()
