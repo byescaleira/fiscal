@@ -1,0 +1,10 @@
+{
+  "images" : [
+    { "filename" : "FiscalIconMonogram.png", "idiom" : "universal" },
+    {
+      "appearances" : [ { "appearance" : "luminosity", "value" : "dark" } ],
+      "filename" : "FiscalIconMonogram-dark.png", "idiom" : "universal"
+    }
+  ],
+  "info" : { "author" : "xcode", "version" : 1 }
+}
