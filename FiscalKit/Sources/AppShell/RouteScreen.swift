@@ -24,7 +24,14 @@ struct RouteScreen: View {
             ) {
                 ProfileScreen()
             }
-        case .vote(let id): ModelHost(VoteDetailModel(id: id, service: data)) { VoteDetailScreen() }
+        case .vote(let id):
+            ModelHost(
+                VoteDetailModel(
+                    id: id, service: data, lens: session.repositories.lens,
+                    homeUF: UserDefaults.standard.string(forKey: VoteDetailModel.homeUFKey))
+            ) {
+                VoteDetailScreen()
+            }
         case .compare(let slugs):
             ModelHost(CompareModel(slugs: slugs, service: data)) { CompareScreen() }
         case .races: ModelHost(FiscalServices.shared.liveResults()) { LiveResultsScreen() }
