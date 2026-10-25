@@ -173,7 +173,7 @@ struct ArtCatalogTests {
         #expect(catalog.collections.map(\.id) == ["brasil-agora", "acervo-historico"])
         #expect(catalog.collection(id: "acervo-historico")?.isReserve == true)
         #expect(catalog.featuredCollections.map(\.id) == ["brasil-agora"])
-        #expect(catalog.works(in: "acervo-historico").count == 20)
+        #expect(catalog.works(in: "acervo-historico").count == 22)
         let series = try #require(catalog.series)
         #expect(series.map(\.id) == ["civica", "povo", "paisagens", "historia"])
         for item in series {
