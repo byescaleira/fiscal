@@ -14,146 +14,77 @@ struct LensLookStep: View {
                 message: Text(
                     "Colors and art for the app and your cards. Charts, scoreboards and politicians keep their own colors."
                 ))
-            LookPreview()
-            PaletteChoices()
-            CollectionChoices()
-        }
-    }
-}
-
-private struct LookPreview: View {
-    @Environment(LensSetupModel.self) private var setup
-    @Environment(\.appTint) private var tint
-
-    var body: some View {
-        HStack(spacing: .spaceM) {
-            if let work = setup.backdrop {
-                ArtPoster(work: work, width: .artThumb, height: .artThumb, showsCredit: false)
-            }
-            VStack(alignment: .leading, spacing: .spaceS) {
-                if let stance = setup.draft.stance {
-                    LensBadge(stance)
-                }
-                HStack(spacing: .spaceXS) {
-                    ForEach(setup.draft.themes.prefix(2)) { theme in
-                        Chip(theme.title, color: tint)
-                    }
-                }
-            }
-            Spacer(minLength: .zero)
-        }
-        .padding(.spaceM)
-        .background {
-            if let palette = setup.palette {
-                palette.gradient.opacity(.opacitySoft)
-            }
-        }
-        .background(Color.primary.opacity(.opacityFill))
-        .clipShape(.rect(cornerRadius: .radiusL))
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text("Preview of your look"))
-    }
-}
-
-private struct PaletteChoices: View {
-    @Environment(LensSetupModel.self) private var setup
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: .spaceM) {
-            LensChoiceTitle("Palette", detail: "Mirrored pairs. Any palette fits any side.")
-            ForEach(setup.palettePairs, id: \.self) { pair in
-                AdaptiveStack(spacing: .spaceM) {
-                    ForEach(pair) { swatch in
-                        PaletteButton(swatch: swatch)
-                    }
-                }
-            }
-        }
-    }
-}
-
-private struct PaletteButton: View {
-    @Environment(LensSetupModel.self) private var setup
-    let swatch: LensPaletteSwatch
-
-    var body: some View {
-        let isSelected = setup.isChosen(swatch)
-        Button {
-            setup.choose(swatch)
-        } label: {
-            HStack(spacing: .spaceS) {
-                LensSwatch(swatch: swatch)
-                Text(verbatim: swatch.title)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.primary)
-                Spacer(minLength: .zero)
-                SelectionMark(isSelected: isSelected)
-            }
-            .padding(.spaceS)
-            .frame(maxWidth: .infinity)
-            .contentShape(.rect(cornerRadius: .radiusL))
-        }
-        .buttonStyle(.plain)
-        .lensChoice(isSelected: isSelected)
-        .accessibilityLabel(Text(verbatim: swatch.title))
-        .accessibilityValue(Text(verbatim: swatch.pairText))
-        .accessibilityAddTraits(isSelected ? .isSelected : [])
-    }
-}
-
-private struct CollectionChoices: View {
-    @Environment(LensSetupModel.self) private var setup
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: .spaceM) {
-            LensChoiceTitle(
-                "Art", detail: "Public domain works from Brazilian artists, always with credit.")
-            LazyVGrid(
-                columns: [GridItem(.adaptive(minimum: .posterHeight), spacing: .spaceM)],
-                spacing: .spaceM
+            LensLookPreview(
+                palette: setup.palette, theme: setup.draft.themes.first,
+                stance: setup.draft.stance)
+            LensLookCard(
+                "Palette", detail: "Mirrored pairs side by side. Any palette fits any side."
             ) {
-                ForEach(setup.collections) { collection in
-                    CollectionCard(collection: collection)
+                LensPaletteGrid(
+                    swatches: setup.paletteGrid, selected: setup.palette,
+                    suggested: setup.suggestedPalette
+                ) { setup.choose($0) }
+            }
+            LensSetupArtCard()
+            if setup.supportsIcons {
+                LensLookCard(
+                    "App Icon", detail: "One icon for each palette, or the Amazon at dawn."
+                ) {
+                    LensIconStrip(
+                        inset: .spaceL, icons: setup.iconChoices, selected: setup.appIcon,
+                        suggested: setup.suggestedIcon
+                    ) { icon in
+                        Task { await setup.choose(icon) }
+                    }
                 }
             }
         }
     }
 }
 
-private struct CollectionCard: View {
+private struct LensSetupArtCard: View {
     @Environment(LensSetupModel.self) private var setup
-    let collection: ArtCollection
 
     var body: some View {
-        let isSelected = setup.isChosen(collection)
-        let works = setup.works(in: collection)
-        Button {
-            setup.choose(collection)
-        } label: {
-            VStack(alignment: .leading, spacing: .spaceS) {
-                if let lead = works.first {
-                    ArtPoster(work: lead, width: nil, height: .posterWidth)
-                }
-                HStack(alignment: .firstTextBaseline) {
-                    VStack(alignment: .leading, spacing: .space2XS) {
-                        Text(verbatim: collection.name).font(.headline)
-                        Text("\(works.count) works")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                    }
-                    Spacer(minLength: .zero)
-                    SelectionMark(isSelected: isSelected)
-                }
-                .padding(.horizontal, .spaceS)
-                .padding(.bottom, .spaceS)
+        LensLookCard("Art", detail: "Public domain works by Brazilian artists, always with credit.")
+        {
+            if setup.collections.count > 1 {
+                LensCollectionPicker(
+                    inset: .spaceL, collections: setup.collections,
+                    isChosen: setup.isChosen(_:), count: { setup.works(in: $0).count }
+                ) { setup.choose($0) }
             }
-            .padding(.spaceXS)
-            .contentShape(.rect(cornerRadius: .radiusL))
+            LensArtCarousel(inset: .spaceL, works: setup.collectionWorks)
+                .id(setup.collection?.id)
+                .transition(.opacity)
         }
-        .buttonStyle(.plain)
-        .lensChoice(isSelected: isSelected)
-        .accessibilityElement(children: .combine)
-        .accessibilityAddTraits(isSelected ? .isSelected : [])
+        .animation(.smooth, value: setup.collection?.id)
+    }
+}
+
+struct LensLookCard<Content: View>: View {
+    let title: LocalizedStringKey
+    let detail: LocalizedStringKey
+    let content: Content
+
+    init(
+        _ title: LocalizedStringKey, detail: LocalizedStringKey,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.title = title
+        self.detail = detail
+        self.content = content()
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: .spaceM) {
+            LensChoiceTitle(title, detail: detail)
+            content
+        }
+        .padding(.spaceL)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.primary.opacity(.opacityFill))
+        .clipShape(.rect(cornerRadius: .radiusGroup))
     }
 }
 

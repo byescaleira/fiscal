@@ -66,7 +66,11 @@ private struct LensSetupHost: View {
     @Environment(LensContext.self) private var context
 
     var body: some View {
-        ModelHost(LensSetupModel(context: context, catalog: try? ArtCatalog.bundled())) {
+        ModelHost(
+            LensSetupModel(
+                context: context, catalog: try? ArtCatalog.bundled(),
+                icons: SystemAppIconSwitcher())
+        ) {
             LensSetupScreen()
         }
     }

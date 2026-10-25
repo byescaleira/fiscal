@@ -22,6 +22,7 @@ public struct LensScreen: View {
             LensPrivacySection()
         }
         .fontDesign(.rounded)
+        .task { await lens.loadVotes() }
         .navigationTitle("Lens")
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)

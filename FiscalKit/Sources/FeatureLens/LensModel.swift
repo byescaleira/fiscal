@@ -10,12 +10,24 @@ public final class LensModel {
     public var editing: LensSetupModel.Step?
     public var isConfirmingErase = false
     public private(set) var isErasing = false
+    public private(set) var recentVotes: [VoteSummary]?
+    public private(set) var isLoadingVotes = false
+    public private(set) var appIcon: AppIcon
+    public var focusedTheme: Theme?
     public let catalog: ArtCatalog?
     @ObservationIgnored public let context: LensContext
+    @ObservationIgnored private let service: (any PublicDataService)?
+    @ObservationIgnored let icons: (any AppIconSwitching)?
 
-    public init(context: LensContext, catalog: ArtCatalog? = try? ArtCatalog.bundled()) {
+    public init(
+        context: LensContext, catalog: ArtCatalog? = try? ArtCatalog.bundled(),
+        service: (any PublicDataService)? = nil, icons: (any AppIconSwitching)? = nil
+    ) {
         self.context = context
         self.catalog = catalog
+        self.service = service
+        self.icons = icons
+        appIcon = icons?.current ?? .standard
     }
 
     public var lens: Lens? { context.saved }
@@ -76,7 +88,28 @@ public final class LensModel {
     }
 
     public func editor(for step: LensSetupModel.Step) -> LensSetupModel {
-        LensSetupModel(context: context, catalog: catalog, editing: step)
+        LensSetupModel(context: context, catalog: catalog, editing: step, icons: icons)
+    }
+
+    public func loadVotes() async {
+        guard let service, recentVotes == nil, !isLoadingVotes else { return }
+        isLoadingVotes = true
+        recentVotes = (try? await service.recentVotes()) ?? []
+        isLoadingVotes = false
+    }
+
+    public func update(_ change: (inout Lens) -> Void) async {
+        guard var next = lens else { return }
+        change(&next)
+        guard next != lens else { return }
+        await context.save(next)
+    }
+
+    public func setIcon(_ icon: AppIcon) async {
+        guard let icons, icon != appIcon else { return }
+        let previous = appIcon
+        appIcon = icon
+        if (try? await icons.set(icon)) == nil { appIcon = previous }
     }
 
     public func erase() async {
