@@ -54,6 +54,8 @@ func TestInvalidConfigFailsClosed(t *testing.T) {
 		"bad year":      {"INGEST_YEARS": "abc"},
 		"bad range":     {"INGEST_YEARS": "2026-2024"},
 		"tse year":      {"TSE_YEARS": "2024"},
+		"city year":     {"TSE_CITY_YEAR": "2022"},
+		"future city":   {"TSE_CITY_YEAR": "2028"},
 		"uf":            {"INGEST_UFS": "xx"},
 		"source":        {"INGEST_SOURCES": "stf"},
 		"full at":       {"INGEST_FULL_AT": "25:00"},

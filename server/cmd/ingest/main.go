@@ -20,9 +20,10 @@ import (
 
 	"liveresults/internal/ingest"
 	"liveresults/internal/sources/fetch"
+	"liveresults/internal/sources/tse"
 )
 
-var knownSources = []string{"camara", "senado", "tse", "ibge", "receita", "assembleias", "comprova"}
+var knownSources = []string{"camara", "senado", "tse", "ibge", "receita", "assembleias", "comprova", "cidades"}
 
 var knownUFs = map[string]bool{}
 
@@ -109,6 +110,14 @@ func loadConfig(getenv func(string) string, now time.Time) (config, error) {
 	}
 	if c.ingest.TSECandidateYears, err = parseYears(getenv("TSE_CANDIDATE_YEARS"), []int{2018}); err != nil {
 		return c, fmt.Errorf("TSE_CANDIDATE_YEARS: %w", err)
+	}
+	c.ingest.CityYear = 2024
+	if v := strings.TrimSpace(getenv("TSE_CITY_YEAR")); v != "" {
+		y, err := strconv.Atoi(v)
+		if err != nil || !tse.MunicipalYear(y) || y > year {
+			return c, fmt.Errorf("TSE_CITY_YEAR: %q is not a past municipal election year", v)
+		}
+		c.ingest.CityYear = y
 	}
 	if v := strings.TrimSpace(getenv("INGEST_UFS")); v != "" {
 		for _, uf := range strings.Split(strings.ToLower(v), ",") {
@@ -282,7 +291,7 @@ func logReport(kind string, rep ingest.Report, err error) {
 		log.Printf("%s load failed, nothing new published: %v", kind, err)
 		return
 	}
-	log.Printf("%s load ok: people=%d votes=%d checks=%d checkPeople=%d checkLinks=%d checkReviews=%d files=%d written=%d removed=%d json=%s gzip=%s warnings=%d in %s", kind, rep.People, rep.Votes, rep.Checks, rep.CheckPeople, rep.CheckLinks, rep.Reviews, rep.Files, rep.Written, rep.Removed, mib(rep.Bytes), mib(rep.Gzip), len(rep.Warnings), rep.Duration.Round(time.Second))
+	log.Printf("%s load ok: people=%d cities=%d cityPeople=%d votes=%d checks=%d checkPeople=%d checkLinks=%d checkReviews=%d files=%d written=%d removed=%d json=%s gzip=%s warnings=%d in %s", kind, rep.People, rep.Cities, rep.CityPeople, rep.Votes, rep.Checks, rep.CheckPeople, rep.CheckLinks, rep.Reviews, rep.Files, rep.Written, rep.Removed, mib(rep.Bytes), mib(rep.Gzip), len(rep.Warnings), rep.Duration.Round(time.Second))
 }
 
 func mib(n int64) string {
