@@ -186,6 +186,26 @@
             return isEmpty ? nil : ShowcaseChecks.list(for: slug, now: now)
         }
 
+        public func actions(slug: String) async throws -> ActionList? {
+            guard let card = try? legislator(slug) else {
+                try check()
+                return nil
+            }
+            return ShowcaseWeight.actions(
+                for: card, now: now, longText: longText, calendar: calendar)
+        }
+
+        public func highlights() async throws -> HighlightList? {
+            try check()
+            return isEmpty
+                ? nil : ShowcaseWeight.highlights(now: now, longText: longText, sources: sources)
+        }
+
+        public func weightMethod() async throws -> WeightMethod? {
+            try check()
+            return ShowcaseWeight.method(sources: sources)
+        }
+
         public func recentVotes() async throws -> [VoteSummary] {
             try check()
             return isEmpty ? [] : ShowcaseVotes.recent(now: now, longText: longText)

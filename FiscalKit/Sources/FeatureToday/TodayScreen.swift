@@ -12,6 +12,7 @@ public struct TodayScreen: View {
         ScrollView {
             VStack(alignment: .leading, spacing: .spaceXL) {
                 TodayMasthead()
+                TodayHighlightSection()
                 if let board = today.liveBoard {
                     TodayLiveRaceCard(board: board)
                         .transition(.opacity)

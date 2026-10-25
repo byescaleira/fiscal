@@ -27,6 +27,7 @@ public final class TodayModel {
     public private(set) var digest: TodayDigest?
     public private(set) var agenda: Agenda?
     public private(set) var recentVotes: [VoteSummary] = []
+    public private(set) var highlights: HighlightList?
     public private(set) var races: [Race] = []
     public private(set) var racesOffline = false
     public private(set) var followed: [PersonCard] = []
@@ -170,9 +171,11 @@ public final class TodayModel {
             async let today = service.today()
             async let agenda = service.agenda()
             async let votes = service.recentVotes()
+            async let highlights = service.highlights()
             digest = try await today
             if let value = try? await agenda { self.agenda = value }
             if let value = try? await votes { recentVotes = value }
+            if let value = try? await highlights { self.highlights = value }
         }
         followed = await people
         await liveRaces

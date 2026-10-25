@@ -104,6 +104,26 @@ public struct PublicDataClient: PublicDataService {
 
     public func today() async throws -> TodayDigest { try await get(PublicDataPath.today) }
 
+    public func actions(slug: String) async throws -> ActionList? {
+        try await optional(PublicDataPath.actions(slug: slug))
+    }
+
+    public func highlights() async throws -> HighlightList? {
+        try await optional(PublicDataPath.highlights)
+    }
+
+    public func weightMethod() async throws -> WeightMethod? {
+        try await optional(PublicDataPath.weightMethod)
+    }
+
+    private func optional<Value: Decodable>(_ path: String) async throws -> Value? {
+        do {
+            return try await get(path)
+        } catch PublicDataError.notFound {
+            return nil
+        }
+    }
+
     func get<Value: Decodable>(_ path: String) async throws -> Value {
         var request = URLRequest(url: url(for: path))
         request.setValue("application/json", forHTTPHeaderField: "Accept")
