@@ -47,22 +47,24 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | --- | --- | --- |
 | Card ao vivo do Hoje com uma barra de força por lado, sem diferença | no iPhone | TodayLiveRaceCard |
 | Live Activity igual ao card: foto, tag, % apurado, barra de força, fundo do sistema em vidro | no iPhone | RaceLiveActivity |
-| Tela de apuração menos repetitiva, com brancos, nulos e fotos | em andamento | frente races2 |
+| Live Activity cabendo na tela de bloqueio, percentual em destaque | no iPhone | RaceLiveActivity |
+| Apuração mostrando 87% (era o cenário de teste) | no iPhone, só dado real | launch sem cenário |
+| Tela de apuração menos repetitiva, com brancos, nulos, abstenção e fotos | no iPhone | LiveResultsScreen, RaceDetailScreen |
 
 ## Lente e visual
 
 | Pedido | Estado | Onde |
 | --- | --- | --- |
-| "De que lado você está?" na proposta do app | em andamento | frente lens2 |
-| "O seu visual" consistente com o app | em andamento | frente lens2 |
-| Gráfico de "Seus temas" na tela da Lente | em andamento | frente lens2 |
+| "De que lado você está?" na proposta do app | no iPhone | LensStanceSpectrum, LensChoices |
+| "O seu visual" consistente com o app | no iPhone | LensLookPreview, LensLookChoices |
+| Gráfico de "Seus temas" na tela da Lente | no iPhone | LensThemeChart |
 
 ## Gráficos e dinheiro
 
 | Pedido | Estado | Onde |
 | --- | --- | --- |
 | Temas em Fiscalizar com Swift Charts | no iPhone | ThemeCharts |
-| Seções de Dinheiro com gráficos próprios do Swift Charts | em andamento | frente money2 |
+| Seções de Dinheiro com gráficos próprios do Swift Charts | no iPhone | FeatureMoney |
 
 ## Novas funcionalidades
 
@@ -74,6 +76,14 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Antes × durante o mandato para todos | em andamento | frente prices |
 | Explicar em linguagem simples o sentido dos dados, com Foundation Models e selo de interpretação imparcial | em andamento | frente explain |
 | Repercussão no X, Instagram ou TikTok | decisão (custo) | — |
+
+## Backend e dados reais
+
+| Pedido | Estado | Onde |
+| --- | --- | --- |
+| Só dados reais no iPhone | no iPhone (apuração real; o resto depende do deploy) | sem -FiscalDataScenario |
+| Backend que guarda tudo e sincroniza sozinho (SQLite, decisão do usuário) | em andamento | frente store |
+| Deploy da carga na VPS (aprovado pelo usuário) | na fila: depois da carga nacional completa | frente data + coordenador |
 
 ## Ícone
 
