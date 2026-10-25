@@ -27,6 +27,8 @@ O que o Fiscal vai ganhar, por fase, até a 1.0. A visão, os públicos, a Lente
 - **Fase 7:** começa o licenciamento das obras logo depois da [pesquisa de artistas](research/README.md), porque contrato leva semanas. O código dos cards pode ser feito com obras em domínio público enquanto os contratos andam.
 - **Fase 1:** depois de hoje, a apuração vira um card em Hoje durante eleições e uma seção em Fiscalizar.
 
+- **Antes da fase 2:** tirar os outros idiomas ([ADR 0003](adr/0003-portuguese-only.md)) e ligar o setup inicial da Lente com Aparência e arte, que o usuário pediu como prioridade (imagens de artistas primeiro).
+
 ## Critério de pronto da 1.0
 
 - Uma pessoa de qualquer lado instala, escolhe a Lente em menos de um minuto e, na primeira tela, vê o que os seus representantes fizeram nos temas dela, com fonte e data.
