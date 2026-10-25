@@ -7,7 +7,8 @@ import Observation
 
 @MainActor @Observable
 public final class ShareModel {
-    public static let neutralCollection = "brasil-agora"
+    public static let neutralCollection = "acervo-historico"
+    public static let lastSeries = "paisagens"
 
     public let subject: ShareSubject
     public private(set) var phase: PublicDataPhase = .idle
@@ -66,7 +67,11 @@ public final class ShareModel {
 
     public var works: [ArtWork] {
         guard let catalog else { return [] }
-        return collections.flatMap { catalog.works(in: $0.id) }
+        return collections.flatMap { collection in
+            let works = catalog.works(in: collection.id)
+            return works.filter { $0.series != Self.lastSeries }
+                + works.filter { $0.series == Self.lastSeries }
+        }
     }
 
     public var artwork: ShareArtwork? {
@@ -101,8 +106,8 @@ public final class ShareModel {
 
     private var preferredCollectionID: ArtCollection.ID {
         let ids = catalog?.collections.map(\.id) ?? []
-        if let chosen = lens?.artCollection, ids.contains(chosen) { return chosen }
         if ids.contains(Self.neutralCollection) { return Self.neutralCollection }
+        if let chosen = lens?.artCollection, ids.contains(chosen) { return chosen }
         return ids.first ?? Self.neutralCollection
     }
 
