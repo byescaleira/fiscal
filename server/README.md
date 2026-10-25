@@ -154,12 +154,13 @@ Cada arquivo sai com o `.gz` ao lado, por escrita atômica (`internal/publish`, 
 | Variável | Padrão | Uso |
 | --- | --- | --- |
 | `PUBLIC_DIR` | `./public` (`/public` no container) | Raiz pública; os arquivos vão para `PUBLIC_DIR/v1` |
-| `DATA_DIR` | `./data` (`/data` no container, volume `./ingest-data`) | `slugs.json`, `sources.json`, `ingest-status.json`, `comprova.json` (checagens lidas), `checks-review.json` (lista interna de revisão) e `cache/` (downloads condicionais e agregados do TSE); pasta `0700`, arquivos `0600` |
+| `DATA_DIR` | `./data` (`/data` no container, volume `./ingest-data`) | `slugs.json`, `sources.json`, `ingest-status.json`, `comprova.json` (checagens lidas), `checks-review.json` (lista interna de revisão), `cities-review.json` (casamento TSE ↔ IBGE dos municípios, interno) e `cache/` (downloads condicionais e agregados do TSE); pasta `0700`, arquivos `0600` |
 | `INGEST_YEARS` | de `2023` até o ano corrente (a legislatura) | Anos de atividade da Câmara, do Senado e das assembleias: `2026`, `2023-2026` ou `2025,2026` |
 | `TSE_YEARS` | `2022,2026` | Eleições lidas por inteiro (candidaturas, bens, votos por município e contas). A penúltima é a do mandato atual, a última é a dos eleitos aguardando posse |
 | `TSE_CANDIDATE_YEARS` | `2018` | Eleições lidas só para candidaturas e bens (ligação dos senadores eleitos em 2018 e linha do tempo) |
 | `INGEST_UFS` | vazio (todas) | Limita a carga a UFs (`ac,sp`). O presidente e o vice entram sempre. Os arquivos anuais da Câmara são nacionais e são baixados inteiros mesmo assim |
-| `INGEST_SOURCES` | vazio (todas) | Subconjunto de `camara,senado,tse,ibge,receita,assembleias,comprova` |
+| `INGEST_SOURCES` | vazio (todas) | Subconjunto de `camara,senado,tse,ibge,receita,assembleias,comprova,cidades` |
+| `TSE_CITY_YEAR` | `2024` | Eleição municipal lida para prefeitos, vices e vereadores (`2016`, `2020`, `2024`…; nunca no futuro) |
 | `INGEST_FULL_AT` | `06:30` | Hora (Brasília) da carga completa diária; a Câmara regera os arquivos anuais entre 00h e 04h |
 | `INGEST_LIVE_INTERVAL` | `10m` | Intervalo da atualização ao vivo (de 2 min a 1 h) |
 | `INGEST_WORKERS` | `4` | Requisições paralelas às APIs (1 a 16) |
@@ -177,6 +178,7 @@ Configuração inválida derruba o processo no boot (falha fechada). Nenhuma var
 | Senado | `/senador/lista/atual`, `/senador/{c}`, `/mandatos`, `/comissoes?ativo=S`, `/discursos`, `/processo?codigoParlamentarAutor`, `/votacao`, `/plenario/agenda/dia` e `/mes`; CEAPS pela API administrativa (com `codSenador`). Nenhum serviço descontinuado | perfil, mandato, comissões, propostas, discursos, votos, gastos, pauta |
 | TSE | `consulta_cand`, `bem_candidato`, `votacao_candidato_munzona` e `prestacao_de_contas_eleitorais_candidatos` (receitas e despesas contratadas). Lê só os CSVs das UFs pedidas (mais `BR`, nunca `BRASIL`) de dentro dos ZIPs por HTTP Range, filtra os cargos 1 a 8, em Latin-1 com `;`. O agregado fica em cache até o `ETag` do ZIP mudar | governadores, vices, deputados estaduais e distritais, presidente e vice, eleitos de 2026, bens, campanhas, linha do tempo |
 | IBGE | municípios (`view=nivelado`) | `index/places.json` |
+| TSE, eleição municipal (`cidades`) | `consulta_cand_2024.zip` (cargos 11, 12 e 13, só os eleitos: `ELEITO`, `ELEITO POR QP`, `ELEITO POR MÉDIA`, com o 2º turno de prefeito), `bem_candidato_2024.zip` e `votacao_candidato_munzona_2024.zip`, em `https://cdn.tse.jus.br/estatistica/sead/odsele/…`, pelo mesmo leitor de ZIP por HTTP Range, só das UFs pedidas | `places/city/{ibge}.json` e o perfil leve `people/{slug}.json` de cada prefeito, vice e vereador |
 | Receita | `arrecadacao-estado.csv` (último ano com 12 meses; as colunas de detalhe substituem os totais) | `money/overview.json` › `revenue`, ou `null` |
 | Assembleias (SAPL) | AC, AM, PB, PI e RO: parlamentares, legislatura atual e mandatos, autores, tipos e matérias de cada ano | quem está em exercício (com os suplentes no cargo), propostas, contato e foto. Nas outras UFs a cobertura é `notPublished` |
 | Projeto Comprova (CC BY-ND 4.0) | API pública do WordPress, `/wp-json/wp/v2/publicacoes` (100 por página, até `X-WP-TotalPages`, só os campos usados). A primeira carga lê a janela inteira; as seguintes pedem só o que mudou (`modified_after`, com 1 h de folga) e a cada 7 dias a janela é relida inteira, para tirar o que saiu do ar | `people/{slug}/checks.json` (título, selo, data e link; o corpo da checagem não é guardado nem publicado) |
@@ -190,6 +192,14 @@ Configuração inválida derruba o processo no boot (falha fechada). Nenhuma var
 - **Temas e linguagem simples:** radicais escritos para o Fiscal (`internal/publicdata/themes.go`) e regras próprias (`internal/publicdata/plain.go`); a ementa oficial vai sempre ao lado.
 - **Slugs:** nome de urna em kebab-case, com `-uf` só quando o nome se repete em mais de uma UF; o registro em `DATA_DIR/slugs.json` mantém o slug de cada pessoa entre cargas e nunca o passa para outra.
 - **Neutralidade e ausência:** listas em ordem alfabética, sem ranking; dado que a fonte não publica ou que não foi carregado é `null`, com o motivo em `coverage`. Gasto de fornecedor pessoa física sai sem documento (só CNPJ é publicado).
+- **Municípios:**
+  - **Quem entra:** os eleitos de `TSE_CITY_YEAR` por município e cargo. Quando o mesmo arquivo traz uma eleição suplementar com eleito (Oiapoque, 2026), vale a mais recente. Sem eleito no dado aberto (eleição anulada, sub judice, retotalização), o grupo some e o arquivo diz o motivo em `note`; nada é inventado.
+  - **TSE ↔ IBGE:** o código do TSE (`SG_UE`) é casado com o IBGE pelo nome dentro da UF, em etapas e só com candidato único dos dois lados: nome sem acento e sem pontuação; sem as partículas (`d'`, `de`, `do`, `dos`…: "Espigão do Oeste" ↔ "Espigão D'Oeste"); grafia (`th`→`t`, `z`→`s`, `y`→`i`, letra dobrada, nasal final: "São Thomé" ↔ "São Tomé", "Camacã" ↔ "Camacan"); prefixo ("São Luiz" ↔ "São Luiz do Anauá"); e uma tabela curta de renomeações (Boa Saúde ↔ Januário Cicco, RN). O que sobra vai para `DATA_DIR/cities-review.json` (`unmatchedUnit`), junto dos municípios sem eleição (`noElection`: Brasília e Fernando de Noronha) e de cada casamento que não foi exato.
+  - **Todo município do IBGE ganha `places/city/{ibge}.json`**, inclusive os sem eleição, com o motivo em `note`.
+  - **Perfil leve:** nome de urna, nome civil, partido, cargo, mandato (01/01/2025 a 31/12/2028; `null` no início quando a eleição foi suplementar), nascimento, escolaridade, bens e votos de 2024. Campanha e salário ficam `notLoaded`; foto `null`. O título de eleitor só serve de chave interna, como hash (`titulo:…`), igual ao CPF.
+  - **Fora do índice:** prefeitos, vices e vereadores não entram em `index/people.json`, `meta.json › counts` nem `places/{uf}.json`.
+  - **Atualização ao vivo:** reaproveita os arquivos de municípios da última carga completa (não os regrava a cada 10 min), e a limpeza não os apaga.
+  - **Falha:** a fonte é opcional. Se o TSE falhar, a carga usa a última leitura boa em `DATA_DIR/cache/tse`; sem leitura anterior, sai sem arquivos de municípios e com aviso no log.
 - **Falha:** se a Câmara listar menos de 400 deputados, o Senado menos de 70 senadores, o IBGE menos de 5.000 municípios, ou uma fonte obrigatória (Câmara, Senado, TSE das eleições inteiras, IBGE) falhar, a carga para sem publicar. Receita e assembleias que falham viram `null` ou `notLoaded`, com aviso no log. Se o Comprova falhar, a carga segue com as checagens da última leitura boa (`DATA_DIR/comprova.json`), e os arquivos publicados ficam iguais.
 
 ### Checagens (Projeto Comprova)

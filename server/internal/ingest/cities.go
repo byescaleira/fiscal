@@ -234,7 +234,7 @@ func cityPerson(o tse.Official, year int, city string, assetsOK bool, assets map
 		p.Coverage["assets"] = publicdata.Coverage{Kind: "assets", Status: publicdata.CoverageNotLoaded, Source: publicdata.CitySource}
 	}
 	p.Coverage["campaigns"] = publicdata.Coverage{Kind: "campaigns", Status: publicdata.CoverageNotLoaded, Source: publicdata.CitySource}
-	p.Coverage["salary"] = publicdata.Coverage{Kind: "salary", Status: publicdata.CoverageNotPublished, Source: publicdata.CitySource}
+	p.Coverage["salary"] = publicdata.Coverage{Kind: "salary", Status: publicdata.CoverageNotLoaded, Source: publicdata.CitySource}
 	return p
 }
 
