@@ -61,19 +61,8 @@ private struct RaceLockScreen: View {
 
     var body: some View {
         let board = RaceBoard(context: context)
-        VStack(alignment: .leading, spacing: .spaceM) {
-            HStack(spacing: .spaceS) {
-                Text(verbatim: board.title)
-                    .font(.subheadline.weight(.bold))
-                    .foregroundStyle(RaceStyle.primary)
-                    .lineLimit(1)
-                Spacer(minLength: .spaceS)
-                Text(verbatim: board.officeText)
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(RaceStyle.secondary)
-                    .lineLimit(1)
-            }
-            HStack(alignment: .center, spacing: .spaceXS) {
+        VStack(spacing: .spaceS) {
+            HStack(alignment: .center, spacing: .spaceS) {
                 if let first = board.first {
                     ScoreColumn(row: first, score: board.score(first), alignment: .leading)
                 }
@@ -84,13 +73,19 @@ private struct RaceLockScreen: View {
                     ScoreColumn(row: second, score: board.score(second), alignment: .trailing)
                 }
             }
-            ShareBar(board: board, height: .spaceM)
-            Text(verbatim: board.sourceText)
-                .font(.caption2.weight(.medium))
-                .foregroundStyle(RaceStyle.secondary)
-                .lineLimit(1)
+            ShareBar(board: board, height: .spaceS)
+            HStack(spacing: .spaceS) {
+                Text(verbatim: board.officeText)
+                    .lineLimit(1)
+                Spacer(minLength: .spaceS)
+                Text(verbatim: board.sourceText)
+                    .lineLimit(1)
+            }
+            .font(.caption2.weight(.medium))
+            .foregroundStyle(RaceStyle.secondary)
         }
-        .padding(.spaceL)
+        .padding(.horizontal, .spaceL)
+        .padding(.vertical, .spaceM)
         .frame(maxWidth: .infinity)
         .fontDesign(.rounded)
         .partyMarksStill()
@@ -135,21 +130,24 @@ private struct ScoreColumn: View {
 
     var body: some View {
         VStack(alignment: alignment, spacing: .space2XS) {
-            CandidatePhoto(row: row, side: .badgeL)
-            Text(verbatim: score.percent)
-                .font(.scoreboardNumber)
-                .monospacedDigit()
-                .contentTransition(.numericText(value: score.value))
-                .foregroundStyle(RaceStyle.primary)
-                .lineLimit(1)
-                .minimumScaleFactor(0.6)
             HStack(spacing: .spaceXS) {
+                if alignment == .leading { CandidatePhoto(row: row, side: .badgeM) }
+                Text(verbatim: score.percent)
+                    .font(.title2.weight(.heavy))
+                    .monospacedDigit()
+                    .contentTransition(.numericText(value: score.value))
+                    .foregroundStyle(RaceStyle.primary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                if alignment == .trailing { CandidatePhoto(row: row, side: .badgeM) }
+            }
+            HStack(spacing: .space2XS) {
                 if alignment == .trailing { PartyMark(row.party) }
                 Text(verbatim: score.name.uppercased())
                     .font(.caption2.weight(.heavy))
                     .foregroundStyle(RaceStyle.secondary)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.7)
+                    .minimumScaleFactor(0.6)
                 if alignment == .leading { PartyMark(row.party) }
             }
         }
@@ -165,7 +163,7 @@ private struct CenterStatus: View {
     var body: some View {
         VStack(spacing: .space2XS) {
             Text(verbatim: board.centerValue)
-                .font(.headline.weight(.bold))
+                .font(.subheadline.weight(.bold))
                 .foregroundStyle(RaceStyle.primary)
                 .monospacedDigit()
                 .contentTransition(.numericText(value: board.state.sectionsPercent))
