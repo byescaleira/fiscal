@@ -16,6 +16,7 @@ struct FiscalApp: App {
                 FiscalDatabase.initializeCloudSchema()
             }
         #endif
+        FiscalShortcutsSetup.install()
         let settings = SettingsModel()
         _settings = State(initialValue: settings)
         _bootstrap = State(initialValue: FiscalBootstrap())
