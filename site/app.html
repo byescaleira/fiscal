@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fiscal on the Web</title>
+<meta name="description" content="See Fiscal on any computer. Scan the code with your iPhone; your data travels encrypted end to end.">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/icon.png">
+<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/web.css">
+<script src="/vendor/qrcode-generator-1.4.4.min.js" defer></script>
+<script type="module" src="/web.js"></script>
+</head>
+<body data-page="app">
+<nav class="nav">
+<div class="page">
+<a class="brand" href="/"><img class="icon-light" src="/assets/icon.png" alt=""><img class="icon-dark" src="/assets/icon-dark.png" alt="">Fiscal</a>
+<div class="nav-links">
+<a class="button small" href="https://apps.apple.com/app/id0" data-t="getAppShort">Get Fiscal</a>
+</div>
+</div>
+</nav>
+
+<main class="page web" aria-live="polite">
+<section class="web-pair" data-view="pair" hidden>
+<div class="web-pair-copy">
+<span class="chip capsule" data-t="proChip">Fiscal Pro</span>
+<h1 data-t="pairTitle">See Fiscal on this computer</h1>
+<p class="lead" data-t="pairLead">Scan the code with your iPhone. Your data travels encrypted end to end, straight from Fiscal to this browser.</p>
+<ol class="web-steps">
+<li><b>1</b><span data-t="step1">Open the Camera on your iPhone, or Fiscal › Settings › Fiscal on the Web › Scan QR Code.</span></li>
+<li><b>2</b><span data-t="step2">Point it at this code.</span></li>
+<li><b>3</b><span data-t="step3">Tap Show in Fiscal.</span></li>
+</ol>
+<p class="footnote" data-t="privacy">Only this browser holds the key. We can't read your data.</p>
+</div>
+<div class="web-qr-card">
+<div class="web-qr" data-slot="qr" role="img" aria-label="QR code"></div>
+<p class="web-waiting"><i></i><span data-slot="status" data-t="waiting">Waiting for your iPhone…</span></p>
+</div>
+</section>
+
+<section class="web-message" data-view="message" hidden>
+<h1 data-slot="message-title"></h1>
+<p class="lead" data-slot="message-text"></p>
+<button class="button" type="button" data-action="new-code" data-t="newCode">New code</button>
+</section>
+</main>
+
+<div class="dash" data-view="dashboard" hidden>
+<aside class="dash-side">
+<a class="brand" href="/"><img class="icon-light" src="/assets/icon.png" alt=""><img class="icon-dark" src="/assets/icon-dark.png" alt="">Fiscal</a>
+<div class="dash-profile">
+<span class="dash-avatar" data-slot="avatar"></span>
+<div><strong data-slot="profile-name"></strong><span class="footnote" data-slot="side-period"></span></div>
+</div>
+<nav class="dash-nav" aria-label="Fiscal">
+<a href="#overview" data-route="overview"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13h6V4H4zM14 20h6v-9h-6zM4 20h6v-4H4zM14 4v4h6V4z"/></svg><span data-t="navOverview">Overview</span></a>
+<a href="#items" data-route="items"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span data-t="navItems">Items</span><span class="dash-count" data-slot="item-count"></span></a>
+<a href="#groups" data-route="groups" data-nav="groups"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg><span data-t="navGroups">Groups</span></a>
+</nav>
+<div class="dash-side-foot">
+<span class="footnote" data-slot="updated"></span>
+<button class="button small quiet-small" type="button" data-action="sign-out" data-t="signOut">Sign out</button>
+</div>
+</aside>
+<div class="dash-main">
+<p class="web-notice" data-slot="paused" data-t="pausedNotice" hidden>Fiscal on the Web is paused for a few minutes. This page tries again on its own.</p>
+<header class="dash-head">
+<div><span class="eyebrow" data-slot="head-period"></span><h1 data-slot="route-title"></h1></div>
+<span class="chip capsule" data-slot="state" hidden></span>
+</header>
+
+<section data-route-view="overview">
+<div class="dash-kpis" data-slot="metrics"></div>
+<div class="dash-grid">
+<div class="dash-stack">
+<article class="dash-panel span-2" data-panel="daily" data-block="daily" hidden><h2 data-t="dailyTitle">By day</h2><div data-slot="daily"></div></article>
+<article class="dash-panel span-2" data-panel="history" data-block="history" hidden><h2 data-t="historyTitle">Last months</h2><div data-slot="history"></div></article>
+<article class="dash-panel span-pair" data-panel="groups" data-block="groups-top" hidden><div class="panel-head"><h2 data-t="groupsTitle">Top groups</h2><a href="#groups" data-t="seeAll">See all</a></div><div class="dash-split" data-slot="groups-top"></div></article>
+</div>
+<div class="dash-stack">
+<article class="dash-panel" data-panel="glance" data-block="glance" hidden><h2 data-t="glanceTitle">At a glance</h2><div class="dash-glance" data-slot="highlights"></div></article>
+<article class="dash-panel span-pair" data-panel="upcoming" data-block="upcoming" hidden><h2 data-t="upcomingTitle">Coming up</h2><div class="dash-split" data-slot="upcoming"></div></article>
+<article class="dash-panel span-2" data-panel="recent"><div class="panel-head"><h2 data-t="recentTitle">Recent items</h2><a href="#items" data-t="seeAll">See all</a></div><div data-slot="recent"></div></article>
+</div>
+</div>
+</section>
+
+<section data-route-view="items" hidden>
+<div class="dash-toolbar">
+<label class="dash-search"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14zM20 20l-4-4"/></svg><input type="search" data-slot="search" data-t-placeholder="searchPlaceholder" placeholder="Search title, group or tag"></label>
+<div class="dash-segment" role="group" data-slot="status-filter"></div>
+<select class="dash-select" data-slot="group-filter" aria-label="Group" data-t-aria-label="colGroup"></select>
+<span class="footnote dash-summary" data-slot="item-summary"></span>
+</div>
+<div class="dash-panel dash-table-wrap">
+<table class="dash-table">
+<thead><tr>
+<th><button type="button" data-sort="date" data-t="colDate">Date</button></th>
+<th data-t="colTitle">Title</th>
+<th data-t="colGroup">Group</th>
+<th data-t="colStatus">Status</th>
+<th class="num"><button type="button" data-sort="value" data-t="colValue">Value</button></th>
+</tr></thead>
+<tbody data-slot="item-body"></tbody>
+</table>
+<p class="web-empty dash-empty" data-slot="item-empty" data-t="noResults" hidden>No items match these filters.</p>
+</div>
+</section>
+
+<section data-route-view="groups" hidden>
+<div class="dash-grid">
+<article class="dash-panel span-3"><h2 data-t="navGroups">Groups</h2><div class="dash-share" data-slot="group-share"></div><div class="dash-budgets" data-slot="groups"></div></article>
+</div>
+</section>
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,94 @@
+{
+  "urls": {
+    "support": "https://fiscal.byescaleira.com/support",
+    "marketing": "https://fiscal.byescaleira.com",
+    "privacy": "https://fiscal.byescaleira.com/privacy",
+    "terms": "https://fiscal.byescaleira.com/terms"
+  },
+  "locales": {
+    "en-US": {
+      "name": "",
+      "subtitle": "",
+      "promotionalText": "",
+      "keywords": "",
+      "whatsNew": "",
+      "description": ""
+    },
+    "pt-BR": {
+      "name": "",
+      "subtitle": "",
+      "promotionalText": "",
+      "keywords": "",
+      "whatsNew": "",
+      "description": ""
+    },
+    "es-ES": {
+      "name": "",
+      "subtitle": "",
+      "promotionalText": "",
+      "keywords": "",
+      "whatsNew": "",
+      "description": ""
+    },
+    "de-DE": {
+      "name": "",
+      "subtitle": "",
+      "promotionalText": "",
+      "keywords": "",
+      "whatsNew": "",
+      "description": ""
+    },
+    "fr-FR": {
+      "name": "",
+      "subtitle": "",
+      "promotionalText": "",
+      "keywords": "",
+      "whatsNew": "",
+      "description": ""
+    },
+    "it": {
+      "name": "",
+      "subtitle": "",
+      "promotionalText": "",
+      "keywords": "",
+      "whatsNew": "",
+      "description": ""
+    },
+    "ja": {
+      "name": "",
+      "subtitle": "",
+      "promotionalText": "",
+      "keywords": "",
+      "whatsNew": "",
+      "description": ""
+    },
+    "ko": {
+      "name": "",
+      "subtitle": "",
+      "promotionalText": "",
+      "keywords": "",
+      "whatsNew": "",
+      "description": ""
+    },
+    "zh-Hans": {
+      "name": "",
+      "subtitle": "",
+      "promotionalText": "",
+      "keywords": "",
+      "whatsNew": "",
+      "description": ""
+    },
+    "ru": {
+      "name": "",
+      "subtitle": "",
+      "promotionalText": "",
+      "keywords": "",
+      "whatsNew": "",
+      "description": ""
+    }
+  },
+  "review": {
+    "notes": "",
+    "contact": ""
+  }
+}

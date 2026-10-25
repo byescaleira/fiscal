@@ -1,0 +1,10 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["Q7QLR2PH2X.com.byescaleira.fiscal"],
+        "components": [{ "/": "/link" }]
+      }
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+services:
+  bridge:
+    build: .
+    image: fiscal-bridge
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3110:3110"
+    environment:
+      ALLOWED_ORIGIN: https://fiscal.byescaleira.com
+      BRIDGE_ADMIN_TOKEN: ${BRIDGE_ADMIN_TOKEN:-}
+    volumes:
+      - data:/data
+    networks:
+      default:
+      control:
+        aliases:
+          - fiscal-bridge
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 768m
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3110/bridge/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  data:
+
+networks:
+  control:
+    name: fiscal-control

@@ -1,0 +1,31 @@
+{
+  "app": "Fiscal",
+  "include": [
+    "^FiscalKit/Sources/",
+    "^FiscalKit/Tests/",
+    "^Fiscal/"
+  ],
+  "exclude": [
+    "/FiscalResource/FiscalResourceAnimation\\.swift$",
+    "Package\\.swift$",
+    "/FiscalMock/",
+    "/FiscalPreview/"
+  ],
+  "catalogs": [
+    "Fiscal/Fiscal/Localizable.xcstrings",
+    "Fiscal/Fiscal/InfoPlist.xcstrings",
+    "Fiscal/Fiscal/AppShortcuts.xcstrings",
+    "Fiscal/FiscalWidgets/Localizable.xcstrings"
+  ],
+  "swiftlintConfig": ".swiftlint.yml",
+  "swiftlintResolver": "scripts/install-swiftlint.sh",
+  "allow": {
+    "literal-color": [
+      "/FiscalDesignSystem/",
+      "/FiscalDesignSystemTests/"
+    ],
+    "foreign-localization": [
+      "/FiscalDomain/Localization/"
+    ]
+  }
+}

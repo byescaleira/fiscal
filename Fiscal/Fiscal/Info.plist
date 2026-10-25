@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>FiscalAppStoreID</key>
+	<string></string>
+	<key>FiscalHelpURL</key>
+	<string></string>
+	<key>FiscalPrivacyURL</key>
+	<string></string>
+	<key>FiscalSupportEmail</key>
+	<string></string>
+	<key>FiscalTermsURL</key>
+	<string></string>
+	<key>FiscalWebBridgeURL</key>
+	<string></string>
+	<key>FiscalWebsiteURL</key>
+	<string></string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.byescaleira.fiscal</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fiscal</string>
+			</array>
+		</dict>
+	</array>
+	<key>NSUbiquitousContainers</key>
+	<dict>
+		<key>iCloud.fiscal</key>
+		<dict>
+			<key>NSUbiquitousContainerIsDocumentScopePublic</key>
+			<true/>
+			<key>NSUbiquitousContainerName</key>
+			<string>Fiscal</string>
+			<key>NSUbiquitousContainerSupportedFolderLevels</key>
+			<string>Any</string>
+		</dict>
+	</dict>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
+</dict>
+</plist>

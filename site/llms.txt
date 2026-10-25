@@ -1,0 +1,21 @@
+# Fiscal
+
+> Fiscal is a private app for iPhone and iPad that keeps what matters in one calm place, ready the moment you open it. No account, no ads, no tracking: data stays on the person's devices and in their own iCloud.
+
+- Platforms: iPhone and iPad today; Mac and Apple Vision Pro are coming soon.
+- Languages: English, Portuguese, Spanish, German, French, Italian, Japanese, Korean, Chinese and Russian.
+- Price: free to download, with unlimited items, iCloud sync, themes, accent colors and guides. Fiscal Pro (monthly or yearly, 7 days free) adds Fiscal on the Web, exclusive app icons and every Pro feature as it arrives.
+- Privacy: no sign-up, no analytics or crash-reporting SDKs, no tracking. Sync uses the person's private iCloud database. Fiscal on the Web is optional and end-to-end encrypted; the bridge keeps the encrypted summary for at most 24 hours and cannot read it.
+- Made by Rafael Escaleira (byescaleira). Support: support@byescaleira.com.
+
+## Pages
+
+- [Home](https://fiscal.byescaleira.com/): what Fiscal does, devices, tips, Free and Pro, and frequently asked questions
+- [Support](https://fiscal.byescaleira.com/support): contact, iCloud sync and subscriptions
+- [Privacy Policy](https://fiscal.byescaleira.com/privacy): what the app stores, where, and every network request it makes
+- [Terms of Use](https://fiscal.byescaleira.com/terms): terms, subscriptions and in-app purchases
+- [Fiscal on the Web](https://fiscal.byescaleira.com/app): read-only dashboard on a computer, paired with the iPhone by QR code
+
+## Optional
+
+- [App Store](https://apps.apple.com/app/id0): download Fiscal

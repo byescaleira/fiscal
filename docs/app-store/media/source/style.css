@@ -1,0 +1,89 @@
+@font-face { font-family: "Fiscal Rounded"; font-weight: 400; src: local("SF Pro Rounded Regular"), url("file:///Library/Fonts/SF-Pro-Rounded-Regular.otf"); }
+@font-face { font-family: "Fiscal Rounded"; font-weight: 500; src: local("SF Pro Rounded Medium"), url("file:///Library/Fonts/SF-Pro-Rounded-Medium.otf"); }
+@font-face { font-family: "Fiscal Rounded"; font-weight: 600; src: local("SF Pro Rounded Semibold"), url("file:///Library/Fonts/SF-Pro-Rounded-Semibold.otf"); }
+@font-face { font-family: "Fiscal Rounded"; font-weight: 700; src: local("SF Pro Rounded Bold"), url("file:///Library/Fonts/SF-Pro-Rounded-Bold.otf"); }
+@font-face { font-family: "Fiscal Rounded"; font-weight: 800; src: local("SF Pro Rounded Heavy"), url("file:///Library/Fonts/SF-Pro-Rounded-Heavy.otf"); }
+@font-face { font-family: "Fiscal Rounded"; font-weight: 900; src: local("SF Pro Rounded Black"), url("file:///Library/Fonts/SF-Pro-Rounded-Black.otf"); }
+
+:root {
+  --mustard: #b8841c;
+  --orange: #c2602a;
+  --rust: #a63d2c;
+  --olive: #5f7a2e;
+  --teal: #2a7069;
+  --denim: #3d5f86;
+  --plum: #74415f;
+  --brown: #7e5536;
+  --cream: #f0e6d2;
+  --paper: #fbf5ea;
+  --ink: #1c1c1e;
+  --metal: #5c1a26;
+  --metal-light: #8c3443;
+  --metal-dark: #33080f;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { width: var(--w); height: var(--h); overflow: hidden; }
+
+body {
+  position: relative;
+  font-family: "Fiscal Rounded", ui-rounded, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: var(--paper);
+  background:
+    radial-gradient(90% 55% at 50% 0%, color-mix(in srgb, var(--bg) 70%, white 30%), transparent 70%),
+    radial-gradient(80% 60% at 100% 100%, color-mix(in srgb, var(--bg) 75%, black 25%), transparent 70%),
+    var(--bg);
+}
+
+body.light { color: var(--ink); }
+
+.copy { position: absolute; text-align: center; }
+.copy h1 { font-weight: 800; letter-spacing: -0.02em; line-height: 1.02; text-wrap: balance; }
+.copy p { font-weight: 600; line-height: 1.22; opacity: 0.86; text-wrap: balance; margin-top: 0.55em; }
+
+.shot { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+
+.iphone {
+  position: absolute;
+  padding: calc(var(--d) * 0.017);
+  border-radius: calc(var(--d) * 0.168);
+  background:
+    linear-gradient(90deg, var(--metal-dark), var(--metal-light) 3%, var(--metal) 9%, var(--metal) 91%, var(--metal-light) 97%, var(--metal-dark)),
+    var(--metal);
+  box-shadow:
+    inset 0 0 0 calc(var(--d) * 0.0015) rgba(255, 255, 255, 0.2),
+    inset 0 calc(var(--d) * 0.003) calc(var(--d) * 0.004) rgba(255, 255, 255, 0.25),
+    0 calc(var(--d) * 0.08) calc(var(--d) * 0.14) calc(var(--d) * -0.05) rgba(20, 4, 8, 0.65),
+    0 calc(var(--d) * 0.03) calc(var(--d) * 0.06) calc(var(--d) * -0.02) rgba(0, 0, 0, 0.35);
+}
+
+.iphone .bezel { padding: calc(var(--d) * 0.022); border-radius: calc(var(--d) * 0.151); background: #050505; }
+.iphone .screen { position: relative; width: var(--d); height: calc(var(--d) * 2868 / 1320); border-radius: calc(var(--d) * 0.13); overflow: hidden; background: #f2f2f7; }
+.iphone .island { position: absolute; left: 35.76%; width: 28.48%; top: 1.464%; height: 3.84%; border-radius: 999px; background: #000; }
+.iphone .button { position: absolute; width: calc(var(--d) * 0.011); border-radius: calc(var(--d) * 0.004); background: linear-gradient(90deg, var(--metal-dark), var(--metal-light), var(--metal)); }
+.iphone .action { left: calc(var(--d) * -0.008); top: 17%; height: 4.5%; }
+.iphone .up { left: calc(var(--d) * -0.008); top: 24.5%; height: 7.5%; }
+.iphone .down { left: calc(var(--d) * -0.008); top: 33.5%; height: 7.5%; }
+.iphone .power { right: calc(var(--d) * -0.008); top: 27%; height: 11%; transform: scaleX(-1); }
+
+.ipad {
+  position: absolute;
+  padding: calc(var(--d) * 0.034);
+  border-radius: calc(var(--d) * 0.062);
+  background: #0b0b0c;
+  box-shadow:
+    inset 0 0 0 calc(var(--d) * 0.005) #c9cacc,
+    inset 0 0 0 calc(var(--d) * 0.007) #8e9093,
+    0 calc(var(--d) * 0.06) calc(var(--d) * 0.1) calc(var(--d) * -0.04) rgba(0, 0, 0, 0.55);
+}
+
+.ipad .screen { position: relative; width: var(--d); height: calc(var(--d) * var(--ratio)); border-radius: calc(var(--d) * 0.03); overflow: hidden; background: #f2f2f7; }
+
+.card {
+  position: absolute;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  box-shadow: 0 calc(var(--s) * 40px) calc(var(--s) * 90px) calc(var(--s) * -24px) rgba(0, 0, 0, 0.45), 0 0 0 calc(var(--s) * 2px) rgba(0, 0, 0, 0.04);
+}

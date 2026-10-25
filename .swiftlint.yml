@@ -1,0 +1,98 @@
+included:
+  - Fiscal/Fiscal
+  - Fiscal/Shared
+  - Fiscal/FiscalWidgets
+  - Fiscal/FiscalUITests
+  - Fiscal/FiscalStoreTests
+  - FiscalKit/Sources
+  - FiscalKit/Tests
+  - FiscalKit/Package.swift
+
+excluded:
+  - FiscalKit/.build
+  - FiscalKit/.swiftpm
+  - .tools
+
+only_rules:
+  - blanket_disable_command
+  - compiler_protocol_init
+  - custom_rules
+  - discarded_notification_center_observer
+  - duplicate_conditions
+  - duplicate_enum_cases
+  - duplicate_imports
+  - duplicated_key_in_dictionary_literal
+  - fatal_error_message
+  - file_length
+  - force_cast
+  - force_try
+  - force_unwrapping
+  - function_parameter_count
+  - identical_operands
+  - implicitly_unwrapped_optional
+  - invalid_swiftlint_command
+  - notification_center_detachment
+  - orphaned_doc_comment
+  - overridden_super_call
+  - prohibited_super_call
+  - unhandled_throwing_task
+  - unused_closure_parameter
+  - unused_control_flow_label
+  - unused_optional_binding
+  - unused_setter_value
+  - type_body_length
+  - weak_delegate
+
+custom_rules:
+  no_comments:
+    name: No comments
+    message: Comments are not allowed. Express intent through names and structure.
+    regex: '(//|/\*)'
+    match_kinds:
+      - comment
+      - doccomment
+    excluded: '.*Package\.swift$'
+    severity: error
+
+  design_token_spacing:
+    name: Design token spacing
+    message: Use os tokens de espaçamento do FiscalDesignSystem (.spaceS, .spaceM...).
+    regex: '(spacing: -?[1-9][0-9]*\b|\.padding\((\.[a-zA-Z]+, |\[[^\]]*\], )?-?[1-9][0-9]*\)|minLength: [1-9])'
+    included: '.*/(Sources/(Feature|AppShell|FiscalPreview)|Fiscal/(Fiscal|Shared|FiscalWidgets)/).*\.swift$'
+    severity: error
+  design_token_radius:
+    name: Design token radius
+    message: Use os tokens de raio do FiscalDesignSystem (.radiusS, .radiusM...).
+    regex: 'cornerRadius: [1-9][0-9]*\b'
+    included: '.*/(Sources/(Feature|AppShell|FiscalPreview)|Fiscal/(Fiscal|Shared|FiscalWidgets)/).*\.swift$'
+    severity: error
+  design_token_opacity:
+    name: Design token opacity
+    message: Use os tokens de opacidade do FiscalDesignSystem (.opacityTint, .opacityFill...).
+    regex: '\.opacity\(0\.[0-9]+\)'
+    included: '.*/(Sources/(Feature|AppShell|FiscalPreview)|Fiscal/(Fiscal|Shared|FiscalWidgets)/).*\.swift$'
+    severity: error
+  design_token_font:
+    name: Design token font
+    message: Use .icon(_:weight:) ou os tokens de tipografia do FiscalDesignSystem.
+    regex: '\.system\(size: [0-9]'
+    included: '.*/(Sources/(Feature|AppShell|FiscalPreview)|Fiscal/(Fiscal|Shared|FiscalWidgets)/).*\.swift$'
+    severity: error
+
+file_length:
+  warning: 400
+  error: 400
+function_parameter_count:
+  warning: 7
+  error: 7
+type_body_length:
+  warning: 250
+  error: 250
+force_cast: error
+force_try: error
+force_unwrapping: error
+implicitly_unwrapped_optional: error
+strict: true
+allow_zero_lintable_files: false
+check_for_updates: false
+reporter: xcode
