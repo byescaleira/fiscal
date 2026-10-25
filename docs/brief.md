@@ -36,7 +36,7 @@ O Brasil está polarizado, e o Fiscal assume isso de frente: **o app se adapta a
    - a paleta e a arte são neutras;
    - a "Outra lente" fica sempre aberta.
 
-   Embaixo, o app explica em uma frase que adapta o que mostra primeiro, as cores, a arte e os destaques, que os números são os mesmos para todo mundo e que a escolha não sai do iPhone. "Prefiro não dizer" existe, menor, e funciona como Imparcial.
+   Embaixo, o app explica que adapta o que mostra primeiro, as cores, a arte e os destaques, e que os números são os mesmos para todo mundo. Um aviso de privacidade, em destaque e com ícone de cadeado, diz com estas palavras: **"Sua escolha fica só neste iPhone. Ela não vai para nenhum servidor, não entra no iCloud nem em backup, não é compartilhada e o Fiscal não sabe qual é."** "Prefiro não dizer" existe, menor, e funciona como Imparcial.
 2. **"O que mais importa para você?"** Uma grade de 12 temas, já pré-marcada com os temas que costumam importar para aquele lado. A pessoa ajusta: de 3 a 5 temas.
 3. **"O seu visual."** Coleção de arte, paleta e ícone sugeridos para o lado, com prévia real, e a possibilidade de trocar.
 
@@ -56,7 +56,13 @@ O Brasil está polarizado, e o Fiscal assume isso de frente: **o app se adapta a
 - Na loja e no setup, o app diz com todas as letras que se adapta ao lado de quem usa.
 
 - **Outra lente:** em qualquer votação ou perfil, um botão mostra o mesmo fato pelos temas do outro público. É o recurso de ponte do app: entender por que o outro lado se importa com aquela votação.
-- **Privacidade:** o lado, a Lente e as escolhas visuais ficam **só no aparelho**, com consentimento explícito no setup. Nunca vão para o servidor, nunca entram em telemetria e nunca saem no backup do servidor. Opinião política é dado pessoal sensível na LGPD (art. 5º, II, e art. 11).
+- **Privacidade (inegociável):** o lado, os temas e as escolhas visuais ficam **só neste aparelho**:
+  - num banco local separado, **fora do CloudKit e do iCloud**, com o arquivo marcado como excluído do backup (`isExcludedFromBackup`);
+  - nunca vão em requisição ao servidor, em log, em telemetria, em analytics, no `TipKit` ou em notificação;
+  - nunca aparecem num card de compartilhar nem em metadados de imagem exportada;
+  - trocar de iPhone ou reinstalar o app pede a escolha de novo, e o app avisa disso no setup;
+  - o selo "Lente: …" e o aviso do cadeado repetem a regra em Ajustes › Lente, com um botão "Apagar minha escolha";
+  - na App Store, o rótulo de privacidade continua "Dados não coletados". Nunca vão para o servidor, nunca entram em telemetria e nunca saem no backup do servidor. Opinião política é dado pessoal sensível na LGPD (art. 5º, II, e art. 11).
   - Notificações não são personalizadas (decisão do usuário em 2026-10-25): são por feature, iguais para todo mundo, por canal de broadcast do APNs, e só quando há necessidade ou variação significativa dos dados. A Lente nunca vira alerta, então nada da Lente sai do aparelho.
 
 ## Aparência pela Lente

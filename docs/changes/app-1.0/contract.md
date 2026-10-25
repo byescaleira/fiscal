@@ -149,7 +149,12 @@ TodayDigest {
 - **Dados:**
   - `FiscalData/PublicData/PublicDataClient`, com `URLCache` e `ETag`, a partir da base `FiscalAPIURL` do Info.plist;
   - `ShowcasePublicData` em debug, com cenários por `-FiscalDataScenario <nome>`;
-  - a Lente e os seguidos em SwiftData no aparelho, nunca no servidor.
+  - **a Lente só no aparelho:**
+    - num `ModelContainer` SwiftData separado e local (`cloudKitDatabase: .none`), com o arquivo marcado `isExcludedFromBackup`;
+    - nunca em requisição, log, telemetria, notificação ou card;
+    - "Apagar minha escolha" em Ajustes;
+    - teste que garante que o store da Lente não usa CloudKit e está fora do backup;
+  - os seguidos ficam no aparelho; o iCloud privado é opcional e nunca leva a Lente.
 - **Aparência:** `PartyPalette` para candidatos; paletas da Lente em pares espelhados; arte via `art-credits.json` no `FiscalResource`.
 - **Só português ([ADR 0003](../../adr/0003-portuguese-only.md)):** o catálogo fica só com `pt-BR` (chaves em inglês) e sai a escolha de idioma dos Ajustes.
 - **Gratuito** (decisão do usuário em 2026-10-25): sem assinatura, Pro, paywall nem StoreKit. Saem do template o `Fiscal.storekit`, `FiscalStoreTests`, os textos e as telas de compra, e o que mais depender disso.
