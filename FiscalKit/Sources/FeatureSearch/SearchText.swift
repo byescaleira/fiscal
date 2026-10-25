@@ -29,6 +29,9 @@ enum SearchText {
         case .governor: "governador governadora"
         case .viceGovernor: "vice governador governadora"
         case .stateDeputy: "deputado deputada estadual distrital assembleia"
+        case .mayor: "prefeito prefeita prefeitura"
+        case .viceMayor: "vice prefeito prefeita prefeitura"
+        case .cityCouncilor: "vereador vereadora camara municipal"
         }
     }
 

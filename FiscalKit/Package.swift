@@ -20,7 +20,11 @@ let package = Package(
         .target(name: "FiscalData", dependencies: ["FiscalDomain"]),
         .target(name: "FiscalDesignSystem"),
         .target(
-            name: "FiscalResource", resources: [.process("Assets"), .process("art-credits.json")]),
+            name: "FiscalResource",
+            resources: [
+                .process("Assets"), .process("art-credits.json"),
+                .process("showcase-people.json"), .process("showcase-cities.json"),
+            ]),
         .target(
             name: "FeatureCore",
             dependencies: [
@@ -63,7 +67,7 @@ let package = Package(
         .target(
             name: "AppShell",
             dependencies: [
-                "FiscalDomain", "FiscalData", "FiscalDesignSystem", "FeatureCore",
+                "FiscalDomain", "FiscalData", "FiscalDesignSystem", "FiscalResource", "FeatureCore",
                 "FeatureGuides", "FeatureLiveResults", "FeatureSettings", "FeatureToday",
                 "FeatureMine", "FeatureProfile", "FeatureVotes", "FeatureMoney", "FeatureSearch",
                 "FeatureLens", "FeatureShare",
@@ -118,6 +122,8 @@ let package = Package(
             dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureSettings"]),
         .testTarget(
             name: "AppShellTests",
-            dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "AppShell"]),
+            dependencies: [
+                "FiscalDomain", "FiscalData", "FiscalResource", "FeatureCore", "AppShell",
+            ]),
     ]
 )

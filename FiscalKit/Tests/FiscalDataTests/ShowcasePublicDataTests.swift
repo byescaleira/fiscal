@@ -25,7 +25,9 @@ struct ShowcasePublicDataTests {
         #expect(names == names.sorted { $0.localizedStandardCompare($1) == .orderedAscending })
         #expect(
             Set(people.map(\.party)).isSuperset(of: ["PT", "PL", "PSOL", "NOVO", "UNIÃO", "PSB"]))
-        #expect(Set(people.map(\.office)) == Set(Office.allCases.filter { $0 != .viceGovernor }))
+        #expect(
+            Set(people.map(\.office))
+                == Set(Office.allCases.filter { $0 != .viceGovernor && !$0.isMunicipal }))
         #expect(Set(people.map(\.status)) == Set(PersonStatus.allCases))
     }
 
@@ -109,5 +111,87 @@ struct ShowcasePublicDataTests {
         let roundTrip = try PublicDataCoding.decoder().decode(
             MoneyOverview.self, from: PublicDataCoding.encoder().encode(money))
         #expect(roundTrip == money)
+    }
+
+    @Test func aCapitalOpensWithItsCityHallAndCouncil() async throws {
+        let data = showcase(.normal)
+        #expect(try await data.places().contains { $0.code == "1200401" })
+        let city = try #require(try await data.cityRepresentatives(code: "1200401"))
+        #expect(city.name == "Rio Branco")
+        #expect(city.uf == "ac")
+        #expect(city.groups.map(\.title) == ["Prefeitura", "Câmara Municipal"])
+        #expect(city.groups.allSatisfy { $0.level == .city })
+        let hall = try #require(city.groups.first)
+        #expect(hall.people.map(\.name) == ["Tião Bocalom", "Alysson Bestene"])
+        #expect(hall.people.map(\.office) == [.mayor, .viceMayor])
+        let council = try #require(city.groups.last).people.map(\.name)
+        #expect(council.count == 21)
+        #expect(council == council.sorted { $0.localizedStandardCompare($1) == .orderedAscending })
+        #expect(city.sources.map(\.id) == [Source.municipalElectionID])
+        let mayor = try await data.profile(slug: try #require(hall.people.first).slug)
+        #expect(mayor.office == .mayor)
+        #expect(mayor.numbers.assetsCents == nil)
+        #expect(mayor.mandate?.end == CalendarDay(year: 2_028, month: 12, day: 31))
+    }
+
+    @Test func citiesWithoutAnElectionExplainWhy() async throws {
+        let data = showcase(.normal)
+        let brasilia = try #require(try await data.cityRepresentatives(code: "5300108"))
+        #expect(brasilia.groups.isEmpty)
+        #expect(brasilia.note?.contains("Distrito Federal") == true)
+        #expect(try await data.cityRepresentatives(code: "9999999") == nil)
+        #expect(try await showcase(.empty).cityRepresentatives(code: "1200401") == nil)
+        await #expect(throws: PublicDataError.offline) {
+            try await showcase(.offline).cityRepresentatives(code: "1200401")
+        }
+    }
+
+    @Test func longNamesReachTheCityCouncil() async throws {
+        let data = showcase(.longNames)
+        let city = try #require(try await data.cityRepresentatives(code: "1400100"))
+        let council = try #require(city.groups.last).people
+        let long = try #require(council.first { $0.name.count > 45 })
+        #expect(long.slug.hasPrefix("teste-"))
+        #expect(try await data.profile(slug: long.slug).name == long.name)
+    }
+
+    @Test func theFullRosterAddsEveryoneWithoutDuplicatingTheCurated() async throws {
+        let roster = ShowcaseRoster(
+            people: {
+                [
+                    PersonCard(
+                        slug: "flavio-bolsonaro", name: "Flávio Bolsonaro", office: .senator,
+                        uf: "rj", party: "PL", photo: nil, status: .inOffice),
+                    PersonCard(
+                        slug: "tarcisio", name: "Tarcísio", office: .governor, uf: "sp",
+                        party: "REPUBLICANOS", photo: nil, status: .inOffice),
+                    PersonCard(
+                        slug: "lula", name: "Lula", office: .president, uf: "br", party: "PT",
+                        photo: nil, status: .inOffice),
+                ]
+            }, places: { [] }, city: { _ in nil })
+        let data = ShowcasePublicData(scenario: .normal, now: now, roster: roster)
+        let people = try await data.people()
+        #expect(people.filter { $0.slug == "lula" }.count == 1)
+        #expect(!people.contains { $0.slug == "tarcisio" })
+        #expect(people.contains { $0.slug == "flavio-bolsonaro" })
+        let rio = try await data.representatives(uf: "rj")
+        #expect(rio.groups.contains { $0.people.contains { $0.slug == "flavio-bolsonaro" } })
+        let flavio = try await data.profile(slug: "flavio-bolsonaro")
+        #expect(flavio.numbers.attendance == nil)
+        #expect(flavio.numbers.lastElectionVotes == nil)
+        await #expect(throws: PublicDataError.notFound) {
+            try await data.votes(slug: "flavio-bolsonaro", year: 2_026)
+        }
+        #expect(try await data.votes(slug: "tabata-amaral", year: 2_026).total > 0)
+    }
+
+    @Test func rosterSlugsAreStableAndUniqueInsideACity() {
+        let place = Place(code: "2611606", name: "Recife", uf: "pe")
+        let cards = ShowcaseRoster.cards(
+            [(.cityCouncilor, "Ana Lúcia", "PT"), (.cityCouncilor, "Ana Lucia", "PL")], in: place)
+        #expect(cards.map(\.slug) == ["ana-lucia-2611606", "ana-lucia-2611606-2"])
+        #expect(ShowcaseRoster.code(in: "ana-lucia-2611606-2") == "2611606")
+        #expect(ShowcaseRoster.code(in: "lula") == nil)
     }
 }

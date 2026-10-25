@@ -231,7 +231,9 @@ public final class TodayModel {
         switch office {
         case .federalDeputy: .camara
         case .senator: .senado
-        case .president, .vicePresident, .governor, .viceGovernor, .stateDeputy: nil
+        case .president, .vicePresident, .governor, .viceGovernor, .stateDeputy, .mayor,
+            .viceMayor, .cityCouncilor:
+            nil
         }
     }
 }

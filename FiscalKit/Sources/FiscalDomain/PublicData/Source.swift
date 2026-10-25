@@ -1,6 +1,9 @@
 import Foundation
 
 public struct Source: Codable, Hashable, Identifiable, Sendable {
+    public static let electionID = "tse"
+    public static let municipalElectionID = "tse-cidades"
+
     public let id: String
     public let name: String
     public let url: URL?

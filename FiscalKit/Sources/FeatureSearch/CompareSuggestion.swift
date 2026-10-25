@@ -54,6 +54,9 @@ extension Office {
         case .governor: String(appLocalized: "Governors")
         case .viceGovernor: String(appLocalized: "Vice governors")
         case .stateDeputy: String(appLocalized: "State deputies")
+        case .mayor: String(appLocalized: "Mayors")
+        case .viceMayor: String(appLocalized: "Vice mayors")
+        case .cityCouncilor: String(appLocalized: "City councilors")
         }
     }
 }

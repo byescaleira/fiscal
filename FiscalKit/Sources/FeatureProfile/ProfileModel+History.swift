@@ -43,7 +43,12 @@ extension ProfileModel {
     public func money(_ cents: Int?) -> String { PublicFormat.money(cents: cents) }
 
     public func campaignDetail(_ campaign: Profile.Campaign) -> String {
-        [campaign.office, campaign.result].compactMap(\.self).joined(separator: " · ")
+        [Office.title(of: campaign.office), campaign.result].compactMap(\.self)
+            .joined(separator: " · ")
+    }
+
+    public func careerOffice(_ career: Profile.Career) -> String {
+        Office.title(of: career.office)
     }
 
     public func careerDetail(_ career: Profile.Career) -> String {

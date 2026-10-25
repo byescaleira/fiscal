@@ -208,20 +208,41 @@ type cacheEnvelope[T any] struct {
 }
 
 func cached[T any](ctx context.Context, in *Ingest, prefix string, year int, ufs []string, url string, read func(io.Reader, *T) error) (T, error) {
+	return cachedSalted(ctx, in, prefix, year, ufs, url, "", read)
+}
+
+func (in *Ingest) cachePath(prefix string, year int, ufs []string) string {
+	key := "all"
+	if len(ufs) > 0 {
+		key = strings.Join(ufs, "-")
+	}
+	return filepath.Join(in.cfg.DataDir, "cache", "tse", fmt.Sprintf("%s-%d-%s.json", prefix, year, key))
+}
+
+func staleCache[T any](in *Ingest, prefix string, year int, ufs []string) (T, bool) {
+	var env cacheEnvelope[T]
+	data, err := os.ReadFile(in.cachePath(prefix, year, ufs))
+	if err != nil || json.Unmarshal(data, &env) != nil || env.Version == "" {
+		return env.Value, false
+	}
+	return env.Value, true
+}
+
+func cachedSalted[T any](ctx context.Context, in *Ingest, prefix string, year int, ufs []string, url, salt string, read func(io.Reader, *T) error) (T, error) {
 	var zero T
 	remote, err := in.get.Open(ctx, url)
 	if err != nil {
 		return zero, err
 	}
-	key := "all"
-	if len(ufs) > 0 {
-		key = strings.Join(ufs, "-")
+	path := in.cachePath(prefix, year, ufs)
+	dir := filepath.Dir(path)
+	version := remote.Version()
+	if version != "" && salt != "" {
+		version += "#" + salt
 	}
-	dir := filepath.Join(in.cfg.DataDir, "cache", "tse")
-	path := filepath.Join(dir, fmt.Sprintf("%s-%d-%s.json", prefix, year, key))
 	if data, err := os.ReadFile(path); err == nil {
 		var env cacheEnvelope[T]
-		if json.Unmarshal(data, &env) == nil && env.Version != "" && env.Version == remote.Version() {
+		if json.Unmarshal(data, &env) == nil && env.Version != "" && env.Version == version {
 			return env.Value, nil
 		}
 	}
@@ -238,9 +259,9 @@ func cached[T any](ctx context.Context, in *Ingest, prefix string, year int, ufs
 		return zero, err
 	}
 	in.logger.Printf("tse %s %d: read %d entries, %s over HTTP range", prefix, year, len(files), humanBytes(remote.BytesRead()))
-	if remote.Version() != "" {
+	if version != "" {
 		if err := os.MkdirAll(dir, 0o700); err == nil {
-			if data, err := json.Marshal(cacheEnvelope[T]{Version: remote.Version(), Value: value}); err == nil {
+			if data, err := json.Marshal(cacheEnvelope[T]{Version: version, Value: value}); err == nil {
 				tmp := path + ".tmp"
 				if os.WriteFile(tmp, data, 0o600) == nil {
 					os.Rename(tmp, path)

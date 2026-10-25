@@ -2,6 +2,7 @@ import Foundation
 
 public enum Office: String, CaseIterable, Codable, Identifiable, Sendable {
     case president, vicePresident, senator, federalDeputy, governor, viceGovernor, stateDeputy
+    case mayor, viceMayor, cityCouncilor
 
     public var id: String { rawValue }
 
@@ -14,14 +15,28 @@ public enum Office: String, CaseIterable, Codable, Identifiable, Sendable {
         case .governor: String(appLocalized: "Governor")
         case .viceGovernor: String(appLocalized: "Vice Governor")
         case .stateDeputy: String(appLocalized: "State Deputy")
+        case .mayor: String(appLocalized: "Mayor")
+        case .viceMayor: String(appLocalized: "Vice Mayor")
+        case .cityCouncilor: String(appLocalized: "City Councilor")
         }
     }
 
     public var isFederal: Bool {
         switch self {
         case .president, .vicePresident, .senator, .federalDeputy: true
-        case .governor, .viceGovernor, .stateDeputy: false
+        case .governor, .viceGovernor, .stateDeputy, .mayor, .viceMayor, .cityCouncilor: false
         }
+    }
+
+    public var isMunicipal: Bool {
+        switch self {
+        case .mayor, .viceMayor, .cityCouncilor: true
+        default: false
+        }
+    }
+
+    public static func title(of raw: String) -> String {
+        Office(rawValue: raw)?.title ?? raw
     }
 }
 

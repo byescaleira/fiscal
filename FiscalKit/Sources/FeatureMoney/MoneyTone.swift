@@ -75,6 +75,9 @@ public struct MoneyKind: Equatable, Sendable {
         case .governor: "building.2"
         case .viceGovernor: "building"
         case .stateDeputy: "person.2"
+        case .mayor: "flag"
+        case .viceMayor: "flag.2.crossed"
+        case .cityCouncilor: "person.3.sequence"
         }
     }
 

@@ -37,6 +37,27 @@ func TestWritePairWritesJSONAndGzipAtomically(t *testing.T) {
 	}
 }
 
+func TestRetainKeepsFilesThisRunDidNotRewrite(t *testing.T) {
+	root := t.TempDir()
+	first := NewTree(root)
+	for _, rel := range []string{"places/city/1.json", "places/city/2.json", "people/a.json"} {
+		if err := first.WriteJSON(rel, map[string]string{"x": rel}); err != nil {
+			t.Fatal(err)
+		}
+	}
+	next := NewTree(root)
+	next.Retain([]string{"places/city/1.json", "people/a.json", "people/missing.json"})
+	if err := next.Prune("places", "people"); err != nil {
+		t.Fatal(err)
+	}
+	if !Exists(filepath.Join(root, "places", "city", "1.json")) || !Exists(filepath.Join(root, "people", "a.json.gz")) {
+		t.Fatal("retained files were pruned")
+	}
+	if Exists(filepath.Join(root, "places", "city", "2.json")) {
+		t.Fatal("a file nobody retained must be pruned")
+	}
+}
+
 func TestWritePairSkipsUnchangedContent(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "a.json")

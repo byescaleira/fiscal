@@ -27,7 +27,7 @@ public struct PersonCard: Codable, Hashable, Identifiable, Sendable {
 
 public struct RepresentativeGroup: Codable, Hashable, Sendable {
     public enum Level: String, Codable, Sendable {
-        case country, state
+        case country, state, city
     }
 
     public let level: Level
@@ -44,15 +44,22 @@ public struct RepresentativeGroup: Codable, Hashable, Sendable {
 }
 
 public struct PlaceRepresentatives: Codable, Hashable, Sendable {
+    public let code: String?
     public let uf: String
     public let name: String
     public let groups: [RepresentativeGroup]
+    public let note: String?
     public let sources: [Source]
 
-    public init(uf: String, name: String, groups: [RepresentativeGroup], sources: [Source]) {
+    public init(
+        code: String? = nil, uf: String, name: String, groups: [RepresentativeGroup],
+        note: String? = nil, sources: [Source]
+    ) {
+        self.code = code
         self.uf = uf
         self.name = name
         self.groups = groups
+        self.note = note
         self.sources = sources
     }
 }

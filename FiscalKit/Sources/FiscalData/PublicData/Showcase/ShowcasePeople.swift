@@ -15,18 +15,6 @@
             ("to", "Tocantins"),
         ]
 
-        static let cities: [Place] = [
-            Place(code: "1200401", name: "Rio Branco", uf: "ac"),
-            Place(code: "2611606", name: "Recife", uf: "pe"),
-            Place(code: "2927408", name: "Salvador", uf: "ba"),
-            Place(code: "3106200", name: "Belo Horizonte", uf: "mg"),
-            Place(code: "3304557", name: "Rio de Janeiro", uf: "rj"),
-            Place(code: "3550308", name: "São Paulo", uf: "sp"),
-            Place(code: "4106902", name: "Curitiba", uf: "pr"),
-            Place(code: "4314902", name: "Porto Alegre", uf: "rs"),
-            Place(code: "5300108", name: "Brasília", uf: "df"),
-        ]
-
         static let regular: [PersonCard] = [
             card("lula", "Lula", .president, "br", "PT"),
             card("geraldo-alckmin", "Geraldo Alckmin", .vicePresident, "br", "PSB"),
@@ -80,11 +68,37 @@
                 status: status)
         }
 
-        static func places() -> [Place] {
+        static let longCouncil: [(office: Office, name: String, party: String)] = [
+            (
+                .cityCouncilor, "Maria Aparecida dos Santos Cavalcanti de Albuquerque",
+                "REPUBLICANOS"
+            ),
+            (.cityCouncilor, "José Roberto Figueiredo dos Santos Magalhães Neto", "SOLIDARIEDADE"),
+        ]
+
+        static func places(cities: [Place]) -> [Place] {
             let states = states.map { Place(code: $0.uf, name: $0.name, uf: $0.uf) }
             return (states + cities).sorted {
                 $0.name.localizedStandardCompare($1.name) == .orderedAscending
             }
+        }
+
+        static func merged(_ curated: [PersonCard], with roster: [PersonCard]) -> [PersonCard] {
+            let slugs = Set(curated.map(\.slug))
+            let known = Dictionary(grouping: curated) { "\($0.office.rawValue)-\($0.uf)" }
+            return curated
+                + roster.filter { card in
+                    guard !slugs.contains(card.slug) else { return false }
+                    let name = folded(card.name)
+                    return !(known["\(card.office.rawValue)-\(card.uf)"] ?? []).contains {
+                        let other = folded($0.name)
+                        return other.contains(name) || name.contains(other)
+                    }
+                }
+        }
+
+        static func folded(_ text: String) -> String {
+            text.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: nil)
         }
 
         static func stateName(_ uf: String) -> String {

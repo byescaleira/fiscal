@@ -40,6 +40,7 @@ type Config struct {
 	Workers           int
 	ChecksSince       string
 	ChecksMaxPages    int
+	CityYear          int
 }
 
 func (c Config) Enabled(source string) bool {
@@ -84,6 +85,7 @@ type Ingest struct {
 
 	mu      sync.Mutex
 	dataset *publicdata.Dataset
+	cities  []string
 }
 
 func New(cfg Config, get Fetcher, now func() time.Time, logger *log.Logger) *Ingest {
@@ -176,6 +178,8 @@ type Report struct {
 	CheckPeople int
 	CheckLinks  int
 	Reviews     int
+	Cities      int
+	CityPeople  int
 	Files       int
 	Written     int
 	Removed     int
@@ -271,6 +275,13 @@ func (in *Ingest) Full(ctx context.Context) (Report, error) {
 		applyCoverage(p)
 	}
 	ds.People = people
+	if in.cfg.Enabled("cidades") {
+		if len(ds.Municipalities) == 0 {
+			in.warn(&rep, "cities: skipped, the IBGE list of municipalities is not loaded")
+		} else {
+			ds.Cities = in.loadCities(ctx, &rep, ds.Municipalities, srcs)
+		}
+	}
 	if in.cfg.Enabled("comprova") {
 		ds.Checks = in.loadChecks(ctx, &rep, srcs)
 	}
@@ -279,11 +290,15 @@ func (in *Ingest) Full(ctx context.Context) (Report, error) {
 	}
 	ds.Sources = srcs.list
 	in.refreshLive(ctx, ds, &rep)
-	if err := in.publish(ds, &rep); err != nil {
+	cities, err := in.publish(ds, &rep, nil)
+	if err != nil {
 		return rep, err
 	}
+	lite := *ds
+	lite.Cities = nil
 	in.mu.Lock()
-	in.dataset = ds
+	in.dataset = &lite
+	in.cities = cities
 	in.mu.Unlock()
 	rep.Duration = in.now().Sub(start)
 	return rep, nil
@@ -293,6 +308,7 @@ func (in *Ingest) Live(ctx context.Context) (Report, error) {
 	var rep Report
 	in.mu.Lock()
 	ds := in.dataset
+	cities := in.cities
 	in.mu.Unlock()
 	if ds == nil {
 		return rep, errors.New("live: no full load yet")
@@ -300,18 +316,20 @@ func (in *Ingest) Live(ctx context.Context) (Report, error) {
 	ds.GeneratedAt = in.now()
 	ds.Today = in.today()
 	in.refreshLive(ctx, ds, &rep)
-	return rep, in.publish(ds, &rep)
+	_, err := in.publish(ds, &rep, cities)
+	return rep, err
 }
 
-func (in *Ingest) publish(ds *publicdata.Dataset, rep *Report) error {
+func (in *Ingest) publish(ds *publicdata.Dataset, rep *Report, retain []string) ([]string, error) {
 	slugs, err := publicdata.LoadSlugs(filepath.Join(in.cfg.DataDir, "slugs.json"))
 	if err != nil {
-		return err
+		return nil, err
 	}
 	out := publicdata.Build(ds, slugs)
 	tree := publish.NewTree(filepath.Join(in.cfg.PublicDir, "v1"))
+	tree.Retain(retain)
 	if err := publicdata.Publish(out, tree, true); err != nil {
-		return err
+		return nil, err
 	}
 	if in.cfg.Enabled("comprova") {
 		if err := in.writeCheckReview(out.Reviews); err != nil {
@@ -326,13 +344,13 @@ func (in *Ingest) publish(ds *publicdata.Dataset, rep *Report) error {
 		}
 	}
 	if err := slugs.Save(); err != nil {
-		return err
+		return nil, err
 	}
 	st := tree.Stats()
 	rep.People = len(ds.People)
 	rep.Votes = len(ds.Votes)
 	rep.Files, rep.Written, rep.Removed, rep.Bytes, rep.Gzip = st.Files, st.Written, st.Removed, st.Bytes, st.GzipBytes
-	return nil
+	return out.Cities, nil
 }
 
 func (in *Ingest) currentYear() int {

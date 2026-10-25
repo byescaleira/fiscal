@@ -5,6 +5,7 @@ public protocol PublicDataService: Sendable {
     func people() async throws -> [PersonCard]
     func places() async throws -> [Place]
     func representatives(uf: String) async throws -> PlaceRepresentatives
+    func cityRepresentatives(code: String) async throws -> PlaceRepresentatives?
     func profile(slug: String) async throws -> Profile
     func votes(slug: String, year: Int) async throws -> PublicList<PersonVote>
     func proposals(slug: String, year: Int) async throws -> PublicList<Proposal>
@@ -16,6 +17,10 @@ public protocol PublicDataService: Sendable {
     func agenda() async throws -> Agenda
     func money() async throws -> MoneyOverview
     func today() async throws -> TodayDigest
+}
+
+extension PublicDataService {
+    public func cityRepresentatives(code: String) async throws -> PlaceRepresentatives? { nil }
 }
 
 public enum PublicDataError: LocalizedError, Equatable, Sendable {
@@ -49,6 +54,8 @@ public enum PublicDataPath {
     public static let today = "today.json"
 
     public static func representatives(uf: String) -> String { "places/\(uf.lowercased()).json" }
+
+    public static func cityRepresentatives(code: String) -> String { "places/city/\(code).json" }
 
     public static func profile(slug: String) -> String { "people/\(slug).json" }
 

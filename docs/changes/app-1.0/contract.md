@@ -18,7 +18,7 @@ Peça compartilhada pelas frentes paralelas da mudança [`app-1.0`](proposal.md)
   { "id": "camara", "name": "Câmara dos Deputados", "url": "https://dadosabertos.camara.leg.br", "updatedAt": "2026-10-25T05:42:00-03:00" }
   ```
 - **Identificadores:**
-  - `slug` em kebab-case sem acento, único: o nome de urna, com `-<uf>` quando o mesmo nome aparece em mais de uma UF;
+  - `slug` em kebab-case sem acento, único: o nome de urna, com `-<uf>` quando o mesmo nome aparece em mais de uma UF; quem tem cargo municipal ganha `<nome-de-urna>-<cidade>-<uf>` (`joao-campos-recife-pe`), com `-2`, `-3`… só se repetir, num espaço que nunca colide com os slugs nacionais;
   - `uf` em minúsculas (`br` para o país);
   - IBGE para município (`code`, 7 dígitos).
 - **Escopo da 1.0** (decisão do usuário em 2026-10-25, "federal + estados"):
@@ -28,7 +28,7 @@ Peça compartilhada pelas frentes paralelas da mudança [`app-1.0`](proposal.md)
   - 27 governadores e vices;
   - deputados estaduais e distritais;
   - os eleitos de 2026 aguardando posse;
-  - prefeitos e vereadores ficam para depois da 1.0.
+  - prefeitos, vice-prefeitos e vereadores dos 5.571 municípios, eleitos em 2024 (pedido do usuário em 2026-10-25, "tem que cobrir tudo", no lugar de "prefeitos e vereadores ficam para depois da 1.0").
 - **Atividade das assembleias:** só onde há dado aberto (presença, votos, propostas ou gastos); fora disso `null`, e o perfil diz que a casa não publica.
 - **Neutralidade:**
   - sem nota, ranking ou "mais e menos" entre políticos;
@@ -43,7 +43,8 @@ Peça compartilhada pelas frentes paralelas da mudança [`app-1.0`](proposal.md)
 | `index/people.json` | índice de busca: `[PersonCard]` de todo o escopo, em ordem alfabética | a cada carga |
 | `index/places.json` | `[{ code, name, uf }]`: os 5.571 municípios mais as 27 UFs (`code` = sigla da UF, em minúsculas) | anual (IBGE) |
 | `places/{uf}.json` | quem representa a UF: `{ uf, name, groups: [RepresentativeGroup], sources }` | a cada carga |
-| `people/{slug}.json` | perfil completo: `Profile` | quando muda |
+| `places/city/{ibge}.json` | quem representa o município: `{ code, name, uf, groups: [RepresentativeGroup], note, sources }`, com os grupos "Prefeitura" (prefeito e vice, nessa ordem) e "Câmara Municipal" (vereadores em ordem alfabética); `note` (texto pronto ou `null`) explica o que falta: Brasília e Fernando de Noronha não elegem prefeito nem vereadores, e alguns municípios estão sem prefeito ou sem vereadores nos dados abertos do TSE. Um arquivo para cada um dos municípios do IBGE | na carga completa (TSE, eleição municipal de 2024) |
+| `people/{slug}.json` | perfil completo: `Profile`. Prefeito, vice e vereador ganham um perfil leve, só com o que o TSE publica (candidatura de 2024, partido, votos, bens; mandato de 01/01/2025 a 31/12/2028), sem arquivos de atividade | quando muda |
 | `people/{slug}/votes-{year}.json` | `{ items: [PersonVote], total }` | quando muda |
 | `people/{slug}/proposals-{year}.json` | `{ items: [Proposal], total }` | quando muda |
 | `people/{slug}/speeches-{year}.json` | `{ items: [Speech], total }` | quando muda |
@@ -63,9 +64,13 @@ Peça compartilhada pelas frentes paralelas da mudança [`app-1.0`](proposal.md)
 ```text
 PersonCard { slug, name, office, uf, party, photo (URL ou null), status }
   office ∈ president | vicePresident | senator | federalDeputy | governor | viceGovernor | stateDeputy
+           | mayor | viceMayor | cityCouncilor
   status ∈ inOffice | electedAwaiting | onLeave
 
-RepresentativeGroup { level ∈ country | state, office, title, people: [PersonCard] }
+RepresentativeGroup { level ∈ country | state | city, office, title, people: [PersonCard] }
+  no grupo "Prefeitura" (`office: mayor`) cada card traz o próprio cargo (prefeito ou vice)
+
+CityRepresentatives { code, name, uf, groups: [RepresentativeGroup], note (string ou null), sources }
 
 Profile {
   slug, name, civilName, office, uf, party, photo, status,
@@ -120,6 +125,11 @@ TodayDigest {
   - `numbers.proposals`, `laws`, `speeches` e `votes`, `campaigns` em `money/overview.json` e `mandate.start`/`end` de deputado estadual são `null` quando a casa não publica ou o cargo não tem o dado;
   - `Expense.document` é o CNPJ do fornecedor; fornecedor pessoa física sai `null`;
   - `revenue` usa o último ano completo da Receita.
+- **Municípios (2026-10-25, frente `city`):**
+  - `index/people.json`, `meta.json › counts` e `places/{uf}.json` continuam só com o escopo federal e estadual; prefeitos, vices e vereadores (por volta de 69 mil pessoas) só aparecem em `places/city/{ibge}.json` e no próprio perfil, para o índice de busca não crescer 40 vezes e para versões do app que não conhecem os cargos novos continuarem lendo o índice;
+  - o app abre `places/city/{ibge}.json` primeiro e mostra depois os grupos do estado e de Brasília; um 404 quer dizer que a carga de municípios ainda não rodou, e o app segue só com o estado;
+  - `photo` é `null` (o TSE publica as fotos só em ZIPs por UF, sem URL por pessoa); campanha (`revenueCents`, `expenseCents`) fica `null`, com `coverage` `notLoaded`, porque a prestação de contas municipal tem 1,3 GB;
+  - a lista vem dos eleitos de 2024 como o TSE os publica hoje: quando há eleição suplementar com eleito, vale a mais recente; cassação, renúncia ou posse do vice depois da eleição não aparecem.
 - **`themes`:** as 17 chaves da apuração:
   - `saude`, `educacao`, `seguranca`, `economia`, `impostos`, `ambiente`;
   - `cidade`, `transporte`, `social`, `mulheres`, `campo`, `cultura`;

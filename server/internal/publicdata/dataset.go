@@ -31,6 +31,7 @@ type Candidacy struct {
 	BirthUF      string
 	Education    string
 	Votes        *int64
+	Place        string
 	RevenueCents *int64
 	ExpenseCents *int64
 	Assets       []AssetItem
@@ -144,8 +145,14 @@ func officeRank(o string) int {
 		return 5
 	case OfficeStateDeputy:
 		return 6
+	case OfficeMayor:
+		return 7
+	case OfficeViceMayor:
+		return 8
+	case OfficeCityCouncilor:
+		return 9
 	}
-	return 9
+	return 10
 }
 
 func Federal(office string) bool {
@@ -249,4 +256,5 @@ type Dataset struct {
 	Salaries       []OfficeSalary
 	SalarySource   map[string]string
 	Checks         []RawCheck
+	Cities         []City
 }
