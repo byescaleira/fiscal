@@ -19,7 +19,8 @@ struct SectionScreen: View {
             }
         case .mine: ModelHost(MineModel(follows: session.repositories.follows)) { MineScreen() }
         case .votes: ModelHost(VotesModel(service: data)) { VotesScreen() }
-        case .money: ModelHost(MoneyModel(service: data)) { MoneyScreen() }
+        case .money:
+            ModelHost(MoneyModel(service: data, lens: session.repositories.lens)) { MoneyScreen() }
         case .search: ModelHost(SearchModel(service: data)) { SearchScreen() }
         }
     }
