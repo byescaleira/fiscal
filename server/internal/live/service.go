@@ -31,14 +31,15 @@ type Stats struct {
 }
 
 type Service struct {
-	defs      []tse.Definition
-	source    tse.Source
-	sender    apns.Sender
-	registry  Registry
-	now       func() time.Time
-	statePath string
-	workers   int
-	logger    *log.Logger
+	defs       []tse.Definition
+	source     tse.Source
+	sender     apns.Sender
+	registry   Registry
+	now        func() time.Time
+	statePath  string
+	publishDir string
+	workers    int
+	logger     *log.Logger
 
 	mu        sync.RWMutex
 	races     map[string]tse.Race
@@ -47,13 +48,14 @@ type Service struct {
 }
 
 type Options struct {
-	Source    tse.Source
-	Sender    apns.Sender
-	Registry  Registry
-	Now       func() time.Time
-	StatePath string
-	Workers   int
-	Logger    *log.Logger
+	Source     tse.Source
+	Sender     apns.Sender
+	Registry   Registry
+	Now        func() time.Time
+	StatePath  string
+	PublishDir string
+	Workers    int
+	Logger     *log.Logger
 }
 
 func New(o Options) *Service {
@@ -67,16 +69,17 @@ func New(o Options) *Service {
 		o.Logger = log.Default()
 	}
 	return &Service{
-		defs:      tse.Definitions(),
-		source:    o.Source,
-		sender:    o.Sender,
-		registry:  o.Registry,
-		now:       o.Now,
-		statePath: o.StatePath,
-		workers:   o.Workers,
-		logger:    o.Logger,
-		races:     map[string]tse.Race{},
-		ended:     map[string]bool{},
+		defs:       tse.Definitions(),
+		source:     o.Source,
+		sender:     o.Sender,
+		registry:   o.Registry,
+		now:        o.Now,
+		statePath:  o.StatePath,
+		publishDir: o.PublishDir,
+		workers:    o.Workers,
+		logger:     o.Logger,
+		races:      map[string]tse.Race{},
+		ended:      map[string]bool{},
 	}
 }
 
@@ -229,6 +232,9 @@ func (s *Service) PollOnce(ctx context.Context) {
 	}
 	if updated {
 		s.saveState()
+		if err := s.publish(); err != nil {
+			s.logger.Printf("publish: %v", err)
+		}
 	}
 }
 

@@ -36,6 +36,7 @@ type config struct {
 	host         string
 	port         string
 	dataDir      string
+	publicDir    string
 	tseBase      string
 	poll         time.Duration
 	simulate     bool
@@ -52,6 +53,7 @@ func loadConfig(getenv func(string) string) (config, error) {
 		host:         getenv("HOST"),
 		port:         getenv("PORT"),
 		dataDir:      getenv("DATA_DIR"),
+		publicDir:    getenv("PUBLIC_DIR"),
 		tseBase:      getenv("TSE_BASE_URL"),
 		simulate:     getenv("SIMULATE") == "1",
 		apnsDisabled: getenv("APNS_DISABLED") == "1",
@@ -73,6 +75,9 @@ func loadConfig(getenv func(string) string) (config, error) {
 	}
 	if c.dataDir == "" {
 		c.dataDir = "./data"
+	}
+	if c.publicDir == "" {
+		c.publicDir = "./public"
 	}
 	if c.tseBase == "" {
 		c.tseBase = "https://resultados.tse.jus.br/oficial/ele2026"
@@ -185,7 +190,7 @@ func main() {
 		source = tse.NewHTTPSource(cfg.tseBase, &http.Client{Timeout: 10 * time.Second})
 		statePath = filepath.Join(cfg.dataDir, "state.json")
 	}
-	svc := live.New(live.Options{Source: source, Sender: sender, Registry: regs, StatePath: statePath})
+	svc := live.New(live.Options{Source: source, Sender: sender, Registry: regs, StatePath: statePath, PublishDir: cfg.publicDir})
 	if err := svc.LoadState(); err != nil {
 		log.Fatalf("state: %v", err)
 	}

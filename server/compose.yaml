@@ -17,6 +17,7 @@ services:
       TSE_BASE_URL: ${TSE_BASE_URL:-https://resultados.tse.jus.br/oficial/ele2026}
     volumes:
       - ./data:/data
+      - ./public:/public
       - ./secrets:/secrets:ro
     read_only: true
     cap_drop:
