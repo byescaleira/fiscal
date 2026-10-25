@@ -31,7 +31,7 @@ public struct PartySeal: View {
                         )
                         .resizable()
                 } else {
-                    Capsule().fill(PartyPalette.of(party: party).gradient)
+                    PartyStripes(palette: PartyPalette.of(party: party)).clipShape(.capsule)
                 }
                 Text(party.uppercased())
                     .font(

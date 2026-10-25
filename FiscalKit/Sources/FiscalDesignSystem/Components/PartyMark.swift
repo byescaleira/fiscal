@@ -76,12 +76,13 @@ struct PartyMarkChip: View {
         Text(party.uppercased())
             .font(.chipLabel)
             .foregroundStyle(.white)
+            .shadow(color: .black.opacity(.opacitySoft), radius: .spaceHairline)
             .lineLimit(1)
             .padding(.horizontal, .spaceS)
             .padding(.vertical, .space2XS)
             .background {
-                Capsule()
-                    .fill(palette.gradient)
+                PartyStripes(palette: palette)
+                    .clipShape(.capsule)
                     .overlay { sheen.clipShape(.capsule) }
             }
             .background {
@@ -101,6 +102,21 @@ struct PartyMarkChip: View {
             .frame(width: proxy.size.width / 2)
             .offset(x: proxy.size.width / 4 + phase.sheenOffset * proxy.size.width * 3 / 4)
             .opacity(phase.sheenOpacity)
+        }
+    }
+}
+
+public struct PartyStripes: View {
+    private let palette: PartyPalette
+
+    public init(palette: PartyPalette) {
+        self.palette = palette
+    }
+
+    public var body: some View {
+        HStack(spacing: .zero) {
+            palette.primary
+            palette.secondary
         }
     }
 }

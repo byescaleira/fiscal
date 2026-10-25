@@ -5,7 +5,7 @@ import Observation
 
 @MainActor @Observable
 public final class CompareModel {
-    public static let range = 2...3
+    public static let range = 2...2
 
     public private(set) var slugs: [String]
     public private(set) var profiles: [Profile] = []

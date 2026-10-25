@@ -2,7 +2,7 @@ import FiscalDomain
 import Foundation
 
 public struct CompareSuggestion: Hashable, Identifiable, Sendable {
-    public static let limit = 3
+    public static let limit = 2
 
     public let office: Office
     public let uf: String

@@ -20,16 +20,9 @@ public enum AppSection: String, CaseIterable, Identifiable, Sendable {
         switch self {
         case .today: "newspaper"
         case .mine: "person.2"
-        case .votes: "checkmark.square"
-        case .money: "brazilianrealsign"
+        case .votes: "checklist"
+        case .money: "banknote"
         case .search: "magnifyingglass"
-        }
-    }
-
-    public var role: TabRole? {
-        switch self {
-        case .search: .search
-        case .today, .mine, .votes, .money: nil
         }
     }
 }

@@ -97,9 +97,11 @@ struct CompareModelTests {
         #expect(!model.people.isEmpty)
         let cards = Array(model.people.prefix(4))
         for card in cards { model.toggle(card) }
-        #expect(model.slugs == cards.prefix(3).map(\.slug))
-        #expect(!model.canToggle(cards[3]))
+        #expect(model.slugs == cards.prefix(2).map(\.slug))
+        #expect(!model.canToggle(cards[2]))
         model.toggle(cards[0])
+        #expect(model.slugs.count == 1)
+        model.toggle(cards[2])
         #expect(model.slugs.count == 2)
         model.pickerQuery = "psol"
         #expect(model.pickerResults.map(\.slug) == ["erika-hilton"])

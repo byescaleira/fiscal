@@ -104,7 +104,7 @@ private struct CompareEmptyState: View {
 
     var body: some View {
         EmptyStateView(
-            title: "Pick two or three people",
+            title: "Pick two people",
             description:
                 "Fiscal puts the same numbers side by side, in columns of the same width, with no score or ranking.",
             actionTitle: "Choose people", action: { Task { await compare.pick() } }
