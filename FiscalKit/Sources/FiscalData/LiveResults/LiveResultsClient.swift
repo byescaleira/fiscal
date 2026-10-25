@@ -17,9 +17,13 @@ public struct LiveResultsClient: LiveResultsService {
     }
 
     public static func fromBundle(_ bundle: Bundle = .main) -> LiveResultsClient? {
-        guard let value = bundle.object(forInfoDictionaryKey: "FiscalAPIURL") as? String,
-            let url = URL(string: value), !value.isEmpty
-        else { return nil }
+        var value = bundle.object(forInfoDictionaryKey: "FiscalAPIURL") as? String
+        #if DEBUG
+            if let override = UserDefaults.standard.string(forKey: "FiscalAPIURL") {
+                value = override
+            }
+        #endif
+        guard let value, !value.isEmpty, let url = URL(string: value) else { return nil }
         return LiveResultsClient(baseURL: url)
     }
 
