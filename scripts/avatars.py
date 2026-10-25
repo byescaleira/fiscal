@@ -4,12 +4,13 @@ import json
 import math
 import os
 import sys
+import zlib
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 TRAITS = os.path.join(ROOT, "avatar-traits.json")
 PARTIES = os.path.join(ROOT, "party-palette.json")
 OUT = os.path.join(ROOT, "animations", "avatars")
-BUNDLE = os.path.join(ROOT, "..", "FiscalKit", "Sources", "FiscalResource", "Assets", "fiscal-portraits.json")
+BUNDLE = os.path.join(ROOT, "..", "FiscalKit", "Sources", "FiscalResource", "Assets", "fiscal-portraits.deflate")
 PREVIEW = os.path.join(ROOT, "avatars-preview.html")
 
 SIDE, FPS, END = 200, 30, 150
@@ -605,9 +606,11 @@ def main():
     index = {"rigVersion": traits["rigVersion"],
              "people": [{"slug": p["slug"], "party": p["party"], "updatedAt": stamp} for p in people]}
     write(os.path.join(OUT, "index.json"), compact(index))
-    bundle = dict(index, generic=documents["generic"], seal=seal_document,
-                  animations={p["slug"]: documents[p["slug"]] for p in people})
-    write(BUNDLE, compact(bundle))
+    bundle = dict(index, generic=compact(documents["generic"]), seal=compact(seal_document),
+                  animations={p["slug"]: compact(documents[p["slug"]]) for p in people})
+    deflater = zlib.compressobj(9, zlib.DEFLATED, -15)
+    with open(BUNDLE, "wb") as handle:
+        handle.write(deflater.compress(compact(bundle).encode("utf-8")) + deflater.flush())
     preview(people, documents, seal_document, parties)
     sizes = [len(compact(value)) for value in documents.values()]
     print("%d portraits (max %d KB), seal, index and %s" % (len(people), max(sizes) // 1024, os.path.abspath(BUNDLE)))

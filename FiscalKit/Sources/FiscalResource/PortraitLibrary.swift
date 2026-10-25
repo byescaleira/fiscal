@@ -34,8 +34,11 @@ public struct PortraitLibrary: Sendable {
     public static let empty = PortraitLibrary(rigVersion: 0, entries: [], animations: [:])
 
     public static let bundled: PortraitLibrary = {
-        guard let url = Bundle.module.url(forResource: "fiscal-portraits", withExtension: "json"),
-            let data = try? Data(contentsOf: url), let library = try? decode(data)
+        guard
+            let url = Bundle.module.url(forResource: "fiscal-portraits", withExtension: "deflate"),
+            let packed = try? Data(contentsOf: url),
+            let data = try? (packed as NSData).decompressed(using: .zlib) as Data,
+            let library = try? decode(data)
         else { return .empty }
         return library
     }()
@@ -53,12 +56,16 @@ public struct PortraitLibrary: Sendable {
             guard let animation = animations[entry.slug] else {
                 throw PortraitLibraryError.missingAnimation(entry.slug)
             }
-            encoded[entry.slug] = try JSONSerialization.data(withJSONObject: animation)
+            encoded[entry.slug] = try document(animation)
         }
         return PortraitLibrary(
             rigVersion: rigVersion, entries: entries, animations: encoded,
-            generic: try root["generic"].map { try JSONSerialization.data(withJSONObject: $0) },
-            seal: try root["seal"].map { try JSONSerialization.data(withJSONObject: $0) })
+            generic: try root["generic"].map(document), seal: try root["seal"].map(document))
+    }
+
+    private static func document(_ value: Any) throws -> Data {
+        if let text = value as? String { return Data(text.utf8) }
+        return try JSONSerialization.data(withJSONObject: value)
     }
 
     public var slugs: [String] {
