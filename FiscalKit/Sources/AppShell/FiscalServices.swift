@@ -34,9 +34,12 @@ public final class FiscalServices {
         #else
             let environment = PushEnvironment.production
         #endif
+        var service: (any LiveResultsService)? = LiveResultsClient.fromBundle()
+        #if DEBUG
+            if let showcase = ShowcaseLiveResults.fromLaunchArguments() { service = showcase }
+        #endif
         return LiveResultsModel(
-            service: LiveResultsClient.fromBundle(), activities: RaceActivities(),
-            environment: environment)
+            service: service, activities: RaceActivities(), environment: environment)
     }
 
     public static var launchCloudSync: Bool {
