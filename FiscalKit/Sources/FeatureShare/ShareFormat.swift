@@ -6,6 +6,14 @@ public enum ShareFormat: String, CaseIterable, Identifiable, Sendable {
 
     public var id: String { rawValue }
 
+    public var raceRowLimit: Int {
+        switch self {
+        case .stories: 8
+        case .feed: 5
+        case .message: 3
+        }
+    }
+
     public var title: LocalizedStringKey {
         switch self {
         case .stories: "Stories"

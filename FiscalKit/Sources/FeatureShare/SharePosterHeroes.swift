@@ -177,7 +177,7 @@ private struct ShareRaceHero: View {
             }
         } else {
             VStack(alignment: .leading, spacing: .spaceS) {
-                ForEach(race.candidates) { candidate in
+                ForEach(race.candidates.prefix(format.raceRowLimit)) { candidate in
                     HStack(alignment: .center, spacing: .spaceM) {
                         ShareIdentity(name: candidate.name, party: candidate.party)
                         if candidate.elected {
