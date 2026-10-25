@@ -21,6 +21,16 @@
         }
       }
     },
+    "%@ counted" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ apuradas"
+          }
+        }
+      }
+    },
     "%@ elected" : {
       "localizations" : {
         "pt-BR" : {
@@ -321,6 +331,16 @@
         }
       }
     },
+    "+%lld more candidates" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld candidatos"
+          }
+        }
+      }
+    },
     "2 TO 3 PEOPLE" : {
       "localizations" : {
         "pt-BR" : {
@@ -557,6 +577,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Todos os tipos"
+          }
+        }
+      }
+    },
+    "All Races" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todas as disputas"
+          }
+        }
+      }
+    },
+    "All Regions" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todas as regiões"
           }
         }
       }
@@ -911,12 +951,42 @@
         }
       }
     },
+    "Blank" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brancos"
+          }
+        }
+      }
+    },
     "Blank %@ · Null %@" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Brancos %@ · Nulos %@"
+          }
+        }
+      }
+    },
+    "Blank and null votes don't count toward the valid votes, which decide the race." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brancos e nulos não entram nos votos válidos, que decidem a disputa."
+          }
+        }
+      }
+    },
+    "Blank and null votes show up with the count" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brancos e nulos aparecem com a apuração"
           }
         }
       }
@@ -1071,6 +1141,16 @@
         }
       }
     },
+    "Candidates" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Candidatos"
+          }
+        }
+      }
+    },
     "Caramel" : {
       "localizations" : {
         "pt-BR" : {
@@ -1127,6 +1207,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Centro-direita"
+          }
+        }
+      }
+    },
+    "Center-West" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Centro-Oeste"
           }
         }
       }
@@ -1621,6 +1711,16 @@
         }
       }
     },
+    "Count" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apuração"
+          }
+        }
+      }
+    },
     "Counted" : {
       "localizations" : {
         "pt-BR" : {
@@ -1731,6 +1831,16 @@
         }
       }
     },
+    "Dashed line: half of the valid votes, needed to win in round 1" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Linha tracejada: metade dos votos válidos, o necessário para vencer no 1º turno"
+          }
+        }
+      }
+    },
     "Data and Privacy" : {
       "localizations" : {
         "pt-BR" : {
@@ -1747,6 +1857,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Data"
+          }
+        }
+      }
+    },
+    "Decided" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Definidas"
           }
         }
       }
@@ -3852,6 +3972,16 @@
         }
       }
     },
+    "No race matches these filters" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma disputa com esses filtros"
+          }
+        }
+      }
+    },
     "No receipts this year" : {
       "localizations" : {
         "pt-BR" : {
@@ -4012,6 +4142,26 @@
         }
       }
     },
+    "North" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Norte"
+          }
+        }
+      }
+    },
+    "Northeast" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nordeste"
+          }
+        }
+      }
+    },
     "Not loaded yet" : {
       "localizations" : {
         "pt-BR" : {
@@ -4078,6 +4228,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nada para compartilhar ainda"
+          }
+        }
+      }
+    },
+    "Null" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nulos"
+          }
+        }
+      }
+    },
+    "Numbers straight from the TSE, with no projections or polls." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Números direto do TSE, sem projeções nem pesquisas."
           }
         }
       }
@@ -4428,6 +4598,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Outros tipos"
+          }
+        }
+      }
+    },
+    "Other Races" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outras disputas"
           }
         }
       }
@@ -5132,6 +5312,16 @@
         }
       }
     },
+    "Race unavailable" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disputa indisponível"
+          }
+        }
+      }
+    },
     "Raised" : {
       "localizations" : {
         "pt-BR" : {
@@ -5268,6 +5458,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Votações registradas em %@: %@"
+          }
+        }
+      }
+    },
+    "Region" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Região"
           }
         }
       }
@@ -5842,6 +6042,16 @@
         }
       }
     },
+    "Shows every candidate and the blank and null votes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra todos os candidatos e os votos brancos e nulos"
+          }
+        }
+      }
+    },
     "Shows only this party in the roll call" : {
       "localizations" : {
         "pt-BR" : {
@@ -6062,6 +6272,26 @@
         }
       }
     },
+    "South" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sul"
+          }
+        }
+      }
+    },
+    "Southeast" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sudeste"
+          }
+        }
+      }
+    },
     "Speeches" : {
       "localizations" : {
         "pt-BR" : {
@@ -6222,12 +6452,32 @@
         }
       }
     },
+    "Status" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Situação"
+          }
+        }
+      }
+    },
     "Step %lld of %lld" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Passo %lld de %lld"
+          }
+        }
+      }
+    },
+    "Still Counting" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em apuração"
           }
         }
       }
@@ -6922,6 +7172,16 @@
         }
       }
     },
+    "This race isn't in the latest TSE file." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta disputa não está no último arquivo do TSE."
+          }
+        }
+      }
+    },
     "This record no longer exists. Refresh the list." : {
       "localizations" : {
         "pt-BR" : {
@@ -7212,6 +7472,16 @@
         }
       }
     },
+    "Valid" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Válidos"
+          }
+        }
+      }
+    },
     "Version %@" : {
       "localizations" : {
         "pt-BR" : {
@@ -7372,6 +7642,26 @@
         }
       }
     },
+    "Voters" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eleitorado"
+          }
+        }
+      }
+    },
+    "Voters in the counted polling stations" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eleitores das urnas apuradas"
+          }
+        }
+      }
+    },
     "Votes" : {
       "localizations" : {
         "pt-BR" : {
@@ -7398,6 +7688,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Votações registradas"
+          }
+        }
+      }
+    },
+    "Votes in the counted polling stations" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votos das urnas apuradas"
           }
         }
       }
