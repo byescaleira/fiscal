@@ -31,6 +31,16 @@
         }
       }
     },
+    "%@ had the most votes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ teve mais votações"
+          }
+        }
+      }
+    },
     "%@ is represented here by the people elected in %@. Mayors and city councillors come after version 1.0." : {
       "localizations" : {
         "pt-BR" : {
@@ -117,6 +127,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ · emenda à Constituição precisa de %2$@ votos Sim"
+          }
+        }
+      }
+    },
+    "%@ · from the city councilor to the president" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · do vereador ao presidente"
           }
         }
       }
@@ -501,6 +521,16 @@
         }
       }
     },
+    "All Topics" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos os temas"
+          }
+        }
+      }
+    },
     "Amapá" : {
       "localizations" : {
         "pt-BR" : {
@@ -627,6 +657,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aprovada"
+          }
+        }
+      }
+    },
+    "Approved: %lld" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aprovadas: %lld"
           }
         }
       }
@@ -1191,12 +1231,42 @@
         }
       }
     },
+    "Cities" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cidades"
+          }
+        }
+      }
+    },
     "Cities and housing" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cidades e moradia"
+          }
+        }
+      }
+    },
+    "City Councilor" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vereador"
+          }
+        }
+      }
+    },
+    "City councilors" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vereadores"
           }
         }
       }
@@ -1571,12 +1641,42 @@
         }
       }
     },
+    "Dashed line: average of %@ per day" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Linha tracejada: média de %@ por dia"
+          }
+        }
+      }
+    },
+    "Dashed line: average of %@ per week" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Linha tracejada: média de %@ por semana"
+          }
+        }
+      }
+    },
     "Data and Privacy" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dados e privacidade"
+          }
+        }
+      }
+    },
+    "Date" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data"
           }
         }
       }
@@ -2101,6 +2201,16 @@
         }
       }
     },
+    "Filters" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filtros"
+          }
+        }
+      }
+    },
     "Final" : {
       "localizations" : {
         "pt-BR" : {
@@ -2127,6 +2237,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Encontre qualquer político, compare e acompanhe as eleições."
+          }
+        }
+      }
+    },
+    "Find Your City" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encontrar sua cidade"
           }
         }
       }
@@ -2842,6 +2962,16 @@
         }
       }
     },
+    "Largest: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maior gasto: %@"
+          }
+        }
+      }
+    },
     "Last vote · %@ · %@" : {
       "localizations" : {
         "pt-BR" : {
@@ -3112,6 +3242,26 @@
         }
       }
     },
+    "Mayor" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prefeito"
+          }
+        }
+      }
+    },
+    "Mayors" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prefeitos"
+          }
+        }
+      }
+    },
     "Mayors and city councilors come after version 1.0. For now, Fiscal shows who represents %@ in the state and in Brasília." : {
       "localizations" : {
         "pt-BR" : {
@@ -3248,6 +3398,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mais na pauta: %lld"
+          }
+        }
+      }
+    },
+    "More than one topic tied in the latest votes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais de um tema empatou nas últimas votações"
           }
         }
       }
@@ -3652,6 +3812,16 @@
         }
       }
     },
+    "No votes on these topics in the latest update." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma votação nestes temas na última carga."
+          }
+        }
+      }
+    },
     "No votes yet" : {
       "localizations" : {
         "pt-BR" : {
@@ -3668,6 +3838,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Você ainda não segue ninguém"
+          }
+        }
+      }
+    },
+    "None of the latest votes touched these topics" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma das últimas votações tocou nestes temas"
           }
         }
       }
@@ -4032,6 +4212,16 @@
         }
       }
     },
+    "Opens the search field" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre o campo de busca"
+          }
+        }
+      }
+    },
     "Opens what your lens changes" : {
       "localizations" : {
         "pt-BR" : {
@@ -4078,6 +4268,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Outras disputas hoje: %lld"
+          }
+        }
+      }
+    },
+    "Other Topics" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outros temas"
           }
         }
       }
@@ -4348,6 +4548,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Escolha seu estado em Meus para ver aqui seus deputados, senadores e governador, com o voto de cada um."
+          }
+        }
+      }
+    },
+    "Pick your state or city to see who represents you, from the city councilor to the president." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha seu estado ou sua cidade para ver quem representa você, do vereador ao presidente."
           }
         }
       }
@@ -4832,6 +5042,16 @@
         }
       }
     },
+    "RECENT VOTES · %lld" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "VOTAÇÕES RECENTES · %lld"
+          }
+        }
+      }
+    },
     "Recorded votes in %@: %@" : {
       "localizations" : {
         "pt-BR" : {
@@ -5218,6 +5438,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ver a nota"
+          }
+        }
+      }
+    },
+    "Selected" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selecionado"
           }
         }
       }
@@ -5702,6 +5932,16 @@
         }
       }
     },
+    "State capitals first. Search finds any other city." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capitais primeiro. A busca encontra qualquer outra cidade."
+          }
+        }
+      }
+    },
     "State deputies" : {
       "localizations" : {
         "pt-BR" : {
@@ -5918,6 +6158,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Toque num lugar para ver quem o representa."
+          }
+        }
+      }
+    },
+    "Tap a topic to see its votes. Slide across the bars to see each day." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque num tema para ver as votações dele. Deslize pelas barras para ver cada dia."
           }
         }
       }
@@ -6252,6 +6502,16 @@
         }
       }
     },
+    "The list of the mayor and city councilors of %@ isn't published yet." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A lista de prefeito e vereadores de %@ ainda não foi publicada."
+          }
+        }
+      }
+    },
     "The office pays and asks to be refunded with an invoice. The Chamber and the Senate publish each one." : {
       "localizations" : {
         "pt-BR" : {
@@ -6522,6 +6782,16 @@
         }
       }
     },
+    "Topic" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tema"
+          }
+        }
+      }
+    },
     "Topics" : {
       "localizations" : {
         "pt-BR" : {
@@ -6652,6 +6922,16 @@
         }
       }
     },
+    "Type the name of any city in the search field. Every municipality in Brazil is there, with its mayor and city councilors." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Digite o nome de qualquer cidade na busca. Todos os municípios do Brasil estão lá, com prefeito e vereadores."
+          }
+        }
+      }
+    },
     "Update" : {
       "localizations" : {
         "pt-BR" : {
@@ -6728,6 +7008,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vice-governadores"
+          }
+        }
+      }
+    },
+    "Vice Mayor" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vice-prefeito"
+          }
+        }
+      }
+    },
+    "Vice mayors" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vice-prefeitos"
           }
         }
       }
@@ -6862,6 +7162,26 @@
         }
       }
     },
+    "Votes on these topics per day" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votações nestes temas por dia"
+          }
+        }
+      }
+    },
+    "Votes on these topics per week" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votações nestes temas por semana"
+          }
+        }
+      }
+    },
     "Votes received: %@" : {
       "localizations" : {
         "pt-BR" : {
@@ -6892,12 +7212,42 @@
         }
       }
     },
+    "Votes: %lld" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votações: %lld"
+          }
+        }
+      }
+    },
+    "Votes: %lld, approved: %lld, rejected: %lld" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votações: %1$lld, aprovadas: %2$lld, rejeitadas: %3$lld"
+          }
+        }
+      }
+    },
     "Website" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Site"
+          }
+        }
+      }
+    },
+    "Week of %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semana de %@"
           }
         }
       }
