@@ -53,6 +53,7 @@ Peça compartilhada pelas frentes paralelas da mudança [`app-1.0`](proposal.md)
 | `agenda/today.json` | `{ date, houses: [{ house, inSession, nextSession, items: [AgendaItem] }] }` | a cada 10 min |
 | `money/overview.json` | `MoneyOverview` | diária |
 | `today.json` | `TodayDigest` (o que aconteceu, para a aba Hoje) | a cada 10 min |
+| `people/{slug}/checks.json` | `{ items: [FactCheck], sources }`: checagens do Projeto Comprova que citam a pessoa pelo nome completo exato; só existe quando há ao menos uma | diária |
 | `avatars/index.json` | `{ rigVersion, people: [{ slug, updatedAt }] }`: quem já tem retrato desenhado | quando muda |
 | `avatars/{slug}.json` | Lottie do retrato animado (esqueleto do Fiscal com os traços da pessoa e a cor do partido); sem arquivo, o app mostra o retrato genérico | quando muda |
 | `races.json`, `races/{id}.json` | apuração (já existe, fase `live-results`) | 20 s em eleição |
@@ -96,6 +97,8 @@ VoteDetail extends VoteSummary + { quorum, guidance: [{ party, guidance }],
               parties: [{ party, yes, no, others }], people: [{ slug, name, party, uf, vote }], sources }
 
 AgendaItem { proposition, summary, status, themes, url }
+
+FactCheck { id, title, verdict (rótulo da agência como veio, ou null), date, url, publisher, license, licenseUrl }
 
 MoneyOverview {
   year, quota: { federalDeputiesCents, senatorsCents, byCategory: [{ category, cents }] },

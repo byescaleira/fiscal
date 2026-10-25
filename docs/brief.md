@@ -163,12 +163,20 @@ O manifesto `art-credits.json` vai junto com o app e lista, por obra: autor, @, 
 | 4 | **Dinheiro** | `brazilianrealsign` | Para onde vai o dinheiro público: cota, salários e benefícios, emendas (inclusive as "emendas Pix"), financiamento de campanha, patrimônio declarado e arrecadação |
 | 5 | **Fiscalizar** (proeminente) | `magnifyingglass` | A busca universal: pessoa, partido, projeto, cidade, CNPJ de fornecedor. Também é a porta para Comparar e Eleições. É a aba com `Tab(role: .search)`, que o iOS 26+ mostra destacada, separada das outras na barra de Liquid Glass |
 
-- **Checagens no perfil** (pedido do usuário em 2026-10-25, no lugar de mostrar posts das redes):
-  - cada político tem as checagens de fatos publicadas sobre o que ele disse, com a frase checada, o veredito da agência, a data e o link para a checagem completa;
-  - fontes: agências de checagem, a começar pelas signatárias da IFCN (Lupa, Aos Fatos, Estadão Verifica, AFP Checamos, UOL Confere, Comprova), de preferência pelo `ClaimReview` que elas publicam;
-  - o veredito é o da agência, com o nome dela, sem nota nossa, contagem de "mentiras" ou ranking;
-  - a ordem é por data e o mesmo tratamento vale para todos;
-  - o nome da seção não usa "Fato ou Fake", que é marca da seção do g1.
+- **Checagens no perfil** (pedido do usuário em 2026-10-25, no lugar de mostrar posts das redes; piloto só com o Projeto Comprova, decisão do usuário no mesmo dia, depois da [pesquisa de checagens](research/2026-10-25-fact-checks.md)):
+  - **Fonte:** o Comprova publica sob CC BY-ND 4.0 (conferido na página de metodologia em 2026-10-25: uso comercial permitido, com crédito, link da licença e sem alterar o conteúdo). A carga lê a API pública do site (`/wp-json/wp/v2/publicacoes`), sem raspar HTML. Lupa, Aos Fatos e a API do Google ficam de fora até haver autorização por escrito.
+  - **O que o Comprova checa:** quase sempre conteúdo que circula sobre um político (post, vídeo, montagem), e não o que o político disse. Por isso a seção se chama "O que circulou sobre <nome>" e diz que o veredito vale para o conteúdo checado, não para a pessoa. Nunca "o que ele disse é falso".
+  - **Cada item:**
+    - o título da checagem como o Comprova escreveu, sem reescrever;
+    - o selo da agência como veio (Falso, Enganoso, Comprovado, Sátira, Contextualizando), sem nota nossa;
+    - a data e o link;
+    - o crédito "Projeto Comprova · CC BY-ND 4.0", com o link da licença.
+  - **Associação à pessoa:** só com o nome completo exato (de urna ou civil) no título ou na explicação da checagem, único entre as pessoas do escopo. Homônimo, nome parcial ou mais de uma pessoa possível fica de fora (vai para uma lista interna de revisão, não publicada).
+  - **Neutralidade:**
+    - todas as checagens da janela, não só as falsas, em ordem de data e com a mesma regra para todos;
+    - sem contagem de "mentiras" nem ranking;
+    - um aviso de cobertura: a lista mostra só o que a agência escolheu checar, e ausência de checagem não quer dizer nada sobre a pessoa;
+  - **Nome:** a seção não usa "Fato ou Fake", que é marca da seção do g1.
 - **Ajustes** saem da barra de abas e viram um botão na toolbar de Hoje, onde a pessoa também edita a Lente.
 - **Eleições** (apuração ao vivo, resultados e propostas de governo) aparecem em Hoje durante o período eleitoral e ficam sempre acessíveis em Fiscalizar.
 - **Recomendação de aba proeminente:** usar Fiscalizar porque é o padrão nativo (`role: .search`) e o verbo que dá nome ao app. A alternativa, um "Ao vivo" central, só faz sentido em dia de evento e ficaria vazia no resto do ano.
