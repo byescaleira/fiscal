@@ -14,154 +14,193 @@ public struct ShareCardView: View {
 
     public var body: some View {
         let size = card.format.size
+        let field = Color.posterField(card.artwork?.shade)
         ZStack(alignment: .top) {
-            ShareBackdrop(artwork: card.artwork, size: size)
-            VStack(spacing: .zero) {
-                ShareArtBand(
-                    artwork: card.artwork, width: size.width,
-                    height: size.height * card.format.artShare)
-                Spacer(minLength: .zero)
-                ShareDataBlock(card: card, code: code)
-                    .padding(.spaceM)
+            LinearGradient(
+                colors: [field.mix(with: .white, by: .opacityPosterGlow), field],
+                startPoint: .top, endPoint: .bottom)
+            if let artwork = card.artwork, artwork.isBackdrop {
+                ShareBackdrop(artwork: artwork, size: size)
+            }
+            VStack(alignment: .leading, spacing: .zero) {
+                ShareArtHeader(artwork: card.artwork, format: card.format, field: field)
+                    .layoutPriority(1)
+                if card.artwork?.isBackdrop == true {
+                    Spacer(minLength: .spaceM)
+                    ShareContent(card: card, code: code, field: field)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .layoutPriority(2)
+                } else {
+                    ShareLead(poster: card.poster, format: card.format)
+                        .padding([.top, .horizontal], card.format.margin)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .layoutPriority(2)
+                    Spacer(minLength: .spaceM)
+                    ShareFooter(card: card, code: code)
+                        .padding([.bottom, .horizontal], card.format.margin)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .layoutPriority(2)
+                }
             }
         }
         .frame(width: size.width, height: size.height)
         .clipped()
-        .environment(\.colorScheme, .light)
-        .fontDesign(.rounded)
+        .foregroundStyle(.white)
+        .environment(\.colorScheme, .dark)
         .dynamicTypeSize(.large)
     }
 }
 
+extension Color {
+    static func posterField(_ shade: String?) -> Color {
+        guard let shade else { return .scoreboard }
+        return Color.scoreboard.mix(with: Color(hex: shade), by: .opacityPosterTint)
+    }
+
+    static let posterSecondary = Color.white.opacity(.opacityPosterSecondary)
+}
+
 private struct ShareBackdrop: View {
-    let artwork: ShareArtwork?
+    let artwork: ShareArtwork
     let size: CGSize
 
     var body: some View {
-        ZStack {
-            Color.scoreboard
-            if let artwork {
-                artwork.work.image
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: size.width, height: size.height)
-                    .blur(radius: .shareBlur)
-                    .clipped()
-            }
-            LinearGradient(
-                colors: [shade.opacity(.opacityTint), shade.opacity(.opacityShareShade)],
-                startPoint: .top, endPoint: .bottom)
-        }
-        .frame(width: size.width, height: size.height)
-    }
-
-    private var shade: Color {
-        artwork?.shade.map { Color(hex: $0) } ?? .scoreboard
+        artwork.work.image
+            .resizable()
+            .scaledToFill()
+            .frame(width: size.width, height: size.height)
+            .clipped()
+            .accessibilityHidden(true)
     }
 }
 
-private struct ShareArtBand: View {
+private struct ShareArtHeader: View {
     let artwork: ShareArtwork?
-    let width: CGFloat
-    let height: CGFloat
+    let format: ShareFormat
+    let field: Color
 
     var body: some View {
-        ZStack(alignment: .top) {
-            if let artwork {
-                artwork.work.image
-                    .resizable()
-                    .aspectRatio(contentMode: artwork.work.isPublicDomain ? .fill : .fit)
-                    .frame(width: width, height: height)
-                    .clipped()
-                    .mask(
-                        LinearGradient(
-                            stops: [
-                                .init(color: .black, location: .zero),
-                                .init(color: .black, location: .shareArtFade),
-                                .init(color: .clear, location: 1),
-                            ], startPoint: .top, endPoint: .bottom))
-                Text(verbatim: artwork.credit)
-                    .font(.shareCredit)
-                    .foregroundStyle(.white)
-                    .lineLimit(2)
-                    .minimumScaleFactor(.shareTextShrink)
-                    .padding(.horizontal, .spaceM)
-                    .padding(.vertical, .spaceXS)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(.black.opacity(.opacityShareBand))
+        if let artwork {
+            if artwork.isBackdrop {
+                ShareCredit(text: artwork.credit, lines: 3)
+                    .padding(.horizontal, .spaceS)
+                    .padding(.vertical, .space2XS)
+                    .background(
+                        field.opacity(.opacityPosterLabel), in: .rect(cornerRadius: .radiusS)
+                    )
+                    .padding(format.margin)
+            } else if format.plateSpansWidth {
+                VStack(alignment: .leading, spacing: .spaceS) {
+                    SharePlate(artwork: artwork)
+                    ShareCredit(text: artwork.credit, lines: 3)
+                }
+                .padding([.top, .horizontal], format.margin)
+            } else {
+                HStack(alignment: .top, spacing: .spaceM) {
+                    ShareCredit(text: artwork.credit, lines: 7)
+                        .frame(maxWidth: .infinity, alignment: .topLeading)
+                    SharePlate(artwork: artwork)
+                        .frame(width: format.plateWidth)
+                }
+                .padding([.top, .horizontal], format.margin)
             }
         }
-        .frame(width: width, height: height, alignment: .top)
     }
 }
 
-private struct ShareDataBlock: View {
-    let card: ShareCard
-    let code: CGImage?
+private struct SharePlate: View {
+    let artwork: ShareArtwork
 
     var body: some View {
-        ViewThatFits(in: .vertical) {
-            ShareBlockContent(card: card, code: code, dense: card.format.isCompact)
-            ShareBlockContent(card: card, code: code, dense: true)
+        artwork.work.image
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .accessibilityHidden(true)
+    }
+}
+
+private struct ShareCredit: View {
+    let text: String
+    let lines: Int
+
+    var body: some View {
+        Text(verbatim: text)
+            .font(.posterCredit)
+            .foregroundStyle(Color.posterSecondary)
+            .lineLimit(lines)
+            .minimumScaleFactor(.shareTextShrink)
+            .fixedSize(horizontal: false, vertical: true)
+    }
+}
+
+private struct ShareContent: View {
+    let card: ShareCard
+    let code: CGImage?
+    let field: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: .spaceL) {
+            ShareLead(poster: card.poster, format: card.format)
+            ShareFooter(card: card, code: code)
         }
-        .padding(.spaceL)
+        .padding(card.format.margin)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            .white.opacity(.opacityShareBlock), in: .rect(cornerRadius: .shareRadius))
+        .background(alignment: .bottom) {
+            if card.artwork?.isBackdrop == true {
+                ShareScrim(field: field)
+            }
+        }
     }
 }
 
-private struct ShareBlockContent: View {
-    let card: ShareCard
-    let code: CGImage?
-    let dense: Bool
+private struct ShareScrim: View {
+    let field: Color
 
     var body: some View {
-        VStack(alignment: .leading, spacing: dense ? .spaceS : .spaceM) {
-            Text(verbatim: card.content.eyebrow)
-                .font(.shareLabel)
-                .foregroundStyle(.secondary)
+        VStack(spacing: .zero) {
+            LinearGradient(
+                colors: [field.opacity(.zero), field.opacity(.opacityPosterScrim)],
+                startPoint: .top, endPoint: .bottom
+            )
+            .frame(height: .posterFade)
+            field.opacity(.opacityPosterScrim)
+        }
+        .padding(.top, -.posterFade)
+    }
+}
+
+private struct ShareLead: View {
+    let poster: SharePoster
+    let format: ShareFormat
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: .spaceS) {
+            Text(verbatim: poster.eyebrow)
+                .font(.posterEyebrow)
+                .tracking(.posterTracking)
+                .foregroundStyle(Color.posterSecondary)
                 .lineLimit(1)
                 .minimumScaleFactor(.shareTextShrink)
-            if let headline = card.content.headline {
+            if let headline = poster.headline {
                 Text(verbatim: headline)
-                    .font(.shareTitle)
-                    .lineLimit(dense ? 2 : 4)
+                    .font(format == .message ? .posterHeadlineCompact : .posterHeadline)
+                    .lineLimit(format.headlineLines)
                     .minimumScaleFactor(.shareTextShrink)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            if case .compare = card.content.body {
-                EmptyView()
-            } else if let face = card.content.faces.first {
-                ShareFaceRow(face: face)
+            ShareHero(hero: poster.hero, format: format)
+            if !poster.facts.isEmpty, format.showsFacts || poster.factsAreEssential {
+                ShareFacts(facts: poster.facts, size: format.factSize)
             }
-            ShareBodyView(content: card.content, dense: dense)
-            Divider()
-            ShareFooter(card: card, code: dense ? nil : code)
-        }
-    }
-}
-
-private struct ShareFaceRow: View {
-    let face: ShareFace
-
-    var body: some View {
-        HStack(spacing: .spaceM) {
-            PersonPortrait(
-                slug: face.slug, name: face.name, party: face.party, size: .sharePortrait)
-            VStack(alignment: .leading, spacing: .space2XS) {
-                Text(verbatim: face.name)
-                    .font(.shareName)
+            if let note = poster.note, format.showsNote || poster.noteIsEssential {
+                Text(verbatim: note)
+                    .font(.posterLabel)
+                    .foregroundStyle(Color.posterSecondary)
                     .lineLimit(2)
                     .minimumScaleFactor(.shareTextShrink)
-                HStack(spacing: .spaceXS) {
-                    PartyMark(face.party)
-                    Text(verbatim: face.detail)
-                        .font(.shareBody)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                        .minimumScaleFactor(.shareTextShrink)
-                }
+            }
+            if let person = poster.person {
+                ShareIdentity(name: person.name, party: person.party)
             }
         }
     }
@@ -175,36 +214,27 @@ private struct ShareFooter: View {
         HStack(alignment: .bottom, spacing: .spaceM) {
             VStack(alignment: .leading, spacing: .space2XS) {
                 Text(verbatim: card.content.source)
-                    .font(.shareBody)
-                    .foregroundStyle(.secondary)
+                    .font(.posterSource)
+                    .foregroundStyle(Color.posterSecondary)
                     .lineLimit(2)
-                    .minimumScaleFactor(.shareTextShrink)
-                Text(verbatim: card.content.stamp)
-                    .font(.shareStamp)
-                    .foregroundStyle(.tertiary)
-                    .lineLimit(1)
                     .minimumScaleFactor(.shareTextShrink)
                 HStack(alignment: .firstTextBaseline, spacing: .spaceXS) {
                     Text(verbatim: card.brand)
-                        .font(.shareBrand)
+                        .font(.posterBrand)
                     Text(verbatim: ShareCardBuilder.host)
-                        .font(.shareLabel)
-                        .foregroundStyle(.secondary)
-                    if let mark = card.portraitMark {
-                        Text(verbatim: "· \(mark)")
-                            .font(.shareLabel)
-                            .foregroundStyle(.secondary)
-                    }
+                        .font(.posterHost)
+                        .foregroundStyle(Color.posterSecondary)
                 }
                 .lineLimit(1)
-                .minimumScaleFactor(.shareTextShrink)
             }
             Spacer(minLength: .zero)
             if let code, card.format.showsCode {
                 Image(decorative: code, scale: 1)
                     .interpolation(.none)
                     .resizable()
-                    .frame(width: .shareCode, height: .shareCode)
+                    .frame(width: .posterCode, height: .posterCode)
+                    .padding(.posterCodeInset)
+                    .background(.white, in: .rect(cornerRadius: .space2XS))
             }
         }
     }

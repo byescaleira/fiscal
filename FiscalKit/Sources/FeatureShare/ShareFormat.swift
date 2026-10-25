@@ -30,15 +30,87 @@ public enum ShareFormat: String, CaseIterable, Identifiable, Sendable {
         }
     }
 
-    public var artShare: CGFloat {
+    public var heroSize: CGFloat {
         switch self {
-        case .stories: 0.42
-        case .feed: 0.26
-        case .message: 0.16
+        case .stories: .posterHeroStories
+        case .feed: .posterHeroFeed
+        case .message: .posterHeroMessage
         }
     }
 
-    public var isCompact: Bool { self == .message }
+    public var titleSize: CGFloat {
+        switch self {
+        case .stories: .posterTitleStories
+        case .feed: .posterTitleFeed
+        case .message: .posterTitleMessage
+        }
+    }
+
+    public var scoreSize: CGFloat {
+        switch self {
+        case .stories: .posterScoreStories
+        case .feed: .posterScoreFeed
+        case .message: .posterScoreMessage
+        }
+    }
+
+    public var rowSize: CGFloat {
+        switch self {
+        case .stories: .posterRowStories
+        case .feed: .posterRowFeed
+        case .message: .posterRowMessage
+        }
+    }
+
+    public var factSize: CGFloat {
+        switch self {
+        case .stories: .posterFactStories
+        case .feed: .posterFactFeed
+        case .message: .posterFactMessage
+        }
+    }
+
+    public var contentWidth: CGFloat {
+        size.width - margin * 2
+    }
+
+    public func figureSize(_ base: CGFloat, for value: String, in width: CGFloat? = nil) -> CGFloat
+    {
+        let characters = CGFloat(max(value.count, 1))
+        return min(base, (width ?? contentWidth) / (characters * .posterFigureAdvance))
+    }
+
+    public var column: CGFloat {
+        (size.width - margin * 2 - .spaceL) / 2
+    }
+
+    public var margin: CGFloat {
+        self == .stories ? .posterMargin : .posterMarginCompact
+    }
+
+    public var plateSpansWidth: Bool { self == .stories }
+
+    public var plateWidth: CGFloat {
+        switch self {
+        case .stories: .shareCanvasWidth
+        case .feed: .posterPlateFeed
+        case .message: .posterPlateMessage
+        }
+    }
+
+    public var headlineLines: Int {
+        switch self {
+        case .stories: 4
+        case .feed: 3
+        case .message: 2
+        }
+    }
+
+    public var showsFacts: Bool { self == .stories }
+
+    public var showsNote: Bool { self == .stories }
+
+    public var compareRows: Int { self == .message ? 2 : SharePoster.compareLimit }
 
     public var showsCode: Bool { self != .message }
 
