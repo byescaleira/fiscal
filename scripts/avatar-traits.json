@@ -1,0 +1,89 @@
+{
+  "rigVersion": 1,
+  "reference": "Traços descritos a olho a partir das fotos oficiais de candidatura do TSE (resultados.tse.jus.br, eleição 2026, 2º turno). As fotos não ficam no repositório; nada é decalcado nem gerado por IA. Chapéus e acessórios de roupa ficam de fora para todos.",
+  "scales": {
+    "skin": ["#F6D8C4", "#EEC4A6", "#E2AE8A", "#D39B74", "#C2865E", "#AC714B", "#93603E", "#7A4C31", "#5F3B26", "#47291B"],
+    "hair": {
+      "black": "#1F1A17",
+      "darkBrown": "#3A2A20",
+      "brown": "#6A4630",
+      "auburn": "#7B4129",
+      "blonde": "#CDA86C",
+      "salt": "#5D5A57",
+      "gray": "#97938E",
+      "white": "#E7E3DD"
+    }
+  },
+  "people": [
+    {
+      "slug": "allyson", "name": "Allyson", "party": "UNIÃO", "office": "governor", "uf": "rn",
+      "skin": 6, "face": "long", "hair": "short", "hairColor": "black", "brows": "medium",
+      "beard": "none", "glasses": "none"
+    },
+    {
+      "slug": "alan-rick", "name": "Alan Rick", "party": "REPUBLICANOS", "office": "governor", "uf": "ac",
+      "skin": 3, "face": "oval", "hair": "swept", "hairColor": "salt", "brows": "medium",
+      "beard": "full", "beardColor": "salt", "glasses": "rectangle"
+    },
+    {
+      "slug": "cadu-de-lula", "name": "Cadu de Lula", "party": "PT", "office": "governor", "uf": "rn",
+      "skin": 3, "face": "oval", "hair": "short", "hairColor": "darkBrown", "brows": "medium",
+      "beard": "none", "glasses": "none"
+    },
+    {
+      "slug": "celina-leao", "name": "Celina Leão", "party": "PP", "office": "governor", "uf": "df",
+      "skin": 2, "face": "oval", "hair": "long", "hairColor": "blonde", "brows": "light",
+      "beard": "none", "glasses": "none"
+    },
+    {
+      "slug": "flavio-bolsonaro", "name": "Flávio Bolsonaro", "party": "PL", "office": "president", "uf": "br",
+      "skin": 2, "face": "long", "hair": "short", "hairColor": "darkBrown", "brows": "strong",
+      "beard": "none", "glasses": "none"
+    },
+    {
+      "slug": "leandro-grass", "name": "Leandro Grass", "party": "PT", "office": "governor", "uf": "df",
+      "skin": 3, "face": "long", "hair": "swept", "hairColor": "gray", "brows": "medium",
+      "beard": "short", "beardColor": "gray", "glasses": "none"
+    },
+    {
+      "slug": "lorenzo-pazolini", "name": "Lorenzo Pazolini", "party": "REPUBLICANOS", "office": "governor", "uf": "es",
+      "skin": 2, "face": "round", "hair": "short", "hairColor": "darkBrown", "brows": "medium",
+      "beard": "none", "glasses": "none"
+    },
+    {
+      "slug": "lula", "name": "Lula", "party": "PT", "office": "president", "uf": "br",
+      "skin": 3, "face": "round", "hair": "receding", "hairColor": "white", "brows": "medium",
+      "beard": "full", "beardColor": "white", "glasses": "none"
+    },
+    {
+      "slug": "mailza-assis", "name": "Mailza Assis", "party": "PP", "office": "governor", "uf": "ac",
+      "skin": 4, "face": "oval", "hair": "bob", "hairColor": "brown", "brows": "medium",
+      "beard": "none", "glasses": "none"
+    },
+    {
+      "slug": "omar-aziz", "name": "Omar Aziz", "party": "PSD", "office": "governor", "uf": "am",
+      "skin": 3, "face": "round", "hair": "receding", "hairColor": "gray", "brows": "medium",
+      "beard": "none", "glasses": "none"
+    },
+    {
+      "slug": "professora-dorinha", "name": "Professora Dorinha", "party": "UNIÃO", "office": "governor", "uf": "to",
+      "skin": 2, "face": "oval", "hair": "wavy", "hairColor": "darkBrown", "brows": "medium",
+      "beard": "none", "glasses": "none"
+    },
+    {
+      "slug": "professora-maria-do-carmo", "name": "Professora Maria do Carmo", "party": "PL", "office": "governor", "uf": "am",
+      "skin": 3, "face": "round", "hair": "bob", "hairColor": "auburn", "brows": "strong",
+      "beard": "none", "glasses": "none"
+    },
+    {
+      "slug": "ricardo-ferraco", "name": "Ricardo Ferraço", "party": "MDB", "office": "governor", "uf": "es",
+      "skin": 5, "face": "square", "hair": "thick", "hairColor": "salt", "brows": "strong",
+      "beard": "none", "glasses": "none"
+    },
+    {
+      "slug": "vicentinho-junior", "name": "Vicentinho Júnior", "party": "PSDB", "office": "governor", "uf": "to",
+      "skin": 5, "face": "oval", "hair": "short", "hairColor": "black", "brows": "strong",
+      "beard": "none", "glasses": "none"
+    }
+  ]
+}

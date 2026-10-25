@@ -11,6 +11,16 @@ struct ArtCatalogTests {
 
     private static let assetCatalog = resourceRoot.appending(path: "Assets/Art.xcassets")
 
+    private static let openLicenses: Set<String> = ["CC BY-SA 4.0", "CC BY 4.0", "CC0"]
+
+    private static let regions: [Set<String>] = [
+        ["ac", "am", "ap", "pa", "ro", "rr", "to"],
+        ["al", "ba", "ce", "ma", "pb", "pe", "pi", "rn", "se"],
+        ["df", "go", "ms", "mt"],
+        ["es", "mg", "rj", "sp"],
+        ["pr", "rs", "sc"],
+    ]
+
     private static let fixture = #"""
         {
           "collections": [
@@ -108,8 +118,11 @@ struct ArtCatalogTests {
     }
 
     @Test func bundledCreditsNameTheWorkAndThePublicDomain() throws {
-        for work in try ArtCatalog.bundled().works {
+        for work in try ArtCatalog.bundled().works where !work.isPhoto {
             #expect(work.asset == "art-" + work.id)
+            #expect(work.kind == .artwork)
+            #expect(work.collection == "acervo-historico")
+            #expect(work.series != nil)
             #expect(
                 work.credit.hasPrefix(
                     "\(work.artist), \(work.title) (\(work.year)). Domínio público. "))
@@ -121,6 +134,65 @@ struct ArtCatalogTests {
         }
     }
 
+    @Test func bundledPhotosCarryTheOpenLicenseAndTheirAuthor() throws {
+        let photos = try ArtCatalog.bundled().works.filter(\.isPhoto)
+        #expect(!photos.isEmpty)
+        for photo in photos {
+            #expect(photo.asset == "art-" + photo.id, "\(photo.id)")
+            #expect(photo.collection == "brasil-agora", "\(photo.id)")
+            #expect(Self.openLicenses.contains(photo.license), "\(photo.id)")
+            #expect(photo.licenseUrl.host() == "creativecommons.org", "\(photo.id)")
+            #expect(photo.lifeSpan == nil)
+            #expect(photo.author?.isEmpty == false, "\(photo.id)")
+            #expect(photo.event?.hasPrefix("Wiki Loves Earth 202") == true, "\(photo.id)")
+            #expect(photo.place?.isEmpty == false, "\(photo.id)")
+            #expect(photo.credit.hasPrefix("Foto: \(photo.artist)"), "\(photo.id)")
+            #expect(photo.credit.contains(photo.license), "\(photo.id)")
+            #expect(photo.credit.contains(photo.event ?? "-"), "\(photo.id)")
+            #expect(photo.credit.hasSuffix(" via Wikimedia Commons."), "\(photo.id)")
+            #expect(photo.sourceUrl.host() == "commons.wikimedia.org", "\(photo.id)")
+            #expect(photo.fileUrl.host()?.hasSuffix(".wikimedia.org") == true, "\(photo.id)")
+        }
+    }
+
+    @Test func brasilAgoraCoversStatesFromEveryRegion() throws {
+        let catalog = try ArtCatalog.bundled()
+        let photos = catalog.works(in: "brasil-agora")
+        let states = photos.compactMap(\.uf)
+        #expect(states.count == photos.count)
+        #expect(Set(states).count == states.count)
+        #expect(states.count >= 12)
+        for region in Self.regions {
+            #expect(!region.isDisjoint(with: states), "\(region)")
+        }
+        #expect(catalog.works(forState: "MA").count == 1)
+    }
+
+    @Test func publicDomainBecomesTheHistoricalReserve() throws {
+        let catalog = try ArtCatalog.bundled()
+        #expect(catalog.collections.map(\.id) == ["brasil-agora", "acervo-historico"])
+        #expect(catalog.collection(id: "acervo-historico")?.isReserve == true)
+        #expect(catalog.featuredCollections.map(\.id) == ["brasil-agora"])
+        #expect(catalog.works(in: "acervo-historico").count == 20)
+        let series = try #require(catalog.series)
+        #expect(series.map(\.id) == ["civica", "povo", "paisagens", "historia"])
+        for item in series {
+            #expect(!catalog.works(inSeries: item.id).isEmpty, "\(item.id)")
+        }
+    }
+
+    @Test func everyWorkHasImageCreditLicenseAndLink() throws {
+        let catalog = try ArtCatalog.bundled()
+        let imagesets = try Self.imagesetNames()
+        for work in catalog.works {
+            #expect(imagesets.contains(work.asset), "\(work.id)")
+            #expect(!work.credit.isEmpty, "\(work.id)")
+            #expect(!work.license.isEmpty, "\(work.id)")
+            #expect(work.sourceUrl.scheme == "https", "\(work.id)")
+            #expect(work.licenseUrl.scheme == "https", "\(work.id)")
+        }
+    }
+
     @Test func collectionStaysUnderTheSizeBudget() throws {
         var total = 0
         for name in try Self.imagesetNames() {
@@ -129,6 +201,6 @@ struct ArtCatalogTests {
                 atPath: image.path(percentEncoded: false))
             total += (attributes[.size] as? Int) ?? 0
         }
-        #expect(total < 15_000_000)
+        #expect(total < 25_000_000)
     }
 }

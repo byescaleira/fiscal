@@ -8,12 +8,14 @@ public struct FiscalWindow {
     public let session: SessionModel
     public let navigation: FiscalNavigation
     public let lens: LensContext
+    public let portraits: PortraitStore
 
     public init(provider: any RepositoryProvider) {
         let repositories = Self.repositories(provider.repositories)
         session = SessionModel(repositories: repositories)
         navigation = FiscalNavigation()
         lens = LensContext(repository: repositories.lens)
+        portraits = PortraitStore()
     }
 
     private static func repositories(_ repositories: Repositories) -> Repositories {
@@ -33,5 +35,6 @@ extension View {
         environment(window.session)
             .environment(window.navigation)
             .environment(window.lens)
+            .fiscalPortraits(window.portraits)
     }
 }

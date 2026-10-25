@@ -1,0 +1,39 @@
+{
+  "maxSide": 1600,
+  "quality": 74,
+  "maxTotalBytes": 25000000,
+  "collection": {
+    "id": "brasil-agora",
+    "name": "Brasil agora",
+    "leadWork": "wle-ma-lencois-maranhenses"
+  },
+  "licenses": {
+    "CC BY-SA 4.0": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "CC BY 4.0": "https://creativecommons.org/licenses/by/4.0/",
+    "CC0": "https://creativecommons.org/publicdomain/zero/1.0/"
+  },
+  "photos": [
+    { "id": "wle-am-medio-jurua", "uf": "am", "event": "2026", "place": "Reserva Extrativista Médio Juruá", "file": "File:Comunidade ribeirinha, 2022.jpg" },
+    { "id": "wle-ba-morro-do-pai-inacio", "uf": "ba", "event": "2026", "place": "Morro do Pai Inácio, Chapada Diamantina", "file": "File:Chapada Diamantina, Bahia - 20250727 130821.jpg" },
+    { "id": "wle-ce-pecem", "uf": "ce", "event": "2026", "place": "Estação Ecológica do Pecém", "file": "File:Centro ecológico do pecem (CE).jpg" },
+    { "id": "wle-df-flona-brasilia", "uf": "df", "event": "2025", "place": "Floresta Nacional de Brasília", "file": "File:Floresta Nacional de Brasília Tullio Franca (008).jpg" },
+    { "id": "wle-es-sooretama", "uf": "es", "event": "2025", "place": "Reserva Biológica de Sooretama", "file": "File:BIODIVESIDADE.jpg" },
+    { "id": "wle-go-lago-azul", "uf": "go", "event": "2026", "place": "RPPN Fazenda Branca Terra dos Anões", "file": "File:Reservoir and concrete pier at the Lago Azul at Fazenda Branca Terra dos Anões 1.jpg" },
+    { "id": "wle-ma-lencois-maranhenses", "uf": "ma", "event": "2025", "place": "Parque Nacional dos Lençóis Maranhenses", "file": "File:PARQUE NACIONAL DOS LENÇÓIS MARANHENSES - ELIZABETH MACHADO (01).jpg" },
+    { "id": "wle-mg-pico-do-itambe", "uf": "mg", "event": "2026", "place": "Parque Estadual Pico do Itambé", "file": "File:Parque Estadual Pico do Itambé por Joalpe - 007.jpg" },
+    { "id": "wle-ms-pantanal-rio-negro", "uf": "ms", "event": "2025", "place": "Parque Estadual do Pantanal do Rio Negro", "file": "File:Parque Estadual do Pantanal do Rio Negro Mariela Cantero (05).jpg" },
+    { "id": "wle-mt-encontro-das-aguas", "uf": "mt", "event": "2025", "place": "Parque Estadual Encontro das Águas", "file": "File:009 Female jaguar in Encontro das Águas State Park Photo by Giles Laurent.jpg" },
+    { "id": "wle-pa-flona-tapajos", "uf": "pa", "event": "2025", "place": "Floresta Nacional do Tapajós", "file": "File:Floresta Nacional dos Tapajós - Julia Bimi (01).jpg" },
+    { "id": "wle-pb-tambaba", "uf": "pb", "event": "2025", "place": "Área de Proteção Ambiental de Tambaba", "file": "File:Área de Proteção Ambiental de Tambaba - Graciela Verrone (02).jpg" },
+    { "id": "wle-pe-fernando-de-noronha", "uf": "pe", "event": "2025", "place": "Parque Nacional Marinho de Fernando de Noronha", "file": "File:Parque Nacional Marinho de Fernando de Noronha - Atoba Pardo.jpg" },
+    { "id": "wle-pi-serra-da-capivara", "uf": "pi", "event": "2025", "place": "Parque Nacional da Serra da Capivara", "file": "File:Parque Nacional da Serra da Capivara - Michele Coronetti (06).jpg" },
+    { "id": "wle-pr-iguacu", "uf": "pr", "event": "2026", "place": "Parque Nacional do Iguaçu", "file": "File:Cataratas de Iguaçu panorâmica 01.jpg" },
+    { "id": "wle-rj-lagoa-de-itaipu", "uf": "rj", "event": "2026", "place": "Lagoa de Itaipu, Niterói", "file": "File:Nascer do Sol Camboinhas RJ Brasil.jpg" },
+    { "id": "wle-rn-dunas-do-rosado", "uf": "rn", "event": "2026", "place": "APA Dunas do Rosado", "file": "File:Porto do Mangue APA Dunas do Rosado 25.01.2024 por Caroline Macedo.jpg" },
+    { "id": "wle-rs-flona-sao-francisco-de-paula", "uf": "rs", "event": "2026", "place": "Floresta Nacional de São Francisco de Paula", "file": "File:Lago FLONA.jpg" },
+    { "id": "wle-sc-carijos", "uf": "sc", "event": "2025", "place": "Estação Ecológica de Carijós", "file": "File:Estação Ecológica Carijós.jpg" },
+    { "id": "wle-se-rio-sao-francisco", "uf": "se", "event": "2025", "place": "Monumento Natural do Rio São Francisco", "file": "File:Monumento Natural do Rio São Francisco - Michele Coronetti (01).jpg" },
+    { "id": "wle-sp-mantiqueira-paulista", "uf": "sp", "event": "2026", "place": "Monumento Natural Estadual da Mantiqueira Paulista", "file": "File:Monumento Natural Estadual Mantiqueira Paulista-Marcia Cristina da Silva Machado (10).jpg" },
+    { "id": "wle-to-serra-geral", "uf": "to", "event": "2025", "place": "Estação Ecológica Serra Geral do Tocantins", "file": "File:ESEC Geral do Tocantins por Ismael Carlos Oliveira de Paula (02).jpg" }
+  ]
+}

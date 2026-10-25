@@ -4,20 +4,70 @@
   "quality": 80,
   "maxTotalBytes": 15000000,
   "artists": {
-    "agostini": { "name": "Angelo Agostini", "born": 1843, "died": 1910 },
-    "almeida-junior": { "name": "Almeida Júnior", "born": 1850, "died": 1899 },
-    "belmonte": { "name": "Belmonte", "born": 1896, "died": 1947 },
-    "calixto": { "name": "Benedito Calixto", "born": 1853, "died": 1927 },
-    "debret": { "name": "Jean-Baptiste Debret", "born": 1768, "died": 1848 },
-    "j-carlos": { "name": "J. Carlos", "born": 1884, "died": 1950 },
-    "meirelles": { "name": "Victor Meirelles", "born": 1832, "died": 1903 },
-    "pedro-americo": { "name": "Pedro Américo", "born": 1843, "died": 1905 }
+    "agostini": {
+      "name": "Angelo Agostini",
+      "born": 1843,
+      "died": 1910
+    },
+    "almeida-junior": {
+      "name": "Almeida Júnior",
+      "born": 1850,
+      "died": 1899
+    },
+    "belmonte": {
+      "name": "Belmonte",
+      "born": 1896,
+      "died": 1947
+    },
+    "calixto": {
+      "name": "Benedito Calixto",
+      "born": 1853,
+      "died": 1927
+    },
+    "debret": {
+      "name": "Jean-Baptiste Debret",
+      "born": 1768,
+      "died": 1848
+    },
+    "j-carlos": {
+      "name": "J. Carlos",
+      "born": 1884,
+      "died": 1950
+    },
+    "meirelles": {
+      "name": "Victor Meirelles",
+      "born": 1832,
+      "died": 1903
+    },
+    "pedro-americo": {
+      "name": "Pedro Américo",
+      "born": 1843,
+      "died": 1905
+    }
   },
-  "collections": [
-    { "id": "civica", "name": "Vida cívica", "leadWork": "j-carlos-careta-1920" },
-    { "id": "povo", "name": "Gente do Brasil", "leadWork": "almeida-junior-caipira-picando-fumo" },
-    { "id": "paisagens", "name": "Paisagens", "leadWork": "almeida-junior-marinha-guaruja" },
-    { "id": "historia", "name": "História", "leadWork": "pedro-americo-independencia-ou-morte" }
+  "collection": {
+    "id": "acervo-historico",
+    "name": "Acervo histórico",
+    "leadWork": "pedro-americo-independencia-ou-morte",
+    "reserve": true
+  },
+  "series": [
+    {
+      "id": "civica",
+      "name": "Vida cívica"
+    },
+    {
+      "id": "povo",
+      "name": "Gente do Brasil"
+    },
+    {
+      "id": "paisagens",
+      "name": "Paisagens"
+    },
+    {
+      "id": "historia",
+      "name": "História"
+    }
   ],
   "works": [
     {
@@ -26,7 +76,7 @@
       "title": "Capa da Careta",
       "artist": "j-carlos",
       "year": "1920",
-      "collection": "civica",
+      "series": "civica",
       "holder": "Careta, 13 de março de 1920",
       "holderKind": "periodical",
       "license": "PD-Art (PD-old-100-expired)",
@@ -38,7 +88,7 @@
       "title": "As Duas Imprensas",
       "artist": "j-carlos",
       "year": "1922",
-      "collection": "civica",
+      "series": "civica",
       "holder": "O Malho, n.º 1057, na Hemeroteca Digital Brasileira",
       "holderKind": "periodical",
       "license": "PD-Brazil-URAA",
@@ -50,7 +100,7 @@
       "title": "Fechamento das Câmaras",
       "artist": "agostini",
       "year": "1892",
-      "collection": "civica",
+      "series": "civica",
       "holder": "Revista Illustrada, n.º 637",
       "holderKind": "periodical",
       "license": "PD-Brazil-media",
@@ -62,7 +112,7 @@
       "title": "Urna Conservadora",
       "artist": "agostini",
       "year": "1878",
-      "collection": "civica",
+      "series": "civica",
       "holder": "Revista Illustrada, n.º 125, na Hemeroteca Digital Brasileira",
       "holderKind": "periodical",
       "license": "PD-old-70",
@@ -74,7 +124,7 @@
       "title": "Praça do Palácio, Rio de Janeiro",
       "artist": "debret",
       "year": "1834–1839",
-      "collection": "civica",
+      "series": "civica",
       "holder": "Arquivo Nacional",
       "holderKind": "institution",
       "license": "PD-old-100-expired (Arquivo Nacional PD-license)",
@@ -86,7 +136,7 @@
       "title": "Caipira Picando Fumo",
       "artist": "almeida-junior",
       "year": "1893",
-      "collection": "povo",
+      "series": "povo",
       "holder": "Pinacoteca do Estado de São Paulo",
       "holderKind": "institution",
       "license": "PD-Art (PD-old-100-expired)",
@@ -98,7 +148,7 @@
       "title": "O Violeiro",
       "artist": "almeida-junior",
       "year": "1899",
-      "collection": "povo",
+      "series": "povo",
       "holder": "Pinacoteca do Estado de São Paulo",
       "holderKind": "institution",
       "license": "PD-Art (PD-old-100-expired)",
@@ -110,7 +160,7 @@
       "title": "Leitura",
       "artist": "almeida-junior",
       "year": "1892",
-      "collection": "povo",
+      "series": "povo",
       "holder": "Pinacoteca do Estado de São Paulo",
       "holderKind": "institution",
       "license": "PD-Art (PD-old-100-expired)",
@@ -122,7 +172,7 @@
       "title": "Carnaval",
       "artist": "agostini",
       "year": "1884",
-      "collection": "povo",
+      "series": "povo",
       "holder": "Revista Illustrada, n.º 373",
       "holderKind": "periodical",
       "license": "PD-Art (PD-old-auto-expired)",
@@ -134,7 +184,7 @@
       "title": "Juca Pato",
       "artist": "belmonte",
       "year": "s.d.",
-      "collection": "povo",
+      "series": "povo",
       "holder": "reprodução da Folha de S.Paulo, 2017",
       "holderKind": "periodical",
       "license": "PD-Art (PD-Brazil-media)",
@@ -146,7 +196,7 @@
       "title": "Marinha, Guarujá",
       "artist": "almeida-junior",
       "year": "1895",
-      "collection": "paisagens",
+      "series": "paisagens",
       "holder": "Pinacoteca do Estado de São Paulo",
       "holderKind": "institution",
       "license": "PD-Art (PD-old-100-expired)",
@@ -158,7 +208,7 @@
       "title": "A Cachoeira do Rio Sorocaba",
       "artist": "calixto",
       "year": "1891",
-      "collection": "paisagens",
+      "series": "paisagens",
       "holder": "Museu de Arte de São Paulo (MASP)",
       "holderKind": "institution",
       "license": "PD-Art (PD-old-auto-expired)",
@@ -170,7 +220,7 @@
       "title": "Praia com Barcos ao Seco (Marinha)",
       "artist": "calixto",
       "year": "1919",
-      "collection": "paisagens",
+      "series": "paisagens",
       "holder": "Museu de Arte de São Paulo (MASP)",
       "holderKind": "institution",
       "license": "PD-Art (PD-old-auto-expired)",
@@ -182,7 +232,7 @@
       "title": "Estudo para o Panorama do Rio de Janeiro",
       "artist": "meirelles",
       "year": "c. 1885",
-      "collection": "paisagens",
+      "series": "paisagens",
       "holder": "Museu Nacional de Belas Artes",
       "holderKind": "institution",
       "license": "PD-Art (PD-old-auto-expired)",
@@ -194,7 +244,7 @@
       "title": "Vista do Rio de Janeiro, a partir do Convento de São Bento",
       "artist": "debret",
       "year": "1834–1839",
-      "collection": "paisagens",
+      "series": "paisagens",
       "holder": "Arquivo Nacional",
       "holderKind": "institution",
       "license": "PD-old-100-expired (Arquivo Nacional PD-license)",
@@ -206,7 +256,7 @@
       "title": "Independência ou Morte",
       "artist": "pedro-americo",
       "year": "1888",
-      "collection": "historia",
+      "series": "historia",
       "holder": "Museu Paulista da USP",
       "holderKind": "institution",
       "license": "PD-Art (PD-old-auto-expired)",
@@ -218,7 +268,7 @@
       "title": "Juramento da Princesa Isabel",
       "artist": "meirelles",
       "year": "1875",
-      "collection": "historia",
+      "series": "historia",
       "holder": "Museu Imperial",
       "holderKind": "institution",
       "license": "PD-Art (PD-old-auto-expired)",
@@ -230,7 +280,7 @@
       "title": "Proclamação da República",
       "artist": "calixto",
       "year": "1893",
-      "collection": "historia",
+      "series": "historia",
       "holder": "Pinacoteca Municipal de São Paulo",
       "holderKind": "institution",
       "license": "PD-Art (PD-old-auto-expired)",
@@ -242,7 +292,7 @@
       "title": "Aclamação de D. Pedro I como Imperador do Brasil",
       "artist": "debret",
       "year": "1834–1839",
-      "collection": "historia",
+      "series": "historia",
       "holder": "Arquivo Nacional",
       "holderKind": "institution",
       "license": "PD-old-100-expired (Arquivo Nacional PD-license)",
@@ -254,7 +304,7 @@
       "title": "Estudo para Partida da Monção",
       "artist": "almeida-junior",
       "year": "1897",
-      "collection": "historia",
+      "series": "historia",
       "holder": "Pinacoteca do Estado de São Paulo",
       "holderKind": "institution",
       "license": "PD-Art (PD-old-100-expired)",
