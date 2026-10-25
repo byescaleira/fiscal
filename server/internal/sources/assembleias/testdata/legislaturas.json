@@ -1,0 +1,39 @@
+{
+ "pagination": {
+  "links": {
+   "next": "http://sapl.al.ac.leg.br/api/parlamentares/legislatura/?o=-numero&page=2&page_size=2",
+   "previous": null
+  },
+  "previous_page": null,
+  "next_page": null,
+  "start_index": 1,
+  "end_index": 2,
+  "total_entries": 16,
+  "total_pages": 8,
+  "page": 1
+ },
+ "results": [
+  {
+   "id": 17,
+   "__str__": "16ª (2023 - 2027) (Atual)",
+   "link_detail_backend": "/sistema/parlamentar/legislatura/17",
+   "metadata": {},
+   "numero": 16,
+   "data_inicio": "2023-02-01",
+   "data_fim": "2027-01-31",
+   "data_eleicao": "2023-01-31",
+   "observacao": ""
+  },
+  {
+   "id": 16,
+   "__str__": "15ª (2019 - 2023) ",
+   "link_detail_backend": "/sistema/parlamentar/legislatura/16",
+   "metadata": {},
+   "numero": 15,
+   "data_inicio": "2019-02-01",
+   "data_fim": "2023-01-31",
+   "data_eleicao": "2018-10-07",
+   "observacao": ""
+  }
+ ]
+}

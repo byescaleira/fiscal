@@ -222,7 +222,7 @@ func (b *builder) person(p *Person) {
 	for _, y := range b.ds.Years {
 		act := p.Activity[y]
 		if act == nil {
-			act = &YearActivity{Year: y}
+			continue
 		}
 		ys := YearSummary{Year: y}
 		if attendanceOn && act.Present != nil && act.Eligible != nil {
@@ -682,7 +682,9 @@ func (b *builder) votes() {
 			case "nao":
 				t.No++
 			default:
-				t.Others++
+				if bl.Present {
+					t.Others++
+				}
 			}
 			var slug *string
 			if p, ok := b.byKey[bl.PersonKey]; ok {

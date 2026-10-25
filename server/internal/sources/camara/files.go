@@ -207,7 +207,7 @@ func ReadCommittees(r io.Reader, fn func(Committee)) error {
 		fn(Committee{
 			DeputyID: idFromURI(row.Raw("uriDeputado")),
 			Acronym:  row.Raw("siglaOrgao"),
-			Name:     row.Raw("nomeOrgao"),
+			Name:     CleanText(row.Raw("nomeOrgao")),
 			Role:     row.Raw("cargo"),
 			Start:    row.Raw("dataInicio"),
 			End:      row.Raw("dataFim"),

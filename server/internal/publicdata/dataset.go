@@ -162,6 +162,7 @@ type Ballot struct {
 	Party     string
 	UF        string
 	Vote      string
+	Present   bool
 }
 
 type HouseVote struct {

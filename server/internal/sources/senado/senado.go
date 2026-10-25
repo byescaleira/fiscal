@@ -720,6 +720,14 @@ func (a API) Agenda(ctx context.Context, day string) ([]AgendaSession, error) {
 	return body.sessions(), nil
 }
 
+func (a API) AgendaMonth(ctx context.Context, from string) ([]AgendaSession, error) {
+	var body agendaJSON
+	if err := a.Get.JSON(ctx, fmt.Sprintf("%s/plenario/agenda/mes/%s.json", a.base(), strings.ReplaceAll(from, "-", "")), &body); err != nil {
+		return nil, err
+	}
+	return body.sessions(), nil
+}
+
 func ParseAgenda(data []byte) ([]AgendaSession, error) {
 	var body agendaJSON
 	if err := json.Unmarshal(data, &body); err != nil {

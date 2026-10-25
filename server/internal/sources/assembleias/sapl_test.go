@@ -23,6 +23,8 @@ func (f *fileGetter) JSON(_ context.Context, raw string, v any) error {
 		"/api/base/autor/":                     "autores.json",
 		"/api/materia/tipomaterialegislativa/": "tipos.json",
 		"/api/materia/materialegislativa/":     "materias.json",
+		"/api/parlamentares/legislatura/":      "legislaturas.json",
+		"/api/parlamentares/mandato/":          "mandatos.json",
 	}[u.Path]
 	if name == "" {
 		f.t.Fatalf("unexpected path %s", u.Path)
@@ -40,12 +42,16 @@ func TestLoadLinksMattersToActiveMembers(t *testing.T) {
 		t.Fatal("AC house")
 	}
 	g := &fileGetter{t: t}
-	d, err := Load(context.Background(), g, h, 2026)
+	d, err := Load(context.Background(), g, h, 2026, "2026-10-25")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(d.Members) != 1 || d.Members[0].ID != 248 || d.Members[0].Name != "ADAILTON CRUZ" || !strings.HasPrefix(d.Members[0].Photo, "https://") || d.Members[0].Email == "" {
-		t.Fatalf("members = %+v", d.Members)
+	if len(d.Members) != 2 || !d.CurrentKnown || !d.Current[248] || d.Current[79] {
+		t.Fatalf("members = %+v current = %v", d.Members, d.Current)
+	}
+	cur := d.CurrentMembers()
+	if len(cur) != 1 || cur[0].ID != 248 || cur[0].Name != "ADAILTON CRUZ" || !strings.HasPrefix(cur[0].Photo, "https://") || cur[0].Email == "" {
+		t.Fatalf("current members = %+v", cur)
 	}
 	if d.Authors[146] != 248 || len(d.Authors) != 1 {
 		t.Fatalf("authors = %v", d.Authors)
@@ -65,8 +71,27 @@ func TestLoadLinksMattersToActiveMembers(t *testing.T) {
 			t.Fatalf("call = %s", c)
 		}
 	}
-	if !strings.Contains(g.calls[0], "ativo=True") || !strings.Contains(g.calls[3], "ano=2026") {
+	joined := strings.Join(g.calls, " ")
+	if !strings.Contains(joined, "legislatura=17") || !strings.Contains(joined, "ano=2026") {
 		t.Fatalf("filters = %v", g.calls)
+	}
+}
+
+func TestCurrentMembersSkipsLeavesAndOtherLegislatures(t *testing.T) {
+	legs := []legislatureJSON{{ID: 1, DataInicio: "2019-02-01", DataFim: "2023-01-31"}, {ID: 2, DataInicio: "2023-02-01", DataFim: "2027-01-31"}}
+	ms := []mandateJSON{
+		{Parlamentar: 10, DataInicio: "2023-02-01", DataFim: "2027-01-31"},
+		{Parlamentar: 11, DataInicio: "2023-02-01", DataFim: "2025-03-01"},
+		{Parlamentar: 12, DataInicio: "2025-03-02", DataFim: ""},
+		{Parlamentar: 13, DataInicio: "2023-02-01", DataFim: "2027-01-31", TipoAfastamento: []byte("3")},
+	}
+	var asked int64
+	cur, known, err := currentMembers(legs, func(id int64) ([]mandateJSON, error) { asked = id; return ms, nil }, "2026-10-25")
+	if err != nil || !known || asked != 2 || !cur[10] || cur[11] || !cur[12] || cur[13] {
+		t.Fatalf("current = %v known=%v asked=%d err=%v", cur, known, asked, err)
+	}
+	if _, known, _ := currentMembers(legs[:1], func(int64) ([]mandateJSON, error) { return ms, nil }, "2026-10-25"); known {
+		t.Fatal("no current legislature means unknown membership")
 	}
 }
 

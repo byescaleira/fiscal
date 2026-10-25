@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	blockSize  = 4 << 20
+	blockSize  = 2 << 20
 	keepBlocks = 4
 )
 

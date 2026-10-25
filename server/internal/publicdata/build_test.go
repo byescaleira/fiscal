@@ -74,8 +74,8 @@ func sampleDataset() *Dataset {
 		Approved: bptr(false), Result: "Rejeitada", Nominal: true, Yes: iptr(1), No: iptr(1), Others: iptr(0),
 		Guidance: []PartyGuidance{{Party: "MDB", Guidance: "Sim"}, {Party: "Fdr PT-PCdoB-PV", Guidance: "Não"}},
 		Ballots: []Ballot{
-			{PersonKey: "camara:204379", Name: "Acácio Favacho", Party: "MDB", UF: "AP", Vote: "Sim"},
-			{PersonKey: "camara:160535", Name: "Marcon", Party: "PT", UF: "RS", Vote: "Não"},
+			{PersonKey: "camara:204379", Name: "Acácio Favacho", Party: "MDB", UF: "AP", Vote: "Sim", Present: true},
+			{PersonKey: "camara:160535", Name: "Marcon", Party: "PT", UF: "RS", Vote: "Não", Present: true},
 		},
 	}
 	v2 := &HouseVote{ID: "senado-7108", House: HouseSenado, Date: "2026-10-25", Proposition: "PLP 186/2026", Kind: "PLP", Description: "Votação nominal do PLP 186/2026.", Ementa: "Altera a Lei Complementar nº 123, de 14 de dezembro de 2006, para dispor sobre o limite de receita bruta anual do Microempreendedor Individual.", Approved: bptr(true), Result: "Aprovada", Nominal: true, Yes: iptr(78), No: iptr(0), Others: iptr(1)}

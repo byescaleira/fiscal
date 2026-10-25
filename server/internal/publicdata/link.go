@@ -279,7 +279,7 @@ type AssemblyMember struct {
 	Photo    string
 }
 
-func LinkAssembly(people []*Person, cands []Candidacy, uf string, year int, members []AssemblyMember, house string, states map[string]string) ([]*Person, map[int64]*Person) {
+func LinkAssembly(people []*Person, cands []Candidacy, uf string, year int, members []AssemblyMember, current bool, house string, states map[string]string) ([]*Person, map[int64]*Person) {
 	matched := map[int64]*Person{}
 	elected := map[*Person]bool{}
 	for _, p := range people {
@@ -287,23 +287,27 @@ func LinkAssembly(people []*Person, cands []Candidacy, uf string, year int, memb
 			elected[p] = true
 		}
 	}
-	match := func(m AssemblyMember, c Candidacy) bool {
-		return (m.Name != "" && Fold(m.Name) == Fold(c.BallotName)) || (m.FullName != "" && Fold(m.FullName) == Fold(c.Name))
+	match := sameMember
+	electedList := make([]*Person, 0, len(elected))
+	for p := range elected {
+		electedList = append(electedList, p)
 	}
+	sort.Slice(electedList, func(i, j int) bool { return firstKey(electedList[i]) < firstKey(electedList[j]) })
 	for _, m := range members {
-		var hit *Person
-		for p := range elected {
+		var hits []*Person
+		for _, p := range electedList {
 			for _, c := range p.Candidacies {
 				if c.Year == year && c.Office == OfficeStateDeputy && c.UF == uf && match(m, c) {
-					hit = p
+					hits = append(hits, p)
+					break
 				}
 			}
 		}
-		if hit != nil {
-			matched[m.ID] = hit
+		if len(hits) == 1 {
+			matched[m.ID] = hits[0]
 		}
 	}
-	enough := len(elected) > 0 && len(matched)*5 >= len(elected)*4
+	enough := current && len(elected) > 0 && len(matched)*5 >= len(elected)*4
 	byCPF := map[string]*Person{}
 	for _, p := range people {
 		if p.CPF != "" {
@@ -311,7 +315,7 @@ func LinkAssembly(people []*Person, cands []Candidacy, uf string, year int, memb
 		}
 	}
 	for _, m := range members {
-		if _, ok := matched[m.ID]; ok {
+		if _, ok := matched[m.ID]; ok || !current {
 			continue
 		}
 		var found []Candidacy
@@ -374,4 +378,37 @@ func LinkAssembly(people []*Person, cands []Candidacy, uf string, year int, memb
 		}
 	}
 	return people, matched
+}
+
+var honorifics = map[string]bool{
+	"dr": true, "dra": true, "doutor": true, "doutora": true, "pastor": true, "pastora": true, "pr": true, "prof": true,
+	"profa": true, "professor": true, "professora": true, "sargento": true, "sgt": true, "cabo": true, "coronel": true,
+	"cel": true, "capitao": true, "delegado": true, "delegada": true, "irmao": true, "irma": true, "tio": true, "tia": true,
+	"deputado": true, "deputada": true, "dep": true, "enfermeiro": true, "enfermeira": true, "missionario": true, "missionaria": true,
+}
+
+func plainName(s string) string {
+	var out []string
+	for _, w := range strings.Fields(Fold(s)) {
+		if !honorifics[w] {
+			out = append(out, w)
+		}
+	}
+	return strings.Join(out, " ")
+}
+
+func sameMember(m AssemblyMember, c Candidacy) bool {
+	if m.Name != "" && Fold(m.Name) == Fold(c.BallotName) {
+		return true
+	}
+	if m.FullName != "" && Fold(m.FullName) == Fold(c.Name) {
+		return true
+	}
+	if m.Name != "" {
+		a := plainName(m.Name)
+		if a != "" && a == plainName(c.BallotName) {
+			return true
+		}
+	}
+	return false
 }

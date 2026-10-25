@@ -131,7 +131,7 @@ func TestLinkAssemblyUsesActiveMembers(t *testing.T) {
 	cands = append(cands, cand(2022, OfficeStateDeputy, "ac", "SUP", "SUP", "SUPLENTE ATIVO", "SUPLENTE ATIVO", "SUPLENTE"))
 	people := Link(LinkInput{Candidacies: cands, PreviousYear: 2022, ElectionYear: 2026, StateNames: states})
 	members := []AssemblyMember{{ID: 1, Name: "Ana"}, {ID: 2, Name: "Bruno"}, {ID: 3, Name: "Carla"}, {ID: 4, FullName: "Nome Dani"}, {ID: 5, Name: "Suplente Ativo", Email: "s@al.ac.leg.br"}, {ID: 6, Name: "Desconhecido"}}
-	people, matched := LinkAssembly(people, cands, "ac", 2022, members, "assembleia-ac", states)
+	people, matched := LinkAssembly(people, cands, "ac", 2022, members, true, "assembleia-ac", states)
 	if len(matched) != 5 || matched[6] != nil {
 		t.Fatalf("matched = %v", matched)
 	}
@@ -159,7 +159,7 @@ func TestLinkAssemblyKeepsStatusWhenTheListLooksIncomplete(t *testing.T) {
 		cands = append(cands, cand(2022, OfficeStateDeputy, "ac", n, n, "NOME "+n, n, "ELEITO POR QP"))
 	}
 	people := Link(LinkInput{Candidacies: cands, PreviousYear: 2022, ElectionYear: 2026, StateNames: states})
-	people, _ = LinkAssembly(people, cands, "ac", 2022, []AssemblyMember{{ID: 1, Name: "Ana"}}, "assembleia-ac", states)
+	people, _ = LinkAssembly(people, cands, "ac", 2022, []AssemblyMember{{ID: 1, Name: "Ana"}}, true, "assembleia-ac", states)
 	for _, p := range people {
 		if p.Primary().Status != StatusInOffice {
 			t.Fatalf("%s changed to %s", p.Name, p.Primary().Status)
@@ -230,5 +230,30 @@ func TestSlugsAreStableAcrossRuns(t *testing.T) {
 	newcomer := &Person{Keys: []string{"k:4"}, Name: "Pedro Lima", Roles: []Role{{UF: "ce"}}}
 	if s := fresh.Assign([]*Person{newcomer})[newcomer]; s == "pedro-lima" {
 		t.Fatal("a slug that belonged to someone else must not be reused")
+	}
+}
+
+func TestAssemblyNamesIgnoreHonorifics(t *testing.T) {
+	c := cand(2022, OfficeStateDeputy, "ac", "1", "1", "MICHELLE DE MELO", "DRA. MICHELLE MELO", "ELEITO POR QP")
+	if !sameMember(AssemblyMember{Name: "MICHELLE MELO"}, c) || sameMember(AssemblyMember{Name: "MICHELLE"}, c) {
+		t.Fatal("honorific match")
+	}
+}
+
+func TestLinkAssemblyWithoutCurrentListOnlyLinksElected(t *testing.T) {
+	cands := []Candidacy{
+		cand(2022, OfficeStateDeputy, "ac", "A", "A", "NOME A", "ANA", "ELEITO POR QP"),
+		cand(2022, OfficeStateDeputy, "ac", "B", "B", "NOME B", "BRUNO", "ELEITO POR QP"),
+		cand(2022, OfficeStateDeputy, "ac", "S", "S", "NOME S", "SUPLENTE", "SUPLENTE"),
+	}
+	people := Link(LinkInput{Candidacies: cands, PreviousYear: 2022, ElectionYear: 2026, StateNames: states})
+	people, matched := LinkAssembly(people, cands, "ac", 2022, []AssemblyMember{{ID: 1, Name: "Ana"}, {ID: 9, Name: "Suplente"}}, false, "assembleia-ac", states)
+	if len(people) != 2 || len(matched) != 1 || matched[1] == nil {
+		t.Fatalf("people=%d matched=%v", len(people), matched)
+	}
+	for _, p := range people {
+		if p.Primary().Status != StatusInOffice {
+			t.Fatalf("%s = %s", p.Name, p.Primary().Status)
+		}
 	}
 }

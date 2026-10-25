@@ -61,10 +61,22 @@ type Matter struct {
 }
 
 type Data struct {
-	House   House
-	Members []Member
-	Authors map[int64]int64
-	Matters []Matter
+	House        House
+	Members      []Member
+	Current      map[int64]bool
+	CurrentKnown bool
+	Authors      map[int64]int64
+	Matters      []Matter
+}
+
+func (d Data) CurrentMembers() []Member {
+	var out []Member
+	for _, m := range d.Members {
+		if d.Current[m.ID] {
+			out = append(out, m)
+		}
+	}
+	return out
 }
 
 const pageSize = 100
@@ -131,8 +143,56 @@ type matterJSON struct {
 	Autores          []int64 `json:"autores"`
 }
 
-func Load(ctx context.Context, g Getter, h House, year int) (Data, error) {
-	members, err := list[memberJSON](ctx, g, h.Base, "/api/parlamentares/parlamentar/", url.Values{"ativo": {"True"}})
+type legislatureJSON struct {
+	ID         int64  `json:"id"`
+	DataInicio string `json:"data_inicio"`
+	DataFim    string `json:"data_fim"`
+}
+
+type mandateJSON struct {
+	Parlamentar     int64           `json:"parlamentar"`
+	DataInicio      string          `json:"data_inicio_mandato"`
+	DataFim         string          `json:"data_fim_mandato"`
+	TipoAfastamento json.RawMessage `json:"tipo_afastamento"`
+}
+
+func currentMembers(legs []legislatureJSON, mandates func(int64) ([]mandateJSON, error), today string) (map[int64]bool, bool, error) {
+	var leg *legislatureJSON
+	for i := range legs {
+		l := legs[i]
+		if l.DataInicio != "" && l.DataInicio <= today && (l.DataFim == "" || l.DataFim >= today) {
+			leg = &legs[i]
+		}
+	}
+	if leg == nil {
+		return nil, false, nil
+	}
+	ms, err := mandates(leg.ID)
+	if err != nil {
+		return nil, false, err
+	}
+	out := map[int64]bool{}
+	for _, m := range ms {
+		away := len(m.TipoAfastamento) > 0 && string(m.TipoAfastamento) != "null"
+		if m.DataInicio != "" && m.DataInicio <= today && (m.DataFim == "" || m.DataFim >= today) && !away {
+			out[m.Parlamentar] = true
+		}
+	}
+	return out, len(out) > 0, nil
+}
+
+func Load(ctx context.Context, g Getter, h House, year int, today string) (Data, error) {
+	members, err := list[memberJSON](ctx, g, h.Base, "/api/parlamentares/parlamentar/", url.Values{})
+	if err != nil {
+		return Data{}, err
+	}
+	legs, err := list[legislatureJSON](ctx, g, h.Base, "/api/parlamentares/legislatura/", url.Values{})
+	if err != nil {
+		return Data{}, err
+	}
+	current, known, err := currentMembers(legs, func(id int64) ([]mandateJSON, error) {
+		return list[mandateJSON](ctx, g, h.Base, "/api/parlamentares/mandato/", url.Values{"legislatura": {strconv.FormatInt(id, 10)}})
+	}, today)
 	if err != nil {
 		return Data{}, err
 	}
@@ -148,7 +208,9 @@ func Load(ctx context.Context, g Getter, h House, year int) (Data, error) {
 	if err != nil {
 		return Data{}, err
 	}
-	return assemble(h, members, authors, kinds, matters), nil
+	d := assemble(h, members, authors, kinds, matters)
+	d.Current, d.CurrentKnown = current, known
+	return d, nil
 }
 
 func assemble(h House, members []memberJSON, authors []authorJSON, kinds []kindJSON, matters []matterJSON) Data {
@@ -156,9 +218,6 @@ func assemble(h House, members []memberJSON, authors []authorJSON, kinds []kindJ
 	byID := map[int64]Member{}
 	for _, m := range members {
 		mm := m.member()
-		if !mm.Active {
-			continue
-		}
 		d.Members = append(d.Members, mm)
 		byID[mm.ID] = mm
 	}
