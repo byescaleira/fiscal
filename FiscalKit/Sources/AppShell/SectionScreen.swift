@@ -1,6 +1,9 @@
 import FeatureCore
-import FeatureLiveResults
-import FeatureSettings
+import FeatureMine
+import FeatureMoney
+import FeatureSearch
+import FeatureToday
+import FeatureVotes
 import SwiftUI
 
 struct SectionScreen: View {
@@ -8,8 +11,11 @@ struct SectionScreen: View {
 
     @ViewBuilder var body: some View {
         switch section {
-        case .today: ModelHost(FiscalServices.shared.liveResults()) { LiveResultsScreen() }
-        case .settings: SettingsScreen()
+        case .today: ModelHost(TodayModel()) { TodayScreen() }
+        case .mine: ModelHost(MineModel()) { MineScreen() }
+        case .votes: ModelHost(VotesModel()) { VotesScreen() }
+        case .money: ModelHost(MoneyModel()) { MoneyScreen() }
+        case .search: ModelHost(SearchModel()) { SearchScreen() }
         }
     }
 }

@@ -111,12 +111,32 @@
         }
       }
     },
-    "Appearance, guides and more." : {
+    "Artists" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aparência, guias e mais."
+            "value" : "Artistas"
+          }
+        }
+      }
+    },
+    "Attendance" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presença"
+          }
+        }
+      }
+    },
+    "Attendance, votes, proposals, expenses and assets show up here, each with its official source." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presença, votos, propostas, gastos e patrimônio aparecem aqui, cada um com a fonte oficial."
           }
         }
       }
@@ -181,12 +201,42 @@
         }
       }
     },
+    "Chamber of Deputies" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Câmara dos Deputados"
+          }
+        }
+      }
+    },
     "Cherry" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cereja"
+          }
+        }
+      }
+    },
+    "Choose 3 to 5 topics and Fiscal puts them first. The numbers stay the same for everyone, and your lens never leaves this device." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha de 3 a 5 temas e o Fiscal coloca esses temas na frente. Os números são os mesmos para todo mundo, e a sua lente nunca sai deste aparelho."
+          }
+        }
+      }
+    },
+    "Choose two politicians in Search and Fiscal puts their numbers side by side, with no score or ranking." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha dois políticos em Fiscalizar e o Fiscal põe os números lado a lado, sem nota nem ranking."
           }
         }
       }
@@ -227,6 +277,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cor"
+          }
+        }
+      }
+    },
+    "Compare" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comparar"
           }
         }
       }
@@ -351,22 +411,22 @@
         }
       }
     },
-    "Current Version" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Versão atual"
-          }
-        }
-      }
-    },
     "Current month" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mês atual"
+          }
+        }
+      }
+    },
+    "Current Version" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão atual"
           }
         }
       }
@@ -491,6 +551,16 @@
         }
       }
     },
+    "Elections" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eleições"
+          }
+        }
+      }
+    },
     "Every device signed in to your Apple Account shows the same data." : {
       "localizations" : {
         "pt-BR" : {
@@ -531,12 +601,12 @@
         }
       }
     },
-    "Everything starts on the Live Results tab. Settings keeps the choices that are yours." : {
+    "Everything starts on the Today tab. Settings, in its toolbar, keeps the choices that are yours." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tudo começa na aba Apuração. Ajustes guarda as escolhas que são suas."
+            "value" : "Tudo começa na aba Hoje. Os Ajustes, na barra de cima, guardam as escolhas que são suas."
           }
         }
       }
@@ -551,6 +621,26 @@
         }
       }
     },
+    "Expenses" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gastos"
+          }
+        }
+      }
+    },
+    "Explore" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explorar"
+          }
+        }
+      }
+    },
     "Export Data" : {
       "localizations" : {
         "pt-BR" : {
@@ -561,12 +651,32 @@
         }
       }
     },
+    "Federal Senate" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senado Federal"
+          }
+        }
+      }
+    },
     "Final result" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Resultado final"
+          }
+        }
+      }
+    },
+    "Find anyone, compare and follow elections." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encontre qualquer político, compare e acompanhe as eleições."
           }
         }
       }
@@ -608,6 +718,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O Fiscal mantém este visual, seja qual for o ajuste do aparelho."
+          }
+        }
+      }
+    },
+    "Five Tabs" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cinco abas"
+          }
+        }
+      }
+    },
+    "Floor votes and who voted how." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As votações do Plenário e como cada um votou."
           }
         }
       }
@@ -682,6 +812,16 @@
         }
       }
     },
+    "Health" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saúde"
+          }
+        }
+      }
+    },
     "Help" : {
       "localizations" : {
         "pt-BR" : {
@@ -692,22 +832,22 @@
         }
       }
     },
-    "Help Center" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Central de ajuda"
-          }
-        }
-      }
-    },
     "Help and Feedback" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ajuda e opinião"
+          }
+        }
+      }
+    },
+    "Help Center" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Central de ajuda"
           }
         }
       }
@@ -768,6 +908,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lavanda"
+          }
+        }
+      }
+    },
+    "Lens" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lente"
           }
         }
       }
@@ -862,12 +1012,32 @@
         }
       }
     },
+    "Mine" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meus"
+          }
+        }
+      }
+    },
     "Mint" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Menta"
+          }
+        }
+      }
+    },
+    "Money" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dinheiro"
           }
         }
       }
@@ -892,12 +1062,32 @@
         }
       }
     },
+    "Name, party or state" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nome, partido ou estado"
+          }
+        }
+      }
+    },
     "Next Year" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Próximo ano"
+          }
+        }
+      }
+    },
+    "No" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não"
           }
         }
       }
@@ -912,12 +1102,52 @@
         }
       }
     },
+    "No artworks yet" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma obra ainda"
+          }
+        }
+      }
+    },
     "No connection. Showing the last numbers received." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sem conexão. Mostrando os últimos números recebidos."
+          }
+        }
+      }
+    },
+    "No figures yet" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum número ainda"
+          }
+        }
+      }
+    },
+    "No lens yet" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma lente ainda"
+          }
+        }
+      }
+    },
+    "No representatives yet" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum representante ainda"
           }
         }
       }
@@ -942,6 +1172,16 @@
         }
       }
     },
+    "No votes yet" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma votação ainda"
+          }
+        }
+      }
+    },
     "Not Now" : {
       "localizations" : {
         "pt-BR" : {
@@ -958,6 +1198,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nada sobre você é vendido, compartilhado ou medido."
+          }
+        }
+      }
+    },
+    "Nothing new yet" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nada de novo ainda"
+          }
+        }
+      }
+    },
+    "Office allowance" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cota parlamentar"
+          }
+        }
+      }
+    },
+    "Office allowances, salaries and campaign money show up here, each with its official source." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cota parlamentar, salários e dinheiro de campanha aparecem aqui, cada um com a fonte oficial."
           }
         }
       }
@@ -982,6 +1252,16 @@
         }
       }
     },
+    "Open license" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Licença aberta"
+          }
+        }
+      }
+    },
     "Opening Fiscal" : {
       "localizations" : {
         "pt-BR" : {
@@ -998,6 +1278,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Personalizar"
+          }
+        }
+      }
+    },
+    "Pick two people" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha duas pessoas"
+          }
+        }
+      }
+    },
+    "Pick your state and Fiscal shows who represents you, from the president to the state assembly." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha o seu estado e o Fiscal mostra quem representa você, do presidente à assembleia estadual."
           }
         }
       }
@@ -1092,6 +1392,66 @@
         }
       }
     },
+    "Profile" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perfil"
+          }
+        }
+      }
+    },
+    "Profile not loaded" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perfil não carregado"
+          }
+        }
+      }
+    },
+    "Proposals" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Propostas"
+          }
+        }
+      }
+    },
+    "Public domain" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Domínio público"
+          }
+        }
+      }
+    },
+    "Public security" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Segurança pública"
+          }
+        }
+      }
+    },
+    "Put two politicians side by side, with the same facts." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponha dois políticos lado a lado, com os mesmos fatos."
+          }
+        }
+      }
+    },
     "Rate Fiscal" : {
       "localizations" : {
         "pt-BR" : {
@@ -1142,6 +1502,16 @@
         }
       }
     },
+    "Salaries" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salários"
+          }
+        }
+      }
+    },
     "Salmon" : {
       "localizations" : {
         "pt-BR" : {
@@ -1168,6 +1538,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Salvar"
+          }
+        }
+      }
+    },
+    "Search" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fiscalizar"
+          }
+        }
+      }
+    },
+    "Senators" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senadores"
           }
         }
       }
@@ -1262,22 +1652,22 @@
         }
       }
     },
-    "Stop Simulating" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Parar simulação"
-          }
-        }
-      }
-    },
     "Stop following %@" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Parar de acompanhar %@"
+          }
+        }
+      }
+    },
+    "Stop Simulating" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parar simulação"
           }
         }
       }
@@ -1318,26 +1708,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sistema"
-          }
-        }
-      }
-    },
-    "TSE" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "TSE"
-          }
-        }
-      }
-    },
-    "TSE file from %@" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Arquivo do TSE das %@"
           }
         }
       }
@@ -1402,6 +1772,16 @@
         }
       }
     },
+    "The artists behind the share cards show up here, with each work, its license and a link to the source." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os artistas dos cards de compartilhar aparecem aqui, com cada obra, a licença e o link para a fonte."
+          }
+        }
+      }
+    },
     "The count starts at 5 PM Brasília time. Numbers come straight from the TSE, with no projections or polls." : {
       "localizations" : {
         "pt-BR" : {
@@ -1412,12 +1792,32 @@
         }
       }
     },
+    "The day's votes, sessions and live count." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As votações, as sessões e a apuração do dia."
+          }
+        }
+      }
+    },
     "The first version of Fiscal." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "A primeira versão do Fiscal."
+          }
+        }
+      }
+    },
+    "The latest floor votes of the Chamber and the Senate show up here, with who voted how." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As últimas votações do Plenário da Câmara e do Senado aparecem aqui, com o voto de cada um."
           }
         }
       }
@@ -1452,6 +1852,16 @@
         }
       }
     },
+    "The tally by party and by state, the party guidance and each vote show up here." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O placar por partido e por estado, a orientação dos partidos e cada voto aparecem aqui."
+          }
+        }
+      }
+    },
     "Theme" : {
       "localizations" : {
         "pt-BR" : {
@@ -1472,22 +1882,22 @@
         }
       }
     },
-    "This Month" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Este mês"
-          }
-        }
-      }
-    },
     "This device's rollout group: %lld. Only shown in development builds." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Grupo de lançamento deste aparelho: %lld. Só aparece em versões de desenvolvimento."
+          }
+        }
+      }
+    },
+    "This Month" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este mês"
           }
         }
       }
@@ -1532,6 +1942,26 @@
         }
       }
     },
+    "TSE" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TSE"
+          }
+        }
+      }
+    },
+    "TSE file from %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arquivo do TSE das %@"
+          }
+        }
+      }
+    },
     "Turn on Live Activities for Fiscal in Settings to follow a race on the Lock Screen." : {
       "localizations" : {
         "pt-BR" : {
@@ -1558,16 +1988,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Turquesa"
-          }
-        }
-      }
-    },
-    "Two Tabs" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Duas Abas"
           }
         }
       }
@@ -1632,6 +2052,46 @@
         }
       }
     },
+    "Vote" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votação"
+          }
+        }
+      }
+    },
+    "Vote not loaded" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votação não carregada"
+          }
+        }
+      }
+    },
+    "Votes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votações"
+          }
+        }
+      }
+    },
+    "Votes, sessions and new laws show up here as they happen." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votações, sessões e leis novas aparecem aqui assim que acontecem."
+          }
+        }
+      }
+    },
     "Website" : {
       "localizations" : {
         "pt-BR" : {
@@ -1662,6 +2122,16 @@
         }
       }
     },
+    "What Happened" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que aconteceu"
+          }
+        }
+      }
+    },
     "What's New" : {
       "localizations" : {
         "pt-BR" : {
@@ -1683,6 +2153,16 @@
         }
       }
     },
+    "Where public money goes." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para onde vai o dinheiro público."
+          }
+        }
+      }
+    },
     "Where your data lives" : {
       "localizations" : {
         "pt-BR" : {
@@ -1693,12 +2173,42 @@
         }
       }
     },
+    "Who represents you and who you follow." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem representa você e quem você segue."
+          }
+        }
+      }
+    },
+    "Yes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sim"
+          }
+        }
+      }
+    },
     "Your Data Stays Yours" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Seus dados continuam seus"
+          }
+        }
+      }
+    },
+    "Your Fiscal" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu Fiscal"
           }
         }
       }

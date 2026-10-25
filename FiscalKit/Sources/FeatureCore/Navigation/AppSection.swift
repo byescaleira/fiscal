@@ -2,27 +2,34 @@ import FiscalDomain
 import SwiftUI
 
 public enum AppSection: String, CaseIterable, Identifiable, Sendable {
-    case today, settings
+    case today, mine, votes, money, search
 
     public var id: String { rawValue }
 
     public var title: String {
         switch self {
         case .today: String(appLocalized: "Today")
-        case .settings: String(appLocalized: "Settings")
+        case .mine: String(appLocalized: "Mine")
+        case .votes: String(appLocalized: "Votes")
+        case .money: String(appLocalized: "Money")
+        case .search: String(appLocalized: "Search")
         }
     }
 
     public var systemImage: String {
         switch self {
         case .today: "newspaper"
-        case .settings: "gearshape"
+        case .mine: "person.2"
+        case .votes: "checkmark.square"
+        case .money: "brazilianrealsign"
+        case .search: "magnifyingglass"
         }
     }
 
     public var role: TabRole? {
         switch self {
-        case .today, .settings: nil
+        case .search: .search
+        case .today, .mine, .votes, .money: nil
         }
     }
 }

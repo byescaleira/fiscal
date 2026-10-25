@@ -26,6 +26,15 @@ fiscal/
 | `FiscalResource` | Prévia do ícone e animações Lottie embutidas (`FiscalResourceAnimation`) | nada |
 | `FeatureCore` | `SessionModel`, navegação (`Route`, `AppSection`, `FiscalNavigation`, `\.open`, `\.close`), `FeatureFlag`/`FeatureFlags`, guias (`Guide*`), `EmptyStateView`, `MonthPicker`, editor (`EditorStatus`, `EditorActions`, `editorLifecycle`), `errorAlert`, cores retrô, `FiscalAnimationView` | Domain, DesignSystem, Resource, Lottie |
 | `FeatureGuides` | `GuideScreen` e páginas dos tutoriais | Domain, DesignSystem, FeatureCore |
+| `FeatureToday` | Aba Hoje: eventos do dia, card da apuração e o botão de Ajustes | Domain, DesignSystem, FeatureCore |
+| `FeatureMine` | Aba Meus: UF ou cidade, grupos de representantes e seguidos | Domain, DesignSystem, FeatureCore |
+| `FeatureProfile` | Perfil (`Route.person(slug:)`), aberto por qualquer aba | Domain, DesignSystem, FeatureCore |
+| `FeatureVotes` | Aba Votações: recentes, pauta do dia e detalhe (`Route.vote(id:)`) | Domain, DesignSystem, FeatureCore |
+| `FeatureMoney` | Aba Dinheiro | Domain, DesignSystem, FeatureCore |
+| `FeatureSearch` | Aba Fiscalizar (`Tab(role: .search)`): busca no índice, Comparar (`Route.compare(slugs:)`) e Eleições | Domain, DesignSystem, FeatureCore |
+| `FeatureLens` | Lente (`Route.lens`): setup, edição, aparência e coleções de arte | Domain, DesignSystem, FeatureCore |
+| `FeatureShare` | Cards de compartilhar e galeria de artistas (`Route.artists`) | Domain, DesignSystem, FeatureCore |
+| `FeatureLiveResults` | Apuração (`Route.races`), aberta por Hoje e por Fiscalizar › Eleições | Domain, DesignSystem, FeatureCore |
 | `FeatureSettings` | Ajustes: Aparência (tema, cor de destaque), Guias, Sobre, Desenvolvedor (flags) | Domain, DesignSystem, Resource, FeatureCore |
 | `AppShell` | `FiscalWindow`, `MainScreen`, `SectionStack`, `SectionScreen`, `RouteScreen`, `InspectorScreen`, `SplashScreen`/`LaunchProgress`, `DeepLinks`, `FiscalServices` | todas as features |
 
@@ -33,9 +42,13 @@ fiscal/
 
 | Link | Abre |
 | --- | --- |
-| `fiscal://today` | Hoje |
-| `fiscal://races` | Apuração |
-| `fiscal://settings` | Ajustes |
+| `fiscal://today`, `mine`, `votes`, `money`, `search` | A aba |
+| `fiscal://person/<slug>` | Perfil, na aba Meus |
+| `fiscal://vote/<id>` | Votação, na aba Votações |
+| `fiscal://compare?slugs=<a>,<b>` | Comparar, em Fiscalizar |
+| `fiscal://races` | Apuração, em Fiscalizar |
+| `fiscal://lens`, `fiscal://artists` | Lente e artistas, em Hoje |
+| `fiscal://settings` | Ajustes, em Hoje |
 
 ## Receita: nova feature
 
