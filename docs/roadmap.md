@@ -29,6 +29,16 @@ O que o Fiscal vai ganhar, por fase, até a 1.0. A visão, os públicos, a Lente
 
 - **Antes da fase 2:** tirar os outros idiomas ([ADR 0003](adr/0003-portuguese-only.md)) e ligar o setup inicial da Lente com Aparência e arte, que o usuário pediu como prioridade (imagens de artistas primeiro).
 
+## Design de cada seção
+
+Cada aba e cada peça visível (Hoje, Meus, Votações, Dinheiro, Fiscalizar, setup, cards, widgets) passa pelo ciclo da skill `byescaleira-sdd` (`design-principles.md` §4.1), o mesmo que levou a Live Activity da apuração à versão aprovada:
+1. referência visual real (capturas oficiais da App Store, HIG, Dribbble);
+2. versão com dados de teste de todos os estados, no iPhone;
+3. revisão com o usuário;
+4. repetir até o "agora sim".
+
+Correto no HIG não basta: a seção não pode parecer genérica.
+
 ## Critério de pronto da 1.0
 
 - Uma pessoa de qualquer lado instala, escolhe a Lente em menos de um minuto e, na primeira tela, vê o que os seus representantes fizeram nos temas dela, com fonte e data.
