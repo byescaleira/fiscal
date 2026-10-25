@@ -29,7 +29,15 @@ struct RouteScreen: View {
         case .lens: LensDestination()
         case .artists: ArtistsDestination()
         case .settings: SettingsScreen { SettingsExtraSection() }
-        case .share(let subject): ShareScreen(subject: subject)
+        case .share(let subject):
+            ModelHost(
+                ShareModel(
+                    subject: subject, service: data,
+                    races: FiscalServices.shared.liveResultsService(),
+                    lens: session.repositories.lens)
+            ) {
+                ShareScreen()
+            }
         }
     }
 }
@@ -43,8 +51,10 @@ private struct LensDestination: View {
 }
 
 private struct ArtistsDestination: View {
+    @Environment(SessionModel.self) private var session
+
     var body: some View {
-        ModelHost(ArtistsModel()) { ArtistsScreen() }
+        ModelHost(ArtistsModel(lens: session.repositories.lens)) { ArtistsScreen() }
     }
 }
 
