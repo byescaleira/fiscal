@@ -87,13 +87,13 @@ public struct VoteDetail: Codable, Hashable, Identifiable, Sendable {
     }
 
     public struct Ballot: Codable, Hashable, Identifiable, Sendable {
-        public let slug: String
+        public let slug: String?
         public let name: String
         public let party: String
         public let uf: String
         public let vote: String
 
-        public init(slug: String, name: String, party: String, uf: String, vote: String) {
+        public init(slug: String?, name: String, party: String, uf: String, vote: String) {
             self.slug = slug
             self.name = name
             self.party = party
@@ -101,7 +101,7 @@ public struct VoteDetail: Codable, Hashable, Identifiable, Sendable {
             self.vote = vote
         }
 
-        public var id: String { slug }
+        public var id: String { slug ?? "\(name)-\(party)-\(uf)" }
     }
 
     private enum CodingKeys: String, CodingKey {

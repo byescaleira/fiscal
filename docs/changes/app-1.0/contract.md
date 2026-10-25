@@ -111,6 +111,12 @@ TodayDigest {
 }
 ```
 
+- **Ajustes aceitos pelo coordenador depois da carga real (2026-10-25):**
+  - `VoteDetail.people[].slug` pode ser `null` (votou, mas está fora do escopo, por exemplo quem deixou o cargo); a linha aparece sem link;
+  - `index/places.json`: `code` é sempre string, inclusive para município (`"1100015"`);
+  - `numbers.proposals`, `laws`, `speeches` e `votes`, `campaigns` em `money/overview.json` e `mandate.start`/`end` de deputado estadual são `null` quando a casa não publica ou o cargo não tem o dado;
+  - `Expense.document` é o CNPJ do fornecedor; fornecedor pessoa física sai `null`;
+  - `revenue` usa o último ano completo da Receita.
 - **`themes`:** as 17 chaves da apuração:
   - `saude`, `educacao`, `seguranca`, `economia`, `impostos`, `ambiente`;
   - `cidade`, `transporte`, `social`, `mulheres`, `campo`, `cultura`;

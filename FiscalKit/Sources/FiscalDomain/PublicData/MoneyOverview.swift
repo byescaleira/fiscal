@@ -84,12 +84,12 @@ public struct MoneyOverview: Codable, Hashable, Sendable {
     public let year: Int
     public let quota: Quota
     public let salaries: [OfficeSalary]
-    public let campaigns: Campaigns
+    public let campaigns: Campaigns?
     public let revenue: Revenue?
     public let sources: [Source]
 
     public init(
-        year: Int, quota: Quota, salaries: [OfficeSalary], campaigns: Campaigns,
+        year: Int, quota: Quota, salaries: [OfficeSalary], campaigns: Campaigns?,
         revenue: Revenue?, sources: [Source]
     ) {
         self.year = year

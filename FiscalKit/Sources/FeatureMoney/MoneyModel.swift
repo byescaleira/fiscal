@@ -23,7 +23,7 @@ public final class MoneyModel {
     public var isEmpty: Bool {
         guard let overview else { return true }
         return overview.salaries.isEmpty && overview.quota.federalDeputiesCents == 0
-            && overview.quota.senatorsCents == 0 && overview.campaigns.revenueCents == 0
+            && overview.quota.senatorsCents == 0 && (overview.campaigns?.revenueCents ?? 0) == 0
     }
 
     public var quota: [Line] {

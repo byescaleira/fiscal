@@ -109,7 +109,14 @@ struct PublicDataDecodingTests {
     @Test func readsTheMoneyOverviewWithoutRevenue() throws {
         let money = try decode(MoneyOverview.self, PublicDataFixtures.money)
         #expect(money.salaries.first?.office == .federalDeputy)
-        #expect(money.campaigns.byOrigin.count == 1)
+        #expect(money.campaigns?.byOrigin.count == 1)
         #expect(money.revenue == nil)
+    }
+
+    @Test func readsABallotFromSomeoneOutOfScope() throws {
+        let json = #"{ "slug": null, "name": "Fulano", "party": "PT", "uf": "ac", "vote": "Sim" }"#
+        let ballot = try decode(VoteDetail.Ballot.self, json)
+        #expect(ballot.slug == nil)
+        #expect(ballot.id == "Fulano-PT-ac")
     }
 }
