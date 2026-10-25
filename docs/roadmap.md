@@ -53,3 +53,20 @@ Correto no HIG não basta: a seção não pode parecer genérica.
 - Eleições municipais de 2028: apuração por cidade, prefeitos e vereadores.
 - Push-to-start da Live Activity (a apuração começa sozinha na tela de bloqueio).
 - Apple Watch (complicação com a votação do dia) e o Fiscal na Web.
+
+### Pedidos do usuário para depois (2026-10-25)
+
+- **Acompanhamento de preços:** monitorar ao longo do tempo os preços do que pesa para toda a população, no Brasil e por estado, e ligar cada série ao governo e ao período. Itens:
+  - gasolina e outros combustíveis;
+  - o real contra o dólar;
+  - a cesta de alimentos comuns, por exemplo os itens que aparecem na mídia quando sobem (arroz, feijão, carne, café, leite, ovo).
+
+  Fontes oficiais a pesquisar: ANP (combustíveis), Banco Central (câmbio, via SGS/PTAX), IBGE (IPCA por item) e DIEESE (cesta básica por capital).
+- **Notificações por feature, iguais para todo mundo:**
+  - não são personalizadas por pessoa;
+  - todo mundo recebe as mesmas, por canal de feature (broadcast do APNs), por exemplo "votação importante", "resultado da apuração", "variação forte de preço";
+  - raras: só quando há necessidade ou variação significativa dos dados, nunca rotina diária.
+- **Comparações como recurso central:**
+  - pesquisar o que está em alta na internet nos argumentos políticos dos dois lados (comparações de governo, preços, gastos, votos, promessas contra entregas);
+  - transformar cada argumento recorrente numa comparação com dado oficial e fonte, sem ranking nem conclusão pronta;
+  - a pesquisa vem antes do desenho de cada comparação (skill `research`).

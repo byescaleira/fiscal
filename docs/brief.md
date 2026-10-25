@@ -39,12 +39,12 @@ A **Lente** é o conjunto de prioridades da pessoa, escolhido no primeiro uso e 
 |---|---|
 | A ordem dos temas em Hoje e nos perfis | Os números, os votos, os gastos e as fontes |
 | Quais votações aparecem em destaque | O acesso a qualquer dado: tudo está a um toque |
-| Os alertas e as notificações que a pessoa recebe | A ordem dos candidatos e dos políticos (por voto ou alfabética) |
+| Os destaques do resumo de Hoje | A ordem dos candidatos e dos políticos (por voto ou alfabética) |
 | O resumo do perfil ("nos seus temas, ele votou assim") | A ausência de nota, ranking ou adjetivo |
 
 - **Outra lente:** em qualquer votação ou perfil, um botão mostra o mesmo fato pelos temas do outro público. É o recurso de ponte do app: entender por que o outro lado se importa com aquela votação.
 - **Privacidade:** a Lente e o posicionamento ficam **só no aparelho**. Nunca vão para o servidor, nunca entram em telemetria e nunca saem no backup do servidor. Opinião política é dado pessoal sensível na LGPD (art. 5º, II, e art. 11).
-  - Os alertas por tema são filtrados no próprio aparelho. Uma alternativa a decidir é usar canais de push por tema (broadcast do APNs), em que o servidor não sabe quem assinou cada canal.
+  - Notificações não são personalizadas (decisão do usuário em 2026-10-25): são por feature, iguais para todo mundo, por canal de broadcast do APNs, e só quando há necessidade ou variação significativa dos dados. A Lente nunca vira alerta, então nada da Lente sai do aparelho.
 
 ## Aparência pela Lente
 
