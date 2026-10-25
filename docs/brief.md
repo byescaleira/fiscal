@@ -54,7 +54,7 @@ O app tem a cara da pessoa; os dados continuam com a cara dos fatos.
 - **Bandeira e brasões:** nunca recoloridos, com inscrição ou usados como produto (Lei 5.700/1971; Lei 9.279/1996, art. 191).
 - **Símbolos:** um conjunto de SF Symbols por tema e por estilo, usado nos chips da Lente, nos cards e nos ícones alternativos do app. Sem logotipo de partido: é marca registrada e transformaria o app em material de campanha.
 - **Ícone do app:** ícones alternativos combinando com as paletas.
-- **O que a paleta nunca toca:** gráficos, placares e listas de políticos. Neles a cor marca dado (sim, não, ausente), cargo ou lugar, e nunca segue a paleta nem o partido. O mesmo gráfico tem a mesma cor para todo mundo.
+- **O que a paleta nunca toca:** gráficos, placares e listas de políticos. Neles a cor marca o partido de cada candidato (`PartyPalette`) ou o dado (sim, não, ausente), e nunca segue a paleta da pessoa. O mesmo gráfico tem a mesma cor para todo mundo.
 
 ## Compartilhar com arte
 
@@ -100,7 +100,7 @@ O manifesto `art-credits.json` vai junto com o app e lista, por obra: autor, @, 
 
 1. **Mesmo fato para todo mundo.** A Lente ordena; ela não filtra nem reescreve.
 2. **Fonte e data em cada bloco.** "—" quando o dado não existe, nunca 0.
-3. **Sem nota, ranking ou cor de partido.** A cor marca lugar, cargo ou estado do dado.
+3. **Sem nota nem ranking.** Cada candidato e cada partido têm sempre a mesma cor (a do próprio partido, `PartyPalette`), igual para todo mundo; a Lente e a aparência nunca mudam a cor de um candidato. Decisão do usuário em 2026-10-25, depois de ver a Live Activity.
 4. **Linguagem simples.** A ementa oficial vira "o que muda para você", sempre com o texto original a um toque.
 5. **Privacidade como recurso.** Sem conta para usar o app; seguir e a Lente ficam no aparelho; o iCloud é opcional.
 6. **Nativo Apple.** Live Activities, widgets, App Intents com a Siri, Spotlight, Apple Intelligence no aparelho, VoiceOver nos gráficos e layouts para iPad, Mac e visionOS.

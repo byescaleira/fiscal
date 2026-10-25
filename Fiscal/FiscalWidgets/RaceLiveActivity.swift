@@ -16,13 +16,13 @@ struct RaceLiveActivity: Widget {
             return DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
                     if let first = board.first {
-                        CandidateScore(row: board.score(first), alignment: .leading, size: .island)
+                        CandidateSide(row: board.score(first), alignment: .leading, size: .island)
                             .padding(.leading, .space2XS)
                     }
                 }
                 DynamicIslandExpandedRegion(.trailing) {
                     if let second = board.second {
-                        CandidateScore(
+                        CandidateSide(
                             row: board.score(second), alignment: .trailing, size: .island
                         )
                         .padding(.trailing, .space2XS)
@@ -36,7 +36,7 @@ struct RaceLiveActivity: Widget {
                 }
                 DynamicIslandExpandedRegion(.bottom) {
                     VStack(spacing: .spaceXS) {
-                        ShareBar(first: board.first?.percent, second: board.second?.percent)
+                        ShareBar(board: board, height: 8)
                         BoardFooter(board: board)
                     }
                     .padding(.horizontal, .space2XS)
@@ -57,8 +57,8 @@ struct RaceLiveActivity: Widget {
 }
 
 enum RaceStyle {
-    static let background = Color(red: 0.06, green: 0.09, blue: 0.09)
-    static let accent = Color(red: 0.38, green: 0.67, blue: 0.64)
+    static let background = Color.scoreboard
+    static let accent = Color.scoreboardAccent
     static let primary = Color.white
     static let secondary = Color.white.opacity(.opacityStrong)
     static let track = Color.white.opacity(.opacityTint)
@@ -80,6 +80,15 @@ struct RaceBoard {
     var first: RaceActivityRow? { rows.first }
     var second: RaceActivityRow? { rows.dropFirst().first }
     var hasStarted: Bool { state.sectionsPercent > 0 }
+    var firstPalette: PartyPalette { first.map(palette) ?? PartyPalette.of(party: "", fallback: 0) }
+    var secondPalette: PartyPalette {
+        second.map(palette) ?? PartyPalette.of(party: "", fallback: 1)
+    }
+
+    func palette(_ row: RaceActivityRow) -> PartyPalette {
+        let index = rows.firstIndex { $0.number == row.number } ?? 0
+        return PartyPalette.of(party: row.party, fallback: index)
+    }
 
     var countText: String {
         state.final
@@ -96,6 +105,8 @@ struct RaceBoard {
 
     func score(_ row: RaceActivityRow) -> CandidateScoreText {
         CandidateScoreText(
+            number: row.number,
+            palette: palette(row),
             name: row.name,
             detail: "\(row.party) · \(row.number)",
             percent: hasStarted ? RaceText.percent(row.percent) : "—",
@@ -108,6 +119,8 @@ struct RaceBoard {
 }
 
 struct CandidateScoreText {
+    let number: String
+    let palette: PartyPalette
     let name: String
     let detail: String
     let percent: String
@@ -138,17 +151,16 @@ private struct RaceLockScreen: View {
                     .foregroundStyle(RaceStyle.secondary)
                     .lineLimit(1)
             }
-            HStack(alignment: .top, spacing: .spaceL) {
+            HStack(alignment: .center, spacing: .spaceS) {
                 if let first = board.first {
-                    CandidateScore(row: board.score(first), alignment: .leading, size: .lockScreen)
+                    CandidateSide(row: board.score(first), alignment: .leading, size: .lockScreen)
                 }
                 Spacer(minLength: 0)
                 if let second = board.second {
-                    CandidateScore(
-                        row: board.score(second), alignment: .trailing, size: .lockScreen)
+                    CandidateSide(row: board.score(second), alignment: .trailing, size: .lockScreen)
                 }
             }
-            ShareBar(first: board.first?.percent, second: board.second?.percent)
+            ShareBar(board: board, height: 12)
             BoardFooter(board: board)
         }
         .padding(.spaceL)
@@ -157,7 +169,7 @@ private struct RaceLockScreen: View {
     }
 }
 
-private struct CandidateScore: View {
+private struct CandidateSide: View {
     enum Size { case lockScreen, island }
 
     let row: CandidateScoreText
@@ -165,66 +177,96 @@ private struct CandidateScore: View {
     let size: Size
 
     var body: some View {
-        VStack(alignment: alignment, spacing: .space2XS) {
-            HStack(spacing: .space2XS) {
-                if row.elected, alignment == .trailing { seal }
+        HStack(spacing: size == .lockScreen ? .spaceM : .spaceS) {
+            if alignment == .leading { badge }
+            VStack(alignment: alignment, spacing: 0) {
+                Text(verbatim: row.percent)
+                    .font(
+                        .system(
+                            size: size == .lockScreen ? 40 : 26, weight: .heavy, design: .rounded)
+                    )
+                    .monospacedDigit()
+                    .contentTransition(.numericText(value: row.value))
+                    .foregroundStyle(RaceStyle.primary)
+                    .minimumScaleFactor(0.6)
+                    .lineLimit(1)
                 Text(verbatim: row.name)
                     .font(
                         size == .lockScreen
-                            ? .subheadline.weight(.semibold) : .caption.weight(.semibold)
+                            ? .subheadline.weight(.semibold) : .caption2.weight(.semibold)
                     )
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.7)
-                if row.elected, alignment == .leading { seal }
-            }
-            .foregroundStyle(RaceStyle.primary)
-            Text(verbatim: row.percent)
-                .font(.system(size: size == .lockScreen ? 36 : 24, weight: .bold, design: .rounded))
-                .monospacedDigit()
-                .contentTransition(.numericText(value: row.value))
-                .foregroundStyle(RaceStyle.primary)
-                .minimumScaleFactor(0.6)
-                .lineLimit(1)
-            if size == .lockScreen {
-                Text(verbatim: row.detail)
-                    .font(.caption2.weight(.medium))
                     .foregroundStyle(RaceStyle.secondary)
                     .lineLimit(1)
+                    .minimumScaleFactor(0.7)
             }
+            if alignment == .trailing { badge }
         }
-        .multilineTextAlignment(alignment == .leading ? .leading : .trailing)
-        .opacity(row.dimmed ? 0.55 : 1)
+        .opacity(row.dimmed ? 0.5 : 1)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: row.accessibility))
     }
 
-    private var seal: some View {
-        Image(systemName: "checkmark.seal.fill").foregroundStyle(RaceStyle.accent)
+    private var badge: some View {
+        NumberBadge(
+            number: row.number, palette: row.palette, elected: row.elected,
+            side: size == .lockScreen ? 48 : 34)
+    }
+}
+
+private struct NumberBadge: View {
+    let number: String
+    let palette: PartyPalette
+    let elected: Bool
+    let side: CGFloat
+
+    var body: some View {
+        RoundedRectangle(cornerRadius: side * 0.28, style: .continuous)
+            .fill(palette.gradient)
+            .frame(width: side, height: side)
+            .overlay {
+                Text(verbatim: number)
+                    .font(.system(size: side * 0.42, weight: .heavy, design: .rounded))
+                    .foregroundStyle(.white)
+                    .minimumScaleFactor(0.6)
+            }
+            .overlay(alignment: .topTrailing) {
+                if elected {
+                    Image(systemName: "checkmark.seal.fill")
+                        .font(.system(size: side * 0.36))
+                        .symbolRenderingMode(.palette)
+                        .foregroundStyle(.white, RaceStyle.accent)
+                        .offset(x: side * 0.16, y: -side * 0.16)
+                }
+            }
     }
 }
 
 private struct ShareBar: View {
-    let first: Double?
-    let second: Double?
+    let board: RaceBoard
+    let height: CGFloat
 
     var body: some View {
         GeometryReader { proxy in
-            let total = (first ?? 0) + (second ?? 0)
-            let share = total > 0 ? (first ?? 0) / total : 0
-            ZStack(alignment: .leading) {
-                Capsule().fill(RaceStyle.track)
-                if total > 0 {
-                    Capsule()
-                        .fill(RaceStyle.primary)
-                        .frame(width: max(proxy.size.height, proxy.size.width * share))
-                }
-                Rectangle()
-                    .fill(RaceStyle.background)
-                    .frame(width: 2)
-                    .offset(x: proxy.size.width / 2 - 1)
+            let first = board.first?.percent ?? 0
+            let second = board.second?.percent ?? 0
+            let total = first + second
+            let share = total > 0 ? first / total : 0.5
+            HStack(spacing: .spaceHairline) {
+                Capsule()
+                    .fill(
+                        total > 0
+                            ? AnyShapeStyle(board.firstPalette.gradient)
+                            : AnyShapeStyle(RaceStyle.track)
+                    )
+                    .frame(width: max(height, (proxy.size.width - .spaceHairline) * share))
+                Capsule()
+                    .fill(
+                        total > 0
+                            ? AnyShapeStyle(board.secondPalette.gradient)
+                            : AnyShapeStyle(RaceStyle.track))
             }
         }
-        .frame(height: 8)
+        .frame(height: height)
         .accessibilityHidden(true)
     }
 }
@@ -257,7 +299,7 @@ private struct CompactLeading: View {
             Image(systemName: "chart.bar.xaxis").foregroundStyle(RaceStyle.accent)
                 .accessibilityLabel(Text(verbatim: board.countText))
         } else if let first = board.first {
-            CompactStanding(number: first.number, percent: board.score(first).shortPercent)
+            CompactStanding(score: board.score(first))
                 .accessibilityLabel(Text(verbatim: board.score(first).accessibility))
         }
     }
@@ -269,23 +311,20 @@ private struct CompactTrailing: View {
 
     var body: some View {
         if !limited, let second = board.second {
-            CompactStanding(number: second.number, percent: board.score(second).shortPercent)
+            CompactStanding(score: board.score(second))
                 .accessibilityLabel(Text(verbatim: board.score(second).accessibility))
         }
     }
 }
 
 private struct CompactStanding: View {
-    let number: String
-    let percent: String
+    let score: CandidateScoreText
 
     var body: some View {
         HStack(spacing: .space2XS) {
-            Text(verbatim: number)
-                .font(.caption2.weight(.heavy))
-                .foregroundStyle(RaceStyle.accent)
-            Text(verbatim: percent)
-                .font(.caption.weight(.bold))
+            NumberBadge(number: score.number, palette: score.palette, elected: false, side: 20)
+            Text(verbatim: score.shortPercent)
+                .font(.caption.weight(.heavy))
                 .foregroundStyle(RaceStyle.primary)
                 .contentTransition(.numericText())
         }

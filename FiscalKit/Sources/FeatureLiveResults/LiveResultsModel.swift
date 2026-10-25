@@ -145,6 +145,10 @@ public final class LiveResultsModel {
         race.hasStarted ? String(appLocalized: "\(RaceText.votes(candidate.votes)) votes") : "—"
     }
 
+    public func index(of candidate: RaceCandidate, in race: Race) -> Int {
+        race.candidates.firstIndex { $0.number == candidate.number } ?? 0
+    }
+
     public func partyText(_ candidate: RaceCandidate) -> String {
         "\(candidate.party) · \(candidate.number)"
     }

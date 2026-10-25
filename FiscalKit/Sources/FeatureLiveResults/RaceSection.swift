@@ -77,7 +77,11 @@ private struct CandidateRow: View {
                             reduceMotion ? .identity : .numericText(value: Double(candidate.votes)))
                 }
             }
-            ProgressBar(value: candidate.percent / 100, color: .retroTeal)
+            ProgressBar(
+                value: candidate.percent / 100,
+                color: PartyPalette.of(
+                    party: candidate.party, fallback: results.index(of: candidate, in: race)
+                ).primary)
         }
         .padding(.vertical, .spaceXS)
         .animation(reduceMotion ? nil : .smooth, value: candidate.votes)
