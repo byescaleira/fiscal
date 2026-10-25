@@ -1,6 +1,6 @@
 # Servidor do Fiscal
 
-Go 1.26.10, só com a biblioteca padrão. Dois processos na mesma imagem:
+Go 1.26.10 com a biblioteca padrão; a única dependência externa é `modernc.org/sqlite` (Go puro), usada só pela carga ([ADR 0006](../docs/adr/0006-ingest-sqlite-store.md)). Dois processos na mesma imagem:
 
 - **`liveresults-server`** (`cmd/server`): a apuração ao vivo. Lê os arquivos do TSE do 2º turno (presidente e governador de AC, AM, DF, ES, RN e TO), serve o placar em `/api/v1/races` e atualiza as Live Activities por APNs quando os números mudam. Contrato em `docs/changes/live-results/proposal.md`.
 - **`fiscal-ingest`** (`cmd/ingest`): a carga de dados da 1.0. Lê Câmara, Senado, TSE, IBGE, Receita, as assembleias com SAPL e as checagens do Projeto Comprova e publica os arquivos estáticos do contrato (`docs/changes/app-1.0/contract.md`, seção 2) em `PUBLIC_DIR/v1`. Detalhes em [Carga de dados](#carga-de-dados-fiscal-ingest).
@@ -67,10 +67,10 @@ Com APNs de verdade, aponte `APNS_KEY_FILE` para a `.p8` e preencha `APNS_KEY_ID
 Em `/opt/fiscal-api` na VPS, com o `.env` (`chmod 600`, nomes em `.env.example`), `secrets/apns.p8` e `data/` (dono 1000, pastas `700`, chave `600`). O código sobe com `rsync -a`, **sem `--delete`**, e sem tocar no que só existe na VPS:
 
 ```sh
-rsync -a --exclude .env --exclude secrets/ --exclude data/ --exclude ingest-data/ --exclude public/ server/ vps:/opt/fiscal-api/
+rsync -a --exclude .env --exclude secrets/ --exclude data/ --exclude ingest-data/ --exclude ingest-backups/ --exclude public/ server/ vps:/opt/fiscal-api/
 ```
 
-`.env`, `secrets/`, `data/`, `ingest-data/` e `public/` nunca saem da máquina local nem são sobrescritos ou apagados na VPS. O `ADMIN_TOKEN` é gerado na própria VPS e vai só para o `.env`:
+`.env`, `secrets/`, `data/`, `ingest-data/`, `ingest-backups/` e `public/` nunca saem da máquina local nem são sobrescritos ou apagados na VPS. O `ADMIN_TOKEN` é gerado na própria VPS e vai só para o `.env`:
 
 ```sh
 cd /opt/fiscal-api
@@ -147,16 +147,16 @@ Roda no container `fiscal-ingest` (mesma imagem, `entrypoint` próprio no `compo
 1. **Carga completa** no boot e todo dia às `INGEST_FULL_AT` (hora de Brasília). Se falhar, nada novo é publicado (os arquivos anteriores ficam) e ela tenta de novo em 5, 15 e 30 min.
 2. **Atualização ao vivo** a cada `INGEST_LIVE_INTERVAL`: pauta do dia do Plenário das duas casas, votações de hoje (API da Câmara e `/votacao` do Senado), próxima sessão e o card da apuração (lido de `PUBLIC_DIR/v1/races.json` quando o arquivo é de hoje). Regrava `agenda/today.json`, `today.json`, `votes/*` e os votos por pessoa que mudaram.
 
-Cada arquivo sai com o `.gz` ao lado, por escrita atômica (`internal/publish`, o mesmo código da apuração), e só é regravado quando o conteúdo muda. O `updatedAt` de cada fonte só anda quando os dados daquela fonte mudam (`DATA_DIR/sources.json`), para o `ETag` do Caddy se manter entre cargas sem novidade. Arquivos de pessoas e votações que saíram do escopo são apagados (`people/`, `votes/`, `places/`, `index/`, `agenda/`, `money/`, `method/`); `races*` nunca.
-Cada arquivo sai com o `.gz` ao lado, por escrita atômica (`internal/publish`, o mesmo código da apuração), e só é regravado quando o conteúdo muda. O `updatedAt` de cada fonte só anda quando os dados daquela fonte mudam (`DATA_DIR/sources.json`), para o `ETag` do Caddy se manter entre cargas sem novidade. Arquivos de pessoas e votações que saíram do escopo são apagados (`people/`, `votes/`, `places/`, `index/`, `agenda/`, `money/`, `indicators/`); `races*` nunca.
+Tudo o que é lido fica guardado no banco SQLite (`STORE_PATH`), com histórico, e os arquivos são gerados a partir dele; detalhes em [Banco da carga](#banco-da-carga-fiscaldb).
+
+Cada arquivo sai com o `.gz` ao lado, por escrita atômica (`internal/publish`, o mesmo código da apuração), e só é regravado quando o conteúdo muda. O `updatedAt` de cada fonte só anda quando os dados daquela fonte mudam (`DATA_DIR/sources.json`), para o `ETag` do Caddy se manter entre cargas sem novidade. Arquivos de pessoas e votações que saíram do escopo são apagados (`people/`, `votes/`, `places/`, `index/`, `agenda/`, `money/`, `method/`, `indicators/`); `races*` nunca.
 
 ### Variáveis da carga
 
 | Variável | Padrão | Uso |
 | --- | --- | --- |
 | `PUBLIC_DIR` | `./public` (`/public` no container) | Raiz pública; os arquivos vão para `PUBLIC_DIR/v1` |
-| `DATA_DIR` | `./data` (`/data` no container, volume `./ingest-data`) | `slugs.json`, `sources.json`, `ingest-status.json`, `comprova.json` (checagens lidas), `checks-review.json` (lista interna de revisão), `cities-review.json` (casamento TSE ↔ IBGE dos municípios, interno), `repercussion.json` (só contagens do GDELT e da Wikipédia, sem texto de terceiros) e `cache/` (downloads condicionais e agregados do TSE); pasta `0700`, arquivos `0600` |
-| `DATA_DIR` | `./data` (`/data` no container, volume `./ingest-data`) | `slugs.json`, `sources.json`, `ingest-status.json`, `comprova.json` (checagens lidas), `checks-review.json` (lista interna de revisão), `cities-review.json` (casamento TSE ↔ IBGE dos municípios, interno), `indicators.json` (última leitura boa da ANP e do SIDRA) e `cache/` (downloads condicionais e agregados do TSE); pasta `0700`, arquivos `0600` |
+| `DATA_DIR` | `./data` (`/data` no container, volume `./ingest-data`) | `fiscal.db` (o banco, com `-wal` e `-shm`), `backups/` (volume `./ingest-backups`), `slugs.json`, `sources.json`, `ingest-status.json`, `comprova.json` (checagens lidas), `checks-review.json` (lista interna de revisão), `cities-review.json` (casamento TSE ↔ IBGE dos municípios, interno), `repercussion.json` (só contagens do GDELT e da Wikipédia, sem texto de terceiros), `indicators.json` (última leitura boa da ANP e do SIDRA) e `cache/` (downloads condicionais e agregados do TSE); pasta `0700`, arquivos `0600` |
 | `INGEST_YEARS` | de `2023` até o ano corrente (a legislatura) | Anos de atividade da Câmara, do Senado e das assembleias: `2026`, `2023-2026` ou `2025,2026` |
 | `TSE_YEARS` | `2022,2026` | Eleições lidas por inteiro (candidaturas, bens, votos por município e contas). A penúltima é a do mandato atual, a última é a dos eleitos aguardando posse |
 | `TSE_CANDIDATE_YEARS` | `2018` | Eleições lidas só para candidaturas e bens (ligação dos senadores eleitos em 2018 e linha do tempo) |
@@ -169,6 +169,8 @@ Cada arquivo sai com o `.gz` ao lado, por escrita atômica (`internal/publish`, 
 | `COMPROVA_SINCE` | `2022-01-01` | Início da janela de checagens do Comprova (`AAAA-MM-DD`, de 2018 até hoje) |
 | `NEWS_BUDGET` | `120` | Consultas ao GDELT por carga completa (1 a 600), uma a cada 6 segundos; o resto usa as contagens guardadas em `DATA_DIR/repercussion.json` por até 3 dias |
 | `INGEST_REQUEST_GAP` | `150ms` | Intervalo mínimo entre requisições ao mesmo host (o Senado devolve 429 acima de 10 por segundo) |
+| `STORE_PATH` | `DATA_DIR/fiscal.db` (`/data/fiscal.db` no container) | Banco SQLite da carga; precisa terminar em `.db` |
+| `BACKUP_KEEP` | `14` | Quantos backups diários manter em `DATA_DIR/backups` (1 a 365) |
 
 Configuração inválida derruba o processo no boot (falha fechada). Nenhuma variável é segredo.
 
@@ -210,7 +212,7 @@ Configuração inválida derruba o processo no boot (falha fechada). Nenhuma var
   - **Arquivos:** `indicators/index.json` (`{ items: [{ id, name, unit, kind, scope, scopes, start, latest, latestDate, change12m }], sources }`, com o último valor e a variação em 12 meses do Brasil) e `indicators/{id}.json` (`{ id, name, unit, kind (price | index), scope (br | uf), areas: [{ scope, name, series: [{ date, value }] }], sources }`), em base mensal (`date` é o dia 1º do mês).
   - **Antes e durante o mandato:** `people/{slug}/context.json` para todo político federal e estadual em exercício com data de posse (deputado estadual sem data usa 1º de fevereiro do ano seguinte à eleição): `{ mandateStart, scope, indicators: [{ id, name, unit, kind, scope, area, atStart, atStartDate, latest, latestDate, months, changeDuring, beforeDate, changeBefore, series }], sources }`. O valor da posse é o do mês anterior ao mês da posse; `changeDuring` é a variação dele até o último mês publicado (`months` meses) e `changeBefore` a variação nos mesmos `months` meses antes; `series` traz o recorte de `2 × months` meses. A jurisdição é o Brasil para presidente e vice e a UF para os demais; sem série na UF (o IPCA só cobre 16 UFs), vale a do Brasil, e o item diz qual (`scope`, `area`). Prefeitos, vices e vereadores ficam sem o arquivo (seriam 69 mil cópias do mesmo recorte por UF); o app faz o mesmo cálculo a partir de `indicators/{id}.json`. Eleitos aguardando posse também não ganham o arquivo. Nenhum texto de causa: só valores e variações.
   - **Falha:** as duas fontes são opcionais. Se a ANP ou o SIDRA falharem (ou vierem com menos de 100 meses no Brasil, ou a ANP sem as 27 UFs), a carga segue com a última leitura boa de `DATA_DIR/indicators.json`; sem leitura anterior, sai sem esses arquivos.
-- **Falha:** se a Câmara listar menos de 400 deputados, o Senado menos de 70 senadores, o IBGE menos de 5.000 municípios, ou uma fonte obrigatória (Câmara, Senado, TSE das eleições inteiras, IBGE) falhar, a carga para sem publicar. Receita e assembleias que falham viram `null` ou `notLoaded`, com aviso no log. Se o Comprova falhar, a carga segue com as checagens da última leitura boa (`DATA_DIR/comprova.json`), e os arquivos publicados ficam iguais.
+- **Falha:** se a Câmara listar menos de 400 deputados, o Senado menos de 70 senadores, o IBGE menos de 5.000 municípios, ou uma fonte obrigatória (Câmara, Senado, TSE das eleições inteiras, IBGE) falhar, a carga usa a última leitura guardada no banco daquela fonte (estado `fallback`, `updatedAt` mantido); sem leitura guardada, para sem publicar. Receita e assembleias que falham viram `null` ou `notLoaded`, com aviso no log. Se o Comprova falhar, a carga segue com as checagens da última leitura boa (`DATA_DIR/comprova.json`), e os arquivos publicados ficam iguais.
 
 ### Checagens (Projeto Comprova)
 
@@ -227,6 +229,44 @@ Piloto do item "Checagens no perfil" do brief (`docs/brief.md`), com a pesquisa 
   - `verdictConflict`: selos que discordam.
 - **Publicação:** `people/{slug}/checks.json` só quando há ao menos uma checagem, em ordem de data decrescente; quem é citado por nome em várias checagens recebe todas, sem contagem nem ranking.
 
+### Banco da carga (`fiscal.db`)
+
+SQLite em WAL, aberto só pelo `fiscal-ingest` (pacote `internal/datastore`, uma conexão). O schema é versionado (`schema_migrations`) e migra no boot. Nenhuma requisição pública lê o banco: ele alimenta os arquivos estáticos.
+
+**Histórico.** Toda tabela de dado tem `source`, `key`, `hash`, `payload` (JSON da fonte já convertida), `valid_from`, `valid_to`, `first_run` e `seen_run`. Leitura igual só atualiza `seen_run`; conteúdo novo fecha a versão atual (`valid_to`) e abre outra; o que some de uma leitura completa é fechado, nunca apagado. A versão atual é `valid_to IS NULL`.
+
+| Tabela | Fonte (`source`) | Chave | O que guarda |
+| --- | --- | --- | --- |
+| `people` | `camara`, `senado` (leitura da casa) e `fiscal` (pessoa já ligada e publicada, com `slug`) | `camara:<id>`, `senado:<código>` ou `cpf:<hash>` | nome, cargo, UF, partido, situação; o payload leva candidaturas, comissões, discursos e presença |
+| `mandates` | `fiscal` | pessoa + cargo + UF + início | cada cargo com partido, situação e datas |
+| `votes`, `ballots` | `camara`, `senado` | id da votação; votação + pessoa | votações (sem os votos) e cada voto nominal |
+| `propositions` | `camara`, `senado`, `assembleia-<uf>` | pessoa + ano + id | propostas de autoria |
+| `expenses` | `camara`, `senado` | pessoa + ano + id | gastos da cota |
+| `places` | `ibge` | `municipality:<código>` | municípios |
+| `city_officials` | `tse-cidades` | município + pessoa | prefeitos, vices e vereadores |
+| `snapshots` | por fonte | livre (`quota`, `laws`, `candidacies:<ano>`, `campaigns`, `revenue`, `check:<id>`, `city:<código>`, `agenda:<data>`) | o resto do que a fonte entrega, com `fetched_at` da última leitura |
+| `series` | por fonte | série + escopo + data | `quota.total` (casa, ano), `revenue.total` (UF ou `br`, ano), `checks.published` (`br`, mês); preços, indicadores e sinais de repercussão entram aqui |
+| `sources_runs` | | | uma linha por execução (`source = 'all'`, `kind` `full`, `live` ou `backup`) e uma por fonte: início, fim, estado (`ok`, `failed`, `fallback`, `skipped`), contagens (`inserted`, `changed`, `unchanged`, `closed`) e erro |
+
+O CPF não entra em claro: vira `cpf:<hash>` antes de gravar e antes da ligação entre bases.
+
+**Fonte fora do ar.** Câmara, Senado, TSE, IBGE e Receita voltam do banco quando a leitura falha; municípios e checagens, quando a leitura e o cache próprio falham. A pauta do dia guardada cobre a primeira carga depois de um reinício. As assembleias seguem o fluxo de antes.
+
+**Status público.** `PUBLIC_DIR/v1/status.json`, regravado a cada execução: `full`, `live` e `backup` (início, fim, estado e contagens da última), `lastFullOk` e, por fonte, a última execução e a última leitura `ok`. Sem mensagens de erro, caminhos ou segredos.
+
+**Backup.** Depois da primeira carga completa bem-sucedida de cada dia (hora de Brasília), `VACUUM INTO` grava `DATA_DIR/backups/fiscal-AAAA-MM-DD.db` (`0600`), uma cópia consistente feita com o banco aberto, e os mais antigos que os `BACKUP_KEEP` mais novos são apagados. No container a pasta é o volume `./ingest-backups`; copie-a para fora da VPS de vez em quando.
+
+**Restauração.** Com o serviço parado:
+
+```sh
+cd /opt/fiscal-api
+docker compose stop fiscal-ingest
+docker compose run --rm fiscal-ingest -restore /data/backups/fiscal-2026-10-25.db
+docker compose start fiscal-ingest
+```
+
+O `-restore` confere `PRAGMA integrity_check` do backup, troca `fiscal.db` por escrita atômica e apaga `fiscal.db-wal` e `fiscal.db-shm`. Na próxima carga as fontes são relidas e o histórico continua a partir do backup. Para olhar o banco sem parar nada, abra um backup (`sqlite3 ingest-backups/fiscal-AAAA-MM-DD.db`), nunca o `fiscal.db` em uso.
+
 ### Rodar a carga local
 
 ```sh
@@ -235,7 +275,7 @@ gofmt -l . && go vet ./... && go test -race -count=1 ./...
 PUBLIC_DIR=/tmp/fiscal/public DATA_DIR=/tmp/fiscal/data INGEST_UFS=ac INGEST_YEARS=2026 go run ./cmd/ingest -once
 ```
 
-`-once` faz uma carga completa e sai (código 1 se falhar); sem a flag, o processo fica no agendamento. `-check` é o healthcheck do container (heartbeat a cada minuto em `DATA_DIR/ingest-status.json`).
+`-once` faz uma carga completa, o backup do dia e sai (código 1 se falhar); `-restore <arquivo>` troca o banco por um backup e sai; sem as flags, o processo fica no agendamento. `-check` é o healthcheck do container (heartbeat a cada minuto em `DATA_DIR/ingest-status.json`).
 
 Carga real limitada de 2026-10-25 (AC, ano de 2026, TSE 2018, 2022 e 2026): 2 min 44 s, 51 pessoas, 974 votações, 1.127 arquivos, 7,8 MiB de JSON e 1,6 MiB em `.gz`; repetida sem mudança nas fontes, regravou só `meta.json`. A carga nacional baixa por volta de 100 MiB de arquivos da Câmara por ano e algumas centenas de MiB dos ZIPs do TSE (só os CSVs necessários), que ficam em `DATA_DIR/cache` e só são baixados de novo quando mudam.
 
@@ -243,14 +283,14 @@ Checagens reais de 2026-10-25, com os 513 deputados federais, os 81 senadores e 
 
 ### Deploy da carga
 
-Na VPS, ao lado da apuração e só com o ok do usuário: criar `/opt/fiscal-api/ingest-data` com dono 1000 e modo `700` e subir o serviço `fiscal-ingest` do `compose.yaml`. O container não abre porta, roda `read_only`, sem capacidades, com `mem_limit: 1536m`, e escreve só em `/data` e `/public`.
+Na VPS, ao lado da apuração e só com o ok do usuário: criar `/opt/fiscal-api/ingest-data` e `/opt/fiscal-api/ingest-backups` com dono 1000 e modo `700` e subir o serviço `fiscal-ingest` do `compose.yaml`. O container não abre porta, roda `read_only`, sem capacidades, com `mem_limit: 1536m`, e escreve só em `/data` e `/public`.
 
 O Caddy precisa servir os novos arquivos estáticos antes do `handle /api/*` (proposta, ainda não aplicada):
 
 ```
 	@data {
 		method GET HEAD
-		path_regexp data ^/api/v1/((meta|today)|(index|places|people|votes|agenda|money)/[a-z0-9/-]+)\.json$
+		path_regexp data ^/api/v1/((meta|today|status)|(index|places|people|votes|agenda|money)/[a-z0-9/-]+)\.json$
 	}
 	handle @data {
 		root * /opt/fiscal-api/public

@@ -4,3 +4,4 @@ secrets/
 *.p8
 public/
 ingest-data/
+ingest-backups/

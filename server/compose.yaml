@@ -56,8 +56,11 @@ services:
       INGEST_LIVE_INTERVAL: ${INGEST_LIVE_INTERVAL:-10m}
       INGEST_WORKERS: ${INGEST_WORKERS:-4}
       INGEST_REQUEST_GAP: ${INGEST_REQUEST_GAP:-150ms}
+      STORE_PATH: /data/fiscal.db
+      BACKUP_KEEP: ${BACKUP_KEEP:-14}
     volumes:
       - ./ingest-data:/data
+      - ./ingest-backups:/data/backups
       - ./public:/public
     read_only: true
     cap_drop:

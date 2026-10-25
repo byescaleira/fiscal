@@ -16,6 +16,7 @@ import (
 	"sync"
 	"time"
 
+	"liveresults/internal/datastore"
 	"liveresults/internal/publicdata"
 	"liveresults/internal/publish"
 	"liveresults/internal/sources/fetch"
@@ -87,6 +88,9 @@ type Ingest struct {
 	mu      sync.Mutex
 	dataset *publicdata.Dataset
 	cities  []string
+
+	db  *datastore.Store
+	run *datastore.Run
 }
 
 func New(cfg Config, get Fetcher, now func() time.Time, logger *log.Logger) *Ingest {
@@ -119,10 +123,18 @@ type sourceSet struct {
 	at     string
 	list   map[string]publicdata.Source
 	hashes map[string]string
+	stale  map[string]bool
 }
 
 func newSourceSet(at string) *sourceSet {
-	return &sourceSet{at: at, list: map[string]publicdata.Source{}, hashes: map[string]string{}}
+	return &sourceSet{at: at, list: map[string]publicdata.Source{}, hashes: map[string]string{}, stale: map[string]bool{}}
+}
+
+func (s *sourceSet) keep(id, name, url string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.list[id] = publicdata.Source{ID: id, Name: name, URL: url, UpdatedAt: s.at}
+	s.stale[id] = true
 }
 
 func (s *sourceSet) add(id, name, url string, data any) {
@@ -149,6 +161,12 @@ func (s *sourceSet) settle(path string) error {
 	}
 	next := map[string]sourceState{}
 	for id, src := range s.list {
+		if p, ok := prev[id]; ok && s.stale[id] && p.UpdatedAt != "" {
+			src.UpdatedAt = p.UpdatedAt
+			s.list[id] = src
+			next[id] = p
+			continue
+		}
 		h := s.hashes[id]
 		if p, ok := prev[id]; ok && p.Hash == h && p.UpdatedAt != "" {
 			src.UpdatedAt = p.UpdatedAt
@@ -199,6 +217,13 @@ func (in *Ingest) warn(r *Report, format string, args ...any) {
 }
 
 func (in *Ingest) Full(ctx context.Context) (Report, error) {
+	in.begin(ctx, "full")
+	rep, err := in.full(ctx)
+	in.end(ctx, rep, err)
+	return rep, err
+}
+
+func (in *Ingest) full(ctx context.Context) (Report, error) {
 	start := in.now()
 	var rep Report
 	srcs := newSourceSet(in.stamp())
@@ -207,36 +232,53 @@ func (in *Ingest) Full(ctx context.Context) (Report, error) {
 		ds.States = append(ds.States, publicdata.PlaceEntry{Code: strings.ToLower(s.UF), Name: s.Name, UF: strings.ToLower(s.UF)})
 	}
 	if in.cfg.Enabled("ibge") {
-		muns, err := in.loadIBGE(ctx)
+		var muns []publicdata.PlaceEntry
+		fresh, err := in.withSource(ctx, &rep, srcs, in.ibgeIO(ctx, &muns))
 		if err != nil {
 			return rep, fmt.Errorf("ibge: %w", err)
 		}
 		ds.Municipalities = muns
-		srcs.add("ibge", "IBGE", ibge.SiteURL, muns)
+		if fresh {
+			srcs.add("ibge", "IBGE", ibge.SiteURL, muns)
+		}
+	} else {
+		in.skipped(ctx, "ibge")
 	}
 	var people []*publicdata.Person
 	if in.cfg.Enabled("camara") {
-		cam, err := in.loadCamara(ctx, &rep)
+		var cam camaraResult
+		fresh, err := in.withSource(ctx, &rep, srcs, in.camaraIO(ctx, &rep, &cam))
 		if err != nil {
 			return rep, fmt.Errorf("camara: %w", err)
 		}
+		if fresh {
+			srcs.add("camara", "Câmara dos Deputados", "https://dadosabertos.camara.leg.br", []any{cam.people, cam.votes, cam.laws, cam.quotaTotal, cam.quotaByCategory})
+		}
+		pseudonymizePeople(cam.people)
 		people = append(people, cam.people...)
 		ds.Votes = append(ds.Votes, cam.votes...)
 		ds.Laws = append(ds.Laws, cam.laws...)
 		ds.Quota.FederalDeputies = cam.quotaTotal
 		mergeCategories(&ds.Quota, cam.quotaByCategory)
-		srcs.add("camara", "Câmara dos Deputados", "https://dadosabertos.camara.leg.br", []any{cam.people, cam.votes, cam.laws, cam.quotaTotal, cam.quotaByCategory})
+	} else {
+		in.skipped(ctx, "camara")
 	}
 	if in.cfg.Enabled("senado") {
-		sen, err := in.loadSenado(ctx, &rep)
+		var sen senadoResult
+		fresh, err := in.withSource(ctx, &rep, srcs, in.senadoIO(ctx, &rep, &sen))
 		if err != nil {
 			return rep, fmt.Errorf("senado: %w", err)
 		}
+		if fresh {
+			srcs.add("senado", "Senado Federal", "https://legis.senado.leg.br/dadosabertos", []any{sen.people, sen.votes, sen.quotaTotal, sen.quotaByCategory})
+		}
+		pseudonymizePeople(sen.people)
 		people = append(people, sen.people...)
 		ds.Votes = append(ds.Votes, sen.votes...)
 		ds.Quota.Senators = sen.quotaTotal
 		mergeCategories(&ds.Quota, sen.quotaByCategory)
-		srcs.add("senado", "Senado Federal", "https://legis.senado.leg.br/dadosabertos", []any{sen.people, sen.votes, sen.quotaTotal, sen.quotaByCategory})
+	} else {
+		in.skipped(ctx, "senado")
 	}
 	ds.Quota.Year = in.currentYear()
 	states := map[string]string{"br": "Brasil"}
@@ -246,25 +288,36 @@ func (in *Ingest) Full(ctx context.Context) (Report, error) {
 	var cands []publicdata.Candidacy
 	var campaigns *publicdata.CampaignTotals
 	if in.cfg.Enabled("tse") {
-		t, err := in.loadTSE(ctx, &rep)
+		var t tseResult
+		fresh, err := in.withSource(ctx, &rep, srcs, in.tseIO(ctx, &rep, &t))
 		if err != nil {
 			return rep, fmt.Errorf("tse: %w", err)
 		}
+		if fresh {
+			srcs.add("tse", "Tribunal Superior Eleitoral", "https://dadosabertos.tse.jus.br", []any{t.candidacies, t.campaigns})
+		}
+		pseudonymizeCandidacies(t.candidacies)
 		cands = t.candidacies
 		campaigns = t.campaigns
-		srcs.add("tse", "Tribunal Superior Eleitoral", "https://dadosabertos.tse.jus.br", []any{t.candidacies, t.campaigns})
+	} else {
+		in.skipped(ctx, "tse")
 	}
 	prev, next := electionYears(in.cfg.TSEYears)
 	people = publicdata.Link(publicdata.LinkInput{People: people, Candidacies: cands, PreviousYear: prev, ElectionYear: next, StateNames: states})
 	people = in.filterScope(people)
 	if in.cfg.Enabled("assembleias") {
 		people = in.loadAssemblies(ctx, &rep, people, cands, prev, states, srcs)
+	} else {
+		in.skipped(ctx, "assembleias")
 	}
 	ds.Campaigns = campaigns
 	if in.cfg.Enabled("receita") {
-		rev, err := in.loadReceita(ctx)
+		var rev *publicdata.RevenueBlock
+		fresh, err := in.withSource(ctx, &rep, srcs, in.receitaIO(ctx, &rev))
 		if err != nil {
 			in.warn(&rep, "receita: %v (revenue published as null)", err)
+		} else if !fresh {
+			ds.Revenue = rev
 		} else if rev != nil {
 			ds.Revenue = rev
 			srcs.add("receita", "Receita Federal", "https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/dados-abertos", rev)
@@ -280,11 +333,11 @@ func (in *Ingest) Full(ctx context.Context) (Report, error) {
 		if len(ds.Municipalities) == 0 {
 			in.warn(&rep, "cities: skipped, the IBGE list of municipalities is not loaded")
 		} else {
-			ds.Cities = in.loadCities(ctx, &rep, ds.Municipalities, srcs)
+			ds.Cities = in.storeCities(ctx, &rep, srcs, in.loadCities(ctx, &rep, ds.Municipalities, srcs))
 		}
 	}
 	if in.cfg.Enabled("comprova") {
-		ds.Checks = in.loadChecks(ctx, &rep, srcs)
+		ds.Checks = in.storeChecks(ctx, &rep, srcs, in.loadChecks(ctx, &rep, srcs))
 	}
 	if in.cfg.Enabled("repercussao") {
 		ds.Signals = in.loadSignals(ctx, &rep, ds, srcs)
@@ -296,11 +349,18 @@ func (in *Ingest) Full(ctx context.Context) (Report, error) {
 		return rep, err
 	}
 	ds.Sources = srcs.list
+	var assemblies []string
+	if in.cfg.Enabled("assembleias") {
+		assemblies = in.storeAssemblies(ctx, srcs, people)
+	}
+	ds.Agenda = in.storedAgenda(ctx, ds.Today)
 	in.refreshLive(ctx, ds, &rep)
-	cities, err := in.publish(ds, &rep, nil)
+	in.storeLive(ctx, &rep, ds)
+	cities, slugs, err := in.publish(ds, &rep, nil)
 	if err != nil {
 		return rep, err
 	}
+	in.storeFinal(ctx, &rep, ds.People, slugs, assemblies)
 	lite := *ds
 	lite.Cities = nil
 	in.mu.Lock()
@@ -312,6 +372,13 @@ func (in *Ingest) Full(ctx context.Context) (Report, error) {
 }
 
 func (in *Ingest) Live(ctx context.Context) (Report, error) {
+	in.begin(ctx, "live")
+	rep, err := in.live(ctx)
+	in.end(ctx, rep, err)
+	return rep, err
+}
+
+func (in *Ingest) live(ctx context.Context) (Report, error) {
 	var rep Report
 	in.mu.Lock()
 	ds := in.dataset
@@ -323,20 +390,21 @@ func (in *Ingest) Live(ctx context.Context) (Report, error) {
 	ds.GeneratedAt = in.now()
 	ds.Today = in.today()
 	in.refreshLive(ctx, ds, &rep)
-	_, err := in.publish(ds, &rep, cities)
+	in.storeLive(ctx, &rep, ds)
+	_, _, err := in.publish(ds, &rep, cities)
 	return rep, err
 }
 
-func (in *Ingest) publish(ds *publicdata.Dataset, rep *Report, retain []string) ([]string, error) {
+func (in *Ingest) publish(ds *publicdata.Dataset, rep *Report, retain []string) ([]string, map[*publicdata.Person]string, error) {
 	slugs, err := publicdata.LoadSlugs(filepath.Join(in.cfg.DataDir, "slugs.json"))
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	out := publicdata.Build(ds, slugs)
 	tree := publish.NewTree(filepath.Join(in.cfg.PublicDir, "v1"))
 	tree.Retain(retain)
 	if err := publicdata.Publish(out, tree, true); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	if in.cfg.Enabled("comprova") {
 		if err := in.writeCheckReview(out.Reviews); err != nil {
@@ -351,13 +419,13 @@ func (in *Ingest) publish(ds *publicdata.Dataset, rep *Report, retain []string) 
 		}
 	}
 	if err := slugs.Save(); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	st := tree.Stats()
 	rep.People = len(ds.People)
 	rep.Votes = len(ds.Votes)
 	rep.Files, rep.Written, rep.Removed, rep.Bytes, rep.Gzip = st.Files, st.Written, st.Removed, st.Bytes, st.GzipBytes
-	return out.Cities, nil
+	return out.Cities, out.Slugs, nil
 }
 
 func (in *Ingest) currentYear() int {
