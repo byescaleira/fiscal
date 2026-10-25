@@ -1,0 +1,82 @@
+# Pedidos do usuário na rodada de ajustes da 1.0
+
+Lista única dos pedidos feitos no iPhone, com o estado de cada um. Atualizada a cada entrega; cada entrega é instalada no iPhone e relatada.
+
+Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando), **na fila** (ainda não começou), **decisão** (precisa do usuário).
+
+## Navegação e componentes
+
+| Pedido | Estado | Onde |
+| --- | --- | --- |
+| Aba Fiscalizar sem destaque e ícones padrão nas abas | no iPhone | AppSection, MainScreen |
+| Tags de partido em faixas verticais iguais, sem gradiente | no iPhone | PartyMark, PartySeal |
+| Nenhum segmented control no app | no iPhone | Compartilhar, Gastos, Votos do detalhe |
+| Seguir e Compartilhar do perfil numa linha, mesma altura | no iPhone | ProfileHero |
+| Retrato sem rosto em cinza neutro | no iPhone | PersonPortrait |
+
+## Votações
+
+| Pedido | Estado | Onde |
+| --- | --- | --- |
+| Filtros na toolbar em vez da pilha vertical | no iPhone | VotesToolbar |
+| Card Sim × Não com margem da lista e mais respiro | no iPhone | VoteHeroSection |
+| Check e xmark dos representantes em círculo | no iPhone | VoteBallotsSection |
+
+## Meus e dados
+
+| Pedido | Estado | Onde |
+| --- | --- | --- |
+| Escolher qualquer cidade, com prefeito e vereadores | no iPhone | Meus, servidor (TSE 2024) |
+| Comparação só com 2 políticos | no iPhone | Compare |
+| Todos os políticos nos dados de teste (ex.: Flávio Bolsonaro) | no iPhone (594 nacionais) | showcase-people.json |
+| Volume da base de dados (votações, perfis, dinheiro reais) | em andamento | frente data |
+| Rostos para todos (628 desenhados) | no iPhone | avatars.py, fiscal-portraits.deflate |
+
+## Compartilhar
+
+| Pedido | Estado | Onde |
+| --- | --- | --- |
+| Card com pouca informação e sem componentes nativos | no iPhone | SharePoster |
+| Arte brasileira antes das paisagens | no iPhone | ShareModel |
+| Paisagem ocupando o card inteiro, como as pinturas | no iPhone | ShareArtwork |
+| Acervo histórico só com pinturas coloridas em alta resolução | no iPhone (22 pinturas) | art-works.json |
+
+## Apuração ao vivo
+
+| Pedido | Estado | Onde |
+| --- | --- | --- |
+| Card ao vivo do Hoje com uma barra de força por lado, sem diferença | no iPhone | TodayLiveRaceCard |
+| Live Activity igual ao card: foto, tag, % apurado, barra de força, fundo do sistema em vidro | no iPhone | RaceLiveActivity |
+| Tela de apuração menos repetitiva, com brancos, nulos e fotos | em andamento | frente races2 |
+
+## Lente e visual
+
+| Pedido | Estado | Onde |
+| --- | --- | --- |
+| "De que lado você está?" na proposta do app | em andamento | frente lens2 |
+| "O seu visual" consistente com o app | em andamento | frente lens2 |
+| Gráfico de "Seus temas" na tela da Lente | em andamento | frente lens2 |
+
+## Gráficos e dinheiro
+
+| Pedido | Estado | Onde |
+| --- | --- | --- |
+| Temas em Fiscalizar com Swift Charts | no iPhone | ThemeCharts |
+| Seções de Dinheiro com gráficos próprios do Swift Charts | em andamento | frente money2 |
+
+## Novas funcionalidades
+
+| Pedido | Estado | Onde |
+| --- | --- | --- |
+| Destaque do momento sempre na aba Hoje | em andamento | frente weight |
+| Peso de cada ação (repercussão + impacto, regra única) | em andamento | frente weight |
+| Preços com série histórica (gasolina e bens de consumo) | em andamento | frente prices |
+| Antes × durante o mandato para todos | em andamento | frente prices |
+| Explicar em linguagem simples o sentido dos dados, com Foundation Models e selo de interpretação imparcial | em andamento | frente explain |
+| Repercussão no X, Instagram ou TikTok | decisão (custo) | — |
+
+## Ícone
+
+| Pedido | Estado | Onde |
+| --- | --- | --- |
+| Ícone com a identidade do projeto | sessão própria (fiscal-icon) | Fiscal/Fiscal/FiscalIcon*.icon |
