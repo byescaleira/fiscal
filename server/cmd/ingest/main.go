@@ -18,6 +18,7 @@ import (
 	"time"
 	_ "time/tzdata"
 
+	"liveresults/internal/datastore"
 	"liveresults/internal/ingest"
 	"liveresults/internal/sources/fetch"
 	"liveresults/internal/sources/tse"
@@ -34,12 +35,15 @@ func init() {
 }
 
 type config struct {
-	ingest   ingest.Config
-	fullAt   [2]int
-	live     time.Duration
-	gap      time.Duration
-	timeout  time.Duration
-	location *time.Location
+	ingest     ingest.Config
+	storePath  string
+	backupDir  string
+	backupKeep int
+	fullAt     [2]int
+	live       time.Duration
+	gap        time.Duration
+	timeout    time.Duration
+	location   *time.Location
 }
 
 func parseYears(v string, def []int) ([]int, error) {
@@ -88,6 +92,19 @@ func loadConfig(getenv func(string) string, now time.Time) (config, error) {
 	c := config{location: loc, live: 10 * time.Minute, gap: 150 * time.Millisecond, timeout: 120 * time.Second, fullAt: [2]int{6, 30}}
 	c.ingest.PublicDir = envOr(getenv, "PUBLIC_DIR", "./public")
 	c.ingest.DataDir = envOr(getenv, "DATA_DIR", "./data")
+	c.storePath = envOr(getenv, "STORE_PATH", filepath.Join(c.ingest.DataDir, datastore.FileName))
+	if !strings.HasSuffix(c.storePath, ".db") {
+		return c, errors.New("STORE_PATH must be a path ending in .db")
+	}
+	c.backupDir = filepath.Join(c.ingest.DataDir, "backups")
+	c.backupKeep = datastore.DefaultBackup
+	if v := strings.TrimSpace(getenv("BACKUP_KEEP")); v != "" {
+		n, err := strconv.Atoi(v)
+		if err != nil || n < 1 || n > 365 {
+			return c, errors.New("BACKUP_KEEP must be between 1 and 365")
+		}
+		c.backupKeep = n
+	}
 	legislature := []int{}
 	for y := 2023; y <= year; y++ {
 		legislature = append(legislature, y)
@@ -242,6 +259,7 @@ func check(dataDir string, now time.Time, maxAge time.Duration) int {
 func main() {
 	once := flag.Bool("once", false, "run one full load, publish and exit")
 	healthCheck := flag.Bool("check", false, "exit 0 when the scheduler wrote a heartbeat recently")
+	restore := flag.String("restore", "", "replace the store with this backup (stop the scheduler first) and exit")
 	flag.Parse()
 	log.SetFlags(log.LstdFlags | log.LUTC)
 	cfg, err := loadConfig(os.Getenv, time.Now())
@@ -254,12 +272,25 @@ func main() {
 	if err := os.MkdirAll(cfg.ingest.DataDir, 0o700); err != nil {
 		log.Fatalf("data dir: %v", err)
 	}
+	if *restore != "" {
+		if err := datastore.Restore(context.Background(), *restore, cfg.storePath); err != nil {
+			log.Fatalf("restore: %v", err)
+		}
+		log.Printf("restored %s from %s", cfg.storePath, filepath.Base(*restore))
+		return
+	}
+	db, err := datastore.Open(cfg.storePath, nil)
+	if err != nil {
+		log.Fatalf("store: %v", err)
+	}
+	defer db.Close()
 	if err := os.MkdirAll(filepath.Join(cfg.ingest.PublicDir, "v1"), 0o755); err != nil {
 		log.Fatalf("public dir: %v", err)
 	}
 	client := fetch.New(filepath.Join(cfg.ingest.DataDir, "cache", "http"), cfg.timeout)
 	client.Gap = cfg.gap
 	in := ingest.New(cfg.ingest, client, nil, nil)
+	in.UseStore(db)
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 	log.Printf("ingest years=%v tse=%v+%v ufs=%v sources=%v live=%s fullAt=%02d:%02d", cfg.ingest.Years, cfg.ingest.TSEYears, cfg.ingest.TSECandidateYears, cfg.ingest.UFs, keys(cfg.ingest.Sources), cfg.live, cfg.fullAt[0], cfg.fullAt[1])
@@ -267,11 +298,13 @@ func main() {
 		rep, err := in.Full(ctx)
 		logReport("full", rep, err)
 		if err != nil {
+			db.Close()
 			os.Exit(1)
 		}
+		backup(ctx, db, in, cfg)
 		return
 	}
-	run(ctx, in, cfg)
+	run(ctx, in, db, cfg)
 }
 
 func keys(m map[string]bool) []string {
@@ -298,7 +331,24 @@ func mib(n int64) string {
 	return strconv.FormatFloat(float64(n)/(1<<20), 'f', 1, 64) + " MiB"
 }
 
-func run(ctx context.Context, in *ingest.Ingest, cfg config) {
+func backup(ctx context.Context, db *datastore.Store, in *ingest.Ingest, cfg config) {
+	started := time.Now()
+	day := started.In(cfg.location).Format("2006-01-02")
+	path, size, err := db.Backup(ctx, cfg.backupDir, day, cfg.backupKeep)
+	status := datastore.StatusOK
+	if err != nil {
+		status = datastore.StatusFailed
+		log.Printf("backup failed: %v", err)
+	} else {
+		log.Printf("backup ok: %s (%s, keeping %d)", filepath.Base(path), mib(size), cfg.backupKeep)
+	}
+	if e := db.Record(context.WithoutCancel(ctx), "backup", "backup", status, started, map[string]int{"kib": int(size >> 10), "keep": cfg.backupKeep}, err); e != nil {
+		log.Printf("backup record: %v", e)
+	}
+	in.WriteStatus(context.WithoutCancel(ctx))
+}
+
+func run(ctx context.Context, in *ingest.Ingest, db *datastore.Store, cfg config) {
 	var mu sync.Mutex
 	st := status{}
 	beat := func() {
@@ -327,14 +377,16 @@ func run(ctx context.Context, in *ingest.Ingest, cfg config) {
 		rep, err := in.Full(ctx)
 		logReport("full", rep, err)
 		mu.Lock()
-		defer mu.Unlock()
 		if err != nil {
 			st.LastError = err.Error()
+			mu.Unlock()
 			return
 		}
 		loaded = true
 		attempt = 0
 		st.LastFull, st.LastError, st.People, st.Files = time.Now().UTC().Format(time.RFC3339), "", rep.People, rep.Files
+		mu.Unlock()
+		backup(ctx, db, in, cfg)
 	}
 	full()
 	beat()

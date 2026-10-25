@@ -9,9 +9,13 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 )
 
 func CPFKey(cpf string) string {
+	if strings.HasPrefix(cpf, "cpf:") {
+		return cpf
+	}
 	sum := sha256.Sum256([]byte("fiscal-person:" + cpf))
 	return "cpf:" + hex.EncodeToString(sum[:10])
 }
