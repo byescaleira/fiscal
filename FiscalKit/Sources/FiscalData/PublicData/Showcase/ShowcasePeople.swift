@@ -84,17 +84,17 @@
         }
 
         static func merged(_ curated: [PersonCard], with roster: [PersonCard]) -> [PersonCard] {
-            let slugs = Set(curated.map(\.slug))
-            let known = Dictionary(grouping: curated) { "\($0.office.rawValue)-\($0.uf)" }
-            return curated
-                + roster.filter { card in
-                    guard !slugs.contains(card.slug) else { return false }
-                    let name = folded(card.name)
-                    return !(known["\(card.office.rawValue)-\(card.uf)"] ?? []).contains {
-                        let other = folded($0.name)
-                        return other.contains(name) || name.contains(other)
-                    }
-                }
+            curated + roster.filter { !covered($0, by: curated) }
+        }
+
+        static func covered(_ card: PersonCard, by people: [PersonCard]) -> Bool {
+            let name = folded(card.name)
+            return people.contains { other in
+                guard other.slug != card.slug else { return true }
+                guard other.office == card.office, other.uf == card.uf else { return false }
+                let otherName = folded(other.name)
+                return otherName.contains(name) || name.contains(otherName)
+            }
         }
 
         static func folded(_ text: String) -> String {

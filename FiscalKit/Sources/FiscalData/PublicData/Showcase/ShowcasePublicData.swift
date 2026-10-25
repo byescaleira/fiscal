@@ -37,8 +37,8 @@
         private var curated: [PersonCard] {
             switch scenario {
             case .empty, .offline, .unavailable: []
-            case .normal: ShowcasePeople.regular
-            case .longNames: ShowcasePeople.long + ShowcasePeople.regular
+            case .normal: regular
+            case .longNames: ShowcasePeople.long + regular
             }
         }
 
@@ -106,6 +106,11 @@
 
         public func representatives(uf: String) async throws -> PlaceRepresentatives {
             try check()
+            if !longText,
+                let real: PlaceRepresentatives = real(PublicDataPath.representatives(uf: uf))
+            {
+                return real
+            }
             return ShowcasePeople.representatives(uf: uf, people: everyone, sources: sources)
         }
 
@@ -139,6 +144,7 @@
 
         public func profile(slug: String) async throws -> Profile {
             try check()
+            if let real: Profile = real(PublicDataPath.profile(slug: slug)) { return real }
             if let card = curated.first(where: { $0.slug == slug }) {
                 return ShowcaseProfiles.profile(for: card, year: year, sources: sources)
             }
@@ -164,19 +170,40 @@
         }
 
         public func votes(slug: String, year: Int) async throws -> PublicList<PersonVote> {
-            ShowcaseVotes.personVotes(for: try legislator(slug), now: now, longText: longText)
+            if let real: PublicList<PersonVote> = try realActivity(
+                slug: slug, path: PublicDataPath.votes(slug: slug, year: year))
+            {
+                return real
+            }
+            return ShowcaseVotes.personVotes(
+                for: try legislator(slug), now: now, longText: longText)
         }
 
         public func proposals(slug: String, year: Int) async throws -> PublicList<Proposal> {
-            ShowcaseVotes.proposals(for: try legislator(slug), year: year)
+            if let real: PublicList<Proposal> = try realActivity(
+                slug: slug, path: PublicDataPath.proposals(slug: slug, year: year))
+            {
+                return real
+            }
+            return ShowcaseVotes.proposals(for: try legislator(slug), year: year)
         }
 
         public func speeches(slug: String, year: Int) async throws -> PublicList<Speech> {
-            ShowcaseVotes.speeches(for: try legislator(slug), now: now)
+            if let real: PublicList<Speech> = try realActivity(
+                slug: slug, path: PublicDataPath.speeches(slug: slug, year: year))
+            {
+                return real
+            }
+            return ShowcaseVotes.speeches(for: try legislator(slug), now: now)
         }
 
         public func expenses(slug: String, year: Int) async throws -> ExpenseList {
-            ShowcaseExpenses.list(
+            if let real: ExpenseList = try realActivity(
+                slug: slug, path: PublicDataPath.expenses(slug: slug, year: year))
+            {
+                return real
+            }
+            return ShowcaseExpenses.list(
                 for: try legislator(slug), year: year, now: now, calendar: calendar,
                 longText: longText)
         }
@@ -188,11 +215,19 @@
 
         public func recentVotes() async throws -> [VoteSummary] {
             try check()
-            return isEmpty ? [] : ShowcaseVotes.recent(now: now, longText: longText)
+            return isEmpty ? [] : recent
+        }
+
+        private var recent: [VoteSummary] {
+            guard let real: [VoteSummary] = real(PublicDataPath.recentVotes) else {
+                return ShowcaseVotes.recent(now: now, longText: longText)
+            }
+            return longText ? ShowcaseVotes.recent(now: now, longText: true) + real : real
         }
 
         public func vote(id: String) async throws -> VoteDetail {
             try check()
+            if let real: VoteDetail = real(PublicDataPath.vote(id: id)) { return real }
             guard !isEmpty,
                 let detail = ShowcaseVotes.detail(
                     id: id, now: now, people: everyone, sources: sources, longText: longText)
@@ -202,21 +237,60 @@
 
         public func agenda() async throws -> Agenda {
             try check()
+            if let real: Agenda = real(PublicDataPath.agenda),
+                real.houses.contains(where: { !$0.items.isEmpty })
+            {
+                return Agenda(date: CalendarDay(now, calendar: calendar), houses: real.houses)
+            }
             return ShowcaseVotes.agenda(now: now, empty: isEmpty)
         }
 
         public func money() async throws -> MoneyOverview {
             try check()
+            if let real: MoneyOverview = real(PublicDataPath.money) { return real }
             return ShowcaseMoney.overview(year: year, empty: isEmpty, sources: sources)
         }
 
         public func today() async throws -> TodayDigest {
             try check()
-            let votes = isEmpty ? [] : ShowcaseVotes.recent(now: now, longText: longText)
+            let votes = isEmpty ? [] : recent
+            if let real: TodayDigest = real(PublicDataPath.today), !real.events.isEmpty {
+                return TodayDigest(
+                    date: CalendarDay(now, calendar: calendar), events: real.events,
+                    sources: real.sources)
+            }
             return isEmpty
                 ? TodayDigest(
                     date: CalendarDay(now, calendar: calendar), events: [], sources: sources)
                 : ShowcaseMoney.today(now: now, votes: votes, sources: sources)
+        }
+    }
+
+    extension ShowcasePublicData {
+        private var regular: [PersonCard] {
+            guard loaded else { return ShowcasePeople.regular }
+            let people = roster.people()
+            return ShowcasePeople.regular.filter { !ShowcasePeople.covered($0, by: people) }
+        }
+
+        private var loaded: Bool { stored(PublicDataPath.meta) != nil }
+
+        private func stored(_ path: String) -> Data? {
+            switch scenario {
+            case .normal, .longNames: roster.document(path)
+            case .empty, .offline, .unavailable: nil
+            }
+        }
+
+        private func real<Value: Decodable>(_ path: String) -> Value? {
+            stored(path).flatMap { try? PublicDataCoding.decoder().decode(Value.self, from: $0) }
+        }
+
+        private func realActivity<Value: Decodable>(slug: String, path: String) throws -> Value? {
+            try check()
+            guard stored(PublicDataPath.profile(slug: slug)) != nil else { return nil }
+            guard let value: Value = real(path) else { throw PublicDataError.notFound }
+            return value
         }
     }
 #endif

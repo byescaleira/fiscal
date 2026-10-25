@@ -18,15 +18,18 @@
         let people: @Sendable () -> [PersonCard]
         let places: @Sendable () -> [Place]
         let city: @Sendable (String) -> City?
+        let document: @Sendable (String) -> Data?
 
         public init(
             people: @escaping @Sendable () -> [PersonCard],
             places: @escaping @Sendable () -> [Place],
-            city: @escaping @Sendable (String) -> City?
+            city: @escaping @Sendable (String) -> City?,
+            document: @escaping @Sendable (String) -> Data? = { _ in nil }
         ) {
             self.people = people
             self.places = places
             self.city = city
+            self.document = document
         }
 
         public static let curated = ShowcaseRoster(
