@@ -60,6 +60,7 @@ private struct ThemeOverviewRow: View {
             }
             .accessibilityElement(children: .combine)
             ThemeBarsChart(activity: activity)
+            ExplainerCard(search.barsExplanation(for: activity), style: .caption)
         }
         .padding(.vertical, .spaceS)
     }
@@ -83,6 +84,7 @@ private struct ThemeCadenceRow: View {
                 }
             }
             ThemeCadenceChart(activity: activity)
+            ExplainerCard(search.cadenceExplanation(for: activity), style: .caption)
         }
         .padding(.vertical, .spaceS)
     }
