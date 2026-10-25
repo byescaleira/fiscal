@@ -13,7 +13,7 @@ public struct TodayScreen: View {
             VStack(alignment: .leading, spacing: .spaceXL) {
                 TodayMasthead()
                 if let board = today.liveBoard {
-                    TodayLiveRaceCard(board: board)
+                    TodayRaceHero(board: board)
                         .transition(.opacity)
                 }
                 TodayBody()

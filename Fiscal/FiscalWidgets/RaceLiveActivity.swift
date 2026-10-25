@@ -62,6 +62,30 @@ private struct RaceLockScreen: View {
     var body: some View {
         let board = RaceBoard(context: context)
         VStack(spacing: .spaceS) {
+            HStack(spacing: .spaceS) {
+                Label {
+                    Text(board.state.final ? "FINAL" : "LIVE")
+                } icon: {
+                    Image(
+                        systemName: board.state.final
+                            ? "checkmark.seal" : "dot.radiowaves.left.and.right")
+                }
+                .font(.caption2.weight(.heavy))
+                .foregroundStyle(RaceStyle.primary)
+                .padding(.horizontal, .spaceS)
+                .padding(.vertical, .space2XS)
+                .background(RaceStyle.track, in: .capsule)
+                Text(verbatim: board.officeText)
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(RaceStyle.primary)
+                    .lineLimit(1)
+                Spacer(minLength: .spaceS)
+                Text(verbatim: board.sourceText)
+                    .font(.caption2.weight(.medium))
+                    .foregroundStyle(RaceStyle.secondary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+            }
             HStack(alignment: .center, spacing: .spaceS) {
                 if let first = board.first {
                     ScoreColumn(row: first, score: board.score(first), alignment: .leading)
@@ -74,15 +98,6 @@ private struct RaceLockScreen: View {
                 }
             }
             ShareBar(board: board, height: .spaceS)
-            HStack(spacing: .spaceS) {
-                Text(verbatim: board.officeText)
-                    .lineLimit(1)
-                Spacer(minLength: .spaceS)
-                Text(verbatim: board.sourceText)
-                    .lineLimit(1)
-            }
-            .font(.caption2.weight(.medium))
-            .foregroundStyle(RaceStyle.secondary)
         }
         .padding(.horizontal, .spaceL)
         .padding(.vertical, .spaceM)

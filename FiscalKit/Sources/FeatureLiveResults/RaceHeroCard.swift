@@ -3,18 +3,25 @@ import FiscalDesignSystem
 import FiscalDomain
 import SwiftUI
 
-struct RaceHeroCard: View {
-    @Environment(LiveResultsModel.self) private var results
+public struct RaceHeroCard: View {
+    @Environment(LiveResultsModel.self) private var results: LiveResultsModel?
     let race: Race
     let opensDetail: Bool
 
-    var body: some View {
+    public init(race: Race, opensDetail: Bool) {
+        self.race = race
+        self.opensDetail = opensDetail
+    }
+
+    public var body: some View {
         let summary = RaceSummary(race: race)
         VStack(alignment: .leading, spacing: .spaceL) {
             RaceHeroHeader(summary: summary)
             if opensDetail {
                 NavigationLink {
-                    RaceDetailScreen(raceID: race.id).environment(results)
+                    if let results {
+                        RaceDetailScreen(raceID: race.id).environment(results)
+                    }
                 } label: {
                     RaceHeroBody(summary: summary, showsChevron: true)
                         .contentShape(.rect)
@@ -33,7 +40,7 @@ struct RaceHeroCard: View {
         .background { RaceHeroBackground(summary: summary) }
         .clipShape(.rect(cornerRadius: .radiusGroup))
         .fontDesign(.rounded)
-        .opacity(results.isOffline ? .opacityStrong : 1)
+        .opacity(results?.isOffline == true ? .opacityStrong : 1)
     }
 }
 
@@ -80,7 +87,7 @@ private struct RaceHeroBackground: View {
 }
 
 private struct RaceHeroHeader: View {
-    @Environment(LiveResultsModel.self) private var results
+    @Environment(LiveResultsModel.self) private var results: LiveResultsModel?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
@@ -112,7 +119,7 @@ private struct RaceHeroHeader: View {
             }
             .accessibilityElement(children: .combine)
             Spacer(minLength: .spaceS)
-            if results.showsFollow(summary.race) {
+            if let results, results.showsFollow(summary.race) {
                 RaceHeroFollow(race: summary.race)
             }
             Button("Share", systemImage: "square.and.arrow.up") {
@@ -237,8 +244,6 @@ private struct RaceHeroCenter: View {
             Text(summary.race.final ? "TSE" : "counted")
                 .font(.caption2.weight(.semibold))
                 .opacity(.opacityStrong)
-            ProgressBar(value: summary.countedFraction, color: .white)
-                .frame(width: .badgeXL)
         }
         .frame(minWidth: .badgeXL + .spaceL)
     }
@@ -279,16 +284,25 @@ private struct RaceHeroSplit: View {
 
     var body: some View {
         let share = summary.splitShare
+        let first = PartyPalette.of(party: summary.sides.first?.candidate.party ?? "", fallback: 0)
+        let second = PartyPalette.of(party: summary.sides.last?.candidate.party ?? "", fallback: 1)
         GeometryReader { proxy in
-            HStack(spacing: .spaceHairline) {
-                Capsule()
+            ZStack {
+                HStack(spacing: .zero) {
+                    Rectangle()
+                        .fill(first.primary)
+                        .frame(width: proxy.size.width * share)
+                    Rectangle()
+                        .fill(second.primary)
+                }
+                .clipShape(.capsule)
+                .overlay { Capsule().strokeBorder(.white, lineWidth: .spaceHairline) }
+                Rectangle()
                     .fill(.white)
-                    .frame(width: max(.spaceS, (proxy.size.width - .spaceHairline) * share))
-                Capsule()
-                    .fill(.white.opacity(.opacitySoft))
+                    .frame(width: .spaceHairline, height: proxy.size.height + .spaceS)
             }
         }
-        .frame(height: .spaceS)
+        .frame(height: .spaceM)
         .animation(reduceMotion ? nil : .smooth(duration: 1), value: share)
         .accessibilityHidden(true)
     }

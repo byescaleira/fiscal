@@ -21,7 +21,7 @@ struct SectionScreen: View {
                     races: services.liveResultsService(),
                     follows: services.todayFollows(session.repositories.follows))
             ) {
-                TodayScreen()
+                ModelHost(services.liveResults()) { TodayScreen() }
             }
         case .mine:
             ModelHost(MineModel(service: data, follows: session.repositories.follows)) {

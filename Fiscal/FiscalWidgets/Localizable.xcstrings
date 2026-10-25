@@ -207,6 +207,16 @@
         }
       }
     },
+    "FINAL" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FINAL"
+          }
+        }
+      }
+    },
     "Final result" : {
       "localizations" : {
         "pt-BR" : {
@@ -254,6 +264,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Governador"
+          }
+        }
+      }
+    },
+    "LIVE" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AO VIVO"
           }
         }
       }
