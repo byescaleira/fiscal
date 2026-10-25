@@ -1,5 +1,6 @@
 import FeatureCore
 import FiscalDesignSystem
+import FiscalDomain
 import SwiftUI
 
 public struct CompareScreen: View {
@@ -8,16 +9,39 @@ public struct CompareScreen: View {
     public init() {}
 
     public var body: some View {
-        Group {
-            if compare.isEmpty {
-                CompareEmptyState()
+        PublicDataContent(
+            phase: compare.phase, isEmpty: compare.isEmpty, retry: { await compare.load() }
+        ) {
+            AdaptiveList {
+                ForEach(compare.rows) { CompareRowSection(row: $0) }
             }
+        } empty: {
+            CompareEmptyState()
         }
         .fontDesign(.rounded)
         .navigationTitle("Compare")
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
         #endif
+        .task { await compare.load() }
+    }
+}
+
+private struct CompareRowSection: View {
+    let row: CompareModel.Row
+
+    var body: some View {
+        Section {
+            ForEach(row.cells) { cell in
+                LabeledContent {
+                    Text(verbatim: cell.value).monospacedDigit()
+                } label: {
+                    Text(verbatim: cell.name)
+                }
+            }
+        } header: {
+            Text(verbatim: row.title).sectionTitle()
+        }
     }
 }
 

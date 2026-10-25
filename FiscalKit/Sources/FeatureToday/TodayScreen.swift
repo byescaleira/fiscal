@@ -1,5 +1,6 @@
 import FeatureCore
 import FiscalDesignSystem
+import FiscalDomain
 import SwiftUI
 
 public struct TodayScreen: View {
@@ -15,6 +16,7 @@ public struct TodayScreen: View {
         .fontDesign(.rounded)
         .navigationTitle("Today")
         .toolbar { TodayToolbar() }
+        .refreshable { await today.load() }
         .task { await today.load() }
     }
 }
@@ -24,7 +26,20 @@ private struct TodayEventsSection: View {
 
     var body: some View {
         Section {
-            if today.isEmpty {
+            if !today.isEmpty {
+                ForEach(Array(today.events.enumerated()), id: \.offset) { _, event in
+                    IconRow(
+                        verbatim: event.title, detail: event.summary, symbol: event.symbol,
+                        color: .retroDenim)
+                }
+            } else if let error = today.phase.error {
+                IconRow(
+                    "Couldn't load the data", detail: nil, symbol: error.symbol, color: .retroRust
+                )
+                .accessibilityHint(Text(verbatim: error.message))
+            } else if today.phase.isLoading {
+                ProgressView("Loading")
+            } else {
                 IconRow(
                     "Nothing new yet",
                     detail: "Votes, sessions and new laws show up here as they happen.",

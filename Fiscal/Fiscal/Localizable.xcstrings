@@ -61,6 +61,26 @@
         }
       }
     },
+    "%lld of %lld topics chosen" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld de %2$lld temas escolhidos"
+          }
+        }
+      }
+    },
+    "A dash means the source doesn't publish this number." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O traço quer dizer que a fonte não publica esse número."
+          }
+        }
+      }
+    },
     "A new Fiscal is available" : {
       "localizations" : {
         "pt-BR" : {
@@ -87,6 +107,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cor de destaque"
+          }
+        }
+      }
+    },
+    "All federal deputies" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos os deputados federais"
+          }
+        }
+      }
+    },
+    "All senators" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos os senadores"
           }
         }
       }
@@ -381,6 +421,16 @@
         }
       }
     },
+    "Couldn't load the data" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível carregar os dados"
+          }
+        }
+      }
+    },
     "Couldn't load the data. Try again." : {
       "localizations" : {
         "pt-BR" : {
@@ -527,6 +577,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dados e privacidade"
+          }
+        }
+      }
+    },
+    "Declared assets" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Patrimônio declarado"
           }
         }
       }
@@ -872,6 +932,16 @@
         }
       }
     },
+    "Follow" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seguir"
+          }
+        }
+      }
+    },
     "Follow %@ on the Lock Screen" : {
       "localizations" : {
         "pt-BR" : {
@@ -888,6 +958,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Acompanhar na tela de bloqueio"
+          }
+        }
+      }
+    },
+    "Following" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seguindo"
           }
         }
       }
@@ -992,6 +1072,16 @@
         }
       }
     },
+    "In Numbers" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em números"
+          }
+        }
+      }
+    },
     "In office" : {
       "localizations" : {
         "pt-BR" : {
@@ -1048,6 +1138,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Conhece alguém que ia gostar do Fiscal?"
+          }
+        }
+      }
+    },
+    "Latest Floor Votes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Últimas votações do Plenário"
           }
         }
       }
@@ -1302,16 +1402,6 @@
         }
       }
     },
-    "No lens yet" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nenhuma lente ainda"
-          }
-        }
-      }
-    },
     "No representatives yet" : {
       "localizations" : {
         "pt-BR" : {
@@ -1448,6 +1538,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abrindo Fiscal"
+          }
+        }
+      }
+    },
+    "Other votes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outros votos"
           }
         }
       }
@@ -1732,6 +1832,16 @@
         }
       }
     },
+    "Salary" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salário"
+          }
+        }
+      }
+    },
     "Salmon" : {
       "localizations" : {
         "pt-BR" : {
@@ -1958,6 +2068,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sistema"
+          }
+        }
+      }
+    },
+    "Tally" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Placar"
           }
         }
       }
@@ -2208,6 +2328,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hoje"
+          }
+        }
+      }
+    },
+    "Total in %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total em %@"
           }
         }
       }

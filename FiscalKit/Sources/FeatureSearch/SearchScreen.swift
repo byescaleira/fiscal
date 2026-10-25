@@ -1,5 +1,6 @@
 import FeatureCore
 import FiscalDesignSystem
+import FiscalDomain
 import SwiftUI
 
 public struct SearchScreen: View {
@@ -28,6 +29,31 @@ private struct SearchResultsSection: View {
 
     var body: some View {
         Section {
+            if search.results.isEmpty {
+                SearchNoResults()
+            } else {
+                ForEach(search.results) { card in
+                    RouteLink(.person(slug: card.slug)) {
+                        IconRow(
+                            verbatim: card.name, detail: search.detail(for: card),
+                            symbol: "person", color: .retroDenim)
+                    }
+                }
+            }
+        }
+    }
+}
+
+private struct SearchNoResults: View {
+    @Environment(SearchModel.self) private var search
+
+    var body: some View {
+        if let error = search.phase.error {
+            IconRow(
+                "Couldn't load the data", symbol: error.symbol, color: .retroRust)
+        } else if search.phase.isLoading {
+            ProgressView("Loading")
+        } else {
             ContentUnavailableView.search(text: search.query)
         }
     }

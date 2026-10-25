@@ -8,14 +8,44 @@ public struct MoneyScreen: View {
     public init() {}
 
     public var body: some View {
-        Group {
-            if money.isEmpty {
-                MoneyEmptyState()
+        PublicDataContent(
+            phase: money.phase, isEmpty: money.isEmpty, retry: { await money.load() }
+        ) {
+            AdaptiveList {
+                MoneyLinesSection(title: "Office allowance", lines: money.quota)
+                MoneyLinesSection(title: "Salaries", lines: money.salaries)
             }
+        } empty: {
+            MoneyEmptyState()
         }
         .fontDesign(.rounded)
         .navigationTitle("Money")
+        .refreshable { await money.load() }
         .task { await money.load() }
+    }
+}
+
+private struct MoneyLinesSection: View {
+    let title: LocalizedStringKey
+    let lines: [MoneyModel.Line]
+
+    var body: some View {
+        if !lines.isEmpty {
+            Section {
+                ForEach(lines) { line in
+                    LabeledContent {
+                        Text(verbatim: line.value).monospacedDigit()
+                    } label: {
+                        Text(verbatim: line.title)
+                        if let detail = line.detail {
+                            Text(verbatim: detail)
+                        }
+                    }
+                }
+            } header: {
+                Text(title).sectionTitle()
+            }
+        }
     }
 }
 

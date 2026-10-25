@@ -7,15 +7,20 @@ import FeatureVotes
 import SwiftUI
 
 struct SectionScreen: View {
+    @Environment(SessionModel.self) private var session
     let section: AppSection
 
     @ViewBuilder var body: some View {
+        let data = FiscalServices.shared.publicData()
         switch section {
-        case .today: ModelHost(TodayModel()) { TodayScreen() }
-        case .mine: ModelHost(MineModel()) { MineScreen() }
-        case .votes: ModelHost(VotesModel()) { VotesScreen() }
-        case .money: ModelHost(MoneyModel()) { MoneyScreen() }
-        case .search: ModelHost(SearchModel()) { SearchScreen() }
+        case .today:
+            ModelHost(TodayModel(service: data, lens: session.repositories.lens)) {
+                TodayScreen()
+            }
+        case .mine: ModelHost(MineModel(follows: session.repositories.follows)) { MineScreen() }
+        case .votes: ModelHost(VotesModel(service: data)) { VotesScreen() }
+        case .money: ModelHost(MoneyModel(service: data)) { MoneyScreen() }
+        case .search: ModelHost(SearchModel(service: data)) { SearchScreen() }
         }
     }
 }

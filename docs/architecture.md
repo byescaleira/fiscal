@@ -38,6 +38,8 @@ fiscal/
 | `FeatureSettings` | Ajustes: Aparência (tema, cor de destaque), Guias, Sobre, Desenvolvedor (flags) | Domain, DesignSystem, Resource, FeatureCore |
 | `AppShell` | `FiscalWindow`, `MainScreen`, `SectionStack`, `SectionScreen`, `RouteScreen`, `InspectorScreen`, `SplashScreen`/`LaunchProgress`, `DeepLinks`, `FiscalServices` | todas as features |
 
+Os models das abas e das rotas recebem o `PublicDataService` do `FiscalServices.publicData()` (o `PublicDataClient`, ou o `ShowcasePublicData` quando o app abre com `-FiscalDataScenario <nome>` em Debug) e os repositórios da `SessionModel`. Cada um guarda a fase (`PublicDataPhase`: carregando, carregado ou o `PublicDataError`) e a tela usa o `PublicDataContent` para mostrar carregando, erro com "Tentar novamente" ou o estado vazio honesto.
+
 ## Links
 
 | Link | Abre |

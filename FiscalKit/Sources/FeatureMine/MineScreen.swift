@@ -1,21 +1,45 @@
 import FeatureCore
 import FiscalDesignSystem
+import FiscalDomain
 import SwiftUI
 
 public struct MineScreen: View {
     @Environment(MineModel.self) private var mine
+    @Environment(SessionModel.self) private var session
 
     public init() {}
 
     public var body: some View {
+        @Bindable var mine = mine
         Group {
             if mine.isEmpty {
                 MineEmptyState()
+            } else {
+                AdaptiveList { MineFollowingSection() }
             }
         }
         .fontDesign(.rounded)
         .navigationTitle("Mine")
-        .task { await mine.load() }
+        .task(id: session.generation) { await mine.load() }
+        .errorAlert($mine.error)
+    }
+}
+
+private struct MineFollowingSection: View {
+    @Environment(MineModel.self) private var mine
+
+    var body: some View {
+        Section {
+            ForEach(mine.followed) { person in
+                RouteLink(.person(slug: person.card.slug)) {
+                    IconRow(
+                        verbatim: person.card.name, detail: mine.detail(for: person),
+                        symbol: "person", color: .retroTeal)
+                }
+            }
+        } header: {
+            Text("Following").sectionTitle()
+        }
     }
 }
 

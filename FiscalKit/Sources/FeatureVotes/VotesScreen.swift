@@ -1,5 +1,6 @@
 import FeatureCore
 import FiscalDesignSystem
+import FiscalDomain
 import SwiftUI
 
 public struct VotesScreen: View {
@@ -8,14 +9,40 @@ public struct VotesScreen: View {
     public init() {}
 
     public var body: some View {
-        Group {
-            if votes.isEmpty {
-                VotesEmptyState()
-            }
+        PublicDataContent(
+            phase: votes.phase, isEmpty: votes.isEmpty, retry: { await votes.load() }
+        ) {
+            AdaptiveList { VotesRecentSection() }
+        } empty: {
+            VotesEmptyState()
         }
         .fontDesign(.rounded)
         .navigationTitle("Votes")
+        .refreshable { await votes.load() }
         .task { await votes.load() }
+    }
+}
+
+private struct VotesRecentSection: View {
+    @Environment(VotesModel.self) private var votes
+
+    var body: some View {
+        Section {
+            ForEach(votes.votes) { vote in
+                RouteLink(.vote(id: vote.id)) {
+                    VStack(alignment: .leading, spacing: .space2XS) {
+                        Text(verbatim: vote.proposition).font(.rowTitle)
+                        Text(verbatim: vote.plainSummary ?? vote.summary)
+                            .font(.subheadline)
+                        Text(verbatim: votes.detail(for: vote))
+                            .font(.rowDetail)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+        } header: {
+            Text("Latest Floor Votes").sectionTitle()
+        }
     }
 }
 
