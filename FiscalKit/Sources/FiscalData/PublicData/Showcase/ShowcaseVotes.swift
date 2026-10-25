@@ -67,11 +67,12 @@
             else { return nil }
             let office: Office = summary.house == .camara ? .federalDeputy : .senator
             let voters = people.filter { $0.office == office && $0.status == .inOffice }
-            let ballots = voters.map { card in
-                VoteDetail.Ballot(
-                    slug: card.slug, name: card.name, party: card.party, uf: card.uf,
-                    vote: ballot(for: card.slug, voteID: id))
-            }
+            let ballots = ShowcaseVoteRoll.complete(
+                voters.map { card in
+                    VoteDetail.Ballot(
+                        slug: card.slug, name: card.name, party: card.party, uf: card.uf,
+                        vote: ballot(for: card.slug, voteID: id))
+                }, for: summary)
             let parties = Dictionary(grouping: ballots, by: \.party).map { party, ballots in
                 VoteDetail.PartyTally(
                     party: party, yes: ballots.filter { $0.vote == "Sim" }.count,
