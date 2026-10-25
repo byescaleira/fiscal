@@ -108,6 +108,11 @@
             ShowcaseMoney.expenses(for: try legislator(slug), year: year)
         }
 
+        public func checks(slug: String) async throws -> FactCheckList? {
+            try check()
+            return isEmpty ? nil : ShowcaseChecks.list(for: slug, now: now)
+        }
+
         public func recentVotes() async throws -> [VoteSummary] {
             try check()
             return isEmpty ? [] : ShowcaseVotes.recent(now: now, longText: longText)

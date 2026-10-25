@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"path/filepath"
 	"sort"
@@ -23,6 +24,7 @@ import (
 
 type Fetcher interface {
 	JSON(ctx context.Context, rawURL string, v any) error
+	JSONHeader(ctx context.Context, rawURL string, v any) (http.Header, error)
 	Cache(ctx context.Context, rawURL string, limit int64) (fetch.Cached, error)
 	Open(ctx context.Context, rawURL string) (*fetch.Remote, error)
 }
@@ -36,6 +38,8 @@ type Config struct {
 	UFs               []string
 	Sources           map[string]bool
 	Workers           int
+	ChecksSince       string
+	ChecksMaxPages    int
 }
 
 func (c Config) Enabled(source string) bool {
@@ -166,15 +170,19 @@ func (s *sourceSet) settle(path string) error {
 }
 
 type Report struct {
-	People   int
-	Votes    int
-	Files    int
-	Written  int
-	Removed  int
-	Bytes    int64
-	Gzip     int64
-	Duration time.Duration
-	Warnings []string
+	People      int
+	Votes       int
+	Checks      int
+	CheckPeople int
+	CheckLinks  int
+	Reviews     int
+	Files       int
+	Written     int
+	Removed     int
+	Bytes       int64
+	Gzip        int64
+	Duration    time.Duration
+	Warnings    []string
 }
 
 func (in *Ingest) warn(r *Report, format string, args ...any) {
@@ -263,6 +271,9 @@ func (in *Ingest) Full(ctx context.Context) (Report, error) {
 		applyCoverage(p)
 	}
 	ds.People = people
+	if in.cfg.Enabled("comprova") {
+		ds.Checks = in.loadChecks(ctx, &rep, srcs)
+	}
 	if err := srcs.settle(filepath.Join(in.cfg.DataDir, "sources.json")); err != nil {
 		return rep, err
 	}
@@ -301,6 +312,18 @@ func (in *Ingest) publish(ds *publicdata.Dataset, rep *Report) error {
 	tree := publish.NewTree(filepath.Join(in.cfg.PublicDir, "v1"))
 	if err := publicdata.Publish(out, tree, true); err != nil {
 		return err
+	}
+	if in.cfg.Enabled("comprova") {
+		if err := in.writeCheckReview(out.Reviews); err != nil {
+			in.warn(rep, "checks review: %v", err)
+		}
+	}
+	rep.Checks, rep.CheckPeople, rep.CheckLinks, rep.Reviews = len(ds.Checks), 0, 0, len(out.Reviews)
+	for _, f := range out.Files {
+		if l, ok := f.Value.(publicdata.CheckList); ok {
+			rep.CheckPeople++
+			rep.CheckLinks += len(l.Items)
+		}
 	}
 	if err := slugs.Save(); err != nil {
 		return err

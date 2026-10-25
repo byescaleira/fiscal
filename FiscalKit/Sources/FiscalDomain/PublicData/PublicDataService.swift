@@ -10,6 +10,7 @@ public protocol PublicDataService: Sendable {
     func proposals(slug: String, year: Int) async throws -> PublicList<Proposal>
     func speeches(slug: String, year: Int) async throws -> PublicList<Speech>
     func expenses(slug: String, year: Int) async throws -> ExpenseList
+    func checks(slug: String) async throws -> FactCheckList?
     func recentVotes() async throws -> [VoteSummary]
     func vote(id: String) async throws -> VoteDetail
     func agenda() async throws -> Agenda
@@ -66,6 +67,8 @@ public enum PublicDataPath {
     public static func expenses(slug: String, year: Int) -> String {
         "people/\(slug)/expenses-\(year).json"
     }
+
+    public static func checks(slug: String) -> String { "people/\(slug)/checks.json" }
 
     public static func vote(id: String) -> String { "votes/\(id).json" }
 }

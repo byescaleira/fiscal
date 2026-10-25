@@ -1,0 +1,22 @@
+[
+  {
+    "id": 108,
+    "date": "2023-09-15T08:00:00",
+    "modified_gmt": "2023-09-15T11:00:00",
+    "link": "https://projetocomprova.com.br/publicações/nota-fiscal/",
+    "title": {"rendered": "É verídica nota fiscal com imposto de R$ 31,45 <em>sobre</em> produto"},
+    "content": {"rendered": "<p>Comprovado, para o Comprova, é o fato verdadeiro.</p>"},
+    "tags": [{"tag": "Comprovado", "explanation": "Nota é real."}],
+    "image-masked": "https://projetocomprova.com.br/wp-content/uploads/2023/09/02-Site-com-mascara-B-Valor.jpg"
+  },
+  {
+    "id": 109,
+    "date": "2024-07-23T08:00:00",
+    "modified_gmt": "2024-07-23T11:00:00",
+    "link": "https://projetocomprova.com.br/publicações/montagem/",
+    "title": {"rendered": "É montagem vídeo em que Lula diz querer roubar cachorro"},
+    "content": {"rendered": "<p>Sátiras, para o Comprova, são conteúdos de humor.</p>"},
+    "tags": [{"tag": "Sátira", "explanation": "Vídeo é humorístico."}],
+    "image-masked": "https://projetocomprova.com.br/wp-content/uploads/2024/07/02-Site-S%C3%81TIRA-Lula.jpg"
+  }
+]

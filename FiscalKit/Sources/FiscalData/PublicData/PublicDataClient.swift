@@ -74,6 +74,14 @@ public struct PublicDataClient: PublicDataService {
         try await get(PublicDataPath.expenses(slug: slug, year: year))
     }
 
+    public func checks(slug: String) async throws -> FactCheckList? {
+        do {
+            return try await get(PublicDataPath.checks(slug: slug))
+        } catch PublicDataError.notFound {
+            return nil
+        }
+    }
+
     public func recentVotes() async throws -> [VoteSummary] {
         try await get(PublicDataPath.recentVotes)
     }

@@ -22,7 +22,7 @@ import (
 	"liveresults/internal/sources/fetch"
 )
 
-var knownSources = []string{"camara", "senado", "tse", "ibge", "receita", "assembleias"}
+var knownSources = []string{"camara", "senado", "tse", "ibge", "receita", "assembleias", "comprova"}
 
 var knownUFs = map[string]bool{}
 
@@ -156,6 +156,13 @@ func loadConfig(getenv func(string) string, now time.Time) (config, error) {
 		}
 		c.gap = d
 	}
+	if v := strings.TrimSpace(getenv("COMPROVA_SINCE")); v != "" {
+		d, err := time.ParseInLocation("2006-01-02", v, loc)
+		if err != nil || d.Year() < 2018 || d.After(now) {
+			return c, errors.New("COMPROVA_SINCE must be a date (YYYY-MM-DD) from 2018 up to today")
+		}
+		c.ingest.ChecksSince = v
+	}
 	c.ingest.Workers = 4
 	if v := strings.TrimSpace(getenv("INGEST_WORKERS")); v != "" {
 		n, err := strconv.Atoi(v)
@@ -275,7 +282,7 @@ func logReport(kind string, rep ingest.Report, err error) {
 		log.Printf("%s load failed, nothing new published: %v", kind, err)
 		return
 	}
-	log.Printf("%s load ok: people=%d votes=%d files=%d written=%d removed=%d json=%s gzip=%s warnings=%d in %s", kind, rep.People, rep.Votes, rep.Files, rep.Written, rep.Removed, mib(rep.Bytes), mib(rep.Gzip), len(rep.Warnings), rep.Duration.Round(time.Second))
+	log.Printf("%s load ok: people=%d votes=%d checks=%d checkPeople=%d checkLinks=%d checkReviews=%d files=%d written=%d removed=%d json=%s gzip=%s warnings=%d in %s", kind, rep.People, rep.Votes, rep.Checks, rep.CheckPeople, rep.CheckLinks, rep.Reviews, rep.Files, rep.Written, rep.Removed, mib(rep.Bytes), mib(rep.Gzip), len(rep.Warnings), rep.Duration.Round(time.Second))
 }
 
 func mib(n int64) string {
