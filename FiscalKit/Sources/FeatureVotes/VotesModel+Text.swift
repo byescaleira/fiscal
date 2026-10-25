@@ -94,6 +94,10 @@ extension VotesModel {
         String(appLocalized: "Source: Chamber and Senate agendas · as published today")
     }
 
+    public var filterSummary: String {
+        [house.title, theme?.title ?? String(appLocalized: "All Topics")].joined(separator: " · ")
+    }
+
     public var emptyFilterText: String {
         guard let theme else { return String(appLocalized: "No vote in this house lately.") }
         return String(appLocalized: "No recent vote about \(theme.title) with these filters.")

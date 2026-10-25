@@ -13,7 +13,6 @@ public struct VotesScreen: View {
             phase: votes.phase, isEmpty: votes.isEmpty, retry: { await votes.load() }
         ) {
             AdaptiveList {
-                VotesFilterSection()
                 VotesAgendaSection()
                 VotesHighlightsSection()
                 if votes.days.isEmpty {
@@ -29,85 +28,14 @@ public struct VotesScreen: View {
         }
         .fontDesign(.rounded)
         .navigationTitle("Votes")
+        #if !os(visionOS)
+            .navigationSubtitle(votes.filterSummary)
+        #endif
+        .toolbar { VotesToolbar() }
+        .sensoryFeedback(.selection, trigger: votes.house)
+        .sensoryFeedback(.selection, trigger: votes.theme)
         .refreshable { await votes.load() }
         .task { await votes.load() }
-    }
-}
-
-private struct VotesFilterSection: View {
-    @Environment(VotesModel.self) private var votes
-
-    var body: some View {
-        @Bindable var votes = votes
-        Section {
-        } header: {
-            VStack(alignment: .leading, spacing: .spaceM) {
-                if let stance = votes.lensStance {
-                    LensBadge(stance)
-                }
-                Picker("House", selection: $votes.house) {
-                    ForEach(VotesModel.HouseFilter.allCases) { house in
-                        Text(verbatim: house.title).tag(house)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .labelsHidden()
-                ThemeFilterBar()
-            }
-            .textCase(nil)
-            .padding(.bottom, .spaceS)
-        }
-    }
-}
-
-private struct ThemeFilterBar: View {
-    @Environment(VotesModel.self) private var votes
-
-    var body: some View {
-        ScrollView(.horizontal) {
-            HStack(spacing: .spaceS) {
-                ForEach(votes.themeChoices) { theme in
-                    ThemeFilterChip(
-                        theme: theme, isSelected: votes.theme == theme,
-                        isLens: votes.isLensTheme(theme)
-                    ) {
-                        votes.toggle(theme)
-                    }
-                }
-            }
-            .padding(.vertical, .spaceHairline)
-        }
-        .scrollIndicators(.hidden)
-        .scrollClipDisabled()
-    }
-}
-
-private struct ThemeFilterChip: View {
-    @Environment(\.appTint) private var tint
-    let theme: Theme
-    let isSelected: Bool
-    let isLens: Bool
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: .space2XS) {
-                Image(systemName: theme.symbol)
-                Text(verbatim: theme.title)
-                if isLens {
-                    Image(systemName: "eyeglasses").accessibilityHidden(true)
-                }
-            }
-            .font(.chipLabel)
-            .foregroundStyle(isSelected ? Color.white : tint)
-            .padding(.horizontal, .spaceM)
-            .padding(.vertical, .spaceS)
-            .background(isSelected ? tint : tint.opacity(.opacityTint), in: .capsule)
-        }
-        .buttonStyle(.plain)
-        .accessibilityAddTraits(isSelected ? .isSelected : [])
-        .accessibilityHint(isLens ? Text("One of your lens topics") : Text(verbatim: ""))
-        .sensoryFeedback(.selection, trigger: isSelected)
     }
 }
 

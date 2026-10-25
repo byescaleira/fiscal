@@ -45,18 +45,46 @@ struct VotesModelTests {
     @Test func filtersByHouseAndByTopic() async {
         let votes = model()
         await votes.load()
+        #expect(votes.activeFilterCount == 0)
         votes.house = .senado
         #expect(!votes.filtered.isEmpty)
         #expect(votes.filtered.allSatisfy { $0.house == .senado })
-        votes.toggle(.security)
+        #expect(votes.activeFilterCount == 1)
+        votes.theme = .security
         #expect(votes.filtered.isEmpty)
         #expect(votes.days.isEmpty)
         #expect(votes.hasFilter)
+        #expect(votes.activeFilterCount == 2)
         votes.clearFilters()
-        votes.toggle(.security)
-        #expect(votes.filtered.map(\.proposition) == ["PL 3051/2026"])
-        votes.toggle(.security)
+        #expect(!votes.hasFilter)
         #expect(votes.theme == nil)
+        votes.theme = .security
+        #expect(votes.filtered.map(\.proposition) == ["PL 3051/2026"])
+    }
+
+    @Test func theSubtitleSaysWhichFiltersAreOn() async {
+        let votes = model()
+        await votes.load()
+        let allTopics = String(appLocalized: "All Topics")
+        #expect(votes.filterSummary == "\(VotesModel.HouseFilter.all.title) · \(allTopics)")
+        votes.house = .camara
+        votes.theme = .health
+        #expect(
+            votes.filterSummary
+                == "\(VotesModel.HouseFilter.camara.title) · \(Theme.health.title)")
+    }
+
+    @Test func theTopicMenuSplitsLensTopicsFromTheRest() async {
+        let lens = Lens(themes: [.security, .health, .environment], stance: .right)
+        let votes = model(lens: lens)
+        await votes.load()
+        #expect(votes.lensThemeChoices.allSatisfy(lens.contains))
+        #expect(votes.otherThemeChoices.allSatisfy { !lens.contains($0) })
+        #expect(votes.lensThemeChoices + votes.otherThemeChoices == votes.themeChoices)
+        let plain = model()
+        await plain.load()
+        #expect(plain.lensThemeChoices.isEmpty)
+        #expect(plain.otherThemeChoices == plain.themeChoices)
     }
 
     @Test func theLensPutsItsTopicsFirstWithoutHidingAnything() async {

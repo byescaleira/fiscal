@@ -12,15 +12,39 @@ enum BoardStyle {
 
 struct VoteHeroSection: View {
     @Environment(VoteDetailModel.self) private var vote
+    @Environment(\.isGroupedColumn) private var isGroupedColumn
 
     var body: some View {
-        Section {
-        } header: {
-            VoteScoreboard()
-                .textCase(nil)
-                .padding(.bottom, .spaceS)
-        } footer: {
-            Text(verbatim: vote.sourceText)
+        if isGroupedColumn {
+            Section {
+            } header: {
+                VoteScoreboard()
+                    .background { VoteBoardBackground() }
+                    .clipShape(.rect(cornerRadius: .radiusGroup))
+                    .padding(.horizontal, -.spaceInset)
+                    .textCase(nil)
+            } footer: {
+                Text(verbatim: vote.sourceText)
+            }
+        } else {
+            Section {
+                VoteScoreboard()
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(VoteBoardBackground())
+            } footer: {
+                Text(verbatim: vote.sourceText)
+            }
+        }
+    }
+}
+
+private struct VoteBoardBackground: View {
+    var body: some View {
+        ZStack {
+            LinearGradient(
+                colors: [.voteYesBoard, .scoreboard, .voteNoBoard], startPoint: .leading,
+                endPoint: .trailing)
+            Color.black.opacity(.opacityTint)
         }
     }
 }
@@ -73,17 +97,8 @@ private struct VoteScoreboard: View {
             }
             HeroLastLine()
         }
-        .padding(.spaceL)
+        .padding(.spaceXL)
         .frame(maxWidth: .infinity)
-        .background {
-            ZStack {
-                LinearGradient(
-                    colors: [.voteYesBoard, .scoreboard, .voteNoBoard], startPoint: .leading,
-                    endPoint: .trailing)
-                Color.black.opacity(.opacityTint)
-            }
-        }
-        .clipShape(.rect(cornerRadius: .radiusGroup))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: vote.accessibilityScore))
     }

@@ -97,9 +97,31 @@ private struct BallotRow: View {
                 }
             }
             Spacer(minLength: .spaceS)
-            BallotChip(ballot.vote, choice: BallotChoice(vote: ballot.vote))
+            BallotMark(text: ballot.vote, choice: BallotChoice(vote: ballot.vote))
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: vote.ballotAccessibility(ballot)))
+    }
+}
+
+private struct BallotMark: View {
+    @ScaledMetric(relativeTo: .caption) private var diameter: CGFloat = .badgeS
+    let text: String
+    let choice: BallotChoice?
+
+    var body: some View {
+        let color = choice?.color ?? .secondary
+        HStack(spacing: .spaceS) {
+            Text(verbatim: text)
+                .font(.chipLabel)
+                .foregroundStyle(color)
+                .lineLimit(1)
+            Image(systemName: choice?.symbol ?? "circle.dotted")
+                .font(.chipLabel)
+                .foregroundStyle(color)
+                .frame(width: diameter, height: diameter)
+                .background(color.opacity(.opacityTint), in: .circle)
+        }
+        .fixedSize()
     }
 }
