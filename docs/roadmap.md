@@ -80,3 +80,4 @@ Correto no HIG não basta: a seção não pode parecer genérica.
     - arrecadação e indicadores (IBGE, Receita, Banco Central), para servir às comparações e ao acompanhamento de preços;
   - o perfil de cada político ganha a linha do tempo completa, e cada lugar a sua história eleitoral;
   - antes de carregar, pesquisar o que cada fonte tem de série e formato (skill `research`) e medir o tamanho publicado, porque a VPS é pequena (ADR 0002).
+- **Arte encomendada a artistas de agora:** 3 a 6 artistas atuais equilibrados entre direita, centro e esquerda, para mapas, estados, florestas e cores dos partidos, com contrato por escrito que liste app, loja, site e divulgação. A lista, os contatos e o rascunho da mensagem saem antes, e nenhum contato é enviado sem o ok do usuário ([pesquisa](research/2026-10-25-contemporary-artists.md)).

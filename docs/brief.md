@@ -121,6 +121,19 @@ Crédito não autoriza o uso. A Lei 9.610/98 exige autorização do autor, e a A
 | Autorização por escrito | Licença de uso digital e de redes sociais, com prazo e escopo | Contrato assinado |
 | Obra encomendada | Coleção feita para o Fiscal por artistas dos dois lados | Contrato de cessão ou licença |
 
+### De onde vem a arte na 1.0 (decisão do usuário em 2026-10-25)
+
+O usuário quer arte contemporânea, de artistas de agora. A pesquisa de [artistas em alta](research/2026-10-25-contemporary-artists.md) mostrou que nenhum artista atual publica licença aberta nesses temas e que os posts em alta com autor são de um lado só. Por isso a 1.0 usa só o que é livre, sem custo:
+
+1. **Arte própria do Fiscal:**
+   - mapas do Brasil e dos estados gerados das malhas do IBGE;
+   - composições com as cores dos partidos;
+   - os retratos e selos animados em Lottie.
+2. **Fotos recentes com licença aberta:** florestas, paisagens e unidades de conservação de cada estado do Wiki Loves Earth Brasil 2026 (CC BY-SA 4.0), conferidas arquivo a arquivo e usadas sem recorte nem cor nova, para não gerar obra derivada.
+3. **Acervo histórico** em domínio público: as 20 obras já conferidas, como coleção de reserva.
+
+A encomenda a artistas atuais (3 a 6 nomes equilibrados entre direita, centro e esquerda, com contrato) fica para depois da 1.0, no roadmap.
+
 O manifesto `art-credits.json` vai junto com o app e lista, por obra: autor, @, título, ano, base legal, link da licença e onde a obra pode aparecer. Obra sem linha no manifesto não aparece.
 
 ## Públicos
@@ -150,6 +163,12 @@ O manifesto `art-credits.json` vai junto com o app e lista, por obra: autor, @, 
 | 4 | **Dinheiro** | `brazilianrealsign` | Para onde vai o dinheiro público: cota, salários e benefícios, emendas (inclusive as "emendas Pix"), financiamento de campanha, patrimônio declarado e arrecadação |
 | 5 | **Fiscalizar** (proeminente) | `magnifyingglass` | A busca universal: pessoa, partido, projeto, cidade, CNPJ de fornecedor. Também é a porta para Comparar e Eleições. É a aba com `Tab(role: .search)`, que o iOS 26+ mostra destacada, separada das outras na barra de Liquid Glass |
 
+- **Checagens no perfil** (pedido do usuário em 2026-10-25, no lugar de mostrar posts das redes):
+  - cada político tem as checagens de fatos publicadas sobre o que ele disse, com a frase checada, o veredito da agência, a data e o link para a checagem completa;
+  - fontes: agências de checagem, a começar pelas signatárias da IFCN (Lupa, Aos Fatos, Estadão Verifica, AFP Checamos, UOL Confere, Comprova), de preferência pelo `ClaimReview` que elas publicam;
+  - o veredito é o da agência, com o nome dela, sem nota nossa, contagem de "mentiras" ou ranking;
+  - a ordem é por data e o mesmo tratamento vale para todos;
+  - o nome da seção não usa "Fato ou Fake", que é marca da seção do g1.
 - **Ajustes** saem da barra de abas e viram um botão na toolbar de Hoje, onde a pessoa também edita a Lente.
 - **Eleições** (apuração ao vivo, resultados e propostas de governo) aparecem em Hoje durante o período eleitoral e ficam sempre acessíveis em Fiscalizar.
 - **Recomendação de aba proeminente:** usar Fiscalizar porque é o padrão nativo (`role: .search`) e o verbo que dá nome ao app. A alternativa, um "Ao vivo" central, só faz sentido em dia de evento e ficaria vazia no resto do ano.

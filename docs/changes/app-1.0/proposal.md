@@ -32,6 +32,7 @@ Cobre as fases 2 a 8 do [roadmap](../../roadmap.md), seguindo o [brief](../../br
    - publicação dos arquivos do contrato.
 3. **Telas:**
    - Hoje, Meus com o perfil, Votações, Dinheiro e Fiscalizar (Comparar e Eleições);
+   - checagens de fatos no perfil, das agências sobre cada político, com veredito, data e link (brief, "As 5 abas"), depois da pesquisa de fontes e termos de uso;
    - cada uma passa pelo ciclo de design por seção (referência visual real e dados de teste), com a revisão visual do usuário numa rodada só, no fim.
 4. **Lente e arte:**
    - o setup em 3 passos e a aparência (paletas espelhadas, ícones alternativos);
@@ -49,7 +50,7 @@ Cobre as fases 2 a 8 do [roadmap](../../roadmap.md), seguindo o [brief](../../br
 - Prefeitos, vereadores e STF.
 - Broadcast push (a apuração continua por token).
 - Publicação na loja e TestFlight externo.
-- Arte encomendada e licenças pagas.
+- Arte encomendada e licenças pagas (decisão do usuário em 2026-10-25: "só o que é livre por agora"; a encomenda a artistas atuais vai para o roadmap).
 
 ## Verificação (no fim, uma vez)
 
