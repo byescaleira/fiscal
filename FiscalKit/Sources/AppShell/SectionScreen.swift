@@ -14,7 +14,13 @@ struct SectionScreen: View {
         let data = FiscalServices.shared.publicData()
         switch section {
         case .today:
-            ModelHost(TodayModel(service: data, lens: session.repositories.lens)) {
+            let services = FiscalServices.shared
+            ModelHost(
+                TodayModel(
+                    service: data, lens: services.todayLens(session.repositories.lens),
+                    races: services.liveResultsService(),
+                    follows: services.todayFollows(session.repositories.follows))
+            ) {
                 TodayScreen()
             }
         case .mine: ModelHost(MineModel(follows: session.repositories.follows)) { MineScreen() }

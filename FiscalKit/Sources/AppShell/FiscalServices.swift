@@ -34,12 +34,29 @@ public final class FiscalServices {
         #else
             let environment = PushEnvironment.production
         #endif
-        var service: (any LiveResultsService)? = LiveResultsClient.fromBundle()
-        #if DEBUG
-            if let showcase = ShowcaseLiveResults.fromLaunchArguments() { service = showcase }
-        #endif
         return LiveResultsModel(
-            service: service, activities: RaceActivities(), environment: environment)
+            service: liveResultsService(), activities: RaceActivities(), environment: environment)
+    }
+
+    func liveResultsService() -> (any LiveResultsService)? {
+        #if DEBUG
+            if let showcase = ShowcaseLiveResults.fromLaunchArguments() { return showcase }
+        #endif
+        return LiveResultsClient.fromBundle()
+    }
+
+    func todayLens(_ repository: any LensRepository) -> any LensRepository {
+        #if DEBUG
+            if let showcase = ShowcaseLensRepository.fromLaunchArguments() { return showcase }
+        #endif
+        return repository
+    }
+
+    func todayFollows(_ repository: any FollowRepository) -> any FollowRepository {
+        #if DEBUG
+            if let showcase = ShowcaseFollowRepository.fromLaunchArguments() { return showcase }
+        #endif
+        return repository
     }
 
     func publicData() -> (any PublicDataService)? {
