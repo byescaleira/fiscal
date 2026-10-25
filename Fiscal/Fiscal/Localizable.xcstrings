@@ -271,6 +271,26 @@
         }
       }
     },
+    "%@. %@. %@. Weight %lld of 100, repercussion %lld, impact %lld." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@. %2$@. %3$@. Peso %4$lld de 100, repercussão %5$lld, impacto %6$lld."
+          }
+        }
+      }
+    },
+    "%@. %@. Weight %lld of 100, repercussion %lld, impact %lld." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@. %2$@. Peso %3$lld de 100, repercussão %4$lld, impacto %5$lld."
+          }
+        }
+      }
+    },
     "%@: %@ votes, %@ approved" : {
       "localizations" : {
         "pt-BR" : {
@@ -2311,6 +2331,16 @@
         }
       }
     },
+    "Each theme counts only by how many people it reaches, never by political side." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada tema conta só pelo número de pessoas que alcança, nunca pelo lado político."
+          }
+        }
+      }
+    },
     "EARLIER" : {
       "localizations" : {
         "pt-BR" : {
@@ -2567,6 +2597,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gastos em %@"
+          }
+        }
+      }
+    },
+    "Explains how repercussion and impact are calculated" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explica como a repercussão e o impacto são calculados"
           }
         }
       }
@@ -3292,6 +3332,16 @@
         }
       }
     },
+    "Highlight of the Moment" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Destaque do momento"
+          }
+        }
+      }
+    },
     "Highlights take turns between both sides, comparisons sit side by side and Another lens stays open." : {
       "localizations" : {
         "pt-BR" : {
@@ -3372,6 +3422,16 @@
         }
       }
     },
+    "How We Measure" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como medimos"
+          }
+        }
+      }
+    },
     "Hyacinth Macaw" : {
       "localizations" : {
         "pt-BR" : {
@@ -3408,6 +3468,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ilustração de %@"
+          }
+        }
+      }
+    },
+    "Impact" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impacto"
+          }
+        }
+      }
+    },
+    "Impact %lld" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impacto %lld"
           }
         }
       }
@@ -3508,6 +3588,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nos seus temas"
+          }
+        }
+      }
+    },
+    "Indicator" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indicador"
           }
         }
       }
@@ -3818,6 +3908,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Claro"
+          }
+        }
+      }
+    },
+    "Limits" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limites"
           }
         }
       }
@@ -4712,6 +4812,16 @@
         }
       }
     },
+    "Not measured" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não medido"
+          }
+        }
+      }
+    },
     "Not Now" : {
       "localizations" : {
         "pt-BR" : {
@@ -5168,6 +5278,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Em ordem pelo tamanho de cada bancada nesta votação. Toque num partido para ver os nomes."
+          }
+        }
+      }
+    },
+    "Ordered by weight, from 0 to 100: repercussion plus impact, with the same rule for every politician." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em ordem de peso, de 0 a 100: repercussão mais impacto, com a mesma regra para todo político."
           }
         }
       }
@@ -5862,6 +5982,16 @@
         }
       }
     },
+    "Proposal" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Proposta"
+          }
+        }
+      }
+    },
     "Proposals" : {
       "localizations" : {
         "pt-BR" : {
@@ -6062,6 +6192,16 @@
         }
       }
     },
+    "Reach" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrangência"
+          }
+        }
+      }
+    },
     "Read the Speech" : {
       "localizations" : {
         "pt-BR" : {
@@ -6228,6 +6368,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tira esta pessoa da comparação"
+          }
+        }
+      }
+    },
+    "Repercussion" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repercussão"
+          }
+        }
+      }
+    },
+    "Repercussion %lld" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repercussão %lld"
+          }
+        }
+      }
+    },
+    "Repercussion not measured" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repercussão não medida"
           }
         }
       }
@@ -6428,6 +6598,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Linha"
+          }
+        }
+      }
+    },
+    "Rules" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regras"
           }
         }
       }
@@ -6822,6 +7002,16 @@
         }
       }
     },
+    "Showing the %lld of greatest weight out of %lld." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrando as %1$lld de maior peso entre %2$lld."
+          }
+        }
+      }
+    },
     "Shows every candidate and the blank and null votes" : {
       "localizations" : {
         "pt-BR" : {
@@ -7052,6 +7242,16 @@
         }
       }
     },
+    "Sources" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fontes"
+          }
+        }
+      }
+    },
     "South" : {
       "localizations" : {
         "pt-BR" : {
@@ -7068,6 +7268,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sudeste"
+          }
+        }
+      }
+    },
+    "Speech" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discurso"
           }
         }
       }
@@ -7128,6 +7338,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "gastos por deputados federais e senadores em %@"
+          }
+        }
+      }
+    },
+    "Stage" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estágio"
           }
         }
       }
@@ -7588,6 +7808,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Terracota"
+          }
+        }
+      }
+    },
+    "Test data" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dado de teste"
           }
         }
       }
@@ -8082,6 +8312,16 @@
         }
       }
     },
+    "Theme Reach" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alcance do tema"
+          }
+        }
+      }
+    },
     "Themes" : {
       "localizations" : {
         "pt-BR" : {
@@ -8428,6 +8668,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Turquesa"
+          }
+        }
+      }
+    },
+    "Type" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipo"
           }
         }
       }
@@ -8822,6 +9072,26 @@
         }
       }
     },
+    "Weight" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peso"
+          }
+        }
+      }
+    },
+    "Weight orders what is happening; it never rates it." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O peso ordena o que acontece; ele nunca avalia."
+          }
+        }
+      }
+    },
     "Welcome to Fiscal" : {
       "localizations" : {
         "pt-BR" : {
@@ -8908,6 +9178,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O que as fontes publicam"
+          }
+        }
+      }
+    },
+    "What They're Doing" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que está fazendo"
           }
         }
       }
