@@ -22,3 +22,4 @@ Cada decisão que molda o Fiscal além de uma única mudança ganha um registro 
 | ADR | Título | Estado |
 | --- | --- | --- |
 | [0001](0001-record-architecture-decisions.md) | Registrar decisões em ADRs | Aceito |
+| [0002](0002-static-first-server.md) | Servidor estático primeiro: tudo pronto, nada calculado por acesso | Aceito |
