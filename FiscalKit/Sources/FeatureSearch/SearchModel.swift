@@ -15,6 +15,7 @@ public final class SearchModel {
     public private(set) var sources: [Source] = []
     public private(set) var updatedAt: Date?
     public private(set) var liveCount: LiveCount?
+    public private(set) var recentVotes: [VoteSummary]?
     @ObservationIgnored private var index = SearchIndex()
     @ObservationIgnored private let service: (any PublicDataService)?
     @ObservationIgnored private let lensRepository: (any LensRepository)?
@@ -137,12 +138,14 @@ public final class SearchModel {
             async let places = try? service.places()
             async let votes = try? service.recentVotes()
             async let meta = try? service.meta()
-            let loaded = (try await people, await places ?? [], await votes ?? [])
+            let voteList = await votes
+            let loaded = (try await people, await places ?? [], voteList ?? [])
             index = await Task.detached {
                 SearchIndex(people: loaded.0, places: loaded.1, votes: loaded.2)
             }.value
             let info = await meta
             sources = info?.sources ?? []
+            recentVotes = voteList
             updatedAt = info?.generatedAt
             revision += 1
         }

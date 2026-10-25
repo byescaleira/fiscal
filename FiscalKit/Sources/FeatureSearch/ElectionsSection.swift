@@ -46,8 +46,13 @@ private struct ElectionRow: View {
                 Text("President, governors, Senate and deputies")
                     .font(.rowDetail)
                     .foregroundStyle(.secondary)
-                FlowLayout(spacing: .spaceS) {
-                    ForEach(election.rounds) { RoundChip(round: $0) }
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: .spaceS) {
+                        ForEach(election.rounds) { RoundChip(round: $0) }
+                    }
+                    VStack(alignment: .leading, spacing: .spaceS) {
+                        ForEach(election.rounds) { RoundChip(round: $0) }
+                    }
                 }
                 if election.isCurrent {
                     CurrentElectionDetail()
@@ -67,13 +72,17 @@ private struct RoundChip: View {
     let round: ElectionRound
 
     var body: some View {
-        Label(round.text, systemImage: round.symbol)
-            .font(.chipLabel)
-            .foregroundStyle(round.color)
-            .padding(.horizontal, .spaceS)
-            .padding(.vertical, .space2XS)
-            .background(round.color.opacity(.opacityTint), in: .capsule)
-            .accessibilityLabel(round.accessibilityText)
+        HStack(spacing: .space2XS) {
+            Image(systemName: round.symbol)
+            Text(verbatim: round.text).fixedSize(horizontal: false, vertical: true)
+        }
+        .font(.chipLabel)
+        .foregroundStyle(round.color)
+        .padding(.horizontal, .spaceS)
+        .padding(.vertical, .space2XS)
+        .background(round.color.opacity(.opacityTint), in: .capsule)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(round.accessibilityText)
     }
 }
 

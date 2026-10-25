@@ -134,43 +134,6 @@ private struct RecentSection: View {
     }
 }
 
-private struct ThemesSection: View {
-    @Environment(SearchModel.self) private var search
-    @Environment(\.appTint) private var tint
-
-    var body: some View {
-        Section {
-            FlowLayout(spacing: .spaceS) {
-                ForEach(search.themes) { theme in
-                    Button {
-                        search.apply(.theme(theme))
-                    } label: {
-                        Label(theme.title, systemImage: theme.symbol)
-                            .font(.buttonLabel)
-                            .foregroundStyle(tint)
-                            .padding(.horizontal, .spaceM)
-                            .padding(.vertical, .spaceS)
-                            .background(tint.opacity(.opacityTint), in: .capsule)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityHint(Text("Shows the recent votes on this topic"))
-                }
-            }
-            .padding(.vertical, .spaceXS)
-        } header: {
-            VStack(alignment: .leading, spacing: .spaceXS) {
-                Text(search.isLensAdapted ? "Your topics" : "Topics").sectionTitle()
-                if let stance = search.badgeStance {
-                    LensBadge(stance)
-                }
-            }
-            .textCase(nil)
-        } footer: {
-            Text("A topic shows the latest votes in Congress about it.")
-        }
-    }
-}
-
 private struct SuggestionsSection: View {
     @Environment(SearchModel.self) private var search
 
