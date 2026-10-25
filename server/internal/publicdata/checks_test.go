@@ -11,24 +11,28 @@ import (
 )
 
 type scopePerson struct {
-	slug, name, civil string
+	slug, name, civil, office, party string
 }
 
 func checkScope(extra ...scopePerson) ([]*Person, map[*Person]string) {
 	base := []scopePerson{
-		{"lula", "Lula", "Luiz Inácio Lula da Silva"},
-		{"flavio-bolsonaro", "Flávio Bolsonaro", "Flávio Nantes Bolsonaro"},
-		{"eduardo-bolsonaro", "Eduardo Bolsonaro", "Eduardo Nantes Bolsonaro"},
-		{"lula-da-fonte", "Lula da Fonte", ""},
-		{"nikolas-ferreira", "Nikolas Ferreira", "Nikolas Ferreira de Oliveira"},
-		{"carlos-silva-sp", "Carlos Silva", "Carlos Alberto da Silva"},
-		{"carlos-silva-ba", "Carlos Silva", "Carlos Eduardo Silva"},
-		{"neto", "Neto", "José Ribamar Neto"},
+		{"lula", "Lula", "Luiz Inácio Lula da Silva", OfficePresident, "PT"},
+		{"flavio-bolsonaro", "Flávio Bolsonaro", "Flávio Nantes Bolsonaro", OfficeSenator, "PL"},
+		{"eduardo-bolsonaro", "Eduardo Bolsonaro", "Eduardo Nantes Bolsonaro", OfficeFederalDeputy, "PL"},
+		{"lula-da-fonte", "Lula da Fonte", "", OfficeFederalDeputy, "PP"},
+		{"nikolas-ferreira", "Nikolas Ferreira", "Nikolas Ferreira de Oliveira", OfficeFederalDeputy, "PL"},
+		{"carlos-silva-sp", "Carlos Silva", "Carlos Alberto da Silva", OfficeStateDeputy, "MDB"},
+		{"carlos-silva-ba", "Carlos Silva", "Carlos Eduardo Silva", OfficeStateDeputy, "PSD"},
+		{"neto", "Neto", "José Ribamar Neto", OfficeStateDeputy, "PSD"},
+		{"paulo-guedes", "Paulo Guedes", "Paulo José Carlos Guedes", OfficeFederalDeputy, "PT"},
+		{"gleisi-hoffmann", "Gleisi Hoffmann", "Gleisi Helena Hoffmann", OfficeFederalDeputy, "PT"},
+		{"arthur-lira", "Arthur Lira", "Arthur César Pereira de Lira", OfficeFederalDeputy, "PP"},
+		{"sergio-moro", "Sergio Moro", "Sergio Fernando Moro", OfficeSenator, "UNIÃO"},
 	}
 	var people []*Person
 	slugs := map[*Person]string{}
 	for _, s := range append(base, extra...) {
-		p := &Person{Name: s.name, CivilName: s.civil}
+		p := &Person{Name: s.name, CivilName: s.civil, Roles: []Role{{Office: s.office, Party: s.party, Status: StatusInOffice}}}
 		people = append(people, p)
 		slugs[p] = s.slug
 	}
@@ -104,14 +108,15 @@ func TestChecksLinkOnlyTheExactFullName(t *testing.T) {
 }
 
 func TestChecksSendHomonymsAndPartialNamesToReview(t *testing.T) {
-	people, slugs := checkScope(scopePerson{"lula-ba", "Lula", "Luiz Carlos Lula Santos"})
+	people, slugs := checkScope(scopePerson{"lula-ba", "Lula", "Luiz Carlos Lula Santos", OfficeStateDeputy, "PT"})
 	checks := []RawCheck{
 		raw("h1", "2026-10-10", "Carlos Silva não disse que vai fechar escolas"),
 		raw("h2", "2026-10-11", "Vídeo de Lula é montagem"),
 		raw("h3", "2026-10-12", "ACM Neto não declarou apoio a candidato"),
+		raw("h4", "2023-05-11", "Post engana sobre ato", "Postagem compartilha vídeo antigo de ato em frente ao Forte do Neto, em Curitiba."),
 	}
 	m := MatchChecks(people, slugs, checks)
-	for _, id := range []string{"h1", "h2", "h3"} {
+	for _, id := range []string{"h1", "h2", "h3", "h4"} {
 		if got := linkedSlugs(m, slugs, id); len(got) != 0 {
 			t.Errorf("%s linked %v", id, got)
 		}
@@ -120,6 +125,7 @@ func TestChecksSendHomonymsAndPartialNamesToReview(t *testing.T) {
 		"h1": {Reason: ReviewAmbiguousName, Name: "carlos silva", Candidates: []string{"carlos-silva-ba", "carlos-silva-sp"}},
 		"h2": {Reason: ReviewAmbiguousName, Name: "lula", Candidates: []string{"lula", "lula-ba"}},
 		"h3": {Reason: ReviewPartOfLongerName, Name: "neto", Candidates: []string{"neto"}},
+		"h4": {Reason: ReviewPartOfLongerName, Name: "neto", Candidates: []string{"neto"}},
 	}
 	for id, w := range want {
 		r := reviewsOf(m, id)
@@ -163,10 +169,49 @@ func TestChecksOrderAndVerdictConflict(t *testing.T) {
 }
 
 func TestTokenizeKeepsCaseAndBreaksOnPunctuation(t *testing.T) {
-	got := tokenize("Flávio Bolsonaro, D’Ávila e São-Paulo.")
-	want := []token{{"flavio", true, false}, {"bolsonaro", true, true}, {"d", true, false}, {"avila", true, true}, {"e", false, true}, {"sao", true, true}, {"paulo", true, true}}
+	got := tokenize("Flávio Bolsonaro, D’Ávila e São-Paulo. Gleisi (PT)")
+	want := []token{
+		{word: "flavio", upper: true, initial: true}, {word: "bolsonaro", upper: true, joined: true}, {word: "d", upper: true},
+		{word: "avila", upper: true, joined: true}, {word: "e", joined: true}, {word: "sao", upper: true, joined: true},
+		{word: "paulo", upper: true, joined: true}, {word: "gleisi", upper: true, hard: true, initial: true}, {word: "pt", upper: true, paren: true},
+	}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("tokens = %+v", got)
+	}
+}
+
+func TestChecksUseTheOfficeTitleAgainstHomonymsOutsideTheScope(t *testing.T) {
+	people, slugs := checkScope()
+	checks := []RawCheck{
+		raw("g1", "2022-10-21", "É enganoso que Paulo Guedes anunciou redução em aposentadorias", "É enganoso que o ministro da Economia, Paulo Guedes, anunciou que aposentadorias não vão mais ser reajustadas."),
+		raw("g2", "2023-03-16", "Tuíte engana ao afirmar que Paulo Guedes voltou à diretoria do BTG Pactual"),
+		raw("h1", "2022-11-11", "Vídeo inventa declarações de Gleisi Hoffmann", "É falso que a deputada federal Gleisi Hoffmann (PT-PR) tenha feito declarações sobre militares."),
+		raw("h2", "2025-04-01", "Post engana sobre fala da ministra Gleisi Hoffmann"),
+		raw("h3", "2025-05-01", "Gleisi Hoffmann não anunciou novo imposto"),
+		raw("l1", "2022-10-25", "É falsa a mensagem que atribui ao presidente da Câmara, Arthur Lira, condução de romeiros"),
+		raw("l2", "2022-08-01", "Vídeo do ex-presidente Lula foi editado"),
+		raw("l3", "2022-08-02", "Senador Flávio Bolsonaro não disse que vai acabar com o Pix"),
+		raw("l4", "2022-08-03", "Deputado Flávio Bolsonaro não disse isso"),
+		raw("m1", "2022-10-20", "O que se sabe sobre o caso", "Na ocasião, o então juiz Sergio Moro relacionou o esquema ao caso."),
+		raw("m2", "2022-09-20", "Vídeo foi manipulado", "Na verdade, o candidato à Presidência Luiz Inácio Lula da Silva (PT) tem 46%."),
+	}
+	m := MatchChecks(people, slugs, checks)
+	want := map[string][]string{
+		"g1": {}, "g2": {}, "h1": {"gleisi-hoffmann"}, "h2": {}, "h3": {"gleisi-hoffmann"},
+		"l1": {"arthur-lira"}, "l2": {"lula"}, "l3": {"flavio-bolsonaro"}, "l4": {},
+		"m1": {"sergio-moro"}, "m2": {"lula"},
+	}
+	for id, w := range want {
+		if got := linkedSlugs(m, slugs, id); !reflect.DeepEqual(got, w) {
+			t.Errorf("%s linked %v, want %v", id, got, w)
+		}
+	}
+	reasons := map[string]string{}
+	for _, r := range m.Reviews {
+		reasons[r.CheckID] = r.Reason
+	}
+	if reasons["g1"] != ReviewOfficeMismatch || reasons["g2"] != ReviewPossibleHomonym || reasons["h2"] != ReviewOfficeMismatch || reasons["l4"] != ReviewOfficeMismatch || reasons["l3"] != "" {
+		t.Fatalf("reasons = %v", reasons)
 	}
 }
 

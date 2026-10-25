@@ -40,6 +40,8 @@ const (
 	ReviewAmbiguousName    = "ambiguousName"
 	ReviewPartOfLongerName = "partOfLongerName"
 	ReviewSurnameOnly      = "surnameOnly"
+	ReviewOfficeMismatch   = "officeMismatch"
+	ReviewPossibleHomonym  = "possibleHomonym"
 	ReviewVerdictConflict  = "verdictConflict"
 )
 
@@ -59,57 +61,78 @@ type CheckMatch struct {
 	Reviews  []CheckReview
 }
 
-const minOneWordName = 4
+const (
+	minOneWordName = 4
+	titleWindow    = 4
+	longName       = 3
+)
 
 var nameParticles = map[string]bool{"da": true, "de": true, "do": true, "das": true, "dos": true, "di": true, "du": true, "del": true, "van": true, "von": true}
 
 var officeTitles = map[string]bool{
-	"presidente": true, "vice": true, "ex": true, "senador": true, "senadora": true, "deputado": true, "deputada": true,
-	"governador": true, "governadora": true, "ministro": true, "ministra": true, "candidato": true, "candidata": true,
-	"prefeito": true, "prefeita": true, "vereador": true, "vereadora": true, "pre": true,
+	"presidente": true, "presidenta": true, "vice": true, "ex": true, "senador": true, "senadora": true, "deputado": true,
+	"deputada": true, "governador": true, "governadora": true, "ministro": true, "ministra": true, "candidato": true,
+	"candidata": true, "prefeito": true, "prefeita": true, "vereador": true, "vereadora": true, "pre": true,
+}
+
+var titleOffices = map[string][]string{
+	"presidente": {OfficePresident}, "presidenta": {OfficePresident},
+	"senador": {OfficeSenator}, "senadora": {OfficeSenator},
+	"deputado": {OfficeFederalDeputy, OfficeStateDeputy}, "deputada": {OfficeFederalDeputy, OfficeStateDeputy},
+	"governador": {OfficeGovernor}, "governadora": {OfficeGovernor},
+	"ministro": nil, "ministra": nil, "prefeito": nil, "prefeita": nil, "vereador": nil, "vereadora": nil,
+	"juiz": nil, "juiza": nil, "desembargador": nil, "desembargadora": nil,
+}
+
+var pastMarkers = map[string]bool{"ex": true, "pre": true, "entao": true, "antigo": true, "antiga": true, "futuro": true, "futura": true, "eleito": true, "eleita": true}
+
+var viceOffices = map[string][]string{
+	"presidente": {OfficeVicePresident}, "presidenta": {OfficeVicePresident},
+	"governador": {OfficeViceGovernor}, "governadora": {OfficeViceGovernor},
 }
 
 type token struct {
-	word   string
-	upper  bool
-	joined bool
+	word    string
+	upper   bool
+	joined  bool
+	hard    bool
+	paren   bool
+	initial bool
 }
 
 func tokenize(s string) []token {
 	var out []token
 	var cur strings.Builder
-	var upper bool
-	joined := false
-	gapOK := true
-	flush := func() {
-		if cur.Len() == 0 {
-			return
-		}
-		out = append(out, token{word: cur.String(), upper: upper, joined: joined})
-		cur.Reset()
-		gapOK = true
-	}
-	for _, r := range s {
+	var next token
+	gapOK, hard, paren := true, false, false
+	for _, r := range s + " " {
 		l := unicode.ToLower(r)
 		if m, ok := foldMap[l]; ok {
 			l = m
 		}
 		if (l >= 'a' && l <= 'z') || (l >= '0' && l <= '9') {
 			if cur.Len() == 0 {
-				upper = unicode.IsUpper(r)
-				joined = len(out) > 0 && gapOK
+				next = token{upper: unicode.IsUpper(r), joined: len(out) > 0 && gapOK, hard: hard, paren: paren, initial: len(out) == 0 || hard}
 			}
 			cur.WriteRune(l)
 			continue
 		}
-		flush()
+		if cur.Len() > 0 {
+			next.word = cur.String()
+			out = append(out, next)
+			cur.Reset()
+			gapOK, hard, paren = true, false, false
+		}
 		switch r {
 		case ' ', ' ', '-', '\'', '’':
+		case '.', '!', '?', ';', ':':
+			gapOK, hard = false, true
+		case '(', '[':
+			gapOK, paren = false, true
 		default:
 			gapOK = false
 		}
 	}
-	flush()
 	return out
 }
 
@@ -155,12 +178,18 @@ func newNameIndex(people []*Person) nameIndex {
 	return ix
 }
 
+const (
+	evidenceNone = iota
+	evidenceMatch
+	evidenceMismatch
+)
+
 type nameHit struct {
 	name       string
 	owners     []*Person
-	words      int
 	standalone bool
 	surname    bool
+	evidence   int
 }
 
 func capitalized(toks []token) bool {
@@ -170,6 +199,16 @@ func capitalized(toks []token) bool {
 		}
 	}
 	return true
+}
+
+func significant(toks []token) int {
+	n := 0
+	for _, t := range toks {
+		if !nameParticles[t.word] {
+			n++
+		}
+	}
+	return n
 }
 
 func chained(toks []token) bool {
@@ -187,6 +226,9 @@ func standalone(toks []token, start, end int) bool {
 		if prev.upper && !officeTitles[prev.word] && !nameParticles[prev.word] {
 			return false
 		}
+		if nameParticles[prev.word] && start > 1 && prev.joined && toks[start-2].upper && !toks[start-2].initial && !officeTitles[toks[start-2].word] {
+			return false
+		}
 	}
 	if end < len(toks) && toks[end].joined {
 		next := toks[end]
@@ -198,6 +240,73 @@ func standalone(toks []token, start, end int) bool {
 		}
 	}
 	return true
+}
+
+func titleBefore(toks []token, start int) ([]string, bool) {
+	for k := start - 1; k >= 0 && k >= start-titleWindow; k-- {
+		if toks[k+1].hard {
+			return nil, false
+		}
+		word := toks[k].word
+		offices, ok := titleOffices[word]
+		if !ok {
+			continue
+		}
+		vice := k > 0 && toks[k].joined && toks[k-1].word == "vice"
+		if vice {
+			offices = viceOffices[word]
+			k--
+		}
+		if k > 0 && pastMarkers[toks[k-1].word] {
+			return nil, false
+		}
+		head := toks[k].word
+		if !vice && (head == "presidente" || head == "presidenta") && k+1 < start && nameParticles[toks[k+1].word] {
+			return nil, false
+		}
+		return offices, true
+	}
+	return nil, false
+}
+
+func partyAfter(toks []token, end int, p *Person) bool {
+	if end >= len(toks) || !toks[end].paren {
+		return false
+	}
+	words := strings.Fields(Fold(p.Primary().Party))
+	if len(words) == 0 || end+len(words) > len(toks) {
+		return false
+	}
+	for i, w := range words {
+		if toks[end+i].word != w {
+			return false
+		}
+	}
+	return true
+}
+
+func holds(p *Person, offices []string) bool {
+	for _, r := range p.Roles {
+		for _, o := range offices {
+			if r.Office == o {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func evidenceFor(toks []token, start, end int, p *Person) int {
+	if offices, ok := titleBefore(toks, start); ok {
+		if holds(p, offices) {
+			return evidenceMatch
+		}
+		return evidenceMismatch
+	}
+	if partyAfter(toks, end, p) {
+		return evidenceMatch
+	}
+	return evidenceNone
 }
 
 func (ix nameIndex) scan(text string) []nameHit {
@@ -219,7 +328,11 @@ func (ix nameIndex) scan(text string) []nameHit {
 			if !ok {
 				continue
 			}
-			hits = append(hits, nameHit{name: key, owners: owners, words: l, standalone: standalone(toks, i, i+l)})
+			h := nameHit{name: key, owners: owners, standalone: significant(span) >= longName || standalone(toks, i, i+l)}
+			if len(owners) == 1 {
+				h.evidence = evidenceFor(toks, i, i+l, owners[0])
+			}
+			hits = append(hits, h)
 			i += l
 			found = true
 			break
@@ -229,68 +342,80 @@ func (ix nameIndex) scan(text string) []nameHit {
 		}
 		t := toks[i]
 		if owners, ok := ix.surnames[t.word]; ok && t.upper && standalone(toks, i, i+1) {
-			hits = append(hits, nameHit{name: t.word, owners: owners, words: 1, standalone: true, surname: true})
+			hits = append(hits, nameHit{name: t.word, owners: owners, standalone: true, surname: true})
 		}
 		i++
 	}
 	return hits
 }
 
+type checkDoubt struct {
+	reason string
+	name   string
+	owners []*Person
+}
+
+type scannedCheck struct {
+	check  RawCheck
+	linked map[*Person]string
+	doubts []checkDoubt
+}
+
+func scanCheck(ix nameIndex, c RawCheck, confirmed, contradicted map[*Person]bool) scannedCheck {
+	sc := scannedCheck{check: c, linked: map[*Person]string{}}
+	mismatch := map[*Person]string{}
+	for _, text := range append([]string{c.Title}, c.Texts...) {
+		for _, h := range ix.scan(text) {
+			switch {
+			case h.surname:
+				sc.doubts = append(sc.doubts, checkDoubt{ReviewSurnameOnly, h.name, h.owners})
+			case len(h.owners) > 1:
+				sc.doubts = append(sc.doubts, checkDoubt{ReviewAmbiguousName, h.name, h.owners})
+			case !h.standalone:
+				sc.doubts = append(sc.doubts, checkDoubt{ReviewPartOfLongerName, h.name, h.owners})
+			case h.evidence == evidenceMismatch:
+				contradicted[h.owners[0]] = true
+				mismatch[h.owners[0]] = h.name
+			default:
+				if h.evidence == evidenceMatch {
+					confirmed[h.owners[0]] = true
+				}
+				if _, ok := sc.linked[h.owners[0]]; !ok {
+					sc.linked[h.owners[0]] = h.name
+				}
+			}
+		}
+	}
+	for p, name := range mismatch {
+		delete(sc.linked, p)
+		sc.doubts = append(sc.doubts, checkDoubt{ReviewOfficeMismatch, name, []*Person{p}})
+	}
+	return sc
+}
+
 func MatchChecks(people []*Person, slugs map[*Person]string, checks []RawCheck) CheckMatch {
 	ix := newNameIndex(people)
 	res := CheckMatch{ByPerson: map[*Person][]FactCheck{}}
+	confirmed := map[*Person]bool{}
+	contradicted := map[*Person]bool{}
+	scanned := make([]scannedCheck, 0, len(checks))
 	for _, c := range checks {
-		linked := map[*Person]bool{}
-		type pending struct {
-			reason string
-			hit    nameHit
-		}
-		var doubts []pending
-		for _, text := range append([]string{c.Title}, c.Texts...) {
-			for _, h := range ix.scan(text) {
-				switch {
-				case h.surname:
-					doubts = append(doubts, pending{ReviewSurnameOnly, h})
-				case len(h.owners) > 1:
-					doubts = append(doubts, pending{ReviewAmbiguousName, h})
-				case !h.standalone:
-					doubts = append(doubts, pending{ReviewPartOfLongerName, h})
-				default:
-					linked[h.owners[0]] = true
-				}
-			}
-		}
+		scanned = append(scanned, scanCheck(ix, c, confirmed, contradicted))
+	}
+	for _, sc := range scanned {
+		c := sc.check
 		fc := FactCheck{ID: c.ID, Title: c.Title, Verdict: c.Verdict, Date: c.Date, URL: c.URL, Publisher: c.Publisher, License: c.License, LicenseURL: c.LicenseURL}
-		for p := range linked {
+		published := map[*Person]bool{}
+		doubts := sc.doubts
+		for p, name := range sc.linked {
+			if contradicted[p] && !confirmed[p] {
+				doubts = append(doubts, checkDoubt{ReviewPossibleHomonym, name, []*Person{p}})
+				continue
+			}
+			published[p] = true
 			res.ByPerson[p] = append(res.ByPerson[p], fc)
 		}
-		seen := map[string]bool{}
-		for _, d := range doubts {
-			var cands []string
-			for _, p := range d.hit.owners {
-				if !linked[p] {
-					cands = append(cands, slugs[p])
-				}
-			}
-			if len(cands) == 0 {
-				continue
-			}
-			sort.Strings(cands)
-			key := d.reason + "|" + d.hit.name
-			if seen[key] {
-				continue
-			}
-			seen[key] = true
-			res.Reviews = append(res.Reviews, CheckReview{CheckID: c.ID, Title: c.Title, Date: c.Date, URL: c.URL, Reason: d.reason, Name: d.hit.name, Candidates: cands})
-		}
-		if len(c.Conflict) > 0 {
-			var cands []string
-			for p := range linked {
-				cands = append(cands, slugs[p])
-			}
-			sort.Strings(cands)
-			res.Reviews = append(res.Reviews, CheckReview{CheckID: c.ID, Title: c.Title, Date: c.Date, URL: c.URL, Reason: ReviewVerdictConflict, Candidates: cands, Labels: append([]string(nil), c.Conflict...)})
-		}
+		res.Reviews = append(res.Reviews, reviewsFor(c, doubts, published, slugs)...)
 	}
 	for p, items := range res.ByPerson {
 		sortChecks(items)
@@ -310,6 +435,35 @@ func MatchChecks(people []*Person, slugs map[*Person]string, checks []RawCheck) 
 		return a.Name < b.Name
 	})
 	return res
+}
+
+func reviewsFor(c RawCheck, doubts []checkDoubt, published map[*Person]bool, slugs map[*Person]string) []CheckReview {
+	var out []CheckReview
+	seen := map[string]bool{}
+	for _, d := range doubts {
+		var cands []string
+		for _, p := range d.owners {
+			if !published[p] {
+				cands = append(cands, slugs[p])
+			}
+		}
+		key := d.reason + "|" + d.name
+		if len(cands) == 0 || seen[key] {
+			continue
+		}
+		seen[key] = true
+		sort.Strings(cands)
+		out = append(out, CheckReview{CheckID: c.ID, Title: c.Title, Date: c.Date, URL: c.URL, Reason: d.reason, Name: d.name, Candidates: cands})
+	}
+	if len(c.Conflict) > 0 {
+		var cands []string
+		for p := range published {
+			cands = append(cands, slugs[p])
+		}
+		sort.Strings(cands)
+		out = append(out, CheckReview{CheckID: c.ID, Title: c.Title, Date: c.Date, URL: c.URL, Reason: ReviewVerdictConflict, Candidates: cands, Labels: append([]string(nil), c.Conflict...)})
+	}
+	return out
 }
 
 func sortChecks(items []FactCheck) {
