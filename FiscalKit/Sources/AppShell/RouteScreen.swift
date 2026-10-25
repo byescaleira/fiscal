@@ -1,6 +1,7 @@
 import FeatureCore
 import FeatureLens
 import FeatureLiveResults
+import FeatureMoney
 import FeatureProfile
 import FeatureSearch
 import FeatureSettings
@@ -23,6 +24,8 @@ struct RouteScreen: View {
                 ProfileScreen()
             }
         case .vote(let id): ModelHost(VoteDetailModel(id: id, service: data)) { VoteDetailScreen() }
+        case .expenses(let slug, let year):
+            ModelHost(ExpensesModel(slug: slug, year: year, service: data)) { ExpensesScreen() }
         case .compare(let slugs):
             ModelHost(CompareModel(slugs: slugs, service: data)) { CompareScreen() }
         case .races: ModelHost(FiscalServices.shared.liveResults()) { LiveResultsScreen() }

@@ -24,6 +24,8 @@ enum DeepLink: Equatable {
         switch host {
         case "person": path.map { DeepLink.route(.person(slug: $0), in: .mine) }
         case "vote": path.map { DeepLink.route(.vote(id: $0), in: .votes) }
+        case "expenses":
+            path.map { DeepLink.route(.expenses(slug: $0, year: year(in: url)), in: .money) }
         case "compare": .route(.compare(slugs: slugs(in: url)), in: .search)
         case "races": .route(.races, in: .search)
         case "lens": .route(.lens, in: .today)
@@ -37,6 +39,12 @@ enum DeepLink: Equatable {
         let value = URLComponents(url: url, resolvingAgainstBaseURL: false)?
             .queryItems?.first { $0.name == "slugs" }?.value
         return value?.split(separator: ",").map(String.init).filter { !$0.isEmpty } ?? []
+    }
+
+    private static func year(in url: URL) -> Int {
+        let value = URLComponents(url: url, resolvingAgainstBaseURL: false)?
+            .queryItems?.first { $0.name == "year" }?.value
+        return value.flatMap(Int.init) ?? Calendar.current.component(.year, from: .now)
     }
 
     static func handles(_ url: URL) -> Bool {
