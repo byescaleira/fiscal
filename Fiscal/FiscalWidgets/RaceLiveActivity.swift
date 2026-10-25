@@ -131,15 +131,15 @@ private struct ScoreColumn: View {
     var body: some View {
         VStack(alignment: alignment, spacing: .space2XS) {
             HStack(spacing: .spaceXS) {
-                if alignment == .leading { CandidatePhoto(row: row, side: .badgeM) }
+                if alignment == .leading { CandidatePhoto(row: row, side: .badgeS) }
                 Text(verbatim: score.percent)
-                    .font(.title2.weight(.heavy))
+                    .font(.scoreboardNumber)
                     .monospacedDigit()
                     .contentTransition(.numericText(value: score.value))
                     .foregroundStyle(RaceStyle.primary)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.6)
-                if alignment == .trailing { CandidatePhoto(row: row, side: .badgeM) }
+                    .minimumScaleFactor(0.7)
+                if alignment == .trailing { CandidatePhoto(row: row, side: .badgeS) }
             }
             HStack(spacing: .space2XS) {
                 if alignment == .trailing { PartyMark(row.party) }
