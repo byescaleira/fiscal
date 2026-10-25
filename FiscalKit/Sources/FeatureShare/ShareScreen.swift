@@ -109,12 +109,6 @@ private struct ShareArtPicker: View {
                 .padding(.vertical, .space2XS)
             }
             .scrollClipDisabled()
-            if let artwork = model.artwork {
-                Text(verbatim: artwork.credit)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
         }
         .animation(reduceMotion ? nil : .smooth, value: model.selectedWorkID)
         .sensoryFeedback(.selection, trigger: model.selectedWorkID)

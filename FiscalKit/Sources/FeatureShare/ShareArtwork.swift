@@ -18,9 +18,11 @@ public struct ShareArtwork: Hashable, Sendable {
         )
     }
 
-    public var shade: String? { palette.first }
+    public var shade: String? {
+        palette.max { HexColor.saturation($0) < HexColor.saturation($1) }
+    }
 
-    public var glow: String? { palette.dropFirst().first ?? palette.first }
+    public var isBackdrop: Bool { work.isPublicDomain }
 }
 
 public struct ShareCard: Hashable, Sendable {
@@ -36,19 +38,25 @@ public struct ShareCard: Hashable, Sendable {
 
     public var brand: String { "Fiscal" }
 
-    public var portraitMark: String? {
-        content.hasPortrait ? String(appLocalized: "Illustration by Fiscal") : nil
-    }
+    public var poster: SharePoster { SharePoster(content) }
 
     public var texts: [String] {
-        content.texts
-            + [artwork?.credit, portraitMark, brand, ShareCardBuilder.host]
-            .compactMap(\.self)
+        poster.texts + [artwork?.credit, brand, ShareCardBuilder.host].compactMap(\.self)
     }
 
     public var accessibilityLabel: String {
-        ([content.accessibilitySummary, artwork?.credit].compactMap(\.self))
+        ([poster.accessibilitySummary, artwork?.credit].compactMap(\.self))
             .joined(separator: ". ")
+    }
+}
+
+enum HexColor {
+    static func saturation(_ hex: String) -> Double {
+        let text = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        guard text.count == 6, let value = UInt32(text, radix: 16) else { return 0 }
+        let channels = [value >> 16, value >> 8, value].map { Double($0 & 255) / 255 }
+        guard let high = channels.max(), let low = channels.min(), high > 0 else { return 0 }
+        return (high - low) / high
     }
 }
 

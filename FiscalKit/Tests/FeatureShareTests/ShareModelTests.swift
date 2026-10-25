@@ -103,13 +103,14 @@ struct ShareModelTests {
         #expect(model.card?.texts.contains(ShareArtwork(work: other, palette: []).credit) == true)
     }
 
-    @Test func aPortraitCardCarriesTheIllustrationMark() async throws {
+    @Test func theImageCarriesNoPortraitSoNoIllustrationMark() async throws {
         let person = model(.person(slug: "erika-hilton"))
         await person.load()
-        #expect(person.card?.portraitMark != nil)
+        let card = try #require(person.card)
+        #expect(!card.texts.contains(String(appLocalized: "Illustration by Fiscal")))
+        #expect(card.poster.person?.slug == "erika-hilton")
         let race = model(.race(id: "presidente-br"))
         await race.load()
-        #expect(race.card?.portraitMark == nil)
         #expect(race.code != nil)
     }
 

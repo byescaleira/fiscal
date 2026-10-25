@@ -31,19 +31,6 @@ public struct ShareCardContent: Hashable, Sendable {
         self.stamp = stamp
         self.link = link
     }
-
-    public var hasPortrait: Bool { !faces.isEmpty }
-
-    public var texts: [String] {
-        [eyebrow] + [headline].compactMap(\.self) + faces.flatMap(\.texts) + body.texts + [
-            source, stamp,
-        ]
-    }
-
-    public var accessibilitySummary: String {
-        ([eyebrow, headline].compactMap(\.self) + faces.map(\.name) + body.texts + [source])
-            .joined(separator: ", ")
-    }
 }
 
 public struct ShareFace: Hashable, Sendable, Identifiable {
@@ -60,8 +47,6 @@ public struct ShareFace: Hashable, Sendable, Identifiable {
     }
 
     public var id: String { slug }
-
-    var texts: [String] { [name, party, detail] }
 }
 
 public struct ShareMetric: Hashable, Sendable, Identifiable {
@@ -88,10 +73,6 @@ public struct ShareTally: Hashable, Sendable {
     public let result: String?
     public let approved: Bool?
     public let quorum: String?
-
-    var texts: [String] {
-        [proposition, official, yes, no, others, result, quorum].compactMap(\.self)
-    }
 }
 
 public struct ShareSpending: Hashable, Sendable {
@@ -107,10 +88,6 @@ public struct ShareSpending: Hashable, Sendable {
     public let caption: String
     public let receipts: String
     public let categories: [Category]
-
-    var texts: [String] {
-        [total, caption, receipts] + categories.flatMap { [$0.name, $0.value] }
-    }
 }
 
 public struct ShareRace: Hashable, Sendable {
@@ -130,10 +107,6 @@ public struct ShareRace: Hashable, Sendable {
     public let countedShare: Double
     public let candidates: [Candidate]
     public let footnote: String
-
-    var texts: [String] {
-        [counted, footnote] + candidates.flatMap { [$0.name, $0.party, $0.percent, $0.votes] }
-    }
 }
 
 public struct ShareCompareRow: Hashable, Sendable, Identifiable {
@@ -149,17 +122,4 @@ public struct ShareGroup: Hashable, Sendable, Identifiable {
     public let names: [String]
 
     public var id: String { title }
-}
-
-extension ShareCardContent.Body {
-    var texts: [String] {
-        switch self {
-        case .person(let metrics): metrics.flatMap { [$0.label, $0.value] }
-        case .vote(let tally): tally.texts
-        case .expenses(let spending): spending.texts
-        case .race(let race): race.texts
-        case .compare(let rows): rows.flatMap { [$0.label] + $0.values }
-        case .representatives(let groups): groups.flatMap { [$0.title, $0.count] + $0.names }
-        }
-    }
 }
