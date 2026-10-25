@@ -16,27 +16,27 @@ public struct LensPreset: Hashable, Sendable {
         case .right:
             LensPreset(
                 themes: [.taxes, .security, .politics, .economy], palette: "forest",
-                artCollection: "historia")
+                artCollection: "brasil-agora")
         case .centerRight:
             LensPreset(
                 themes: [.economy, .taxes, .security, .health], palette: "indigo",
-                artCollection: "civica")
+                artCollection: "brasil-agora")
         case .center:
             LensPreset(
                 themes: [.economy, .health, .education, .politics], palette: "savanna",
-                artCollection: "civica")
+                artCollection: "brasil-agora")
         case .centerLeft:
             LensPreset(
                 themes: [.health, .education, .social, .environment], palette: "ipe",
-                artCollection: "povo")
+                artCollection: "brasil-agora")
         case .left:
             LensPreset(
                 themes: [.social, .environment, .rights, .education], palette: "annatto",
-                artCollection: "povo")
+                artCollection: "brasil-agora")
         case .impartial, .preferNotToSay:
             LensPreset(
                 themes: [.taxes, .security, .politics, .social, .environment],
-                palette: "graphite", artCollection: "paisagens")
+                palette: "graphite", artCollection: "brasil-agora")
         }
     }
 

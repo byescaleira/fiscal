@@ -7,7 +7,7 @@ import Observation
 
 @MainActor @Observable
 public final class ShareModel {
-    public static let neutralCollection = "paisagens"
+    public static let neutralCollection = "brasil-agora"
 
     public let subject: ShareSubject
     public private(set) var phase: PublicDataPhase = .idle

@@ -41,10 +41,7 @@ public enum MoneyText {
     public static func updatedText(_ date: Date, calendar: Calendar = FiscalCalendar.current)
         -> String
     {
-        date.formatted(
-            Date.FormatStyle(locale: .app, calendar: calendar, timeZone: calendar.timeZone)
-                .day(.twoDigits).month(.twoDigits)
-                .hour(.twoDigits(amPM: .omitted)).minute(.twoDigits))
+        PublicFormat.updated(date, calendar: calendar)
     }
 
     public static func sources(_ all: [Source], ids: [String]) -> [Source] {

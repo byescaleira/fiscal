@@ -33,6 +33,7 @@ struct SingleVote: PublicDataService {
     func agenda() async throws -> Agenda { throw PublicDataError.notFound }
     func money() async throws -> MoneyOverview { throw PublicDataError.notFound }
     func today() async throws -> TodayDigest { throw PublicDataError.notFound }
+    func checks(slug: String) async throws -> FactCheckList? { nil }
 }
 
 @MainActor

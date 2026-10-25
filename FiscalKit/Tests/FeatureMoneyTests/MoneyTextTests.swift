@@ -20,7 +20,7 @@ struct MoneyTextTests {
         let line = MoneyText.sourceLine([source], calendar: calendar)
         #expect(line.contains("Câmara dos Deputados"))
         #expect(line.contains("25/10"))
-        #expect(line.contains("18:00"))
+        #expect(line.contains("06:00"))
         #expect(MoneyText.sourceLine([]).contains(PublicFormat.missing))
     }
 

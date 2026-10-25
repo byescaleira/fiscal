@@ -8,6 +8,7 @@ import FeatureSettings
 import FeatureShare
 import FeatureVotes
 import FiscalDesignSystem
+import FiscalDomain
 import SwiftUI
 
 struct RouteScreen: View {
@@ -29,7 +30,7 @@ struct RouteScreen: View {
             ModelHost(
                 VoteDetailModel(
                     id: id, service: data, lens: session.repositories.lens,
-                    homeUF: UserDefaults.standard.string(forKey: VoteDetailModel.homeUFKey))
+                    homeUF: HomePlace.chosenUF(in: .standard))
             ) {
                 VoteDetailScreen()
             }

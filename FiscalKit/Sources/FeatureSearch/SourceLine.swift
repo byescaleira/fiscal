@@ -9,9 +9,7 @@ enum SourceLine {
         let list = names.formatted(.list(type: .and).locale(.app))
         let latest = updatedAt ?? sources.compactMap(\.updatedAt).max()
         guard let latest else { return String(appLocalized: "Source: \(list)") }
-        let date = latest.formatted(
-            .dateTime.day(.twoDigits).month(.twoDigits).hour(.twoDigits(amPM: .omitted))
-                .minute(.twoDigits).locale(.app))
+        let date = PublicFormat.updated(latest)
         return String(appLocalized: "Source: \(list) · updated \(date)")
     }
 }

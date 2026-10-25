@@ -54,7 +54,7 @@ struct ShareModelTests {
         for stance in PoliticalStance.allCases {
             let repositories = try FiscalDatabase.open(inMemory: true).repositories
             try await repositories.lens.save(
-                Lens(themes: [.health, .taxes, .security], stance: stance, artCollection: "civica"))
+                Lens(themes: [.health, .taxes, .security], stance: stance, artCollection: "brasil-agora"))
             for subject in subjects {
                 let model = model(subject, lens: repositories.lens)
                 await model.load()
@@ -76,14 +76,14 @@ struct ShareModelTests {
     @Test func theLensOnlyChangesTheArt() async throws {
         let repositories = try FiscalDatabase.open(inMemory: true).repositories
         try await repositories.lens.save(
-            Lens(themes: [.health, .taxes, .security], stance: .left, artCollection: "historia"))
+            Lens(themes: [.health, .taxes, .security], stance: .left, artCollection: "acervo-historico"))
         let adapted = model(.person(slug: "lula"), lens: repositories.lens)
         await adapted.load()
         let plain = model(.person(slug: "lula"))
         await plain.load()
         #expect(adapted.content == plain.content)
-        #expect(adapted.artwork?.work.collection == "historia")
-        #expect(adapted.collections.first?.id == "historia")
+        #expect(adapted.artwork?.work.collection == "acervo-historico")
+        #expect(adapted.collections.first?.id == "acervo-historico")
         #expect(plain.artwork?.work.collection == ShareModel.neutralCollection)
         #expect(plain.badgeStance == nil)
         #expect(adapted.isArtAdapted)

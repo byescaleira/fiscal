@@ -26,7 +26,7 @@ struct LensModelTests {
         #expect(model.stanceTitle == PoliticalStance.centerLeft.title)
         #expect(model.themes == saved.themes)
         #expect(model.palette == .ipe)
-        #expect(model.collection?.id == "povo")
+        #expect(model.collection?.id == "brasil-agora")
         #expect(model.leadWork != nil)
         #expect(!model.otherStances.contains(.centerLeft))
         #expect(model.otherStances.count == PoliticalStance.choices.count - 1)

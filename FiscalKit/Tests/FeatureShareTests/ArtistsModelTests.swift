@@ -26,12 +26,12 @@ struct ArtistsModelTests {
     @Test func theLensOnlyReordersTheCollections() async throws {
         let repositories = try FiscalDatabase.open(inMemory: true).repositories
         try await repositories.lens.save(
-            Lens(themes: [.health, .taxes, .security], stance: .right, artCollection: "povo"))
+            Lens(themes: [.health, .taxes, .security], stance: .right, artCollection: "acervo-historico"))
         let adapted = ArtistsModel(lens: repositories.lens)
         await adapted.load()
         let plain = ArtistsModel()
         await plain.load()
-        #expect(adapted.collections.first?.id == "povo")
+        #expect(adapted.collections.first?.id == "acervo-historico")
         #expect(adapted.badgeStance == .right)
         #expect(plain.badgeStance == nil)
         #expect(Set(adapted.collections) == Set(plain.collections))

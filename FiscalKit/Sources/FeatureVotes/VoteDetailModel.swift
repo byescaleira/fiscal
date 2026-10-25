@@ -59,7 +59,7 @@ public final class VoteDetailModel {
         public var id: String { guidance }
     }
 
-    public static let homeUFKey = "FiscalHomeUF"
+    public static let homeUFKey = HomePlace.mineKey
 
     public let id: String
     public let homeUF: String?

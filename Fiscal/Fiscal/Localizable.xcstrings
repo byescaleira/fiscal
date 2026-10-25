@@ -1,12 +1,42 @@
 {
   "sourceLanguage" : "pt-BR",
   "strings" : {
+    "%@ by %@ to %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ por %2$@ a %3$@"
+          }
+        }
+      }
+    },
     "%@ elected" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ eleito(a)"
+          }
+        }
+      }
+    },
+    "%@ had the highest spending: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ teve o maior gasto do ano: %@"
+          }
+        }
+      }
+    },
+    "%@ is represented here by the people elected in %@. Mayors and city councillors come after version 1.0." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aqui, %1$@ aparece pelos eleitos de %2$@. Prefeitos e vereadores entram depois da versão 1.0."
           }
         }
       }
@@ -21,12 +51,92 @@
         }
       }
     },
+    "%@ of %@ sessions" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ de %@ sessões"
+          }
+        }
+      }
+    },
+    "%@ other" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ outros"
+          }
+        }
+      }
+    },
+    "%@ other votes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ outros votos"
+          }
+        }
+      }
+    },
+    "%@ voted" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ votaram"
+          }
+        }
+      }
+    },
     "%@ votes" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ votos"
+          }
+        }
+      }
+    },
+    "%@ was the largest item: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ foi o maior gasto: %@"
+          }
+        }
+      }
+    },
+    "%@ · a constitutional amendment needs %@ yes votes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ · emenda à Constituição precisa de %2$@ votos Sim"
+          }
+        }
+      }
+    },
+    "%@ · from the president to the state assembly" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · do presidente à assembleia estadual"
+          }
+        }
+      }
+    },
+    "%@, %@, %@. Yes: %@. No: %@. Other: %@. %@." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %2$@, %3$@. Sim: %4$@. Não: %5$@. Outros: %6$@. %7$@."
           }
         }
       }
@@ -41,12 +151,52 @@
         }
       }
     },
+    "%@, done" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, encerrado"
+          }
+        }
+      }
+    },
+    "%@, today" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, hoje"
+          }
+        }
+      }
+    },
+    "%@, upcoming" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, próximo"
+          }
+        }
+      }
+    },
     "%@: count finished" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@: apuração encerrada"
+          }
+        }
+      }
+    },
+    "%lld federal deputies" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld deputados federais"
           }
         }
       }
@@ -61,12 +211,62 @@
         }
       }
     },
+    "%lld of %lld chosen" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld de %2$lld escolhidas"
+          }
+        }
+      }
+    },
+    "%lld of %lld sessions" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld de %2$lld sessões"
+          }
+        }
+      }
+    },
     "%lld of %lld topics chosen" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$lld de %2$lld temas escolhidos"
+          }
+        }
+      }
+    },
+    "%lld state deputies" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld deputados estaduais"
+          }
+        }
+      }
+    },
+    "%lld works" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld obras"
+          }
+        }
+      }
+    },
+    "2 TO 3 PEOPLE" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2 A 3 PESSOAS"
           }
         }
       }
@@ -81,12 +281,62 @@
         }
       }
     },
+    "A dash means the source doesn't publish this number. Each number shows where it comes from." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um traço quer dizer que a fonte não publica esse número. Cada número mostra de onde vem."
+          }
+        }
+      }
+    },
+    "A monthly amount for flights, office, phone, fuel and telling voters what the mandate does." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um valor por mês para passagens, escritório, telefone, combustível e para contar ao eleitor o que o mandato faz."
+          }
+        }
+      }
+    },
     "A new Fiscal is available" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tem um Fiscal novo"
+          }
+        }
+      }
+    },
+    "A new iPhone or a reinstall asks for it again." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em outro iPhone ou depois de reinstalar, o Fiscal pergunta de novo."
+          }
+        }
+      }
+    },
+    "A topic shows the latest votes in Congress about it." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um tema mostra as últimas votações do Congresso sobre ele."
+          }
+        }
+      }
+    },
+    "About" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sobre"
           }
         }
       }
@@ -101,12 +351,122 @@
         }
       }
     },
+    "Absent" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausente"
+          }
+        }
+      }
+    },
+    "Abstained" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abstenção"
+          }
+        }
+      }
+    },
+    "Abstention" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abstenção"
+          }
+        }
+      }
+    },
+    "Abstention and other" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abstenção e outros"
+          }
+        }
+      }
+    },
     "Accent Color" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cor de destaque"
+          }
+        }
+      }
+    },
+    "Acre" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acre"
+          }
+        }
+      }
+    },
+    "Add person" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar"
+          }
+        }
+      }
+    },
+    "Agenda for %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pauta de %@"
+          }
+        }
+      }
+    },
+    "agenda of %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "pauta de %@"
+          }
+        }
+      }
+    },
+    "Alagoas" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alagoas"
+          }
+        }
+      }
+    },
+    "All" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos"
+          }
+        }
+      }
+    },
+    "All candidates in the last general election, by origin of the money." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos os candidatos da última eleição geral, pela origem do dinheiro."
           }
         }
       }
@@ -121,12 +481,52 @@
         }
       }
     },
+    "All kinds" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos os tipos"
+          }
+        }
+      }
+    },
     "All senators" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Todos os senadores"
+          }
+        }
+      }
+    },
+    "Amapá" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amapá"
+          }
+        }
+      }
+    },
+    "Amazonas" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amazonas"
+          }
+        }
+      }
+    },
+    "Amount" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valor"
           }
         }
       }
@@ -141,6 +541,36 @@
         }
       }
     },
+    "Annatto" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Urucum"
+          }
+        }
+      }
+    },
+    "Another lens" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outra lente"
+          }
+        }
+      }
+    },
+    "Another lens for a moment. Nothing is saved." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outra lente por um momento. Nada é salvo."
+          }
+        }
+      }
+    },
     "Appearance" : {
       "localizations" : {
         "pt-BR" : {
@@ -151,12 +581,82 @@
         }
       }
     },
+    "Approved" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aprovada"
+          }
+        }
+      }
+    },
+    "Art" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arte"
+          }
+        }
+      }
+    },
+    "Art: %@, %@ (%@) · %@ · %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arte: %@, %@ (%@) · %@ · %@"
+          }
+        }
+      }
+    },
     "Artists" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Artistas"
+          }
+        }
+      }
+    },
+    "Artists: %lld · license checked work by work" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Artistas: %lld · licença conferida obra a obra"
+          }
+        }
+      }
+    },
+    "Artwork: %@, by %@, %@. %@." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obra: %1$@, de %2$@, %3$@. %4$@."
+          }
+        }
+      }
+    },
+    "Artworks from the Fiscal collection, all in the public domain" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obras do acervo do Fiscal, todas em domínio público"
+          }
+        }
+      }
+    },
+    "As declared to the electoral court when running for office." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como declarado à Justiça Eleitoral na candidatura."
           }
         }
       }
@@ -191,6 +691,16 @@
         }
       }
     },
+    "Average" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Média"
+          }
+        }
+      }
+    },
     "Avocado" : {
       "localizations" : {
         "pt-BR" : {
@@ -207,6 +717,96 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Voltar"
+          }
+        }
+      }
+    },
+    "Back to Mine" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voltar à minha"
+          }
+        }
+      }
+    },
+    "Bahia" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bahia"
+          }
+        }
+      }
+    },
+    "Ballot Box" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Urna"
+          }
+        }
+      }
+    },
+    "Biggest month in %@: %@, %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mês de maior gasto em %@: %@, %@"
+          }
+        }
+      }
+    },
+    "Bills filed" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Propostas apresentadas"
+          }
+        }
+      }
+    },
+    "Birthplace" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naturalidade"
+          }
+        }
+      }
+    },
+    "Blank %@ · Null %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brancos %@ · Nulos %@"
+          }
+        }
+      }
+    },
+    "Born" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nascimento"
+          }
+        }
+      }
+    },
+    "Both Houses" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Câmara e Senado"
           }
         }
       }
@@ -231,12 +831,132 @@
         }
       }
     },
+    "By kind of expense" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por tipo de gasto"
+          }
+        }
+      }
+    },
+    "By month" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por mês"
+          }
+        }
+      }
+    },
+    "By Party" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por partido"
+          }
+        }
+      }
+    },
+    "By Your Lens" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pela sua lente"
+          }
+        }
+      }
+    },
+    "By your lens" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pela sua lente"
+          }
+        }
+      }
+    },
+    "Campaign revenue" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Receita de campanha"
+          }
+        }
+      }
+    },
+    "Campaigns" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Campanhas"
+          }
+        }
+      }
+    },
+    "Campaigns in %@ raised %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As campanhas de %@ arrecadaram %@"
+          }
+        }
+      }
+    },
+    "Can become law" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pode virar lei"
+          }
+        }
+      }
+    },
+    "Cancel" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
+          }
+        }
+      }
+    },
     "Caramel" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Caramelo"
+          }
+        }
+      }
+    },
+    "Career" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carreira"
+          }
+        }
+      }
+    },
+    "Ceará" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ceará"
           }
         }
       }
@@ -271,12 +991,102 @@
         }
       }
     },
+    "Cerrado" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrado"
+          }
+        }
+      }
+    },
+    "Chamber" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Câmara"
+          }
+        }
+      }
+    },
     "Chamber of Deputies" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Câmara dos Deputados"
+          }
+        }
+      }
+    },
+    "Change" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mudar"
+          }
+        }
+      }
+    },
+    "Change Look" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mudar o visual"
+          }
+        }
+      }
+    },
+    "Change Place" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trocar lugar"
+          }
+        }
+      }
+    },
+    "Change Topics" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mudar os temas"
+          }
+        }
+      }
+    },
+    "Changing the side keeps your topics and your look." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trocar o lado mantém seus temas e seu visual."
+          }
+        }
+      }
+    },
+    "Checked Document" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Documento"
+          }
+        }
+      }
+    },
+    "Checks published by fact-checking agencies." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checagens publicadas por agências de checagem."
           }
         }
       }
@@ -301,12 +1111,52 @@
         }
       }
     },
+    "Choose 3 to 5 topics. Fiscal puts them first." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha de 3 a 5 temas. O Fiscal mostra esses temas primeiro."
+          }
+        }
+      }
+    },
+    "Choose people" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolher pessoas"
+          }
+        }
+      }
+    },
     "Choose two politicians in Search and Fiscal puts their numbers side by side, with no score or ranking." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Escolha dois políticos em Fiscalizar e o Fiscal põe os números lado a lado, sem nota nem ranking."
+          }
+        }
+      }
+    },
+    "Choose Your State or City" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolher estado ou cidade"
+          }
+        }
+      }
+    },
+    "Chosen" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolhido"
           }
         }
       }
@@ -321,12 +1171,52 @@
         }
       }
     },
+    "City in %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cidade em %@"
+          }
+        }
+      }
+    },
+    "Civil name" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nome civil"
+          }
+        }
+      }
+    },
     "Classic" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Clássico"
+          }
+        }
+      }
+    },
+    "Clear" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limpar"
+          }
+        }
+      }
+    },
+    "Clear Filters" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limpar filtros"
           }
         }
       }
@@ -341,6 +1231,16 @@
         }
       }
     },
+    "CNPJ %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CNPJ %@"
+          }
+        }
+      }
+    },
     "Coffee" : {
       "localizations" : {
         "pt-BR" : {
@@ -351,12 +1251,52 @@
         }
       }
     },
+    "Collected" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arrecadado"
+          }
+        }
+      }
+    },
+    "COLLECTION" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ACERVO"
+          }
+        }
+      }
+    },
     "Color" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cor"
+          }
+        }
+      }
+    },
+    "Colors and art for the app and your cards. Charts, scoreboards and politicians keep their own colors." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cores e arte para o app e os seus cards. Gráficos, placares e políticos mantêm as próprias cores."
+          }
+        }
+      }
+    },
+    "Committees" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comissões"
           }
         }
       }
@@ -441,6 +1381,36 @@
         }
       }
     },
+    "Couldn't load the summary of the day" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não deu para carregar o resumo do dia"
+          }
+        }
+      }
+    },
+    "Couldn't load the votes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não deu para carregar as votações"
+          }
+        }
+      }
+    },
+    "Couldn't load your representatives" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não deu para carregar seus representantes"
+          }
+        }
+      }
+    },
     "Couldn't open Fiscal" : {
       "localizations" : {
         "pt-BR" : {
@@ -497,6 +1467,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apuradas"
+          }
+        }
+      }
+    },
+    "counted" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "apurado"
           }
         }
       }
@@ -591,12 +1571,42 @@
         }
       }
     },
+    "Declared Assets" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Patrimônio declarado"
+          }
+        }
+      }
+    },
     "Delete" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Excluir"
+          }
+        }
+      }
+    },
+    "Delete My Choice" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar minha escolha"
+          }
+        }
+      }
+    },
+    "Delete your lens?" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar sua lente?"
           }
         }
       }
@@ -611,12 +1621,42 @@
         }
       }
     },
+    "Deputies from states farther from Brasília get a higher monthly cap, because flights cost more." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deputados de estados mais longe de Brasília têm um limite mensal maior, porque as passagens custam mais."
+          }
+        }
+      }
+    },
     "Developer" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Desenvolvimento"
+          }
+        }
+      }
+    },
+    "Distrito Federal" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Distrito Federal"
+          }
+        }
+      }
+    },
+    "Doesn't become law" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não vira lei"
           }
         }
       }
@@ -641,12 +1681,32 @@
         }
       }
     },
+    "Each receipt opens the official document published by the house." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada nota abre o documento oficial publicado pela casa."
+          }
+        }
+      }
+    },
     "Each tab keeps its own place, so you can switch without losing your way." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cada aba guarda onde você parou, então dá para trocar sem se perder."
+          }
+        }
+      }
+    },
+    "EARLIER" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ANTES"
           }
         }
       }
@@ -701,12 +1761,52 @@
         }
       }
     },
+    "Elected in 2026" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eleitos em 2026"
+          }
+        }
+      }
+    },
+    "Elected in 2026, awaiting inauguration: %lld" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eleitos em 2026 aguardando posse: %lld"
+          }
+        }
+      }
+    },
     "Elected, awaiting inauguration" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Eleito(a), aguardando a posse"
+          }
+        }
+      }
+    },
+    "Election" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eleição"
+          }
+        }
+      }
+    },
+    "Election count" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apuração"
           }
         }
       }
@@ -721,6 +1821,16 @@
         }
       }
     },
+    "Email" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-mail"
+          }
+        }
+      }
+    },
     "Environment" : {
       "localizations" : {
         "pt-BR" : {
@@ -731,12 +1841,42 @@
         }
       }
     },
+    "Espírito Santo" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espírito Santo"
+          }
+        }
+      }
+    },
     "Every device signed in to your Apple Account shows the same data." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Todo aparelho conectado à sua Conta Apple mostra os mesmos dados."
+          }
+        }
+      }
+    },
+    "Every Expense" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos os gastos"
+          }
+        }
+      }
+    },
+    "Every expense needs a receipt" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todo gasto precisa de nota"
           }
         }
       }
@@ -801,6 +1941,16 @@
         }
       }
     },
+    "Expenses in %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gastos em %@"
+          }
+        }
+      }
+    },
     "Explore" : {
       "localizations" : {
         "pt-BR" : {
@@ -821,12 +1971,42 @@
         }
       }
     },
+    "Fact Checks" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checagens"
+          }
+        }
+      }
+    },
+    "Fact checks" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checagens"
+          }
+        }
+      }
+    },
     "Farming and countryside" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Agro e campo"
+          }
+        }
+      }
+    },
+    "Federal deputies" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deputados federais"
           }
         }
       }
@@ -841,12 +2021,72 @@
         }
       }
     },
+    "Federal revenue" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arrecadação federal"
+          }
+        }
+      }
+    },
+    "Federal revenue in %@: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arrecadação federal em %@: %@"
+          }
+        }
+      }
+    },
     "Federal Senate" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Senado Federal"
+          }
+        }
+      }
+    },
+    "Federal taxes paid in each state in the last full year." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impostos federais pagos em cada estado no último ano completo."
+          }
+        }
+      }
+    },
+    "Feed" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feed"
+          }
+        }
+      }
+    },
+    "Fewer topics" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menos temas"
+          }
+        }
+      }
+    },
+    "Final" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Final"
           }
         }
       }
@@ -871,6 +2111,16 @@
         }
       }
     },
+    "First: %@. The facts are the same for everyone." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Primeiro: %@. Os fatos são os mesmos para todos."
+          }
+        }
+      }
+    },
     "Fiscal" : {
       "localizations" : {
         "pt-BR" : {
@@ -881,6 +2131,46 @@
         }
       },
       "shouldTranslate" : false
+    },
+    "Fiscal adapts the order, the highlights, the colors and the art. The facts are the same for everyone." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Fiscal adapta a ordem, os destaques, as cores e a arte. Os fatos são os mesmos para todo mundo."
+          }
+        }
+      }
+    },
+    "Fiscal adapts what comes first, the colors, the art and the highlights. The numbers are the same for everyone." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Fiscal adapta o que aparece primeiro, as cores, a arte e os destaques. Os números são os mesmos para todo mundo."
+          }
+        }
+      }
+    },
+    "Fiscal card" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card do Fiscal"
+          }
+        }
+      }
+    },
+    "Fiscal couldn't reach the public data now. Try again in a moment." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Fiscal não conseguiu acessar os dados públicos agora. Tente de novo daqui a pouco."
+          }
+        }
+      }
     },
     "Fiscal follows the light and dark setting of your device." : {
       "localizations" : {
@@ -902,6 +2192,16 @@
         }
       }
     },
+    "Fiscal has no data for this filter in the latest update." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Fiscal não tem dados para este filtro na última carga."
+          }
+        }
+      }
+    },
     "Fiscal keeps this look whatever your device uses." : {
       "localizations" : {
         "pt-BR" : {
@@ -912,12 +2212,72 @@
         }
       }
     },
+    "Fiscal puts the same numbers side by side, in columns of the same width, with no score or ranking." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Fiscal põe os mesmos números lado a lado, em colunas da mesma largura, sem nota e sem ranking."
+          }
+        }
+      }
+    },
+    "Fiscal shows the latest vote in Congress as soon as it's published." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Fiscal mostra a votação mais recente do Congresso assim que ela é publicada."
+          }
+        }
+      }
+    },
+    "Fiscal tries again in a while." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Fiscal tenta de novo daqui a pouco."
+          }
+        }
+      }
+    },
+    "Fiscal tries again in a while. Open the app to see the last saved data." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Fiscal tenta de novo daqui a pouco. Abra o app para ver os últimos dados salvos."
+          }
+        }
+      }
+    },
     "Five Tabs" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cinco abas"
+          }
+        }
+      }
+    },
+    "Floor" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plenário"
+          }
+        }
+      }
+    },
+    "Floor vote" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plenário"
           }
         }
       }
@@ -962,12 +2322,52 @@
         }
       }
     },
+    "Follow who represents you" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siga quem representa você"
+          }
+        }
+      }
+    },
     "Following" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Seguindo"
+          }
+        }
+      }
+    },
+    "Forest and gold" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mata e ouro"
+          }
+        }
+      }
+    },
+    "Forget This Place" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esquecer este lugar"
+          }
+        }
+      }
+    },
+    "Format" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formato"
           }
         }
       }
@@ -982,12 +2382,42 @@
         }
       }
     },
+    "From the president to the state assembly" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do presidente à assembleia estadual"
+          }
+        }
+      }
+    },
     "General" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Geral"
+          }
+        }
+      }
+    },
+    "General election %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eleições gerais de %@"
+          }
+        }
+      }
+    },
+    "Goiás" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Goiás"
           }
         }
       }
@@ -1002,12 +2432,32 @@
         }
       }
     },
+    "Governors" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Governadores"
+          }
+        }
+      }
+    },
     "Graphite" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Grafite"
+          }
+        }
+      }
+    },
+    "Gross monthly pay, before taxes. Each one is set by the law shown under the office." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salário mensal bruto, antes dos descontos. Cada valor é fixado pela lei que aparece embaixo do cargo."
           }
         }
       }
@@ -1062,6 +2512,56 @@
         }
       }
     },
+    "Highlights take turns between the topics of both sides. The facts are the same for everyone." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os destaques se revezam entre os temas dos dois lados. Os fatos são os mesmos para todos."
+          }
+        }
+      }
+    },
+    "Historical collection" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acervo histórico"
+          }
+        }
+      }
+    },
+    "House" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Casa"
+          }
+        }
+      }
+    },
+    "How Did My Representatives Vote?" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como votaram meus representantes?"
+          }
+        }
+      }
+    },
+    "How They Voted" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como votaram"
+          }
+        }
+      }
+    },
     "I'm using Fiscal. Take a look." : {
       "localizations" : {
         "pt-BR" : {
@@ -1072,12 +2572,52 @@
         }
       }
     },
+    "Illustration by Fiscal" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ilustração do Fiscal"
+          }
+        }
+      }
+    },
+    "Illustration of %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ilustração de %@"
+          }
+        }
+      }
+    },
     "Impartial" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Imparcial"
+          }
+        }
+      }
+    },
+    "In alphabetical order inside each office. Nobody is ranked." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em ordem alfabética dentro de cada cargo. Ninguém é ranqueado."
+          }
+        }
+      }
+    },
+    "In alphabetical order." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em ordem alfabética."
           }
         }
       }
@@ -1112,12 +2652,42 @@
         }
       }
     },
+    "In session" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em sessão"
+          }
+        }
+      }
+    },
+    "In session now" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em sessão agora"
+          }
+        }
+      }
+    },
     "In Settings › Appearance, pick the theme and the accent color." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Em Ajustes › Aparência, escolha o tema e a cor de destaque."
+          }
+        }
+      }
+    },
+    "In Your Topics" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nos seus temas"
           }
         }
       }
@@ -1132,6 +2702,16 @@
         }
       }
     },
+    "Individual" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pessoa física"
+          }
+        }
+      }
+    },
     "Internet and technology" : {
       "localizations" : {
         "pt-BR" : {
@@ -1142,12 +2722,62 @@
         }
       }
     },
+    "Ipê" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ipê"
+          }
+        }
+      }
+    },
+    "It isn't salary" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não é salário"
+          }
+        }
+      }
+    },
+    "Item" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Item"
+          }
+        }
+      }
+    },
+    "Keep My Lens" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manter minha lente"
+          }
+        }
+      }
+    },
     "Know someone who'd like Fiscal?" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Conhece alguém que ia gostar do Fiscal?"
+          }
+        }
+      }
+    },
+    "Last vote · %@ · %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Último voto · %@ · %@"
           }
         }
       }
@@ -1168,6 +2798,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lavanda"
+          }
+        }
+      }
+    },
+    "Laws" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leis"
+          }
+        }
+      }
+    },
+    "Laws passed" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leis aprovadas"
+          }
+        }
+      }
+    },
+    "Leave it empty to use the state picked in Fiscal." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deixe vazio para usar o estado escolhido no Fiscal."
           }
         }
       }
@@ -1202,12 +2862,42 @@
         }
       }
     },
+    "License" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Licença"
+          }
+        }
+      }
+    },
+    "License: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Licença: %@"
+          }
+        }
+      }
+    },
     "Light" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Claro"
+          }
+        }
+      }
+    },
+    "Live" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ao vivo"
           }
         }
       }
@@ -1232,12 +2922,42 @@
         }
       }
     },
+    "Live results" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apuração ao vivo"
+          }
+        }
+      }
+    },
+    "LIVE TODAY" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AO VIVO HOJE"
+          }
+        }
+      }
+    },
     "Loading" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Carregando"
+          }
+        }
+      }
+    },
+    "Loading the summary of the day" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregando o resumo do dia"
           }
         }
       }
@@ -1272,6 +2992,16 @@
         }
       }
     },
+    "Magnifier" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lupa"
+          }
+        }
+      }
+    },
     "Make It Yours" : {
       "localizations" : {
         "pt-BR" : {
@@ -1282,12 +3012,72 @@
         }
       }
     },
+    "Maranhão" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maranhão"
+          }
+        }
+      }
+    },
+    "Mato Grosso" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mato Grosso"
+          }
+        }
+      }
+    },
+    "Mato Grosso do Sul" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mato Grosso do Sul"
+          }
+        }
+      }
+    },
+    "Mayors and city councilors come after version 1.0. For now, Fiscal shows who represents %@ in the state and in Brasília." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prefeitos e vereadores chegam depois da versão 1.0. Por enquanto, o Fiscal mostra quem representa %@ no estado e em Brasília."
+          }
+        }
+      }
+    },
     "Meet Fiscal" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Conheça o Fiscal"
+          }
+        }
+      }
+    },
+    "Message" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mensagem"
+          }
+        }
+      }
+    },
+    "Minas Gerais" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minas Gerais"
           }
         }
       }
@@ -1312,12 +3102,92 @@
         }
       }
     },
+    "Mirrored pairs. Any palette fits any side." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pares espelhados. Qualquer paleta serve para qualquer lado."
+          }
+        }
+      }
+    },
     "Money" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dinheiro"
+          }
+        }
+      }
+    },
+    "Money to do the job" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dinheiro para o trabalho"
+          }
+        }
+      }
+    },
+    "Month" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mês"
+          }
+        }
+      }
+    },
+    "Monthly average: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Média mensal: %@"
+          }
+        }
+      }
+    },
+    "Monthly salary" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salário mensal"
+          }
+        }
+      }
+    },
+    "More in Mine: %lld" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais em Meus: %lld"
+          }
+        }
+      }
+    },
+    "More on the agenda: %lld" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais na pauta: %lld"
+          }
+        }
+      }
+    },
+    "More topics" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais temas"
           }
         }
       }
@@ -1342,12 +3212,102 @@
         }
       }
     },
+    "My Representatives" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meus representantes"
+          }
+        }
+      }
+    },
+    "MY REPRESENTATIVES" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MEUS REPRESENTANTES"
+          }
+        }
+      }
+    },
     "Name, party or state" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nome, partido ou estado"
+          }
+        }
+      }
+    },
+    "Name, party, office or state" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nome, partido, cargo ou estado"
+          }
+        }
+      }
+    },
+    "Name, party, office, state or city" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nome, partido, cargo, estado ou cidade"
+          }
+        }
+      }
+    },
+    "Names in alphabetical order. Search by name, party or state." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nomes em ordem alfabética. Busque por nome, partido ou UF."
+          }
+        }
+      }
+    },
+    "New law" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lei nova"
+          }
+        }
+      }
+    },
+    "Next session not scheduled yet" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próxima sessão ainda sem data"
+          }
+        }
+      }
+    },
+    "Next session: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próxima sessão: %@"
+          }
+        }
+      }
+    },
+    "Next session: %@ at %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próxima sessão: %1$@ às %2$@"
           }
         }
       }
@@ -1372,6 +3332,16 @@
         }
       }
     },
+    "NO" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NÃO"
+          }
+        }
+      }
+    },
     "No account to create. Your lens never leaves this iPhone." : {
       "localizations" : {
         "pt-BR" : {
@@ -1388,6 +3358,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sem anúncios, sem rastreamento"
+          }
+        }
+      }
+    },
+    "No agenda published today" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma pauta publicada hoje"
           }
         }
       }
@@ -1422,12 +3402,102 @@
         }
       }
     },
+    "No connection. Showing the last summary received." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem conexão. Mostrando o último resumo recebido."
+          }
+        }
+      }
+    },
     "No figures yet" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nenhum número ainda"
+          }
+        }
+      }
+    },
+    "No floor votes yet" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma votação no Plenário ainda"
+          }
+        }
+      }
+    },
+    "No list for this place yet" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ainda sem lista para este lugar"
+          }
+        }
+      }
+    },
+    "No one matches this search." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ninguém encontrado nessa busca."
+          }
+        }
+      }
+    },
+    "No party guidance was published for this vote." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma orientação de partido foi publicada para esta votação."
+          }
+        }
+      }
+    },
+    "No place with that name." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum lugar com esse nome."
+          }
+        }
+      }
+    },
+    "No receipts this year" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma nota neste ano"
+          }
+        }
+      }
+    },
+    "No recent vote about %@ with these filters." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma votação recente sobre %@ com esses filtros."
+          }
+        }
+      }
+    },
+    "No representative from %@ appears in this roll call." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum representante de %@ aparece nesta votação nominal."
           }
         }
       }
@@ -1442,12 +3512,72 @@
         }
       }
     },
+    "No result yet" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem resultado ainda"
+          }
+        }
+      }
+    },
+    "No roll-call vote has been published yet." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ainda não há votação nominal publicada."
+          }
+        }
+      }
+    },
+    "No session now" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem sessão agora"
+          }
+        }
+      }
+    },
+    "No session scheduled" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem sessão marcada"
+          }
+        }
+      }
+    },
     "No subscription, no paywall and no locked feature." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sem assinatura, sem paywall e sem recurso bloqueado."
+          }
+        }
+      }
+    },
+    "No update since %@ · TSE" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem atualização desde %@ · TSE"
+          }
+        }
+      }
+    },
+    "No vote in this house lately." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma votação nesta casa nos últimos dias."
           }
         }
       }
@@ -1462,12 +3592,52 @@
         }
       }
     },
+    "Nobody followed yet" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você ainda não segue ninguém"
+          }
+        }
+      }
+    },
+    "None of your state's representatives is on this roll call." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum representante do seu estado está nesta lista de votos."
+          }
+        }
+      }
+    },
+    "Not loaded yet" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ainda não carregado"
+          }
+        }
+      }
+    },
     "Not Now" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Agora não"
+          }
+        }
+      }
+    },
+    "Not published for these offices: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não publicado para estes cargos: %@"
           }
         }
       }
@@ -1482,12 +3652,42 @@
         }
       }
     },
+    "Nothing here yet" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nada por aqui ainda"
+          }
+        }
+      }
+    },
     "Nothing new yet" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nada de novo ainda"
+          }
+        }
+      }
+    },
+    "Nothing to share yet" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nada para compartilhar ainda"
+          }
+        }
+      }
+    },
+    "Office" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gabinete"
           }
         }
       }
@@ -1502,12 +3702,82 @@
         }
       }
     },
+    "Office Allowance in %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cota parlamentar em %@"
+          }
+        }
+      }
+    },
+    "Office allowance spending in %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gastos da cota parlamentar em %@"
+          }
+        }
+      }
+    },
+    "Office allowance used" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cota usada"
+          }
+        }
+      }
+    },
+    "Office allowance · %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cota parlamentar · %@"
+          }
+        }
+      }
+    },
     "Office allowances, salaries and campaign money show up here, each with its official source." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cota parlamentar, salários e dinheiro de campanha aparecem aqui, cada um com a fonte oficial."
+          }
+        }
+      }
+    },
+    "Official page" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Página oficial"
+          }
+        }
+      }
+    },
+    "Official summary" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ementa oficial"
+          }
+        }
+      }
+    },
+    "Official text" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Texto oficial"
           }
         }
       }
@@ -1542,12 +3812,82 @@
         }
       }
     },
+    "One of your lens topics" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um dos temas da sua lente"
+          }
+        }
+      }
+    },
+    "Only on this iPhone" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Só neste iPhone"
+          }
+        }
+      }
+    },
+    "Open Fiscal and choose your state in Mine." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abra o Fiscal e escolha seu estado em Meus."
+          }
+        }
+      }
+    },
     "Open license" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Licença aberta"
+          }
+        }
+      }
+    },
+    "Open Mine" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Meus"
+          }
+        }
+      }
+    },
+    "Open Profile" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir perfil"
+          }
+        }
+      }
+    },
+    "Open the Official Page" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir a página oficial"
+          }
+        }
+      }
+    },
+    "Open the profile of ${target}" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir o perfil de ${target}"
           }
         }
       }
@@ -1562,12 +3902,182 @@
         }
       }
     },
+    "Opens the latest roll-call vote and tells how the representatives from your state voted." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre a votação nominal mais recente e diz como votaram os representantes do seu estado."
+          }
+        }
+      }
+    },
+    "Opens the live count" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre a apuração ao vivo"
+          }
+        }
+      }
+    },
+    "Opens the live vote count of the elections in Fiscal." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre a apuração das eleições ao vivo no Fiscal."
+          }
+        }
+      }
+    },
+    "Opens the official receipt" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre a nota oficial"
+          }
+        }
+      }
+    },
+    "Opens the profile of a politician in Fiscal." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre o perfil de um político no Fiscal."
+          }
+        }
+      }
+    },
+    "Opens what your lens changes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre o que a sua lente muda"
+          }
+        }
+      }
+    },
+    "Ordered by the size of each bench in this vote. Tap a party to see its names." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em ordem pelo tamanho de cada bancada nesta votação. Toque num partido para ver os nomes."
+          }
+        }
+      }
+    },
+    "Other" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outros"
+          }
+        }
+      }
+    },
+    "Other categories" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outras categorias"
+          }
+        }
+      }
+    },
+    "Other races today: %lld" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outras disputas hoje: %lld"
+          }
+        }
+      }
+    },
     "Other votes" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Outros votos"
+          }
+        }
+      }
+    },
+    "OTHERS" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OUTROS"
+          }
+        }
+      }
+    },
+    "Others" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outros"
+          }
+        }
+      }
+    },
+    "Pairs with %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faz par com %@"
+          }
+        }
+      }
+    },
+    "Palette" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paleta"
+          }
+        }
+      }
+    },
+    "Paraná" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paraná"
+          }
+        }
+      }
+    },
+    "Paraíba" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paraíba"
+          }
+        }
+      }
+    },
+    "Parties" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partidos"
           }
         }
       }
@@ -1582,12 +4092,112 @@
         }
       }
     },
+    "Party Guidance" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orientação dos partidos"
+          }
+        }
+      }
+    },
+    "Party guidance: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orientação do partido: %@"
+          }
+        }
+      }
+    },
+    "Pará" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pará"
+          }
+        }
+      }
+    },
+    "People" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pessoas"
+          }
+        }
+      }
+    },
+    "People in Fiscal: %lld" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pessoas no Fiscal: %lld"
+          }
+        }
+      }
+    },
+    "per month" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "por mês"
+          }
+        }
+      }
+    },
+    "Pernambuco" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pernambuco"
+          }
+        }
+      }
+    },
     "Personalize" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Personalizar"
+          }
+        }
+      }
+    },
+    "Phone" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Telefone"
+          }
+        }
+      }
+    },
+    "Piauí" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piauí"
+          }
+        }
+      }
+    },
+    "Pick two or three people" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha duas ou três pessoas"
           }
         }
       }
@@ -1602,6 +4212,16 @@
         }
       }
     },
+    "Pick your state" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha seu estado"
+          }
+        }
+      }
+    },
     "Pick your state and Fiscal shows who represents you, from the president to the state assembly." : {
       "localizations" : {
         "pt-BR" : {
@@ -1612,12 +4232,62 @@
         }
       }
     },
+    "Pick your state in Fiscal, in the Mine tab." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha seu estado no Fiscal, na aba Meus."
+          }
+        }
+      }
+    },
+    "Pick your state in Mine to see your deputies, senators and governor here, with how they voted." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha seu estado em Meus para ver aqui seus deputados, senadores e governador, com o voto de cada um."
+          }
+        }
+      }
+    },
+    "Pick your state or city to see who represents you, from the president to the state assembly." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha seu estado ou sua cidade para ver quem representa você, do presidente à assembleia estadual."
+          }
+        }
+      }
+    },
+    "Places" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lugares"
+          }
+        }
+      }
+    },
     "Plum" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ameixa"
+          }
+        }
+      }
+    },
+    "Politician" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Político"
           }
         }
       }
@@ -1642,12 +4312,52 @@
         }
       }
     },
+    "Polling stations counted: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Urnas apuradas: %@"
+          }
+        }
+      }
+    },
+    "Polls counted: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Urnas apuradas: %@"
+          }
+        }
+      }
+    },
+    "Pre-marked for %@. Change as you like." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pré-marcados para %@. Mude como quiser."
+          }
+        }
+      }
+    },
     "Prefer not to say" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prefiro não dizer"
+          }
+        }
+      }
+    },
+    "Preparing the image" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparando a imagem"
           }
         }
       }
@@ -1672,12 +4382,42 @@
         }
       }
     },
+    "President and governors, from the TSE" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presidente e governadores, direto do TSE"
+          }
+        }
+      }
+    },
     "President · Brazil" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Presidente · Brasil"
+          }
+        }
+      }
+    },
+    "President, governors, Senate and deputies" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presidente, governadores, Senado e deputados"
+          }
+        }
+      }
+    },
+    "Preview of your look" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prévia do seu visual"
           }
         }
       }
@@ -1752,12 +4492,62 @@
         }
       }
     },
+    "Proposals by topic" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Propostas por tema"
+          }
+        }
+      }
+    },
+    "Proposals in %@: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Propostas em %@: %@"
+          }
+        }
+      }
+    },
+    "Proposals: %@ · Speeches: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Propostas: %@ · Discursos: %@"
+          }
+        }
+      }
+    },
     "Public domain" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Domínio público"
+          }
+        }
+      }
+    },
+    "Public domain works from Brazilian artists, always with credit." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obras de artistas brasileiros em domínio público, sempre com crédito."
+          }
+        }
+      }
+    },
+    "Public domain works: the author died more than 70 years ago (Law 9,610, art. 41). Each image comes from a public archive." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obras em domínio público: o autor morreu há mais de 70 anos (Lei 9.610, art. 41). Cada imagem vem de um acervo público."
           }
         }
       }
@@ -1772,6 +4562,26 @@
         }
       }
     },
+    "Published" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Publicado"
+          }
+        }
+      }
+    },
+    "Published by %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Publicado por %@"
+          }
+        }
+      }
+    },
     "Put two politicians side by side, with the same facts." : {
       "localizations" : {
         "pt-BR" : {
@@ -1782,12 +4592,192 @@
         }
       }
     },
+    "Put your topics first" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seus temas primeiro"
+          }
+        }
+      }
+    },
+    "Quorum %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quórum %@"
+          }
+        }
+      }
+    },
+    "Quorum: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quórum: %@"
+          }
+        }
+      }
+    },
+    "Raised" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arrecadado"
+          }
+        }
+      }
+    },
     "Rate Fiscal" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Avaliar o Fiscal"
+          }
+        }
+      }
+    },
+    "Read the Speech" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ler o discurso"
+          }
+        }
+      }
+    },
+    "Receipts" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notas fiscais"
+          }
+        }
+      }
+    },
+    "Receipts: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notas: %@"
+          }
+        }
+      }
+    },
+    "Recent photos under an open license, used without cropping or new colors." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotos recentes com licença aberta, usadas sem recorte nem cor nova."
+          }
+        }
+      }
+    },
+    "Recent searches" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscas recentes"
+          }
+        }
+      }
+    },
+    "Recent Votes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votações recentes"
+          }
+        }
+      }
+    },
+    "Recent votes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votações recentes"
+          }
+        }
+      }
+    },
+    "Recent votes in your themes: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votações recentes nos seus temas: %@"
+          }
+        }
+      }
+    },
+    "Recorded votes in %@: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votações registradas em %@: %@"
+          }
+        }
+      }
+    },
+    "Rejected" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rejeitada"
+          }
+        }
+      }
+    },
+    "Remove the party filter %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tirar o filtro do partido %@"
+          }
+        }
+      }
+    },
+    "Removes this person from the comparison" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tira esta pessoa da comparação"
+          }
+        }
+      }
+    },
+    "representatives" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "representantes"
+          }
+        }
+      }
+    },
+    "Representatives from %@: %@." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Representantes de %1$@: %2$@."
           }
         }
       }
@@ -1828,6 +4818,86 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Direitos e igualdade"
+          }
+        }
+      }
+    },
+    "Rio de Janeiro" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rio de Janeiro"
+          }
+        }
+      }
+    },
+    "Rio Grande do Norte" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rio Grande do Norte"
+          }
+        }
+      }
+    },
+    "Rio Grande do Sul" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rio Grande do Sul"
+          }
+        }
+      }
+    },
+    "Roll Call · %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votos nominais · %@"
+          }
+        }
+      }
+    },
+    "Roll-call votes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votações nominais"
+          }
+        }
+      }
+    },
+    "Rondônia" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rondônia"
+          }
+        }
+      }
+    },
+    "Roraima" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Roraima"
+          }
+        }
+      }
+    },
+    "Round %lld" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lldº turno"
           }
         }
       }
@@ -1882,12 +4952,42 @@
         }
       }
     },
+    "Same numbers, side by side" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mesmos números, lado a lado"
+          }
+        }
+      }
+    },
+    "Same office and same state, in alphabetical order. No score, no ranking." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mesmo cargo e mesmo estado, em ordem alfabética. Sem nota e sem ranking."
+          }
+        }
+      }
+    },
     "Sand" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Areia"
+          }
+        }
+      }
+    },
+    "Santa Catarina" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Santa Catarina"
           }
         }
       }
@@ -1902,12 +5002,112 @@
         }
       }
     },
+    "Saved only on this device." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardadas só neste aparelho."
+          }
+        }
+      }
+    },
+    "Sea" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mar"
+          }
+        }
+      }
+    },
     "Search" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fiscalizar"
+          }
+        }
+      }
+    },
+    "Search runs on this device, over the official list of places from IBGE." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A busca roda neste aparelho, na lista oficial de lugares do IBGE."
+          }
+        }
+      }
+    },
+    "See Agenda" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver pauta"
+          }
+        }
+      }
+    },
+    "See All" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver tudo"
+          }
+        }
+      }
+    },
+    "See details" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver detalhes"
+          }
+        }
+      }
+    },
+    "See how the representatives from ${state} voted" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver como votaram os representantes de ${state}"
+          }
+        }
+      }
+    },
+    "See the app through the topics of another side for a moment. Nothing is saved and the numbers do not change." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veja o app pelos temas de outro lado por um momento. Nada é salvo e os números não mudam."
+          }
+        }
+      }
+    },
+    "See the Receipt" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver a nota"
+          }
+        }
+      }
+    },
+    "Senate" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senado"
           }
         }
       }
@@ -1928,6 +5128,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Senadores"
+          }
+        }
+      }
+    },
+    "Sergipe" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sergipe"
+          }
+        }
+      }
+    },
+    "Session" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessão"
+          }
+        }
+      }
+    },
+    "Sessions and the bills up for a vote show up here once the houses publish them." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As sessões e os projetos em votação aparecem aqui assim que as casas publicam."
+          }
+        }
+      }
+    },
+    "Set by" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Definido por"
           }
         }
       }
@@ -1972,6 +5212,26 @@
         }
       }
     },
+    "Share Image" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartilhar imagem"
+          }
+        }
+      }
+    },
+    "Share My Representatives" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartilhar meus representantes"
+          }
+        }
+      }
+    },
     "Short guides for every part of the app." : {
       "localizations" : {
         "pt-BR" : {
@@ -1982,12 +5242,122 @@
         }
       }
     },
+    "Show" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar"
+          }
+        }
+      }
+    },
+    "Show the Vote Count" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver a apuração"
+          }
+        }
+      }
+    },
+    "Showing only" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrando só"
+          }
+        }
+      }
+    },
+    "Shows only this party in the roll call" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra só este partido na lista de votos"
+          }
+        }
+      }
+    },
     "Shows the count on the Lock Screen and in the Dynamic Island." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mostra a apuração na tela de bloqueio e na Dynamic Island."
+          }
+        }
+      }
+    },
+    "Shows the people of this party" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra as pessoas deste partido"
+          }
+        }
+      }
+    },
+    "Shows the recent votes on this topic" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra as votações recentes deste tema"
+          }
+        }
+      }
+    },
+    "Shows what the lens changes and lets you switch it" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra o que a lente muda e deixa trocar"
+          }
+        }
+      }
+    },
+    "Shows who represents this place" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra quem representa este lugar"
+          }
+        }
+      }
+    },
+    "Side" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lado"
+          }
+        }
+      }
+    },
+    "Side by side" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lado a lado"
+          }
+        }
+      }
+    },
+    "since %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "desde %@"
           }
         }
       }
@@ -2022,12 +5392,172 @@
         }
       }
     },
+    "Some state assemblies don't publish attendance, votes or expenses as open data." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algumas assembleias não publicam presença, votos ou gastos como dado aberto."
+          }
+        }
+      }
+    },
+    "Source on Commons" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fonte no Commons"
+          }
+        }
+      }
+    },
+    "Source: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fonte: %@"
+          }
+        }
+      }
+    },
+    "Source: %@ · %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fonte: %1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "Source: %@ · updated %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fonte: %1$@ · atualizado %2$@"
+          }
+        }
+      }
+    },
+    "Source: %@ · votes of %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fonte: %1$@ · votações de %2$@"
+          }
+        }
+      }
+    },
+    "Source: Chamber and Senate agendas · as published today" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fonte: pautas da Câmara e do Senado · como publicadas hoje"
+          }
+        }
+      }
+    },
+    "Source: TSE" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fonte: TSE"
+          }
+        }
+      }
+    },
+    "Source: TSE election calendar. Mayors and city councillors come after version 1.0." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fonte: calendário eleitoral do TSE. Prefeitos e vereadores entram depois da versão 1.0."
+          }
+        }
+      }
+    },
+    "Source: —" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fonte: —"
+          }
+        }
+      }
+    },
+    "Speeches" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discursos"
+          }
+        }
+      }
+    },
+    "Speeches in %@: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discursos em %@: %@"
+          }
+        }
+      }
+    },
+    "Spent" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gasto"
+          }
+        }
+      }
+    },
+    "Spent by federal deputies and senators in %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "gastos por deputados federais e senadores em %@"
+          }
+        }
+      }
+    },
+    "Start" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Início"
+          }
+        }
+      }
+    },
     "Start Here" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Comece aqui"
+          }
+        }
+      }
+    },
+    "Start · 1 min" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Começar · 1 min"
           }
         }
       }
@@ -2042,12 +5572,82 @@
         }
       }
     },
+    "State" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estado"
+          }
+        }
+      }
+    },
+    "State deputies" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deputados estaduais"
+          }
+        }
+      }
+    },
     "State Deputy" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Deputado estadual"
+          }
+        }
+      }
+    },
+    "State or city" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estado ou cidade"
+          }
+        }
+      }
+    },
+    "State · %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estado · %@"
+          }
+        }
+      }
+    },
+    "States" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estados"
+          }
+        }
+      }
+    },
+    "States and Cities" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estados e cidades"
+          }
+        }
+      }
+    },
+    "Step %lld of %lld" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passo %lld de %lld"
           }
         }
       }
@@ -2082,12 +5682,52 @@
         }
       }
     },
+    "Stories" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stories"
+          }
+        }
+      }
+    },
+    "Summary in plain words, written from the official text." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resumo em palavras simples, feito a partir do texto oficial."
+          }
+        }
+      }
+    },
+    "Summary of the Day" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resumo do dia"
+          }
+        }
+      }
+    },
     "Sunflower" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Girassol"
+          }
+        }
+      }
+    },
+    "Superior Electoral Court" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tribunal Superior Eleitoral"
           }
         }
       }
@@ -2122,6 +5762,16 @@
         }
       }
     },
+    "São Paulo" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "São Paulo"
+          }
+        }
+      }
+    },
     "Tally" : {
       "localizations" : {
         "pt-BR" : {
@@ -2142,6 +5792,26 @@
         }
       }
     },
+    "Tap a place to see who represents it." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque num lugar para ver quem o representa."
+          }
+        }
+      }
+    },
+    "Tap Follow on any profile and that person shows up here, on this device." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque em Seguir em qualquer perfil e a pessoa aparece aqui, neste aparelho."
+          }
+        }
+      }
+    },
     "Taxes and public spending" : {
       "localizations" : {
         "pt-BR" : {
@@ -2152,12 +5822,82 @@
         }
       }
     },
+    "Taxes collected by state" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impostos arrecadados por estado"
+          }
+        }
+      }
+    },
     "Teal" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Petróleo"
+          }
+        }
+      }
+    },
+    "Term %@–%@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mandato %@–%@"
+          }
+        }
+      }
+    },
+    "Term ends" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fim do mandato"
+          }
+        }
+      }
+    },
+    "Term in Numbers" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mandato em números"
+          }
+        }
+      }
+    },
+    "Term in office" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No mandato"
+          }
+        }
+      }
+    },
+    "Term since %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mandato desde %@"
+          }
+        }
+      }
+    },
+    "Term until %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mandato até %@"
           }
         }
       }
@@ -2202,12 +5942,42 @@
         }
       }
     },
+    "The allowance only pays for work costs. Salary is separate and has its own section." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A cota só paga custos do trabalho. O salário é outra coisa e tem uma seção própria."
+          }
+        }
+      }
+    },
     "The artists behind the share cards show up here, with each work, its license and a link to the source." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Os artistas dos cards de compartilhar aparecem aqui, com cada obra, a licença e o link para a fonte."
+          }
+        }
+      }
+    },
+    "The cap changes by state" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O limite muda por estado"
+          }
+        }
+      }
+    },
+    "The card carries the official source, the date and the art credit. Your Lens never goes into the image." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O card leva a fonte oficial, a data e o crédito da arte. Sua Lente nunca vai para a imagem."
           }
         }
       }
@@ -2242,12 +6012,62 @@
         }
       }
     },
+    "The election calendar below still works." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O calendário das eleições, logo abaixo, continua disponível."
+          }
+        }
+      }
+    },
+    "The electoral court hasn't published campaign money yet." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O TSE ainda não publicou o dinheiro das campanhas."
+          }
+        }
+      }
+    },
+    "The federal revenue service hasn't closed a full year yet." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Receita Federal ainda não fechou um ano completo."
+          }
+        }
+      }
+    },
     "The first version of Fiscal." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "A primeira versão do Fiscal."
+          }
+        }
+      }
+    },
+    "The house doesn't publish this" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A casa não publica"
+          }
+        }
+      }
+    },
+    "The house hasn't published the result yet" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A casa ainda não publicou o resultado"
           }
         }
       }
@@ -2262,12 +6082,102 @@
         }
       }
     },
+    "The latest vote in Congress, with the Yes and No score and the result." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A votação mais recente do Congresso, com o placar de Sim e Não e o resultado."
+          }
+        }
+      }
+    },
+    "The latest votes in the Chamber and the Senate, newest first." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As últimas votações da Câmara e do Senado, das mais novas para as mais antigas."
+          }
+        }
+      }
+    },
+    "The latest votes of the Chamber and the Senate show up here, with the full count." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As últimas votações da Câmara e do Senado aparecem aqui, com o placar completo."
+          }
+        }
+      }
+    },
+    "The lens is never sent in requests, logs, notifications, shared cards or Spotlight." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A lente nunca vai em requisições, registros, notificações, cards compartilhados nem no Spotlight."
+          }
+        }
+      }
+    },
+    "The list of places isn't published yet." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A lista de lugares ainda não foi publicada."
+          }
+        }
+      }
+    },
+    "The office pays and asks to be refunded with an invoice. The Chamber and the Senate publish each one." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O gabinete paga e pede o reembolso com a nota fiscal. A Câmara e o Senado publicam cada uma."
+          }
+        }
+      }
+    },
     "The official count, straight from the TSE." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "A apuração oficial, direto do TSE."
+          }
+        }
+      }
+    },
+    "The official list of representatives for this place isn't published yet." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A lista oficial de representantes deste lugar ainda não foi publicada."
+          }
+        }
+      }
+    },
+    "The palette colors buttons and highlights. Charts, scoreboards and politicians keep their own colors." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A paleta colore botões e destaques. Gráficos, placares e políticos mantêm as próprias cores."
+          }
+        }
+      }
+    },
+    "The plain summary is Fiscal's rewrite. The official summary is always one tap away." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O resumo simples é uma reescrita do Fiscal. A ementa oficial fica sempre a um toque."
           }
         }
       }
@@ -2282,12 +6192,32 @@
         }
       }
     },
+    "The same facts for everyone, in the order that matters to you." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os mesmos fatos para todo mundo, na ordem que importa para você."
+          }
+        }
+      }
+    },
     "The server didn't accept this Live Activity. Try following again." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "O servidor não aceitou esta Atividade ao Vivo. Tente acompanhar de novo."
+          }
+        }
+      }
+    },
+    "The state you chose in Mine. Names in alphabetical order." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O estado que você escolheu em Meus. Nomes em ordem alfabética."
           }
         }
       }
@@ -2332,6 +6262,36 @@
         }
       }
     },
+    "Themes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temas"
+          }
+        }
+      }
+    },
+    "Themes from the proposals and speeches, in the order the data comes. The numbers are the same for everyone." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temas das propostas e dos discursos, na ordem em que os dados chegam. Os números são os mesmos para todo mundo."
+          }
+        }
+      }
+    },
+    "These topics come first in Today, Votes and Money. Nothing is hidden." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esses temas aparecem primeiro em Hoje, Votações e Dinheiro. Nada fica escondido."
+          }
+        }
+      }
+    },
     "This data isn't published yet." : {
       "localizations" : {
         "pt-BR" : {
@@ -2372,12 +6332,42 @@
         }
       }
     },
+    "This state's list isn't published yet." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A lista deste estado ainda não foi publicada."
+          }
+        }
+      }
+    },
     "This version is no longer supported. Update to keep using Fiscal. Your data stays on your device and you can export it now." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Esta versão não tem mais suporte. Atualize para continuar usando o Fiscal. Seus dados continuam no aparelho e você pode exportá-los agora."
+          }
+        }
+      }
+    },
+    "This vote has no names: the house didn't publish who voted how." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta votação não tem nomes: a casa não publicou quem votou como."
+          }
+        }
+      }
+    },
+    "Tocantins" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tocantins"
           }
         }
       }
@@ -2392,12 +6382,62 @@
         }
       }
     },
+    "Today in Congress" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoje no Congresso"
+          }
+        }
+      }
+    },
+    "Today's Agenda" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pauta de hoje"
+          }
+        }
+      }
+    },
+    "Topics" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temas"
+          }
+        }
+      }
+    },
     "Total in %@" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Total em %@"
+          }
+        }
+      }
+    },
+    "Totals by kind of expense, adding up every deputy and senator." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Totais por tipo de gasto, somando todos os deputados e senadores."
+          }
+        }
+      }
+    },
+    "Touch a month to see its total. The dashed line is the monthly average." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque num mês para ver o total. A linha tracejada é a média mensal."
           }
         }
       }
@@ -2552,12 +6592,42 @@
         }
       }
     },
+    "Vice governors" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vice-governadores"
+          }
+        }
+      }
+    },
     "Vice President" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vice-presidente"
+          }
+        }
+      }
+    },
+    "Voice vote" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votação simbólica"
+          }
+        }
+      }
+    },
+    "Voice vote: no one's name is recorded" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votação simbólica: ninguém tem o voto registrado"
           }
         }
       }
@@ -2572,12 +6642,52 @@
         }
       }
     },
+    "Vote Count" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apuração"
+          }
+        }
+      }
+    },
+    "Vote count" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apuração"
+          }
+        }
+      }
+    },
     "Vote not loaded" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Votação não carregada"
+          }
+        }
+      }
+    },
+    "Vote of the Day" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votação do dia"
+          }
+        }
+      }
+    },
+    "Voted %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votou %@"
           }
         }
       }
@@ -2592,12 +6702,72 @@
         }
       }
     },
+    "Votes apart: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diferença: %@ votos"
+          }
+        }
+      }
+    },
+    "Votes cast" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votações registradas"
+          }
+        }
+      }
+    },
+    "Votes in the last election" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votos na última eleição"
+          }
+        }
+      }
+    },
+    "Votes received: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votos recebidos: %@"
+          }
+        }
+      }
+    },
+    "votes up to %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "votações até %@"
+          }
+        }
+      }
+    },
     "Votes, sessions and new laws show up here as they happen." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Votações, sessões e leis novas aparecem aqui assim que acontecem."
+          }
+        }
+      }
+    },
+    "Watchful Eye" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Olhar"
           }
         }
       }
@@ -2622,6 +6792,26 @@
         }
       }
     },
+    "What Changes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que muda"
+          }
+        }
+      }
+    },
+    "What each party's leader asked the bench to vote. Parties in alphabetical order." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que o líder de cada partido pediu para a bancada votar. Partidos em ordem alfabética."
+          }
+        }
+      }
+    },
     "What Fiscal Stands For" : {
       "localizations" : {
         "pt-BR" : {
@@ -2638,6 +6828,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O que aconteceu"
+          }
+        }
+      }
+    },
+    "What is the office allowance?" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que é a cota parlamentar?"
+          }
+        }
+      }
+    },
+    "What matters most to you?" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que mais importa para você?"
+          }
+        }
+      }
+    },
+    "What the Sources Publish" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que as fontes publicam"
+          }
+        }
+      }
+    },
+    "What your representatives do with your vote" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que seus representantes fazem com o seu voto"
           }
         }
       }
@@ -2663,12 +6893,42 @@
         }
       }
     },
+    "When the house publishes the receipts paid with the office allowance, they show up here with supplier and CNPJ." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando a casa publicar as notas pagas com a cota, elas aparecem aqui com fornecedor e CNPJ."
+          }
+        }
+      }
+    },
+    "Where campaign money comes from" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De onde vem o dinheiro das campanhas"
+          }
+        }
+      }
+    },
     "Where public money goes." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Para onde vai o dinheiro público."
+          }
+        }
+      }
+    },
+    "Where the allowance goes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para onde vai a cota"
           }
         }
       }
@@ -2683,12 +6943,92 @@
         }
       }
     },
+    "Which side are you on?" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De que lado você está?"
+          }
+        }
+      }
+    },
+    "Which state?" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De qual estado?"
+          }
+        }
+      }
+    },
+    "Who represents" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem representa"
+          }
+        }
+      }
+    },
+    "Who represents you" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem representa você"
+          }
+        }
+      }
+    },
     "Who represents you and who you follow." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quem representa você e quem você segue."
+          }
+        }
+      }
+    },
+    "Who represents your state, with a tap to each profile." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem representa o seu estado, com um toque para cada perfil."
+          }
+        }
+      }
+    },
+    "Who was elected appears in each profile's history, with the votes." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem foi eleito aparece no histórico de cada perfil, com os votos."
+          }
+        }
+      }
+    },
+    "Who you follow stays on this device." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem você segue fica só neste aparelho."
+          }
+        }
+      }
+    },
+    "With the impartial lens, every other lens stays one tap away. Nothing is saved and the numbers do not change." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na lente imparcial, as outras lentes ficam sempre a um toque. Nada é salvo e os números não mudam."
           }
         }
       }
@@ -2703,12 +7043,82 @@
         }
       }
     },
+    "Works like Impartial." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Funciona como Imparcial."
+          }
+        }
+      }
+    },
+    "Year" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ano"
+          }
+        }
+      }
+    },
     "Yes" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sim"
+          }
+        }
+      }
+    },
+    "YES" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SIM"
+          }
+        }
+      }
+    },
+    "Yes %@, no %@, other %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sim %1$@, não %2$@, outros %3$@"
+          }
+        }
+      }
+    },
+    "Yesterday" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ontem"
+          }
+        }
+      }
+    },
+    "Your choice stays only on this iPhone. It does not go to any server, it is not in iCloud or in backups, it is not shared and Fiscal does not know what it is." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua escolha fica só neste iPhone. Ela não vai para nenhum servidor, não entra no iCloud nem em backup, não é compartilhada e o Fiscal não sabe qual é."
+          }
+        }
+      }
+    },
+    "YOUR CITY" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SUA CIDADE"
           }
         }
       }
@@ -2749,6 +7159,146 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Seu iCloud, sua escolha"
+          }
+        }
+      }
+    },
+    "Your lens changes the order, never the facts. It stays on this iPhone." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua lente muda a ordem, nunca os fatos. Ela fica só neste iPhone."
+          }
+        }
+      }
+    },
+    "Your lens picks which votes come first. The numbers are the same for everyone." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua lente escolhe quais votações aparecem primeiro. Os números são os mesmos para todo mundo."
+          }
+        }
+      }
+    },
+    "Your lens puts your themes first. The numbers are the same for everyone." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua lente põe os seus temas primeiro. Os números são os mesmos para todo mundo."
+          }
+        }
+      }
+    },
+    "Your lens shows %@ first." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua lente mostra %@ primeiro."
+          }
+        }
+      }
+    },
+    "Your look" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O seu visual"
+          }
+        }
+      }
+    },
+    "Your Place" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu lugar"
+          }
+        }
+      }
+    },
+    "Your place stays only on this device. Fiscal never sends it anywhere." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu lugar fica só neste aparelho. O Fiscal nunca o envia para lugar nenhum."
+          }
+        }
+      }
+    },
+    "Your Representatives" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seus representantes"
+          }
+        }
+      }
+    },
+    "Your Representatives · %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seus representantes · %@"
+          }
+        }
+      }
+    },
+    "Your side" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu lado"
+          }
+        }
+      }
+    },
+    "Your side, topics and look leave this iPhone for good. Then Fiscal asks for them again." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu lado, seus temas e seu visual saem deste iPhone de vez. Depois, o Fiscal pergunta de novo."
+          }
+        }
+      }
+    },
+    "YOUR STATE" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SEU ESTADO"
+          }
+        }
+      }
+    },
+    "Your topics" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seus temas"
+          }
+        }
+      }
+    },
+    "Your topics come first. The numbers are the same for everyone." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seus temas vêm primeiro. Os números são os mesmos para todo mundo."
           }
         }
       }

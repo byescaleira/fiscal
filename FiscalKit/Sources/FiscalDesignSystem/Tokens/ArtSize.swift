@@ -11,10 +11,6 @@ extension CGFloat {
     public static let selectionStroke: CGFloat = 2
 }
 
-extension Double {
-    public static let opacityScrim = 0.6
-}
-
 extension Angle {
     public static let posterTilt = Angle.degrees(4)
 }

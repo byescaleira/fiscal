@@ -1,8 +1,9 @@
+import FiscalDomain
 import Foundation
 
 @MainActor
 public final class MinePlaceMemory {
-    public static let key = "FiscalMinePlace"
+    public static let key = HomePlace.mineKey
     private let defaults: UserDefaults
 
     public init(defaults: UserDefaults = .standard) {

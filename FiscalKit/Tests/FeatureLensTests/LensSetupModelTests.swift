@@ -42,7 +42,7 @@ struct LensSetupModelTests {
         #expect(setup.isLastStep)
         #expect(setup.progress == 1)
         #expect(setup.palette == .savanna)
-        #expect(setup.collection?.id == "civica")
+        #expect(setup.collection?.id == "brasil-agora")
         await setup.advance()
         #expect(setup.isFinished)
         #expect(!context.needsSetup)

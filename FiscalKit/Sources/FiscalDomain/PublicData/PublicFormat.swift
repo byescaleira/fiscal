@@ -3,6 +3,16 @@ import Foundation
 public enum PublicFormat {
     public static let missing = "—"
 
+    public static func updated(_ date: Date, calendar: Calendar = FiscalCalendar.current)
+        -> String
+    {
+        let style = Date.VerbatimFormatStyle(
+            format:
+                "\(day: .twoDigits)/\(month: .twoDigits), \(hour: .twoDigits(clock: .twentyFourHour, hourCycle: .zeroBased)):\(minute: .twoDigits)",
+            timeZone: calendar.timeZone, calendar: calendar)
+        return date.formatted(style)
+    }
+
     public static func reais(cents: Int) -> Decimal {
         Decimal(cents) / 100
     }

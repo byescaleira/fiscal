@@ -120,3 +120,12 @@ struct PublicDataDecodingTests {
         #expect(ballot.id == "Fulano-PT-ac")
     }
 }
+
+struct UpdatedTimeTests {
+    @Test func updatedUsesTheTwentyFourHourClock() throws {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = try #require(TimeZone(identifier: "America/Sao_Paulo"))
+        let date = Date(timeIntervalSince1970: 1_792_918_800)
+        #expect(PublicFormat.updated(date, calendar: calendar) == "25/10, 06:00")
+    }
+}
