@@ -222,7 +222,7 @@ def fetch(source, found):
             "id": work["id"], "asset": asset, "title": work["title"], "artist": artist["name"],
             "artistLife": "%d–%d" % (artist["born"], artist["died"]), "year": work["year"],
             "collection": work["collection"], "holder": work["holder"],
-            "sourceUrl": info["descriptionurl"], "fileUrl": fetched, "license": work["license"],
+            "sourceUrl": info["descriptionurl"], "fileUrl": fetched.split("?")[0], "license": work["license"],
             "licenseUrl": license_url(work, info), "credit": credit(work, artist),
         })
         print("%-44s %6d KB  %s" % (asset, os.path.getsize(image) // 1024, fetched))

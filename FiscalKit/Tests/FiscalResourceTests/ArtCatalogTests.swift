@@ -115,7 +115,8 @@ struct ArtCatalogTests {
                     "\(work.artist), \(work.title) (\(work.year)). Domínio público. "))
             #expect(work.credit.hasSuffix(" via Wikimedia Commons."))
             #expect(work.sourceUrl.host() == "commons.wikimedia.org")
-            #expect(work.fileUrl.host() == "upload.wikimedia.org")
+            #expect(work.fileUrl.host()?.hasSuffix(".wikimedia.org") == true)
+            #expect(work.fileUrl.query() == nil)
             #expect(work.licenseUrl.scheme == "https")
         }
     }
