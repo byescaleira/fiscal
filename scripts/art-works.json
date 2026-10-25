@@ -1,43 +1,43 @@
 {
   "deathYearLimit": 1955,
   "maxSide": 1600,
-  "quality": 80,
+  "quality": 70,
   "maxTotalBytes": 15000000,
   "artists": {
-    "agostini": {
-      "name": "Angelo Agostini",
-      "born": 1843,
-      "died": 1910
-    },
     "almeida-junior": {
       "name": "Almeida Júnior",
       "born": 1850,
       "died": 1899
     },
-    "belmonte": {
-      "name": "Belmonte",
-      "born": 1896,
-      "died": 1947
+    "brocos": {
+      "name": "Modesto Brocos",
+      "born": 1852,
+      "died": 1936
     },
     "calixto": {
       "name": "Benedito Calixto",
       "born": 1853,
       "died": 1927
     },
-    "debret": {
-      "name": "Jean-Baptiste Debret",
-      "born": 1768,
-      "died": 1848
-    },
-    "j-carlos": {
-      "name": "J. Carlos",
-      "born": 1884,
-      "died": 1950
+    "frans-post": {
+      "name": "Frans Post",
+      "born": 1612,
+      "died": 1680
     },
     "meirelles": {
       "name": "Victor Meirelles",
       "born": 1832,
       "died": 1903
+    },
+    "moreaux": {
+      "name": "François-René Moreaux",
+      "born": 1807,
+      "died": 1860
+    },
+    "oscar-pereira-da-silva": {
+      "name": "Oscar Pereira da Silva",
+      "born": 1865,
+      "died": 1939
     },
     "pedro-americo": {
       "name": "Pedro Américo",
@@ -71,64 +71,76 @@
   ],
   "works": [
     {
-      "id": "j-carlos-careta-1920",
-      "file": "File:Careta (revista) 1920.png",
-      "title": "Capa da Careta",
-      "artist": "j-carlos",
-      "year": "1920",
+      "id": "pedro-americo-fala-do-trono",
+      "file": "File:Pedro Américo - D. Pedro II na abertura da Assembléia Geral.jpg",
+      "title": "Fala do Trono",
+      "artist": "pedro-americo",
+      "year": "1872",
       "series": "civica",
-      "holder": "Careta, 13 de março de 1920",
-      "holderKind": "periodical",
+      "holder": "Museu Imperial",
+      "holderKind": "institution",
+      "license": "PD-Art (PD-old-auto-expired)",
+      "licenseCategory": "PD-Art (PD-old-auto-expired)"
+    },
+    {
+      "id": "oscar-pereira-da-silva-sessao-das-cortes-de-lisboa",
+      "file": "File:Sessão das Cortes de Lisboa.jpg",
+      "title": "Sessão das Cortes de Lisboa",
+      "artist": "oscar-pereira-da-silva",
+      "year": "1922",
+      "series": "civica",
+      "holder": "Museu Paulista da USP",
+      "holderKind": "institution",
+      "license": "PD-Art (PD-old-70-expired)",
+      "licenseCategory": "PD-Art (PD-old-70-expired)"
+    },
+    {
+      "id": "meirelles-juramento-da-princesa-isabel",
+      "file": "File:Victor Meirelles – Juramento da Princesa Isabel, 1875 – Museu Imperial, Petrópolis.jpg",
+      "title": "Juramento da Princesa Isabel",
+      "artist": "meirelles",
+      "year": "1875",
+      "series": "civica",
+      "holder": "Museu Imperial",
+      "holderKind": "institution",
+      "license": "PD-Art (PD-old-auto-expired)",
+      "licenseCategory": "PD-Art (PD-old-auto-expired)"
+    },
+    {
+      "id": "calixto-proclamacao-da-republica",
+      "file": "File:Proclamação da República by Benedito Calixto 1893.jpg",
+      "title": "Proclamação da República",
+      "artist": "calixto",
+      "year": "1893",
+      "series": "civica",
+      "holder": "Pinacoteca Municipal de São Paulo",
+      "holderKind": "institution",
+      "license": "PD-Art (PD-old-auto-expired)",
+      "licenseCategory": "PD-Art (PD-old-auto-expired)"
+    },
+    {
+      "id": "moreaux-proclamacao-da-independencia",
+      "file": "File:François-René Moreaux – Proclamação da Independência (1844).jpg",
+      "title": "Proclamação da Independência",
+      "artist": "moreaux",
+      "year": "1844",
+      "series": "civica",
+      "holder": "Museu Imperial",
+      "holderKind": "institution",
       "license": "PD-Art (PD-old-100-expired)",
       "licenseCategory": "PD-Art (PD-old-100-expired)"
     },
     {
-      "id": "j-carlos-as-duas-imprensas",
-      "file": "File:As duas imprensas.jpg",
-      "title": "As Duas Imprensas",
-      "artist": "j-carlos",
-      "year": "1922",
+      "id": "calixto-cavalhadas-em-campinas",
+      "file": "File:Benedito Calixto de Jesus - Cavalhadas em Campinas, 1846, Acervo do Museu Paulista da USP.jpg",
+      "title": "Cavalhadas em Campinas, 1846",
+      "artist": "calixto",
+      "year": "1920",
       "series": "civica",
-      "holder": "O Malho, n.º 1057, na Hemeroteca Digital Brasileira",
-      "holderKind": "periodical",
-      "license": "PD-Brazil-URAA",
-      "licenseCategory": "PD-Brazil-URAA"
-    },
-    {
-      "id": "agostini-fechamento-das-camaras",
-      "file": "File:Fechamento das Câmaras - Au revoir.jpg",
-      "title": "Fechamento das Câmaras",
-      "artist": "agostini",
-      "year": "1892",
-      "series": "civica",
-      "holder": "Revista Illustrada, n.º 637",
-      "holderKind": "periodical",
-      "license": "PD-Brazil-media",
-      "licenseCategory": "PD Brazil Media"
-    },
-    {
-      "id": "agostini-urna-conservadora",
-      "file": "File:\"Urna Conservadora\" (Revista Illustrada nº 125, 1878).jpg",
-      "title": "Urna Conservadora",
-      "artist": "agostini",
-      "year": "1878",
-      "series": "civica",
-      "holder": "Revista Illustrada, n.º 125, na Hemeroteca Digital Brasileira",
-      "holderKind": "periodical",
-      "license": "PD-old-70",
-      "licenseCategory": "Author died more than 70 years ago public domain images"
-    },
-    {
-      "id": "debret-praca-do-palacio",
-      "file": "File:Praça do Palácio AN.tif",
-      "title": "Praça do Palácio, Rio de Janeiro",
-      "artist": "debret",
-      "year": "1834–1839",
-      "series": "civica",
-      "holder": "Arquivo Nacional",
+      "holder": "Museu Paulista da USP",
       "holderKind": "institution",
-      "license": "PD-old-100-expired (Arquivo Nacional PD-license)",
-      "licenseCategory": "PD-Arquivo Nacional"
+      "license": "PD-old-95-expired",
+      "licenseCategory": "PD-old-95-expired"
     },
     {
       "id": "almeida-junior-caipira-picando-fumo",
@@ -167,28 +179,40 @@
       "licenseCategory": "PD-Art (PD-old-100-expired)"
     },
     {
-      "id": "agostini-carnaval",
-      "file": "File:Agostini Carnaval sec XIX Revista.jpg",
-      "title": "Carnaval",
-      "artist": "agostini",
-      "year": "1884",
+      "id": "almeida-junior-saudade",
+      "file": "File:Almeida Júnior - Saudade (Longing) - Google Art Project.jpg",
+      "title": "Saudade",
+      "artist": "almeida-junior",
+      "year": "1899",
       "series": "povo",
-      "holder": "Revista Illustrada, n.º 373",
-      "holderKind": "periodical",
+      "holder": "Pinacoteca do Estado de São Paulo",
+      "holderKind": "institution",
       "license": "PD-Art (PD-old-auto-expired)",
       "licenseCategory": "PD-Art (PD-old-auto-expired)"
     },
     {
-      "id": "belmonte-juca-pato",
-      "file": "File:Juca Pato, de Belmonte.jpg",
-      "title": "Juca Pato",
-      "artist": "belmonte",
-      "year": "s.d.",
+      "id": "almeida-junior-amolacao-interrompida",
+      "file": "File:Almeida Júnior - Interrupted Whetting - Google Art Project.jpg",
+      "title": "Amolação Interrompida",
+      "artist": "almeida-junior",
+      "year": "1894",
       "series": "povo",
-      "holder": "reprodução da Folha de S.Paulo, 2017",
-      "holderKind": "periodical",
-      "license": "PD-Art (PD-Brazil-media)",
-      "licenseCategory": "PD-Art (PD-Brazil-media)"
+      "holder": "Pinacoteca do Estado de São Paulo",
+      "holderKind": "institution",
+      "license": "PD-Art (PD-old-100-expired)",
+      "licenseCategory": "PD-Art (PD-old-100-expired)"
+    },
+    {
+      "id": "brocos-engenho-de-mandioca",
+      "file": "File:Brocos-engenho.jpg",
+      "title": "Engenho de Mandioca",
+      "artist": "brocos",
+      "year": "1892",
+      "series": "povo",
+      "holder": "Museu Nacional de Belas Artes",
+      "holderKind": "institution",
+      "license": "PD-Art (PD-old-auto-expired)",
+      "licenseCategory": "PD-Art (PD-old-auto-expired)"
     },
     {
       "id": "almeida-junior-marinha-guaruja",
@@ -196,6 +220,18 @@
       "title": "Marinha, Guarujá",
       "artist": "almeida-junior",
       "year": "1895",
+      "series": "paisagens",
+      "holder": "Pinacoteca do Estado de São Paulo",
+      "holderKind": "institution",
+      "license": "PD-Art (PD-old-100-expired)",
+      "licenseCategory": "PD-Art (PD-old-100-expired)"
+    },
+    {
+      "id": "almeida-junior-paisagem-fluvial",
+      "file": "File:Almeida Júnior - Fluvial Landscape - Google Art Project.jpg",
+      "title": "Paisagem Fluvial",
+      "artist": "almeida-junior",
+      "year": "1899",
       "series": "paisagens",
       "holder": "Pinacoteca do Estado de São Paulo",
       "holderKind": "institution",
@@ -215,40 +251,28 @@
       "licenseCategory": "PD-Art (PD-old-auto-expired)"
     },
     {
-      "id": "calixto-praia-com-barcos-ao-seco",
-      "file": "File:Benedito Calixto de Jesus - Praia com Barcos ao Seco (Marinha).jpg",
-      "title": "Praia com Barcos ao Seco (Marinha)",
-      "artist": "calixto",
-      "year": "1919",
+      "id": "frans-post-vista-de-olinda",
+      "file": "File:Frans Post - Gezicht op Olinda, Brazilië.jpg",
+      "title": "Vista de Olinda",
+      "artist": "frans-post",
+      "year": "1662",
       "series": "paisagens",
-      "holder": "Museu de Arte de São Paulo (MASP)",
+      "holder": "Rijksmuseum, Amsterdã",
       "holderKind": "institution",
       "license": "PD-Art (PD-old-auto-expired)",
       "licenseCategory": "PD-Art (PD-old-auto-expired)"
     },
     {
-      "id": "meirelles-panorama-do-rio-de-janeiro",
-      "file": "File:Victor Meirelles - Estudo para Panorama do Rio de Janeiro - c. 1885.jpg",
-      "title": "Estudo para o Panorama do Rio de Janeiro",
-      "artist": "meirelles",
-      "year": "c. 1885",
+      "id": "frans-post-paisagem-brasileira",
+      "file": "File:Braziliaans landschap Rijksmuseum SK-A-2333.jpeg",
+      "title": "Paisagem Brasileira",
+      "artist": "frans-post",
+      "year": "c. 1670–1680",
       "series": "paisagens",
-      "holder": "Museu Nacional de Belas Artes",
+      "holder": "Rijksmuseum, Amsterdã",
       "holderKind": "institution",
-      "license": "PD-Art (PD-old-auto-expired)",
-      "licenseCategory": "PD-Art (PD-old-auto-expired)"
-    },
-    {
-      "id": "debret-vista-do-rio-de-janeiro",
-      "file": "File:Vista do Rio de Janeiro AN1.tif",
-      "title": "Vista do Rio de Janeiro, a partir do Convento de São Bento",
-      "artist": "debret",
-      "year": "1834–1839",
-      "series": "paisagens",
-      "holder": "Arquivo Nacional",
-      "holderKind": "institution",
-      "license": "PD-old-100-expired (Arquivo Nacional PD-license)",
-      "licenseCategory": "PD-Arquivo Nacional"
+      "license": "PD-Art (PD-old-100-expired)",
+      "licenseCategory": "PD-Art (PD-old-100-expired)"
     },
     {
       "id": "pedro-americo-independencia-ou-morte",
@@ -263,52 +287,52 @@
       "licenseCategory": "PD-Art (PD-old-auto-expired)"
     },
     {
-      "id": "meirelles-juramento-da-princesa-isabel",
-      "file": "File:Victor Meirelles – Juramento da Princesa Isabel, 1875 – Museu Imperial, Petrópolis.jpg",
-      "title": "Juramento da Princesa Isabel",
-      "artist": "meirelles",
-      "year": "1875",
-      "series": "historia",
-      "holder": "Museu Imperial",
-      "holderKind": "institution",
-      "license": "PD-Art (PD-old-auto-expired)",
-      "licenseCategory": "PD-Art (PD-old-auto-expired)"
-    },
-    {
-      "id": "calixto-proclamacao-da-republica",
-      "file": "File:Proclamação da República by Benedito Calixto 1893.jpg",
-      "title": "Proclamação da República",
-      "artist": "calixto",
-      "year": "1893",
-      "series": "historia",
-      "holder": "Pinacoteca Municipal de São Paulo",
-      "holderKind": "institution",
-      "license": "PD-Art (PD-old-auto-expired)",
-      "licenseCategory": "PD-Art (PD-old-auto-expired)"
-    },
-    {
-      "id": "debret-aclamacao-de-d-pedro-i",
-      "file": "File:Aclamação de D. Pedro I como Imperador do Brasil AN.tif",
-      "title": "Aclamação de D. Pedro I como Imperador do Brasil",
-      "artist": "debret",
-      "year": "1834–1839",
-      "series": "historia",
-      "holder": "Arquivo Nacional",
-      "holderKind": "institution",
-      "license": "PD-old-100-expired (Arquivo Nacional PD-license)",
-      "licenseCategory": "PD-Arquivo Nacional"
-    },
-    {
-      "id": "almeida-junior-estudo-partida-da-moncao",
-      "file": "File:Almeida Júnior - Study for \"Departure of the Monção\" - Google Art Project.jpg",
-      "title": "Estudo para Partida da Monção",
+      "id": "almeida-junior-partida-da-moncao",
+      "file": "File:Júnior, José Ferraz de Almeida - Partida da Monção.jpg",
+      "title": "Partida da Monção",
       "artist": "almeida-junior",
       "year": "1897",
       "series": "historia",
-      "holder": "Pinacoteca do Estado de São Paulo",
+      "holder": "Museu Paulista da USP",
       "holderKind": "institution",
-      "license": "PD-Art (PD-old-100-expired)",
-      "licenseCategory": "PD-Art (PD-old-100-expired)"
+      "license": "PD-old-100-expired",
+      "licenseCategory": "PD-old-100-expired"
+    },
+    {
+      "id": "oscar-pereira-da-silva-desembarque-de-cabral",
+      "file": "File:Oscar Pereira da Silva - Desembarque de Pedro Álvares Cabral em Porto Seguro, 1500, Acervo do Museu Paulista da USP.jpg",
+      "title": "Desembarque de Pedro Álvares Cabral em Porto Seguro, 1500",
+      "artist": "oscar-pereira-da-silva",
+      "year": "1900",
+      "series": "historia",
+      "holder": "Museu Paulista da USP",
+      "holderKind": "institution",
+      "license": "PD-old-80-expired",
+      "licenseCategory": "PD-old-80-expired"
+    },
+    {
+      "id": "calixto-fundacao-de-sao-vicente",
+      "file": "File:Benedito Calixto de Jesus - Fundação de São Vicente, Acervo do Museu Paulista da USP.jpg",
+      "title": "Fundação de São Vicente",
+      "artist": "calixto",
+      "year": "1900",
+      "series": "historia",
+      "holder": "Museu Paulista da USP",
+      "holderKind": "institution",
+      "license": "PD-old-95-expired",
+      "licenseCategory": "PD-old-95-expired"
+    },
+    {
+      "id": "oscar-pereira-da-silva-fundacao-de-sao-paulo",
+      "file": "File:Oscar Pereira da Silva - Fundação da Cidade de São Paulo, Acervo do Museu Paulista da USP.jpg",
+      "title": "Fundação de São Paulo",
+      "artist": "oscar-pereira-da-silva",
+      "year": "1909",
+      "series": "historia",
+      "holder": "Museu Paulista da USP",
+      "holderKind": "institution",
+      "license": "PD-old-80-expired",
+      "licenseCategory": "PD-old-80-expired"
     }
   ]
 }
