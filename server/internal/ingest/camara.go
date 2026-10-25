@@ -2,6 +2,7 @@ package ingest
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"sort"
@@ -17,7 +18,10 @@ import (
 const (
 	maxCSVBytes = 512 << 20
 	maxZipBytes = 256 << 20
+	speechTrip  = 40
 )
+
+var errSpeechesDown = errors.New("camara speeches: source failing, skipped")
 
 type camaraResult struct {
 	people          []*publicdata.Person
@@ -175,16 +179,32 @@ func (in *Ingest) loadCamara(ctx context.Context, rep *Report) (camaraResult, er
 		}
 	}
 	var smu sync.Mutex
+	streak, tripped := 0, false
 	forEachJob(in.cfg.Workers, len(jobs), func(i int) {
 		j := jobs[i]
-		sp, err := in.camaraSpeeches(ctx, j.id, j.year)
+		smu.Lock()
+		skip := tripped
+		smu.Unlock()
+		var sp []camara.Speech
+		err := errSpeechesDown
+		if !skip {
+			sp, err = in.camaraSpeeches(ctx, j.id, j.year)
+		}
 		smu.Lock()
 		defer smu.Unlock()
 		if err != nil {
 			speechFailed[j.id] = true
+			if skip {
+				return
+			}
 			in.warn(rep, "camara speeches %d/%d: %v", j.id, j.year, err)
+			if streak++; streak >= speechTrip && !tripped {
+				tripped = true
+				in.warn(rep, "camara speeches: %d failures in a row, skipping the remaining deputies", streak)
+			}
 			return
 		}
+		streak = 0
 		act := deps[j.id].person.Activity[j.year]
 		for _, s := range sp {
 			act.Speeches = append(act.Speeches, publicdata.RawSpeech{Date: in.isoLocal(s.Start), Kind: s.Kind, Summary: s.Summary, Keywords: s.Keywords, URL: s.URL})
