@@ -1,5 +1,12 @@
 import FeatureCore
-import FeatureHome
+import FeatureLens
+import FeatureLiveResults
+import FeatureProfile
+import FeatureSearch
+import FeatureSettings
+import FeatureShare
+import FeatureVotes
+import FiscalDesignSystem
 import SwiftUI
 
 struct RouteScreen: View {
@@ -7,11 +14,50 @@ struct RouteScreen: View {
     let route: Route
 
     @ViewBuilder var body: some View {
+        let data = FiscalServices.shared.publicData()
         switch route {
-        case .item(let id):
-            ModelHost(ItemEditorModel(id: id, repositories: session.repositories)) {
-                ItemEditorScreen()
+        case .person(let slug):
+            ModelHost(
+                ProfileModel(slug: slug, service: data, follows: session.repositories.follows)
+            ) {
+                ProfileScreen()
             }
+        case .vote(let id): ModelHost(VoteDetailModel(id: id, service: data)) { VoteDetailScreen() }
+        case .compare(let slugs):
+            ModelHost(CompareModel(slugs: slugs, service: data)) { CompareScreen() }
+        case .races: ModelHost(FiscalServices.shared.liveResults()) { LiveResultsScreen() }
+        case .lens: LensDestination()
+        case .artists: ArtistsDestination()
+        case .settings: SettingsScreen { SettingsExtraSection() }
+        }
+    }
+}
+
+private struct LensDestination: View {
+    @Environment(SessionModel.self) private var session
+
+    var body: some View {
+        ModelHost(LensModel(repository: session.repositories.lens)) { LensScreen() }
+    }
+}
+
+private struct ArtistsDestination: View {
+    var body: some View {
+        ModelHost(ArtistsModel()) { ArtistsScreen() }
+    }
+}
+
+private struct SettingsExtraSection: View {
+    var body: some View {
+        Section {
+            SettingsRow("Lens", symbol: "eyeglasses", color: .retroTeal) {
+                LensDestination()
+            }
+            SettingsRow("Artists", symbol: "paintpalette", color: .retroPlum) {
+                ArtistsDestination()
+            }
+        } header: {
+            Text("Your Fiscal")
         }
     }
 }

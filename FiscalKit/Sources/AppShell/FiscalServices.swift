@@ -42,6 +42,13 @@ public final class FiscalServices {
             service: service, activities: RaceActivities(), environment: environment)
     }
 
+    func publicData() -> (any PublicDataService)? {
+        #if DEBUG
+            if let showcase = ShowcasePublicData.fromLaunchArguments() { return showcase }
+        #endif
+        return PublicDataClient.fromBundle()
+    }
+
     public static var launchCloudSync: Bool {
         #if targetEnvironment(simulator)
             false

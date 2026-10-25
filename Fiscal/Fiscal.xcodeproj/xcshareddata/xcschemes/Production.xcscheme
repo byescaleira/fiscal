@@ -95,9 +95,6 @@
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>
-      <StoreKitConfigurationFileReference
-         identifier = "../../../Fiscal/Fiscal.storekit">
-      </StoreKitConfigurationFileReference>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

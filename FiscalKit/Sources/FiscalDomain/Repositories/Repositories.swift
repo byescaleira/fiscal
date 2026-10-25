@@ -1,7 +1,9 @@
 public struct Repositories: Sendable {
-    public let items: any ItemRepository
+    public let lens: any LensRepository
+    public let follows: any FollowRepository
 
-    public init(items: any ItemRepository) {
-        self.items = items
+    public init(lens: any LensRepository, follows: any FollowRepository) {
+        self.lens = lens
+        self.follows = follows
     }
 }

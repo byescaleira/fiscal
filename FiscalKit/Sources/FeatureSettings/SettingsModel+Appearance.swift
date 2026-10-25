@@ -45,11 +45,4 @@ extension SettingsModel {
                     detail: 0.79.formatted(.percent.locale(.app)), fraction: 0.79),
             ])
     }
-
-    var languageFooter: String {
-        String(
-            appLocalized:
-                "Fiscal changes language right away. System texts, such as the keyboard and date pickers, follow the next time the app opens."
-        )
-    }
 }

@@ -7,18 +7,27 @@ extension Guide {
             TutorialPage(
                 animation: .launch, title: "Welcome to Fiscal",
                 message:
-                    "Everything starts on the Live Results tab. Settings keeps the choices that are yours."
+                    "Everything starts on the Today tab. Settings, in its toolbar, keeps the choices that are yours."
             ),
             TutorialPage(
-                animation: .done, title: "Two Tabs",
+                animation: .done, title: "Five Tabs",
                 message: "Each tab keeps its own place, so you can switch without losing your way.",
                 steps: [
                     GuideStep(
-                        "chart.bar.xaxis", color: .retroOrange, title: "Live Results",
-                        detail: "The official count, straight from the TSE."),
+                        "newspaper", color: .retroOrange, title: "Today",
+                        detail: "The day's votes, sessions and live count."),
                     GuideStep(
-                        "gearshape", color: .retroDenim, title: "Settings",
-                        detail: "Appearance, language, guides and more."),
+                        "person.2", color: .retroTeal, title: "Mine",
+                        detail: "Who represents you and who you follow."),
+                    GuideStep(
+                        "checkmark.square", color: .retroDenim, title: "Votes",
+                        detail: "Floor votes and who voted how."),
+                    GuideStep(
+                        "brazilianrealsign", color: .retroOlive, title: "Money",
+                        detail: "Where public money goes."),
+                    GuideStep(
+                        "magnifyingglass", color: .retroPlum, title: "Search",
+                        detail: "Find anyone, compare and follow elections."),
                 ]),
         ]
     }
@@ -28,7 +37,7 @@ extension Guide {
             TutorialPage(
                 animation: .editor, title: "Make It Yours",
                 message:
-                    "In Settings › Appearance, pick the theme and the accent color. The language is in Settings › Language."
+                    "In Settings › Appearance, pick the theme and the accent color."
             )
         ]
     }

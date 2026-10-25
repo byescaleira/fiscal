@@ -20,26 +20,37 @@ fiscal/
 
 | Target | Responsabilidade | Depende de |
 | --- | --- | --- |
-| `FiscalDomain` | Entidades (`Item`), valores (`YearMonth`), protocolos de repositório, `FiscalError`, `AppLanguage`/`String(appLocalized:)`, `RemoteFlag` | nada |
-| `FiscalData` | `FiscalDatabase` (SwiftData + CloudKit `iCloud.fiscal`), `FiscalStore` (`@ModelActor`), entidades `@Model`, schema versionado, repositórios, `CloudKitFlagSource` | Domain |
+| `FiscalDomain` | Valores (`YearMonth`, `CalendarDay`), protocolos de repositório (`LensRepository`, `FollowRepository`), `FiscalError`, `AppLanguage`/`String(appLocalized:)`, `RemoteFlag`; em `PublicData/`, os tipos do [contrato](changes/app-1.0/contract.md) (`PersonCard`, `Profile`, `VoteSummary`, `VoteDetail`, `MoneyOverview`, `TodayDigest`…), `Theme`, `Lens`, `PublicDataService`, `PublicDataError` e `PublicFormat` (centavos em reais, "—" para dado ausente) | nada |
+| `FiscalData` | `FiscalDatabase` (SwiftData em duas configurações: `Fiscal` com CloudKit `iCloud.fiscal` para os seguidos e `Device`, só no aparelho, para a Lente; [ADR 0004](adr/0004-lens-on-device-store.md)), `FiscalStore` (`@ModelActor`), entidades `@Model`, schema versionado, repositórios, `CloudKitFlagSource`; em `PublicData/`, o `PublicDataClient` (URLSession com `URLCache`, `ETag` e cópia em cache quando falta rede) e, em Debug, o `ShowcasePublicData` com `-FiscalDataScenario normal\|empty\|offline\|longNames\|unavailable` | Domain |
 | `FiscalDesignSystem` | Tokens, estilos, modifiers, layouts e componentes sem regra de negócio | nada |
 | `FiscalResource` | Prévia do ícone e animações Lottie embutidas (`FiscalResourceAnimation`) | nada |
 | `FeatureCore` | `SessionModel`, navegação (`Route`, `AppSection`, `FiscalNavigation`, `\.open`, `\.close`), `FeatureFlag`/`FeatureFlags`, guias (`Guide*`), `EmptyStateView`, `MonthPicker`, editor (`EditorStatus`, `EditorActions`, `editorLifecycle`), `errorAlert`, cores retrô, `FiscalAnimationView` | Domain, DesignSystem, Resource, Lottie |
-| `FeatureHome` | Início: herói, lista e estado vazio; editor de exemplo (`ItemEditorModel`) | Domain, DesignSystem, FeatureCore |
 | `FeatureGuides` | `GuideScreen` e páginas dos tutoriais | Domain, DesignSystem, FeatureCore |
-| `FeatureSettings` | Ajustes: Aparência (tema, cor de destaque), Idioma, Guias, Sobre, Desenvolvedor (flags) | Domain, DesignSystem, Resource, FeatureCore |
+| `FeatureToday` | Aba Hoje: eventos do dia, card da apuração e o botão de Ajustes | Domain, DesignSystem, FeatureCore |
+| `FeatureMine` | Aba Meus: UF ou cidade, grupos de representantes e seguidos | Domain, DesignSystem, FeatureCore |
+| `FeatureProfile` | Perfil (`Route.person(slug:)`), aberto por qualquer aba | Domain, DesignSystem, FeatureCore |
+| `FeatureVotes` | Aba Votações: recentes, pauta do dia e detalhe (`Route.vote(id:)`) | Domain, DesignSystem, FeatureCore |
+| `FeatureMoney` | Aba Dinheiro | Domain, DesignSystem, FeatureCore |
+| `FeatureSearch` | Aba Fiscalizar (`Tab(role: .search)`): busca no índice, Comparar (`Route.compare(slugs:)`) e Eleições | Domain, DesignSystem, FeatureCore |
+| `FeatureLens` | Lente (`Route.lens`): setup, edição, aparência e coleções de arte | Domain, DesignSystem, FeatureCore |
+| `FeatureShare` | Cards de compartilhar e galeria de artistas (`Route.artists`) | Domain, DesignSystem, FeatureCore |
+| `FeatureLiveResults` | Apuração (`Route.races`), aberta por Hoje e por Fiscalizar › Eleições | Domain, DesignSystem, FeatureCore |
+| `FeatureSettings` | Ajustes: Aparência (tema, cor de destaque), Guias, Sobre, Desenvolvedor (flags) | Domain, DesignSystem, Resource, FeatureCore |
 | `AppShell` | `FiscalWindow`, `MainScreen`, `SectionStack`, `SectionScreen`, `RouteScreen`, `InspectorScreen`, `SplashScreen`/`LaunchProgress`, `DeepLinks`, `FiscalServices` | todas as features |
 
-`Item` é o exemplo vertical que nasce com o template (domínio → dados → feature → testes). Renomeie para a primeira entidade real ou remova quando ela existir.
+Os models das abas e das rotas recebem o `PublicDataService` do `FiscalServices.publicData()` (o `PublicDataClient`, ou o `ShowcasePublicData` quando o app abre com `-FiscalDataScenario <nome>` em Debug) e os repositórios da `SessionModel`. Cada um guarda a fase (`PublicDataPhase`: carregando, carregado ou o `PublicDataError`) e a tela usa o `PublicDataContent` para mostrar carregando, erro com "Tentar novamente" ou o estado vazio honesto.
 
 ## Links
 
 | Link | Abre |
 | --- | --- |
-| `fiscal://home` | Início |
-| `fiscal://items/new` | Editor de item novo |
-| `fiscal://items/<id>` | Editor do item |
-| `fiscal://settings` | Ajustes |
+| `fiscal://today`, `mine`, `votes`, `money`, `search` | A aba |
+| `fiscal://person/<slug>` | Perfil, na aba Meus |
+| `fiscal://vote/<id>` | Votação, na aba Votações |
+| `fiscal://compare?slugs=<a>,<b>` | Comparar, em Fiscalizar |
+| `fiscal://races` | Apuração, em Fiscalizar |
+| `fiscal://lens`, `fiscal://artists` | Lente e artistas, em Hoje |
+| `fiscal://settings` | Ajustes, em Hoje |
 
 ## Receita: nova feature
 

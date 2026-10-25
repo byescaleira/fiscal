@@ -93,7 +93,7 @@ private struct ThemeCanvasTabBar: View {
             HStack(spacing: .spaceM) {
                 ForEach(AppSection.allCases) { section in
                     Image(systemName: section.systemImage)
-                        .foregroundStyle(section == .home ? appTint : Color.secondary)
+                        .foregroundStyle(section == .today ? appTint : Color.secondary)
                 }
             }
             .padding(.horizontal, .spaceM)

@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "FiscalKit",
-    defaultLocalization: "en",
+    defaultLocalization: "pt-BR",
     platforms: [.iOS("27.0"), .macOS("27.0"), .visionOS("27.0")],
     products: [
         .library(name: "FiscalWidgetKit", targets: ["FiscalDomain", "FiscalDesignSystem"]),
@@ -29,10 +29,31 @@ let package = Package(
             name: "FeatureGuides",
             dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
         .target(
-            name: "FeatureHome",
+            name: "FeatureLiveResults",
             dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
         .target(
-            name: "FeatureLiveResults",
+            name: "FeatureToday",
+            dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
+        .target(
+            name: "FeatureMine",
+            dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
+        .target(
+            name: "FeatureProfile",
+            dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
+        .target(
+            name: "FeatureVotes",
+            dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
+        .target(
+            name: "FeatureMoney",
+            dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
+        .target(
+            name: "FeatureSearch",
+            dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
+        .target(
+            name: "FeatureLens",
+            dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
+        .target(
+            name: "FeatureShare",
             dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
         .target(
             name: "FeatureSettings",
@@ -41,7 +62,9 @@ let package = Package(
             name: "AppShell",
             dependencies: [
                 "FiscalDomain", "FiscalData", "FiscalDesignSystem", "FeatureCore",
-                "FeatureGuides", "FeatureHome", "FeatureLiveResults", "FeatureSettings",
+                "FeatureGuides", "FeatureLiveResults", "FeatureSettings", "FeatureToday",
+                "FeatureMine", "FeatureProfile", "FeatureVotes", "FeatureMoney", "FeatureSearch",
+                "FeatureLens", "FeatureShare",
             ]),
         .testTarget(name: "FiscalDomainTests", dependencies: ["FiscalDomain"]),
         .testTarget(name: "FiscalDataTests", dependencies: ["FiscalDomain", "FiscalData"]),
@@ -57,11 +80,32 @@ let package = Package(
             name: "FeatureGuidesTests",
             dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureGuides"]),
         .testTarget(
-            name: "FeatureHomeTests",
-            dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureHome"]),
-        .testTarget(
             name: "FeatureLiveResultsTests",
             dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureLiveResults"]),
+        .testTarget(
+            name: "FeatureTodayTests",
+            dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureToday"]),
+        .testTarget(
+            name: "FeatureMineTests",
+            dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureMine"]),
+        .testTarget(
+            name: "FeatureProfileTests",
+            dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureProfile"]),
+        .testTarget(
+            name: "FeatureVotesTests",
+            dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureVotes"]),
+        .testTarget(
+            name: "FeatureMoneyTests",
+            dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureMoney"]),
+        .testTarget(
+            name: "FeatureSearchTests",
+            dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureSearch"]),
+        .testTarget(
+            name: "FeatureLensTests",
+            dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureLens"]),
+        .testTarget(
+            name: "FeatureShareTests",
+            dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureShare"]),
         .testTarget(
             name: "FeatureSettingsTests",
             dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureSettings"]),

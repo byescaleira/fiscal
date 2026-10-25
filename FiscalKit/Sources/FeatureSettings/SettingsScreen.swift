@@ -42,12 +42,6 @@ private struct SettingsSections<Extra: View>: View {
             ) {
                 AppearanceScreen()
             }
-            SettingsRow(
-                "Language", symbol: "globe", color: RetroColor.teal.color,
-                value: settings.language.nativeName
-            ) {
-                SettingsPage("Language") { LanguageSection() }
-            }
         } header: {
             Text("General")
         }

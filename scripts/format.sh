@@ -23,7 +23,6 @@ for path in \
   "$project_root/Fiscal/Shared" \
   "$project_root/Fiscal/FiscalWidgets" \
   "$project_root/Fiscal/FiscalUITests" \
-  "$project_root/Fiscal/FiscalStoreTests" \
   "$project_root/FiscalKit/Sources" \
   "$project_root/FiscalKit/Tests" \
   "$project_root/FiscalKit/Package.swift"; do

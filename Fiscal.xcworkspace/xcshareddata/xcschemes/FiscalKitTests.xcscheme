@@ -76,9 +76,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "FeatureHomeTests"
-               BuildableName = "FeatureHomeTests"
-               BlueprintName = "FeatureHomeTests"
+               BlueprintIdentifier = "FeatureLiveResultsTests"
+               BuildableName = "FeatureLiveResultsTests"
+               BlueprintName = "FeatureLiveResultsTests"
                ReferencedContainer = "container:FiscalKit">
             </BuildableReference>
          </TestableReference>
@@ -86,9 +86,79 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "FeatureLiveResultsTests"
-               BuildableName = "FeatureLiveResultsTests"
-               BlueprintName = "FeatureLiveResultsTests"
+               BlueprintIdentifier = "FeatureTodayTests"
+               BuildableName = "FeatureTodayTests"
+               BlueprintName = "FeatureTodayTests"
+               ReferencedContainer = "container:FiscalKit">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "FeatureMineTests"
+               BuildableName = "FeatureMineTests"
+               BlueprintName = "FeatureMineTests"
+               ReferencedContainer = "container:FiscalKit">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "FeatureProfileTests"
+               BuildableName = "FeatureProfileTests"
+               BlueprintName = "FeatureProfileTests"
+               ReferencedContainer = "container:FiscalKit">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "FeatureVotesTests"
+               BuildableName = "FeatureVotesTests"
+               BlueprintName = "FeatureVotesTests"
+               ReferencedContainer = "container:FiscalKit">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "FeatureMoneyTests"
+               BuildableName = "FeatureMoneyTests"
+               BlueprintName = "FeatureMoneyTests"
+               ReferencedContainer = "container:FiscalKit">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "FeatureSearchTests"
+               BuildableName = "FeatureSearchTests"
+               BlueprintName = "FeatureSearchTests"
+               ReferencedContainer = "container:FiscalKit">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "FeatureLensTests"
+               BuildableName = "FeatureLensTests"
+               BlueprintName = "FeatureLensTests"
+               ReferencedContainer = "container:FiscalKit">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "FeatureShareTests"
+               BuildableName = "FeatureShareTests"
+               BlueprintName = "FeatureShareTests"
                ReferencedContainer = "container:FiscalKit">
             </BuildableReference>
          </TestableReference>

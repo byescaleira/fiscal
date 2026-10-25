@@ -2,16 +2,7 @@ import Foundation
 
 public enum AppLanguage: String, CaseIterable, Identifiable, Sendable {
     case system
-    case english = "en"
     case portuguese = "pt-BR"
-    case spanish = "es"
-    case german = "de"
-    case french = "fr"
-    case italian = "it"
-    case japanese = "ja"
-    case korean = "ko"
-    case chinese = "zh-Hans"
-    case russian = "ru"
 
     public var id: String { rawValue }
 
@@ -20,16 +11,7 @@ public enum AppLanguage: String, CaseIterable, Identifiable, Sendable {
     public var nativeName: String {
         switch self {
         case .system: String(appLocalized: "System")
-        case .english: "English"
         case .portuguese: "Português (Brasil)"
-        case .spanish: "Español (España)"
-        case .german: "Deutsch (Deutschland)"
-        case .french: "Français (France)"
-        case .italian: "Italiano"
-        case .japanese: "日本語"
-        case .korean: "한국어"
-        case .chinese: "简体中文"
-        case .russian: "Русский"
         }
     }
 

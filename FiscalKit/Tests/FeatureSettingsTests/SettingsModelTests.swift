@@ -14,22 +14,22 @@ struct SettingsModelTests {
     @Test func startsWithTheSystemLookAndTheDefaultTint() throws {
         let settings = SettingsModel(defaults: try defaults(), languageSetting: LanguageSetting())
         #expect(settings.appearance == .system)
-        #expect(settings.language == .system)
         #expect(settings.tintName == RetroColor.default.name)
+    }
+
+    @Test func alwaysSpeaksBrazilianPortuguese() throws {
+        let settings = SettingsModel(defaults: try defaults(), languageSetting: LanguageSetting())
+        #expect(settings.locale.language.languageCode == "pt")
     }
 
     @Test func persistsTheChoices() throws {
         let defaults = try defaults()
-        let language = LanguageSetting()
-        let settings = SettingsModel(defaults: defaults, languageSetting: language)
+        let settings = SettingsModel(defaults: defaults, languageSetting: LanguageSetting())
         settings.appearance = .dark
         settings.tint = RetroColor.teal.hex
-        settings.language = .portuguese
-        #expect(language.language == .portuguese)
         let reopened = SettingsModel(defaults: defaults, languageSetting: LanguageSetting())
         #expect(reopened.appearance == .dark)
         #expect(reopened.tint == RetroColor.teal.hex)
-        #expect(reopened.language == .portuguese)
     }
 
     @Test func readsVersionAndLinksFromTheInfoDictionary() {
