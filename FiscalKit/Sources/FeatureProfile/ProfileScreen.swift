@@ -16,6 +16,7 @@ public struct ProfileScreen: View {
             AdaptiveList {
                 ProfileHeroSection()
                 ProfileNumbersSection()
+                ProfileActionsSection()
                 ProfileLensSection()
                 ProfileVotesSection()
                 ProfileProposalsSection()

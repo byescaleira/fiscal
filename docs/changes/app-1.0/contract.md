@@ -55,6 +55,9 @@ Peça compartilhada pelas frentes paralelas da mudança [`app-1.0`](proposal.md)
 | `money/overview.json` | `MoneyOverview` | diária |
 | `today.json` | `TodayDigest` (o que aconteceu, para a aba Hoje) | a cada 10 min |
 | `people/{slug}/checks.json` | `{ items: [FactCheck], sources }`: checagens do Projeto Comprova que citam a pessoa pelo nome completo exato; só existe quando há ao menos uma | diária |
+| `people/{slug}/actions.json` | `{ items: [Action], sources }`: o que a pessoa fez nos dois últimos anos, ordenado pelo peso ([weight.md](weight.md)); só existe quando há ação | diária |
+| `highlights.json` | `{ generatedAt, items: [Highlight], method, sources }`: o Destaque do momento, nunca vazio quando há dado | a cada 10 min |
+| `method/weight.json` | `WeightMethod`: a regra do peso, para o "Como medimos" | diária |
 | `avatars/index.json` | `{ rigVersion, people: [{ slug, updatedAt }] }`: quem já tem retrato desenhado | quando muda |
 | `avatars/{slug}.json` | Lottie do retrato animado (esqueleto do Fiscal com os traços da pessoa e a cor do partido); sem arquivo, o app mostra o retrato genérico | quando muda |
 | `races.json`, `races/{id}.json` | apuração (já existe, fase `live-results`) | 20 s em eleição |

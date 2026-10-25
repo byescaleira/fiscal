@@ -121,7 +121,7 @@ func (in *Ingest) loadAssemblies(ctx context.Context, rep *Report, people []*pub
 			if year > 0 && y == 0 {
 				y = year
 			}
-			rp := publicdata.RawProposal{ID: id + "-" + strconv.FormatInt(mt.ID, 10), Kind: mt.Kind, Number: mt.Number, Year: mt.Year, Ementa: mt.Ementa, URL: mt.URL}
+			rp := publicdata.RawProposal{ID: id + "-" + strconv.FormatInt(mt.ID, 10), Kind: mt.Kind, Number: mt.Number, Year: mt.Year, Ementa: mt.Ementa, URL: mt.URL, Date: dateOnlyStr(mt.Presented)}
 			for _, a := range mt.AuthorIDs {
 				if p, ok := matched[a]; ok && p.Activity[y] != nil {
 					p.Activity[y].Proposals = append(p.Activity[y].Proposals, rp)
