@@ -12,7 +12,8 @@ public struct LiveResultsScreen: View {
         @Bindable var results = results
         Group {
             if !results.hasLoaded {
-                ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
+                ProgressView("Loading")
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if results.races.isEmpty {
                 LiveResultsUnavailable()
             } else {
@@ -30,14 +31,20 @@ public struct LiveResultsScreen: View {
         .refreshable { await results.refresh() }
         .task { await results.run() }
         .errorAlert($results.error)
+        .onChange(of: results.announcement) { _, text in
+            if let text { AccessibilityNotification.Announcement(text).post() }
+        }
     }
 }
 
 private struct LiveResultsUnavailable: View {
+    @Environment(LiveResultsModel.self) private var results
+
     var body: some View {
         EmptyStateView(
             title: "Results unavailable",
-            description: "Couldn't reach the results server. Pull to try again."
+            description: "Couldn't reach the results server. It tries again on its own.",
+            actionTitle: "Try Again", action: { Task { await results.refresh() } }
         ) {
             IconRow(
                 "President · Brazil", detail: "TSE", symbol: "checkmark.seal", color: .retroTeal)
@@ -51,17 +58,12 @@ private struct LiveResultsNotice: View {
     @Environment(LiveResultsModel.self) private var results
 
     var body: some View {
-        if results.isOffline || results.isWaiting {
+        if let notice = results.notice {
             Section {
                 Label {
-                    Text(
-                        results.isOffline
-                            ? "No connection. Showing the last numbers received."
-                            : "The count starts at 5 PM Brasília time. Numbers come straight from the TSE, with no projections or polls."
-                    )
-                    .font(.subheadline)
+                    Text(verbatim: notice.text).font(.subheadline)
                 } icon: {
-                    Image(systemName: results.isOffline ? "wifi.slash" : "clock")
+                    Image(systemName: notice.symbol)
                 }
             }
         }

@@ -4,9 +4,11 @@ import Foundation
 @MainActor
 public protocol RaceActivityTracking: AnyObject {
     var isAvailable: Bool { get }
+    var onToken: (@MainActor (_ raceID: String, _ token: String) -> Void)? { get set }
+    var onFinish: (@MainActor (_ token: String) -> Void)? { get set }
     func activeRaceIDs() -> Set<String>
-    func start(_ race: Race, onToken: @escaping @MainActor (String) -> Void) throws
-    func resume(onToken: @escaping @MainActor (String, String) -> Void)
+    func start(_ race: Race) throws
+    func resume()
     func update(_ race: Race) async
     func end(raceID: String) async -> [String]
 }
@@ -16,7 +18,9 @@ public protocol RaceActivityTracking: AnyObject {
 
     @MainActor
     public final class RaceActivities: RaceActivityTracking {
-        private var tokenTasks: [String: Task<Void, Never>] = [:]
+        public var onToken: (@MainActor (String, String) -> Void)?
+        public var onFinish: (@MainActor (String) -> Void)?
+        private var tasks: [String: [Task<Void, Never>]] = [:]
         private var tokens: [String: String] = [:]
 
         public init() {}
@@ -29,33 +33,44 @@ public protocol RaceActivityTracking: AnyObject {
                     \.attributes.raceId))
         }
 
-        public func start(_ race: Race, onToken: @escaping @MainActor (String) -> Void) throws {
+        public func start(_ race: Race) throws {
             let content = ActivityContent(
-                state: RaceActivityState(race: race), staleDate: .now.addingTimeInterval(600),
-                relevanceScore: race.office == .president ? 100 : 50)
-            let activity = try Activity.request(
-                attributes: RaceActivityAttributes(race: race), content: content, pushType: .token)
-            observe(activity) { _, token in onToken(token) }
+                state: RaceActivityState(race: race),
+                staleDate: .now.addingTimeInterval(RaceActivityPlan.staleAfter),
+                relevanceScore: RaceActivityPlan.relevance(for: race.office))
+            let attributes = RaceActivityAttributes(race: race)
+            do {
+                observe(
+                    try Activity.request(attributes: attributes, content: content, pushType: .token)
+                )
+            } catch {
+                observe(
+                    try Activity.request(attributes: attributes, content: content, pushType: nil))
+            }
         }
 
-        public func resume(onToken: @escaping @MainActor (String, String) -> Void) {
+        public func resume() {
             for activity in Activity<RaceActivityAttributes>.activities where activity.isLive {
-                guard tokenTasks[activity.id] == nil else { continue }
-                observe(activity, onToken: onToken)
+                guard tasks[activity.id] == nil else { continue }
+                observe(activity)
             }
         }
 
         public func update(_ race: Race) async {
             for activity in Activity<RaceActivityAttributes>.activities
             where activity.attributes.raceId == race.id && activity.isLive {
-                let state = RaceActivityState(race: race)
-                guard state != activity.content.state else { continue }
-                let content = ActivityContent(state: state, staleDate: .now.addingTimeInterval(600))
-                if race.final {
+                switch RaceActivityPlan.next(current: activity.content.state, race: race) {
+                case .keep:
+                    continue
+                case .update(let state):
+                    await activity.update(
+                        ActivityContent(
+                            state: state,
+                            staleDate: .now.addingTimeInterval(RaceActivityPlan.staleAfter)))
+                case .end(let state, let dismissAfter):
                     await activity.end(
-                        content, dismissalPolicy: .after(.now.addingTimeInterval(14_400)))
-                } else {
-                    await activity.update(content)
+                        ActivityContent(state: state, staleDate: nil),
+                        dismissalPolicy: .after(.now.addingTimeInterval(dismissAfter)))
                 }
             }
         }
@@ -64,26 +79,36 @@ public protocol RaceActivityTracking: AnyObject {
             var ended: [String] = []
             for activity in Activity<RaceActivityAttributes>.activities
             where activity.attributes.raceId == raceID {
-                if let token = tokens.removeValue(forKey: activity.id) { ended.append(token) }
-                tokenTasks.removeValue(forKey: activity.id)?.cancel()
+                if let token = forget(activity.id) { ended.append(token) }
                 await activity.end(nil, dismissalPolicy: .immediate)
             }
             return ended
         }
 
-        private func observe(
-            _ activity: Activity<RaceActivityAttributes>,
-            onToken: @escaping @MainActor (String, String) -> Void
-        ) {
+        private func forget(_ id: String) -> String? {
+            tasks.removeValue(forKey: id)?.forEach { $0.cancel() }
+            return tokens.removeValue(forKey: id)
+        }
+
+        private func observe(_ activity: Activity<RaceActivityAttributes>) {
             let id = activity.id
             let raceID = activity.attributes.raceId
-            tokenTasks[id] = Task { [weak self] in
+            let tokenTask = Task { [weak self] in
                 for await data in activity.pushTokenUpdates {
                     let token = data.map { String(format: "%02x", $0) }.joined()
                     self?.tokens[id] = token
-                    onToken(raceID, token)
+                    self?.onToken?(raceID, token)
                 }
             }
+            let stateTask = Task { [weak self] in
+                for await state in activity.activityStateUpdates
+                where state == .dismissed || state == .ended {
+                    guard let self, let token = self.forget(id) else { return }
+                    self.onFinish?(token)
+                    return
+                }
+            }
+            tasks[id] = [tokenTask, stateTask]
         }
     }
 
@@ -93,11 +118,13 @@ public protocol RaceActivityTracking: AnyObject {
 #else
     @MainActor
     public final class RaceActivities: RaceActivityTracking {
+        public var onToken: (@MainActor (String, String) -> Void)?
+        public var onFinish: (@MainActor (String) -> Void)?
         public init() {}
         public var isAvailable: Bool { false }
         public func activeRaceIDs() -> Set<String> { [] }
-        public func start(_ race: Race, onToken: @escaping @MainActor (String) -> Void) throws {}
-        public func resume(onToken: @escaping @MainActor (String, String) -> Void) {}
+        public func start(_ race: Race) throws {}
+        public func resume() {}
         public func update(_ race: Race) async {}
         public func end(raceID: String) async -> [String] { [] }
     }

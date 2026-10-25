@@ -75,6 +75,8 @@ public struct RaceActivityRow: Hashable, Identifiable, Sendable {
     public let elected: Bool
 
     public var id: String { number }
+
+    public var compactText: String { "\(number) \(RaceText.shortPercent(percent))" }
 }
 
 #if canImport(ActivityKit) && os(iOS)
@@ -104,3 +106,24 @@ public struct RaceActivityRow: Hashable, Identifiable, Sendable {
         }
     }
 #endif
+
+public enum RaceActivityPlan: Equatable, Sendable {
+    case keep
+    case update(RaceActivityState)
+    case end(RaceActivityState, dismissAfter: TimeInterval)
+
+    public static let staleAfter: TimeInterval = 600
+    public static let dismissAfter: TimeInterval = 14_400
+
+    public static func next(current: RaceActivityState, race: Race, now: Date = .now)
+        -> RaceActivityPlan
+    {
+        let state = RaceActivityState(race: race, now: now)
+        guard state != current, state.updatedAt >= current.updatedAt else { return .keep }
+        return race.final ? .end(state, dismissAfter: dismissAfter) : .update(state)
+    }
+
+    public static func relevance(for office: Race.Office) -> Double {
+        office == .president ? 100 : 50
+    }
+}

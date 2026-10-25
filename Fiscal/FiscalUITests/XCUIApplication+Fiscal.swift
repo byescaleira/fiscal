@@ -4,7 +4,9 @@ import XCTest
 extension XCUIApplication {
     static func fiscal() -> XCUIApplication {
         let app = XCUIApplication()
-        app.launchArguments += ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+        app.launchArguments += [
+            "-AppleLanguages", "(en)", "-AppleLocale", "en_US", "-FiscalLiveScenario", "close",
+        ]
         return app
     }
 

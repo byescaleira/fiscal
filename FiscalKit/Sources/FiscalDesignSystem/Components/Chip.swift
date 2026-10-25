@@ -1,6 +1,7 @@
 import SwiftUI
 
 public struct Chip: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     public enum Shape: Sendable {
         case capsule, tag
     }
@@ -35,7 +36,7 @@ public struct Chip: View {
             text
             .font(font)
             .foregroundStyle(color)
-            .lineLimit(1)
+            .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
             .padding(.horizontal, .spaceM)
             .padding(.vertical, shape == .capsule ? .spaceS : .space2XS)
         switch shape {

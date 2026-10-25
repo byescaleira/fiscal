@@ -2,6 +2,10 @@ import FiscalDomain
 import Foundation
 
 public struct LiveResultsClient: LiveResultsService {
+    private struct Removal: Encodable {
+        let pushToken: String
+    }
+
     private struct Registration: Encodable {
         let raceId: String
         let pushToken: String
@@ -50,16 +54,22 @@ public struct LiveResultsClient: LiveResultsService {
     }
 
     public func unfollow(pushToken: String) async throws {
-        var request = URLRequest(url: baseURL.appending(path: "v1/live-activities/\(pushToken)"))
+        var request = URLRequest(url: baseURL.appending(path: "v1/live-activities"))
         request.httpMethod = "DELETE"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.timeoutInterval = 15
+        request.httpBody = try JSONEncoder().encode(Removal(pushToken: pushToken))
         let (_, response) = try await session.data(for: request)
         try Self.check(response)
     }
 
     private static func check(_ response: URLResponse) throws {
-        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
-            throw FiscalError.onFetch
+        guard let http = response as? HTTPURLResponse else { throw LiveResultsError.unavailable }
+        switch http.statusCode {
+        case 200..<300: return
+        case 400..<500 where http.statusCode != 429:
+            throw LiveResultsError.rejected(http.statusCode)
+        default: throw LiveResultsError.unavailable
         }
     }
 }

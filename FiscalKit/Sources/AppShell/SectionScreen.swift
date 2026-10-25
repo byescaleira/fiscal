@@ -4,7 +4,6 @@ import FeatureSettings
 import SwiftUI
 
 struct SectionScreen: View {
-    @Environment(SessionModel.self) private var session
     let section: AppSection
 
     @ViewBuilder var body: some View {

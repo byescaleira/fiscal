@@ -7,15 +7,15 @@ extension Guide {
             TutorialPage(
                 animation: .launch, title: "Welcome to Fiscal",
                 message:
-                    "Everything starts on the Home tab. Settings keeps the choices that are yours."
+                    "Everything starts on the Live Results tab. Settings keeps the choices that are yours."
             ),
             TutorialPage(
                 animation: .done, title: "Two Tabs",
                 message: "Each tab keeps its own place, so you can switch without losing your way.",
                 steps: [
                     GuideStep(
-                        "house", color: .retroOrange, title: "Home",
-                        detail: "What matters right now, at a glance."),
+                        "chart.bar.xaxis", color: .retroOrange, title: "Live Results",
+                        detail: "The official count, straight from the TSE."),
                     GuideStep(
                         "gearshape", color: .retroDenim, title: "Settings",
                         detail: "Appearance, language, guides and more."),

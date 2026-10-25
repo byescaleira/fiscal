@@ -9,3 +9,8 @@ public protocol LiveResultsService: Sendable {
     func follow(raceID: String, pushToken: String, environment: PushEnvironment) async throws
     func unfollow(pushToken: String) async throws
 }
+
+public enum LiveResultsError: Error, Equatable, Sendable {
+    case rejected(Int)
+    case unavailable
+}

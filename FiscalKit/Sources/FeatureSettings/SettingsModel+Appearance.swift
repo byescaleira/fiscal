@@ -33,16 +33,16 @@ extension SettingsModel {
 
     var themeSample: ThemeSample {
         ThemeSample(
-            title: String(appLocalized: "Home"),
-            caption: String(appLocalized: "Your Items"),
-            headline: 12.formatted(.number.locale(.app)),
+            title: String(appLocalized: "Live Results"),
+            caption: String(appLocalized: "Polling stations counted"),
+            headline: 0.87.formatted(.percent.locale(.app)),
             rows: [
                 ThemeSample.Row(
-                    symbol: "lightbulb", title: String(appLocalized: "First idea"), color: .mustard,
-                    detail: String(appLocalized: "Today"), fraction: 0.64),
+                    symbol: "checkmark.square", title: String(appLocalized: "Counted"),
+                    color: .mustard, detail: 0.87.formatted(.percent.locale(.app)), fraction: 0.87),
                 ThemeSample.Row(
-                    symbol: "calendar", title: String(appLocalized: "Weekend plan"), color: .teal,
-                    detail: String(appLocalized: "Yesterday"), fraction: 0.3),
+                    symbol: "person.2", title: String(appLocalized: "Turnout"), color: .teal,
+                    detail: 0.79.formatted(.percent.locale(.app)), fraction: 0.79),
             ])
     }
 
