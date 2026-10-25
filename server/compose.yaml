@@ -1,0 +1,32 @@
+services:
+  fiscal-api:
+    build: .
+    image: fiscal-api
+    container_name: fiscal-api
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3130:3130"
+    environment:
+      APNS_KEY_ID: ${APNS_KEY_ID:?APNS_KEY_ID is required}
+      APNS_TEAM_ID: ${APNS_TEAM_ID:?APNS_TEAM_ID is required}
+      APNS_TOPIC: ${APNS_TOPIC:?APNS_TOPIC is required (bundle id + .push-type.liveactivity)}
+      POLL_INTERVAL: ${POLL_INTERVAL:-20s}
+      SIMULATE: ${SIMULATE:-}
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-}
+      APNS_DISABLED: ${APNS_DISABLED:-}
+      TSE_BASE_URL: ${TSE_BASE_URL:-https://resultados.tse.jus.br/oficial/ele2026}
+    volumes:
+      - ./data:/data
+      - ./secrets:/secrets:ro
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 256m
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/liveresults-server", "-check"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s

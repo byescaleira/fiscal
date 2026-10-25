@@ -1,0 +1,6 @@
+*
+!go.mod
+!cmd
+!internal
+internal/**/testdata
+**/*_test.go
