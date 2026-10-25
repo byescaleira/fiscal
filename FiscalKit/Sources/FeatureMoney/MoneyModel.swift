@@ -1,4 +1,5 @@
 import FeatureCore
+import FiscalDesignSystem
 import FiscalDomain
 import Foundation
 import Observation
@@ -34,7 +35,10 @@ public final class MoneyModel {
         public let title: String
         public let law: String
         public let symbol: String
+        public let cents: Int
         public let value: String
+
+        public var reais: Double { Double(cents) / 100 }
     }
 
     public struct Hero: Equatable, Sendable {
@@ -96,6 +100,10 @@ public final class MoneyModel {
             kind: { MoneyKind.category($0.category) })
     }
 
+    public var quotaComposition: [AmountBar] {
+        MoneyText.composition(categories, slices: .chartCompositionSlices)
+    }
+
     public var categoriesHeadline: String? {
         guard let first = categories.first else { return nil }
         return String(appLocalized: "\(first.title) was the largest item: \(first.value)")
@@ -106,7 +114,7 @@ public final class MoneyModel {
             Salary(
                 id: salary.office.rawValue, title: salary.office.title,
                 law: salary.law ?? PublicFormat.missing,
-                symbol: MoneyKind.office(salary.office),
+                symbol: MoneyKind.office(salary.office), cents: salary.monthlyCents,
                 value: PublicFormat.money(cents: salary.monthlyCents))
         }
     }
@@ -117,6 +125,11 @@ public final class MoneyModel {
         MoneyText.bars(
             campaigns?.byOrigin ?? [], id: \.origin, title: \.origin, cents: \.cents,
             kind: { MoneyKind.origin($0.origin) })
+    }
+
+    public var campaignOriginsHeadline: String? {
+        guard let first = campaignOrigins.first, first.cents > 0 else { return nil }
+        return String(appLocalized: "\(first.percent) came from \(first.title)")
     }
 
     public var campaignsHeadline: String {
@@ -142,6 +155,8 @@ public final class MoneyModel {
             revenue?.byState ?? [], id: \.uf, title: { RaceText.scope($0.uf) }, cents: \.cents,
             kind: { _ in MoneyKind.state })
     }
+
+    public var revenueTiles: [StateTile] { StateTile.tiles(revenue?.byState ?? []) }
 
     public var revenueHeadline: String {
         guard let revenue else {

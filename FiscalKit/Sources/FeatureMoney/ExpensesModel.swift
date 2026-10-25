@@ -1,4 +1,5 @@
 import FeatureCore
+import FiscalDesignSystem
 import FiscalDomain
 import Foundation
 import Observation
@@ -127,6 +128,55 @@ public final class ExpensesModel {
     }
 
     public var categoryNames: [String] { categories.map(\.title) }
+
+    public var receipts: [ReceiptPoint] {
+        (list?.items ?? []).filter { $0.cents > 0 }.map { expense in
+            ReceiptPoint(
+                id: expense.id, supplier: expense.supplier, category: expense.category,
+                cents: expense.cents,
+                lane: ReceiptPoint.lane(for: expense.id, lanes: .chartJitterLanes))
+        }
+    }
+
+    public var medianCents: Int? {
+        let values = receipts.map(\.cents).sorted()
+        guard !values.isEmpty else { return nil }
+        let middle = values.count / 2
+        return values.count.isMultiple(of: 2)
+            ? (values[middle - 1] + values[middle]) / 2 : values[middle]
+    }
+
+    public var receiptsHeadline: String? {
+        guard let medianCents else { return nil }
+        return String(
+            appLocalized: "Half of the receipts are below \(PublicFormat.money(cents: medianCents))"
+        )
+    }
+
+    public var yearPoints: [YearPoint] {
+        var byYear = Dictionary(
+            (profile?.years ?? []).compactMap { entry in entry.quotaCents.map { (entry.year, $0) }
+            },
+            uniquingKeysWith: { first, _ in first })
+        if let list { byYear[year] = list.totalCents }
+        guard byYear.count > 1 else { return [] }
+        return byYear.keys.sorted().suffix(6).map { key in
+            YearPoint(year: key, cents: byYear[key] ?? 0, isCurrent: key == year)
+        }
+    }
+
+    public var yearHeadline: String? {
+        let points = yearPoints
+        guard let current = points.first(where: \.isCurrent),
+            let previous = points.last(where: { $0.year < current.year }), previous.cents > 0
+        else { return nil }
+        let change = Double(current.cents - previous.cents) / Double(previous.cents)
+        let percent = PublicFormat.percent(abs(change))
+        let before = String(previous.year)
+        return change >= 0
+            ? String(appLocalized: "\(percent) more than in \(before)")
+            : String(appLocalized: "\(percent) less than in \(before)")
+    }
 
     public var groups: [MonthGroup] {
         let names = MoneyText.monthNames(calendar: calendar)

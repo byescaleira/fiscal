@@ -107,14 +107,16 @@ private struct QuotaCategoriesSection: View {
                     if let headline = money.categoriesHeadline {
                         Text(verbatim: headline).font(.headline)
                     }
-                    AmountBarsChart(bars: money.categories)
+                    CompositionChart(segments: money.quotaComposition)
                 }
                 .padding(.vertical, .spaceXS)
             } header: {
                 Text("Where the allowance goes").sectionTitle()
             } footer: {
                 VStack(alignment: .leading, spacing: .space2XS) {
-                    Text("Totals by kind of expense, adding up every deputy and senator.")
+                    Text(
+                        "Totals by kind of expense, adding up every deputy and senator. Touch the bar or a kind to see its share."
+                    )
                     Text(verbatim: money.sourceLine(for: .quota))
                 }
             }
