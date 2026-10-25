@@ -57,3 +57,48 @@ curl -s http://127.0.0.1:3130/api/health
 ```
 
 O Caddy encaminha `/api/*` de `fiscal.byescaleira.com` para `127.0.0.1:3130`.
+
+## Caddy (no ar desde 2026-10-25)
+
+Leitura sai do disco, sem passar pelo Go ([ADR 0002](../docs/adr/0002-static-first-server.md)): o poller grava `public/v1/races.json` e `public/v1/races/<id>.json` (com `.gz`), e o Caddy entrega com `ETag`, `304` e gzip pré-comprimido. Só o registro de tokens chega ao Go.
+
+```
+fiscal.byescaleira.com {
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		-Server
+	}
+
+	@races path /api/v1/races /api/v1/races/*
+	handle @races {
+		root * /opt/fiscal-api/public
+		@list path /api/v1/races
+		rewrite @list /v1/races.json
+		@one path_regexp one ^/api/v1/races/([a-z]+-[a-z]{2})$
+		rewrite @one /v1/races/{re.one.1}.json
+		header Cache-Control "public, max-age=10, stale-while-revalidate=30"
+		file_server {
+			precompressed gzip
+		}
+	}
+
+	handle /api/* {
+		encode zstd gzip
+		reverse_proxy 127.0.0.1:3130
+	}
+
+	handle {
+		respond 404
+	}
+
+	log {
+		output file /var/log/fiscal-access.log {
+			roll_size 100mb
+			roll_keep 10
+		}
+		format json
+	}
+}
+```
+
+O `rewrite` roda antes de `uri` no Caddy, por isso os matchers usam o caminho original com `/api`.
