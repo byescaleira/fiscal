@@ -3,3 +3,4 @@ data/
 secrets/
 *.p8
 public/
+ingest-data/

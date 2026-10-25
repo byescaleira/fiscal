@@ -1,8 +1,13 @@
-# Servidor da apuração ao vivo
+# Servidor do Fiscal
 
-Serviço em Go 1.26.10, só com a biblioteca padrão. Lê os arquivos do TSE do 2º turno (presidente e governador de AC, AM, DF, ES, RN e TO), serve o placar em `/api/v1/races` e atualiza as Live Activities por APNs quando os números mudam. O contrato está em `docs/changes/live-results/proposal.md`.
+Go 1.26.10, só com a biblioteca padrão. Dois processos na mesma imagem:
 
-## Variáveis
+- **`liveresults-server`** (`cmd/server`): a apuração ao vivo. Lê os arquivos do TSE do 2º turno (presidente e governador de AC, AM, DF, ES, RN e TO), serve o placar em `/api/v1/races` e atualiza as Live Activities por APNs quando os números mudam. Contrato em `docs/changes/live-results/proposal.md`.
+- **`fiscal-ingest`** (`cmd/ingest`): a carga de dados da 1.0. Lê Câmara, Senado, TSE, IBGE, Receita e as assembleias com SAPL e publica os arquivos estáticos do contrato (`docs/changes/app-1.0/contract.md`, seção 2) em `PUBLIC_DIR/v1`. Detalhes em [Carga de dados](#carga-de-dados-fiscal-ingest).
+
+## Apuração ao vivo (`liveresults-server`)
+
+### Variáveis
 
 | Variável | Padrão | Uso |
 | --- | --- | --- |
@@ -22,7 +27,7 @@ Serviço em Go 1.26.10, só com a biblioteca padrão. Lê os arquivos do TSE do 
 
 Sem `APNS_KEY_FILE`, `APNS_KEY_ID`, `APNS_TEAM_ID` e `APNS_TOPIC` o servidor não sobe, a menos que `APNS_DISABLED=1`. A chave é carregada e um JWT é assinado no boot.
 
-## Rotas
+### Rotas
 
 | Rota | Resposta |
 | --- | --- |
@@ -44,9 +49,9 @@ Registros:
 
 Rate limit por IP: 120 GET e 120 POST/DELETE por minuto (CGNAT), `429 rate_limited` acima. IPv6 conta por /64. `X-Forwarded-For` (último valor) só é aceito quando a conexão vem de loopback ou de rede privada (gateway do Docker, `10/8`, `172.16/12`, `192.168/16`, `fc00::/7`); de qualquer outro endereço vale o `RemoteAddr`. Quando o mapa de buckets lota (100 000), o mais antigo é descartado.
 
-Arquivos estáticos (`PUBLIC_DIR/v1`): no boot do modo TSE a pasta `v1` é apagada e republicada a partir do `state.json`. A cada leitura, os arquivos das disputas são gravados antes dos pushes e só quando o conteúdo muda; `races.json` só é regravado quando alguma disputa muda, então o `fetchedAt` dele é o da última mudança, e o `ETag`/`304` do Caddy se mantém entre leituras sem novidade.
+Arquivos estáticos (`PUBLIC_DIR/v1`): no boot do modo TSE só `races.json` e a pasta `races/` são apagados e republicados a partir do `state.json`; o resto de `v1/` é da carga de dados e não é tocado. A cada leitura, os arquivos das disputas são gravados antes dos pushes e só quando o conteúdo muda; `races.json` só é regravado quando alguma disputa muda, então o `fetchedAt` dele é o da última mudança, e o `ETag`/`304` do Caddy se mantém entre leituras sem novidade.
 
-## Rodar local
+### Rodar local
 
 ```sh
 cd server
@@ -57,15 +62,15 @@ curl -s http://127.0.0.1:3130/api/v1/races
 
 Com APNs de verdade, aponte `APNS_KEY_FILE` para a `.p8` e preencha `APNS_KEY_ID`, `APNS_TEAM_ID` e `APNS_TOPIC`.
 
-## Deploy
+## Deploy da apuração
 
 Em `/opt/fiscal-api` na VPS, com o `.env` (`chmod 600`, nomes em `.env.example`), `secrets/apns.p8` e `data/` (dono 1000, pastas `700`, chave `600`). O código sobe com `rsync -a`, **sem `--delete`**, e sem tocar no que só existe na VPS:
 
 ```sh
-rsync -a --exclude .env --exclude secrets/ --exclude data/ --exclude public/ server/ vps:/opt/fiscal-api/
+rsync -a --exclude .env --exclude secrets/ --exclude data/ --exclude ingest-data/ --exclude public/ server/ vps:/opt/fiscal-api/
 ```
 
-`.env`, `secrets/`, `data/` e `public/` nunca saem da máquina local nem são sobrescritos ou apagados na VPS. O `ADMIN_TOKEN` é gerado na própria VPS e vai só para o `.env`:
+`.env`, `secrets/`, `data/`, `ingest-data/` e `public/` nunca saem da máquina local nem são sobrescritos ou apagados na VPS. O `ADMIN_TOKEN` é gerado na própria VPS e vai só para o `.env`:
 
 ```sh
 cd /opt/fiscal-api
@@ -134,3 +139,86 @@ fiscal.byescaleira.com {
 O contrato não põe token na URL (o DELETE leva o token no corpo), por isso o log JSON do Caddy não precisa de filtro. Rode `caddy validate --config /etc/caddy/Caddyfile` antes de recarregar.
 
 O `rewrite` roda antes de `uri` no Caddy, por isso os matchers usam o caminho original com `/api`.
+
+## Carga de dados (`fiscal-ingest`)
+
+Roda no container `fiscal-ingest` (mesma imagem, `entrypoint` próprio no `compose.yaml`), sem porta e sem rota HTTP. Dois ciclos:
+
+1. **Carga completa** no boot e todo dia às `INGEST_FULL_AT` (hora de Brasília). Se falhar, nada novo é publicado (os arquivos anteriores ficam) e ela tenta de novo em 5, 15 e 30 min.
+2. **Atualização ao vivo** a cada `INGEST_LIVE_INTERVAL`: pauta do dia do Plenário das duas casas, votações de hoje (API da Câmara e `/votacao` do Senado), próxima sessão e o card da apuração (lido de `PUBLIC_DIR/v1/races.json` quando o arquivo é de hoje). Regrava `agenda/today.json`, `today.json`, `votes/*` e os votos por pessoa que mudaram.
+
+Cada arquivo sai com o `.gz` ao lado, por escrita atômica (`internal/publish`, o mesmo código da apuração), e só é regravado quando o conteúdo muda. O `updatedAt` de cada fonte só anda quando os dados daquela fonte mudam (`DATA_DIR/sources.json`), para o `ETag` do Caddy se manter entre cargas sem novidade. Arquivos de pessoas e votações que saíram do escopo são apagados (`people/`, `votes/`, `places/`, `index/`, `agenda/`, `money/`); `races*` nunca.
+
+### Variáveis da carga
+
+| Variável | Padrão | Uso |
+| --- | --- | --- |
+| `PUBLIC_DIR` | `./public` (`/public` no container) | Raiz pública; os arquivos vão para `PUBLIC_DIR/v1` |
+| `DATA_DIR` | `./data` (`/data` no container, volume `./ingest-data`) | `slugs.json`, `sources.json`, `ingest-status.json` e `cache/` (downloads condicionais e agregados do TSE); pasta `0700`, arquivos `0600` |
+| `INGEST_YEARS` | de `2023` até o ano corrente (a legislatura) | Anos de atividade da Câmara, do Senado e das assembleias: `2026`, `2023-2026` ou `2025,2026` |
+| `TSE_YEARS` | `2022,2026` | Eleições lidas por inteiro (candidaturas, bens, votos por município e contas). A penúltima é a do mandato atual, a última é a dos eleitos aguardando posse |
+| `TSE_CANDIDATE_YEARS` | `2018` | Eleições lidas só para candidaturas e bens (ligação dos senadores eleitos em 2018 e linha do tempo) |
+| `INGEST_UFS` | vazio (todas) | Limita a carga a UFs (`ac,sp`). O presidente e o vice entram sempre. Os arquivos anuais da Câmara são nacionais e são baixados inteiros mesmo assim |
+| `INGEST_SOURCES` | vazio (todas) | Subconjunto de `camara,senado,tse,ibge,receita,assembleias` |
+| `INGEST_FULL_AT` | `06:30` | Hora (Brasília) da carga completa diária; a Câmara regera os arquivos anuais entre 00h e 04h |
+| `INGEST_LIVE_INTERVAL` | `10m` | Intervalo da atualização ao vivo (de 2 min a 1 h) |
+| `INGEST_WORKERS` | `4` | Requisições paralelas às APIs (1 a 16) |
+| `INGEST_REQUEST_GAP` | `150ms` | Intervalo mínimo entre requisições ao mesmo host (o Senado devolve 429 acima de 10 por segundo) |
+
+Configuração inválida derruba o processo no boot (falha fechada). Nenhuma variável é segredo.
+
+### Fontes e o que vira cada arquivo
+
+| Fonte | O que é lido | Vai para |
+| --- | --- | --- |
+| Câmara, API v2 | `/deputados`, `/deputados/{id}`, `/historico`, `/discursos` (por ano; se a API der 500, mês a mês), `/eventos` e `/eventos/{id}/pauta` do Plenário, `/votacoes` de hoje com `/votos` e `/orientacoes` | perfil, contato, mandato, presença (só nos períodos de exercício), discursos, pauta, votações de hoje |
+| Câmara, arquivos anuais | `proposicoesAutores`, `proposicoes`, `votacoes`, `votacoesVotos`, `votacoesOrientacoes`, `votacoesProposicoes`, `eventos`, `eventosOrgaos`, `eventosPresencaDeputados`, `orgaosDeputados-L57` e a CEAP (`Ano-{ano}.csv.zip`) | propostas, votos, orientação do partido, presença, comissões, gastos, `money/overview.json`, leis do dia |
+| Senado | `/senador/lista/atual`, `/senador/{c}`, `/mandatos`, `/comissoes?ativo=S`, `/discursos`, `/processo?codigoParlamentarAutor`, `/votacao`, `/plenario/agenda/dia` e `/mes`; CEAPS pela API administrativa (com `codSenador`). Nenhum serviço descontinuado | perfil, mandato, comissões, propostas, discursos, votos, gastos, pauta |
+| TSE | `consulta_cand`, `bem_candidato`, `votacao_candidato_munzona` e `prestacao_de_contas_eleitorais_candidatos` (receitas e despesas contratadas). Lê só os CSVs das UFs pedidas (mais `BR`, nunca `BRASIL`) de dentro dos ZIPs por HTTP Range, filtra os cargos 1 a 8, em Latin-1 com `;`. O agregado fica em cache até o `ETag` do ZIP mudar | governadores, vices, deputados estaduais e distritais, presidente e vice, eleitos de 2026, bens, campanhas, linha do tempo |
+| IBGE | municípios (`view=nivelado`) | `index/places.json` |
+| Receita | `arrecadacao-estado.csv` (último ano com 12 meses; as colunas de detalhe substituem os totais) | `money/overview.json` › `revenue`, ou `null` |
+| Assembleias (SAPL) | AC, AM, PB, PI e RO: parlamentares, legislatura atual e mandatos, autores, tipos e matérias de cada ano | quem está em exercício (com os suplentes no cargo), propostas, contato e foto. Nas outras UFs a cobertura é `notPublished` |
+
+### Regras
+
+- **Ligações:** deputado federal ↔ TSE por CPF; senador ↔ TSE por nome completo ou de urna + UF + cargo 5 + ano anterior ao início do mandato (só com resultado único); depois disso, todas as candidaturas da pessoa pelo CPF. O CPF nunca é publicado nem guardado em claro: a chave interna é um hash.
+- **Quem está no cargo:** a lista da própria casa para Câmara e Senado; deputados que aparecem nos votos do ano e estão de licença entram como `onLeave`. Presidente, vice, governador e vice vêm dos eleitos de 2022; quem disputou outro cargo em 2026 renunciou (Constituição, art. 14, § 6º), e o vice assume, sem vice no lugar. Deputados estaduais vêm dos eleitos de 2022; nas assembleias com SAPL, os mandatos da legislatura atual dizem quem está em exercício (os suplentes no cargo entram; os eleitos fora da lista viram `onLeave` quando a lista cobre ao menos 80% das cadeiras). Os eleitos de 2026 entram como `electedAwaiting`.
+- **Mandatos:** datas da Constituição (presidente até 05/01/2027 e governador até 06/01/2027, pela EC 111/2021; Câmara e Senado em 1º de fevereiro). Deputado estadual fica `null`.
+- **Salário:** R$ 46.366,19 para presidente, vice, senador e deputado federal (Decreto Legislativo nº 172/2022); os outros cargos ficam `null`.
+- **Temas e linguagem simples:** radicais escritos para o Fiscal (`internal/publicdata/themes.go`) e regras próprias (`internal/publicdata/plain.go`); a ementa oficial vai sempre ao lado.
+- **Slugs:** nome de urna em kebab-case, com `-uf` só quando o nome se repete em mais de uma UF; o registro em `DATA_DIR/slugs.json` mantém o slug de cada pessoa entre cargas e nunca o passa para outra.
+- **Neutralidade e ausência:** listas em ordem alfabética, sem ranking; dado que a fonte não publica ou que não foi carregado é `null`, com o motivo em `coverage`. Gasto de fornecedor pessoa física sai sem documento (só CNPJ é publicado).
+- **Falha:** se a Câmara listar menos de 400 deputados, o Senado menos de 70 senadores, o IBGE menos de 5.000 municípios, ou uma fonte obrigatória (Câmara, Senado, TSE das eleições inteiras, IBGE) falhar, a carga para sem publicar. Receita e assembleias que falham viram `null` ou `notLoaded`, com aviso no log.
+
+### Rodar a carga local
+
+```sh
+cd server
+gofmt -l . && go vet ./... && go test -race -count=1 ./...
+PUBLIC_DIR=/tmp/fiscal/public DATA_DIR=/tmp/fiscal/data INGEST_UFS=ac INGEST_YEARS=2026 go run ./cmd/ingest -once
+```
+
+`-once` faz uma carga completa e sai (código 1 se falhar); sem a flag, o processo fica no agendamento. `-check` é o healthcheck do container (heartbeat a cada minuto em `DATA_DIR/ingest-status.json`).
+
+Carga real limitada de 2026-10-25 (AC, ano de 2026, TSE 2018, 2022 e 2026): 2 min 44 s, 51 pessoas, 974 votações, 1.127 arquivos, 7,8 MiB de JSON e 1,6 MiB em `.gz`; repetida sem mudança nas fontes, regravou só `meta.json`. A carga nacional baixa por volta de 100 MiB de arquivos da Câmara por ano e algumas centenas de MiB dos ZIPs do TSE (só os CSVs necessários), que ficam em `DATA_DIR/cache` e só são baixados de novo quando mudam.
+
+### Deploy da carga
+
+Na VPS, ao lado da apuração e só com o ok do usuário: criar `/opt/fiscal-api/ingest-data` com dono 1000 e modo `700` e subir o serviço `fiscal-ingest` do `compose.yaml`. O container não abre porta, roda `read_only`, sem capacidades, com `mem_limit: 1536m`, e escreve só em `/data` e `/public`.
+
+O Caddy precisa servir os novos arquivos estáticos antes do `handle /api/*` (proposta, ainda não aplicada):
+
+```
+	@data {
+		method GET HEAD
+		path_regexp data ^/api/v1/((meta|today)|(index|places|people|votes|agenda|money)/[a-z0-9/-]+)\.json$
+	}
+	handle @data {
+		root * /opt/fiscal-api/public
+		rewrite * /v1/{re.data.1}.json
+		header Cache-Control "public, max-age=300, stale-while-revalidate=3600"
+		file_server {
+			precompressed gzip
+		}
+	}
+```
