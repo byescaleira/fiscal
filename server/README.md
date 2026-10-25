@@ -147,24 +147,25 @@ Roda no container `fiscal-ingest` (mesma imagem, `entrypoint` próprio no `compo
 1. **Carga completa** no boot e todo dia às `INGEST_FULL_AT` (hora de Brasília). Se falhar, nada novo é publicado (os arquivos anteriores ficam) e ela tenta de novo em 5, 15 e 30 min.
 2. **Atualização ao vivo** a cada `INGEST_LIVE_INTERVAL`: pauta do dia do Plenário das duas casas, votações de hoje (API da Câmara e `/votacao` do Senado), próxima sessão e o card da apuração (lido de `PUBLIC_DIR/v1/races.json` quando o arquivo é de hoje). Regrava `agenda/today.json`, `today.json`, `votes/*` e os votos por pessoa que mudaram.
 
-Cada arquivo sai com o `.gz` ao lado, por escrita atômica (`internal/publish`, o mesmo código da apuração), e só é regravado quando o conteúdo muda. O `updatedAt` de cada fonte só anda quando os dados daquela fonte mudam (`DATA_DIR/sources.json`), para o `ETag` do Caddy se manter entre cargas sem novidade. Arquivos de pessoas e votações que saíram do escopo são apagados (`people/`, `votes/`, `places/`, `index/`, `agenda/`, `money/`); `races*` nunca.
+Cada arquivo sai com o `.gz` ao lado, por escrita atômica (`internal/publish`, o mesmo código da apuração), e só é regravado quando o conteúdo muda. O `updatedAt` de cada fonte só anda quando os dados daquela fonte mudam (`DATA_DIR/sources.json`), para o `ETag` do Caddy se manter entre cargas sem novidade. Arquivos de pessoas e votações que saíram do escopo são apagados (`people/`, `votes/`, `places/`, `index/`, `agenda/`, `money/`, `method/`); `races*` nunca.
 
 ### Variáveis da carga
 
 | Variável | Padrão | Uso |
 | --- | --- | --- |
 | `PUBLIC_DIR` | `./public` (`/public` no container) | Raiz pública; os arquivos vão para `PUBLIC_DIR/v1` |
-| `DATA_DIR` | `./data` (`/data` no container, volume `./ingest-data`) | `slugs.json`, `sources.json`, `ingest-status.json`, `comprova.json` (checagens lidas), `checks-review.json` (lista interna de revisão), `cities-review.json` (casamento TSE ↔ IBGE dos municípios, interno) e `cache/` (downloads condicionais e agregados do TSE); pasta `0700`, arquivos `0600` |
+| `DATA_DIR` | `./data` (`/data` no container, volume `./ingest-data`) | `slugs.json`, `sources.json`, `ingest-status.json`, `comprova.json` (checagens lidas), `checks-review.json` (lista interna de revisão), `cities-review.json` (casamento TSE ↔ IBGE dos municípios, interno), `repercussion.json` (só contagens do GDELT e da Wikipédia, sem texto de terceiros) e `cache/` (downloads condicionais e agregados do TSE); pasta `0700`, arquivos `0600` |
 | `INGEST_YEARS` | de `2023` até o ano corrente (a legislatura) | Anos de atividade da Câmara, do Senado e das assembleias: `2026`, `2023-2026` ou `2025,2026` |
 | `TSE_YEARS` | `2022,2026` | Eleições lidas por inteiro (candidaturas, bens, votos por município e contas). A penúltima é a do mandato atual, a última é a dos eleitos aguardando posse |
 | `TSE_CANDIDATE_YEARS` | `2018` | Eleições lidas só para candidaturas e bens (ligação dos senadores eleitos em 2018 e linha do tempo) |
 | `INGEST_UFS` | vazio (todas) | Limita a carga a UFs (`ac,sp`). O presidente e o vice entram sempre. Os arquivos anuais da Câmara são nacionais e são baixados inteiros mesmo assim |
-| `INGEST_SOURCES` | vazio (todas) | Subconjunto de `camara,senado,tse,ibge,receita,assembleias,comprova,cidades` |
+| `INGEST_SOURCES` | vazio (todas) | Subconjunto de `camara,senado,tse,ibge,receita,assembleias,comprova,cidades,repercussao` |
 | `TSE_CITY_YEAR` | `2024` | Eleição municipal lida para prefeitos, vices e vereadores (`2016`, `2020`, `2024`…; nunca no futuro) |
 | `INGEST_FULL_AT` | `06:30` | Hora (Brasília) da carga completa diária; a Câmara regera os arquivos anuais entre 00h e 04h |
 | `INGEST_LIVE_INTERVAL` | `10m` | Intervalo da atualização ao vivo (de 2 min a 1 h) |
 | `INGEST_WORKERS` | `4` | Requisições paralelas às APIs (1 a 16) |
 | `COMPROVA_SINCE` | `2022-01-01` | Início da janela de checagens do Comprova (`AAAA-MM-DD`, de 2018 até hoje) |
+| `NEWS_BUDGET` | `120` | Consultas ao GDELT por carga completa (1 a 600), uma a cada 6 segundos; o resto usa as contagens guardadas em `DATA_DIR/repercussion.json` por até 3 dias |
 | `INGEST_REQUEST_GAP` | `150ms` | Intervalo mínimo entre requisições ao mesmo host (o Senado devolve 429 acima de 10 por segundo) |
 
 Configuração inválida derruba o processo no boot (falha fechada). Nenhuma variável é segredo.
@@ -182,6 +183,7 @@ Configuração inválida derruba o processo no boot (falha fechada). Nenhuma var
 | Receita | `arrecadacao-estado.csv` (último ano com 12 meses; as colunas de detalhe substituem os totais) | `money/overview.json` › `revenue`, ou `null` |
 | Assembleias (SAPL) | AC, AM, PB, PI e RO: parlamentares, legislatura atual e mandatos, autores, tipos e matérias de cada ano | quem está em exercício (com os suplentes no cargo), propostas, contato e foto. Nas outras UFs a cobertura é `notPublished` |
 | Projeto Comprova (CC BY-ND 4.0) | API pública do WordPress, `/wp-json/wp/v2/publicacoes` (100 por página, até `X-WP-TotalPages`, só os campos usados). A primeira carga lê a janela inteira; as seguintes pedem só o que mudou (`modified_after`, com 1 h de folga) e a cada 7 dias a janela é relida inteira, para tirar o que saiu do ar | `people/{slug}/checks.json` (título, selo, data e link; o corpo da checagem não é guardado nem publicado) |
+| Repercussão (`repercussao`) | GDELT DOC 2.0 (`mode=timelinevolraw`, 30 dias, `sourcelang:portuguese`, uma consulta a cada 6 s, até `NEWS_BUDGET` por carga) pela proposição e pelo nome; Wikipédia em português (`action=query` com redirecionamento, em lotes de 50) e Wikimedia Pageviews (`per-article`, `user`, 30 dias) do artigo do político e do tema. O Bluesky fica de fora: `searchPosts` responde 403 sem autenticação | `people/{slug}/actions.json`, `highlights.json` e `method/weight.json` (só contagens; regra em `docs/changes/app-1.0/weight.md`) |
 
 ### Regras
 

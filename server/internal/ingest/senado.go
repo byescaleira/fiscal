@@ -87,7 +87,7 @@ func (in *Ingest) loadSenado(ctx context.Context, rep *Report) (senadoResult, er
 			p.Activity[y] = act
 			for _, pr := range procs {
 				if year(pr.Presented) == y {
-					act.Proposals = append(act.Proposals, publicdata.RawProposal{ID: "senado-" + strconv.FormatInt(pr.ID, 10), Kind: pr.Kind, Number: pr.Number, Year: pr.Year, Ementa: pr.Ementa, URL: pr.URL})
+					act.Proposals = append(act.Proposals, publicdata.RawProposal{ID: "senado-" + strconv.FormatInt(pr.ID, 10), Kind: pr.Kind, Number: pr.Number, Year: pr.Year, Ementa: pr.Ementa, URL: pr.URL, Date: dateOnlyStr(pr.Presented)})
 				}
 			}
 			sp, err := api.Speeches(ctx, s.Code, y)

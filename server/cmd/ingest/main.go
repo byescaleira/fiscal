@@ -23,7 +23,7 @@ import (
 	"liveresults/internal/sources/tse"
 )
 
-var knownSources = []string{"camara", "senado", "tse", "ibge", "receita", "assembleias", "comprova", "cidades"}
+var knownSources = []string{"camara", "senado", "tse", "ibge", "receita", "assembleias", "comprova", "cidades", "repercussao"}
 
 var knownUFs = map[string]bool{}
 
@@ -179,6 +179,13 @@ func loadConfig(getenv func(string) string, now time.Time) (config, error) {
 			return c, errors.New("INGEST_WORKERS must be between 1 and 16")
 		}
 		c.ingest.Workers = n
+	}
+	if v := strings.TrimSpace(getenv("NEWS_BUDGET")); v != "" {
+		n, err := strconv.Atoi(v)
+		if err != nil || n < 1 || n > 600 {
+			return c, errors.New("NEWS_BUDGET must be between 1 and 600")
+		}
+		c.ingest.NewsBudget = n
 	}
 	return c, nil
 }

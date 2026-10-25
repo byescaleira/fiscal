@@ -41,6 +41,7 @@ type Config struct {
 	ChecksSince       string
 	ChecksMaxPages    int
 	CityYear          int
+	NewsBudget        int
 }
 
 func (c Config) Enabled(source string) bool {
@@ -284,6 +285,9 @@ func (in *Ingest) Full(ctx context.Context) (Report, error) {
 	}
 	if in.cfg.Enabled("comprova") {
 		ds.Checks = in.loadChecks(ctx, &rep, srcs)
+	}
+	if in.cfg.Enabled("repercussao") {
+		ds.Signals = in.loadSignals(ctx, &rep, ds, srcs)
 	}
 	if err := srcs.settle(filepath.Join(in.cfg.DataDir, "sources.json")); err != nil {
 		return rep, err

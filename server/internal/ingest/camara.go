@@ -295,7 +295,7 @@ func (in *Ingest) loadCamaraYear(ctx context.Context, y int, deps map[int64]*cam
 	err = in.openCSV(ctx, camara.AnnualURL("proposicoes", y), func(f *os.File) error {
 		return camara.ReadPropositions(f, nil, func(p camara.Proposition) {
 			if who, ok := authors[p.ID]; ok {
-				rp := publicdata.RawProposal{ID: "camara-" + strconv.FormatInt(p.ID, 10), Kind: p.Kind, Number: p.Number, Year: p.Year, Ementa: p.Ementa, Keywords: p.Keywords, URL: camara.PropositionURL(p.ID)}
+				rp := publicdata.RawProposal{ID: "camara-" + strconv.FormatInt(p.ID, 10), Kind: p.Kind, Number: p.Number, Year: p.Year, Ementa: p.Ementa, Keywords: p.Keywords, URL: camara.PropositionURL(p.ID), Date: dateOnlyStr(p.Presented)}
 				for _, d := range who {
 					cy.proposals[d] = append(cy.proposals[d], rp)
 				}

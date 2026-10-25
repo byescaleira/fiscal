@@ -80,6 +80,7 @@ func Build(ds *Dataset, registry *Slugs) Output {
 	b.placeFiles(people)
 	b.cityFiles()
 	reviews := b.checks(people)
+	b.weights(people)
 	b.votes()
 	b.agenda()
 	b.money()

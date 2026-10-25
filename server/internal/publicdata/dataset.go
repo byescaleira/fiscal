@@ -46,6 +46,7 @@ type RawProposal struct {
 	Ementa   string
 	Keywords string
 	URL      string
+	Date     string
 }
 
 type RawSpeech struct {
@@ -257,4 +258,5 @@ type Dataset struct {
 	SalarySource   map[string]string
 	Checks         []RawCheck
 	Cities         []City
+	Signals        *Signals
 }
