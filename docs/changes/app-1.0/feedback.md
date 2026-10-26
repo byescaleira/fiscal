@@ -85,9 +85,9 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 
 | Pedido | Estado | Onde |
 | --- | --- | --- |
-| Só dados reais no iPhone | no iPhone (apuração real; o resto depende do deploy) | sem -FiscalDataScenario |
-| Backend que guarda tudo e sincroniza sozinho (SQLite, decisão do usuário) | pronto no código; entra no próximo deploy | datastore, ADR 0006 |
-| Deploy da carga na VPS (aprovado pelo usuário) | no ar; primeira carga completa rodando | fiscal-ingest, Caddy /api/v1 |
+| Só dados reais no iPhone | no iPhone, dados reais no ar desde 26/10 01:51 UTC | sem -FiscalDataScenario |
+| Backend que guarda tudo e sincroniza sozinho (SQLite, decisão do usuário) | no ar (banco de 1,3 GB, backup diário) | datastore, ADR 0006 |
+| Deploy da carga na VPS (aprovado pelo usuário) | no ar: 2.357 pessoas, 69.269 municipais, 4.452 votações, 1.152 checagens | fiscal-ingest, Caddy /api/v1 |
 
 ## Rodada de 26/10
 
@@ -102,11 +102,11 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Cargo no feminino (Deputada, Senadora…) | no iPhone (dados de teste; real após a próxima carga) | Office.title(for:) |
 | Ajustes e telas internas no padrão do app | no iPhone | FeatureSettings |
 | Sem "Apagar minha escolha" na Privacidade da Lente | no iPhone | LensPrivacySection |
-| Destaque do momento no widget (sempre) e na Live Activity (só peso ≥ 85, últimas 24 h) | no código; falta instalar (iPhone fora do alcance) e deploy do servidor da apuração | HighlightWidget, HighlightLiveActivity |
+| Destaque do momento no widget (sempre) e na Live Activity (só peso ≥ 85, últimas 24 h) | no iPhone; push por servidor depende do deploy do fiscal-api | HighlightWidget, HighlightLiveActivity |
 | Cabeçalho de Meus melhor, sem cor | no iPhone | MineHeroCard |
-| Botões da toolbar na cor do texto; Trocar lugar na toolbar de Meus | no código | toolbars |
-| Lente pelos candidatos que a pessoa apoia, no lugar do lado (apoiar ≠ seguir) | em andamento | frente support-lens |
-| Tela "O que mais importa para você?" (temas) no layout do app | em andamento | frente support-lens |
+| Botões da toolbar na cor do texto; Trocar lugar na toolbar de Meus | no iPhone | toolbars |
+| Lente pelos candidatos que a pessoa apoia, no lugar do lado (apoiar ≠ seguir) | no iPhone | FeatureLens, SupportThemes, FiscalSchemaV2 |
+| Tela "O que mais importa para você?" (temas) no layout do app | no iPhone | LensThemesStep |
 
 ## Ícone
 
