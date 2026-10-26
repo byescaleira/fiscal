@@ -125,6 +125,17 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Salários sem sentido (todos iguais) → "Quanto custa um mandato" | em andamento | frente mandate-cost |
 | Mais retratos: deputados estaduais, vice-governadores, prefeitos de capitais e cidades > 200 mil | em andamento | frentes faces e–h |
 
+| Compartilhar não abria no Instagram ("content unavailable") | no iPhone (PNG de verdade, sem texto junto) | ShareCardFile |
+| Pôster dos Stories: menos informação, padding maior, mais confete | no iPhone | ShareVictoryPoster |
+| Um só botão de compartilhar no card de vitória | no iPhone | RaceWinnerCard |
+| Linhas gigantes em Região e Votações | no iPhone | MineSections, VotePartySections |
+| Ícones dos Ajustes no estilo byescaleira (sem círculo com gradiente) | no iPhone | SettingsRow |
+| Aba "Meus" vira "Região" | no iPhone | catálogo |
+| Retratos: +1.402 (estaduais, vice-governadores, prefeitos e vices de 157 cidades) | no iPhone (2.030 no total) | fiscal-portraits.pack |
+| Destaque do momento no estilo do card de vitória; incerteza do peso | no iPhone | TodayHighlightHero, WeightCoverage |
+| Classificar os números (favorável/na média/desfavorável; relevância alta/média/baixa) | em andamento | frente classify |
+| Área histórica (apurações passadas, história política, estudo) | na fila | — |
+
 ## Ícone
 
 | Pedido | Estado | Onde |
