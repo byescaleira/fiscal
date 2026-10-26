@@ -61,8 +61,8 @@ Peça compartilhada pelas frentes paralelas da mudança [`app-1.0`](proposal.md)
 | `method/weight.json` | `WeightMethod` (versão 2): a regra do peso, para o "Como medimos", com `renormalization` (sinal ausente sai da conta, nunca vira zero), `confidence` e `alert { minWeight, maxAgeHours, text }`, `levels: [{ key ∈ high \| medium \| low, label, min, max }]` e `levelsText` (as faixas de relevância) | diária |
 | `index/benchmarks.json` | `{ generatedAt, items: [Benchmark], sources }`: a referência dos colegas por cargo e casa (deputados federais, senadores e deputados estaduais por UF), com p25, mediana, p75 e `n` de presença, cota por mês de mandato, propostas e discursos no ano | a cada carga |
 | `method/benchmarks.json` | `BenchmarkMethod` (versão 1): a regra da classificação em texto, para o "Como medimos" | a cada carga |
-| `avatars/index.json` | `{ rigVersion, people: [{ slug, updatedAt }] }`: quem já tem retrato desenhado | quando muda |
-| `avatars/{slug}.json` | Lottie do retrato animado (esqueleto do Fiscal com os traços da pessoa e a cor do partido); sem arquivo, o app mostra o retrato genérico | quando muda |
+| `avatars/rig.json` | Lottie único do retrato: todas as partes uma vez só (rostos, cabelos, barbas, óculos, sobrancelhas, mãos), cada uma com o seletor `fx` do traço que a escolhe, cores por papel (`skin`, `hair`, `beard`, `brow`, `primary`, `secondary`) e as expressões como marcadores (`idle`, `wave`, `thumbsUp`, `nodYes`, `shakeNo`, `smile`, `celebrate`, `sad`, `think`, `thinkLoop` e `<expressão>Pose`) | quando muda |
+| `avatars/traits.json` | `{ rigVersion, fields, values, people: [[slug, índices…]] }`: os traços de cada pessoa; sem linha, o app mostra o retrato genérico, neutro | quando muda |
 | `races.json`, `races/{id}.json` | apuração (já existe, fase `live-results`) | 20 s em eleição |
 
 ### Tipos

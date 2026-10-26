@@ -51,7 +51,7 @@ struct RaceWinnerCard: View {
             VStack(spacing: .spaceS) {
                 PersonPortrait(
                     slug: winner.slug, name: winner.candidate.name,
-                    party: winner.candidate.party, size: .badgeXL * 2
+                    party: winner.candidate.party, size: .badgeXL * 2, expression: .celebrate
                 )
                 .overlay { Circle().strokeBorder(.white, lineWidth: .space2XS) }
                 .overlay(alignment: .topTrailing) {

@@ -1,14 +1,22 @@
 import SwiftUI
 
+public enum PortraitExpression: String, Sendable, Hashable, CaseIterable {
+    case wave, thumbsUp, nodYes, shakeNo, smile, celebrate, think, sad
+}
+
 public struct PortraitRequest: Sendable, Hashable {
     public let slug: String
     public let party: String
     public let isStill: Bool
+    public let expression: PortraitExpression?
 
-    public init(slug: String, party: String, isStill: Bool) {
+    public init(
+        slug: String, party: String, isStill: Bool, expression: PortraitExpression? = nil
+    ) {
         self.slug = slug
         self.party = party
         self.isStill = isStill
+        self.expression = expression
     }
 }
 

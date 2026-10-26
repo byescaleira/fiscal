@@ -1,4 +1,5 @@
 import CoreGraphics
+import FiscalDesignSystem
 import FiscalResource
 import Foundation
 import Lottie
@@ -8,11 +9,11 @@ import Observation
 @Observable
 public final class PortraitStore {
     public static let stillSide: CGFloat = 480
+    private static let cacheLimit = 160
 
     public let library: PortraitLibrary
-    public private(set) var downloaded: [String: PortraitLibrary.Entry] = [:]
-    @ObservationIgnored private var downloadedData: [String: Data] = [:]
-    @ObservationIgnored private var parsed: [String: LottieAnimation] = [:]
+    @ObservationIgnored private var loadedRig: PortraitRig?
+    @ObservationIgnored private var assembled: [String: LottieAnimation] = [:]
     @ObservationIgnored private var stills: [String: CGImage] = [:]
     @ObservationIgnored private var sealAnimation: LottieAnimation?
 
@@ -21,23 +22,28 @@ public final class PortraitStore {
     }
 
     public func hasPortrait(slug: String, party: String) -> Bool {
-        data(slug: slug, party: party) != nil
+        library.rig != nil && library.traits(for: slug, party: party) != nil
     }
 
     public func animation(slug: String, party: String) -> LottieAnimation? {
-        guard let data = data(slug: slug, party: party) else { return nil }
-        if let cached = parsed[slug] { return cached }
-        guard let animation = try? LottieAnimation.from(data: data) else { return nil }
-        parsed[slug] = animation
+        guard let traits = library.traits(for: slug, party: party) else { return nil }
+        let key = Self.key(slug: slug, party: party)
+        if let cached = assembled[key] { return cached }
+        guard let animation = rig()?.animation(for: traits, party: party) else { return nil }
+        if assembled.count >= Self.cacheLimit { assembled.removeAll(keepingCapacity: true) }
+        assembled[key] = animation
         return animation
     }
 
-    public func still(slug: String, party: String) -> CGImage? {
-        if let cached = stills[slug], hasPortrait(slug: slug, party: party) { return cached }
-        guard let animation = animation(slug: slug, party: party),
-            let image = PortraitStill.render(animation, side: Self.stillSide)
+    public func still(slug: String, party: String, pose: PortraitExpression? = nil) -> CGImage? {
+        let key = Self.key(slug: slug, party: party) + "|" + (pose?.rawValue ?? "")
+        if let cached = stills[key] { return cached }
+        guard let animation = animation(slug: slug, party: party) else { return nil }
+        let frame = pose.flatMap { animation.frameTime(forMarker: $0.poseMarker) } ?? 0
+        guard let image = PortraitStill.render(animation, side: Self.stillSide, frame: frame)
         else { return nil }
-        stills[slug] = image
+        if stills.count >= Self.cacheLimit { stills.removeAll(keepingCapacity: true) }
+        stills[key] = image
         return image
     }
 
@@ -50,25 +56,23 @@ public final class PortraitStore {
         return animation
     }
 
-    public func install(_ data: Data, for entry: PortraitLibrary.Entry) throws {
-        guard let animation = try? LottieAnimation.from(data: data), animation.duration > 0 else {
-            throw PortraitStoreError.invalidAnimation
-        }
-        downloaded[entry.slug] = entry
-        downloadedData[entry.slug] = data
-        parsed[entry.slug] = animation
-        stills[entry.slug] = nil
+    private func rig() -> PortraitRig? {
+        if let loadedRig { return loadedRig }
+        loadedRig = library.rig.flatMap(PortraitRig.init(data:))
+        return loadedRig
     }
 
-    private func data(slug: String, party: String) -> Data? {
-        if let entry = downloaded[slug] {
-            guard PortraitLibrary.sameParty(entry.party, party) else { return nil }
-            return downloadedData[slug]
-        }
-        return library.animationData(for: slug, party: party)
+    private static func key(slug: String, party: String) -> String {
+        slug + "|" + PortraitLibrary.partyKey(party)
     }
 }
 
-public enum PortraitStoreError: Error, Equatable {
-    case invalidAnimation
+extension PortraitExpression {
+    static let idleMarker = "idle"
+
+    var marker: String { rawValue }
+
+    var poseMarker: String { rawValue + "Pose" }
+
+    var loopMarker: String? { self == .think ? "thinkLoop" : nil }
 }

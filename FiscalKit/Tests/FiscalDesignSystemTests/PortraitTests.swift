@@ -43,6 +43,13 @@ struct PortraitTests {
         #expect(artwork.view(for: request) == nil)
     }
 
+    @Test func portraitCarriesTheExpression() {
+        let request = PersonPortrait(
+            slug: "lula", name: "Lula", party: "PT", expression: .wave
+        ).request
+        #expect(request.expression == .wave)
+    }
+
     @Test func partyMarkPhasesReturnToRest() {
         let phases = PartyMarkPhase.allCases
         #expect(phases.first == .rest)

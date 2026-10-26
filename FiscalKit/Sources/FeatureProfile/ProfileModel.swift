@@ -18,6 +18,7 @@ public final class ProfileModel {
     public private(set) var context: PersonContext?
     public var selectedIndicatorID: String?
     public private(set) var isFollowing = false
+    public private(set) var hasJustFollowed = false
     public private(set) var phase: PublicDataPhase = .idle
     public var error: FiscalError?
     @ObservationIgnored private let service: (any PublicDataService)?
@@ -104,6 +105,7 @@ public final class ProfileModel {
                 try await follows.follow(card, at: now())
             }
             isFollowing.toggle()
+            hasJustFollowed = isFollowing
         } catch {
             self.error = .onSave
         }

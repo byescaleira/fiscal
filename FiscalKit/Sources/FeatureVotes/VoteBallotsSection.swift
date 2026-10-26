@@ -114,7 +114,9 @@ private struct BallotRow: View {
     private func content(slug: String) -> some View {
         AdaptiveRow(spacing: .spaceM) {
             HStack(spacing: .spaceM) {
-                PersonPortrait(slug: slug, name: ballot.name, party: ballot.party, size: size)
+                PersonPortrait(
+                    slug: slug, name: ballot.name, party: ballot.party, size: size,
+                    expression: BallotChoice(vote: ballot.vote)?.portraitExpression)
                 VStack(alignment: .leading, spacing: .spaceHairline) {
                     Text(verbatim: ballot.name).font(.rowTitle)
                     Text(verbatim: vote.ballotDetail(ballot))

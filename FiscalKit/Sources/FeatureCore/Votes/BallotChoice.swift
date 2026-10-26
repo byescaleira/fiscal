@@ -53,6 +53,14 @@ public enum BallotChoice: String, CaseIterable, Identifiable, Sendable {
         case .absent: .voteAbsent
         }
     }
+
+    public var portraitExpression: PortraitExpression? {
+        switch self {
+        case .yes: .nodYes
+        case .no: .shakeNo
+        case .abstain, .absent: nil
+        }
+    }
 }
 
 public struct BallotChip: View {
