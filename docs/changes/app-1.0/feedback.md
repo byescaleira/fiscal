@@ -151,7 +151,7 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Expressões neutras aleatórias de tempos em tempos nos retratos (positivas/negativas só quando o contexto pede) | no iPhone; "pensar" no Fiscalizar ligado | PersonPortrait, avatars.py |
 | Trilhos e carrosséis cortando as laterais: devem ir de ponta a ponta | no iPhone, 2ª correção (seção sem margem); aguardando conferência | EdgeToEdgeRail |
 | Investigações salvas no iCloud (SwiftData + CloudKit) | no iPhone; falta publicar o schema no console do CloudKit | FiscalData |
-| Servidor não pode cair no ingest; seguro; só o app consulta; 8 GB para milhões | Cloudflare Pages grátis no ar em dados.fiscal.byescaleira.com (CNAME na Vercel); código da migração em andamento (frente server-resilience); sem VPS nova: ingest faseado com teto de CPU/memória e publicação aos poucos; deploy feito em 26/10 (API com App Attest, ingest em fases, timers); primeira carga rodando; falta o token do Pages na VPS e a primeira publicação | server/, ADR 0007, docs/server-runbook.md |
+| Servidor não pode cair no ingest; seguro; só o app consulta; 8 GB para milhões | no ar (26/10): dados públicos na Cloudflare Pages em dados.fiscal.byescaleira.com, ingest em fases na VPS (4 vCPU/16 GB), publicação automática, App Attest no registro; app lendo do Pages | server/, ADR 0007, docs/server-runbook.md |
 
 ## Ícone
 
