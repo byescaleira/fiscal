@@ -12,6 +12,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"time"
 
 	"liveresults/internal/publicdata"
 	"liveresults/internal/publish"
@@ -33,6 +34,36 @@ type HotState struct {
 	Agenda      []publicdata.RawAgendaHouse `json:"agenda"`
 	Votes       []*publicdata.HouseVote     `json:"votes"`
 	VoteHashes  map[string]string           `json:"voteHashes"`
+	Carry       []*publicdata.HouseVote     `json:"carry"`
+}
+
+const carryDays = 7
+
+func (st HotState) merge(ds *publicdata.Dataset) {
+	ds.Votes = upsertVotes(ds.Votes, st.Carry)
+	if st.Date == ds.Today {
+		ds.Agenda = st.Agenda
+		ds.Votes = upsertVotes(ds.Votes, st.Votes)
+	}
+}
+
+func (in *Ingest) carry(prev HotState, today string) []*publicdata.HouseVote {
+	all := prev.Carry
+	if prev.Date != today {
+		all = upsertVotes(append([]*publicdata.HouseVote(nil), all...), prev.Votes)
+	}
+	t, err := time.ParseInLocation("2006-01-02", today, in.loc)
+	if err != nil {
+		return all
+	}
+	since := t.AddDate(0, 0, -carryDays).Format("2006-01-02")
+	var out []*publicdata.HouseVote
+	for _, v := range all {
+		if v.Date >= since && v.Date < today {
+			out = append(out, v)
+		}
+	}
+	return out
 }
 
 type HotReport struct {
@@ -245,7 +276,7 @@ func (in *Ingest) Hot(ctx context.Context) (HotReport, error) {
 		return out, err
 	}
 	out.Release = rep.Release
-	if err := in.saveHotState(HotState{Date: today, Fingerprint: fp, Agenda: ds.Agenda, Votes: ds.Votes, VoteHashes: hashes}); err != nil {
+	if err := in.saveHotState(HotState{Date: today, Fingerprint: fp, Agenda: ds.Agenda, Votes: ds.Votes, VoteHashes: hashes, Carry: in.carry(prev, today)}); err != nil {
 		return out, err
 	}
 	return out, nil
@@ -275,12 +306,8 @@ func (in *Ingest) derived(ctx context.Context) (Report, error) {
 	in.mu.Unlock()
 	ds.GeneratedAt = in.now()
 	ds.Today = in.today()
-	if hot := in.loadHotState(); hot.Date == ds.Today {
-		ds.Agenda = hot.Agenda
-		ds.Votes = upsertVotes(ds.Votes, hot.Votes)
-	} else {
-		ds.Agenda = in.storedAgenda(ctx, ds.Today)
-	}
+	ds.Agenda = in.storedAgenda(ctx, ds.Today)
+	in.loadHotState().merge(ds)
 	ds.Races = in.races()
 	if paths, ok := in.loadCityPaths(); ok {
 		cities = paths

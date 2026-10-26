@@ -406,10 +406,7 @@ func (in *Ingest) full(ctx context.Context) (Report, error) {
 		assemblies = in.storeAssemblies(ctx, srcs, people)
 	}
 	ds.Agenda = in.storedAgenda(ctx, ds.Today)
-	if hot := in.loadHotState(); hot.Date == ds.Today {
-		ds.Agenda = hot.Agenda
-		ds.Votes = upsertVotes(ds.Votes, hot.Votes)
-	}
+	in.loadHotState().merge(ds)
 	in.refreshLive(ctx, ds, &rep)
 	in.storeLive(ctx, &rep, ds)
 	kind := in.cfg.ReleaseKind

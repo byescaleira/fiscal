@@ -36,12 +36,8 @@ func (in *Ingest) overlay(ctx context.Context) (Report, error) {
 	}
 	ds.GeneratedAt = in.now()
 	ds.Today = in.today()
-	if hot := in.loadHotState(); hot.Date == ds.Today {
-		ds.Agenda = hot.Agenda
-		ds.Votes = upsertVotes(ds.Votes, hot.Votes)
-	} else {
-		ds.Agenda = in.storedAgenda(ctx, ds.Today)
-	}
+	ds.Agenda = in.storedAgenda(ctx, ds.Today)
+	in.loadHotState().merge(ds)
 	ds.Races = in.races()
 	srcs := newSourceSet(in.stamp())
 	for id, s := range ds.Sources {

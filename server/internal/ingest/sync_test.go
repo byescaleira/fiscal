@@ -11,6 +11,7 @@ import (
 	"testing"
 	"time"
 
+	"liveresults/internal/publicdata"
 	"liveresults/internal/site"
 )
 
@@ -166,6 +167,26 @@ func TestOverlayJobsReuseTheSnapshotInsteadOfRestoringEverySource(t *testing.T) 
 		if strings.Contains(c, "/senador/") {
 			t.Fatalf("the overlay must not read the Senate again: %s", c)
 		}
+	}
+}
+
+func TestYesterdaysLiveVotesStayUntilAPhaseReadsThemFromTheStore(t *testing.T) {
+	in := testIngest(t, Config{}, senadoFixtures(t), time.Now())
+	vote := func(id, date string) *publicdata.HouseVote {
+		return &publicdata.HouseVote{ID: id, Date: date, House: publicdata.HouseCamara}
+	}
+	prev := HotState{Date: "2026-10-26", Votes: []*publicdata.HouseVote{vote("b", "2026-10-26")}, Carry: []*publicdata.HouseVote{vote("a", "2026-10-23"), vote("old", "2026-10-01")}}
+	carry := in.carry(prev, "2026-10-27")
+	if len(carry) != 2 || carry[0].ID != "a" || carry[1].ID != "b" {
+		t.Fatalf("carry = %v", carry)
+	}
+	if same := in.carry(prev, "2026-10-26"); len(same) != 1 || same[0].ID != "a" {
+		t.Fatalf("the same day keeps only the older carry: %v", same)
+	}
+	ds := &publicdata.Dataset{Today: "2026-10-27", Votes: []*publicdata.HouseVote{vote("z", "2026-10-20")}}
+	HotState{Date: "2026-10-27", Votes: []*publicdata.HouseVote{vote("c", "2026-10-27")}, Agenda: []publicdata.RawAgendaHouse{{House: "camara"}}, Carry: carry}.merge(ds)
+	if len(ds.Votes) != 4 || len(ds.Agenda) != 1 {
+		t.Fatalf("merge = %d votes, %d agenda houses", len(ds.Votes), len(ds.Agenda))
 	}
 }
 
