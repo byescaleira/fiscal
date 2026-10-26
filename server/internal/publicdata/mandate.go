@@ -56,6 +56,13 @@ func (b *builder) mandate() {
 		return
 	}
 	out := *m
+	out.Roles = make([]MandateRole, len(m.Roles))
+	for i, role := range m.Roles {
+		if role.Unpublished == nil {
+			role.Unpublished = []string{}
+		}
+		out.Roles[i] = role
+	}
 	out.Sources = b.sources(b.ds.MandateSources...)
 	b.add("money/mandate-cost.json", out)
 }
