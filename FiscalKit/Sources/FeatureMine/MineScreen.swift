@@ -48,7 +48,6 @@ private struct MineHeroSection: View {
 
 private struct MineHeroCard: View {
     @Environment(MineModel.self) private var mine
-    @Environment(\.appTint) private var tint
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
@@ -62,7 +61,7 @@ private struct MineHeroCard: View {
                 .font(.chipLabel)
                 .padding(.horizontal, .spaceS)
                 .padding(.vertical, .space2XS)
-                .background(.white.opacity(.opacityTint), in: .capsule)
+                .background(.fill.tertiary, in: .capsule)
                 Spacer(minLength: .spaceS)
                 if mine.hasPlace {
                     Button {
@@ -74,7 +73,7 @@ private struct MineHeroCard: View {
                     .buttonStyle(.plain)
                     .padding(.horizontal, .spaceM)
                     .padding(.vertical, .spaceXS)
-                    .background(.white.opacity(.opacityTint), in: .capsule)
+                    .background(.fill.tertiary, in: .capsule)
                 }
             }
             VStack(alignment: .leading, spacing: .space2XS) {
@@ -104,15 +103,10 @@ private struct MineHeroCard: View {
                 MineLevelStrip()
             }
         }
-        .foregroundStyle(.white)
+        .foregroundStyle(.primary)
         .padding(.spaceInset)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background {
-            LinearGradient(
-                colors: [tint, tint.opacity(.opacityStrong)], startPoint: .topLeading,
-                endPoint: .bottomTrailing)
-        }
-        .clipShape(.rect(cornerRadius: .radiusGroup))
+        .background(.groupedRow, in: .rect(cornerRadius: .radiusGroup))
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isHeader)
     }
@@ -136,7 +130,7 @@ private struct MineLevelStrip: View {
                     }
                     .padding(.horizontal, .spaceM)
                     .padding(.vertical, .spaceS)
-                    .background(.white.opacity(.opacityTint), in: .rect(cornerRadius: .radiusS))
+                    .background(.fill.tertiary, in: .rect(cornerRadius: .radiusS))
                 }
             }
         }
@@ -155,7 +149,7 @@ private struct MineStatePlate: View {
             .padding(.horizontal, .spaceS)
             .overlay(
                 RoundedRectangle(cornerRadius: .radiusS)
-                    .strokeBorder(.white.opacity(.opacityStrong), lineWidth: .spaceHairline))
+                    .strokeBorder(.secondary, lineWidth: .spaceHairline))
     }
 }
 
