@@ -80,7 +80,7 @@ func (d Data) CurrentMembers() []Member {
 }
 
 const pageSize = 100
-const maxPages = 100
+const maxPages = 400
 
 type page[T any] struct {
 	Pagination struct {

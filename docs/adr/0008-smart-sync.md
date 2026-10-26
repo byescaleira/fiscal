@@ -78,7 +78,7 @@ O que foi medido em 26/10, na VPS (4 vCPU, 16 GB) e no Mac com os dados reais co
   - `compose.yaml` (`PAGES_MAX_DEPLOYS_PER_MONTH`).
   - O ADR 0007 fica valendo para o Pages, o layout `v2`, a validação e o App Attest; os itens 4 e 5 dele (calendário das fases e publicação) passam a ser os deste.
 - **Pendências.**
-  - Os anos de 2023 a 2025 da Assembleia da Paraíba continuam fora: passam do teto de 100 páginas do SAPL. Agora só o trabalho `assembleias` tenta ler.
+  - Os anos de 2023 a 2025 da Assembleia da Paraíba ficavam fora porque passam de 100 páginas no SAPL (o SAPL limita cada página a 100 itens, e 2023 tem 15,5 mil matérias). O teto subiu para 400 páginas, e um ano já fechado é lido do cache por 30 dias; só o ano corrente é relido todo dia.
   - O snapshot nacional (cerca de 520 MB de heap) ainda é carregado pelos derivados e pelas sobreposições. Dividi-lo por casa é o próximo passo, se a memória apertar.
 
 ## Alternativas consideradas

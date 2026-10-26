@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"liveresults/internal/publicdata"
+	"liveresults/internal/sources/assembleias"
 	"liveresults/internal/sources/camara"
 	"liveresults/internal/sources/fetch"
 	"liveresults/internal/sources/senado"
@@ -412,5 +413,38 @@ func TestFullPublishesChecksAndKeepsThemWhenTheSourceFails(t *testing.T) {
 	again, err := os.ReadFile(path)
 	if err != nil || string(again) != string(first) {
 		t.Fatalf("checks must survive a failed fetch: %s %v", again, err)
+	}
+}
+
+func TestAClosedAssemblyYearComesFromARecentCache(t *testing.T) {
+	now := time.Date(2026, 10, 26, 12, 0, 0, 0, time.UTC)
+	get := &fixtureFetcher{t: t, routes: map[string]string{}}
+	in := testIngest(t, Config{}, get, now)
+	h := assembleias.Houses[0]
+	cached := assembleias.Data{House: h, Members: []assembleias.Member{{ID: 1, Name: "Ana"}}}
+	raw, _ := json.Marshal(cached)
+	path := in.assemblyCache(h, 2024)
+	if err := os.MkdirAll(filepath.Dir(path), 0o700); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(path, raw, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Chtimes(path, now.Add(-24*time.Hour), now.Add(-24*time.Hour)); err != nil {
+		t.Fatal(err)
+	}
+	d, note, err := in.assembly(context.Background(), h, 2024)
+	if err != nil || note != "" || len(d.Members) != 1 || len(get.calls) != 0 {
+		t.Fatalf("a closed year cached yesterday must not hit the SAPL: %v %q %d reads", err, note, len(get.calls))
+	}
+	if err := os.Chtimes(path, now.Add(-40*24*time.Hour), now.Add(-40*24*time.Hour)); err != nil {
+		t.Fatal(err)
+	}
+	if _, _, err := in.assembly(context.Background(), h, 2024); err != nil || len(get.calls) == 0 {
+		t.Fatalf("an old cache reads the SAPL again and falls back to the cache on failure: %v %d reads", err, len(get.calls))
+	}
+	get.calls = nil
+	if _, _, _ = in.assembly(context.Background(), h, 2026); len(get.calls) == 0 {
+		t.Fatal("the current year always reads the SAPL")
 	}
 }
