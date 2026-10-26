@@ -84,51 +84,75 @@ private struct ShareCardPreview: View {
 private struct ShareArtPicker: View {
     @Environment(ShareModel.self) private var model
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.appTint) private var tint
+    @State private var collectionID: ArtCollection.ID?
 
     var body: some View {
+        let collections = model.collections
+        let current = collectionID ?? model.selectedWork?.collection ?? collections.first?.id
         VStack(alignment: .leading, spacing: .spaceM) {
             HStack {
-                Text("Art")
-                    .font(.headline)
+                Text("Art").font(.title3.weight(.bold))
                 Spacer()
                 if let stance = model.badgeStance {
                     LensBadge(stance)
                 }
             }
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(alignment: .top, spacing: .spaceL) {
-                    ForEach(model.collections) { collection in
-                        ShareCollectionStrip(collection: collection)
+            HStack(spacing: .spaceS) {
+                ForEach(collections) { collection in
+                    let isOn = collection.id == current
+                    Button {
+                        collectionID = collection.id
+                    } label: {
+                        Text(verbatim: collection.name)
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(isOn ? AnyShapeStyle(.white) : AnyShapeStyle(tint))
+                            .padding(.horizontal, .spaceM)
+                            .padding(.vertical, .spaceS)
+                            .background(
+                                isOn
+                                    ? AnyShapeStyle(tint)
+                                    : AnyShapeStyle(tint.opacity(.opacityTint)),
+                                in: .capsule)
                     }
+                    .buttonStyle(.plain)
+                    .accessibilityAddTraits(isOn ? .isSelected : [])
                 }
-                .padding(.vertical, .space2XS)
             }
-            .scrollClipDisabled()
+            ScrollViewReader { proxy in
+                ScrollView(.horizontal) {
+                    HStack(alignment: .top, spacing: .spaceM) {
+                        ForEach(model.works.filter { $0.collection == current }) { work in
+                            ShareArtCard(work: work).id(work.id)
+                        }
+                    }
+                    .scrollTargetLayout()
+                    .padding(.vertical, .spaceXS)
+                }
+                .scrollIndicators(.hidden)
+                .scrollTargetBehavior(.viewAligned)
+                .scrollClipDisabled()
+                .onAppear {
+                    if let id = model.selectedWorkID { proxy.scrollTo(id, anchor: .center) }
+                }
+            }
+            if let work = model.selectedWork {
+                Text(
+                    verbatim: "\(work.artist) · \(work.title), \(work.year) · \(work.licenseLabel)"
+                )
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .lineLimit(2)
+                .contentTransition(.opacity)
+            }
         }
         .animation(reduceMotion ? nil : .smooth, value: model.selectedWorkID)
+        .animation(reduceMotion ? nil : .smooth, value: collectionID)
         .sensoryFeedback(.selection, trigger: model.selectedWorkID)
     }
 }
 
-private struct ShareCollectionStrip: View {
-    @Environment(ShareModel.self) private var model
-    let collection: ArtCollection
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: .spaceS) {
-            Text(verbatim: collection.name)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
-            HStack(spacing: .spaceS) {
-                ForEach(model.works.filter { $0.collection == collection.id }) { work in
-                    ShareThumbnail(work: work)
-                }
-            }
-        }
-    }
-}
-
-private struct ShareThumbnail: View {
+private struct ShareArtCard: View {
     @Environment(ShareModel.self) private var model
     @Environment(\.appTint) private var tint
     let work: ArtWork
@@ -138,23 +162,37 @@ private struct ShareThumbnail: View {
         Button {
             model.select(work)
         } label: {
-            work.image
-                .resizable()
-                .scaledToFill()
-                .frame(width: .shareThumbnail, height: .shareThumbnail)
-                .clipShape(.rect(cornerRadius: .radiusS))
-                .overlay {
-                    RoundedRectangle(cornerRadius: .radiusS)
-                        .strokeBorder(selected ? tint : .clear, lineWidth: .spaceHairline)
-                }
-                .overlay(alignment: .bottomTrailing) {
-                    if selected {
-                        Image(systemName: "checkmark.circle.fill")
-                            .symbolRenderingMode(.palette)
-                            .foregroundStyle(.white, tint)
-                            .padding(.space2XS)
+            VStack(alignment: .leading, spacing: .spaceXS) {
+                work.image
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: .shareThumbnail * 2, height: .shareThumbnail * 3)
+                    .clipShape(.rect(cornerRadius: .radiusM))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: .radiusM)
+                            .strokeBorder(selected ? tint : .clear, lineWidth: .space2XS)
                     }
-                }
+                    .overlay(alignment: .topTrailing) {
+                        if selected {
+                            Image(systemName: "checkmark.circle.fill")
+                                .font(.icon(.m))
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(.white, tint)
+                                .padding(.spaceXS)
+                        }
+                    }
+                    .shadow(color: .black.opacity(selected ? .opacityTint : 0), radius: .spaceS)
+                Text(verbatim: work.artist)
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(.primary)
+                    .lineLimit(1)
+                Text(verbatim: work.title)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
+            .frame(width: .shareThumbnail * 2)
+            .scaleEffect(selected ? 1 : 0.94)
         }
         .buttonStyle(.plain)
         .accessibilityLabel(Text(verbatim: "\(work.title), \(work.artist), \(work.year)"))

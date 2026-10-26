@@ -47,20 +47,27 @@ private struct ChosenStrip: View {
     @Environment(CompareModel.self) private var compare
 
     var body: some View {
-        HStack(alignment: .top, spacing: .spaceM) {
-            ForEach(0..<CompareModel.range.upperBound, id: \.self) { slot in
-                let chosen = compare.chosen
-                Group {
-                    if slot < chosen.count {
-                        ChosenSlot(card: chosen[slot])
-                    } else {
-                        EmptySlot()
-                    }
-                }
-                .frame(maxWidth: .infinity)
+        let chosen = compare.chosen
+        HStack(alignment: .center, spacing: .spaceS) {
+            slot(0, chosen: chosen)
+            Text("vs")
+                .font(.title3.weight(.heavy))
+                .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
+            slot(1, chosen: chosen)
+        }
+        .padding(.vertical, .spaceL)
+    }
+
+    @ViewBuilder private func slot(_ index: Int, chosen: [PersonCard]) -> some View {
+        Group {
+            if index < chosen.count {
+                ChosenSlot(card: chosen[index])
+            } else {
+                EmptySlot()
             }
         }
-        .padding(.vertical, .spaceS)
+        .frame(maxWidth: .infinity)
     }
 }
 
@@ -72,20 +79,23 @@ private struct ChosenSlot: View {
         Button {
             compare.toggle(card)
         } label: {
-            VStack(spacing: .spaceXS) {
-                PersonPortrait(slug: card.slug, name: card.name, party: card.party, size: .badgeXL)
-                    .overlay(alignment: .topTrailing) {
-                        Image(systemName: "xmark.circle.fill")
-                            .symbolRenderingMode(.palette)
-                            .foregroundStyle(.white, .secondary)
-                            .font(.icon(.m))
-                            .accessibilityHidden(true)
-                    }
+            VStack(spacing: .spaceS) {
+                PersonPortrait(
+                    slug: card.slug, name: card.name, party: card.party, size: .badgeXL * 2
+                )
+                .overlay(alignment: .topTrailing) {
+                    Image(systemName: "xmark.circle.fill")
+                        .symbolRenderingMode(.palette)
+                        .foregroundStyle(.white, .secondary)
+                        .font(.icon(.l))
+                        .accessibilityHidden(true)
+                }
                 Text(verbatim: card.name)
-                    .font(.caption.weight(.semibold))
+                    .font(.headline)
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
                     .foregroundStyle(Color.primary)
+                PartyMark(card.party)
             }
         }
         .buttonStyle(.plain)
@@ -101,12 +111,12 @@ private struct EmptySlot: View {
                 .strokeBorder(
                     .tertiary, style: StrokeStyle(lineWidth: .spaceHairline, dash: [.space2XS])
                 )
-                .frame(width: .badgeXL, height: .badgeXL)
+                .frame(width: .badgeXL * 2, height: .badgeXL * 2)
                 .overlay {
-                    Image(systemName: "plus").foregroundStyle(.secondary)
+                    Image(systemName: "plus").font(.title2).foregroundStyle(.secondary)
                 }
             Text("Add person")
-                .font(.caption)
+                .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
         .accessibilityElement(children: .combine)

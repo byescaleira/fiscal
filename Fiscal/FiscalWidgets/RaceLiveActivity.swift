@@ -80,29 +80,47 @@ private struct RaceLockScreen: View {
                     .foregroundStyle(RaceStyle.primary)
                     .lineLimit(1)
                 Spacer(minLength: .spaceS)
-                VStack(alignment: .trailing, spacing: 0) {
-                    Text(verbatim: "\(board.centerValue) \(board.centerCaption)")
-                        .font(.caption.weight(.bold))
+                Text(verbatim: board.sourceText)
+                    .font(.caption2)
+                    .foregroundStyle(RaceStyle.secondary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+            }
+            HStack(alignment: .center, spacing: .spaceS) {
+                if let first = board.first {
+                    SideColumn(row: first, score: board.score(first), alignment: .leading)
+                }
+                Spacer(minLength: 0)
+                VStack(spacing: .space2XS) {
+                    Text(verbatim: board.centerValue)
+                        .font(.subheadline.weight(.heavy))
                         .foregroundStyle(RaceStyle.primary)
                         .monospacedDigit()
                         .contentTransition(.numericText(value: board.state.sectionsPercent))
-                    Text(verbatim: board.sourceText)
-                        .font(.caption2)
+                    Text(verbatim: board.centerCaption)
+                        .font(.caption2.weight(.medium))
                         .foregroundStyle(RaceStyle.secondary)
+                    Capsule()
+                        .fill(RaceStyle.track)
+                        .frame(width: .badgeL, height: .space2XS)
+                        .overlay(alignment: .leading) {
+                            Capsule()
+                                .fill(RaceStyle.primary)
+                                .frame(
+                                    width: .badgeL
+                                        * min(max(board.state.sectionsPercent / 100, 0), 1))
+                        }
                 }
                 .lineLimit(1)
-                .minimumScaleFactor(0.8)
-            }
-            if let first = board.first {
-                ScoreRow(row: first, score: board.score(first))
-            }
-            if let second = board.second {
-                ScoreRow(row: second, score: board.score(second))
+                Spacer(minLength: 0)
+                if let second = board.second {
+                    SideColumn(row: second, score: board.score(second), alignment: .trailing)
+                }
             }
             ShareBar(board: board, height: .spaceS)
         }
-        .padding(.horizontal, .spaceL)
-        .padding(.vertical, .spaceM)
+        .padding(.horizontal, .spaceXL)
+        .padding(.vertical, .spaceL)
         .frame(maxWidth: .infinity)
         .fontDesign(.rounded)
         .partyMarksStill()
@@ -110,27 +128,33 @@ private struct RaceLockScreen: View {
     }
 }
 
-private struct ScoreRow: View {
+private struct SideColumn: View {
     let row: RaceActivityRow
     let score: CandidateScoreText
+    let alignment: HorizontalAlignment
 
     var body: some View {
-        HStack(alignment: .center, spacing: .spaceS) {
-            CandidatePhoto(row: row, side: .badgeM)
-            Text(verbatim: score.name.uppercased())
-                .font(.footnote.weight(.heavy))
-                .foregroundStyle(RaceStyle.primary)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-            PartyMark(row.party)
-            Spacer(minLength: .spaceS)
-            Text(verbatim: score.percent)
-                .font(.scoreboardNumber)
-                .monospacedDigit()
-                .contentTransition(.numericText(value: score.value))
-                .foregroundStyle(RaceStyle.primary)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
+        VStack(alignment: alignment, spacing: .space2XS) {
+            HStack(spacing: .spaceXS) {
+                if alignment == .leading { CandidatePhoto(row: row, side: .badgeM) }
+                Text(verbatim: score.percent)
+                    .font(.scoreboardNumber)
+                    .monospacedDigit()
+                    .contentTransition(.numericText(value: score.value))
+                    .foregroundStyle(RaceStyle.primary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                if alignment == .trailing { CandidatePhoto(row: row, side: .badgeM) }
+            }
+            HStack(spacing: .space2XS) {
+                if alignment == .trailing { PartyMark(row.party) }
+                Text(verbatim: score.name.uppercased())
+                    .font(.caption2.weight(.heavy))
+                    .foregroundStyle(RaceStyle.secondary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                if alignment == .leading { PartyMark(row.party) }
+            }
         }
         .opacity(score.dimmed ? .opacitySoft : 1)
         .accessibilityElement(children: .ignore)
@@ -250,18 +274,12 @@ private struct ShareBar: View {
             let second = board.second?.percent ?? 0
             let total = first + second
             let share = total > 0 ? first / total : 0.5
-            ZStack {
-                HStack(spacing: .zero) {
-                    Rectangle()
-                        .fill(total > 0 ? board.firstPalette.primary : RaceStyle.track)
-                        .frame(width: proxy.size.width * share)
-                    Rectangle()
-                        .fill(total > 0 ? board.secondPalette.primary : RaceStyle.track)
-                }
-                .clipShape(.capsule)
-                Rectangle()
+            HStack(spacing: .spaceHairline) {
+                Capsule()
                     .fill(RaceStyle.primary)
-                    .frame(width: .spaceHairline, height: proxy.size.height + .spaceXS)
+                    .frame(width: max(height, (proxy.size.width - .spaceHairline) * share))
+                Capsule()
+                    .fill(RaceStyle.secondary.opacity(.opacitySoft))
             }
         }
         .frame(height: height)

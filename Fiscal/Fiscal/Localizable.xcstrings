@@ -9402,6 +9402,16 @@
         }
       }
     },
+    "vs" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "vs"
+          }
+        }
+      }
+    },
     "Website" : {
       "localizations" : {
         "pt-BR" : {

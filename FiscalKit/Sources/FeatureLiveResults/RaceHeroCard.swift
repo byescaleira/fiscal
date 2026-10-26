@@ -244,6 +244,8 @@ private struct RaceHeroCenter: View {
             Text(summary.race.final ? "TSE" : "counted")
                 .font(.caption2.weight(.semibold))
                 .opacity(.opacityStrong)
+            ProgressBar(value: summary.countedFraction, color: .white)
+                .frame(width: .badgeXL)
         }
         .frame(minWidth: .badgeXL + .spaceL)
     }
@@ -284,25 +286,16 @@ private struct RaceHeroSplit: View {
 
     var body: some View {
         let share = summary.splitShare
-        let first = PartyPalette.of(party: summary.sides.first?.candidate.party ?? "", fallback: 0)
-        let second = PartyPalette.of(party: summary.sides.last?.candidate.party ?? "", fallback: 1)
         GeometryReader { proxy in
-            ZStack {
-                HStack(spacing: .zero) {
-                    Rectangle()
-                        .fill(first.primary)
-                        .frame(width: proxy.size.width * share)
-                    Rectangle()
-                        .fill(second.primary)
-                }
-                .clipShape(.capsule)
-                .overlay { Capsule().strokeBorder(.white, lineWidth: .spaceHairline) }
-                Rectangle()
+            HStack(spacing: .spaceHairline) {
+                Capsule()
                     .fill(.white)
-                    .frame(width: .spaceHairline, height: proxy.size.height + .spaceS)
+                    .frame(width: max(.spaceS, (proxy.size.width - .spaceHairline) * share))
+                Capsule()
+                    .fill(.white.opacity(.opacitySoft))
             }
         }
-        .frame(height: .spaceM)
+        .frame(height: .spaceS)
         .animation(reduceMotion ? nil : .smooth(duration: 1), value: share)
         .accessibilityHidden(true)
     }
