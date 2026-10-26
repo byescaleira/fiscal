@@ -4,6 +4,7 @@ import Foundation
 public struct LiveResultsClient: LiveResultsService, HighlightAlertService {
     private struct Removal: Encodable {
         let pushToken: String
+        let challenge: String?
     }
 
     private struct Registration: Encodable {
@@ -70,7 +71,9 @@ public struct LiveResultsClient: LiveResultsService, HighlightAlertService {
     }
 
     public func unfollow(pushToken: String) async throws {
-        try await send("DELETE", path: "v1/live-activities", body: Removal(pushToken: pushToken))
+        try await attested(method: "DELETE", path: "v1/live-activities") { challenge in
+            Removal(pushToken: pushToken, challenge: challenge)
+        }
     }
 
     public func registerHighlights(pushToken: String, environment: PushEnvironment)
@@ -83,8 +86,9 @@ public struct LiveResultsClient: LiveResultsService, HighlightAlertService {
     }
 
     public func unregisterHighlights(pushToken: String) async throws {
-        try await send(
-            "DELETE", path: "v1/highlight-activities", body: Removal(pushToken: pushToken))
+        try await attested(method: "DELETE", path: "v1/highlight-activities") { challenge in
+            Removal(pushToken: pushToken, challenge: challenge)
+        }
     }
 
     private func send(_ method: String, path: String, body: some Encodable) async throws {
@@ -94,14 +98,14 @@ public struct LiveResultsClient: LiveResultsService, HighlightAlertService {
     }
 
     private func attested<Body: Encodable>(
-        path: String, body make: (String?) -> Body, retry: Bool = true
+        method: String = "POST", path: String, body make: (String?) -> Body, retry: Bool = true
     ) async throws {
         let attestor = AppAttestor.shared
         if let prepared = await attestor.prepare(base: baseURL, session: session) {
             let body = try JSONEncoder().encode(make(prepared.challenge))
             if let assertion = await attestor.assertion(keyID: prepared.keyID, body: body) {
                 let (data, response) = try await raw(
-                    "POST", path: path, body: body,
+                    method, path: path, body: body,
                     headers: [
                         "X-Fiscal-Attest-Key": prepared.keyID,
                         "X-Fiscal-Attest-Assertion": assertion,
@@ -110,14 +114,14 @@ public struct LiveResultsClient: LiveResultsService, HighlightAlertService {
                     Self.code(data) == "attest_unknown_key"
                 {
                     await attestor.forget()
-                    try await attested(path: path, body: make, retry: false)
+                    try await attested(method: method, path: path, body: make, retry: false)
                     return
                 }
                 try Self.check(response)
                 return
             }
         }
-        try await send("POST", path: path, body: make(nil))
+        try await send(method, path: path, body: make(nil))
     }
 
     private func raw(_ method: String, path: String, body: Data, headers: [String: String])

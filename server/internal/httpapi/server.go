@@ -95,9 +95,9 @@ func New(c Config) http.Handler {
 	mux.HandleFunc("POST /api/v1/attest/challenge", s.limit(ClassWrite, s.challenge))
 	mux.HandleFunc("POST /api/v1/attest/keys", s.limit(ClassWrite, s.registerKey))
 	mux.HandleFunc("POST /api/v1/live-activities", s.limit(ClassWrite, s.attested(s.register)))
-	mux.HandleFunc("DELETE /api/v1/live-activities", s.limit(ClassWrite, s.unregister))
+	mux.HandleFunc("DELETE /api/v1/live-activities", s.limit(ClassWrite, s.attested(s.unregister)))
 	mux.HandleFunc("POST /api/v1/highlight-activities", s.limit(ClassWrite, s.attested(s.registerHighlights)))
-	mux.HandleFunc("DELETE /api/v1/highlight-activities", s.limit(ClassWrite, s.unregisterHighlights))
+	mux.HandleFunc("DELETE /api/v1/highlight-activities", s.limit(ClassWrite, s.attested(s.unregisterHighlights)))
 	mux.HandleFunc("POST /api/v1/admin/push-test", s.limit(ClassWrite, s.pushTest))
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusNotFound, "not_found", "route not found")
