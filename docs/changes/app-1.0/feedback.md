@@ -151,7 +151,7 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Expressões neutras aleatórias de tempos em tempos nos retratos (positivas/negativas só quando o contexto pede) | no iPhone; "pensar" no Fiscalizar ligado | PersonPortrait, avatars.py |
 | Trilhos e carrosséis cortando as laterais: devem ir de ponta a ponta | em andamento | frente carousels |
 | Investigações salvas no iCloud (SwiftData + CloudKit) | em andamento | frente investigations-icloud |
-| Servidor não pode cair no ingest; seguro; só o app consulta; 8 GB para milhões | diagnóstico e proposta enviados, aguardando decisões | server/ |
+| Servidor não pode cair no ingest; seguro; só o app consulta; 8 GB para milhões | aprovado tudo + Cloudflare; código em andamento (frente server-resilience); VPS própria e DNS são passos do usuário | server/, ADR |
 
 ## Ícone
 
