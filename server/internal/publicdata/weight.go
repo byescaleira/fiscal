@@ -68,6 +68,7 @@ type Action struct {
 	Stage        string        `json:"stage"`
 	Themes       []string      `json:"themes"`
 	Weight       int           `json:"weight"`
+	Relevance    string        `json:"relevance"`
 	Repercussion *int          `json:"repercussion"`
 	Impact       int           `json:"impact"`
 	Signals      ActionSignals `json:"signals"`
@@ -583,10 +584,11 @@ func (d draft) action(sig ActionSignals, personal bool) Action {
 	if rep != nil {
 		shown = ptr(round(*rep))
 	}
+	weight := weightOf(rep, d.impact)
 	return Action{
 		ID: d.id, Kind: d.kind, Title: d.title, Proposition: strPtr(d.label), Date: d.date, URL: strPtr(d.url),
 		Ref: strPtr(d.ref), Ballot: strPtr(d.ballot), Scope: d.scope, Stage: d.stage, Themes: nonNil(d.themes),
-		Weight: weightOf(rep, d.impact), Repercussion: shown, Impact: round(d.impact), Signals: sig, SignalCoverage: cov,
+		Weight: weight, Relevance: RelevanceOf(weight), Repercussion: shown, Impact: round(d.impact), Signals: sig, SignalCoverage: cov,
 	}
 }
 

@@ -24,6 +24,7 @@ type Highlight struct {
 	Title        string        `json:"title"`
 	Subtitle     string        `json:"subtitle"`
 	Weight       int           `json:"weight"`
+	Relevance    string        `json:"relevance"`
 	Repercussion *int          `json:"repercussion"`
 	Impact       int           `json:"impact"`
 	Route        string        `json:"route"`
@@ -126,6 +127,15 @@ type WeightMethod struct {
 	Limits          []string           `json:"limits"`
 	Sources         []Source           `json:"sources"`
 	Alert           MethodAlert        `json:"alert"`
+	Levels          []MethodLevel      `json:"levels"`
+	LevelsText      string             `json:"levelsText"`
+}
+
+type MethodLevel struct {
+	Key   string `json:"key"`
+	Label string `json:"label"`
+	Min   int    `json:"min"`
+	Max   int    `json:"max"`
 }
 
 func Method(sources []Source) WeightMethod {
@@ -205,6 +215,12 @@ func Method(sources []Source) WeightMethod {
 		},
 		Sources: sources,
 		Alert:   MethodAlert{MinWeight: AlertMinWeight, MaxAgeHours: AlertMaxAgeHours, Text: alert},
+		Levels: []MethodLevel{
+			{Key: RelevanceHigh, Label: "Alta relevância", Min: RelevanceHighMin, Max: 100},
+			{Key: RelevanceMedium, Label: "Média relevância", Min: RelevanceMediumMin, Max: RelevanceHighMin - 1},
+			{Key: RelevanceLow, Label: "Baixa relevância", Min: 0, Max: RelevanceMediumMin - 1},
+		},
+		LevelsText: fmt.Sprintf("Na tela, o peso aparece como faixa: alta relevância com %d ou mais, média de %d a %d e baixa abaixo de %d. O número fica no detalhe. A faixa ordena; ela não diz se a medida é boa ou ruim.", RelevanceHighMin, RelevanceMediumMin, RelevanceHighMin-1, RelevanceMediumMin),
 	}
 }
 
@@ -332,7 +348,7 @@ func (b *builder) weights(people []*Person) {
 		score, in := decayed(a.Weight, a.Date, today)
 		cands = append(cands, candidate{key: k, score: score, inRange: in, h: Highlight{
 			ID: "action-" + a.ID, Kind: HighlightAction, Title: a.Title, Subtitle: joinParts(deref(a.Proposition), who),
-			Weight: a.Weight, Repercussion: a.Repercussion, Impact: a.Impact, Route: card.Slug, Person: &card,
+			Weight: a.Weight, Relevance: a.Relevance, Repercussion: a.Repercussion, Impact: a.Impact, Route: card.Slug, Person: &card,
 			Proposition: a.Proposition, Date: a.Date, URL: a.URL, Signals: a.Signals, SignalCoverage: a.SignalCoverage,
 			Themes: a.Themes, Stage: a.Stage, House: strPtr(personHouse(g.person)),
 		}})
@@ -367,7 +383,7 @@ func (b *builder) weights(people []*Person) {
 		}
 		cands = append(cands, candidate{key: k, score: score, inRange: in, h: Highlight{
 			ID: d.id, Kind: HighlightVote, Title: a.Title, Subtitle: joinParts(houseName(v.House), v.Proposition, v.Result),
-			Weight: a.Weight, Repercussion: a.Repercussion, Impact: a.Impact, Route: v.ID,
+			Weight: a.Weight, Relevance: a.Relevance, Repercussion: a.Repercussion, Impact: a.Impact, Route: v.ID,
 			Proposition: a.Proposition, Date: a.Date, Signals: a.Signals, SignalCoverage: a.SignalCoverage,
 			Themes: a.Themes, Stage: a.Stage, House: strPtr(v.House), Tally: tallyOf(v),
 		}})

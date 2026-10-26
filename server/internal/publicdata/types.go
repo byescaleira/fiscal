@@ -159,30 +159,31 @@ type Coverage struct {
 }
 
 type Profile struct {
-	Slug       string          `json:"slug"`
-	Name       string          `json:"name"`
-	CivilName  *string         `json:"civilName"`
-	Office     string          `json:"office"`
-	UF         string          `json:"uf"`
-	Party      string          `json:"party"`
-	Photo      *string         `json:"photo"`
-	Status     string          `json:"status"`
-	Gender     *string         `json:"gender"`
-	Mandate    Mandate         `json:"mandate"`
-	BirthDate  *string         `json:"birthDate"`
-	BirthPlace *string         `json:"birthPlace"`
-	Education  *string         `json:"education"`
-	Contact    *Contact        `json:"contact"`
-	Salary     *Salary         `json:"salary"`
-	Numbers    Numbers         `json:"numbers"`
-	Years      []YearSummary   `json:"years"`
-	Themes     []ThemeCount    `json:"themes"`
-	Committees []Committee     `json:"committees"`
-	Assets     []AssetYear     `json:"assets"`
-	Campaigns  []Campaign      `json:"campaigns"`
-	Timeline   []TimelineEntry `json:"timeline"`
-	Coverage   []Coverage      `json:"coverage"`
-	Sources    []Source        `json:"sources"`
+	Slug           string          `json:"slug"`
+	Name           string          `json:"name"`
+	CivilName      *string         `json:"civilName"`
+	Office         string          `json:"office"`
+	UF             string          `json:"uf"`
+	Party          string          `json:"party"`
+	Photo          *string         `json:"photo"`
+	Status         string          `json:"status"`
+	Gender         *string         `json:"gender"`
+	Mandate        Mandate         `json:"mandate"`
+	BirthDate      *string         `json:"birthDate"`
+	BirthPlace     *string         `json:"birthPlace"`
+	Education      *string         `json:"education"`
+	Contact        *Contact        `json:"contact"`
+	Salary         *Salary         `json:"salary"`
+	Numbers        Numbers         `json:"numbers"`
+	Years          []YearSummary   `json:"years"`
+	Themes         []ThemeCount    `json:"themes"`
+	Committees     []Committee     `json:"committees"`
+	Assets         []AssetYear     `json:"assets"`
+	Campaigns      []Campaign      `json:"campaigns"`
+	Timeline       []TimelineEntry `json:"timeline"`
+	Coverage       []Coverage      `json:"coverage"`
+	Classification *Classification `json:"classification"`
+	Sources        []Source        `json:"sources"`
 }
 
 type PersonVote struct {
