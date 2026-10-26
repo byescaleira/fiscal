@@ -141,6 +141,9 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Documentar os padrões de tela aprovados | cartão proposto | docs/design-system.md |
 | Fiscalizar como investigação: busca contextual com IA local, quadro de peças, conclusão e pôster; Eleições sai da tela | em andamento | frente investigate |
 | Status dos turnos em Eleições ainda em cápsula (deve ser círculo) | em andamento | frente memory, com StatusCircle |
+| Tag "Por quem você apoia" escondida pela arte no Destaque | no iPhone (removida do hero) | TodayHighlightHero |
+| Mais retratos Lottie (Jones Manoel e os eleitos de 2026) | no iPhone: 2.689 rostos, todos os 2.357 da base real | scripts/avatar-traits.json |
+| Expressões controláveis nos retratos (acenar, joinha, balançar, sorrir) | cartão proposto: boneco único + fichas | — |
 
 ## Ícone
 
