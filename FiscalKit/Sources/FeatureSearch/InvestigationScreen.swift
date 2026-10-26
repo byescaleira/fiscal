@@ -23,7 +23,7 @@ public struct InvestigationScreen: View {
                 ConclusionSection()
             }
         }
-        .emphasisTitle("Investigation")
+        .navigationTitle("Investigation")
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
         #endif

@@ -15,7 +15,7 @@ public struct GuidesHubScreen: View {
         }
         .readableWidth()
         .background(.groupedBackground)
-        .emphasisTitle("Guides")
+        .navigationTitle("Guides")
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
         #endif

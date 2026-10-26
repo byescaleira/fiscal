@@ -21,7 +21,7 @@ struct RaceDetailScreen: View {
             }
         }
         .background(.groupedBackground)
-        .emphasisTitle(Text(verbatim: results.race(id: raceID).map(results.title) ?? ""))
+        .navigationTitle(Text(verbatim: results.race(id: raceID).map(results.title) ?? ""))
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
         #endif

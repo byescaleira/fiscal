@@ -106,11 +106,7 @@ public struct VoteSummary: Codable, Hashable, Identifiable, Sendable {
 
     public var tally: Tally { Tally(yes: yes, no: no, others: others) }
 
-    public var heading: String {
-        guard let turn, turn > 0 else { return proposition }
-        let label = String(appLocalized: "Turn \(turn)")
-        return proposition.isEmpty ? label : "\(proposition) · \(label)"
-    }
+    public var heading: String { VoteHeading.text(proposition, turn: turn) }
 
     public var sameDayVotes: [Related] { related ?? [] }
 
@@ -206,4 +202,12 @@ public struct VoteDetail: Codable, Hashable, Identifiable, Sendable {
     }
 
     public var id: String { vote.id }
+}
+
+public enum VoteHeading {
+    public static func text(_ proposition: String, turn: Int?) -> String {
+        guard let turn, turn > 0 else { return proposition }
+        let label = String(appLocalized: "Turn \(turn)")
+        return proposition.isEmpty ? label : "\(proposition) · \(label)"
+    }
 }

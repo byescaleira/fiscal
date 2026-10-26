@@ -30,7 +30,7 @@ public struct FiscalAnimationView: View {
         tinted(
             LottieView(animation: loaded)
                 .playbackMode(
-                    reduceMotion || isStill
+                    reduceMotion || isStill || (loops && MotionBudget.isConstrained)
                         ? .paused(at: .progress(1))
                         : .playing(
                             .fromProgress(0, toProgress: 1, loopMode: loops ? .loop : .playOnce))

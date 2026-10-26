@@ -16,7 +16,7 @@ public struct ArtistsScreen: View {
                 ArtistsGallery()
             }
         }
-        .emphasisTitle("Artists")
+        .navigationTitle("Artists")
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
         #endif

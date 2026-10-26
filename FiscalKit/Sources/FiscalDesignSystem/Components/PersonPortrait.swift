@@ -1,8 +1,6 @@
 import SwiftUI
 
 public struct PersonPortrait: View {
-    private static let gestureSize: CGFloat = .badgeL
-
     @Environment(\.portraitArtwork) private var artwork
     @Environment(\.portraitsAreStill) private var portraitsAreStill
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -47,7 +45,7 @@ public struct PersonPortrait: View {
         return PortraitRequest(
             slug: slug, party: party, isStill: isStill,
             expression: reduceMotion && !portraitsAreStill ? nil : expression,
-            allowsGestures: !isStill && size >= Self.gestureSize)
+            allowsGestures: !isStill)
     }
 
     var initials: String {

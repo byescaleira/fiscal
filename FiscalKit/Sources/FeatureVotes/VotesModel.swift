@@ -78,6 +78,8 @@ public final class VotesModel {
         return order.sorted(by: >).map { Day(id: $0, votes: groups[$0] ?? []) }
     }
 
+    public var showsNoMatch: Bool { days.isEmpty && highlights.isEmpty }
+
     public var themeChoices: [Theme] {
         let used = Set(votes.flatMap(\.themes))
         let present = Theme.allCases.filter(used.contains)

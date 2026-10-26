@@ -70,7 +70,7 @@ public enum TodayText {
 
     public static func voteLine(_ vote: VoteSummary) -> String {
         let day = shortDate(vote.date.date())
-        return "\(vote.house.title) · \(vote.proposition) · \(day)"
+        return "\(vote.house.title) · \(vote.heading) · \(day)"
     }
 
     public static func lensLine(_ lens: Lens?) -> String? {

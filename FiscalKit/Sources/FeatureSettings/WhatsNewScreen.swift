@@ -21,9 +21,9 @@ struct WhatsNewScreen: View {
         .readableWidth()
         .background(.groupedBackground)
         #if os(visionOS) || os(tvOS)
-            .emphasisTitle(String(appLocalized: "What's New in Version \(settings.info.number)"))
+            .navigationTitle(String(appLocalized: "What's New in Version \(settings.info.number)"))
         #else
-            .emphasisTitle("What's New")
+            .navigationTitle("What's New")
             .navigationSubtitle(String(appLocalized: "Version \(settings.info.number)"))
         #endif
         #if os(iOS)

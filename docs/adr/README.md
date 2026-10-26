@@ -28,4 +28,5 @@ Cada decisão que molda o Fiscal além de uma única mudança ganha um registro 
 | [0005](0005-data-ingest-process.md) | Carga de dados num processo próprio, com ligações e slugs guardados no servidor | Proposto |
 | [0006](0006-ingest-sqlite-store.md) | A carga guarda tudo num SQLite com histórico, e os arquivos públicos saem dele | Aceito |
 | [0007](0007-pages-cdn-phased-ingest.md) | Dados públicos no Cloudflare Pages, carga em fases na VPS atual e App Attest no registro | Proposto; calendário e publicação substituídos por [0008](0008-smart-sync.md) |
-| [0008](0008-smart-sync.md) | Sincronização por cadência, detecção de mudança e reconstrução incremental | Proposto |
+| [0008](0008-smart-sync.md) | Sincronização por cadência, detecção de mudança e reconstrução incremental | Aceito |
+| [0009](0009-bricolage-emphasis-font.md) | Bricolage Grotesque como fonte de ênfase, SF Pro no corpo | Aceito |

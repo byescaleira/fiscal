@@ -9,10 +9,11 @@ public struct PersonVote: Codable, Hashable, Identifiable, Sendable {
     public let partyGuidance: String?
     public let approved: Bool?
     public let themes: [Theme]
+    public let turn: Int?
 
     public init(
         voteId: String, date: CalendarDay, proposition: String, summary: String, vote: String,
-        partyGuidance: String?, approved: Bool?, themes: [Theme]
+        partyGuidance: String?, approved: Bool?, themes: [Theme], turn: Int? = nil
     ) {
         self.voteId = voteId
         self.date = date
@@ -22,10 +23,11 @@ public struct PersonVote: Codable, Hashable, Identifiable, Sendable {
         self.partyGuidance = partyGuidance
         self.approved = approved
         self.themes = themes
+        self.turn = turn
     }
 
     private enum CodingKeys: String, CodingKey {
-        case voteId, date, proposition, summary, vote, partyGuidance, approved, themes
+        case voteId, date, proposition, summary, vote, partyGuidance, approved, themes, turn
     }
 
     public init(from decoder: any Decoder) throws {
@@ -38,9 +40,12 @@ public struct PersonVote: Codable, Hashable, Identifiable, Sendable {
         partyGuidance = try container.decodeIfPresent(String.self, forKey: .partyGuidance)
         approved = try container.decodeIfPresent(Bool.self, forKey: .approved)
         themes = try container.decode([Theme].self, forKey: .themes)
+        turn = try container.decodeIfPresent(Int.self, forKey: .turn)
     }
 
     public var id: String { voteId }
+
+    public var heading: String { VoteHeading.text(proposition, turn: turn) }
 }
 
 public struct Proposal: Codable, Hashable, Identifiable, Sendable {

@@ -115,7 +115,7 @@ public struct WeightMethodSheet: View {
                 .padding(.bottom, .space2XL)
             }
             .background(.sheetBackground)
-            .emphasisTitle("How We Measure")
+            .navigationTitle("How We Measure")
             #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
             #endif

@@ -90,7 +90,7 @@ public struct SettingsPage<Content: View>: View {
                 AdaptiveList { content }
             #endif
         }
-        .emphasisTitle(title)
+        .navigationTitle(title)
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
         #endif

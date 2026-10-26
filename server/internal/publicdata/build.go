@@ -241,6 +241,7 @@ func (b *builder) person(p *Person) {
 			PartyGuidance: guidanceFor(pb.vote, pb.ballot.Party),
 			Approved:      pb.vote.Approved,
 			Themes:        voteThemes(pb.vote),
+			Turn:          turnOf(pb.vote),
 		})
 	}
 	themeCounts := map[string]*ThemeCount{}
@@ -663,6 +664,13 @@ func (b *builder) placeFiles(people []*Person) {
 	}
 }
 
+func turnOf(v *HouseVote) *int {
+	if t := voteTurn(v); t > 0 {
+		return ptr(t)
+	}
+	return nil
+}
+
 func VoteLabel(v *HouseVote) string {
 	switch {
 	case strings.TrimSpace(v.Proposition) != "":
@@ -694,9 +702,7 @@ func (b *builder) summary(v *HouseVote) VoteSummary {
 	if v.Ementa != "" {
 		s.PlainSummary = strPtr(PlainSummary(v.Ementa))
 	}
-	if t := voteTurn(v); t > 0 {
-		s.Turn = ptr(t)
-	}
+	s.Turn = turnOf(v)
 	if g, ok := b.groups()[v.ID]; ok {
 		s.Group = g.ID
 		if n := len(g.Votes) - 1; n > 0 {

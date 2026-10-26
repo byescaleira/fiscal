@@ -104,7 +104,7 @@ struct ProfileExpensesScreen: View {
                 ProfileFooter(lines: [profile.sourceText(for: ["expenses"])])
             }
         }
-        .emphasisTitle("Expenses in \(String(profile.year))")
+        .navigationTitle("Expenses in \(String(profile.year))")
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
         #endif

@@ -22,7 +22,7 @@ public struct LensScreen: View {
         }
         .task { await lens.loadVotes() }
         .task(id: lens.supported) { await lens.loadSupport() }
-        .emphasisTitle("Lens")
+        .navigationTitle("Lens")
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
         #endif

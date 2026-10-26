@@ -15,7 +15,7 @@ public struct VotesScreen: View {
             AdaptiveList {
                 VotesAgendaSection()
                 VotesHighlightsSection()
-                if votes.days.isEmpty {
+                if votes.showsNoMatch {
                     VotesNoMatchSection()
                 }
                 ForEach(votes.days) { day in

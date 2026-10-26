@@ -18,7 +18,7 @@ public struct ShareScreen: View {
                 "Nothing to share yet", systemImage: "square.and.arrow.up",
                 description: Text("This data isn't published yet."))
         }
-        .emphasisTitle("Share")
+        .navigationTitle("Share")
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
         #endif

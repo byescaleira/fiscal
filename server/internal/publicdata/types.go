@@ -195,6 +195,7 @@ type PersonVote struct {
 	PartyGuidance *string  `json:"partyGuidance"`
 	Approved      *bool    `json:"approved"`
 	Themes        []string `json:"themes"`
+	Turn          *int     `json:"turn,omitempty"`
 }
 
 type Proposal struct {

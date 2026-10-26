@@ -53,6 +53,7 @@ struct VotesModelTests {
         votes.theme = .security
         #expect(votes.filtered.isEmpty)
         #expect(votes.days.isEmpty)
+        #expect(votes.showsNoMatch)
         #expect(votes.hasFilter)
         #expect(votes.activeFilterCount == 2)
         votes.clearFilters()
@@ -100,6 +101,7 @@ struct VotesModelTests {
         let listed = votes.highlights.map(\.id) + votes.days.flatMap(\.votes).map(\.id)
         #expect(listed.count == Set(listed).count)
         #expect(Set(listed) == Set(votes.filtered.map(\.id)))
+        #expect(!votes.showsNoMatch)
         votes.house = .camara
         #expect(votes.highlights.isEmpty)
         #expect(votes.days.flatMap(\.votes).count == votes.filtered.count)
