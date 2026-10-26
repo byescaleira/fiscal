@@ -1,4 +1,6 @@
+import FeatureLiveResults
 import FiscalData
+import FiscalDomain
 import Foundation
 import Observation
 
@@ -24,6 +26,49 @@ public final class FiscalServices {
             opening = nil
             throw error
         }
+    }
+
+    func liveResults() -> LiveResultsModel {
+        #if DEBUG
+            let environment = PushEnvironment.development
+        #else
+            let environment = PushEnvironment.production
+        #endif
+        return LiveResultsModel(
+            service: liveResultsService(), activities: RaceActivities(),
+            environment: environment)
+    }
+
+    func liveResultsService() -> (any LiveResultsService)? {
+        #if DEBUG
+            if let showcase = ShowcaseLiveResults.fromLaunchArguments() { return showcase }
+        #endif
+        return LiveResultsClient.fromBundle()
+    }
+
+    func highlightAlertService() -> (any HighlightAlertService)? {
+        #if DEBUG
+            if ShowcaseLiveResults.fromLaunchArguments() != nil { return nil }
+        #endif
+        return LiveResultsClient.fromBundle()
+    }
+
+    func todayFollows(_ repository: any FollowRepository) -> any FollowRepository {
+        #if DEBUG
+            if let showcase = ShowcaseFollowRepository.fromLaunchArguments() { return showcase }
+        #endif
+        return repository
+    }
+
+    func publicData() -> (any PublicDataService)? {
+        #if DEBUG
+            if let showcase = ShowcasePublicData.fromLaunchArguments(
+                roster: .bundled, indicators: .bundled)
+            {
+                return showcase
+            }
+        #endif
+        return PublicDataClient.fromBundle()
     }
 
     public static var launchCloudSync: Bool {

@@ -1,0 +1,11 @@
+[Unit]
+Description=Fiscal phase cidades (weekly)
+
+[Timer]
+OnCalendar=Sat *-*-* 00:20:00 America/Sao_Paulo
+RandomizedDelaySec=5min
+Persistent=true
+Unit=fiscal-phase@cidades.service
+
+[Install]
+WantedBy=timers.target

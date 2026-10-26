@@ -1,0 +1,11 @@
+[Unit]
+Description=Fiscal Pages deploy every minute (enable only while there is a live vote count)
+
+[Timer]
+OnBootSec=2min
+OnUnitInactiveSec=60s
+AccuracySec=5s
+Unit=fiscal-pages.service
+
+[Install]
+WantedBy=timers.target

@@ -5,16 +5,28 @@ final class LaunchTests: XCTestCase {
         continueAfterFailure = false
     }
 
-    @MainActor func testLaunchShowsHomeAndOpensSettings() {
+    @MainActor func testLaunchShowsTodayAndOpensSettings() {
         let app = XCUIApplication.fiscal()
         app.launch()
         XCTAssertTrue(app.waitForSections())
-        XCTAssertTrue(app.buttons["Home"].firstMatch.exists)
-        capture(app, "home")
+        for tab in ["Hoje", "Meus", "Votações", "Dinheiro", "Fiscalizar"] {
+            XCTAssertTrue(app.buttons[tab].firstMatch.exists, tab)
+        }
+        capture(app, "today")
         #if !os(tvOS)
             XCTAssertTrue(app.openSettings())
             capture(app, "settings")
         #endif
+    }
+
+    @MainActor func testTodayOpensTheLiveResults() {
+        let app = XCUIApplication.fiscal()
+        app.launch()
+        XCTAssertTrue(app.waitForSections())
+        app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Apuração")).firstMatch
+            .tap()
+        XCTAssertTrue(app.staticTexts["Presidente · Brasil"].waitForExistence(timeout: 10))
+        capture(app, "live-results")
     }
 
     @MainActor private func capture(_ app: XCUIApplication, _ name: String) {

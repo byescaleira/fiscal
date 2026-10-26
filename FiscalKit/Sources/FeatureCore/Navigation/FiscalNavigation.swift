@@ -4,7 +4,7 @@ import SwiftUI
 
 @MainActor @Observable
 public final class FiscalNavigation {
-    public var selectedSection: AppSection = .home
+    public var selectedSection: AppSection = .today
     public var paths: [AppSection: [Route]] = [:]
     public var inspector: Inspector?
     public private(set) var opensBeside = false

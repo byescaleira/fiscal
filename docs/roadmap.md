@@ -1,24 +1,83 @@
 # Roadmap
 
-O que o Fiscal vai ganhar, por fase. Cada fase diz o que entrega, a tecnologia e o tamanho; os pré-requisitos técnicos ficam no [backlog.md](backlog.md) e cada fase vira uma ou mais mudanças em [changes/](changes/README.md).
+O que o Fiscal vai ganhar, por fase, até a 1.0. A visão, os públicos, a Lente e as 5 abas estão no [brief](brief.md). Cada fase vira uma ou mais mudanças em [changes/](changes/README.md); os pré-requisitos técnicos ficam no [backlog](backlog.md).
 
 ## Como dimensionar
 
-- **S:** uma sessão; uma mudança pequena, sem dado novo nem tela nova (ajuste, texto, flag, integração já pronta no template).
+- **S:** uma sessão; uma mudança pequena, sem dado novo nem tela nova.
 - **M:** duas ou três etapas; uma tela ou entidade nova com testes, sem migração delicada.
-- **L:** quatro ou mais etapas; dado novo com migração, serviço externo, plataforma nova ou fluxo inteiro. Fase L que puder ser dividida vira duas fases M.
-- **Mantenha a 1.0 com até ~8 fases.** Passou disso, corte escopo para depois da 1.0 antes de começar; o template já traz a base (fase 0) pronta, então não refaça o que ele entrega.
+- **L:** quatro ou mais etapas; dado novo com migração, serviço externo, plataforma nova ou fluxo inteiro. Uma fase L que puder ser dividida vira duas M.
 
-## Fases
+## Fases até a 1.0
 
 | Fase | Entrega | Tecnologia | Tamanho | Estado |
 | --- | --- | --- | --- | --- |
-| 0 | Base: estrutura por feature, design system, Ajustes (Aparência, Idioma, Guias, Sobre), guias com Lottie, flags, deep links, dez idiomas, lint, scripts, CI, site, ponte e admin | Template `byescaleira-workspace` | S | pronta |
-| 1 | Primeira feature real, no lugar do exemplo `Item` | _a definir_ | _S/M/L_ | _a definir_ |
-| _N_ | _..._ | _..._ | _S/M/L_ | _..._ |
+| 0 | Base: estrutura por feature, design system, Ajustes, guias, flags, deep links, idiomas, lint, scripts, CI, site, ponte e admin | Template `byescaleira-workspace` | S | pronta |
+| 1 | **Apuração ao vivo do 2º turno** (25/10/2026), com a Live Activity atualizada por push | TSE `resultados`, servidor Go, ActivityKit, APNs | L | em andamento |
+| 2 | **Dados federais no servidor:** carga diária da Câmara, do Senado e do TSE; API `/api/v1` com lista, busca, perfil, votos, propostas, discursos e gastos | Go, SQLite ou Postgres na VPS, arquivos anuais oficiais | L | — |
+| 3 | **Meus, perfil e Fiscalizar:** os representantes pelo endereço, seguir no aparelho, perfil federal completo (presença, votos, propostas, gastos, patrimônio, campanhas, contato), busca universal e as 5 abas no lugar das atuais | SwiftData, IBGE, `Tab(role: .search)` | L | — |
+| 4 | **Lente e Aparência:** onboarding de prioridades, posicionamento opcional e privado, Hoje personalizado, "Outra lente", paletas, símbolos e ícones alternativos | SwiftData no aparelho, `GuideSheet`, Lottie, ícones alternativos | M | — |
+| 5 | **Votações:** pauta e calendário, placar por partido e por estado, quem votou como, "o que muda para você", alertas por tema e a Live Activity da votação importante | Servidor (pauta do dia), ActivityKit, notificações filtradas no aparelho | L | — |
+| 6 | **Dinheiro:** cota e notas, salários e benefícios, emendas, financiamento de campanha, patrimônio ao longo do tempo e arrecadação federal | Swift Charts com Audio Graphs, Receita, Portal da Transparência | M | — |
+| 7 | **Compartilhar com arte:** cards de Stories, feed e mensagem para cada tela, coleções de artistas pela Lente, galeria com crédito e licença, manifesto `art-credits.json` e Comparar | `ImageRenderer`, `ShareLink`/`Transferable`, deep links, licenças assinadas | M | — |
+| 8 | **Integrações e polimento para a loja e o Apple Design Award:** widgets, App Intents com a Siri, Spotlight, resumo de projetos no aparelho, acessibilidade completa, iPad, Mac e visionOS, revisão de neutralidade, App Store e TestFlight público | WidgetKit, App Intents, Core Spotlight, Foundation Models; revisores; `app-store-release.md` | L | — |
 
-A fase 1 é definida com o usuário: proposta em `docs/changes/<id>/`, desenho e etapas em fases, crítica antes de desenhar telas e a spec em `docs/specs/` ao arquivar.
+- **Ordem:** a fase 2 destrava as fases de 3 a 8.
+- **Em paralelo:** 4 e 6 podem correr ao mesmo tempo que 5, cada uma em sua worktree.
+- **Fase 7:** começa o licenciamento das obras logo depois da [pesquisa de artistas](research/README.md), porque contrato leva semanas. O código dos cards pode ser feito com obras em domínio público enquanto os contratos andam.
+- **Fase 1:** depois de hoje, a apuração vira um card em Hoje durante eleições e uma seção em Fiscalizar.
+
+- **Antes da fase 2:** tirar os outros idiomas ([ADR 0003](adr/0003-portuguese-only.md)) e ligar o setup inicial da Lente com Aparência e arte, que o usuário pediu como prioridade (imagens de artistas primeiro).
+
+## Design de cada seção
+
+Cada aba e cada peça visível (Hoje, Meus, Votações, Dinheiro, Fiscalizar, setup, cards, widgets) passa pelo ciclo da skill `byescaleira-sdd` (`design-principles.md` §4.1), o mesmo que levou a Live Activity da apuração à versão aprovada:
+1. referência visual real (capturas oficiais da App Store, HIG, Dribbble);
+2. versão com dados de teste de todos os estados, no iPhone;
+3. revisão com o usuário;
+4. repetir até o "agora sim".
+
+Correto no HIG não basta: a seção não pode parecer genérica.
+
+## Critério de pronto da 1.0
+
+- Uma pessoa de qualquer lado instala, escolhe a Lente em menos de um minuto e, na primeira tela, vê o que os seus representantes fizeram nos temas dela, com fonte e data.
+- Os 513 deputados, os 81 senadores e o presidente com perfil completo; Live Activity para apuração e para votação importante.
+- Zero dado pessoal no servidor; a Lente só no aparelho.
+- VoiceOver, Dynamic Type nos tamanhos de acessibilidade e Reduzir movimento em todas as telas; iPhone, iPad e Mac.
 
 ## Depois da 1.0
 
-- Widgets e controles (WidgetKit), App Intents, notificações, assinatura (StoreKit), onboarding, conforme `references/` da skill `byescaleira-sdd`.
+- Governadores, assembleias e câmaras municipais, onde houver dado aberto (SAPL, portais de transparência).
+- STF: pauta, julgamentos e votos dos ministros.
+- Eleições municipais de 2028: apuração por cidade, prefeitos e vereadores.
+- Push-to-start da Live Activity (a apuração começa sozinha na tela de bloqueio).
+- Apple Watch (complicação com a votação do dia) e o Fiscal na Web.
+
+### Pedidos do usuário para depois (2026-10-25)
+
+- **Acompanhamento de preços:** monitorar ao longo do tempo os preços do que pesa para toda a população, no Brasil e por estado, e ligar cada série ao governo e ao período. Itens:
+  - gasolina e outros combustíveis;
+  - o real contra o dólar;
+  - a cesta de alimentos comuns, por exemplo os itens que aparecem na mídia quando sobem (arroz, feijão, carne, café, leite, ovo).
+
+  Fontes oficiais a pesquisar: ANP (combustíveis), Banco Central (câmbio, via SGS/PTAX), IBGE (IPCA por item) e DIEESE (cesta básica por capital).
+- **Notificações por feature, iguais para todo mundo:**
+  - não são personalizadas por pessoa;
+  - todo mundo recebe as mesmas, por canal de feature (broadcast do APNs), por exemplo "votação importante", "resultado da apuração", "variação forte de preço";
+  - raras: só quando há necessidade ou variação significativa dos dados, nunca rotina diária.
+- **Comparações como recurso central:**
+  - pesquisar o que está em alta na internet nos argumentos políticos dos dois lados (comparações de governo, preços, gastos, votos, promessas contra entregas);
+  - transformar cada argumento recorrente numa comparação com dado oficial e fonte, sem ranking nem conclusão pronta;
+  - a pesquisa vem antes do desenho de cada comparação (skill `research`).
+- **Base histórica de tudo:**
+  - todas as apurações das eleições passadas: presidente, governador, senador, deputados, prefeito e vereador, por turno, UF, município e zona, desde o início da série digital do TSE;
+  - os outros dados históricos relevantes, com a mesma regra de fonte oficial e arquivo estático:
+    - candidaturas, bens e prestação de contas de cada eleição (TSE);
+    - mandatos, votações nominais, proposições, discursos e gastos de legislaturas anteriores (Câmara e Senado);
+    - composição das casas e das bancadas ao longo do tempo;
+    - presidentes, governadores e mandatos (quem governou o quê, e quando);
+    - arrecadação e indicadores (IBGE, Receita, Banco Central), para servir às comparações e ao acompanhamento de preços;
+  - o perfil de cada político ganha a linha do tempo completa, e cada lugar a sua história eleitoral;
+  - antes de carregar, pesquisar o que cada fonte tem de série e formato (skill `research`) e medir o tamanho publicado, porque a VPS é pequena (ADR 0002).
+- **Arte encomendada a artistas de agora:** 3 a 6 artistas atuais equilibrados entre direita, centro e esquerda, para mapas, estados, florestas e cores dos partidos, com contrato por escrito que liste app, loja, site e divulgação. A lista, os contatos e o rascunho da mensagem saem antes, e nenhum contato é enviado sem o ok do usuário ([pesquisa](research/2026-10-25-contemporary-artists.md)).

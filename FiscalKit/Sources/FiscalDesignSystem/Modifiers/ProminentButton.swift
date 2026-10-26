@@ -10,10 +10,19 @@ extension View {
     }
 
     public func primaryButton() -> some View {
-        prominentButton()
+        modifier(PrimaryButtonLabel())
+            .prominentButton()
             .controlSize(.large)
             .buttonSizing(.flexible)
             .font(.headline.weight(.bold))
             .fontDesign(.rounded)
+    }
+}
+
+private struct PrimaryButtonLabel: ViewModifier {
+    @Environment(\.colorScheme) private var colorScheme
+
+    func body(content: Content) -> some View {
+        content.foregroundStyle(colorScheme == .dark ? Color.black : Color.white)
     }
 }

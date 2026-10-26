@@ -1,0 +1,68 @@
+{
+ "pagination": {
+  "links": {
+   "next": "http://sapl.al.ac.leg.br/api/base/autor/?page=2&page_size=3",
+   "previous": null
+  },
+  "previous_page": null,
+  "next_page": null,
+  "start_index": 1,
+  "end_index": 3,
+  "total_entries": 199,
+  "total_pages": 67,
+  "page": 1
+ },
+ "results": [
+  {
+   "id": 146,
+   "__str__": "ADAILTON CRUZ",
+   "link_detail_backend": "/sistema/autor/146",
+   "metadata": {},
+   "autor_related": {
+    "value": 248,
+    "text": "ADAILTON CRUZ"
+   },
+   "object_id": 248,
+   "nome": "ADAILTON CRUZ",
+   "cargo": "",
+   "tipo": 1,
+   "content_type": 26,
+   "operadores": []
+  },
+  {
+   "id": 147,
+   "__str__": "AFONSO FERNANDES",
+   "link_detail_backend": "/sistema/autor/147",
+   "metadata": {},
+   "autor_related": {
+    "value": 249,
+    "text": "AFONSO FERNANDES"
+   },
+   "object_id": 249,
+   "nome": "AFONSO FERNANDES",
+   "cargo": "",
+   "tipo": 1,
+   "content_type": 26,
+   "operadores": []
+  },
+  {
+   "id": 106,
+   "__str__": "ANDRÉ VALE",
+   "link_detail_backend": "/sistema/autor/106",
+   "metadata": {},
+   "autor_related": {
+    "value": 223,
+    "text": "ANDRÉ VALE"
+   },
+   "object_id": 223,
+   "nome": "ANDRÉ VALE",
+   "cargo": "",
+   "tipo": 1,
+   "content_type": 26,
+   "operadores": [
+    56,
+    111
+   ]
+  }
+ ]
+}

@@ -1,0 +1,68 @@
+{
+ "pagination": {
+  "links": {
+   "next": null,
+   "previous": null
+  },
+  "previous_page": null,
+  "next_page": null,
+  "start_index": 1,
+  "end_index": 25,
+  "total_entries": 25,
+  "total_pages": 1,
+  "page": 1
+ },
+ "results": [
+  {
+   "id": 426,
+   "__str__": "ADAILTON CRUZ 16ª (2023 - 2027) (Atual)",
+   "link_detail_backend": "/parlamentar/mandato/426",
+   "metadata": {},
+   "tipo_causa_fim_mandato": null,
+   "data_inicio_mandato": "2023-02-01",
+   "data_fim_mandato": "2027-01-31",
+   "votos_recebidos": null,
+   "data_expedicao_diploma": "2022-12-15",
+   "titular": true,
+   "observacao": "",
+   "parlamentar": 248,
+   "tipo_afastamento": null,
+   "legislatura": 17,
+   "coligacao": null
+  },
+  {
+   "id": 427,
+   "__str__": "AFONSO FERNANDES 16ª (2023 - 2027) (Atual)",
+   "link_detail_backend": "/parlamentar/mandato/427",
+   "metadata": {},
+   "tipo_causa_fim_mandato": null,
+   "data_inicio_mandato": "2023-02-01",
+   "data_fim_mandato": "2027-01-31",
+   "votos_recebidos": null,
+   "data_expedicao_diploma": "2022-12-15",
+   "titular": true,
+   "observacao": "",
+   "parlamentar": 249,
+   "tipo_afastamento": null,
+   "legislatura": 17,
+   "coligacao": null
+  },
+  {
+   "id": 413,
+   "__str__": "ANDRÉ VALE 16ª (2023 - 2027) (Atual)",
+   "link_detail_backend": "/parlamentar/mandato/413",
+   "metadata": {},
+   "tipo_causa_fim_mandato": null,
+   "data_inicio_mandato": "2023-02-01",
+   "data_fim_mandato": "2027-01-31",
+   "votos_recebidos": null,
+   "data_expedicao_diploma": "2022-12-15",
+   "titular": true,
+   "observacao": "",
+   "parlamentar": 223,
+   "tipo_afastamento": null,
+   "legislatura": 17,
+   "coligacao": null
+  }
+ ]
+}

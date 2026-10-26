@@ -17,7 +17,7 @@ public enum Guide: String, CaseIterable, Identifiable, Sendable {
     public var subtitle: String {
         switch self {
         case .tour: String(appLocalized: "The tabs and what each one shows")
-        case .appearance: String(appLocalized: "Theme, accent color and language")
+        case .appearance: String(appLocalized: "Theme and accent color")
         case .privacy: String(appLocalized: "Where your data lives")
         }
     }

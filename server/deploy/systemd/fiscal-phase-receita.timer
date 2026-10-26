@@ -1,0 +1,11 @@
+[Unit]
+Description=Fiscal phase receita (weekly)
+
+[Timer]
+OnCalendar=Mon *-*-* 00:20:00 America/Sao_Paulo
+RandomizedDelaySec=5min
+Persistent=true
+Unit=fiscal-phase@receita.service
+
+[Install]
+WantedBy=timers.target

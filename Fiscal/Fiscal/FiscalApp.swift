@@ -1,4 +1,3 @@
-import AppIntents
 import AppShell
 import FeatureCore
 import FeatureSettings
@@ -17,10 +16,10 @@ struct FiscalApp: App {
                 FiscalDatabase.initializeCloudSchema()
             }
         #endif
+        FiscalShortcutsSetup.install()
         let settings = SettingsModel()
         _settings = State(initialValue: settings)
         _bootstrap = State(initialValue: FiscalBootstrap())
-        NewItemIntent.open = { FiscalServices.shared.pendingURL = $0 }
     }
 
     var body: some Scene {
@@ -31,6 +30,11 @@ struct FiscalApp: App {
                 .featureFlags(bootstrap.flags)
                 .fiscalSettings(settings)
         }
+        #if os(iOS) || os(visionOS)
+            .backgroundTask(.appRefresh(OfflineDataCenter.refreshIdentifier)) {
+                await OfflineDataCenter.shared.refreshInBackground()
+            }
+        #endif
         #if os(macOS)
             Settings {
                 FiscalSettingsWindow()
@@ -78,11 +82,6 @@ private final class FiscalBootstrap {
             export = DataExportModel(repositories: database.repositories)
             Task { await flags.refresh() }
             await hold.attach([])
-            #if DEBUG
-                if UserDefaults.standard.bool(forKey: "fiscal.developer.showcase") {
-                    try? await ShowcaseData.seed(database.repositories)
-                }
-            #endif
         } catch {
             self.error = error.localizedDescription
         }
@@ -149,17 +148,5 @@ private struct FiscalRootView: View {
                 launch.finish(.database)
             }
         }
-    }
-}
-
-struct FiscalShortcuts: AppShortcutsProvider {
-    static var appShortcuts: [AppShortcut] {
-        AppShortcut(
-            intent: NewItemIntent(),
-            phrases: [
-                "Add an item in \(.applicationName)",
-                "Create an item in \(.applicationName)",
-            ],
-            shortTitle: "New Item", systemImageName: "plus.circle")
     }
 }

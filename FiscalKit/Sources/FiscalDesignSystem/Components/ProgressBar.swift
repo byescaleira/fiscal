@@ -23,6 +23,7 @@ public struct ProgressBar: View {
             .gaugeStyle(.linearCapacity)
             .tint(color)
             .labelsHidden()
+            .accessibilityHidden(true)
         #endif
     }
 }

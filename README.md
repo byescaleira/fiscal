@@ -11,7 +11,6 @@ App SwiftUI para iOS, iPadOS, macOS e visionOS 27, com SwiftData local e sincron
 - [Backlog](docs/backlog.md)
 - [Roadmap](docs/roadmap.md)
 - [Atualização obrigatória](docs/force-update.md)
-- [Compras: StoreKit local e sandbox](docs/subscription-sandbox.md)
 - [Validação antes de distribuir](docs/validation.md)
 - [Site e Fiscal na Web](docs/web.md)
 - [Admin](docs/admin.md)
@@ -19,7 +18,7 @@ App SwiftUI para iOS, iPadOS, macOS e visionOS 27, com SwiftData local e sincron
 
 ## Começando
 
-Abra `Fiscal.xcworkspace` no Xcode 27 e use o scheme `Production` para o app (compras locais pelo `Fiscal.storekit`), `Sandbox` para a sandbox da App Store, `FiscalKitTests` para os testes do pacote, `FiscalStoreTests` para o StoreKit e `FiscalUITests` para a interface.
+Abra `Fiscal.xcworkspace` no Xcode 27 e use o scheme `Production` para o app, `FiscalKitTests` para os testes do pacote e `FiscalUITests` para a interface. O app é gratuito, sem compras nem StoreKit.
 
 ```sh
 scripts/format.sh
@@ -27,7 +26,6 @@ scripts/lint.sh
 scripts/build.sh Debug
 scripts/strings.sh
 scripts/test.sh
-scripts/store-test.sh
 scripts/ui-test.sh
 scripts/audit.sh
 ```

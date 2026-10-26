@@ -10,10 +10,9 @@ struct WhatsNewScreen: View {
         ScrollView {
             VStack(spacing: .spaceXL) {
                 if let release = settings.featuredRelease {
-                    WhatsNewHero(release: release)
-                    WhatsNewNotes(notes: release.notes)
+                    ReleaseCard(release: release, isCurrent: true)
                 }
-                ForEach(settings.earlierReleases) { EarlierRelease(release: $0) }
+                ForEach(settings.earlierReleases) { ReleaseCard(release: $0, isCurrent: false) }
             }
             .padding(.horizontal, .spaceInset)
             .padding(.top, .spaceS)
@@ -34,45 +33,79 @@ struct WhatsNewScreen: View {
     }
 }
 
-private struct WhatsNewHero: View {
+private struct ReleaseCard: View {
     @Environment(\.appTint) private var appTint
     let release: Release
+    let isCurrent: Bool
 
     var body: some View {
-        VStack(spacing: .spaceM) {
-            HStack(spacing: -.spaceS) {
-                ForEach(Array(release.heroNotes.enumerated()), id: \.element.id) { index, note in
-                    SymbolBadge(note.symbol, color: note.color.color, size: .badgeL, style: .filled)
-                        .overlay(Circle().stroke(Color.groupedBackground, lineWidth: 3))
-                        .releaseCascade(index)
+        VStack(alignment: .leading, spacing: .spaceL) {
+            ReleaseCardHeader(release: release, isCurrent: isCurrent)
+            Divider()
+            VStack(alignment: .leading, spacing: .spaceL) {
+                ForEach(Array(release.notes.enumerated()), id: \.element.id) { index, note in
+                    ReleaseNoteRow(note: note)
+                        .releaseCascade(isCurrent ? index + 1 : 0)
                 }
             }
-            .padding(.vertical, .spaceS)
-            Chip("Current Version", color: appTint, shape: .capsule).textCase(.uppercase)
-            VStack(spacing: .spaceXS) {
-                Text(verbatim: release.title).font(.titleLarge)
-                Text(verbatim: release.headline).font(.body).foregroundStyle(.secondary)
-            }
         }
-        .multilineTextAlignment(.center)
-        .frame(maxWidth: .infinity)
-        .accessibilityElement(children: .combine)
+        .padding(.spaceL)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.groupedRow, in: .rect(cornerRadius: .radiusGroup, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: .radiusGroup, style: .continuous)
+                .strokeBorder(
+                    isCurrent ? appTint.opacity(.opacitySoft) : .clear,
+                    lineWidth: .selectionStroke)
+        }
     }
 }
 
-private struct WhatsNewNotes: View {
-    let notes: [ReleaseNote]
+private struct ReleaseCardHeader: View {
+    @Environment(\.appTint) private var appTint
+    let release: Release
+    let isCurrent: Bool
 
     var body: some View {
-        VStack(spacing: .spaceS) {
-            ForEach(Array(notes.enumerated()), id: \.element.id) { index, note in
-                ReleaseNoteCard(note: note).releaseCascade(index + 2)
+        HStack(alignment: .top, spacing: .spaceM) {
+            VStack(alignment: .leading, spacing: .space2XS) {
+                Group {
+                    if isCurrent {
+                        Chip("Current Version", color: appTint, shape: .capsule)
+                    } else {
+                        Chip("Earlier Version", color: .secondary, shape: .capsule)
+                    }
+                }
+                .textCase(.uppercase)
+                Text(verbatim: release.version)
+                    .font(.scoreboardNumber)
+                    .monospacedDigit()
+                    .padding(.top, .space2XS)
+                Text(verbatim: release.headline)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer(minLength: .zero)
+            if isCurrent {
+                HStack(spacing: -.spaceS) {
+                    ForEach(Array(release.heroNotes.prefix(3).enumerated()), id: \.element.id) {
+                        index, note in
+                        SymbolBadge(
+                            note.symbol, color: note.color.color, size: .badgeM, style: .filled
+                        )
+                        .overlay(Circle().stroke(Color.groupedRow, lineWidth: .selectionStroke))
+                        .releaseCascade(index)
+                    }
+                }
             }
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(Text(verbatim: "\(release.title). \(release.headline)"))
     }
 }
 
-private struct ReleaseNoteCard: View {
+private struct ReleaseNoteRow: View {
     let note: ReleaseNote
 
     var body: some View {
@@ -83,30 +116,9 @@ private struct ReleaseNoteCard: View {
                 Text(verbatim: note.detail).font(.rowDetail).foregroundStyle(.secondary)
             }
             .fixedSize(horizontal: false, vertical: true)
-            Spacer(minLength: 0)
+            Spacer(minLength: .zero)
         }
-        .padding(.spaceL)
-        .background(.groupedRow, in: .rect(cornerRadius: .radiusL))
         .accessibilityElement(children: .combine)
-    }
-}
-
-private struct EarlierRelease: View {
-    let release: Release
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: .spaceS) {
-            Text(verbatim: release.title).font(.headline).padding(.horizontal, .spaceS)
-            VStack(alignment: .leading, spacing: .spaceM) {
-                ForEach(release.notes) { note in
-                    IconRow(
-                        verbatim: note.title, detail: note.detail, symbol: note.symbol,
-                        color: note.color.color)
-                }
-            }
-            .padding(.spaceL)
-            .background(.groupedRow, in: .rect(cornerRadius: .radiusL))
-        }
     }
 }
 
@@ -125,7 +137,7 @@ private struct ReleaseCascade: ViewModifier {
         content
             .opacity(isShown || reduceMotion ? 1 : 0)
             .scaleEffect(isShown || reduceMotion ? 1 : 0.8)
-            .animation(reduceMotion ? nil : .bouncy.delay(Double(index) * 0.05), value: isShown)
+            .animation(reduceMotion ? nil : .bouncy.delay(Double(index) * 0.04), value: isShown)
             .task { isShown = true }
     }
 }
