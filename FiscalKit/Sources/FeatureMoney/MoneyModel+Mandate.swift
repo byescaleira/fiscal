@@ -20,20 +20,18 @@ extension MoneyModel {
 
     public var hasMandate: Bool { !(mandate?.roles.isEmpty ?? true) }
 
-    public var mandateUF: String {
-        let states = mandateStates
-        if states.contains(selectedUF) { return selectedUF }
-        if states.contains(MandateText.fallbackUF) { return MandateText.fallbackUF }
-        return states.first ?? selectedUF
+    func cents(of item: MandateCost.Item) -> Int? {
+        if let monthly = item.monthlyCents { return monthly }
+        guard isCountry else { return item.cents(uf: scopeUF) }
+        let values = (item.byState ?? []).map(\.monthlyCents)
+        guard !values.isEmpty else { return nil }
+        return values.reduce(0, +) / values.count
     }
 
-    public var mandateUFName: String { RaceText.scope(mandateUF) }
-
     public var mandateSegments: [MandateSegment] {
-        let uf = mandateUF
-        return (mandate?.roles ?? []).flatMap { role in
+        (mandate?.roles ?? []).flatMap { role in
             let parts = role.items.compactMap { item in
-                item.cents(uf: uf).map { (item.kind, $0) }
+                cents(of: item).map { (item.kind, $0) }
             }
             return parts.enumerated().map { index, part in
                 MandateSegment(
@@ -43,11 +41,10 @@ extension MoneyModel {
     }
 
     public var mandateTotals: [MandateRoleTotal] {
-        let uf = mandateUF
-        return (mandate?.roles ?? []).map { role in
+        (mandate?.roles ?? []).map { role in
             MandateRoleTotal(
                 role: role.role,
-                monthlyCents: role.items.compactMap { $0.cents(uf: uf) }.reduce(0, +),
+                monthlyCents: role.items.compactMap { cents(of: $0) }.reduce(0, +),
                 unpublished: role.unpublished)
         }
     }
@@ -58,7 +55,7 @@ extension MoneyModel {
 
     public var mandateHighlightChip: String {
         guard let highlight = mandateHighlight else { return "" }
-        let place = quotaItem == nil ? "" : " · \(mandateUFName)"
+        let place = quotaItem == nil ? "" : " · \(scopeName)"
         return "\(highlight.title)\(place)".uppercased(with: .app)
     }
 
@@ -98,17 +95,26 @@ extension MoneyModel {
         return lines
     }
 
-    public var mandateActLines: [String] {
+    public var mandateMissingNote: String? { missingNote(in: mandateTotals) }
+
+    var congressMissingNote: String? {
+        missingNote(in: mandateTotals.filter { $0.role == .federalDeputy || $0.role == .senator })
+    }
+
+    public var mandateActs: [MandateActItem] {
         guard let mandate else { return [] }
         var seen = Set<String>()
         return mandate.roles.flatMap(\.items).compactMap { item in
-            let line = MandateText.itemLine(item)
-            return seen.insert(line).inserted ? line : nil
+            let act = MandateText.act(item.act)
+            let id = "\(item.kind.rawValue)-\(act)"
+            guard seen.insert(id).inserted else { return nil }
+            return MandateActItem(
+                id: id, title: MandateText.kindTitle(item.kind), act: act, url: item.act.url)
         }
     }
 
-    public var mandateMissingNote: String? {
-        let missing = mandateTotals.filter { !$0.unpublished.isEmpty }
+    private func missingNote(in totals: [MandateRoleTotal]) -> String? {
+        let missing = totals.filter { !$0.unpublished.isEmpty }
         guard !missing.isEmpty else { return nil }
         return missing.map { total in
             let kinds = total.unpublished.map(MandateText.kindTitle)
@@ -127,7 +133,7 @@ extension MoneyModel {
     }
 
     public var quotaStateBars: [QuotaStateBar] {
-        let uf = mandateUF
+        let uf = scopeUF
         return (quotaItem?.byState ?? [])
             .map {
                 QuotaStateBar(
@@ -138,6 +144,16 @@ extension MoneyModel {
     }
 
     public var selectedQuotaBar: QuotaStateBar? { quotaStateBars.first(where: \.isSelected) }
+
+    public var mandateScopeNote: String? {
+        guard quotaItem != nil else { return nil }
+        return isCountry
+            ? String(
+                appLocalized:
+                    "Brazil: the office allowance is the average of the state caps. Pick a state in the toolbar to see its own cap."
+            )
+            : String(appLocalized: "The office allowance shown is the cap for \(scopeName).")
+    }
 
     public var quotaRangeHeadline: String? {
         let bars = quotaStateBars

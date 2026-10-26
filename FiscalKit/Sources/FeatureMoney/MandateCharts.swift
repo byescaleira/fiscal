@@ -96,13 +96,18 @@ struct QuotaStatesChart: View {
         ChartPalette.color(at: MandateCost.Kind.allCases.firstIndex(of: .quota) ?? 1)
     }
 
+    private var focused: QuotaStateBar? {
+        bars.first { $0.code == scrubbed } ?? money.selectedQuotaBar
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceS) {
-            if let selected = money.selectedQuotaBar {
-                ChartCallout(title: selected.title, value: selected.value) { EmptyView() }
+            if let focused {
+                ChartCallout(title: focused.title, value: focused.value) { EmptyView() }
             }
             chart
         }
+        .animation(reduceMotion ? nil : .smooth, value: focused)
         .onAppear {
             withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
         }
@@ -116,7 +121,7 @@ struct QuotaStatesChart: View {
                 width: .ratio(.chartBarWidth)
             )
             .foregroundStyle(
-                bar.isSelected
+                focused == nil || bar == focused
                     ? AnyShapeStyle(color.gradient) : AnyShapeStyle(color.opacity(.opacitySoft))
             )
             .clipShape(
@@ -145,12 +150,7 @@ struct QuotaStatesChart: View {
             }
         }
         .chartXSelection(value: $scrubbed)
-        .onChange(of: scrubbed) { _, code in
-            guard let code, let bar = bars.first(where: { $0.code == code }) else { return }
-            money.selectedUF = bar.uf
-        }
-        .sensoryFeedback(.selection, trigger: money.selectedUF)
-        .animation(reduceMotion ? nil : .smooth, value: money.selectedUF)
+        .sensoryFeedback(.selection, trigger: scrubbed)
         .frame(height: height)
     }
 }

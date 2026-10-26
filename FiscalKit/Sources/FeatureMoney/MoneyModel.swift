@@ -7,16 +7,16 @@ import Observation
 @MainActor @Observable
 public final class MoneyModel {
     public enum Section: String, CaseIterable, Identifiable, Sendable {
-        case quota, mandate, campaigns, revenue
+        case mandate, quota, campaigns, revenue
 
         public var id: String { rawValue }
 
         public var title: String {
             switch self {
-            case .quota: String(appLocalized: "Office allowance")
-            case .mandate: String(appLocalized: "What a mandate costs")
-            case .campaigns: String(appLocalized: "Campaigns")
-            case .revenue: String(appLocalized: "Federal revenue")
+            case .mandate: String(appLocalized: "What a Mandate Costs")
+            case .quota: String(appLocalized: "Who Spends More, and on What")
+            case .campaigns: String(appLocalized: "Who Funds the Campaigns")
+            case .revenue: String(appLocalized: "What the Country Collects")
             }
         }
 
@@ -44,38 +44,49 @@ public final class MoneyModel {
         }
     }
 
-    public struct Hero: Equatable, Sendable {
-        public let chip: String
+    public struct Answer: Equatable, Sendable {
+        public let kicker: String
         public let value: String
         public let cents: Int
-        public let caption: String
-        public let chamber: String
-        public let senate: String
-        public let chamberShare: Double
+        public let unit: String
+        public let sentence: String
+        public let comparison: String?
+        public let fact: String?
+        public let caveat: String?
     }
 
     public private(set) var overview: MoneyOverview?
     public private(set) var mandate: MandateCost?
-    public var selectedUF: String
+    public private(set) var places: MoneyPlaces?
+    public private(set) var scope: String
+    public private(set) var homeUF: String?
     public private(set) var lens: Lens?
     public private(set) var phase: PublicDataPhase = .idle
+    @ObservationIgnored private var followsHome = true
     @ObservationIgnored private let service: (any PublicDataService)?
     @ObservationIgnored private let lensRepository: (any LensRepository)?
+    @ObservationIgnored private let home: @MainActor () -> String?
 
     public init(
         service: (any PublicDataService)?, lens: (any LensRepository)? = nil,
-        homeUF: String? = HomePlace.chosenUF(in: .standard)
+        home: @escaping @MainActor () -> String? = { HomePlace.chosenUF(in: .standard) }
     ) {
         self.service = service
         lensRepository = lens
-        selectedUF = homeUF ?? MandateText.fallbackUF
+        self.home = home
+        let uf = home()
+        homeUF = uf
+        scope = uf ?? MoneyPlaces.country
     }
 
     public var isEmpty: Bool {
         guard let overview else { return true }
         return (mandate?.roles.isEmpty ?? true) && quotaCents == 0
             && (overview.campaigns?.revenueCents ?? 0) == 0 && overview.revenue == nil
+            && (places?.places.isEmpty ?? true)
     }
+
+    public var isStale: Bool { phase.error != nil && !isEmpty }
 
     public var sections: [Section] { Section.order(for: lens) }
 
@@ -88,105 +99,78 @@ public final class MoneyModel {
         return String(appLocalized: "Your lens shows \(first.title) first.")
     }
 
-    private var quotaCents: Int {
+    public var states: [String] {
+        let published = (places?.places ?? []).filter { !$0.isCountry }.map(\.uf)
+        return (published.isEmpty ? mandateStates : published)
+            .sorted {
+                RaceText.scope($0).localizedStandardCompare(RaceText.scope($1)) == .orderedAscending
+            }
+    }
+
+    public var scopeUF: String {
+        scope != MoneyPlaces.country && states.contains(scope) ? scope : MoneyPlaces.country
+    }
+
+    public var isCountry: Bool { scopeUF == MoneyPlaces.country }
+
+    public var scopeName: String { RaceText.scope(scopeUF) }
+
+    public var scopeCode: String { scopeUF.uppercased(with: .app) }
+
+    public var homeOption: String? {
+        guard let homeUF, states.contains(homeUF) else { return nil }
+        return homeUF
+    }
+
+    public var place: MoneyPlaces.Place? { places?.place(scopeUF) }
+
+    public func select(scope uf: String) {
+        followsHome = uf == (homeUF ?? MoneyPlaces.country)
+        scope = uf
+    }
+
+    private func refreshHome() {
+        let current = home()
+        guard current != homeUF else { return }
+        homeUF = current
+        if followsHome { scope = current ?? MoneyPlaces.country }
+    }
+
+    var quotaCents: Int {
         guard let quota = overview?.quota else { return 0 }
         return quota.federalDeputiesCents + quota.senatorsCents
     }
 
-    public var hero: Hero? {
-        guard let overview, quotaCents > 0 else { return nil }
-        let year = String(overview.year)
-        return Hero(
-            chip: String(appLocalized: "Office allowance · \(year)").uppercased(with: .app),
-            value: PublicFormat.compactMoney(cents: quotaCents), cents: quotaCents,
-            caption: String(appLocalized: "Spent by federal deputies and senators in \(year)"),
-            chamber: PublicFormat.compactMoney(cents: overview.quota.federalDeputiesCents),
-            senate: PublicFormat.compactMoney(cents: overview.quota.senatorsCents),
-            chamberShare: Double(overview.quota.federalDeputiesCents) / Double(quotaCents))
-    }
-
-    public var categories: [AmountBar] {
-        MoneyText.bars(
-            overview?.quota.byCategory ?? [], id: \.category, title: \.category, cents: \.cents,
-            kind: { MoneyKind.category($0.category) })
-    }
-
-    public var quotaComposition: [AmountBar] {
-        MoneyText.composition(categories, slices: .chartCompositionSlices)
-    }
-
-    public var categoriesHeadline: String? {
-        guard let first = categories.first else { return nil }
-        return String(appLocalized: "\(first.title) was the largest item: \(first.value)")
-    }
-
-    public var campaigns: MoneyOverview.Campaigns? { overview?.campaigns }
-
-    public var campaignOrigins: [AmountBar] {
-        MoneyText.bars(
-            campaigns?.byOrigin ?? [], id: \.origin, title: \.origin, cents: \.cents,
-            kind: { MoneyKind.origin($0.origin) })
-    }
-
-    public var campaignOriginsHeadline: String? {
-        guard let first = campaignOrigins.first, first.cents > 0 else { return nil }
-        return String(appLocalized: "\(first.percent) came from \(first.title)")
-    }
-
-    public var campaignsHeadline: String {
-        guard let campaigns else {
-            return String(appLocalized: "The electoral court hasn't published campaign money yet.")
-        }
-        let year = String(campaigns.year)
-        let raised = PublicFormat.compactMoney(cents: campaigns.revenueCents)
-        return String(appLocalized: "Campaigns in \(year) raised \(raised)")
-    }
-
-    public var campaignFigures: (raised: String, spent: String) {
-        (
-            PublicFormat.compactMoney(cents: campaigns?.revenueCents),
-            PublicFormat.compactMoney(cents: campaigns?.expenseCents)
-        )
-    }
-
-    public var revenue: MoneyOverview.Revenue? { overview?.revenue }
-
-    public var revenueStates: [AmountBar] {
-        MoneyText.bars(
-            revenue?.byState ?? [], id: \.uf, title: { RaceText.scope($0.uf) }, cents: \.cents,
-            kind: { _ in MoneyKind.state })
-    }
-
-    public var revenueTiles: [StateTile] { StateTile.tiles(revenue?.byState ?? []) }
-
-    public var revenueHeadline: String {
-        guard let revenue else {
-            return String(
-                appLocalized: "The federal revenue service hasn't closed a full year yet.")
-        }
-        let total = PublicFormat.compactMoney(cents: revenue.totalCents)
-        return String(appLocalized: "Federal revenue in \(String(revenue.year)): \(total)")
+    var minimumWageCents: Int? {
+        guard let wage = mandate?.minimumWage?.monthlyCents, wage > 0 else { return nil }
+        return wage
     }
 
     public func sourceLine(for section: Section) -> String {
-        let ids: [String] =
-            switch section {
-            case .quota: ["camara", "senado"]
-            case .mandate: (mandate?.sources ?? []).map(\.id)
-            case .campaigns: ["tse"]
-            case .revenue: ["receita"]
-            }
-        let all = section == .mandate ? mandate?.sources ?? [] : overview?.sources ?? []
-        return MoneyText.sourceLine(MoneyText.sources(all, ids: ids))
+        switch section {
+        case .mandate:
+            let all = mandate?.sources ?? []
+            return MoneyText.sourceLine(MoneyText.sources(all, ids: all.map(\.id)))
+        case .quota:
+            let all = places?.sources ?? overview?.sources ?? []
+            return MoneyText.sourceLine(MoneyText.sources(all, ids: ["camara", "senado"]))
+        case .campaigns:
+            return MoneyText.sourceLine(MoneyText.sources(overview?.sources ?? [], ids: ["tse"]))
+        case .revenue:
+            return MoneyText.sourceLine(
+                MoneyText.sources(overview?.sources ?? [], ids: ["receita"]))
+        }
     }
 
     public func load() async {
+        refreshHome()
         if overview == nil { phase = .loading }
         phase = await PublicDataPhase.settle(after: phase) {
             lens = try? await lensRepository?.lens()
             guard let service else { throw PublicDataError.unavailable }
             overview = try await service.money()
             mandate = try? await service.mandateCost()
+            places = try? await service.moneyPlaces()
         }
     }
 }
