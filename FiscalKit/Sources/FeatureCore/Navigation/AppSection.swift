@@ -20,7 +20,7 @@ public enum AppSection: String, CaseIterable, Identifiable, Sendable {
         switch self {
         case .today: "calendar.badge.checkmark"
         case .mine: "mappin.and.ellipse"
-        case .votes: "archivebox.fill"
+        case .votes: "checklist"
         case .money: "building.columns.fill"
         case .search: "magnifyingglass"
         }
