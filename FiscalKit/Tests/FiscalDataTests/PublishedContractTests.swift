@@ -70,7 +70,7 @@ struct PublishedContractTests {
         }
         _ = await check("facts") { try await client.facts() }
         let elections = await check("election history") { try await client.electionHistory() }
-        if elections == nil || elections! == nil { failures.append("election history: missing") }
+        if elections.flatMap({ $0 }) == nil { failures.append("election history: missing") }
         _ = await check("timeline") { try await client.politicalTimeline() }
         _ = await check("study") { try await client.studyCatalog() }
         print("CONTRACT people=\(people.count) sample=\(sample.count) votes=\(recent.count)")

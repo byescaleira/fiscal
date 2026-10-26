@@ -23,11 +23,16 @@ public struct LiveResultsClient: LiveResultsService, HighlightAlertService {
     private let baseURL: URL
     private let dataURL: URL?
     private let session: URLSession
+    private let offline: OfflinePackStore?
 
-    public init(baseURL: URL, dataURL: URL? = nil, session: URLSession = .shared) {
+    public init(
+        baseURL: URL, dataURL: URL? = nil, session: URLSession = .shared,
+        offline: OfflinePackStore? = nil
+    ) {
         self.baseURL = baseURL
         self.dataURL = dataURL
         self.session = session
+        self.offline = offline
     }
 
     public static func fromBundle(_ bundle: Bundle = .main) -> LiveResultsClient? {
@@ -38,7 +43,8 @@ public struct LiveResultsClient: LiveResultsService, HighlightAlertService {
             }
         #endif
         guard let value, !value.isEmpty, let url = URL(string: value) else { return nil }
-        return LiveResultsClient(baseURL: url, dataURL: PublicDataClient.dataURL(bundle))
+        return LiveResultsClient(
+            baseURL: url, dataURL: PublicDataClient.dataURL(bundle), offline: .shared)
     }
 
     public func races() async throws -> [Race] {
@@ -46,9 +52,18 @@ public struct LiveResultsClient: LiveResultsService, HighlightAlertService {
             let races = try? await races(
                 at: dataURL.appending(path: PublicDataLayout.version).appending(path: "races.json"))
         {
+            if offline != nil { OfflineNotice.shared.markOnline() }
             return races
         }
-        return try await races(at: baseURL.appending(path: "v1/races"))
+        do {
+            return try await races(at: baseURL.appending(path: "v1/races"))
+        } catch {
+            guard let offline, let data = await offline.data(for: "races.json"),
+                let list = try? JSONDecoder().decode(RaceList.self, from: data)
+            else { throw error }
+            OfflineNotice.shared.markOffline(dataFrom: await offline.updatedAt)
+            return list.races
+        }
     }
 
     private func races(at url: URL) async throws -> [Race] {

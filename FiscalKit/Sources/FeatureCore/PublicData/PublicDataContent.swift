@@ -43,7 +43,7 @@ private struct PublicDataFailure: View {
 
     var body: some View {
         ContentUnavailableView {
-            Label("Couldn't load the data", systemImage: error.symbol)
+            Label(error.title, systemImage: error.symbol)
         } description: {
             Text(verbatim: error.message)
         } actions: {

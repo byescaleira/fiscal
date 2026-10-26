@@ -2,7 +2,7 @@ import FiscalDomain
 import Foundation
 
 public struct PublicDataClient: PublicDataService {
-    private static let offlineCodes: Set<URLError.Code> = [
+    static let offlineCodes: Set<URLError.Code> = [
         .notConnectedToInternet, .networkConnectionLost, .dataNotAllowed,
         .internationalRoamingOff, .cannotConnectToHost, .cannotFindHost, .dnsLookupFailed,
         .timedOut,
@@ -16,13 +16,18 @@ public struct PublicDataClient: PublicDataService {
     private let baseURL: URL
     private let dataURL: URL?
     private let session: URLSession
+    private let offline: OfflinePackStore?
+    private let notice: OfflineNotice?
 
     public init(
-        baseURL: URL, dataURL: URL? = nil, session: URLSession = PublicDataClient.sharedSession
+        baseURL: URL, dataURL: URL? = nil, session: URLSession = PublicDataClient.sharedSession,
+        offline: OfflinePackStore? = nil, notice: OfflineNotice? = nil
     ) {
         self.baseURL = baseURL
         self.dataURL = dataURL
         self.session = session
+        self.offline = offline
+        self.notice = notice
     }
 
     public static func makeSession(cache: URLCache) -> URLSession {
@@ -41,7 +46,8 @@ public struct PublicDataClient: PublicDataService {
             }
         #endif
         guard let value, !value.isEmpty, let url = URL(string: value) else { return nil }
-        return PublicDataClient(baseURL: url, dataURL: dataURL(bundle))
+        return PublicDataClient(
+            baseURL: url, dataURL: dataURL(bundle), offline: .shared, notice: .shared)
     }
 
     static func dataURL(_ bundle: Bundle) -> URL? {
@@ -184,9 +190,21 @@ public struct PublicDataClient: PublicDataService {
     }
 
     func get<Value: Decodable>(_ path: String) async throws -> Value {
+        do {
+            return try await online(path)
+        } catch let error as PublicDataError where error == .offline || error == .unavailable {
+            guard let offline, let value: Value = try await packed(path, from: offline) else {
+                throw error
+            }
+            return value
+        }
+    }
+
+    private func online<Value: Decodable>(_ path: String) async throws -> Value {
         if let dataURL, await PublicDataRoute.shared.isLive(dataURL, session: session) {
             do {
-                return try await grouped(path, base: dataURL)
+                return try await PublicDataResolver { try await fetch($0, base: dataURL) }
+                    .value(path)
             } catch PublicDataError.unavailable {
                 return try await legacy(path)
             }
@@ -194,29 +212,25 @@ public struct PublicDataClient: PublicDataService {
         return try await legacy(path)
     }
 
-    private func legacy<Value: Decodable>(_ path: String) async throws -> Value {
-        let data = try await load(Self.request(url(for: path)))
-        return try decode(data, keys: [])
+    private func packed<Value: Decodable>(_ path: String, from store: OfflinePackStore)
+        async throws -> Value?
+    {
+        let resolver = PublicDataResolver(isPack: true) { file in
+            guard let data = await store.data(for: file) else { throw PublicDataError.offline }
+            return data
+        }
+        do {
+            let value: Value = try await resolver.value(path)
+            notice?.markOffline(dataFrom: await store.updatedAt)
+            return value
+        } catch PublicDataError.offline {
+            return nil
+        }
     }
 
-    private func grouped<Value: Decodable>(_ path: String, base: URL) async throws -> Value {
-        switch PublicDataLayout.locate(path) {
-        case .file(let file):
-            return try decode(try await fetch(file, base: base), keys: [])
-        case .member(let file, let keys):
-            return try decode(try await fetch(file, base: base), keys: keys)
-        case .profile(let slug):
-            do {
-                return try decode(
-                    try await fetch("people/\(slug).json", base: base), keys: ["profile"])
-            } catch PublicDataError.notFound {
-                let index = PublicDataLayout.cityPeopleIndex.path(slug)
-                let code: String = try decode(
-                    try await fetch(index, base: base), keys: ["items", slug])
-                let city = try await fetch("places/city/\(code).json", base: base)
-                return try decode(city, keys: ["people", slug])
-            }
-        }
+    private func legacy<Value: Decodable>(_ path: String) async throws -> Value {
+        let data = try await load(Self.request(url(for: path)))
+        return try PublicDataResolver.decode(data, keys: [])
     }
 
     private func fetch(_ file: String, base: URL) async throws -> Data {
@@ -225,17 +239,6 @@ public struct PublicDataClient: PublicDataService {
         let data = try await load(Self.request(url))
         await PublicDataRecent.shared.store(data, for: url)
         return data
-    }
-
-    private func decode<Value: Decodable>(_ data: Data, keys: [String]) throws -> Value {
-        let value: Value?
-        do {
-            value = try PublicDataMember<Value>.decode(data, keys: keys)
-        } catch {
-            throw PublicDataError.invalidData
-        }
-        guard let value else { throw PublicDataError.notFound }
-        return value
     }
 
     private static func request(_ url: URL) -> URLRequest {
@@ -259,17 +262,22 @@ public struct PublicDataClient: PublicDataService {
             (data, response) = try await session.data(for: conditional)
         } catch let error as URLError {
             if error.code == .cancelled { throw CancellationError() }
-            if let cached { return cached.data }
-            throw Self.offlineCodes.contains(error.code)
-                ? PublicDataError.offline : PublicDataError.unavailable
+            let offline = Self.offlineCodes.contains(error.code)
+            if let cached {
+                if offline { notice?.markOffline(dataFrom: Self.date(of: cached)) }
+                return cached.data
+            }
+            throw offline ? PublicDataError.offline : PublicDataError.unavailable
         }
         guard let http = response as? HTTPURLResponse else { throw PublicDataError.unavailable }
         switch http.statusCode {
         case 200..<300:
             cache?.storeCachedResponse(CachedURLResponse(response: http, data: data), for: request)
+            notice?.markOnline()
             return data
         case 304:
             guard let cached else { throw PublicDataError.unavailable }
+            notice?.markOnline()
             return cached.data
         case 404, 410:
             throw PublicDataError.notFound
@@ -279,6 +287,14 @@ public struct PublicDataClient: PublicDataService {
             if let cached { return cached.data }
             throw PublicDataError.unavailable
         }
+    }
+}
+
+extension PublicDataClient {
+    static func date(of cached: CachedURLResponse) -> Date? {
+        guard let value = (cached.response as? HTTPURLResponse)?.value(forHTTPHeaderField: "Date")
+        else { return nil }
+        return try? Date(value, strategy: Date.HTTPFormatStyle())
     }
 }
 
