@@ -17,6 +17,21 @@ struct PublicDataDecodingTests {
         #expect(vote.tally.yes == 388)
     }
 
+    @Test func readsThePersonVoteTurn() throws {
+        let second = try decode(
+            PersonVote.self,
+            #"{ "voteId": "senado-7107", "date": "2026-10-14", "proposition": "PEC 221/2019", "summary": "Votação nominal em segundo turno.", "vote": "Sim", "partyGuidance": null, "approved": true, "themes": [], "turn": 2 }"#
+        )
+        let plain = try decode(
+            PersonVote.self,
+            #"{ "voteId": "senado-7106", "date": "2026-10-14", "proposition": "PEC 221/2019", "summary": "Votação nominal.", "vote": "Sim", "partyGuidance": null, "approved": true, "themes": [] }"#
+        )
+        #expect(second.turn == 2)
+        #expect(second.heading == VoteHeading.text("PEC 221/2019", turn: 2))
+        #expect(second.heading != plain.heading)
+        #expect(plain.heading == "PEC 221/2019")
+    }
+
     @Test func readsASourceWithAnOffsetDate() throws {
         let source = try decode(
             Source.self,

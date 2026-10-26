@@ -400,3 +400,28 @@ func TestEachTurnOfAProposalSaysWhichTurnItIs(t *testing.T) {
 		t.Fatalf("turns = %v", turns)
 	}
 }
+
+func TestPersonVotesCarryTheTurnOfTheVote(t *testing.T) {
+	ds := sampleDataset()
+	var voter Ballot
+	for _, v := range ds.Votes {
+		if len(v.Ballots) > 0 {
+			voter = v.Ballots[0]
+			break
+		}
+	}
+	if voter.PersonKey == "" {
+		t.Fatal("the sample needs a vote with ballots")
+	}
+	ds.Votes = append(ds.Votes, &HouseVote{ID: "camara-pec-2", House: HouseCamara, Date: "2026-10-14", Proposition: "PEC 9/2026", Kind: "PEC", Description: "Aprovada em segundo turno.", Nominal: true, Yes: iptr(1), No: iptr(0), Ballots: []Ballot{voter}})
+	files := marshalFiles(t, Build(ds, &Slugs{byKey: map[string]string{}}).Files)
+	for path, body := range files {
+		if strings.HasSuffix(path, "/votes-2026.json") && strings.Contains(body, `"voteId":"camara-pec-2"`) {
+			if !strings.Contains(body, `"turn":2`) {
+				t.Fatalf("%s lists the vote without its turn: %s", path, body)
+			}
+			return
+		}
+	}
+	t.Fatal("no person vote list has the second-turn vote")
+}
