@@ -7,7 +7,7 @@ Os textos da página do Fiscal na App Store ficam em `metadata.json`, a fonte qu
 ```json
 {
   "urls": { "support": "...", "marketing": "...", "privacy": "...", "terms": "..." },
-  "locales": { "en-US": { "name": "", "subtitle": "", "promotionalText": "", "keywords": "", "whatsNew": "", "description": "" } },
+  "locales": { "pt-BR": { "name": "", "subtitle": "", "promotionalText": "", "keywords": "", "whatsNew": "", "description": "" } },
   "review": { "notes": "", "contact": "" }
 }
 ```
@@ -27,7 +27,7 @@ Os textos da página do Fiscal na App Store ficam em `metadata.json`, a fonte qu
 | `review.notes` | Version › App Review Information › Notes | 4000 caracteres | Em inglês (abaixo) |
 | `review.contact` | Version › App Review Information › Contact | — | E-mail de suporte (`support@byescaleira.com`), nunca o pessoal |
 
-Locales, na ordem do arquivo: `en-US` (English U.S., principal), `pt-BR`, `es-ES`, `de-DE`, `fr-FR`, `it`, `ja`, `ko`, `zh-Hans` e `ru`, os mesmos 10 idiomas do catálogo do app.
+Locale único: `pt-BR` (Portuguese (Brazil), idioma principal), o mesmo do catálogo do app ([ADR 0003](../adr/0003-portuguese-only.md)).
 
 Para conferir os limites antes de colar:
 
@@ -60,7 +60,7 @@ Em inglês, curtas, respondendo o que o revisor precisa para testar sem pergunta
 ## Ordem de preenchimento
 
 1. **Contratos:** o contrato de apps gratuitos já vale; o Fiscal não vende nada.
-2. **Registro do app** com o bundle id `com.byescaleira.fiscal` e o `name` em en-US. Copie o id do app para `FiscalAppStoreID` no `Info.plist` antes do build da revisão.
+2. **Registro do app:** feito em 26/10/2026. Apple ID `6826982117`, bundle id e SKU `com.byescaleira.fiscal`, idioma principal Portuguese (Brazil), só iOS por enquanto, acesso de todos os usuários. O id já está em `FiscalAppStoreID` no `Info.plist`.
 3. **Preço:** gratuito, sem compras no app nem assinatura.
 4. **Textos da versão** a partir deste `metadata.json`, idioma por idioma: nome, subtítulo, texto promocional, descrição, palavras-chave, URLs e "What's New" quando houver. Recarregue a página e confira cada idioma: alguns campos ignoram valor colado por script.
 5. **Mídia** de [media/README.md](media/README.md), na ordem de envio.
