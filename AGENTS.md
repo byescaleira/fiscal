@@ -46,6 +46,7 @@ App SwiftUI para iOS, iPadOS, macOS e visionOS 27, com SwiftData local e sincron
 | `scripts/icons.sh`, `python3 scripts/animations.py` | Ícone e animações Lottie |
 | `python3 -I scripts/art.py check\|fetch` | Checa a licença e baixa o acervo em domínio público (`art-credits.json`, `Art.xcassets`) |
 | `node scripts/site-server.mjs` | Site e ponte em `http://127.0.0.1:4173` |
+| `scripts/server-deploy.sh [--apply]` | Plano (padrão) ou deploy do servidor na VPS, um serviço por vez, com o ok do usuário ([runbook](docs/server-runbook.md)) |
 | `python3 scripts/site-i18n.py extract\|check` | Textos do site nos 10 idiomas |
 | `node --test bridge/server.test.mjs site/web-crypto.test.mjs` | Testes da ponte e da cifra |
 | `cd admin && npm ci --ignore-scripts && node --test test/*.test.mjs` | Testes do admin |
@@ -71,7 +72,7 @@ fiscal/
 
 - [Constituição](docs/constitution.md), [specs](docs/specs/README.md), [mudanças](docs/changes/README.md), [ADRs](docs/adr/README.md) e o [histórico de decisões](docs/decisions.md).
 - [Arquitetura](docs/architecture.md), [design system](docs/design-system.md), [modelo de spec](docs/spec-template.md), [backlog](docs/backlog.md) e [roadmap](docs/roadmap.md).
-- [Atualização obrigatória](docs/force-update.md), [site e web](docs/web.md), [admin](docs/admin.md), [validação antes de distribuir](docs/validation.md) e [App Store](docs/app-store/README.md).
+- [Atualização obrigatória](docs/force-update.md), [site e web](docs/web.md), [admin](docs/admin.md), [servidor e publicação](docs/server-runbook.md), [validação antes de distribuir](docs/validation.md) e [App Store](docs/app-store/README.md).
 - Padrão completo dos apps (processo, arquitetura, design, textos, testes, release): skill `byescaleira-sdd` do plugin `byescaleira-workspace`.
 
 ## Git flow

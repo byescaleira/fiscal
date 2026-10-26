@@ -1,9 +1,14 @@
 # Servidor do Fiscal
 
-Go 1.26.10 com a biblioteca padrão; a única dependência externa é `modernc.org/sqlite` (Go puro), usada só pela carga ([ADR 0006](../docs/adr/0006-ingest-sqlite-store.md)). Dois processos na mesma imagem:
+Go 1.26.10 com a biblioteca padrão; a única dependência externa é `modernc.org/sqlite` (Go puro), usada só pela carga ([ADR 0006](../docs/adr/0006-ingest-sqlite-store.md)). A arquitetura de publicação está no [ADR 0007](../docs/adr/0007-pages-cdn-phased-ingest.md), e a operação no [runbook](../docs/server-runbook.md).
 
-- **`liveresults-server`** (`cmd/server`): a apuração ao vivo. Lê os arquivos do TSE do 2º turno (presidente e governador de AC, AM, DF, ES, RN e TO), serve o placar em `/api/v1/races` e atualiza as Live Activities por APNs quando os números mudam. Contrato em `docs/changes/live-results/proposal.md`.
-- **`fiscal-ingest`** (`cmd/ingest`): a carga de dados da 1.0. Lê Câmara, Senado, TSE, IBGE, Receita, as assembleias com SAPL e as checagens do Projeto Comprova e publica os arquivos estáticos do contrato (`docs/changes/app-1.0/contract.md`, seção 2) em `PUBLIC_DIR/v1`. Detalhes em [Carga de dados](#carga-de-dados-fiscal-ingest).
+A leitura pública não passa pela VPS: os JSON são um site estático do Cloudflare Pages (`fiscal-dados`, em `https://dados.fiscal.byescaleira.com/v2/…`). A VPS é o bastidor e roda três binários, cada um na sua imagem mínima (`deploy/docker/`), compilados no Mac:
+
+| Binário | O que faz |
+| --- | --- |
+| **`liveresults-server`** (`cmd/server`, imagem `fiscal-api`) | A apuração ao vivo e o único endpoint que recebe dados. Lê os arquivos do TSE do 2º turno (presidente e governador de AC, AM, DF, ES, RN e TO), grava o placar em `PUBLIC_DIR/v1/races*.json`, atualiza as Live Activities por APNs e recebe o registro de token com App Attest. Contrato em `docs/changes/live-results/proposal.md` |
+| **`fiscal-ingest`** (`cmd/ingest`, imagem `fiscal-ingest`) | A carga de dados da 1.0, em fases que rodam e saem (`-phase <nome>`) ou numa carga só (`-once full` ou `-once live`). Lê as fontes, guarda no SQLite, grava o `v1` local (área de preparo) e monta o site `v2` validado em `PUBLIC_DIR/site/ready`. Detalhes em [Carga de dados](#carga-de-dados-fiscal-ingest) |
+| **`fiscal-pages`** (`cmd/pages`, imagem `fiscal-pages`, com o `wrangler` fixado) | Faz o deploy do `site/ready`, junto com os arquivos da apuração e o `status.json`, no Pages. Um deploy por vez, só quando algo mudou, com 3 tentativas |
 
 ## Apuração ao vivo (`liveresults-server`)
 
@@ -24,7 +29,7 @@ Go 1.26.10 com a biblioteca padrão; a única dependência externa é `modernc.o
 | `APNS_TOPIC` | vazio | Tópico completo, com o sufixo: `com.byescaleira.fiscal.push-type.liveactivity` |
 | `APNS_DISABLED` | vazio | `1` sobe sem APNs e só loga o resumo dos pushes (sem token) |
 | `ADMIN_TOKEN` | vazio | Liga `POST /api/v1/admin/push-test` (32+ caracteres); vazio, a rota responde 404. Gere na VPS com `openssl rand -hex 32` e guarde só no `.env` |
-| `HIGHLIGHT_ALERTS` | `1` | `0` desliga a Live Activity do destaque: sem as rotas `/api/v1/highlight-activities` (404) e sem ler `PUBLIC_DIR/v1/highlights.json` |
+| `HIGHLIGHT_ALERTS` | `1` | `0` desliga a Live Activity do destaque: sem as rotas `/api/v1/highlight-activities` (404) e sem ler `PUBLIC_DIR/published/highlights.json` |
 
 Sem `APNS_KEY_FILE`, `APNS_KEY_ID`, `APNS_TEAM_ID` e `APNS_TOPIC` o servidor não sobe, a menos que `APNS_DISABLED=1`. A chave é carregada e um JWT é assinado no boot.
 
@@ -52,11 +57,33 @@ Registros:
 
 Destaque na tela de bloqueio (regra em `docs/changes/app-1.0/weight.md`):
 - Os tokens de push-to-start ficam em `DATA_DIR/highlight-registrations.json` (sem IP), valem 30 dias e são renovados a cada abertura do app; até 200 000 registros e 100 por IP.
-- A cada minuto o servidor confere `PUBLIC_DIR/v1/highlights.json` (gravado pela carga) e só relê quando data ou tamanho mudam. O primeiro item com peso ≥ 85, de fato até 24 h depois do fim do dia dele (Brasília), e ainda não enviado vira um push-to-start (`event: start`, prioridade 10) para todos os tokens; o id vai para `DATA_DIR/highlight-alerts.json` (14 dias). Sem nenhum token registrado, nada é marcado como enviado.
+- A cada minuto o servidor confere `PUBLIC_DIR/published/highlights.json` (copiado pela carga só depois de uma release validada) e só relê quando data ou tamanho mudam. O primeiro item com peso ≥ 85, de fato até 24 h depois do fim do dia dele (Brasília), e ainda não enviado vira um push-to-start (`event: start`, prioridade 10) para todos os tokens; o id vai para `DATA_DIR/highlight-alerts.json` (14 dias). Sem nenhum token registrado, nada é marcado como enviado.
 
 Rate limit por IP: 120 GET e 120 POST/DELETE por minuto (CGNAT), `429 rate_limited` acima. IPv6 conta por /64. `X-Forwarded-For` (último valor) só é aceito quando a conexão vem de loopback ou de rede privada (gateway do Docker, `10/8`, `172.16/12`, `192.168/16`, `fc00::/7`); de qualquer outro endereço vale o `RemoteAddr`. Quando o mapa de buckets lota (100 000), o mais antigo é descartado.
 
-Arquivos estáticos (`PUBLIC_DIR/v1`): no boot do modo TSE só `races.json` e a pasta `races/` são apagados e republicados a partir do `state.json`; o resto de `v1/` é da carga de dados e não é tocado. A cada leitura, os arquivos das disputas são gravados antes dos pushes e só quando o conteúdo muda; `races.json` só é regravado quando alguma disputa muda, então o `fetchedAt` dele é o da última mudança, e o `ETag`/`304` do Caddy se mantém entre leituras sem novidade.
+App Attest (`internal/appattest`, só biblioteca padrão):
+
+- **Rotas.**
+  - `POST /api/v1/attest/challenge` devolve `{"challenge"}`: 32 bytes em base64url, de uso único, válido por 5 min.
+  - `POST /api/v1/attest/keys` recebe `{"keyId","attestation","challenge"}` (base64, até 16 KiB) e responde `204`, `401 attest_invalid` ou `507 capacity_reached`.
+- **Verificação da chave:**
+  - CBOR próprio;
+  - cadeia `x5c` até a Apple App Attestation Root CA embutida (`internal/appattest/apple-root-ca.der`, SHA-256 `1cb9823b…c932`);
+  - nonce `SHA256(authData ‖ SHA256(challenge))` na extensão `1.2.840.113635.100.8.2`;
+  - `keyId` = SHA-256 da chave pública;
+  - `rpIdHash` = SHA-256 de `APPATTEST_APP_ID`;
+  - contador 0;
+  - `aaguid` de produção (o de desenvolvimento só com `APPATTEST_ALLOW_DEVELOPMENT=1`).
+- **Registros com asserção.** `POST /api/v1/live-activities` e `POST /api/v1/highlight-activities` aceitam os cabeçalhos `X-Fiscal-Attest-Key` (base64 do `keyId`) e `X-Fiscal-Attest-Assertion` (base64 do CBOR), com `"challenge"` no corpo.
+  - A assinatura é sobre `SHA256(SHA256(authenticatorData ‖ SHA256(corpo)))`, e o contador precisa subir.
+  - Erros: `401 attest_invalid`, `401 attest_unknown_key` (o app atesta de novo) e `401 attest_challenge`.
+- **Modos:**
+  - **`APPATTEST_MODE=optional`** é o padrão quando há `APPATTEST_APP_ID` ou `APNS_TEAM_ID` + `APNS_TOPIC`. O registro sem cabeçalhos passa, com limite próprio de 10 por minuto por IP.
+  - **`required`** recusa o registro sem asserção com `401 attest_required`.
+  - **`off`** desliga.
+- **Chaves.** Ficam em `DATA_DIR/attest-keys.json` (`0600`, sem IP, até 500 000). Uma chave sem uso por 400 dias sai na leitura.
+
+Arquivos estáticos (`PUBLIC_DIR/v1`, a área de preparo): no boot do modo TSE só `races.json` e a pasta `races/` são apagados e republicados a partir do `state.json`; o resto de `v1/` é da carga de dados e não é tocado. A cada leitura, os arquivos das disputas são gravados antes dos pushes e só quando o conteúdo muda; `races.json` só é regravado quando alguma disputa muda, então o `fetchedAt` dele é o da última mudança, e o `ETag`/`304` do Caddy se mantém entre leituras sem novidade.
 
 ### Rodar local
 
@@ -69,24 +96,16 @@ curl -s http://127.0.0.1:3130/api/v1/races
 
 Com APNs de verdade, aponte `APNS_KEY_FILE` para a `.p8` e preencha `APNS_KEY_ID`, `APNS_TEAM_ID` e `APNS_TOPIC`.
 
-## Deploy da apuração
+## Deploy
 
-Em `/opt/fiscal-api` na VPS, com o `.env` (`chmod 600`, nomes em `.env.example`), `secrets/apns.p8` e `data/` (dono 1000, pastas `700`, chave `600`). O código sobe com `rsync -a`, **sem `--delete`**, e sem tocar no que só existe na VPS:
+Só com o ok do usuário, pedido a cada vez. O passo a passo está no [runbook](../docs/server-runbook.md):
 
-```sh
-rsync -a --exclude .env --exclude secrets/ --exclude data/ --exclude ingest-data/ --exclude ingest-backups/ --exclude public/ server/ vps:/opt/fiscal-api/
-```
+- **O plano.** `scripts/server-deploy.sh` mostra o plano sem `--apply`.
+- **Sem compilação na VPS.** Os binários são compilados no Mac e enviados para `/opt/fiscal-api/builds/<sha>`, e as imagens são montadas lá só com `COPY`.
+- **A API.** Ela troca sozinha (`docker compose up -d --no-deps fiscal-api`), com healthcheck e volta automática para `:previous`.
+- **As fases.** As units do systemd (`deploy/systemd/`) agendam cada uma.
 
-`.env`, `secrets/`, `data/`, `ingest-data/`, `ingest-backups/` e `public/` nunca saem da máquina local nem são sobrescritos ou apagados na VPS. O `ADMIN_TOKEN` é gerado na própria VPS e vai só para o `.env`:
-
-```sh
-cd /opt/fiscal-api
-echo "ADMIN_TOKEN=$(openssl rand -hex 32)" >> .env
-chmod 600 .env
-docker compose up -d --build
-docker compose ps
-curl -s http://127.0.0.1:3130/api/health
-```
+`.env`, `secrets/`, `data/`, `ingest-data/`, `ingest-backups/`, `pages-data/` e `public/` nunca saem da VPS nem são sobrescritos. O `ADMIN_TOKEN` é gerado na própria VPS (`openssl rand -hex 32`) e vai só para o `.env`.
 
 A rota de teste do admin não passa pelo Caddy (ele responde 404 em `/api/v1/admin/*`); use só por SSH, direto no loopback:
 
@@ -149,7 +168,52 @@ O `rewrite` roda antes de `uri` no Caddy, por isso os matchers usam o caminho or
 
 ## Carga de dados (`fiscal-ingest`)
 
-Roda no container `fiscal-ingest` (mesma imagem, `entrypoint` próprio no `compose.yaml`), sem porta e sem rota HTTP. Dois ciclos:
+Roda como job que sai (imagem `fiscal-ingest`, perfil `jobs` do `compose.yaml`, `restart: "no"`), sem porta e sem rota HTTP. Na VPS, quem chama são os timers do systemd (calendário no [runbook](../docs/server-runbook.md)):
+
+| Modo | O que faz |
+| --- | --- |
+| `-phase <nome>` | Lê só as fontes da fase (`camara`, `senado`, `assembleias`, `tse`, `cidades`, `checagens`, `indicadores`, `receita`, `repercussao`; `memoria` não lê nenhuma). O resto vem do SQLite pelo mesmo caminho de quando uma fonte cai (estado `skipped` em `sources_runs`), e as assembleias vêm de `DATA_DIR/cache/assembleias`. A fase reconstrói tudo, monta o site, salva o snapshot (`DATA_DIR/live-snapshot.gob`) e faz o backup do dia |
+| `-once live` | Atualização ao vivo a partir do snapshot da última fase: pauta, votações de hoje e card da apuração. Sem snapshot, pula |
+| `-once` ou `-once full` | Carga completa de todas as fontes numa execução (primeira carga ou manutenção) |
+| sem modo | O agendador antigo de longa duração, só para desenvolvimento |
+| `-site status`, `-site rollback [-to <nome>]` | Mostra a release pronta ou aponta `site/ready` para a anterior |
+| `-allow-drop` | Aceita, nesta execução, uma release com mais de `SITE_MAX_DROP` a menos de arquivos ou pessoas |
+| `-config-check` | Valida a configuração e sai |
+
+O que vale em toda execução:
+
+- **Lock global.** Nunca rodam duas cargas: há um lock exclusivo em `DATA_DIR/ingest.lock`. As fases esperam até `INGEST_LOCK_WAIT` e saem com código 75; o modo `live` pula na hora.
+- **Prioridade baixa.** O processo baixa a própria prioridade (`INGEST_NICE`; I/O na classe ociosa no Linux).
+- **Guarda de carga.** Com load acima de `INGEST_MAX_LOAD` ou menos de `INGEST_MIN_AVAILABLE_MB` livres (`/proc/loadavg` e `/proc/meminfo`), a fase espera até `INGEST_CAPACITY_WAIT` e sai sem fazer nada.
+
+**Site `v2` (`internal/site`).** O stager monta `PUBLIC_DIR/site/sites/<stamp>-<fase>` a partir do `v1`. O layout que o app lê:
+
+- `people/{slug}.json` = `{ profile, files: { "votes-2026.json": …, "context.json": … } }`;
+- `places/city/{ibge}.json` = `{ place, people: { slug: perfil } }`;
+- `index/city-people/{bucket}.json` = `{ items: { slug: ibge } }` (256 pacotes);
+- `votes/by-id/{bucket}.json` = `{ items: { id: votação } }` (512 pacotes);
+- o resto igual ao `v1`;
+- mais `release.json`, `_headers` (Cache-Control por tipo) e `404.html`.
+
+O bucket são os 2 primeiros bytes do SHA-256 da chave, módulo o número de pacotes, em hexadecimal.
+
+A release só vira `site/ready` (troca atômica de link simbólico) depois da validação:
+
+- todo JSON válido;
+- `meta.json`, `index/people.json` e `today.json` presentes;
+- cada pessoa do índice com o próprio arquivo e perfil;
+- `meta.counts.people` igual ao índice;
+- `today.date` presente;
+- pelo menos `SITE_MIN_PEOPLE` pessoas;
+- no máximo `SITE_MAX_FILES` arquivos;
+- nenhum arquivo acima de 25 MiB;
+- no máximo `SITE_MAX_DROP` a menos de arquivos lógicos ou pessoas do que a release anterior.
+
+São guardadas as últimas `SITE_KEEP`.
+
+Sem nenhum arquivo mudado, nenhuma release nova é criada. Depois de cada release, `highlights.json` é copiado para `PUBLIC_DIR/published/highlights.json`, que é o que o alerta de destaque do `fiscal-api` lê.
+
+Os dois ciclos de carga:
 
 1. **Carga completa** no boot e todo dia às `INGEST_FULL_AT` (hora de Brasília). Se falhar, nada novo é publicado (os arquivos anteriores ficam) e ela tenta de novo em 5, 15 e 30 min.
 2. **Atualização ao vivo** a cada `INGEST_LIVE_INTERVAL`: pauta do dia do Plenário das duas casas, votações de hoje (API da Câmara e `/votacao` do Senado), próxima sessão e o card da apuração (lido de `PUBLIC_DIR/v1/races.json` quando o arquivo é de hoje). Regrava `agenda/today.json`, `today.json`, `votes/*` e os votos por pessoa que mudaram.
@@ -179,7 +243,39 @@ Cada arquivo sai com o `.gz` ao lado, por escrita atômica (`internal/publish`, 
 | `STORE_PATH` | `DATA_DIR/fiscal.db` (`/data/fiscal.db` no container) | Banco SQLite da carga; precisa terminar em `.db` |
 | `BACKUP_KEEP` | `14` | Quantos backups diários manter em `DATA_DIR/backups` (1 a 365) |
 
+| `SITE_MIN_PEOPLE` | `500` na carga nacional, `1` com `INGEST_UFS` ou `INGEST_SOURCES` | Mínimo de pessoas para a release valer |
+| `SITE_MAX_DROP` | `0.2` | Queda máxima de arquivos ou pessoas contra a release anterior |
+| `SITE_MAX_FILES` | `18000` | Teto de arquivos do site (de 100 a 20 000, o limite do Pages Free) |
+| `SITE_KEEP` | `3` | Releases guardadas em `PUBLIC_DIR/site/sites` |
+| `INGEST_LOCK_WAIT` | `20m` | Quanto uma fase espera o lock global |
+| `INGEST_NICE` | `19` | Prioridade do processo (`0` desliga) |
+| `INGEST_MAX_LOAD`, `INGEST_MIN_AVAILABLE_MB`, `INGEST_CAPACITY_WAIT` | `2`, `1536`, `20m` | Guarda de carga antes de cada fase (`0` desliga cada limite) |
+
 Configuração inválida derruba o processo no boot (falha fechada). Nenhuma variável é segredo.
+
+### Deploy no Pages (`fiscal-pages`)
+
+Cada execução faz um ciclo:
+
+1. **Lê `PUBLIC_DIR/site/ready`.**
+2. **Monta `PUBLIC_DIR/deploy/<release>`.** São links físicos da release, mais `v1/races.json`, `v1/races/*.json` e `v1/status.json` copiados para `v2/`, sem `.gz`.
+3. **Roda `wrangler pages deploy … --project-name=$PAGES_PROJECT --branch=$PAGES_BRANCH`.** O token vai só no ambiente do processo, e o log o mascara.
+
+Quando há deploy:
+
+- **Release nova de fase, `full` ou rollback:** na hora.
+- **Release `live`:** no máximo uma a cada `PAGES_DATA_INTERVAL`.
+- **Apuração mudou:** na hora.
+- **Só o `status.json` mudou:** espera o próximo.
+
+Limites:
+
+- até `PAGES_MAX_DEPLOYS_PER_DAY` por dia;
+- recusa mais de 20 000 arquivos;
+- um deploy por vez (`DATA_DIR/pages.lock`);
+- 3 tentativas com 30 s e 60 s de espera.
+
+Variáveis: `PAGES_PROJECT` (`fiscal-dados`), `PAGES_BRANCH` (`main`), `CLOUDFLARE_ACCOUNT_ID` (32 caracteres hexadecimais) e `CLOUDFLARE_API_TOKEN_FILE` (`/run/fiscal/cloudflare-pages-token`, só o token Pages:Edit, montado só leitura a partir de `secrets/`). Flags: `-dry-run` monta e conta sem enviar; `-force` ignora o intervalo; `-config-check` confere a configuração.
 
 ### Fontes e o que vira cada arquivo
 
@@ -263,13 +359,13 @@ O CPF não entra em claro: vira `cpf:<hash>` antes de gravar e antes da ligaçã
 
 **Backup.** Depois da primeira carga completa bem-sucedida de cada dia (hora de Brasília), `VACUUM INTO` grava `DATA_DIR/backups/fiscal-AAAA-MM-DD.db` (`0600`), uma cópia consistente feita com o banco aberto, e os mais antigos que os `BACKUP_KEEP` mais novos são apagados. No container a pasta é o volume `./ingest-backups`; copie-a para fora da VPS de vez em quando.
 
-**Restauração.** Com o serviço parado:
+**Restauração.** Com os timers parados:
 
 ```sh
 cd /opt/fiscal-api
-docker compose stop fiscal-ingest
-docker compose run --rm fiscal-ingest -restore /data/backups/fiscal-2026-10-25.db
-docker compose start fiscal-ingest
+systemctl stop 'fiscal-phase-*.timer' fiscal-live.timer
+docker compose --profile jobs run --rm --no-deps -T fiscal-ingest -restore /data/backups/fiscal-2026-10-25.db
+systemctl start 'fiscal-phase-*.timer' fiscal-live.timer
 ```
 
 O `-restore` confere `PRAGMA integrity_check` do backup, troca `fiscal.db` por escrita atômica e apaga `fiscal.db-wal` e `fiscal.db-shm`. Na próxima carga as fontes são relidas e o histórico continua a partir do backup. Para olhar o banco sem parar nada, abra um backup (`sqlite3 ingest-backups/fiscal-AAAA-MM-DD.db`), nunca o `fiscal.db` em uso.
@@ -279,10 +375,18 @@ O `-restore` confere `PRAGMA integrity_check` do backup, troca `fiscal.db` por e
 ```sh
 cd server
 gofmt -l . && go vet ./... && go test -race -count=1 ./...
-PUBLIC_DIR=/tmp/fiscal/public DATA_DIR=/tmp/fiscal/data INGEST_UFS=ac INGEST_YEARS=2026 go run ./cmd/ingest -once
+PUBLIC_DIR=/tmp/fiscal/public DATA_DIR=/tmp/fiscal/data INGEST_UFS=ac INGEST_YEARS=2026 INGEST_NICE=0 go run ./cmd/ingest -once full
+PUBLIC_DIR=/tmp/fiscal/public DATA_DIR=/tmp/fiscal/data INGEST_UFS=ac INGEST_YEARS=2026 INGEST_NICE=0 go run ./cmd/ingest -phase memoria
+PUBLIC_DIR=/tmp/fiscal/public DATA_DIR=/tmp/fiscal/pages PAGES_PROJECT=fiscal-dados go run ./cmd/pages -dry-run
 ```
 
-`-once` faz uma carga completa, o backup do dia e sai (código 1 se falhar); `-restore <arquivo>` troca o banco por um backup e sai; sem as flags, o processo fica no agendamento. `-check` é o healthcheck do container (heartbeat a cada minuto em `DATA_DIR/ingest-status.json`).
+Os comandos fazem, em ordem:
+
+1. **`-once full`** faz a carga completa, monta o site e salva o snapshot e o backup do dia (código 1 se falhar).
+2. **`-phase memoria`** reconstrói o site a partir do banco, sem rede.
+3. **`fiscal-pages -dry-run`** mostra o que iria para o Pages, sem enviar.
+
+`-restore <arquivo>` troca o banco por um backup e sai. Sem modo, o processo fica no agendador antigo (só para desenvolvimento), e `-check` é o healthcheck dele.
 
 Carga real limitada de 2026-10-25 (AC, ano de 2026, TSE 2018, 2022 e 2026): 2 min 44 s, 51 pessoas, 974 votações, 1.127 arquivos, 7,8 MiB de JSON e 1,6 MiB em `.gz`; repetida sem mudança nas fontes, regravou só `meta.json`. A carga nacional baixa por volta de 100 MiB de arquivos da Câmara por ano e algumas centenas de MiB dos ZIPs do TSE (só os CSVs necessários), que ficam em `DATA_DIR/cache` e só são baixados de novo quando mudam.
 
@@ -290,21 +394,22 @@ Checagens reais de 2026-10-25, com os 513 deputados federais, os 81 senadores e 
 
 ### Deploy da carga
 
-Na VPS, ao lado da apuração e só com o ok do usuário: criar `/opt/fiscal-api/ingest-data` e `/opt/fiscal-api/ingest-backups` com dono 1000 e modo `700` e subir o serviço `fiscal-ingest` do `compose.yaml`. O container não abre porta, roda `read_only`, sem capacidades, com `mem_limit: 1536m`, e escreve só em `/data` e `/public`.
+As fases e a atualização ao vivo são units do systemd em `deploy/systemd/`:
 
-O Caddy precisa servir os novos arquivos estáticos antes do `handle /api/*` (proposta, ainda não aplicada):
+- **`fiscal-phase@.service`** roda `fiscal-ingest -phase %i` e, em seguida, `fiscal-pages`.
+- **`fiscal-phase-<nome>.timer`** agenda cada fase.
+- **`fiscal-live.service` e `fiscal-live.timer`** fazem a atualização ao vivo.
+- **`fiscal-pages.service` e `fiscal-pages.timer`** cuidam da apuração e ficam ligados só em dia de eleição.
 
-```
-	@data {
-		method GET HEAD
-		path_regexp data ^/api/v1/((meta|today|status)|(index|places|people|votes|agenda|money)/[a-z0-9/-]+)\.json$
-	}
-	handle @data {
-		root * /opt/fiscal-api/public
-		rewrite * /v1/{re.data.1}.json
-		header Cache-Control "public, max-age=300, stale-while-revalidate=3600"
-		file_server {
-			precompressed gzip
-		}
-	}
-```
+Limites dos containers de job no `compose.yaml`:
+
+- `cpus: 1` e `cpu_shares: 128`;
+- `mem_limit`/`memswap_limit` de `1200m`, com `GOMEMLIMIT` de 900 MiB;
+- `oom_score_adj: 1000` (o kernel mata a carga antes de qualquer outro serviço);
+- peso de I/O 10;
+- `read_only`, sem capacidades;
+- 3 workers e 300 ms entre requisições ao mesmo host.
+
+As units dão `Nice=19`, `IOSchedulingClass=idle` e `CPUQuota=100%` ao cliente do Docker. Os limites que valem são os do container.
+
+O Caddy da VPS continua com o bloco `@data`, que serve o `v1` de `/opt/fiscal-api/public`, só como reserva para builds antigos, até todas as versões no ar lerem o Pages.
