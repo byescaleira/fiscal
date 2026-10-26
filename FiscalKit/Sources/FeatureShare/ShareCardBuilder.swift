@@ -100,9 +100,7 @@ public struct ShareCardBuilder: Sendable {
             no: PublicFormat.number(vote.no), others: PublicFormat.number(vote.others),
             yesShare: share(vote.yes), noShare: share(vote.no), othersShare: share(vote.others),
             result: result(vote), approved: vote.approved,
-            quorum: detail.quorum.map {
-                String(appLocalized: "Quorum: \(PublicFormat.number($0))")
-            })
+            quorum: detail.quorum)
     }
 
     func spending(_ list: ExpenseList, year: Int) -> ShareSpending {

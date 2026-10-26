@@ -84,7 +84,10 @@ struct PublicDataDecodingTests {
         #expect(detail.vote.house == .camara)
         #expect(detail.vote.date == CalendarDay(year: 2_026, month: 10, day: 21))
         #expect(detail.vote.tally.total == 470)
-        #expect(detail.quorum == 257)
+        #expect(
+            detail.quorum
+                == "Para passar, precisa da maioria dos votos, com pelo menos 257 de 513 presentes."
+        )
         #expect(detail.parties.first?.party == "PL")
         #expect(detail.people.first?.vote == "Sim")
         let encoded = try PublicDataCoding.encoder().encode(detail)

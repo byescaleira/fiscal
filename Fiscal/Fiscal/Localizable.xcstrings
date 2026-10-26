@@ -10569,6 +10569,16 @@
         }
       }
     },
+    "Quorum not published" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quórum não publicado"
+          }
+        }
+      }
+    },
     "Quorum: %@" : {
       "extractionState" : "stale",
       "localizations" : {

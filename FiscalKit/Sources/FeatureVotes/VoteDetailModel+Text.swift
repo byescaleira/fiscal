@@ -28,7 +28,7 @@ extension VoteDetailModel {
     }
 
     public var quorumText: String {
-        String(appLocalized: "Quorum \(PublicFormat.number(detail?.quorum))")
+        detail?.quorum ?? String(appLocalized: "Quorum not published")
     }
 
     public var votersText: String {

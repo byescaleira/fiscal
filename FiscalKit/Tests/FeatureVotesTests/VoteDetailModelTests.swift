@@ -162,7 +162,7 @@ struct VoteDetailModelTests {
         let vote = VoteDetailModel(id: "senado-1", service: SingleVote(detail: detail))
         await vote.load()
         #expect(vote.yesText == PublicFormat.missing)
-        #expect(vote.quorumText.contains(PublicFormat.missing))
+        #expect(vote.quorumText == String(appLocalized: "Quorum not published"))
         #expect(vote.outcome == .symbolic)
         #expect(vote.ballots.first?.slug == nil)
         #expect(vote.partyRows.first?.yes == 1)

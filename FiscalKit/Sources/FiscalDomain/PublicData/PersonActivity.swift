@@ -24,6 +24,22 @@ public struct PersonVote: Codable, Hashable, Identifiable, Sendable {
         self.themes = themes
     }
 
+    private enum CodingKeys: String, CodingKey {
+        case voteId, date, proposition, summary, vote, partyGuidance, approved, themes
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        voteId = try container.decode(String.self, forKey: .voteId)
+        date = try container.decode(CalendarDay.self, forKey: .date)
+        proposition = try container.decodeIfPresent(String.self, forKey: .proposition) ?? ""
+        summary = try container.decode(String.self, forKey: .summary)
+        vote = try container.decode(String.self, forKey: .vote)
+        partyGuidance = try container.decodeIfPresent(String.self, forKey: .partyGuidance)
+        approved = try container.decodeIfPresent(Bool.self, forKey: .approved)
+        themes = try container.decode([Theme].self, forKey: .themes)
+    }
+
     public var id: String { voteId }
 }
 

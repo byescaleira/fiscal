@@ -109,14 +109,14 @@ public struct VoteDetail: Codable, Hashable, Identifiable, Sendable {
     }
 
     public let vote: VoteSummary
-    public let quorum: Int?
+    public let quorum: String?
     public let guidance: [Guidance]
     public let parties: [PartyTally]
     public let people: [Ballot]
     public let sources: [Source]
 
     public init(
-        vote: VoteSummary, quorum: Int?, guidance: [Guidance], parties: [PartyTally],
+        vote: VoteSummary, quorum: String?, guidance: [Guidance], parties: [PartyTally],
         people: [Ballot], sources: [Source]
     ) {
         self.vote = vote
@@ -130,7 +130,7 @@ public struct VoteDetail: Codable, Hashable, Identifiable, Sendable {
     public init(from decoder: any Decoder) throws {
         vote = try VoteSummary(from: decoder)
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        quorum = try container.decodeIfPresent(Int.self, forKey: .quorum)
+        quorum = try container.decodeIfPresent(String.self, forKey: .quorum)
         guidance = try container.decode([Guidance].self, forKey: .guidance)
         parties = try container.decode([PartyTally].self, forKey: .parties)
         people = try container.decode([Ballot].self, forKey: .people)

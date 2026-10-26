@@ -14,7 +14,9 @@ struct RepresentativeBallotsTests {
                 time: "18:42", proposition: "PL 1873/2026", kind: nil, summary: "Altera a lei.",
                 plainSummary: nil, themes: [], result: "Aprovado", approved: true, nominal: true,
                 tally: .init(yes: 412, no: 49, others: 9)),
-            quorum: 257, guidance: [], parties: [], people: people, sources: [])
+            quorum:
+                "Para passar, precisa da maioria dos votos, com pelo menos 257 de 513 presentes.",
+            guidance: [], parties: [], people: people, sources: [])
     }
 
     private func ballot(_ name: String, _ uf: String, _ vote: String) -> VoteDetail.Ballot {

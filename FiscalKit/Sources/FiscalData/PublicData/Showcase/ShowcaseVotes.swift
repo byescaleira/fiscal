@@ -87,7 +87,11 @@
                     VoteDetail.Guidance(party: $0.party, guidance: $0.yes >= $0.no ? "Sim" : "Não")
                 }
             return VoteDetail(
-                vote: summary, quorum: summary.house == .camara ? 257 : 41, guidance: guidance,
+                vote: summary,
+                quorum: summary.house == .camara
+                    ? "Para passar, precisa da maioria dos votos, com pelo menos 257 de 513 presentes."
+                    : "Para passar, precisa da maioria dos votos, com pelo menos 41 de 81 presentes.",
+                guidance: guidance,
                 parties: parties, people: ballots, sources: sources)
         }
 

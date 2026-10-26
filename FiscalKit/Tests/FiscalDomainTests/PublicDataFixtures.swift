@@ -45,7 +45,7 @@ enum PublicDataFixtures {
           "summary": "Altera a Lei nº 9.250, de 1995.", "plainSummary": "Muda uma lei do imposto de renda.",
           "themes": ["impostos"], "result": "Aprovado", "approved": true, "nominal": true,
           "yes": 412, "no": 49, "others": 9,
-          "quorum": 257,
+          "quorum": "Para passar, precisa da maioria dos votos, com pelo menos 257 de 513 presentes.",
           "guidance": [{ "party": "PL", "guidance": "Sim" }],
           "parties": [{ "party": "PL", "yes": 80, "no": 6, "others": 2 }],
           "people": [{ "slug": "nikolas-ferreira", "name": "Nikolas Ferreira", "party": "PL", "uf": "mg", "vote": "Sim" }],
