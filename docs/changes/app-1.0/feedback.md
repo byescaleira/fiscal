@@ -139,11 +139,14 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | O que falta do Politicômetro | respondido; dado novo só depois do catálogo de leituras | docs/research/api-politicometro.md |
 | Objetivo claro por tela, fluxo e seção; só leituras (sem dado bruto); backend pré-processa tudo; sincronização inteligente | proposta enviada, aguardando decisões | — |
 | Documentar os padrões de tela aprovados | cartão proposto | docs/design-system.md |
-| Fiscalizar como investigação: busca contextual com IA local, quadro de peças, conclusão e pôster; Eleições sai da tela | em andamento | frente investigate |
+| Fiscalizar como investigação: busca contextual com IA local, quadro de peças, conclusão e pôster; Eleições sai da tela | no iPhone (fidelidade ao partido só após deploy do ingest) | FeatureSearch, index/facts.json |
 | Status dos turnos em Eleições ainda em cápsula (deve ser círculo) | em andamento | frente memory, com StatusCircle |
 | Tag "Por quem você apoia" escondida pela arte no Destaque | no iPhone (removida do hero) | TodayHighlightHero |
 | Mais retratos Lottie (Jones Manoel e os eleitos de 2026) | no iPhone: 2.689 rostos, todos os 2.357 da base real | scripts/avatar-traits.json |
-| Expressões controláveis nos retratos (acenar, joinha, balançar, sorrir) | cartão proposto: boneco único + fichas | — |
+| Expressões controláveis nos retratos (acenar, joinha, balançar, sorrir) | em andamento (sessão própria) | retratos-lottie-com-expr |
+| Folha "Como medimos" vazia (texto branco herdado do Destaque) | no iPhone, redesenhada em cartões | WeightMethodSheet |
+| Criar o app no App Store Connect (pt-BR, padrão de nome) | feito: Fiscal: Política Transparente, id 6826982117 | docs/app-store |
+| Preencher App Store Connect e TestFlight | feito, menos disponibilidade (sua confirmação), telefone de contato, rótulo de privacidade, capturas e build | docs/app-store/metadata.json |
 
 ## Ícone
 
