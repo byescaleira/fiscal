@@ -79,7 +79,7 @@ services:
       - ALL
     security_opt:
       - no-new-privileges:true
-    cpus: 1.0
+    cpus: ${INGEST_CPUS:-1.0}
     cpu_shares: 128
     mem_limit: ${INGEST_MEM_LIMIT:-1200m}
     memswap_limit: ${INGEST_MEM_LIMIT:-1200m}
