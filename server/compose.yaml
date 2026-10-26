@@ -46,6 +46,7 @@ services:
     entrypoint: ["/usr/local/bin/fiscal-ingest"]
     environment:
       DATA_DIR: /data
+      GOMEMLIMIT: ${GOMEMLIMIT:-3GiB}
       PUBLIC_DIR: /public
       INGEST_YEARS: ${INGEST_YEARS:-}
       INGEST_UFS: ${INGEST_UFS:-}
@@ -67,7 +68,7 @@ services:
       - ALL
     security_opt:
       - no-new-privileges:true
-    mem_limit: 1536m
+    mem_limit: 3584m
     pids_limit: 128
     logging:
       driver: json-file
