@@ -1,10 +1,8 @@
 {
-  "+1 vote on this bill today": "+1 votação deste projeto hoje",
-  "+1 vote on this bill that day": "+1 votação deste projeto no dia",
-  "+%lld votes on this bill today": "+%lld votações deste projeto hoje",
-  "+%lld votes on this bill that day": "+%lld votações deste projeto no dia",
+  "+%lld votes on this bill today": { "one": "+%lld votação deste projeto hoje", "other": "+%lld votações deste projeto hoje" },
+  "+%lld votes on this bill that day": { "one": "+%lld votação deste projeto no dia", "other": "+%lld votações deste projeto no dia" },
   "Other Votes on This Bill That Day": "Outras votações deste projeto no dia",
   "Roll-call vote": "Votação nominal",
   "The Chamber and the Senate often vote on the same bill several times in one day: requests, amendments, the main text and the final wording. The lists show the vote on the text.": "A Câmara e o Senado costumam votar o mesmo projeto várias vezes no mesmo dia: requerimentos, emendas, o texto principal e a redação final. As listas mostram a votação do texto.",
-  "%lld more aren't listed here.": "Mais %lld não aparecem aqui."
+  "%lld more aren't listed here.": { "one": "Mais %lld não aparece aqui.", "other": "Mais %lld não aparecem aqui." }
 }

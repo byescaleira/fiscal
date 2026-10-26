@@ -8,13 +8,9 @@ public enum SameDayVotes {
     public static func mark(_ vote: VoteSummary, today: CalendarDay) -> String? {
         let count = vote.sameDayCount
         guard count > 0 else { return nil }
-        let isToday = vote.date == today
-        switch (count, isToday) {
-        case (1, true): return String(appLocalized: "+1 vote on this bill today")
-        case (1, false): return String(appLocalized: "+1 vote on this bill that day")
-        case (_, true): return String(appLocalized: "+\(count) votes on this bill today")
-        default: return String(appLocalized: "+\(count) votes on this bill that day")
-        }
+        return vote.date == today
+            ? String(appLocalized: "+\(count) votes on this bill today")
+            : String(appLocalized: "+\(count) votes on this bill that day")
     }
 }
 
@@ -34,7 +30,7 @@ public struct SameDayVotesMark: View {
             } icon: {
                 Image(systemName: SameDayVotes.symbol)
             }
-            .font(.caption2.weight(.semibold))
+            .font(.caption)
             .foregroundStyle(.secondary)
             .lineLimit(1)
         }
