@@ -33,6 +33,7 @@
       }
     },
     "%@, %@, %@. Yes: %@. No: %@. Other: %@. %@." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -87,6 +88,7 @@
       }
     },
     "Approved" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -108,6 +110,7 @@
       }
     },
     "Chamber" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -118,6 +121,7 @@
       }
     },
     "Chamber of Deputies" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -178,6 +182,7 @@
       }
     },
     "Federal Deputy" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -188,6 +193,7 @@
       }
     },
     "Federal Senate" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -360,6 +366,7 @@
       }
     },
     "Rejected" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -370,6 +377,7 @@
       }
     },
     "Senate" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -380,6 +388,7 @@
       }
     },
     "Senator" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -390,6 +399,7 @@
       }
     },
     "Source: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -400,6 +410,7 @@
       }
     },
     "Source: %@ · %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -410,6 +421,7 @@
       }
     },
     "Source: %@ · updated %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -430,6 +442,7 @@
       }
     },
     "State Deputy" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -480,6 +493,7 @@
       }
     },
     "Vice Governor" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -490,6 +504,7 @@
       }
     },
     "Vice President" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {

@@ -18,7 +18,10 @@ public struct MainScreen: View {
         @Bindable var navigation = navigation
         TabView(selection: $navigation.selectedSection) {
             ForEach(AppSection.allCases) { section in
-                Tab(section.title, systemImage: section.systemImage, value: section) {
+                Tab(
+                    section.title, systemImage: section.systemImage, value: section,
+                    role: section.role
+                ) {
                     SectionStack(section: section)
                 }
             }
