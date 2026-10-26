@@ -49,6 +49,7 @@ type Item struct {
 	Route    string  `json:"route"`
 	Person   *Person `json:"person"`
 	Date     string  `json:"date"`
+	publicdata.SignalCoverage
 }
 
 type highlightFile struct {
@@ -96,15 +97,18 @@ func clip(s string, limit int) string {
 }
 
 type attributes struct {
-	HighlightID string `json:"highlightId"`
-	Kind        string `json:"kind"`
-	Title       string `json:"title"`
-	Subtitle    string `json:"subtitle"`
-	Date        string `json:"date"`
-	Route       string `json:"route"`
-	PersonName  string `json:"personName,omitempty"`
-	PersonSlug  string `json:"personSlug,omitempty"`
-	Party       string `json:"party,omitempty"`
+	HighlightID string   `json:"highlightId"`
+	Kind        string   `json:"kind"`
+	Title       string   `json:"title"`
+	Subtitle    string   `json:"subtitle"`
+	Date        string   `json:"date"`
+	Route       string   `json:"route"`
+	PersonName  string   `json:"personName,omitempty"`
+	PersonSlug  string   `json:"personSlug,omitempty"`
+	Party       string   `json:"party,omitempty"`
+	Confidence  string   `json:"confidence,omitempty"`
+	Measured    []string `json:"measured,omitempty"`
+	Missing     []string `json:"missing,omitempty"`
 }
 
 type contentState struct {
@@ -134,7 +138,7 @@ func BuildStart(it Item, now time.Time) ([]byte, error) {
 		date = date[:10]
 	}
 	ends := now.Add(Lifetime)
-	attrs := attributes{HighlightID: it.ID, Kind: it.Kind, Title: clip(it.Title, titleLimit), Subtitle: clip(it.Subtitle, subtitleLimit), Date: date, Route: it.Route}
+	attrs := attributes{HighlightID: it.ID, Kind: it.Kind, Title: clip(it.Title, titleLimit), Subtitle: clip(it.Subtitle, subtitleLimit), Date: date, Route: it.Route, Confidence: it.Confidence, Measured: it.Measured, Missing: it.Missing}
 	if it.Person != nil {
 		attrs.PersonName, attrs.PersonSlug, attrs.Party = it.Person.Name, it.Person.Slug, it.Person.Party
 	}

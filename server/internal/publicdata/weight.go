@@ -22,9 +22,19 @@ const (
 	ScopeState     = "state"
 	ScopeMunicipal = "municipal"
 
-	WeightMethodVersion = 1
-	ActionsPerPerson    = 40
-	actionYears         = 2
+	WeightMethodVersion = 2
+
+	ConfidenceFull       = "full"
+	ConfidencePartial    = "partial"
+	ConfidenceImpactOnly = "impactOnly"
+
+	SignalNews       = "news"
+	SignalNewsPerson = "newsPerson"
+	SignalWiki       = "wiki"
+	SignalWikiTheme  = "wikiTheme"
+	SignalBluesky    = "bluesky"
+	ActionsPerPerson = 40
+	actionYears      = 2
 )
 
 type Signals struct {
@@ -58,9 +68,16 @@ type Action struct {
 	Stage        string        `json:"stage"`
 	Themes       []string      `json:"themes"`
 	Weight       int           `json:"weight"`
-	Repercussion int           `json:"repercussion"`
+	Repercussion *int          `json:"repercussion"`
 	Impact       int           `json:"impact"`
 	Signals      ActionSignals `json:"signals"`
+	SignalCoverage
+}
+
+type SignalCoverage struct {
+	Measured   []string `json:"measured"`
+	Missing    []string `json:"missing"`
+	Confidence string   `json:"confidence"`
 }
 
 type ActionFile struct {
@@ -499,26 +516,78 @@ func signalsFor(s *Signals, p *Person, d draft) ActionSignals {
 	return out
 }
 
-func repercussionOf(sig ActionSignals) float64 {
-	return 100 * (signalNewsW*scaled(sig.News, capNews) + signalPersonW*scaled(sig.NewsPerson, capPersonNews) + signalWikiW*scaled(sig.Wiki, capWiki) + signalThemeW*scaled(sig.WikiTheme, capThemeWiki))
+type signalTerm struct {
+	key      string
+	value    *int64
+	cap      float64
+	share    float64
+	personal bool
+}
+
+func terms(sig ActionSignals) []signalTerm {
+	return []signalTerm{
+		{SignalNews, sig.News, capNews, signalNewsW, false},
+		{SignalNewsPerson, sig.NewsPerson, capPersonNews, signalPersonW, true},
+		{SignalWiki, sig.Wiki, capWiki, signalWikiW, true},
+		{SignalWikiTheme, sig.WikiTheme, capThemeWiki, signalThemeW, false},
+	}
+}
+
+func repercussionOf(sig ActionSignals, personal bool) (*float64, SignalCoverage) {
+	cov := SignalCoverage{Measured: []string{}, Missing: []string{}}
+	sum, shares := 0.0, 0.0
+	expected := 0
+	for _, t := range terms(sig) {
+		if t.personal && !personal {
+			continue
+		}
+		expected++
+		if t.value == nil {
+			cov.Missing = append(cov.Missing, t.key)
+			continue
+		}
+		cov.Measured = append(cov.Measured, t.key)
+		sum += t.share * scaled(t.value, t.cap)
+		shares += t.share
+	}
+	if sig.Bluesky == nil {
+		cov.Missing = append(cov.Missing, SignalBluesky)
+	}
+	switch {
+	case len(cov.Measured) == 0:
+		cov.Confidence = ConfidenceImpactOnly
+		return nil, cov
+	case len(cov.Measured) == expected:
+		cov.Confidence = ConfidenceFull
+	default:
+		cov.Confidence = ConfidencePartial
+	}
+	rep := 100 * sum / shares
+	return &rep, cov
 }
 
 func round(v float64) int {
 	return int(math.Round(math.Max(0, math.Min(100, v))))
 }
 
-func weightOf(rep, imp float64) int {
-	return round(weightRepW*rep + weightImpW*imp)
+func weightOf(rep *float64, imp float64) int {
+	if rep == nil {
+		return round(imp)
+	}
+	return round(weightRepW**rep + weightImpW*imp)
 }
 
-func (d draft) action(sig ActionSignals) Action {
-	rep := repercussionOf(sig)
-	a := Action{
+func (d draft) action(sig ActionSignals, personal bool) Action {
+	rep, cov := repercussionOf(sig, personal)
+	var shown *int
+	if rep != nil {
+		shown = ptr(round(*rep))
+	}
+	return Action{
 		ID: d.id, Kind: d.kind, Title: d.title, Proposition: strPtr(d.label), Date: d.date, URL: strPtr(d.url),
 		Ref: strPtr(d.ref), Ballot: strPtr(d.ballot), Scope: d.scope, Stage: d.stage, Themes: nonNil(d.themes),
-		Weight: weightOf(rep, d.impact), Repercussion: round(rep), Impact: round(d.impact), Signals: sig,
+		Weight: weightOf(rep, d.impact), Repercussion: shown, Impact: round(d.impact), Signals: sig, SignalCoverage: cov,
 	}
-	return a
 }
 
 func sortActions(items []Action) {
