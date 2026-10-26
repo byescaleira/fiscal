@@ -125,7 +125,9 @@ actor PublicDataRoute {
         await route(base, session: session).origin
     }
 
-    private func route(_ base: URL, session: URLSession) async -> (live: Bool, origin: PublicDataOrigin?) {
+    private func route(_ base: URL, session: URLSession) async -> (
+        live: Bool, origin: PublicDataOrigin?
+    ) {
         if let entry = known[base], Date().timeIntervalSince(entry.at) < (entry.live ? 600 : 120) {
             return (entry.live, entry.origin)
         }
