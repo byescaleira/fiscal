@@ -8,7 +8,7 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 
 | Pedido | Estado | Onde |
 | --- | --- | --- |
-| Aba Fiscalizar sem destaque e ícones padrão nas abas | no iPhone | AppSection, MainScreen |
+| Ícones das abas (casa, pessoas, arquivo, recibo, lupa) e Fiscalizar em destaque — ajuste do usuário em 26/10 | no código | AppSection, MainScreen |
 | Tags de partido em faixas verticais iguais, sem gradiente | no iPhone | PartyMark, PartySeal |
 | Nenhum segmented control no app | no iPhone | Compartilhar, Gastos, Votos do detalhe |
 | Seguir e Compartilhar do perfil numa linha, mesma altura | no iPhone | ProfileHero |
