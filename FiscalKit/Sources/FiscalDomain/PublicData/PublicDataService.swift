@@ -16,6 +16,7 @@ public protocol PublicDataService: Sendable {
     func vote(id: String) async throws -> VoteDetail
     func agenda() async throws -> Agenda
     func money() async throws -> MoneyOverview
+    func mandateCost() async throws -> MandateCost?
     func today() async throws -> TodayDigest
     func actions(slug: String) async throws -> ActionList?
     func highlights() async throws -> HighlightList?
@@ -26,6 +27,8 @@ public protocol PublicDataService: Sendable {
 }
 
 extension PublicDataService {
+    public func mandateCost() async throws -> MandateCost? { nil }
+
     public func cityRepresentatives(code: String) async throws -> PlaceRepresentatives? { nil }
 
     public func actions(slug: String) async throws -> ActionList? { nil }
@@ -69,6 +72,7 @@ public enum PublicDataPath {
     public static let recentVotes = "votes/recent.json"
     public static let agenda = "agenda/today.json"
     public static let money = "money/overview.json"
+    public static let mandateCost = "money/mandate-cost.json"
     public static let today = "today.json"
     public static let highlights = "highlights.json"
     public static let weightMethod = "method/weight.json"

@@ -66,6 +66,12 @@
             return ShowcaseMoney.overview(year: year, empty: isEmpty, sources: sources)
         }
 
+        public func mandateCost() async throws -> MandateCost? {
+            try check()
+            if let real: MandateCost = real(PublicDataPath.mandateCost) { return real }
+            return isEmpty ? nil : ShowcaseMandate.cost(now: now)
+        }
+
         public func indicators() async throws -> IndicatorCatalog? {
             try check()
             return isEmpty ? nil : series.catalog()

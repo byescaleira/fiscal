@@ -102,6 +102,10 @@ public struct PublicDataClient: PublicDataService {
 
     public func money() async throws -> MoneyOverview { try await get(PublicDataPath.money) }
 
+    public func mandateCost() async throws -> MandateCost? {
+        try await optional(PublicDataPath.mandateCost)
+    }
+
     public func today() async throws -> TodayDigest { try await get(PublicDataPath.today) }
 
     public func actions(slug: String) async throws -> ActionList? {
