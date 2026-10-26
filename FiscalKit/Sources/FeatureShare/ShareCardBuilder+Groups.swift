@@ -3,6 +3,7 @@ import Foundation
 
 extension ShareCardBuilder {
     public func race(_ race: Race) -> ShareCardContent {
+        if let winner = race.winner { return victory(race, winner: winner) }
         let candidates = race.candidates.sorted { $0.votes > $1.votes }.map { candidate in
             ShareRace.Candidate(
                 number: candidate.number, name: candidate.name, party: candidate.party,

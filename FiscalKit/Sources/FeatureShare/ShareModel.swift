@@ -41,8 +41,12 @@ public final class ShareModel {
     public var isEmpty: Bool { content == nil }
 
     public var card: ShareCard? {
-        content.map { ShareCard(content: $0, artwork: artwork, format: format) }
+        content.map {
+            ShareCard(content: $0, artwork: $0.isVictory ? nil : artwork, format: format)
+        }
     }
+
+    public var usesArt: Bool { content?.isVictory != true }
 
     public var shareMessage: String {
         guard let content else { return ShareCardBuilder.host }
