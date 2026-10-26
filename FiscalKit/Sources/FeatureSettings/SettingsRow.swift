@@ -31,56 +31,24 @@ public struct SettingsRow<Destination: View>: View {
 }
 
 public struct SettingsLabel: View {
-    private let title: Text
-    private let detail: Text?
-    private let symbol: String
-    private let color: Color
-    private let value: String?
+    private let row: IconRow
 
     public init(
         _ title: LocalizedStringKey, detail: LocalizedStringKey? = nil, symbol: String,
         color: Color, value: String? = nil
     ) {
-        self.title = Text(title)
-        self.detail = detail.map { Text($0) }
-        self.symbol = symbol
-        self.color = color
-        self.value = value
+        row = IconRow(title, detail: detail, symbol: symbol, color: color, value: value)
     }
 
     public init(
         verbatim title: String, detail: String? = nil, symbol: String, color: Color,
         value: String? = nil
     ) {
-        self.title = Text(verbatim: title)
-        self.detail = detail.map { Text(verbatim: $0) }
-        self.symbol = symbol
-        self.color = color
-        self.value = value
+        row = IconRow(verbatim: title, detail: detail, symbol: symbol, color: color, value: value)
     }
 
     public var body: some View {
-        HStack(spacing: .spaceM) {
-            SymbolBadge(symbol, color: color, size: .badgeM, style: .filled)
-            VStack(alignment: .leading, spacing: .spaceHairline) {
-                title.font(.rowTitle).foregroundStyle(.primary)
-                if let detail {
-                    detail.font(.rowDetail).foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-            }
-            Spacer(minLength: .spaceS)
-            if let value {
-                Text(verbatim: value)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-                    .monospacedDigit()
-            }
-        }
-        .padding(.vertical, .space2XS)
-        .contentShape(.rect)
-        .accessibilityElement(children: .combine)
+        row.contentShape(.rect)
     }
 }
 

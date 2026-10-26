@@ -5173,7 +5173,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Meus"
+            "value" : "Região"
           }
         }
       }
@@ -5315,7 +5315,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mais em Meus: %lld"
+            "value" : "Mais em Região: %lld"
           }
         }
       }
@@ -6454,7 +6454,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abra o Fiscal e escolha seu estado em Meus."
+            "value" : "Abra o Fiscal e escolha seu estado em Região."
           }
         }
       }
@@ -6476,7 +6476,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abrir Meus"
+            "value" : "Abrir Região"
           }
         }
       }
@@ -7098,7 +7098,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Escolha seu estado no Fiscal, na aba Meus."
+            "value" : "Escolha seu estado no Fiscal, na aba Região."
           }
         }
       }
@@ -7109,7 +7109,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Escolha seu estado em Meus para ver aqui seus deputados, senadores e governador, com o voto de cada um."
+            "value" : "Escolha seu estado em Região para ver aqui seus deputados, senadores e governador, com o voto de cada um."
           }
         }
       }
@@ -9423,7 +9423,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apoiar não é seguir: em Meus você segue qualquer pessoa. Quem você apoia também passa a ser seguido, e os temas e as ações dessas pessoas vêm primeiro."
+            "value" : "Apoiar não é seguir: em Região você segue qualquer pessoa. Quem você apoia também passa a ser seguido, e os temas e as ações dessas pessoas vêm primeiro."
           }
         }
       }
@@ -10284,7 +10284,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O estado que você escolheu em Meus. Nomes em ordem alfabética."
+            "value" : "O estado que você escolheu em Região. Nomes em ordem alfabética."
           }
         }
       }
