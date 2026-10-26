@@ -229,6 +229,7 @@ private struct LensSupportResults: View {
 
 private struct LensSupportRow: View {
     @Environment(LensSetupModel.self) private var setup
+    @State private var cheer: PortraitExpression?
     let card: PersonCard
 
     var body: some View {
@@ -237,7 +238,9 @@ private struct LensSupportRow: View {
             Task { await setup.toggle(card) }
         } label: {
             HStack(spacing: .spaceM) {
-                PersonPortrait(slug: card.slug, name: card.name, party: card.party, size: .badgeXL)
+                PersonPortrait(
+                    slug: card.slug, name: card.name, party: card.party, size: .badgeXL,
+                    expression: cheer)
                 VStack(alignment: .leading, spacing: .space2XS) {
                     Text(verbatim: card.name)
                         .font(.headline)
@@ -261,6 +264,9 @@ private struct LensSupportRow: View {
         .opacity(setup.canToggle(card) ? 1 : .opacitySoft)
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(isSupported ? .isSelected : [])
+        .onChange(of: isSupported) { _, supported in
+            cheer = supported ? .thumbsUp : nil
+        }
     }
 }
 

@@ -113,19 +113,21 @@ private struct ShareVictoryPortrait: View {
     var body: some View {
         let size = format.victoryPortrait
         let palette = PartyPalette.of(party: face.party)
-        PersonPortrait(slug: face.slug, name: face.name, party: face.party, size: size)
-            .overlay { Circle().strokeBorder(.white, lineWidth: format.victoryRing) }
-            .overlay(alignment: .topTrailing) {
-                Image(systemName: "checkmark.seal.fill")
-                    .font(.posterSeal(format.victorySeal))
-                    .symbolRenderingMode(.palette)
-                    .foregroundStyle(.white, Color.scoreboardAccent)
-            }
-            .background {
-                CelebrationConfetti(colors: [palette.secondary, .white])
-                    .frame(width: size * .posterVictoryHalo, height: size * .posterVictoryHalo)
-                    .opacity(.opacityStrong)
-            }
+        PersonPortrait(
+            slug: face.slug, name: face.name, party: face.party, size: size, expression: .celebrate
+        )
+        .overlay { Circle().strokeBorder(.white, lineWidth: format.victoryRing) }
+        .overlay(alignment: .topTrailing) {
+            Image(systemName: "checkmark.seal.fill")
+                .font(.posterSeal(format.victorySeal))
+                .symbolRenderingMode(.palette)
+                .foregroundStyle(.white, Color.scoreboardAccent)
+        }
+        .background {
+            CelebrationConfetti(colors: [palette.secondary, .white])
+                .frame(width: size * .posterVictoryHalo, height: size * .posterVictoryHalo)
+                .opacity(.opacityStrong)
+        }
     }
 }
 

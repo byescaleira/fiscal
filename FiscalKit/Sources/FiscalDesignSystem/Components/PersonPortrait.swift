@@ -8,12 +8,17 @@ public struct PersonPortrait: View {
     private let name: String
     private let party: String
     private let size: CGFloat
+    private let expression: PortraitExpression?
 
-    public init(slug: String, name: String, party: String, size: CGFloat = .badgeL) {
+    public init(
+        slug: String, name: String, party: String, size: CGFloat = .badgeL,
+        expression: PortraitExpression? = nil
+    ) {
         self.slug = slug
         self.name = name
         self.party = party
         self.size = size
+        self.expression = expression
     }
 
     public var body: some View {
@@ -34,7 +39,9 @@ public struct PersonPortrait: View {
     }
 
     var request: PortraitRequest {
-        PortraitRequest(slug: slug, party: party, isStill: portraitsAreStill || reduceMotion)
+        PortraitRequest(
+            slug: slug, party: party, isStill: portraitsAreStill || reduceMotion,
+            expression: reduceMotion && !portraitsAreStill ? nil : expression)
     }
 
     var initials: String {

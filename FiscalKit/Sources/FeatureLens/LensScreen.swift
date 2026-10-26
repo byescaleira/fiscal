@@ -99,7 +99,7 @@ private struct LensHeroText: View {
                 LensBadge()
             }
             if !lens.supportedCards.isEmpty {
-                LensFaces(cards: lens.supportedCards, size: .badgeL)
+                LensFaces(cards: lens.supportedCards, size: .badgeL, expression: .wave)
             }
             Text(verbatim: lens.heroTitle)
                 .font(.titleMedium)

@@ -5,7 +5,9 @@ import QuartzCore
 
 @MainActor
 enum PortraitStill {
-    static func render(_ animation: LottieAnimation, side: CGFloat) -> CGImage? {
+    static func render(
+        _ animation: LottieAnimation, side: CGFloat, frame: AnimationFrameTime = 0
+    ) -> CGImage? {
         let size = animation.size
         guard size.width > 0, size.height > 0, side > 0,
             let space = CGColorSpace(name: CGColorSpace.sRGB)
@@ -13,7 +15,7 @@ enum PortraitStill {
         let layer = LottieAnimationLayer(
             animation: animation, configuration: LottieConfiguration(renderingEngine: .mainThread))
         layer.frame = CGRect(origin: .zero, size: size)
-        layer.currentProgress = 0
+        layer.currentFrame = frame
         for sublayer in layer.sublayers ?? [] {
             sublayer.position = CGPoint(x: layer.bounds.midX, y: layer.bounds.midY)
         }

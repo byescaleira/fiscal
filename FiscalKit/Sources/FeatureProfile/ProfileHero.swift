@@ -32,7 +32,8 @@ private struct ProfileHero: View {
                 }
             }
             PersonPortrait(
-                slug: person.slug, name: person.name, party: person.party, size: .medallion
+                slug: person.slug, name: person.name, party: person.party, size: .medallion,
+                expression: profile.hasJustFollowed ? .wave : nil
             )
             .overlay(Circle().strokeBorder(.white, lineWidth: .space2XS))
             VStack(spacing: .spaceXS) {
