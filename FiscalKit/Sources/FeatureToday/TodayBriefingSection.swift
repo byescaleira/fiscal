@@ -82,7 +82,7 @@ private struct LeadContent: View {
                             Spacer(minLength: .spaceS)
                             if let approved = vote.approved { ResultChip(approved: approved) }
                         }
-                        TallyBar(tally: vote.tally)
+                        VoteTallyChart(tally: vote.tally)
                         Text(verbatim: TodayText.voteLine(vote))
                             .font(.caption)
                             .foregroundStyle(.secondary)

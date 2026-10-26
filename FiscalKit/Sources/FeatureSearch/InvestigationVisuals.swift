@@ -72,8 +72,6 @@ struct PeerStripVisual: View {
 }
 
 struct PairVisual: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var isShown = false
     let faces: [PersonCard]
     let rows: [InvestigationLink.PairRow]
 
@@ -102,16 +100,12 @@ struct PairVisual: View {
                     .font(.amountRow)
                     .monospacedDigit()
                     HStack(spacing: .caseMirror) {
-                        ProgressBar(value: isShown ? row.shares.first ?? 0 : 0, color: color(0))
-                            .environment(\.layoutDirection, .rightToLeft)
-                        ProgressBar(value: isShown ? row.shares.last ?? 0 : 0, color: color(1))
+                        ShareBarChart(value: row.shares.first ?? 0, color: color(0), mirrored: true)
+                        ShareBarChart(value: row.shares.last ?? 0, color: color(1))
                     }
                 }
                 .accessibilityElement(children: .combine)
             }
-        }
-        .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { isShown = true }
         }
     }
 

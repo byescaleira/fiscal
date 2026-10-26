@@ -183,8 +183,13 @@ private struct ExpensesCategoriesSection: View {
         @Bindable var expenses = expenses
         if !expenses.categories.isEmpty {
             Section {
-                RankedBarsChart(bars: expenses.categories, selection: $expenses.categoryFilter)
-                    .padding(.vertical, .spaceXS)
+                RankedBarChart(
+                    String(appLocalized: "By kind of expense"),
+                    bars: expenses.categories.map(\.ranked),
+                    selection: $expenses.categoryFilter
+                )
+                .accessibilityHint(Text("Shows only the receipts of this kind"))
+                .padding(.vertical, .spaceXS)
             } header: {
                 Text("By kind of expense").sectionTitle()
             } footer: {

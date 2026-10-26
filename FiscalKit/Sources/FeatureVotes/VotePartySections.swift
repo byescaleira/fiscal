@@ -57,9 +57,7 @@ struct VotePartySection: View {
 
 private struct PartyTallyRow: View {
     @Environment(VoteDetailModel.self) private var vote
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.appTint) private var tint
-    @State private var fill = 0.0
     let row: VoteDetailModel.PartyRow
     let index: Int
 
@@ -79,7 +77,8 @@ private struct PartyTallyRow: View {
                             .accessibilityHidden(true)
                     }
                 }
-                TallyBar(segments: segments, height: .barHeight, fill: fill * widthShare)
+                TallyChart(
+                    segments: segments, height: .barHeight, fill: widthShare, order: index)
             }
             .padding(.vertical, .space2XS)
             .contentShape(.rect)
@@ -89,25 +88,17 @@ private struct PartyTallyRow: View {
         .accessibilityLabel(Text(verbatim: vote.partyAccessibility(row)))
         .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
         .accessibilityHint(Text("Shows only this party in the roll call"))
-        .onAppear {
-            guard fill == 0 else { return }
-            if reduceMotion {
-                fill = 1
-            } else {
-                withAnimation(.smooth(duration: 1).delay(Double(index) * 0.04)) { fill = 1 }
-            }
-        }
     }
 
     private var widthShare: Double {
         vote.largestBench > 0 ? Double(row.total) / Double(vote.largestBench) : 0
     }
 
-    private var segments: [TallyBar.Segment] {
+    private var segments: [TallyChart.Segment] {
         BallotChoice.allCases.map { choice in
-            TallyBar.Segment(
-                id: choice.id, value: Double(row.count(choice)), color: choice.color,
-                dashed: choice == .absent)
+            TallyChart.Segment(
+                id: choice.id, title: choice.title, value: Double(row.count(choice)),
+                color: choice.color, dashed: choice == .absent)
         }
     }
 }

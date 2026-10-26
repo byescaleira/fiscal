@@ -30,7 +30,7 @@ struct VoteScoreRow: View {
             ScoreLine(
                 vote: vote, yes: votes.yesText(vote), no: votes.noText(vote),
                 others: votes.othersText(vote))
-            TallyBar(segments: VoteTally.segments(vote.tally), height: .spaceXS)
+            TallyChart(segments: VoteTally.segments(vote.tally), height: .spaceXS)
         }
         .padding(.vertical, .spaceXS)
         .accessibilityElement(children: .ignore)

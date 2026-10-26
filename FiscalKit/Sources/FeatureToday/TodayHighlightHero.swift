@@ -168,14 +168,20 @@ private struct TodayHighlightScore: View {
                 side("NO", tally.no)
             }
             .frame(maxWidth: large ? .infinity : nil)
-            FiscalDesignSystem.TallyBar(
+            TallyChart(
                 segments: [
-                    .init(id: "yes", value: Double(tally.yes), color: .white),
-                    .init(id: "no", value: Double(tally.no), color: .white.opacity(.opacitySoft)),
                     .init(
-                        id: "others", value: Double(tally.others),
-                        color: .white.opacity(.opacityTint)),
-                ], height: .spaceXS)
+                        id: "yes", title: String(appLocalized: "Yes"), value: Double(tally.yes),
+                        color: .white),
+                    .init(
+                        id: "no", title: String(appLocalized: "No"), value: Double(tally.no),
+                        color: .white.opacity(.opacitySoft)),
+                    .init(
+                        id: "others", title: String(appLocalized: "Others"),
+                        value: Double(tally.others), color: .white.opacity(.opacityTint)),
+                ], height: .spaceXS
+            )
+            .accessibilityHidden(true)
             if tally.others > 0 {
                 Text("\(tally.others) other votes")
                     .font(.caption.weight(.semibold))

@@ -175,11 +175,12 @@ private struct MineVoteRow: View {
                     Text(verbatim: vote.heading)
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.primary)
-                    TallyBar(
+                    TallyChart(
                         segments: BallotChoice.allCases.map { choice in
-                            TallyBar.Segment(
-                                id: choice.rawValue, value: Double(vote.count(choice)),
-                                color: choice.color, dashed: choice == .absent)
+                            TallyChart.Segment(
+                                id: choice.rawValue, title: choice.title,
+                                value: Double(vote.count(choice)), color: choice.color,
+                                dashed: choice == .absent)
                         }, height: .spaceS)
                     Text(verbatim: vote.countsText)
                         .font(.footnote.weight(.medium))

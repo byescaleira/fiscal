@@ -11,8 +11,12 @@ struct ProfileExpensesSection: View {
         if profile.hasExpenses {
             Section {
                 ProfileExpensesSummary()
-                ForEach(profile.categoryLines) { line in
-                    ProfileCategoryRow(line: line)
+                if !profile.categoryLines.isEmpty {
+                    RankedBarChart(
+                        String(appLocalized: "By kind of expense"),
+                        bars: profile.categoryLines.enumerated().map { $1.ranked(slot: $0) }
+                    )
+                    .padding(.vertical, .spaceXS)
                 }
                 DisclosureLink {
                     ProfileExpensesScreen().environment(profile)
@@ -70,26 +74,14 @@ private struct ProfileMonthChart: View {
     }
 }
 
-private struct ProfileCategoryRow: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var filled = false
-    let line: ProfileModel.CategoryLine
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: .spaceXS) {
-            AdaptiveRow(spacing: .spaceS) {
-                Text(verbatim: line.category).font(.rowTitle)
-                Spacer(minLength: .spaceS)
-                Text(verbatim: line.value)
-                    .font(.body.weight(.semibold))
-                    .monospacedDigit()
-            }
-            ProgressBar(value: filled ? line.fraction : 0, color: .secondary)
-                .animation(reduceMotion ? nil : .smooth(duration: 1), value: filled)
-                .onAppear { filled = true }
-        }
-        .padding(.vertical, .space2XS)
-        .accessibilityElement(children: .combine)
+extension ProfileModel.CategoryLine {
+    fileprivate func ranked(slot: Int) -> RankedBar {
+        RankedBar(
+            id: id, title: category, value: fraction, valueText: value,
+            details: [
+                PublicFormat.percent(fraction),
+                String(appLocalized: "Receipts: \(PublicFormat.number(count))"),
+            ], color: ChartPalette.color(at: slot))
     }
 }
 

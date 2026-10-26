@@ -127,7 +127,7 @@ extension ProfileModel {
         guard let expenses, expenses.totalCents > 0 else { return [] }
         return expenses.byCategory.sorted { $0.cents > $1.cents }.map {
             CategoryLine(
-                category: $0.category, value: PublicFormat.money(cents: $0.cents),
+                category: $0.category, value: PublicFormat.compactMoney(cents: $0.cents),
                 fraction: Double($0.cents) / Double(expenses.totalCents), count: $0.count)
         }
     }

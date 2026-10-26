@@ -136,39 +136,24 @@ struct ResultChip: View {
     }
 }
 
-struct TallyBar: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var isShown = false
+struct VoteTallyChart: View {
     let tally: VoteSummary.Tally
 
     var body: some View {
-        let parts = [
-            (tally.yes ?? 0, Color.positive), (tally.no ?? 0, Color.negative),
-            (tally.others ?? 0, Color.secondary),
-        ]
-        let total = max(parts.map(\.0).reduce(0, +), 1)
-        GeometryReader { proxy in
-            HStack(spacing: .spaceHairline) {
-                ForEach(parts.indices, id: \.self) { index in
-                    if parts[index].0 > 0 {
-                        Capsule()
-                            .fill(parts[index].1)
-                            .frame(
-                                width: max(
-                                    .spaceXS,
-                                    proxy.size.width * Double(parts[index].0) / Double(total)
-                                        * (isShown ? 1 : 0)))
-                    }
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .frame(height: .spaceS)
-        .background(.subtleFill, in: .capsule)
+        TallyChart(
+            segments: [
+                .init(
+                    id: "yes", title: String(appLocalized: "Yes"), value: Double(tally.yes ?? 0),
+                    color: .positive),
+                .init(
+                    id: "no", title: String(appLocalized: "No"), value: Double(tally.no ?? 0),
+                    color: .negative),
+                .init(
+                    id: "others", title: String(appLocalized: "Others"),
+                    value: Double(tally.others ?? 0), color: .secondary),
+            ], height: .spaceS
+        )
         .accessibilityHidden(true)
-        .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { isShown = true }
-        }
     }
 }
 
