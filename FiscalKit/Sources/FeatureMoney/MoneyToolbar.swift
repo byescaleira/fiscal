@@ -39,9 +39,6 @@ private struct MoneyScopeMenu: View {
         } label: {
             HStack(spacing: .spaceXS) {
                 Image(systemName: "map")
-                Text(verbatim: money.scopeCode)
-                    .monospaced()
-                    .contentTransition(.numericText())
             }
             .font(.subheadline.weight(.semibold))
             .foregroundStyle(Color.primary)

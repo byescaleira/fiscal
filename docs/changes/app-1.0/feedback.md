@@ -154,6 +154,7 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Sincronização inteligente por fonte e tema (5 min a mensal), incremental, sem carga completa | em andamento | frente smart-sync |
 | Só o app escreve no servidor | no ar: App Attest obrigatório em registro e remoção (401 sem prova); dados de leitura públicos no CDN (decisão do usuário) | server/internal/httpapi |
 | Swift Charts no lugar dos gráficos desenhados à mão (começando por Por tipo de gasto) | em andamento | frente swift-charts |
+| Quem você apoia: tirar Paleta, Arte e Ícone (já estão nos Ajustes) e a tag "Por quem você apoia" do primeiro card | no iPhone, conferido no simulador | FeatureLens |
 | Servidor não pode cair no ingest; seguro; só o app consulta; 8 GB para milhões | no ar (26/10): dados públicos na Cloudflare Pages em dados.fiscal.byescaleira.com, ingest em fases na VPS (4 vCPU/16 GB), publicação automática, App Attest no registro; app lendo do Pages | server/, ADR 0007, docs/server-runbook.md |
 
 ## Ícone
