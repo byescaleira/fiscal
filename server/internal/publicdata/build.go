@@ -28,13 +28,15 @@ func CanBecomeLaw(kind string) bool {
 }
 
 type builder struct {
-	ds      *Dataset
-	slugs   map[*Person]string
-	byKey   map[string]*Person
-	votesBy map[string][]personBallot
-	files   []File
-	cities  []string
-	classes map[*Person]*Classification
+	ds          *Dataset
+	slugs       map[*Person]string
+	byKey       map[string]*Person
+	votesBy     map[string][]personBallot
+	files       []File
+	cities      []string
+	classes     map[*Person]*Classification
+	themes      map[*Person][]string
+	checkCounts map[*Person]int
 }
 
 type personBallot struct {
@@ -43,7 +45,7 @@ type personBallot struct {
 }
 
 func Build(ds *Dataset, registry *Slugs) Output {
-	b := &builder{ds: ds, byKey: map[string]*Person{}, votesBy: map[string][]personBallot{}}
+	b := &builder{ds: ds, byKey: map[string]*Person{}, votesBy: map[string][]personBallot{}, themes: map[*Person][]string{}, checkCounts: map[*Person]int{}}
 	b.slugs = registry.Assign(ds.People)
 	b.assignCities(registry)
 	for _, p := range ds.People {
@@ -83,6 +85,7 @@ func Build(ds *Dataset, registry *Slugs) Output {
 	b.placeFiles(people)
 	b.cityFiles()
 	reviews := b.checks(people)
+	b.facts(people)
 	b.weights(people)
 	b.votes()
 	b.agenda()
@@ -108,6 +111,7 @@ func (b *builder) checks(people []*Person) []CheckReview {
 		if len(items) == 0 {
 			continue
 		}
+		b.checkCounts[p] = len(items)
 		ids := make([]string, 0, len(srcIDs))
 		for id := range srcIDs {
 			ids = append(ids, id)
@@ -345,6 +349,7 @@ func (b *builder) person(p *Person) {
 			themes = append(themes, *t)
 		}
 	}
+	b.themes[p] = topThemes(themes)
 	committees := append([]Committee{}, p.Committees...)
 	sort.SliceStable(committees, func(i, j int) bool {
 		ai, aj := deref(committees[i].End) == "", deref(committees[j].End) == ""

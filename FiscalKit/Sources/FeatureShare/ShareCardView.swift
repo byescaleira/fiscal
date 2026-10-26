@@ -17,6 +17,8 @@ public struct ShareCardView: View {
         Group {
             if let victory = card.victory {
                 ShareVictoryPoster(card: card, victory: victory, code: code)
+            } else if let investigation = card.investigation {
+                ShareInvestigationPoster(card: card, investigation: investigation, code: code)
             } else {
                 standard
             }

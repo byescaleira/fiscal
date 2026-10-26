@@ -10,6 +10,7 @@ public struct SearchScreen: View {
 
     public var body: some View {
         @Bindable var search = search
+        @Bindable var board = search.board
         AdaptiveList {
             if search.isSearching {
                 SearchResultsList()
@@ -26,6 +27,12 @@ public struct SearchScreen: View {
             Label(token.title, systemImage: token.symbol)
         }
         .onSubmit(of: .search) { search.record() }
+        .navigationDestination(isPresented: $board.isBoardOpen) {
+            InvestigationScreen()
+                .environment(search)
+                .environment(board)
+        }
+        .environment(board)
         .task { await search.load() }
     }
 }

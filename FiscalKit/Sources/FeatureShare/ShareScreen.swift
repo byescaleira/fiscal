@@ -223,11 +223,21 @@ private struct ShareAction: View {
             } else {
                 ProgressView("Preparing the image")
             }
-            Text(
-                model.usesArt
-                    ? "The card carries the official source, the date and the art credit. Your Lens never goes into the image."
-                    : "The card carries the official TSE numbers and the time of the file. Your Lens never goes into the image."
-            )
+            Group {
+                if model.isInvestigation {
+                    Text(
+                        "The card carries only the numbers found, their sources and the date. Your question stays on this device unless you share it."
+                    )
+                } else if model.usesArt {
+                    Text(
+                        "The card carries the official source, the date and the art credit. Your Lens never goes into the image."
+                    )
+                } else {
+                    Text(
+                        "The card carries the official TSE numbers and the time of the file. Your Lens never goes into the image."
+                    )
+                }
+            }
             .font(.footnote)
             .foregroundStyle(.secondary)
             .multilineTextAlignment(.center)
