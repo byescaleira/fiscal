@@ -28,7 +28,7 @@ def main():
     v1 = sys.argv[1]
     meta = read(os.path.join(v1, "meta.json"))
     people = [
-        [p["slug"], p["name"], p["office"], p["uf"], p["party"], p["photo"], p["status"]]
+        [p["slug"], p["name"], p["office"], p["uf"], p["party"], p["photo"], p["status"], p.get("gender")]
         for p in read(os.path.join(v1, "index", "people.json"))
     ]
     write("showcase-people.json", {"source": SOURCE, "generatedAt": meta["generatedAt"], "people": people})
@@ -46,7 +46,7 @@ def main():
             continue
         city = read(path)
         officials = [
-            [OFFICES[p["office"]], p["name"], p["party"]]
+            [OFFICES[p["office"]], p["name"], p["party"], p.get("gender")]
             for group in city["groups"]
             for p in group["people"]
         ]

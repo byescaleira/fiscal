@@ -42,10 +42,11 @@
         }
 
         public static func cards(
-            _ officials: [(office: Office, name: String, party: String)], in place: Place
+            _ officials: [(office: Office, name: String, party: String)], in place: Place,
+            genders: [Gender?] = []
         ) -> [PersonCard] {
             var used = Set<String>()
-            return officials.map { official in
+            return officials.enumerated().map { index, official in
                 let base = "\(slug(official.name))-\(place.code)"
                 var slug = base
                 var suffix = 2
@@ -55,7 +56,8 @@
                 }
                 return PersonCard(
                     slug: slug, name: official.name, office: official.office, uf: place.uf,
-                    party: official.party, photo: nil, status: .inOffice)
+                    party: official.party, photo: nil, status: .inOffice,
+                    gender: genders.indices.contains(index) ? genders[index] : nil)
             }
         }
 
