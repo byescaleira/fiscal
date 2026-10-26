@@ -1,4 +1,5 @@
 import FiscalDomain
+import Foundation
 import Testing
 
 @testable import FeatureToday
@@ -23,9 +24,15 @@ struct TodayRaceBoardTests {
         #expect(featured.office == .governor)
     }
 
-    @Test func theCardLeavesWhenEveryRaceIsOver() {
-        #expect(TodayRaceBoard.featured(in: RaceScenario.finished.races()) == nil)
-        #expect(TodayRaceBoard.featured(in: []) == nil)
+    @Test func theCardLeavesADayAfterEveryRaceIsOver() throws {
+        let races = RaceScenario.finished.races()
+        let result = Date(timeIntervalSince1970: 1_792_963_200)
+        let winner = try #require(TodayRaceBoard.featured(in: races, now: result))
+        #expect(winner.final)
+        #expect(winner.office == .president)
+        let nextDay = result.addingTimeInterval(TodayRaceBoard.winnerWindow)
+        #expect(TodayRaceBoard.featured(in: races, now: nextDay) == nil)
+        #expect(TodayRaceBoard.featured(in: [], now: result) == nil)
     }
 
     @Test func beforeTheCountTheNumbersAreMissingNotZero() throws {

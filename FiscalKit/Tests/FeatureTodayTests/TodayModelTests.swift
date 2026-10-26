@@ -6,18 +6,22 @@ import Testing
 @testable import FeatureToday
 
 @MainActor
+@Suite(.timeLimit(.minutes(1)))
 struct TodayModelTests {
     private let now = Date(timeIntervalSince1970: 1_792_917_720)
+    private let afterTheResult = Date(timeIntervalSince1970: 1_792_963_200)
 
     private func model(
         _ scenario: PublicDataScenario = .normal, lens: Lens? = nil,
-        races: RaceScenario? = nil, follows: PublicDataScenario? = nil
+        races: RaceScenario? = nil, follows: PublicDataScenario? = nil, clock: Date? = nil
     ) -> TodayModel {
-        TodayModel(
+        let today = clock ?? now
+        return TodayModel(
             service: ShowcasePublicData(scenario: scenario, now: now),
             lens: ShowcaseLensRepository(lens: lens),
             races: races.map(ShowcaseLiveResults.init(scenario:)),
-            follows: follows.map { ShowcaseFollowRepository(scenario: $0, now: now) })
+            follows: follows.map { ShowcaseFollowRepository(scenario: $0, now: now) },
+            raceInterval: .milliseconds(1), now: { today })
     }
 
     @Test func loadsTheDigestOfTheDay() async {
@@ -95,7 +99,8 @@ struct TodayModelTests {
     }
 
     @Test func noElectionNoCard() async {
-        let finished = model(races: .finished)
+        let finished = model(
+            races: .finished, clock: afterTheResult.addingTimeInterval(TodayRaceBoard.winnerWindow))
         await finished.load()
         #expect(finished.liveBoard == nil)
         #expect(finished.briefing.contains { $0.value.kind == .race })
@@ -103,6 +108,15 @@ struct TodayModelTests {
         let quiet = model()
         await quiet.load()
         #expect(quiet.liveBoard == nil)
+    }
+
+    @Test func theWinnerStaysForADayWithoutPolling() async {
+        let finished = model(races: .finished, clock: afterTheResult)
+        await finished.load()
+        #expect(finished.liveBoard?.race.final == true)
+        #expect(finished.liveBoard?.race.office == .president)
+        await finished.watchRaces()
+        #expect(finished.liveBoard?.race.final == true)
     }
 
     @Test func aLostConnectionKeepsTheLastNumbersMarkedAsStale() async {

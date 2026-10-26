@@ -40,7 +40,7 @@ struct PublicDataDecodingTests {
         #expect(throws: DecodingError.self) {
             try decode(
                 PersonCard.self,
-                #"{ "slug": "x", "name": "X", "office": "mayor", "uf": "sp", "party": "PT", "photo": null, "status": "inOffice" }"#
+                #"{ "slug": "x", "name": "X", "office": "minister", "uf": "sp", "party": "PT", "photo": null, "status": "inOffice" }"#
             )
         }
     }

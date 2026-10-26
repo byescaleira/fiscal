@@ -29,7 +29,7 @@ struct ShareModelTests {
             races: ShowcaseLiveResults(scenario: .finished), lens: lens)
     }
 
-    @Test func everyCardCarriesTheArtCreditInEveryFormat() async throws {
+    @Test func everyArtCardCarriesTheCreditInEveryFormat() async throws {
         for subject in subjects {
             let model = model(subject)
             await model.load()
@@ -38,13 +38,18 @@ struct ShareModelTests {
             for format in ShareFormat.allCases {
                 model.format = format
                 let card = try #require(model.card)
-                let credit = try #require(card.artwork?.credit)
+                #expect(card.texts.contains(ShareCardBuilder.host))
+                #expect(!card.content.source.isEmpty)
+                if card.content.hasOwnPoster {
+                    #expect(card.artwork == nil, "\(subject)")
+                    #expect(!model.usesArt)
+                    continue
+                }
+                let credit = try #require(card.artwork?.credit, "\(subject)")
                 #expect(card.texts.contains(credit))
                 for part in [work.artist, work.title, work.year] {
                     #expect(credit.contains(part))
                 }
-                #expect(card.texts.contains(ShareCardBuilder.host))
-                #expect(!card.content.source.isEmpty)
             }
         }
     }

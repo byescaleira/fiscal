@@ -41,17 +41,19 @@ public final class TodayModel {
     @ObservationIgnored private let raceService: (any LiveResultsService)?
     @ObservationIgnored private let follows: (any FollowRepository)?
     @ObservationIgnored private let raceInterval: Duration
+    @ObservationIgnored private let now: @Sendable () -> Date
 
     public init(
         service: (any PublicDataService)?, lens: (any LensRepository)? = nil,
         races: (any LiveResultsService)? = nil, follows: (any FollowRepository)? = nil,
-        raceInterval: Duration = .seconds(20)
+        raceInterval: Duration = .seconds(20), now: @escaping @Sendable () -> Date = { .now }
     ) {
         self.service = service
         lensRepository = lens
         raceService = races
         self.follows = follows
         self.raceInterval = raceInterval
+        self.now = now
     }
 
     public var mode: TodayBriefing.Mode { TodayBriefing.mode(for: lens) }
@@ -61,7 +63,7 @@ public final class TodayModel {
     public var lensLine: String? { TodayText.lensLine(lens) }
 
     public var dateLine: String {
-        TodayText.dateLine(digest?.date ?? agenda?.date ?? CalendarDay(.now))
+        TodayText.dateLine(digest?.date ?? agenda?.date ?? CalendarDay(now()))
     }
 
     public var events: [TodayDigest.Event] { ordered(digest?.events ?? []).map(\.value) }
@@ -84,7 +86,7 @@ public final class TodayModel {
     public var digestSource: String? { TodayText.sourceLine(sources) }
 
     public var liveBoard: TodayRaceBoard? {
-        guard let race = TodayRaceBoard.featured(in: races) else { return nil }
+        guard let race = TodayRaceBoard.featured(in: races, now: now()) else { return nil }
         let others = races.filter { !$0.final && $0.id != race.id }.count
         return TodayRaceBoard(race: race, others: others, isStale: racesOffline)
     }
@@ -200,7 +202,7 @@ public final class TodayModel {
 
     public func watchRaces() async {
         guard raceService != nil else { return }
-        while !Task.isCancelled, liveBoard != nil {
+        while !Task.isCancelled, liveBoard?.race.final == false {
             try? await Task.sleep(for: raceInterval)
             guard !Task.isCancelled else { return }
             await refreshRaces()
