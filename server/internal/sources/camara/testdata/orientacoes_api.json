@@ -1,0 +1,45 @@
+{
+ "dados": [
+  {
+   "orientacaoVoto": "",
+   "codTipoLideranca": "B",
+   "siglaPartidoBloco": "Maioria",
+   "codPartidoBloco": null,
+   "uriPartidoBloco": null
+  },
+  {
+   "orientacaoVoto": "Não",
+   "codTipoLideranca": "B",
+   "siglaPartidoBloco": "Governo",
+   "codPartidoBloco": null,
+   "uriPartidoBloco": null
+  },
+  {
+   "orientacaoVoto": "Não",
+   "codTipoLideranca": "P",
+   "siglaPartidoBloco": "MISSÃO",
+   "codPartidoBloco": 38011,
+   "uriPartidoBloco": "https://dadosabertos.camara.leg.br/api/v2/partidos/38011"
+  },
+  {
+   "orientacaoVoto": "",
+   "codTipoLideranca": "B",
+   "siglaPartidoBloco": "Oposição",
+   "codPartidoBloco": null,
+   "uriPartidoBloco": null
+  },
+  {
+   "orientacaoVoto": "Sim",
+   "codTipoLideranca": "P",
+   "siglaPartidoBloco": "NOVO",
+   "codPartidoBloco": 37901,
+   "uriPartidoBloco": "https://dadosabertos.camara.leg.br/api/v2/partidos/37901"
+  }
+ ],
+ "links": [
+  {
+   "rel": "self",
+   "href": "https://dadosabertos.camara.leg.br/api/v2/votacoes/2236186-60/orientacoes"
+  }
+ ]
+}

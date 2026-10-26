@@ -1,0 +1,152 @@
+{
+  "version": "2026-10-25",
+  "method": [
+    "Cada guia resume o que dizem a Constituição, as leis e as páginas oficiais da Câmara, do Senado, do TSE e do STF, com a fonte em cada card.",
+    "Os testes conferem só o funcionamento das instituições. Não há pontuação nem pergunta sobre partido ou político."
+  ],
+  "guides": [
+    {
+      "id": "tres-poderes",
+      "kind": "guide",
+      "title": "Os três Poderes",
+      "summary": "Quem faz as leis, quem governa e quem julga.",
+      "cards": [
+        { "title": "Independentes e harmônicos", "text": "A Constituição divide o poder da União em Legislativo, Executivo e Judiciário, independentes e harmônicos entre si (art. 2º).", "sources": ["cf1988"] },
+        { "title": "Legislativo", "text": "O Congresso Nacional, formado pela Câmara dos Deputados e pelo Senado Federal, faz as leis e fiscaliza o Executivo, com o apoio do Tribunal de Contas da União (arts. 44, 70 e 71).", "sources": ["cf1988"] },
+        { "title": "Executivo", "text": "O presidente da República, com os ministros, governa, sanciona ou veta leis e pode editar medidas provisórias (arts. 76, 62 e 84).", "sources": ["cf1988"] },
+        { "title": "Judiciário", "text": "Juízes e tribunais julgam conflitos com base nas leis. O STF, com 11 ministros, é o guardião da Constituição (arts. 92, 101 e 102).", "sources": ["cf1988", "stf"] },
+        { "title": "Freios e contrapesos", "text": "O Congresso pode derrubar um veto pela maioria absoluta de deputados e senadores; o STF pode anular lei contrária à Constituição; o Senado julga o presidente por crime de responsabilidade (arts. 52, 66 e 102).", "sources": ["cf1988"] },
+        { "title": "Nos estados e municípios", "text": "Os estados têm governador, Assembleia Legislativa e Tribunal de Justiça; os municípios têm prefeito e Câmara Municipal, mas não têm Judiciário próprio (arts. 25 a 31 e 125).", "sources": ["cf1988"] }
+      ],
+      "quiz": [
+        { "question": "Quem forma o Congresso Nacional?", "options": ["A Câmara dos Deputados e o Senado Federal", "A Câmara dos Deputados e o STF", "O Senado Federal e os ministérios"], "answer": 0, "explanation": "O Poder Legislativo da União é exercido pelo Congresso Nacional, que se compõe da Câmara e do Senado (art. 44).", "sources": ["cf1988"] },
+        { "question": "Quem dá a última palavra sobre se uma lei respeita a Constituição?", "options": ["O presidente da República", "O Senado Federal", "O Supremo Tribunal Federal"], "answer": 2, "explanation": "Cabe ao STF, precipuamente, a guarda da Constituição (art. 102).", "sources": ["cf1988"] },
+        { "question": "O que o Congresso pode fazer com um veto do presidente?", "options": ["Nada, o veto é definitivo", "Derrubá-lo pela maioria absoluta de deputados e senadores", "Pedir ao STF que decida"], "answer": 1, "explanation": "O veto é apreciado em sessão conjunta e só é rejeitado pelo voto da maioria absoluta dos deputados e senadores (art. 66, § 4º).", "sources": ["cf1988"] },
+        { "question": "Que órgão auxilia o Congresso na fiscalização das contas públicas?", "options": ["O Tribunal de Contas da União", "O Banco Central", "O Supremo Tribunal Federal"], "answer": 0, "explanation": "O controle externo é exercido pelo Congresso com o auxílio do TCU (art. 71).", "sources": ["cf1988"] },
+        { "question": "Quantos ministros tem o STF?", "options": ["9", "11", "15"], "answer": 1, "explanation": "O Supremo Tribunal Federal compõe-se de onze ministros (art. 101).", "sources": ["cf1988"] }
+      ],
+      "sources": ["cf1988", "stf"]
+    },
+    {
+      "id": "como-nasce-uma-lei",
+      "kind": "guide",
+      "title": "Como um projeto vira lei",
+      "summary": "Da proposta à publicação, passo a passo.",
+      "cards": [
+        { "title": "1. Alguém propõe", "text": "Podem propor leis deputados, senadores, comissões, o presidente da República, o STF, os tribunais superiores, o procurador-geral da República e os cidadãos (art. 61).", "sources": ["cf1988", "camara-processo"] },
+        { "title": "Iniciativa popular", "text": "Um projeto de cidadãos precisa de assinaturas de 1% do eleitorado nacional, em pelo menos cinco estados, com no mínimo 0,3% dos eleitores de cada um (art. 61, § 2º).", "sources": ["cf1988"] },
+        { "title": "2. Comissões", "text": "O projeto passa pelas comissões temáticas, que analisam o mérito, e pela de Constituição e Justiça. Na Câmara, alguns projetos são decididos só nas comissões, sem ir ao Plenário.", "sources": ["camara-processo", "cf1988"] },
+        { "title": "3. Plenário", "text": "Lei ordinária é aprovada por maioria simples (art. 47), lei complementar por maioria absoluta (art. 69) e emenda à Constituição por três quintos, em dois turnos, em cada Casa (art. 60, § 2º).", "sources": ["cf1988"] },
+        { "title": "4. A outra Casa revisa", "text": "Aprovado numa Casa, o projeto vai para a outra. Se for emendado, volta à Casa onde começou (art. 65).", "sources": ["cf1988", "camara-processo"] },
+        { "title": "5. Sanção ou veto", "text": "O presidente tem 15 dias úteis para sancionar ou vetar. Se ficar em silêncio, o projeto é sancionado. O veto volta ao Congresso, que pode derrubá-lo (art. 66).", "sources": ["cf1988"] },
+        { "title": "6. Promulgação e publicação", "text": "A lei é promulgada e publicada no Diário Oficial da União; só então passa a valer, na data que ela mesma fixar.", "sources": ["camara-processo"] }
+      ],
+      "quiz": [
+        { "question": "Quantos votos uma emenda à Constituição precisa?", "options": ["Maioria simples em cada Casa", "Três quintos, em dois turnos, em cada Casa", "Dois terços, só na Câmara"], "answer": 1, "explanation": "A proposta é discutida e votada em cada Casa, em dois turnos, e aprovada se obtiver três quintos dos votos (art. 60, § 2º).", "sources": ["cf1988"] },
+        { "question": "Qual é o prazo do presidente para sancionar ou vetar?", "options": ["15 dias úteis", "30 dias corridos", "Não há prazo"], "answer": 0, "explanation": "O veto deve ser feito no prazo de quinze dias úteis (art. 66, § 1º).", "sources": ["cf1988"] },
+        { "question": "Se o presidente não se manifesta no prazo, o que acontece?", "options": ["O projeto é arquivado", "O projeto volta ao Congresso", "O projeto é sancionado"], "answer": 2, "explanation": "Decorrido o prazo, o silêncio do presidente importa sanção (art. 66, § 3º).", "sources": ["cf1988"] },
+        { "question": "Quantas assinaturas exige um projeto de iniciativa popular?", "options": ["1% do eleitorado nacional, em pelo menos cinco estados", "100 mil assinaturas em qualquer estado", "10% dos eleitores de um estado"], "answer": 0, "explanation": "É o que prevê o art. 61, § 2º, com no mínimo 0,3% dos eleitores de cada um desses estados.", "sources": ["cf1988"] },
+        { "question": "Se o Senado emenda um projeto que veio da Câmara, para onde ele vai?", "options": ["Direto para a sanção", "Volta para a Câmara", "Para o STF"], "answer": 1, "explanation": "Sendo emendado, o projeto volta à Casa iniciadora (art. 65, parágrafo único).", "sources": ["cf1988"] }
+      ],
+      "sources": ["cf1988", "camara-processo"]
+    },
+    {
+      "id": "sistema-proporcional",
+      "kind": "guide",
+      "title": "Sistema proporcional e quociente eleitoral",
+      "summary": "Como os votos viram cadeiras de deputado e vereador.",
+      "cards": [
+        { "title": "Dois sistemas", "text": "Presidente, governador, prefeito e senador são eleitos pelo sistema majoritário: ganha quem tem mais votos. Deputados e vereadores são eleitos pelo proporcional: as cadeiras são divididas entre os partidos pelo total de votos de cada um (arts. 45 e 46 da Constituição).", "sources": ["cf1988", "tse"] },
+        { "title": "Quociente eleitoral", "text": "Divide-se o número de votos válidos pelo número de vagas. Votos brancos e nulos não entram na conta (art. 106 do Código Eleitoral).", "sources": ["codigo-eleitoral", "tse"] },
+        { "title": "Quociente partidário", "text": "Os votos de cada partido ou federação, somando os dos candidatos e os de legenda, são divididos pelo quociente eleitoral. O resultado inteiro é o número de cadeiras do partido (art. 107).", "sources": ["codigo-eleitoral"] },
+        { "title": "Exemplo", "text": "Com 100 mil votos válidos e 10 vagas, o quociente eleitoral é 10 mil. Um partido com 35 mil votos tem quociente partidário 3 e ganha 3 cadeiras, ocupadas pelos seus 3 candidatos mais votados.", "sources": ["codigo-eleitoral"] },
+        { "title": "Votação mínima", "text": "Para ocupar uma cadeira do partido, o candidato precisa de votos iguais a pelo menos 10% do quociente eleitoral (art. 108).", "sources": ["codigo-eleitoral"] },
+        { "title": "Sobras", "text": "As vagas que restam são distribuídas pelas maiores médias. Desde a Lei nº 14.211/2021, disputam as sobras os partidos com ao menos 80% do quociente eleitoral e os candidatos com ao menos 20% dele (art. 109).", "sources": ["codigo-eleitoral", "l14211"] },
+        { "title": "Sem coligações", "text": "Desde as eleições de 2020, partidos não podem se coligar nas eleições proporcionais (Emenda Constitucional nº 97/2017). Federações de partidos funcionam como um só partido por quatro anos.", "sources": ["ec97", "tse"] }
+      ],
+      "quiz": [
+        { "question": "Como se calcula o quociente eleitoral?", "options": ["Votos válidos divididos pelo número de vagas", "Eleitores inscritos divididos pelo número de vagas", "Votos do partido divididos pelo número de candidatos"], "answer": 0, "explanation": "O quociente eleitoral é o número de votos válidos dividido pelo de lugares a preencher (art. 106).", "sources": ["codigo-eleitoral"] },
+        { "question": "Votos brancos e nulos entram no quociente eleitoral?", "options": ["Sim, os dois", "Só os brancos", "Não"], "answer": 2, "explanation": "Só os votos válidos, dados a candidatos e legendas, entram na conta.", "sources": ["codigo-eleitoral", "tse"] },
+        { "question": "Desde quando as coligações são proibidas nas eleições proporcionais?", "options": ["2014", "2020", "2026"], "answer": 1, "explanation": "A Emenda Constitucional nº 97/2017 vedou as coligações proporcionais a partir das eleições de 2020.", "sources": ["ec97"] },
+        { "question": "Com 100 mil votos válidos e 10 vagas, qual é o quociente eleitoral?", "options": ["1 mil", "10 mil", "100 mil"], "answer": 1, "explanation": "100 mil divididos por 10 vagas dão 10 mil votos.", "sources": ["codigo-eleitoral"] },
+        { "question": "Qual votação mínima o candidato precisa para ocupar uma cadeira do partido?", "options": ["10% do quociente eleitoral", "50% do quociente eleitoral", "Não há mínimo"], "answer": 0, "explanation": "O art. 108 exige votos em número igual ou superior a 10% do quociente eleitoral.", "sources": ["codigo-eleitoral"] }
+      ],
+      "sources": ["codigo-eleitoral", "ec97", "l14211", "tse"]
+    },
+    {
+      "id": "cargos",
+      "kind": "guide",
+      "title": "O que faz cada cargo",
+      "summary": "Do vereador ao presidente, mandato e função de cada um.",
+      "cards": [
+        { "title": "Presidente", "text": "Chefe de Estado e de governo. Mandato de 4 anos, com uma reeleição. Vence no 1º turno quem tem a maioria absoluta dos votos válidos; se ninguém tiver, há 2º turno (arts. 14, 77 e 82).", "sources": ["cf1988"] },
+        { "title": "Senador", "text": "Representa o seu estado. São 3 por estado e pelo Distrito Federal, com mandato de 8 anos; a cada 4 anos se renovam, alternadamente, um terço e dois terços das cadeiras (art. 46).", "sources": ["cf1988"] },
+        { "title": "Deputado federal", "text": "Representa a população na Câmara, com mandato de 4 anos. Cada estado tem de 8 a 70 deputados, conforme a população (art. 45).", "sources": ["cf1988", "camara"] },
+        { "title": "Governador e deputado estadual", "text": "O governador chefia o Executivo do estado por 4 anos; os deputados estaduais fazem as leis do estado na Assembleia Legislativa (arts. 27 e 28).", "sources": ["cf1988"] },
+        { "title": "Prefeito e vereador", "text": "O prefeito governa o município por 4 anos; os vereadores fazem as leis municipais e fiscalizam a prefeitura. A Câmara Municipal tem de 9 a 55 vereadores, conforme a população (art. 29).", "sources": ["cf1988"] }
+      ],
+      "quiz": [
+        { "question": "Qual é o mandato de um senador?", "options": ["4 anos", "6 anos", "8 anos"], "answer": 2, "explanation": "Cada senador é eleito com mandato de oito anos (art. 46, § 1º).", "sources": ["cf1988"] },
+        { "question": "Quantos senadores tem cada estado?", "options": ["2", "3", "Depende da população"], "answer": 1, "explanation": "Cada estado e o Distrito Federal elegem três senadores (art. 46, § 1º).", "sources": ["cf1988"] },
+        { "question": "Quantos deputados federais um estado pode ter?", "options": ["De 8 a 70", "De 3 a 50", "Sempre 20"], "answer": 0, "explanation": "Nenhum estado tem menos de oito nem mais de setenta deputados (art. 45, § 1º).", "sources": ["cf1988"] },
+        { "question": "Quando o presidente é eleito no 1º turno?", "options": ["Quando tem mais votos que o segundo colocado", "Quando tem a maioria absoluta dos votos válidos", "Quando tem um terço dos votos"], "answer": 1, "explanation": "É eleito quem obtiver a maioria absoluta dos votos, não computados os brancos e nulos (art. 77, § 2º).", "sources": ["cf1988"] },
+        { "question": "Quantas reeleições seguidas pode ter um presidente?", "options": ["Nenhuma", "Uma", "Duas"], "answer": 1, "explanation": "O presidente pode ser reeleito para um único período subsequente (art. 14, § 5º).", "sources": ["cf1988", "ec16"] }
+      ],
+      "sources": ["cf1988", "camara"]
+    },
+    {
+      "id": "impeachment",
+      "kind": "guide",
+      "title": "Impeachment",
+      "summary": "Como o presidente pode perder o cargo por crime de responsabilidade.",
+      "cards": [
+        { "title": "O que é", "text": "É o processo para julgar o presidente por crime de responsabilidade: atos contra a Constituição, a probidade na administração, a lei orçamentária e outros listados no art. 85 e na Lei nº 1.079/1950.", "sources": ["cf1988", "l1079"] },
+        { "title": "Quem pode pedir", "text": "Qualquer cidadão pode apresentar a denúncia à Câmara dos Deputados (Lei nº 1.079/1950, art. 14).", "sources": ["l1079"] },
+        { "title": "Na Câmara", "text": "O presidente da Câmara decide se aceita a denúncia. Uma comissão especial dá parecer, e o Plenário autoriza o processo com dois terços dos deputados: 342 de 513 (arts. 51 e 86).", "sources": ["cf1988", "camara"] },
+        { "title": "No Senado", "text": "Aberto o processo no Senado, o presidente da República fica afastado por até 180 dias. O julgamento é presidido pelo presidente do STF (arts. 52 e 86).", "sources": ["cf1988", "senado"] },
+        { "title": "A decisão", "text": "Para condenar são precisos dois terços dos senadores: 54 de 81. A pena é a perda do cargo e a inabilitação por oito anos para função pública (art. 52, parágrafo único).", "sources": ["cf1988"] },
+        { "title": "Na história", "text": "Fernando Collor (1992) e Dilma Rousseff (2016) foram condenados pelo Senado. Collor renunciou no início do julgamento.", "sources": ["senado"] }
+      ],
+      "quiz": [
+        { "question": "Quantos deputados precisam votar para autorizar o processo?", "options": ["257", "308", "342"], "answer": 2, "explanation": "A autorização exige dois terços da Câmara, 342 dos 513 deputados (art. 51, I).", "sources": ["cf1988"] },
+        { "question": "Quem preside o julgamento no Senado?", "options": ["O presidente do Senado", "O presidente do STF", "O procurador-geral da República"], "answer": 1, "explanation": "Nos crimes de responsabilidade, funciona como presidente o do Supremo Tribunal Federal (art. 52, parágrafo único).", "sources": ["cf1988"] },
+        { "question": "Por quanto tempo o presidente fica afastado depois que o Senado abre o processo?", "options": ["Até 30 dias", "Até 180 dias", "Até o fim do mandato"], "answer": 1, "explanation": "Se o julgamento não terminar em 180 dias, o afastamento cessa (art. 86, § 2º).", "sources": ["cf1988"] },
+        { "question": "Quem pode apresentar a denúncia?", "options": ["Só partidos políticos", "Só o procurador-geral", "Qualquer cidadão"], "answer": 2, "explanation": "É permitido a qualquer cidadão denunciar o presidente perante a Câmara (Lei nº 1.079/1950, art. 14).", "sources": ["l1079"] },
+        { "question": "Quantos senadores precisam votar pela condenação?", "options": ["41", "49", "54"], "answer": 2, "explanation": "A condenação exige dois terços do Senado, 54 dos 81 senadores (art. 52, parágrafo único).", "sources": ["cf1988"] }
+      ],
+      "sources": ["cf1988", "l1079", "camara", "senado"]
+    },
+    {
+      "id": "glossario",
+      "kind": "glossary",
+      "title": "Glossário",
+      "summary": "Os termos que aparecem nas votações e nas notícias.",
+      "terms": [
+        { "term": "Bancada", "definition": "Conjunto de parlamentares de um mesmo partido, estado ou tema.", "sources": ["senado-glossario"] },
+        { "term": "CPI", "definition": "Comissão Parlamentar de Inquérito: investiga fato determinado, por prazo certo, com poderes de investigação de autoridade judicial. É criada com a assinatura de um terço dos membros da Casa (art. 58, § 3º).", "sources": ["cf1988", "senado-glossario"] },
+        { "term": "Comissão de Constituição e Justiça", "definition": "Comissão que analisa se os projetos respeitam a Constituição e as leis.", "sources": ["camara-processo"] },
+        { "term": "Destaque", "definition": "Pedido para votar em separado uma parte de um projeto ou uma emenda.", "sources": ["senado-glossario"] },
+        { "term": "Emenda", "definition": "Proposta de mudança no texto de um projeto, apresentada por parlamentar ou comissão.", "sources": ["senado-glossario"] },
+        { "term": "Federação partidária", "definition": "União de partidos que atuam como um só nas eleições e no Parlamento por pelo menos quatro anos.", "sources": ["tse"] },
+        { "term": "Foro por prerrogativa de função", "definition": "Regra que leva o julgamento de certas autoridades a um tribunal específico; deputados e senadores são julgados pelo STF nos crimes comuns (art. 102, I, b).", "sources": ["cf1988", "stf"] },
+        { "term": "Imunidade parlamentar", "definition": "Deputados e senadores não respondem civil nem penalmente por opiniões, palavras e votos, e só podem ser presos em flagrante de crime inafiançável (art. 53).", "sources": ["cf1988"] },
+        { "term": "Legislatura", "definition": "Período de quatro anos de trabalho do Congresso, que começa em 1º de fevereiro do ano seguinte à eleição (arts. 44 e 57).", "sources": ["cf1988"] },
+        { "term": "Lei complementar", "definition": "Lei que regulamenta temas que a Constituição reserva a ela; precisa da maioria absoluta de cada Casa (art. 69).", "sources": ["cf1988"] },
+        { "term": "Maioria absoluta", "definition": "Mais da metade de todos os membros da Casa: 257 deputados ou 41 senadores.", "sources": ["senado-glossario", "cf1988"] },
+        { "term": "Maioria simples", "definition": "Mais da metade dos presentes na votação, desde que esteja presente a maioria absoluta dos membros (art. 47).", "sources": ["cf1988"] },
+        { "term": "Medida provisória", "definition": "Norma com força de lei editada pelo presidente em caso de relevância e urgência; vale por 60 dias, prorrogáveis por mais 60, e perde a validade se o Congresso não a aprovar (art. 62).", "sources": ["cf1988"] },
+        { "term": "Obstrução", "definition": "Estratégia de parlamentares para atrasar ou impedir uma votação, como não registrar presença para derrubar o quórum.", "sources": ["senado-glossario"] },
+        { "term": "Orientação de bancada", "definition": "Indicação do líder de como a bancada deve votar; aparece no painel ao lado de cada votação.", "sources": ["camara"] },
+        { "term": "PEC", "definition": "Proposta de Emenda à Constituição: precisa de três quintos dos votos, em dois turnos, em cada Casa (art. 60).", "sources": ["cf1988"] },
+        { "term": "Quociente eleitoral", "definition": "Número de votos válidos dividido pelo número de vagas numa eleição proporcional (Código Eleitoral, art. 106).", "sources": ["codigo-eleitoral"] },
+        { "term": "Quórum", "definition": "Número mínimo de parlamentares presentes para abrir a sessão ou votar.", "sources": ["senado-glossario"] },
+        { "term": "Relator", "definition": "Parlamentar escolhido para estudar um projeto e dar parecer a favor, contra ou com mudanças.", "sources": ["senado-glossario"] },
+        { "term": "Sanção", "definition": "Aprovação de um projeto pelo presidente da República, que o transforma em lei (art. 66).", "sources": ["cf1988"] },
+        { "term": "Suplente", "definition": "Quem assume a cadeira quando o titular se licencia, renuncia ou perde o mandato.", "sources": ["senado-glossario"] },
+        { "term": "Urgência", "definition": "Regime que acelera a votação de um projeto, com prazos menores e menos etapas.", "sources": ["senado-glossario", "camara-processo"] },
+        { "term": "Veto", "definition": "Recusa do presidente, total ou parcial, a um projeto aprovado; o Congresso pode derrubá-lo (art. 66).", "sources": ["cf1988"] }
+      ],
+      "sources": ["senado-glossario", "cf1988", "camara-processo"]
+    }
+  ]
+}

@@ -1,0 +1,494 @@
+{
+  "version": "2026-10-25",
+  "method": [
+    "Os períodos seguem a divisão usada nas obras de referência citadas: República Velha, Era Vargas, República de 1946, ditadura militar e Nova República, com subfases.",
+    "Cada marco, avanço e crítica traz a fonte. Os textos descrevem o que as fontes registram, sem adjetivo do Fiscal.",
+    "Quando historiadores divergem, a lista mostra as posições lado a lado, cada uma com a sua fonte.",
+    "Os indicadores vêm das séries oficiais publicadas no Ipeadata (IBGE e FGV) e cobrem só os anos completos de cada período."
+  ],
+  "periods": [
+    {
+      "id": "republica-da-espada",
+      "name": "República da Espada",
+      "era": "República Velha",
+      "start": "1889-11-15",
+      "end": "1894-11-15",
+      "years": { "from": 1890, "to": 1894 },
+      "summary": "Os dois primeiros presidentes da República foram marechais do Exército.",
+      "presidents": [
+        { "name": "Deodoro da Fonseca", "start": "1889-11-15", "end": "1891-11-23", "how": "Chefe do Governo Provisório; eleito pelo Congresso em 25/02/1891; renunciou.", "sources": ["presidencia"] },
+        { "name": "Floriano Peixoto", "start": "1891-11-23", "end": "1894-11-15", "how": "Vice-presidente; assumiu com a renúncia de Deodoro.", "sources": ["presidencia"] }
+      ],
+      "milestones": [
+        { "date": "1889-11-15", "kind": "rupture", "title": "Proclamação da República", "text": "Militares liderados pelo marechal Deodoro da Fonseca depõem o imperador Pedro II e instalam um Governo Provisório.", "sources": ["fausto", "atlas"] },
+        { "date": "1890-01-07", "kind": "law", "title": "Separação entre Igreja e Estado", "text": "O Decreto nº 119-A proíbe a autoridade federal e a dos estados de estabelecer uma religião oficial.", "sources": ["d119a"] },
+        { "date": "1890-01-17", "kind": "economy", "title": "Encilhamento", "text": "Com Rui Barbosa no Ministério da Fazenda, bancos ganham o direito de emitir moeda; seguem especulação na bolsa e falências.", "sources": ["abreu", "fausto"] },
+        { "date": "1891-02-24", "kind": "constitution", "title": "Constituição de 1891", "text": "Primeira Constituição da República: federalismo, presidencialismo e voto direto para cidadãos alistados maiores de 21 anos, excluídos analfabetos, mendigos, praças e religiosos de ordens monásticas (art. 70).", "sources": ["cf1891"] },
+        { "date": "1891-11-03", "kind": "rupture", "title": "Deodoro fecha o Congresso", "text": "O presidente dissolve o Congresso. Diante da reação da Marinha, renuncia em 23 de novembro e Floriano Peixoto assume.", "sources": ["fausto", "cpdoc"] },
+        { "date": "1893-09-06", "kind": "event", "title": "Revolta da Armada", "text": "Parte da Marinha se rebela contra Floriano no Rio de Janeiro, no mesmo período da Revolução Federalista no Sul (1893-1895).", "sources": ["fausto"] }
+      ],
+      "advances": [
+        { "text": "A Constituição de 1891 adotou o casamento civil como o único reconhecido pela República e a separação entre Igreja e Estado (art. 72).", "sources": ["cf1891"] },
+        { "text": "A Constituição de 1891 instituiu o Supremo Tribunal Federal e a Justiça Federal (art. 55).", "sources": ["cf1891"] }
+      ],
+      "critiques": [
+        { "text": "Floriano governou até o fim do mandato sem convocar nova eleição, embora o art. 42 da Constituição previsse eleição quando a vaga ocorresse antes de dois anos de mandato.", "sources": ["cf1891", "fausto"] },
+        { "text": "O governo decretou estado de sítio e prendeu opositores durante as revoltas de 1893 e 1894.", "sources": ["fausto"] },
+        { "text": "O voto não era secreto, e as mulheres não votavam na prática.", "sources": ["carvalho-cidadania"] }
+      ],
+      "divergences": [
+        {
+          "topic": "Participação popular na Proclamação",
+          "positions": [
+            { "text": "José Murilo de Carvalho retoma a frase de Aristides Lobo de que o povo assistiu à Proclamação \"bestializado\", sem participar.", "sources": ["carvalho-bestializados"] },
+            { "text": "Boris Fausto descreve a Proclamação como resultado da aproximação entre militares do Exército e republicanos civis, sobretudo os de São Paulo.", "sources": ["fausto"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "republica-oligarquica",
+      "name": "República Oligárquica",
+      "era": "República Velha",
+      "start": "1894-11-15",
+      "end": "1930-10-24",
+      "years": { "from": 1895, "to": 1930 },
+      "summary": "Presidentes civis eleitos por voto direto e aberto, com o apoio das oligarquias estaduais.",
+      "presidents": [
+        { "name": "Prudente de Morais", "start": "1894-11-15", "end": "1898-11-15", "how": "Eleito por voto direto.", "sources": ["presidencia"] },
+        { "name": "Campos Sales", "start": "1898-11-15", "end": "1902-11-15", "how": "Eleito por voto direto.", "sources": ["presidencia"] },
+        { "name": "Rodrigues Alves", "start": "1902-11-15", "end": "1906-11-15", "how": "Eleito por voto direto.", "sources": ["presidencia"] },
+        { "name": "Afonso Pena", "start": "1906-11-15", "end": "1909-06-14", "how": "Eleito por voto direto; morreu no cargo.", "sources": ["presidencia"] },
+        { "name": "Nilo Peçanha", "start": "1909-06-14", "end": "1910-11-15", "how": "Vice-presidente; assumiu com a morte de Afonso Pena.", "sources": ["presidencia"] },
+        { "name": "Hermes da Fonseca", "start": "1910-11-15", "end": "1914-11-15", "how": "Eleito por voto direto.", "sources": ["presidencia"] },
+        { "name": "Venceslau Brás", "start": "1914-11-15", "end": "1918-11-15", "how": "Eleito por voto direto.", "sources": ["presidencia"] },
+        { "name": "Delfim Moreira", "start": "1918-11-15", "end": "1919-07-28", "how": "Vice-presidente; assumiu porque Rodrigues Alves, eleito, adoeceu e morreu antes da posse.", "sources": ["presidencia"] },
+        { "name": "Epitácio Pessoa", "start": "1919-07-28", "end": "1922-11-15", "how": "Eleito por voto direto na eleição de 1919.", "sources": ["presidencia"] },
+        { "name": "Artur Bernardes", "start": "1922-11-15", "end": "1926-11-15", "how": "Eleito por voto direto.", "sources": ["presidencia"] },
+        { "name": "Washington Luís", "start": "1926-11-15", "end": "1930-10-24", "how": "Eleito por voto direto; deposto.", "sources": ["presidencia"] }
+      ],
+      "milestones": [
+        { "date": "1897-10-05", "kind": "event", "title": "Fim de Canudos", "text": "O Exército destrói o arraial de Canudos, no sertão da Bahia, depois de quatro expedições militares.", "sources": ["fausto"] },
+        { "date": "1898-11-15", "kind": "event", "title": "Política dos governadores", "text": "Campos Sales firma o apoio mútuo entre o governo federal e as oligarquias dos estados, com a Comissão de Verificação de Poderes da Câmara decidindo quem tomava posse.", "sources": ["fausto", "leal"] },
+        { "date": "1904-11-10", "kind": "event", "title": "Revolta da Vacina", "text": "Moradores do Rio de Janeiro enfrentam a polícia contra a vacinação obrigatória contra a varíola.", "sources": ["carvalho-bestializados", "schwarcz"] },
+        { "date": "1906-02-26", "kind": "economy", "title": "Convênio de Taubaté", "text": "São Paulo, Minas Gerais e Rio de Janeiro combinam comprar o excedente de café para sustentar o preço.", "sources": ["abreu"] },
+        { "date": "1916-01-01", "kind": "law", "title": "Código Civil", "text": "Sancionado o primeiro Código Civil do país, substituído pelo Código Civil de 2002.", "sources": ["codigo-civil-1916"] },
+        { "date": "1922-07-05", "kind": "event", "title": "Revolta dos 18 do Forte", "text": "Levante de jovens oficiais no Forte de Copacabana, marco inicial do tenentismo.", "sources": ["fausto", "cpdoc"] },
+        { "date": "1923-01-24", "kind": "law", "title": "Lei Eloy Chaves", "text": "Cria uma caixa de aposentadoria e pensões em cada empresa de estrada de ferro.", "sources": ["eloy-chaves"] },
+        { "date": "1930-10-24", "kind": "rupture", "title": "Deposição de Washington Luís", "text": "Depois da eleição de Júlio Prestes e do assassinato de João Pessoa, o movimento armado iniciado em 3 de outubro leva os militares a depor o presidente.", "sources": ["fausto", "cpdoc"] }
+      ],
+      "advances": [
+        { "text": "De 1894 a 1926, as sucessões presidenciais seguiram o calendário da Constituição, salvo as mortes de Afonso Pena (1909) e de Rodrigues Alves (1919).", "sources": ["presidencia", "fausto"] },
+        { "text": "A Lei Eloy Chaves (1923) é registrada como o marco inicial da previdência social no país.", "sources": ["eloy-chaves", "carvalho-cidadania"] }
+      ],
+      "critiques": [
+        { "text": "O voto aberto, as atas fraudadas e a \"degola\" de eleitos pela Comissão de Verificação de Poderes marcavam as eleições.", "sources": ["leal", "carvalho-cidadania"] },
+        { "text": "Votaram 2,2% da população na eleição presidencial de 1894 e 5,6% na de 1930, segundo José Murilo de Carvalho.", "sources": ["carvalho-cidadania"] },
+        { "text": "Movimentos populares foram reprimidos pelo Exército, como em Canudos (1896-1897) e no Contestado (1912-1916).", "sources": ["fausto"] }
+      ],
+      "divergences": [
+        {
+          "topic": "\"Política do café com leite\"",
+          "positions": [
+            { "text": "A leitura tradicional registra o domínio da alternância entre São Paulo e Minas Gerais na Presidência.", "sources": ["fausto"] },
+            { "text": "Cláudia Viscardi sustenta que a aliança entre os dois estados foi instável e que outros estados, como o Rio Grande do Sul, tiveram peso decisivo.", "sources": ["viscardi"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vargas-1930-1937",
+      "name": "Governo Provisório e Constitucional",
+      "era": "Era Vargas",
+      "start": "1930-10-24",
+      "end": "1937-11-10",
+      "years": { "from": 1931, "to": 1937 },
+      "summary": "Getúlio Vargas governa por decreto até 1934 e depois sob a Constituição de 1934.",
+      "presidents": [
+        { "name": "Junta Governativa Provisória", "start": "1930-10-24", "end": "1930-11-03", "how": "Generais Tasso Fragoso e Mena Barreto e almirante Isaías de Noronha, depois da deposição de Washington Luís.", "sources": ["presidencia"] },
+        { "name": "Getúlio Vargas", "start": "1930-11-03", "end": "1937-11-10", "how": "Chefe do Governo Provisório; eleito pela Assembleia Constituinte em 17/07/1934.", "sources": ["presidencia"] }
+      ],
+      "milestones": [
+        { "date": "1930-11-26", "kind": "law", "title": "Ministério do Trabalho", "text": "Criado o Ministério do Trabalho, Indústria e Comércio.", "sources": ["cpdoc"] },
+        { "date": "1932-02-24", "kind": "law", "title": "Código Eleitoral de 1932", "text": "Institui o voto secreto, o voto feminino e a Justiça Eleitoral.", "sources": ["ce1932", "tse"] },
+        { "date": "1932-07-09", "kind": "event", "title": "Revolução Constitucionalista", "text": "São Paulo pega em armas contra o Governo Provisório e pela convocação de uma Constituinte; rende-se em 2 de outubro.", "sources": ["fausto", "cpdoc"] },
+        { "date": "1933-05-03", "kind": "election", "title": "Eleição da Constituinte", "text": "Eleição da Assembleia Nacional Constituinte, com Carlota Pereira de Queirós como a primeira deputada federal eleita.", "sources": ["cpdoc", "camara"] },
+        { "date": "1934-07-16", "kind": "constitution", "title": "Constituição de 1934", "text": "Inclui direitos trabalhistas, como salário mínimo, jornada de oito horas e férias anuais (art. 121), e o mandado de segurança (art. 113).", "sources": ["cf1934"] },
+        { "date": "1935-04-04", "kind": "law", "title": "Lei de Segurança Nacional", "text": "A Lei nº 38 define crimes contra a ordem política e social.", "sources": ["lsn1935"] },
+        { "date": "1935-11-23", "kind": "event", "title": "Levante comunista", "text": "Levantes militares em Natal, Recife e no Rio de Janeiro, ligados à Aliança Nacional Libertadora e ao PCB, são derrotados em poucos dias.", "sources": ["fausto", "cpdoc"] },
+        { "date": "1937-09-30", "kind": "event", "title": "Plano Cohen", "text": "O governo divulga um suposto plano comunista de tomada do poder; o documento foi depois reconhecido como forjado.", "sources": ["cpdoc", "fausto"] }
+      ],
+      "advances": [
+        { "text": "O Código Eleitoral de 1932 instituiu o voto secreto, o voto das mulheres e a Justiça Eleitoral.", "sources": ["ce1932", "tse"] },
+        { "text": "A Constituição de 1934 previu salário mínimo, jornada de oito horas, férias remuneradas e proibição de trabalho a menores de 14 anos (art. 121).", "sources": ["cf1934"] }
+      ],
+      "critiques": [
+        { "text": "De 1930 a 1934, o governo fechou o Congresso e as assembleias e nomeou interventores nos estados.", "sources": ["fausto", "cpdoc"] },
+        { "text": "Depois do levante de 1935, o governo decretou estado de guerra e prendeu milhares de pessoas, entre elas parlamentares.", "sources": ["fausto"] }
+      ],
+      "divergences": [
+        {
+          "topic": "O caráter de 1930",
+          "positions": [
+            { "text": "Interpretações correntes até os anos 1960 descreviam 1930 como revolução da burguesia industrial ou das classes médias.", "sources": ["fausto-1930"] },
+            { "text": "Boris Fausto contesta essas leituras e descreve 1930 como rearranjo entre frações das elites, sem predomínio de uma classe.", "sources": ["fausto-1930"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "estado-novo",
+      "name": "Estado Novo",
+      "era": "Era Vargas",
+      "start": "1937-11-10",
+      "end": "1945-10-29",
+      "years": { "from": 1938, "to": 1945 },
+      "summary": "Vargas fecha o Congresso, outorga uma Constituição e governa sem eleições.",
+      "presidents": [
+        { "name": "Getúlio Vargas", "start": "1937-11-10", "end": "1945-10-29", "how": "Permaneceu no cargo com a Constituição outorgada de 1937; deposto pelos militares.", "sources": ["presidencia"] }
+      ],
+      "milestones": [
+        { "date": "1937-11-10", "kind": "constitution", "title": "Golpe e Constituição de 1937", "text": "Vargas fecha o Congresso e outorga uma nova Constituição.", "sources": ["cf1937", "cpdoc"] },
+        { "date": "1937-12-02", "kind": "law", "title": "Fim dos partidos", "text": "Um decreto-lei extingue os partidos políticos.", "sources": ["cpdoc", "fausto"] },
+        { "date": "1939-12-27", "kind": "law", "title": "Criação do DIP", "text": "O Departamento de Imprensa e Propaganda passa a controlar a censura e a propaganda oficial.", "sources": ["dip"] },
+        { "date": "1940-05-01", "kind": "law", "title": "Salário mínimo", "text": "Fixados os primeiros valores do salário mínimo por região.", "sources": ["cpdoc"] },
+        { "date": "1941-04-09", "kind": "economy", "title": "Companhia Siderúrgica Nacional", "text": "Criada a CSN, cuja usina de Volta Redonda começou a operar em 1946.", "sources": ["cpdoc", "abreu"] },
+        { "date": "1942-08-22", "kind": "event", "title": "Entrada na Segunda Guerra", "text": "O Brasil declara guerra à Alemanha e à Itália; a Força Expedicionária Brasileira segue para a Itália em 1944.", "sources": ["fausto", "cpdoc"] },
+        { "date": "1943-05-01", "kind": "law", "title": "CLT", "text": "A Consolidação das Leis do Trabalho reúne a legislação trabalhista.", "sources": ["clt"] },
+        { "date": "1945-10-29", "kind": "rupture", "title": "Deposição de Vargas", "text": "Militares depõem Vargas; o presidente do STF, José Linhares, assume até a posse do eleito.", "sources": ["presidencia", "fausto"] }
+      ],
+      "advances": [
+        { "text": "A CLT (1943) reuniu em um só texto as regras de jornada, férias, carteira de trabalho e Justiça do Trabalho.", "sources": ["clt"] },
+        { "text": "A criação da CSN (1941) é registrada como base da siderurgia nacional.", "sources": ["abreu", "cpdoc"] }
+      ],
+      "critiques": [
+        { "text": "O Congresso ficou fechado e não houve eleições de 1937 a 1945.", "sources": ["cf1937", "fausto"] },
+        { "text": "O plebiscito previsto no art. 187 da Constituição de 1937 para aprová-la nunca foi realizado.", "sources": ["cf1937"] },
+        { "text": "O DIP censurou jornais, rádio e cinema, e a polícia política prendeu e torturou opositores.", "sources": ["dip", "cpdoc", "fausto"] }
+      ],
+      "divergences": [
+        {
+          "topic": "A relação entre Vargas e os trabalhadores",
+          "positions": [
+            { "text": "Francisco Weffort descreve o populismo como manipulação das massas urbanas pelo Estado.", "sources": ["weffort"] },
+            { "text": "Angela de Castro Gomes descreve o trabalhismo como um pacto, em que os trabalhadores aceitaram a tutela do Estado em troca de direitos.", "sources": ["gomes"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "republica-de-1946",
+      "name": "República de 1946",
+      "era": "República de 1946",
+      "start": "1945-10-29",
+      "end": "1964-04-01",
+      "years": { "from": 1946, "to": 1963 },
+      "summary": "Eleições diretas para presidente, partidos nacionais e crises militares até o golpe de 1964.",
+      "presidents": [
+        { "name": "José Linhares", "start": "1945-10-29", "end": "1946-01-31", "how": "Presidente do STF; assumiu depois da deposição de Vargas.", "sources": ["presidencia"] },
+        { "name": "Eurico Gaspar Dutra", "start": "1946-01-31", "end": "1951-01-31", "how": "Eleito por voto direto em 1945.", "sources": ["presidencia"] },
+        { "name": "Getúlio Vargas", "start": "1951-01-31", "end": "1954-08-24", "how": "Eleito por voto direto em 1950; morreu no cargo.", "sources": ["presidencia"] },
+        { "name": "Café Filho", "start": "1954-08-24", "end": "1955-11-08", "how": "Vice-presidente; afastou-se por motivo de saúde.", "sources": ["presidencia"] },
+        { "name": "Carlos Luz", "start": "1955-11-08", "end": "1955-11-11", "how": "Presidente da Câmara; afastado pelo movimento de 11 de novembro, liderado pelo general Lott.", "sources": ["presidencia"] },
+        { "name": "Nereu Ramos", "start": "1955-11-11", "end": "1956-01-31", "how": "Vice-presidente do Senado; assumiu até a posse do eleito.", "sources": ["presidencia"] },
+        { "name": "Juscelino Kubitschek", "start": "1956-01-31", "end": "1961-01-31", "how": "Eleito por voto direto em 1955.", "sources": ["presidencia"] },
+        { "name": "Jânio Quadros", "start": "1961-01-31", "end": "1961-08-25", "how": "Eleito por voto direto em 1960; renunciou.", "sources": ["presidencia"] },
+        { "name": "Ranieri Mazzilli", "start": "1961-08-25", "end": "1961-09-07", "how": "Presidente da Câmara; interino.", "sources": ["presidencia"] },
+        { "name": "João Goulart", "start": "1961-09-07", "end": "1964-04-01", "how": "Vice-presidente; assumiu sob o parlamentarismo até 1963; deposto.", "sources": ["presidencia"] }
+      ],
+      "milestones": [
+        { "date": "1946-09-18", "kind": "constitution", "title": "Constituição de 1946", "text": "Restabelece a eleição direta para presidente, com mandato de cinco anos, e a independência dos Poderes.", "sources": ["cf1946"] },
+        { "date": "1947-05-07", "kind": "law", "title": "PCB perde o registro", "text": "O TSE cancela o registro do Partido Comunista do Brasil; em 1948 os mandatos dos seus parlamentares são cassados.", "sources": ["cpdoc", "tse"] },
+        { "date": "1953-10-03", "kind": "law", "title": "Criação da Petrobras", "text": "A Lei nº 2.004 cria a Petrobras e o monopólio estatal do petróleo.", "sources": ["petrobras"] },
+        { "date": "1954-08-24", "kind": "event", "title": "Morte de Vargas", "text": "Pressionado a renunciar, Vargas se mata no Palácio do Catete e deixa uma carta-testamento.", "sources": ["fausto", "cpdoc"] },
+        { "date": "1960-04-21", "kind": "event", "title": "Inauguração de Brasília", "text": "A capital passa do Rio de Janeiro para Brasília, obra do Plano de Metas de Juscelino Kubitschek.", "sources": ["cpdoc", "atlas"] },
+        { "date": "1961-09-02", "kind": "constitution", "title": "Parlamentarismo", "text": "Depois da renúncia de Jânio, a Emenda Constitucional nº 4 institui o parlamentarismo para que João Goulart tome posse.", "sources": ["ec4-1961"] },
+        { "date": "1963-01-06", "kind": "election", "title": "Plebiscito do presidencialismo", "text": "A maioria dos eleitores vota pela volta do presidencialismo.", "sources": ["cpdoc", "tse"] },
+        { "date": "1964-03-13", "kind": "event", "title": "Comício da Central do Brasil", "text": "Goulart defende as reformas de base, entre elas a agrária, em ato público no Rio de Janeiro.", "sources": ["cpdoc", "fico"] }
+      ],
+      "advances": [
+        { "text": "Houve eleições diretas para presidente em 1945, 1950, 1955 e 1960.", "sources": ["tse", "cf1946"] },
+        { "text": "Foram criados o BNDE (1952) e a Petrobras (1953), registrados como bases do planejamento industrial do período.", "sources": ["petrobras", "abreu"] }
+      ],
+      "critiques": [
+        { "text": "Os analfabetos continuaram sem direito a voto (art. 132 da Constituição de 1946).", "sources": ["cf1946"] },
+        { "text": "Houve crises militares e tentativas de impedir posses em 1954, 1955 e 1961.", "sources": ["fausto", "cpdoc"] },
+        { "text": "A inflação pelo IGP-DI passou de 50% ao ano em 1962 e chegou a 79,9% em 1963.", "sources": ["ipeadata"] }
+      ],
+      "divergences": []
+    },
+    {
+      "id": "ditadura-1964-1968",
+      "name": "Do golpe ao AI-5",
+      "era": "Ditadura militar",
+      "start": "1964-04-01",
+      "end": "1968-12-13",
+      "years": { "from": 1964, "to": 1968 },
+      "summary": "Os militares assumem o poder e governam com atos institucionais.",
+      "presidents": [
+        { "name": "Ranieri Mazzilli", "start": "1964-04-02", "end": "1964-04-15", "how": "Presidente da Câmara; interino depois que o Congresso declarou vaga a Presidência.", "sources": ["presidencia"] },
+        { "name": "Castelo Branco", "start": "1964-04-15", "end": "1967-03-15", "how": "Eleito pelo Congresso Nacional.", "sources": ["presidencia"] },
+        { "name": "Costa e Silva", "start": "1967-03-15", "end": "1968-12-13", "how": "Eleito pelo Congresso Nacional; segue no cargo no período seguinte.", "sources": ["presidencia"] }
+      ],
+      "milestones": [
+        { "date": "1964-04-01", "kind": "rupture", "title": "Golpe de 1964", "text": "Tropas iniciam o movimento em Minas Gerais em 31 de março; João Goulart é deposto, e o Congresso declara vaga a Presidência em 2 de abril.", "sources": ["fico", "cpdoc"] },
+        { "date": "1964-04-09", "kind": "law", "title": "Ato Institucional nº 1", "text": "Autoriza cassar mandatos e suspender direitos políticos e manda o Congresso eleger o presidente.", "sources": ["ai1"] },
+        { "date": "1964-11-30", "kind": "law", "title": "Estatuto da Terra", "text": "Define regras de reforma agrária e de política agrícola.", "sources": ["estatuto-terra"] },
+        { "date": "1964-12-31", "kind": "economy", "title": "Criação do Banco Central", "text": "A Lei nº 4.595 reorganiza o sistema financeiro e cria o Banco Central do Brasil, dentro do PAEG.", "sources": ["bcb-lei", "abreu"] },
+        { "date": "1965-10-27", "kind": "law", "title": "Ato Institucional nº 2", "text": "Extingue os partidos e torna indireta a eleição para presidente; depois, só Arena e MDB podem funcionar.", "sources": ["ai2"] },
+        { "date": "1966-09-13", "kind": "law", "title": "Criação do FGTS", "text": "O Fundo de Garantia do Tempo de Serviço substitui a estabilidade no emprego para quem opta por ele.", "sources": ["fgts"] },
+        { "date": "1967-01-24", "kind": "constitution", "title": "Constituição de 1967", "text": "Votada pelo Congresso convocado pelo AI-4, incorpora a eleição indireta para presidente.", "sources": ["cf1967"] },
+        { "date": "1968-06-26", "kind": "event", "title": "Passeata dos Cem Mil", "text": "Estudantes, artistas e religiosos marcham no Rio de Janeiro contra a ditadura.", "sources": ["napolitano", "cpdoc"] }
+      ],
+      "advances": [
+        { "text": "O PAEG (1964-1966) criou o Banco Central e o FGTS e reorganizou o sistema financeiro.", "sources": ["abreu", "bcb-lei", "fgts"] },
+        { "text": "A inflação pelo IGP-DI caiu de 92,1% em 1964 para 25,0% em 1967.", "sources": ["ipeadata"] }
+      ],
+      "critiques": [
+        { "text": "Os atos institucionais cassaram mandatos, suspenderam direitos políticos e acabaram com a eleição direta para presidente.", "sources": ["ai1", "ai2", "cnv"] },
+        { "text": "A política salarial do PAEG fixou reajustes abaixo da inflação, e o salário mínimo real caiu.", "sources": ["abreu", "fishlow"] }
+      ],
+      "divergences": [
+        {
+          "topic": "Como chamar o regime",
+          "positions": [
+            { "text": "Daniel Aarão Reis usa \"ditadura civil-militar\" para destacar o apoio de setores civis.", "sources": ["reis"] },
+            { "text": "Carlos Fico chama o golpe de civil-militar e o regime de militar, porque os militares concentraram o poder.", "sources": ["fico"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ditadura-1968-1974",
+      "name": "Anos do AI-5",
+      "era": "Ditadura militar",
+      "start": "1968-12-13",
+      "end": "1974-03-15",
+      "years": { "from": 1969, "to": 1973 },
+      "summary": "O AI-5 suspende garantias, enquanto o PIB cresce acima de 9% ao ano.",
+      "presidents": [
+        { "name": "Costa e Silva", "start": "1968-12-13", "end": "1969-08-31", "how": "Afastado por doença.", "sources": ["presidencia"] },
+        { "name": "Junta Militar", "start": "1969-08-31", "end": "1969-10-30", "how": "Ministros Aurélio de Lyra Tavares, Augusto Rademaker e Márcio de Souza e Mello.", "sources": ["presidencia"] },
+        { "name": "Emílio Garrastazu Médici", "start": "1969-10-30", "end": "1974-03-15", "how": "Escolhido pelas Forças Armadas e eleito pelo Congresso.", "sources": ["presidencia"] }
+      ],
+      "milestones": [
+        { "date": "1968-12-13", "kind": "law", "title": "Ato Institucional nº 5", "text": "Permite fechar o Congresso, cassar mandatos e suspende o habeas corpus nos crimes políticos.", "sources": ["ai5"] },
+        { "date": "1969-10-17", "kind": "constitution", "title": "Emenda Constitucional nº 1", "text": "A junta militar edita um novo texto para a Constituição de 1967.", "sources": ["ec1-1969"] },
+        { "date": "1970-01-26", "kind": "law", "title": "Censura prévia", "text": "O Decreto-Lei nº 1.077 institui a censura prévia de livros e periódicos.", "sources": ["dl1077"] },
+        { "date": "1970-09-07", "kind": "law", "title": "Criação do PIS", "text": "A Lei Complementar nº 7 cria o Programa de Integração Social.", "sources": ["pis"] },
+        { "date": "1972-04-12", "kind": "event", "title": "Guerrilha do Araguaia", "text": "O Exército inicia operações contra a guerrilha do PCdoB no Araguaia, encerradas em 1974.", "sources": ["cnv"] },
+        { "date": "1973-01-01", "kind": "economy", "title": "\"Milagre econômico\"", "text": "O PIB cresce 14,0% em 1973, segundo o IBGE.", "sources": ["ipeadata", "abreu"] }
+      ],
+      "advances": [
+        { "text": "O PIB cresceu em média 11,2% ao ano de 1968 a 1973, segundo o IBGE.", "sources": ["ipeadata"] },
+        { "text": "A inflação pelo IGP-DI caiu de 25,5% em 1968 para 15,5% em 1973.", "sources": ["ipeadata"] }
+      ],
+      "critiques": [
+        { "text": "A Comissão Nacional da Verdade reconheceu 434 mortos e desaparecidos políticos de 1946 a 1988, a maioria durante a ditadura, e documentou a tortura como prática do Estado.", "sources": ["cnv"] },
+        { "text": "Houve censura prévia à imprensa, aos livros e às artes.", "sources": ["dl1077", "gaspari"] },
+        { "text": "A concentração de renda aumentou entre os censos de 1960 e 1970.", "sources": ["fishlow", "langoni"] }
+      ],
+      "divergences": [
+        {
+          "topic": "Por que a desigualdade subiu",
+          "positions": [
+            { "text": "Albert Fishlow atribui a alta da desigualdade sobretudo à política salarial do governo.", "sources": ["fishlow"] },
+            { "text": "Carlos Langoni atribui a alta sobretudo à demanda por trabalhadores qualificados num período de crescimento.", "sources": ["langoni"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ditadura-1974-1985",
+      "name": "Distensão e abertura",
+      "era": "Ditadura militar",
+      "start": "1974-03-15",
+      "end": "1985-03-15",
+      "years": { "from": 1974, "to": 1984 },
+      "summary": "Os governos Geisel e Figueiredo conduzem uma abertura gradual, com idas e vindas.",
+      "presidents": [
+        { "name": "Ernesto Geisel", "start": "1974-03-15", "end": "1979-03-15", "how": "Eleito pelo Colégio Eleitoral.", "sources": ["presidencia"] },
+        { "name": "João Figueiredo", "start": "1979-03-15", "end": "1985-03-15", "how": "Eleito pelo Colégio Eleitoral.", "sources": ["presidencia"] }
+      ],
+      "milestones": [
+        { "date": "1974-11-15", "kind": "election", "title": "Eleições de 1974", "text": "O MDB elege 16 dos 22 senadores em disputa.", "sources": ["tse", "skidmore"] },
+        { "date": "1975-10-25", "kind": "event", "title": "Morte de Vladimir Herzog", "text": "O jornalista morre sob tortura no DOI-Codi de São Paulo, segundo a Comissão Nacional da Verdade.", "sources": ["cnv"] },
+        { "date": "1977-04-01", "kind": "law", "title": "Pacote de Abril", "text": "Geisel fecha o Congresso por duas semanas e cria senadores eleitos de forma indireta.", "sources": ["skidmore", "cpdoc"] },
+        { "date": "1978-10-13", "kind": "constitution", "title": "Fim do AI-5", "text": "A Emenda Constitucional nº 11 revoga os atos institucionais a partir de 1979.", "sources": ["ec11-1978"] },
+        { "date": "1979-08-28", "kind": "law", "title": "Lei da Anistia", "text": "Concede anistia a quem cometeu crimes políticos ou conexos de 1961 a 1979.", "sources": ["anistia"] },
+        { "date": "1982-11-15", "kind": "election", "title": "Governadores eleitos", "text": "Primeira eleição direta para governador desde 1965.", "sources": ["tse", "skidmore"] },
+        { "date": "1984-04-25", "kind": "election", "title": "Emenda Dante de Oliveira", "text": "A emenda das eleições diretas para presidente tem 298 votos a favor na Câmara e não alcança os dois terços.", "sources": ["camara", "senado"] },
+        { "date": "1985-01-15", "kind": "election", "title": "Tancredo eleito", "text": "O Colégio Eleitoral elege Tancredo Neves contra Paulo Maluf.", "sources": ["camara", "presidencia"] }
+      ],
+      "advances": [
+        { "text": "O AI-5 foi revogado e a Lei da Anistia permitiu a volta de exilados e a libertação de presos políticos.", "sources": ["ec11-1978", "anistia"] },
+        { "text": "Voltaram as eleições diretas para governador (1982), e a campanha das Diretas Já reuniu multidões em 1984.", "sources": ["tse", "skidmore"] }
+      ],
+      "critiques": [
+        { "text": "O Pacote de Abril mudou as regras eleitorais por decreto para manter a maioria do governo.", "sources": ["skidmore", "cpdoc"] },
+        { "text": "A inflação pelo IGP-DI passou de 200% ao ano em 1983 e 1984, e o país recorreu ao FMI em 1982.", "sources": ["ipeadata", "abreu"] }
+      ],
+      "divergences": [
+        {
+          "topic": "Alcance da Lei da Anistia",
+          "positions": [
+            { "text": "O STF decidiu na ADPF 153 (2010) que a anistia alcança também os agentes do Estado.", "sources": ["stf"] },
+            { "text": "A Comissão Nacional da Verdade recomendou que a anistia não se aplique a agentes responsáveis por tortura, mortes e desaparecimentos.", "sources": ["cnv"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nova-republica-1985-1994",
+      "name": "Transição e Constituinte",
+      "era": "Nova República",
+      "start": "1985-03-15",
+      "end": "1995-01-01",
+      "years": { "from": 1985, "to": 1994 },
+      "summary": "Volta dos civis à Presidência, nova Constituição, primeira eleição direta desde 1960 e o primeiro impeachment.",
+      "presidents": [
+        { "name": "José Sarney", "start": "1985-03-15", "end": "1990-03-15", "how": "Vice eleito com Tancredo Neves, que adoeceu antes da posse e morreu em 21/04/1985.", "sources": ["presidencia"] },
+        { "name": "Fernando Collor", "start": "1990-03-15", "end": "1992-12-29", "how": "Eleito por voto direto em 1989; afastado em 02/10/1992 e renunciou antes do julgamento final.", "sources": ["presidencia"] },
+        { "name": "Itamar Franco", "start": "1992-12-29", "end": "1995-01-01", "how": "Vice-presidente; no exercício desde 02/10/1992.", "sources": ["presidencia"] }
+      ],
+      "milestones": [
+        { "date": "1986-02-28", "kind": "economy", "title": "Plano Cruzado", "text": "Troca o cruzeiro pelo cruzado e congela preços; seguem os planos Bresser (1987) e Verão (1989).", "sources": ["abreu"] },
+        { "date": "1988-10-05", "kind": "constitution", "title": "Constituição de 1988", "text": "Promulgada pela Assembleia Nacional Constituinte, instalada em 1º de fevereiro de 1987.", "sources": ["cf1988"] },
+        { "date": "1989-11-15", "kind": "election", "title": "Eleição direta para presidente", "text": "Primeira eleição direta para presidente desde 1960, decidida no 2º turno em 17 de dezembro.", "sources": ["tse"] },
+        { "date": "1990-03-16", "kind": "economy", "title": "Plano Collor", "text": "Bloqueia por 18 meses os saldos de contas e aplicações acima de NCz$ 50 mil.", "sources": ["abreu", "senado"] },
+        { "date": "1992-09-29", "kind": "impeachment", "title": "Câmara autoriza o impeachment", "text": "A Câmara autoriza o processo contra Collor por 441 votos a 38, depois da CPI do caso PC Farias.", "sources": ["camara", "senado"] },
+        { "date": "1992-12-29", "kind": "impeachment", "title": "Senado condena Collor", "text": "Collor renuncia no início do julgamento; o Senado o condena por 76 votos a 3 e o deixa inelegível por oito anos.", "sources": ["senado", "l1079"] },
+        { "date": "1993-04-21", "kind": "election", "title": "Plebiscito de 1993", "text": "Os eleitores mantêm a república e o presidencialismo.", "sources": ["tse", "cf1988"] },
+        { "date": "1994-07-01", "kind": "economy", "title": "Plano Real", "text": "O real entra em circulação depois da fase da URV, iniciada em março.", "sources": ["real", "abreu"] }
+      ],
+      "advances": [
+        { "text": "A Constituição de 1988 estendeu o voto facultativo aos analfabetos e aos jovens de 16 e 17 anos (art. 14) e criou o SUS (art. 198).", "sources": ["cf1988"] },
+        { "text": "A inflação pelo IPCA caiu de 2.477% em 1993 para 22,4% em 1995, depois do Plano Real.", "sources": ["ipeadata", "real"] }
+      ],
+      "critiques": [
+        { "text": "Os planos Cruzado, Bresser, Verão, Collor I e Collor II não contiveram a inflação, que passou de 1.000% ao ano pelo IPCA em 1989, 1990, 1992 e 1993.", "sources": ["ipeadata", "abreu"] },
+        { "text": "O Plano Collor bloqueou a poupança e as aplicações financeiras das pessoas.", "sources": ["abreu", "senado"] }
+      ],
+      "divergences": []
+    },
+    {
+      "id": "nova-republica-1995-2002",
+      "name": "Estabilização e reformas",
+      "era": "Nova República",
+      "start": "1995-01-01",
+      "end": "2003-01-01",
+      "years": { "from": 1995, "to": 2002 },
+      "summary": "Dois mandatos de Fernando Henrique Cardoso, com o real, privatizações e a reeleição.",
+      "presidents": [
+        { "name": "Fernando Henrique Cardoso", "start": "1995-01-01", "end": "2003-01-01", "how": "Eleito por voto direto em 1994 e reeleito em 1998.", "sources": ["presidencia"] }
+      ],
+      "milestones": [
+        { "date": "1997-05-06", "kind": "economy", "title": "Privatização da Vale", "text": "A Companhia Vale do Rio Doce é vendida em leilão; em 1998 é a vez do sistema Telebrás.", "sources": ["castelar", "biondi"] },
+        { "date": "1997-06-04", "kind": "constitution", "title": "Reeleição", "text": "A Emenda Constitucional nº 16 permite a reeleição para presidente, governador e prefeito.", "sources": ["ec16"] },
+        { "date": "1999-01-15", "kind": "economy", "title": "Câmbio flutuante", "text": "O Banco Central deixa o real flutuar, e a moeda se desvaloriza.", "sources": ["bcb-metas", "abreu"] },
+        { "date": "1999-06-21", "kind": "economy", "title": "Metas de inflação", "text": "O Decreto nº 3.088 institui o regime de metas para a inflação.", "sources": ["metas", "bcb-metas"] },
+        { "date": "2000-05-04", "kind": "law", "title": "Lei de Responsabilidade Fiscal", "text": "Fixa limites para gastos com pessoal e para a dívida de União, estados e municípios.", "sources": ["lrf"] },
+        { "date": "2001-04-11", "kind": "law", "title": "Bolsa Escola", "text": "Programa federal de renda mínima ligado à frequência escolar.", "sources": ["bolsa-escola"] },
+        { "date": "2001-06-01", "kind": "event", "title": "Racionamento de energia", "text": "O governo impõe metas de corte no consumo de eletricidade até fevereiro de 2002.", "sources": ["senado"] }
+      ],
+      "advances": [
+        { "text": "O IPCA ficou abaixo de 10% ao ano de 1996 a 2001.", "sources": ["ipeadata"] },
+        { "text": "A LRF e o regime de metas de inflação são registrados como bases da política fiscal e monetária seguinte.", "sources": ["lrf", "metas", "bcb-metas"] }
+      ],
+      "critiques": [
+        { "text": "Reportagens da Folha de S.Paulo em maio de 1997 publicaram gravações de deputados que diziam ter recebido dinheiro para votar a favor da reeleição; dois renunciaram ao mandato.", "sources": ["folha-1997"] },
+        { "text": "O PIB cresceu em média 2,4% ao ano de 1995 a 2002, com o racionamento de energia em 2001.", "sources": ["ipeadata"] }
+      ],
+      "divergences": [
+        {
+          "topic": "Privatizações",
+          "positions": [
+            { "text": "Armando Castelar Pinheiro registra ganhos de investimento e de produtividade nas empresas privatizadas.", "sources": ["castelar"] },
+            { "text": "Aloysio Biondi sustenta que o Estado vendeu as empresas por menos do que valiam, com financiamento do BNDES e moedas de privatização.", "sources": ["biondi"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nova-republica-2003-2016",
+      "name": "Governos Lula e Dilma",
+      "era": "Nova República",
+      "start": "2003-01-01",
+      "end": "2016-08-31",
+      "years": { "from": 2003, "to": 2015 },
+      "summary": "Três mandatos do PT na Presidência, até o impeachment de Dilma Rousseff.",
+      "presidents": [
+        { "name": "Luiz Inácio Lula da Silva", "start": "2003-01-01", "end": "2011-01-01", "how": "Eleito por voto direto em 2002 e reeleito em 2006.", "sources": ["presidencia"] },
+        { "name": "Dilma Rousseff", "start": "2011-01-01", "end": "2016-08-31", "how": "Eleita em 2010 e reeleita em 2014; afastada em 12/05/2016 e condenada pelo Senado.", "sources": ["presidencia", "senado"] }
+      ],
+      "milestones": [
+        { "date": "2004-01-09", "kind": "law", "title": "Bolsa Família", "text": "A Lei nº 10.836 unifica programas de transferência de renda com condições de saúde e educação.", "sources": ["bolsa-familia"] },
+        { "date": "2005-06-06", "kind": "event", "title": "Mensalão", "text": "O deputado Roberto Jefferson denuncia pagamentos a parlamentares; o STF julga a Ação Penal 470 em 2012.", "sources": ["stf", "camara"] },
+        { "date": "2010-06-04", "kind": "law", "title": "Lei da Ficha Limpa", "text": "Torna inelegíveis por oito anos condenados por órgão colegiado, de iniciativa popular.", "sources": ["ficha-limpa"] },
+        { "date": "2011-11-18", "kind": "law", "title": "Acesso à Informação e Comissão da Verdade", "text": "No mesmo dia são sancionadas a Lei de Acesso à Informação e a lei que cria a Comissão Nacional da Verdade.", "sources": ["lai", "cnv-lei"] },
+        { "date": "2013-06-06", "kind": "event", "title": "Jornadas de Junho", "text": "Protestos contra o aumento das passagens se espalham pelo país com pautas variadas.", "sources": ["senado"] },
+        { "date": "2014-03-17", "kind": "event", "title": "Operação Lava Jato", "text": "A Polícia Federal inicia a operação que investigou desvios na Petrobras.", "sources": ["stf", "senado"] },
+        { "date": "2016-04-17", "kind": "impeachment", "title": "Câmara autoriza o impeachment", "text": "A Câmara autoriza o processo contra Dilma Rousseff por 367 votos a 137.", "sources": ["camara"] },
+        { "date": "2016-08-31", "kind": "impeachment", "title": "Senado condena Dilma", "text": "O Senado condena a presidente por crime de responsabilidade por 61 votos a 20; em votação separada, ela mantém os direitos políticos.", "sources": ["senado", "l1079"] }
+      ],
+      "advances": [
+        { "text": "A Lei da Ficha Limpa e a Lei de Acesso à Informação foram aprovadas.", "sources": ["ficha-limpa", "lai"] },
+        { "text": "A taxa de desocupação ficou em 6,9% em 2014, na média dos quatro trimestres da PNAD Contínua, a menor entre 2012 e 2015.", "sources": ["ipeadata"] }
+      ],
+      "critiques": [
+        { "text": "O STF condenou na Ação Penal 470 (mensalão) ex-ministros, dirigentes partidários e parlamentares.", "sources": ["stf"] },
+        { "text": "O PIB caiu 3,55% em 2015 e 3,28% em 2016, segundo o IBGE.", "sources": ["ipeadata"] }
+      ],
+      "divergences": [
+        {
+          "topic": "O impeachment de 2016",
+          "positions": [
+            { "text": "O Senado decidiu que houve crime de responsabilidade, pela edição de decretos de crédito sem autorização do Congresso e pelos atrasos de repasses ao Banco do Brasil no Plano Safra.", "sources": ["senado", "l1079"] },
+            { "text": "A defesa de Dilma Rousseff sustentou que os atos não configuravam crime de responsabilidade e que o processo foi um golpe parlamentar.", "sources": ["senado"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nova-republica-2016-hoje",
+      "name": "De Temer a Lula",
+      "era": "Nova República",
+      "start": "2016-08-31",
+      "end": null,
+      "years": { "from": 2016, "to": 2025 },
+      "summary": "Reformas fiscais e trabalhistas, a pandemia, os ataques de 8 de janeiro e a volta de Lula.",
+      "presidents": [
+        { "name": "Michel Temer", "start": "2016-08-31", "end": "2019-01-01", "how": "Vice-presidente; no exercício desde 12/05/2016.", "sources": ["presidencia"] },
+        { "name": "Jair Bolsonaro", "start": "2019-01-01", "end": "2023-01-01", "how": "Eleito por voto direto em 2018.", "sources": ["presidencia"] },
+        { "name": "Luiz Inácio Lula da Silva", "start": "2023-01-01", "end": null, "how": "Eleito por voto direto em 2022.", "sources": ["presidencia"] }
+      ],
+      "milestones": [
+        { "date": "2016-12-15", "kind": "constitution", "title": "Teto de gastos", "text": "A Emenda Constitucional nº 95 limita o crescimento das despesas primárias da União à inflação.", "sources": ["ec95"] },
+        { "date": "2017-07-13", "kind": "law", "title": "Reforma trabalhista", "text": "A Lei nº 13.467 altera a CLT e faz o negociado prevalecer sobre a lei em vários temas.", "sources": ["reforma-trabalhista"] },
+        { "date": "2019-11-12", "kind": "constitution", "title": "Reforma da Previdência", "text": "A Emenda Constitucional nº 103 fixa idade mínima para a aposentadoria.", "sources": ["ec103"] },
+        { "date": "2020-04-02", "kind": "law", "title": "Auxílio emergencial", "text": "A Lei nº 13.982 cria o auxílio pago durante a pandemia de covid-19.", "sources": ["auxilio"] },
+        { "date": "2021-04-15", "kind": "event", "title": "STF anula condenações de Lula", "text": "O plenário do STF confirma que a 13ª Vara Federal de Curitiba não era competente para julgar Lula; em março, a 2ª Turma havia declarado a suspeição de Sergio Moro no caso do triplex.", "sources": ["stf"] },
+        { "date": "2023-01-08", "kind": "event", "title": "Ataques de 8 de janeiro", "text": "As sedes dos três Poderes, em Brasília, são invadidas e depredadas.", "sources": ["stf", "senado"] },
+        { "date": "2023-12-20", "kind": "constitution", "title": "Reforma tributária", "text": "A Emenda Constitucional nº 132 troca cinco tributos sobre o consumo pela CBS, o IBS e o Imposto Seletivo.", "sources": ["ec132"] },
+        { "date": "2025-09-11", "kind": "event", "title": "Condenação por tentativa de golpe", "text": "A 1ª Turma do STF condena Jair Bolsonaro e outros réus por tentativa de golpe de Estado e outros crimes, na Ação Penal 2668.", "sources": ["stf"] }
+      ],
+      "advances": [
+        { "text": "A taxa de desocupação caiu de 13,2% em 2021 para 5,9% em 2025, na média dos quatro trimestres da PNAD Contínua.", "sources": ["ipeadata"] },
+        { "text": "A reforma tributária (EC 132/2023) unifica tributos sobre o consumo, com transição até 2033.", "sources": ["ec132"] }
+      ],
+      "critiques": [
+        { "text": "O teto de gastos foi alterado por emendas em 2021 e 2022 e substituído pelo regime fiscal da Lei Complementar nº 200/2023.", "sources": ["ec95", "lc200"] },
+        { "text": "A CPI da Pandemia do Senado aprovou em 2021 relatório que pediu o indiciamento do então presidente e de outras pessoas.", "sources": ["senado"] }
+      ],
+      "divergences": [
+        {
+          "topic": "A Operação Lava Jato",
+          "positions": [
+            { "text": "O Ministério Público Federal registrou acordos de colaboração e a devolução de recursos à Petrobras.", "sources": ["senado"] },
+            { "text": "O STF anulou condenações de Lula por incompetência do juízo e reconheceu a parcialidade do juiz no caso do triplex.", "sources": ["stf"] }
+          ]
+        }
+      ]
+    }
+  ]
+}

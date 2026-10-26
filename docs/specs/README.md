@@ -18,4 +18,4 @@ As specs vivas do Fiscal: um arquivo por capacidade, com a verdade **atual** do 
 | Site público e Fiscal na Web | [../web.md](../web.md) |
 | Admin, flags remotas e versões | [../admin.md](../admin.md) |
 
-As specs que nasceram com o template continuam em `docs/` para não quebrar links; capacidades novas entram aqui e na tabela. Roteiros de teste e operação (`validation.md`, `subscription-sandbox.md`, `app-store/`) não são specs.
+As specs que nasceram com o template continuam em `docs/` para não quebrar links; capacidades novas entram aqui e na tabela. Roteiros de teste e operação (`validation.md`, `app-store/`) não são specs.

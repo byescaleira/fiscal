@@ -17,6 +17,9 @@
     "Fiscal/Fiscal/AppShortcuts.xcstrings",
     "Fiscal/FiscalWidgets/Localizable.xcstrings"
   ],
+  "languages": [
+    "pt-BR"
+  ],
   "swiftlintConfig": ".swiftlint.yml",
   "swiftlintResolver": "scripts/install-swiftlint.sh",
   "allow": {

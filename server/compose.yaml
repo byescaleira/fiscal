@@ -1,0 +1,142 @@
+services:
+  fiscal-api:
+    image: fiscal-api:current
+    container_name: fiscal-api
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3130:3130"
+    environment:
+      APNS_KEY_ID: ${APNS_KEY_ID:?APNS_KEY_ID is required}
+      APNS_TEAM_ID: ${APNS_TEAM_ID:?APNS_TEAM_ID is required}
+      APNS_TOPIC: ${APNS_TOPIC:?APNS_TOPIC is required (bundle id + .push-type.liveactivity)}
+      POLL_INTERVAL: ${POLL_INTERVAL:-20s}
+      SIMULATE: ${SIMULATE:-}
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-}
+      HIGHLIGHT_ALERTS: ${HIGHLIGHT_ALERTS:-1}
+      APNS_DISABLED: ${APNS_DISABLED:-}
+      TSE_BASE_URL: ${TSE_BASE_URL:-https://resultados.tse.jus.br/oficial/ele2026}
+      APPATTEST_MODE: ${APPATTEST_MODE:-optional}
+      APPATTEST_APP_ID: ${APPATTEST_APP_ID:-}
+      APPATTEST_ALLOW_DEVELOPMENT: ${APPATTEST_ALLOW_DEVELOPMENT:-0}
+      GOMEMLIMIT: 200MiB
+    volumes:
+      - ./data:/data
+      - ./public:/public
+      - ./secrets:/secrets:ro
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 256m
+    memswap_limit: 256m
+    cpus: 1.0
+    oom_score_adj: -500
+    pids_limit: 128
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/liveresults-server", "-check"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  fiscal-ingest:
+    image: fiscal-ingest:current
+    profiles: ["jobs"]
+    restart: "no"
+    environment:
+      DATA_DIR: /data
+      PUBLIC_DIR: /public
+      STORE_PATH: /data/fiscal.db
+      GOMEMLIMIT: ${INGEST_GOMEMLIMIT:-900MiB}
+      GOGC: "50"
+      INGEST_YEARS: ${INGEST_YEARS:-}
+      INGEST_UFS: ${INGEST_UFS:-}
+      INGEST_SOURCES: ${INGEST_SOURCES:-}
+      TSE_YEARS: ${TSE_YEARS:-2022,2026}
+      TSE_CANDIDATE_YEARS: ${TSE_CANDIDATE_YEARS:-2018}
+      INGEST_WORKERS: ${INGEST_WORKERS:-3}
+      INGEST_REQUEST_GAP: ${INGEST_REQUEST_GAP:-300ms}
+      INGEST_NICE: "19"
+      INGEST_MAX_LOAD: ${INGEST_MAX_LOAD:-2}
+      INGEST_MIN_AVAILABLE_MB: ${INGEST_MIN_AVAILABLE_MB:-1536}
+      INGEST_CAPACITY_WAIT: ${INGEST_CAPACITY_WAIT:-20m}
+      INGEST_LOCK_WAIT: ${INGEST_LOCK_WAIT:-20m}
+      SITE_MAX_FILES: ${SITE_MAX_FILES:-18000}
+      SITE_MAX_DROP: ${SITE_MAX_DROP:-0.2}
+      BACKUP_KEEP: ${BACKUP_KEEP:-14}
+      PSEUDONYM_KEY_FILE: /run/fiscal/pseudonym-key
+    volumes:
+      - ./ingest-data:/data
+      - ./ingest-backups:/data/backups
+      - ./public:/public
+      - type: bind
+        source: ./secrets/pseudonym-key
+        target: /run/fiscal/pseudonym-key
+        read_only: true
+        bind:
+          create_host_path: false
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    cpus: ${INGEST_CPUS:-1.0}
+    cpu_shares: 128
+    mem_limit: ${INGEST_MEM_LIMIT:-1200m}
+    memswap_limit: ${INGEST_MEM_LIMIT:-1200m}
+    oom_score_adj: 1000
+    blkio_config:
+      weight: 10
+    pids_limit: 128
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  fiscal-pages:
+    image: fiscal-pages:current
+    profiles: ["jobs"]
+    restart: "no"
+    environment:
+      DATA_DIR: /data
+      PUBLIC_DIR: /public
+      PAGES_PROJECT: ${PAGES_PROJECT:-fiscal-dados}
+      PAGES_BRANCH: ${PAGES_BRANCH:-main}
+      CLOUDFLARE_ACCOUNT_ID: ${CLOUDFLARE_ACCOUNT_ID:-}
+      CLOUDFLARE_API_TOKEN_FILE: /run/fiscal/cloudflare-pages-token
+      PAGES_DATA_INTERVAL: ${PAGES_DATA_INTERVAL:-1h}
+      PAGES_MAX_DEPLOYS_PER_DAY: ${PAGES_MAX_DEPLOYS_PER_DAY:-400}
+    volumes:
+      - ./pages-data:/data
+      - ./public:/public
+      - type: bind
+        source: ./secrets/cloudflare-pages-token
+        target: /run/fiscal/cloudflare-pages-token
+        read_only: true
+        bind:
+          create_host_path: false
+    tmpfs:
+      - /tmp:size=2g,mode=1777
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    cpus: 1.0
+    cpu_shares: 128
+    mem_limit: 3g
+    memswap_limit: 3g
+    oom_score_adj: 900
+    pids_limit: 256
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

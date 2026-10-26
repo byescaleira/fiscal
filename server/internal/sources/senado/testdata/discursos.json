@@ -1,0 +1,116 @@
+{
+ "DiscursosParlamentar": {
+  "noNamespaceSchemaLocation": "https://legis.senado.leg.br/dadosabertos/dados/DiscursosParlamentarv5.xsd",
+  "Metadados": {
+   "Versao": "25/10/2026 14:38:44",
+   "VersaoServico": "5",
+   "DataVersaoServico": "2021-06-29",
+   "DescricaoDataSet": "Discursos do Parlamentar. Se não informar o período, serão retornados os discursos dos últimos 30 dias."
+  },
+  "Parlamentar": {
+   "IdentificacaoParlamentar": {
+    "CodigoParlamentar": "5672",
+    "CodigoPublicoNaLegAtual": "800",
+    "NomeParlamentar": "Alan Rick",
+    "NomeCompletoParlamentar": "Alan Rick Miranda",
+    "SexoParlamentar": "Masculino",
+    "FormaTratamento": "Senador ",
+    "UrlFotoParlamentar": "http://www.senado.leg.br/senadores/img/fotos-oficiais/senador5672.jpg",
+    "UrlPaginaParlamentar": "http://www25.senado.leg.br/web/senadores/senador/-/perfil/5672",
+    "EmailParlamentar": "sen.alanrick@senado.leg.br",
+    "SiglaPartidoParlamentar": "REPUBLICANOS",
+    "UfParlamentar": "AC"
+   },
+   "Pronunciamentos": {
+    "Pronunciamento": [
+     {
+      "CodigoPronunciamento": "524112",
+      "TipoUsoPalavra": {
+       "Codigo": "4828",
+       "Sigla": "PL",
+       "Descricao": "Pela Liderança",
+       "IndicadorAtivo": "Sim"
+      },
+      "DataPronunciamento": "2026-09-02",
+      "SiglaPartidoParlamentarNaData": "REPUBLICANOS",
+      "UfParlamentarNaData": "AC",
+      "SiglaCasaPronunciamento": "SF",
+      "NomeCasaPronunciamento": "Senado Federal",
+      "TextoResumo": "Indignação diante das informações divulgadas pela imprensa apontando possível envolvimento entre o Ministro do STF Alexandre de Moraes e o ex-banqueiro Daniel Vorcaro. Defesa de investigação independente e transparente e de imediata análise, pelo Senado Federal, dos pedidos de impeachment apresentados contra o Ministro.",
+      "Indexacao": "COMENTARIO, RELATORIO, POLICIA FEDERAL, MINISTRO, SUPREMO TRIBUNAL FEDERAL (STF), ALEXANDRE DE MORAES, RELACIONAMENTO, DANIEL VORCARO, DEFESA, INVESTIGAÇÃO, DEVIDO PROCESSO LEGAL, DIREITO DE DEFESA, COBRANÇA, SENADO, ANALISE, PEDIDO, IMPEACHMENT.",
+      "UrlTexto": "https://www25.senado.leg.br/web/atividade/pronunciamentos/-/p/texto/524112",
+      "UrlTextoBinario": "https://legis.senado.gov.br/disse/dadosabertos/arquivoTextoPronunciamento/524112",
+      "SessaoPlenaria": {
+       "CodigoSessao": "587381",
+       "SiglaCasaSessao": "SF",
+       "NomeCasaSessao": "Senado Federal",
+       "CodigoSessaoLegislativa": "874",
+       "SiglaTipoSessao": "DOR",
+       "NumeroSessao": "120",
+       "DataSessao": "2026-09-02",
+       "HoraInicioSessao": "14:00:00"
+      },
+      "Publicacoes": {
+       "Publicacao": [
+        {
+         "DescricaoVeiculoPublicacao": "DSF",
+         "DataPublicacao": "2026-09-03",
+         "NumeroPagInicioPublicacao": "83",
+         "IndicadorRepublicacao": "Não",
+         "UrlDiario": "http://legis.senado.leg.br/diarios/BuscaDiario?tipDiario=1&datDiario=03/09/2026&paginaDireta=83"
+        }
+       ]
+      }
+     },
+     {
+      "CodigoPronunciamento": "522858",
+      "TipoUsoPalavra": {
+       "Codigo": "4819",
+       "Sigla": "DIS",
+       "Descricao": "Discurso",
+       "IndicadorAtivo": "Sim"
+      },
+      "DataPronunciamento": "2026-06-09",
+      "SiglaPartidoParlamentarNaData": "REPUBLICANOS",
+      "UfParlamentarNaData": "AC",
+      "SiglaCasaPronunciamento": "SF",
+      "NomeCasaPronunciamento": "Senado Federal",
+      "TextoResumo": "Defesa da importância da aprovação célere do Projeto de Lei nº 5238/2025, de autoriade S. Exa., que institui a Política Nacional de Conscientização e Orientação sobre a Linfangioleiomiomatose (LAM). Agradecimento à Associação dos Portadores de Linfangioleiomiomatose do Brasil (Alambra) e à Sociedade Brasileira de Pneumologia e Tisiologia pelo apoio às pacientes.",
+      "Indexacao": "PROJETO DE LEI, CRIAÇÃO, LEI FEDERAL, POLITICA NACIONAL, CONSCIENTIZAÇÃO, DOENÇA RARA, DOENÇA GRAVE, DEFINIÇÃO, ATUAÇÃO, UNIÃO, ESTADOS, MUNICIPIOS, AMBITO, SISTEMA UNICO DE SAUDE (SUS).\nAGRADECIMENTO, ASSOCIAÇÃO CIVIL.\nCOBRANÇA, INVESTIGAÇÃO, RESPONSABILIDADE, DESABAMENTO, PONTE, SENA MADUREIRA (AC), VOTO DE SOLIDARIEDADE, VITIMA.",
+      "UrlTexto": "https://www25.senado.leg.br/web/atividade/pronunciamentos/-/p/texto/522858",
+      "UrlTextoBinario": "https://legis.senado.gov.br/disse/dadosabertos/arquivoTextoPronunciamento/522858",
+      "SessaoPlenaria": {
+       "CodigoSessao": "564647",
+       "SiglaCasaSessao": "SF",
+       "NomeCasaSessao": "Senado Federal",
+       "CodigoSessaoLegislativa": "874",
+       "SiglaTipoSessao": "DOR",
+       "NumeroSessao": "76",
+       "DataSessao": "2026-06-09",
+       "HoraInicioSessao": "14:00:00"
+      },
+      "Aparteantes": {
+       "Aparteante": {
+        "CodigoParlamentar": "4560",
+        "NomeAparteante": "Sérgio Petecão"
+       }
+      },
+      "Publicacoes": {
+       "Publicacao": [
+        {
+         "DescricaoVeiculoPublicacao": "DSF",
+         "DataPublicacao": "2026-06-10",
+         "NumeroPagInicioPublicacao": "111",
+         "NumeroPagFimPublicacao": "114",
+         "IndicadorRepublicacao": "Não",
+         "UrlDiario": "http://legis.senado.leg.br/diarios/BuscaDiario?tipDiario=1&datDiario=10/06/2026&paginaDireta=111"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "UrlGlossario": "http://legis.senado.leg.br/dadosabertos/senador/"
+  }
+ }
+}

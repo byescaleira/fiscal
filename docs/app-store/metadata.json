@@ -6,89 +6,17 @@
     "terms": "https://fiscal.byescaleira.com/terms"
   },
   "locales": {
-    "en-US": {
-      "name": "",
-      "subtitle": "",
-      "promotionalText": "",
-      "keywords": "",
-      "whatsNew": "",
-      "description": ""
-    },
     "pt-BR": {
-      "name": "",
-      "subtitle": "",
-      "promotionalText": "",
-      "keywords": "",
+      "name": "Fiscal: Política Transparente",
+      "subtitle": "Votos, gastos e eleições",
+      "promotionalText": "Veja a apuração ao vivo, o que cada político fez depois da posse e quanto custa um mandato. Dados oficiais, a mesma régua para todos. Grátis e sem cadastro.",
+      "keywords": "deputado,senador,vereador,prefeito,governador,congresso,câmara,senado,tse,apuração,candidato",
       "whatsNew": "",
-      "description": ""
-    },
-    "es-ES": {
-      "name": "",
-      "subtitle": "",
-      "promotionalText": "",
-      "keywords": "",
-      "whatsNew": "",
-      "description": ""
-    },
-    "de-DE": {
-      "name": "",
-      "subtitle": "",
-      "promotionalText": "",
-      "keywords": "",
-      "whatsNew": "",
-      "description": ""
-    },
-    "fr-FR": {
-      "name": "",
-      "subtitle": "",
-      "promotionalText": "",
-      "keywords": "",
-      "whatsNew": "",
-      "description": ""
-    },
-    "it": {
-      "name": "",
-      "subtitle": "",
-      "promotionalText": "",
-      "keywords": "",
-      "whatsNew": "",
-      "description": ""
-    },
-    "ja": {
-      "name": "",
-      "subtitle": "",
-      "promotionalText": "",
-      "keywords": "",
-      "whatsNew": "",
-      "description": ""
-    },
-    "ko": {
-      "name": "",
-      "subtitle": "",
-      "promotionalText": "",
-      "keywords": "",
-      "whatsNew": "",
-      "description": ""
-    },
-    "zh-Hans": {
-      "name": "",
-      "subtitle": "",
-      "promotionalText": "",
-      "keywords": "",
-      "whatsNew": "",
-      "description": ""
-    },
-    "ru": {
-      "name": "",
-      "subtitle": "",
-      "promotionalText": "",
-      "keywords": "",
-      "whatsNew": "",
-      "description": ""
+      "description": "O Fiscal mostra o que os seus representantes fazem com o seu voto. Presença, votações, projetos, gastos e campanhas de quem governa e legisla, do vereador ao presidente, em linguagem simples e com a fonte oficial ao lado de cada número.\n\nOs fatos são os mesmos para todo mundo. O Fiscal não toma partido, não dá nota a ninguém e diz por que quando algo é estimado.\n\nHOJE\n• O destaque do momento: o que mais repercute e mais atinge a vida das pessoas, com a mesma regra para todos os políticos e temas\n• O resumo do dia no Congresso e as votações que acabaram de acontecer\n• Apuração ao vivo nas eleições, com o vencedor anunciado na hora, Atividade ao Vivo e widget\n\nSUA REGIÃO\n• Quem governa a sua cidade, o seu estado e o país, e o que cada um tem feito\n• As bancadas da Câmara Municipal, da Assembleia e da Câmara dos Deputados, partido por partido\n• Como os seus deputados e senadores votaram nas últimas decisões\n• Todos os 5.570 municípios do Brasil\n\nCADA POLÍTICO, POR INTEIRO\n• Presença, propostas, discursos e cota de cada parlamentar, comparados com os colegas do mesmo cargo\n• Antes e durante o mandato: patrimônio, preços e indicadores da época\n• O que circulou sobre a pessoa, com as checagens do Projeto Comprova\n• Compare duas pessoas lado a lado\n\nVOTAÇÕES E DINHEIRO\n• O que foi decidido e o que muda na prática, com o placar por partido\n• Quanto custa um mandato, estado por estado, contra o salário mínimo\n• Para onde vai a cota parlamentar e quem financia as campanhas\n\nFISCALIZE E COMPARTILHE\n• Busque qualquer pessoa, votação, tema ou cidade\n• Explicações em português simples, escritas pela Apple Intelligence nos aparelhos compatíveis, só com os fatos oficiais\n• Transforme o que você descobriu em um cartaz pronto para os Stories, o feed ou uma mensagem, com obras de arte brasileiras em domínio público\n\nSEU APOIO FICA COM VOCÊ\nEscolha quem você apoia e os temas que importam, e o Fiscal mostra primeiro o que tem a ver com você. Essa escolha fica só neste iPhone: não vai para nenhum servidor, nem para o iCloud. Sem cadastro, sem anúncios, sem rastreamento.\n\nFONTES OFICIAIS\nCâmara dos Deputados, Senado Federal, Tribunal Superior Eleitoral, IBGE, Receita Federal, ANP, assembleias legislativas e Projeto Comprova. Os dados são atualizados todos os dias, e a apuração, em tempo real.\n\nO Fiscal é gratuito, sem assinatura e sem compras no app. Não é ligado a nenhum governo, partido ou candidato.\n\nTermos de Uso: https://fiscal.byescaleira.com/terms\nPolítica de Privacidade: https://fiscal.byescaleira.com/privacy"
     }
   },
   "review": {
-    "notes": "",
-    "contact": ""
+    "notes": "Fiscal is a free Brazilian political transparency app in Portuguese (Brazil). No account, no sign-in, no in-app purchases, no ads and no third-party analytics.\n\nAll data is public and official (Chamber of Deputies, Federal Senate, Superior Electoral Court, IBGE, Federal Revenue, ANP and the Projeto Comprova fact checks under CC BY-ND 4.0). The app reads pre-built static JSON files from https://fiscal.byescaleira.com/api; it sends no personal data. The only upload is the Live Activity push token when the user starts following a live election race, to update the Live Activity.\n\nThe optional \"who you support\" choice and topics stay on the device only (never synced, backed up or sent).\n\nNotifications are optional and used only for live election results and the highlight of the moment. Plain-language explanations use Apple's on-device Foundation Models when available and fall back to fixed text.\n\nThe app does not endorse any party or candidate. Party colors appear only on party tags.",
+    "contact": "support@byescaleira.com"
   }
 }

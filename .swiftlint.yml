@@ -3,7 +3,6 @@ included:
   - Fiscal/Shared
   - Fiscal/FiscalWidgets
   - Fiscal/FiscalUITests
-  - Fiscal/FiscalStoreTests
   - FiscalKit/Sources
   - FiscalKit/Tests
   - FiscalKit/Package.swift

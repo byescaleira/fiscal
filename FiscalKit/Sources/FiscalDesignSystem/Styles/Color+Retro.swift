@@ -16,6 +16,8 @@ extension Color {
     public static let retroPlum = Color(light: 0x74415F, dark: 0xB57FA0)
     public static let retroBrown = Color(light: 0x7E5536, dark: 0xBC8A62)
     public static let retroCream = Color(light: 0xF0E6D2, dark: 0xE6DAC2)
+    public static let scoreboard = Color(light: 0x0F1717, dark: 0x0F1717)
+    public static let scoreboardAccent = Color(light: 0x62ABA2, dark: 0x62ABA2)
 
     init(light: UInt32, dark: UInt32) {
         #if canImport(UIKit)

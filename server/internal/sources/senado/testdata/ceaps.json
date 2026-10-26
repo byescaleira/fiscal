@@ -1,0 +1,62 @@
+[
+ {
+  "id": 2279778,
+  "tipoDocumento": "Nota Fiscal Eletrônica",
+  "ano": 2026,
+  "mes": 1,
+  "codSenador": 5672,
+  "nomeSenador": "ALAN RICK",
+  "tipoDespesa": "Aluguel de imóveis para escritório político, compreendendo despesas concernentes a eles.",
+  "cpfCnpj": "66.970.229/0132-26",
+  "fornecedor": "CLARO NXT TELECOMUNICAÇÕES S.A",
+  "documento": "946049",
+  "data": "2026-01-20",
+  "detalhamento": null,
+  "valorReembolsado": 462.18
+ },
+ {
+  "id": 2279780,
+  "tipoDocumento": "Nota Fiscal Eletrônica",
+  "ano": 2026,
+  "mes": 1,
+  "codSenador": 5672,
+  "nomeSenador": "ALAN RICK",
+  "tipoDespesa": "Aluguel de imóveis para escritório político, compreendendo despesas concernentes a eles.",
+  "cpfCnpj": "04.065.033/0001-70",
+  "fornecedor": "ENERGISA ACRE - DISTRIBUIDORA DE ENERGIA S.A",
+  "documento": "2025009",
+  "data": "2026-01-21",
+  "detalhamento": null,
+  "valorReembolsado": 109.32
+ },
+ {
+  "id": 2279783,
+  "tipoDocumento": "Recibo",
+  "ano": 2026,
+  "mes": 1,
+  "codSenador": 5672,
+  "nomeSenador": "ALAN RICK",
+  "tipoDespesa": "Aluguel de imóveis para escritório político, compreendendo despesas concernentes a eles.",
+  "cpfCnpj": "860.***.***-53",
+  "fornecedor": "LARISSA MAIA MARTINELLO",
+  "documento": "1-2026",
+  "data": "2026-01-29",
+  "detalhamento": null,
+  "valorReembolsado": 4000
+ },
+ {
+  "id": 2283115,
+  "tipoDocumento": "Passagem / Bilhete / Código Localizador",
+  "ano": 2026,
+  "mes": 3,
+  "codSenador": 4639,
+  "nomeSenador": "BETO FARO",
+  "tipoDespesa": "Passagens aéreas, aquáticas e terrestres nacionais",
+  "cpfCnpj": "33.937.681/0001-78",
+  "fornecedor": "LATAM",
+  "documento": "FPONLL",
+  "data": "2026-03-07",
+  "detalhamento": "Companhia Aérea: LATAM, Localizador: FPONLL. Passageiros: ROGERIO DE ARAUJO LIMA (Matrícula 396191, COMISSIONADO), Voo: 3706 - BSB/BEL - 12/03/26; ROGERIO DE ARAUJO LIMA (Matrícula 396191, COMISSIONADO), Voo: 3212 - BEL/BSB - 13/03/26; ",
+  "valorReembolsado": 4576.32
+ }
+]

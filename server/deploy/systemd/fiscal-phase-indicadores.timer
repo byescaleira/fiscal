@@ -1,0 +1,11 @@
+[Unit]
+Description=Fiscal phase indicadores (daily)
+
+[Timer]
+OnCalendar=*-*-* 03:20:00 America/Sao_Paulo
+RandomizedDelaySec=5min
+Persistent=true
+Unit=fiscal-phase@indicadores.service
+
+[Install]
+WantedBy=timers.target

@@ -1,6 +1,6 @@
 # Validação
 
-Como verificar o Fiscal antes de uma versão, do automático ao que depende de aparelhos e dados reais. O caminho até a loja está em [app-store/README.md](app-store/README.md); as compras no sandbox, em [subscription-sandbox.md](subscription-sandbox.md); a atualização obrigatória, em [force-update.md](force-update.md).
+Como verificar o Fiscal antes de uma versão, do automático ao que depende de aparelhos e dados reais. O caminho até a loja está em [app-store/README.md](app-store/README.md); a atualização obrigatória, em [force-update.md](force-update.md). O app é gratuito: não há compras para validar.
 
 ## Automático
 
@@ -17,7 +17,6 @@ scripts/audit.sh
 - Zero warnings em iOS, macOS, visionOS e nos testes do pacote.
 - `scripts/test.sh` usa o simulador só pelo sim-monitor (`scripts/simulator.sh acquire`, `FISCAL_TEST_DESTINATION="platform=iOS Simulator,id=<udid>"`, `release`).
 - `scripts/ui-test.sh` confere o layout em telas grandes (iPad).
-- `scripts/store-test.sh` roda o `FiscalStoreTests` com o test plan `StoreKit` (ver [subscription-sandbox.md](subscription-sandbox.md#storekit-local)).
 - `scripts/audit.sh` só roda quando o pacote tiver o target `FiscalAudit` (migração, preview e volume).
 - Testes que dependem do modelo de linguagem do sistema falham no simulador; rode-os no aparelho e não conte como regressão.
 
@@ -50,7 +49,7 @@ Build: `____` · Data: `__/__/____`
 - [ ] Exportar os dados (JSON) e abrir o arquivo: tudo presente e legível.
 - [ ] Apagar tudo, importar o backup e conferir contagens e totais.
 - [ ] Importar num segundo aparelho com iCloud e ver os registros chegarem ao primeiro.
-- [ ] Exportar continua livre sem assinatura e na tela de atualização obrigatória.
+- [ ] Exportar continua disponível na tela de atualização obrigatória.
 
 ### Interface por plataforma
 
@@ -75,16 +74,6 @@ Build: `____` · Data: `__/__/____`
 - [ ] Controles da Central de Controle e do botão de Ação, se houver.
 - [ ] Notificações com ação, deep links (`fiscal://...`) e links universais.
 - [ ] Face ID, câmera e outras permissões: pedido, recusa e caminho para os Ajustes.
-
-### Compras no sandbox
-
-Roteiro completo em [subscription-sandbox.md](subscription-sandbox.md).
-
-- [ ] Assinar com o teste grátis e ver o estado "Free Trial" com a data de término.
-- [ ] Renovação acelerada vira assinatura paga sem ação da pessoa.
-- [ ] Desligar a renovação mantém o Fiscal Pro até a data e depois volta o paywall.
-- [ ] Restaurar compras num segundo aparelho com o app recém-instalado.
-- [ ] Pedir para Comprar (Ask to Buy) fica pendente e libera quando aprovado.
 
 ### Atualização obrigatória
 

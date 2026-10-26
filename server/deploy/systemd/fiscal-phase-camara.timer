@@ -1,0 +1,11 @@
+[Unit]
+Description=Fiscal phase camara (daily, after the Camara regenerates its yearly files)
+
+[Timer]
+OnCalendar=*-*-* 05:00:00 America/Sao_Paulo
+RandomizedDelaySec=5min
+Persistent=true
+Unit=fiscal-phase@camara.service
+
+[Install]
+WantedBy=timers.target

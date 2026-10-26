@@ -1,0 +1,29 @@
+{
+  "source": "FiscalKit/Sources/FiscalDesignSystem/Styles/PartyPalette.swift",
+  "fallback": [
+    { "primary": "#2A7069", "secondary": "#62ABA2" },
+    { "primary": "#B8841C", "secondary": "#E3B04B" }
+  ],
+  "parties": {
+    "pt": { "primary": "#D7191C", "secondary": "#8E0A12" },
+    "pcdob": { "primary": "#C8102E", "secondary": "#F2B705" },
+    "psol": { "primary": "#F2A900", "secondary": "#A6192E" },
+    "psb": { "primary": "#E4572E", "secondary": "#F9C80E" },
+    "pdt": { "primary": "#D62828", "secondary": "#1D3557" },
+    "pv": { "primary": "#2A9D3C", "secondary": "#146B2B" },
+    "rede": { "primary": "#00A19A", "secondary": "#F7941D" },
+    "pl": { "primary": "#1F3C88", "secondary": "#00A859" },
+    "republicanos": { "primary": "#2D8FD5", "secondary": "#0B4F8A" },
+    "pp": { "primary": "#24569C", "secondary": "#6EC1E4" },
+    "uniao": { "primary": "#1E5BA8", "secondary": "#F4C430" },
+    "psd": { "primary": "#0F6E3A", "secondary": "#F2C14E" },
+    "mdb": { "primary": "#2E9E4F", "secondary": "#F5D000" },
+    "psdb": { "primary": "#1B5FAA", "secondary": "#FDD835" },
+    "novo": { "primary": "#F26522", "secondary": "#1C2B39" },
+    "podemos": { "primary": "#2BB673", "secondary": "#0E7C47" },
+    "avante": { "primary": "#F7941D", "secondary": "#00A0DC" },
+    "solidariedade": { "primary": "#F58220", "secondary": "#005BAA" },
+    "cidadania": { "primary": "#EC008C", "secondary": "#2E3192" },
+    "missao": { "primary": "#111827", "secondary": "#F59E0B" }
+  }
+}

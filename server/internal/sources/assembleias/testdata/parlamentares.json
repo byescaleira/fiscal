@@ -1,0 +1,61 @@
+{
+ "pagination": {
+  "links": {
+   "next": "http://sapl.al.ac.leg.br/api/parlamentares/parlamentar/?page=2&page_size=2",
+   "previous": null
+  },
+  "previous_page": null,
+  "next_page": null,
+  "start_index": 1,
+  "end_index": 2,
+  "total_entries": 187,
+  "total_pages": 94,
+  "page": 1
+ },
+ "results": [
+  {
+   "id": 248,
+   "__str__": "ADAILTON CRUZ",
+   "link_detail_backend": "/parlamentar/248",
+   "metadata": {},
+   "data_ultima_atualizacao": "2026-10-14T15:05:55.627605-03:00",
+   "nome_completo": "José Adailton Cruz Pereira",
+   "nome_parlamentar": "ADAILTON CRUZ",
+   "sexo": "M",
+   "numero_gab_parlamentar": "",
+   "telefone": "3213-4078 / 3213-4079",
+   "telefone_celular": "",
+   "endereco_web": "",
+   "profissao": "",
+   "email": "dep.adailton.cruz@al.ac.leg.br",
+   "locais_atuacao": "",
+   "ativo": true,
+   "biografia": "",
+   "fotografia": "http://sapl.al.ac.leg.br/media/sapl/public/parlamentar/248/foto_dep_17_P2gnjRV.jpg",
+   "cropping": "0,0,862,862",
+   "nivel_instrucao": 1
+  },
+  {
+   "id": 79,
+   "__str__": "Adalberto Aragão",
+   "link_detail_backend": "/parlamentar/79",
+   "metadata": {},
+   "data_ultima_atualizacao": "2026-10-14T15:05:55.627605-03:00",
+   "nome_completo": "Adalberto Aragão Silva",
+   "nome_parlamentar": "Adalberto Aragão",
+   "sexo": "M",
+   "numero_gab_parlamentar": "",
+   "telefone": "",
+   "telefone_celular": "",
+   "endereco_web": "",
+   "profissao": "",
+   "email": "",
+   "locais_atuacao": "",
+   "ativo": false,
+   "biografia": "",
+   "fotografia": null,
+   "cropping": "",
+   "nivel_instrucao": null
+  }
+ ]
+}

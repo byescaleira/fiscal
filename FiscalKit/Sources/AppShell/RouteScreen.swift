@@ -1,5 +1,15 @@
 import FeatureCore
-import FeatureHome
+import FeatureLens
+import FeatureLiveResults
+import FeatureMemory
+import FeatureMoney
+import FeatureProfile
+import FeatureSearch
+import FeatureSettings
+import FeatureShare
+import FeatureVotes
+import FiscalDesignSystem
+import FiscalDomain
 import SwiftUI
 
 struct RouteScreen: View {
@@ -7,11 +17,82 @@ struct RouteScreen: View {
     let route: Route
 
     @ViewBuilder var body: some View {
+        let data = FiscalServices.shared.publicData()
         switch route {
-        case .item(let id):
-            ModelHost(ItemEditorModel(id: id, repositories: session.repositories)) {
-                ItemEditorScreen()
+        case .person(let slug):
+            ModelHost(
+                ProfileModel(
+                    slug: slug, service: data, follows: session.repositories.follows,
+                    lens: session.repositories.lens)
+            ) {
+                ProfileScreen()
+            }
+        case .vote(let id):
+            ModelHost(
+                VoteDetailModel(
+                    id: id, service: data, lens: session.repositories.lens,
+                    homeUF: HomePlace.chosenUF(in: .standard))
+            ) {
+                VoteDetailScreen()
+            }
+        case .expenses(let slug, let year):
+            ModelHost(ExpensesModel(slug: slug, year: year, service: data)) { ExpensesScreen() }
+        case .compare(let slugs):
+            ModelHost(CompareModel(slugs: slugs, service: data)) { CompareScreen() }
+        case .races: ModelHost(FiscalServices.shared.liveResults()) { LiveResultsScreen() }
+        case .memory:
+            ModelHost(
+                MemoryModel(service: data, races: FiscalServices.shared.liveResultsService())
+            ) {
+                MemoryScreen()
+            }
+        case .pastElection(let year):
+            ModelHost(ElectionYearModel(year: year, service: data)) { ElectionYearScreen() }
+        case .pastRace(let id):
+            ModelHost(PastRaceModel(id: id, service: data)) { PastRaceScreen() }
+        case .period(let id): ModelHost(PeriodModel(id: id, service: data)) { PeriodScreen() }
+        case .studyGuide(let id):
+            ModelHost(StudyGuideModel(id: id, service: data)) { StudyGuideScreen() }
+        case .lens: LensDestination()
+        case .artists: ArtistsDestination()
+        case .settings:
+            SettingsScreen(service: data) {
+                LensDestination()
+            } artists: {
+                ArtistsDestination()
+            }
+        case .share(let subject):
+            ModelHost(
+                ShareModel(
+                    subject: subject, service: data,
+                    races: FiscalServices.shared.liveResultsService(),
+                    lens: session.repositories.lens)
+            ) {
+                ShareScreen()
             }
         }
+    }
+}
+
+private struct LensDestination: View {
+    @Environment(LensContext.self) private var lens
+    @Environment(SessionModel.self) private var session
+
+    var body: some View {
+        ModelHost(
+            LensModel(
+                context: lens, service: FiscalServices.shared.publicData(),
+                icons: SystemAppIconSwitcher(), follows: session.repositories.follows)
+        ) {
+            LensScreen()
+        }
+    }
+}
+
+private struct ArtistsDestination: View {
+    @Environment(SessionModel.self) private var session
+
+    var body: some View {
+        ModelHost(ArtistsModel(lens: session.repositories.lens)) { ArtistsScreen() }
     }
 }
