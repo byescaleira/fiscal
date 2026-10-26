@@ -9,14 +9,17 @@ public struct PortraitRequest: Sendable, Hashable {
     public let party: String
     public let isStill: Bool
     public let expression: PortraitExpression?
+    public let allowsGestures: Bool
 
     public init(
-        slug: String, party: String, isStill: Bool, expression: PortraitExpression? = nil
+        slug: String, party: String, isStill: Bool, expression: PortraitExpression? = nil,
+        allowsGestures: Bool = false
     ) {
         self.slug = slug
         self.party = party
         self.isStill = isStill
         self.expression = expression
+        self.allowsGestures = allowsGestures
     }
 }
 
