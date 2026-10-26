@@ -18,6 +18,8 @@ public struct PortraitLibrary: Sendable {
     public let generic: Data?
     public let seal: Data?
     private let animations: [String: Data]
+    private let packed: Data?
+    private let offsets: [String: [Int]]
 
     public init(
         rigVersion: Int, entries: [Entry], animations: [String: Data], generic: Data? = nil,
@@ -29,19 +31,52 @@ public struct PortraitLibrary: Sendable {
         self.animations = animations
         self.generic = generic
         self.seal = seal
+        packed = nil
+        offsets = [:]
+    }
+
+    init(
+        rigVersion: Int, entries: [Entry], packed: Data, offsets: [String: [Int]],
+        generic: Data?, seal: Data?
+    ) {
+        self.rigVersion = rigVersion
+        self.entries = Dictionary(
+            entries.map { ($0.slug, $0) }, uniquingKeysWith: { first, _ in first })
+        animations = [:]
+        self.packed = packed
+        self.offsets = offsets
+        self.generic = generic
+        self.seal = seal
     }
 
     public static let empty = PortraitLibrary(rigVersion: 0, entries: [], animations: [:])
 
     public static let bundled: PortraitLibrary = {
-        guard
-            let url = Bundle.module.url(forResource: "fiscal-portraits", withExtension: "deflate"),
-            let packed = try? Data(contentsOf: url),
-            let data = try? (packed as NSData).decompressed(using: .zlib) as Data,
-            let library = try? decode(data)
+        guard let url = Bundle.module.url(forResource: "fiscal-portraits", withExtension: "pack"),
+            let data = try? Data(contentsOf: url, options: .alwaysMapped),
+            let library = try? unpack(data)
         else { return .empty }
         return library
     }()
+
+    public static func unpack(_ data: Data) throws -> PortraitLibrary {
+        guard data.count > 4 else { throw PortraitLibraryError.malformed }
+        let length = data.prefix(4).reduce(0) { $0 << 8 | Int($1) }
+        let start = data.startIndex + 4
+        guard data.count >= 4 + length,
+            let root = try JSONSerialization.jsonObject(with: data[start..<start + length])
+                as? [String: Any],
+            let rigVersion = root["rigVersion"] as? Int,
+            let people = root["people"] as? [[String: Any]],
+            let offsets = root["offsets"] as? [String: [Int]]
+        else { throw PortraitLibraryError.malformed }
+        let entries = try JSONDecoder().decode(
+            [Entry].self, from: JSONSerialization.data(withJSONObject: people))
+        return PortraitLibrary(
+            rigVersion: rigVersion, entries: entries, packed: data.suffix(from: start + length),
+            offsets: offsets, generic: try root["generic"].map(document),
+            seal: try root["seal"].map(document))
+    }
 
     public static func decode(_ data: Data) throws -> PortraitLibrary {
         guard let root = try JSONSerialization.jsonObject(with: data) as? [String: Any],
@@ -74,7 +109,11 @@ public struct PortraitLibrary: Sendable {
 
     public func animationData(for slug: String, party: String) -> Data? {
         guard let entry = entries[slug], Self.sameParty(entry.party, party) else { return nil }
-        return animations[slug]
+        if let data = animations[slug] { return data }
+        guard let packed, let range = offsets[slug], range.count == 2 else { return nil }
+        let from = packed.startIndex + range[0]
+        let slice = packed[from..<from + range[1]]
+        return try? (Data(slice) as NSData).decompressed(using: .zlib) as Data
     }
 
     public static func sameParty(_ first: String, _ second: String) -> Bool {
