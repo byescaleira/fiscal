@@ -6569,16 +6569,6 @@
         }
       }
     },
-    "INVESTIGATE" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "INVESTIGAR"
-          }
-        }
-      }
-    },
     "Investigate" : {
       "localizations" : {
         "pt-BR" : {
