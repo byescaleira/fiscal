@@ -4129,6 +4129,16 @@
         }
       }
     },
+    "Important highlights on the Lock Screen" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Destaques importantes na tela de bloqueio"
+          }
+        }
+      }
+    },
     "in %@" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -6065,6 +6075,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Só neste iPhone"
+          }
+        }
+      }
+    },
+    "Only weight 85 or more, from the last day. Fiscal sends only an anonymous Apple token." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Só peso 85 ou mais, do último dia. O Fiscal envia só um código anônimo da Apple."
           }
         }
       }
