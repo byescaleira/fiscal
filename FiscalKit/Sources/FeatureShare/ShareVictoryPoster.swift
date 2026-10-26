@@ -22,9 +22,10 @@ struct ShareVictoryPoster: View {
             }
             .fixedSize(horizontal: false, vertical: true)
         }
-        .padding(format.margin)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        .padding(format.margin)
         .background { ShareVictoryField(party: victory.winner.party) }
+        .clipped()
     }
 }
 
@@ -88,9 +89,11 @@ struct ShareVictoryHero: View {
     private var score: some View {
         HStack(alignment: .center, spacing: .spaceM) {
             ShareVictoryParty(party: victory.winner.party, size: format.victoryParty)
-            ShareFigure(value: victory.percent, size: format.victoryPercent)
                 .fixedSize()
+            ShareFigure(value: victory.percent, size: format.victoryPercent)
+                .layoutPriority(1)
         }
+        .frame(maxWidth: .infinity)
     }
 
     private var statement: some View {
@@ -119,8 +122,9 @@ private struct ShareVictoryPortrait: View {
                     .foregroundStyle(.white, Color.scoreboardAccent)
             }
             .background {
-                CelebrationConfetti(colors: [palette.primary, palette.secondary, .white])
+                CelebrationConfetti(colors: [palette.secondary, .white])
                     .frame(width: size * .posterVictoryHalo, height: size * .posterVictoryHalo)
+                    .opacity(.opacityStrong)
             }
     }
 }

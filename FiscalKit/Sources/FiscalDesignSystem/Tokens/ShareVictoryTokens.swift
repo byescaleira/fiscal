@@ -7,7 +7,7 @@ extension CGFloat {
     public static let posterVictoryNameStories: CGFloat = 46
     public static let posterVictoryNameFeed: CGFloat = 30
     public static let posterVictoryNameMessage: CGFloat = 24
-    public static let posterVictoryPercentStories: CGFloat = 96
+    public static let posterVictoryPercentStories: CGFloat = 80
     public static let posterVictoryPercentFeed: CGFloat = 52
     public static let posterVictoryPercentMessage: CGFloat = 42
     public static let posterVictoryPartyStories: CGFloat = 20
@@ -19,7 +19,7 @@ extension CGFloat {
     public static let posterVictorySealMessage: CGFloat = 24
     public static let posterVictoryRingStories: CGFloat = 5
     public static let posterVictoryRing: CGFloat = 3
-    public static let posterVictoryHalo: CGFloat = 2.1
+    public static let posterVictoryHalo: CGFloat = 1.6
     public static let posterVictoryLine: CGFloat = 3
     public static let posterVictoryTagWidth: CGFloat = 0.7
     public static let posterVictoryTagHeight: CGFloat = 0.32
