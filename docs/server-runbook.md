@@ -203,6 +203,7 @@ Regras:
   - **O que o Fiscal faz.** `PAGES_MAX_DEPLOYS_PER_MONTH=450` é teto duro. As releases de rotina esperam `tempo até o fim do mês ÷ deploys restantes`, cerca de 96 min no começo do mês. As quentes esperam também `PAGES_DATA_INTERVAL`. `full`, `memoria`, rollback, `-force` e mudança na apuração saem na hora.
   - **Conferir.** Em Account Home › Workers & Pages › Plans, veja se o uso de builds do mês acompanha os deploys diretos.
   - **Se não contar:** `PAGES_MAX_DEPLOYS_PER_MONTH=9000`, `PAGES_DATA_INTERVAL=10m` e, se quiser tudo pelo Pages, `HOT_FROM_ORIGIN=0`.
+  - **Em produção (26/10/2026).** Depois de uns 12 deploys diretos, o painel não mostrou contador de builds do Pages e os "Workers build mins" seguiram em 0. O `.env` da VPS usa `PAGES_MAX_DEPLOYS_PER_MONTH=4500` (cerca de um deploy a cada 10 min) e `PAGES_DATA_INTERVAL=10m`, com `HOT_FROM_ORIGIN=1`. Se um deploy for recusado por cota, a release no ar continua servindo e o quente segue pela origem; volte o teto para 450.
   - **O quente não depende do Pages.** `today.json`, `agenda/today.json`, `votes/recent.json` e as votações de hoje ficam no `v1` da VPS assim que mudam. O `release.json` diz ao app que leia esses arquivos primeiro na origem (`origin.first`) e que busque lá uma votação que o Pages ainda não tem (`origin.onMissing`).
 
 ## 7. Caddy
