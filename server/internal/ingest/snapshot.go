@@ -13,7 +13,7 @@ import (
 
 const (
 	SnapshotFile    = "live-snapshot.gob"
-	snapshotVersion = 1
+	snapshotVersion = 2
 )
 
 var ErrNoSnapshot = errors.New("no full load snapshot yet")

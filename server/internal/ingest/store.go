@@ -3,6 +3,7 @@ package ingest
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"path/filepath"
 	"sort"
 	"strconv"
@@ -159,19 +160,39 @@ func (in *Ingest) skipped(ctx context.Context, source string) {
 	in.track(ctx, source).done(ctx, datastore.StatusSkipped, nil, nil)
 }
 
-func pseudonymizePeople(people []*publicdata.Person) {
+func pseudonymizePeople(m *publicdata.Pseudonyms, people []*publicdata.Person) {
 	for _, p := range people {
-		p.CPF = datastore.Pseudonym(p.CPF)
-		for i := range p.Candidacies {
-			p.Candidacies[i].CPF = datastore.Pseudonym(p.Candidacies[i].CPF)
-		}
+		m.Person(p)
 	}
 }
 
-func pseudonymizeCandidacies(cands []publicdata.Candidacy) {
+func pseudonymizeCandidacies(m *publicdata.Pseudonyms, cands []publicdata.Candidacy) {
 	for i := range cands {
-		cands[i].CPF = datastore.Pseudonym(cands[i].CPF)
+		cands[i].CPF = m.CPF(cands[i].CPF)
 	}
+}
+
+func (in *Ingest) slugsPath() string {
+	return filepath.Join(in.cfg.DataDir, "slugs.json")
+}
+
+func (in *Ingest) migrateSlugs(m *publicdata.Pseudonyms) error {
+	if m.Len() == 0 {
+		return nil
+	}
+	slugs, err := publicdata.LoadSlugs(in.slugsPath())
+	if err != nil {
+		return err
+	}
+	moved := slugs.Migrate(m)
+	if moved == 0 {
+		return nil
+	}
+	if err := slugs.Save(); err != nil {
+		return fmt.Errorf("slugs: %w", err)
+	}
+	in.logger.Printf("slugs: %d entries moved to the keyed pseudonym", moved)
+	return nil
 }
 
 type quotaSnapshot struct {

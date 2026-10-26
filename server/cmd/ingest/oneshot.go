@@ -15,6 +15,7 @@ import (
 	"liveresults/internal/datastore"
 	"liveresults/internal/ingest"
 	"liveresults/internal/jobctl"
+	"liveresults/internal/publicdata"
 	"liveresults/internal/sources/fetch"
 )
 
@@ -38,6 +39,9 @@ func main() {
 	}
 	cfg, err := loadConfig(os.Getenv, time.Now())
 	if err != nil {
+		log.Fatalf("config: %v", err)
+	}
+	if err := publicdata.SetPseudonymKey(cfg.pseudonym); err != nil {
 		log.Fatalf("config: %v", err)
 	}
 	cfg.site.AllowDrop = *allowDrop
