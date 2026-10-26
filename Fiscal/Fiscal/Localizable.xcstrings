@@ -3469,6 +3469,26 @@
         }
       }
     },
+    "Final TSE result" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resultado final do TSE"
+          }
+        }
+      }
+    },
+    "Final TSE result at %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resultado final do TSE às %@"
+          }
+        }
+      }
+    },
     "Find anyone, compare and follow elections." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -6558,6 +6578,16 @@
         }
       }
     },
+    "Opens the result card for Stories, Feed and Message." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre o card do resultado para Stories, Feed e Mensagem."
+          }
+        }
+      }
+    },
     "Opens the search field" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -8612,6 +8642,16 @@
         }
       }
     },
+    "Share the result" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartilhar o resultado"
+          }
+        }
+      }
+    },
     "Short guides for each part of the app" : {
       "localizations" : {
         "pt-BR" : {
@@ -9754,6 +9794,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O card leva a fonte oficial, a data e o crédito da arte. Sua Lente nunca vai para a imagem."
+          }
+        }
+      }
+    },
+    "The card carries the official TSE numbers and the time of the file. Your Lens never goes into the image." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O card leva os números oficiais do TSE e o horário do arquivo. Quem você apoia nunca vai para a imagem."
           }
         }
       }
