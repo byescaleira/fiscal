@@ -114,7 +114,7 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Card do vencedor quando a disputa termina (sem "ao vivo"), com animação | no iPhone | RaceWinnerCard, WinnerLockScreen |
 | Sem tag de "lente" no Hoje; a palavra lente sai da interface | no iPhone | TodayScreen, badges |
 | Testar o disparo da Live Activity do destaque | no iPhone (forçado); pelo servidor não dispara: peso máx. 50 sem notícias | frente credibility |
-| Compartilhar o card de vitória nos Stories | em andamento | frente victory-share |
+| Compartilhar o card de vitória nos Stories | no iPhone | ShareVictoryPoster |
 | Credibilidade: só fatos, motivo da incerteza, sinal ausente não é zero | em andamento | frente credibility |
 
 | Selo de voto/resultado em círculo em todo o app | no iPhone | StatusCircle |
@@ -123,6 +123,7 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Tirar a tag "Sua cidade" | no iPhone | MineHeroCard |
 | Destaque do momento parecido com o card de vitória | em andamento | frente credibility |
 | Salários sem sentido (todos iguais) → "Quanto custa um mandato" | em andamento | frente mandate-cost |
+| Mais retratos: deputados estaduais, vice-governadores, prefeitos de capitais e cidades > 200 mil | em andamento | frentes faces e–h |
 
 ## Ícone
 
