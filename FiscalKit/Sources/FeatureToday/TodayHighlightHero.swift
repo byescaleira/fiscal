@@ -52,7 +52,6 @@ struct TodayHighlightHero: View {
                 .padding(.horizontal, .spaceM)
                 .padding(.vertical, .space2XS)
                 .background(.white.opacity(.opacityTint), in: .capsule)
-            if today.isSupportPick(highlight) { LensPickMark() }
             Spacer(minLength: .spaceS)
             Button("Share", systemImage: "square.and.arrow.up") {
                 open(.share(today.shareSubject(for: highlight)), in: section)
