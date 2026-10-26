@@ -11986,6 +11986,16 @@
         }
       }
     },
+    "Shows only the receipts of this kind" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra só as notas deste tipo"
+          }
+        }
+      }
+    },
     "Shows only this party in the roll call" : {
       "extractionState" : "stale",
       "localizations" : {
