@@ -5,12 +5,15 @@ import SwiftUI
 
 struct RaceDetailScreen: View {
     @Environment(LiveResultsModel.self) private var results
+    @State private var isLoading = true
     let raceID: String
 
     var body: some View {
         Group {
             if let race = results.race(id: raceID) {
                 RaceDetailContent(race: race)
+            } else if isLoading {
+                ProgressView("Loading").frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 ContentUnavailableView(
                     "Race unavailable", systemImage: "chart.bar.xaxis",
@@ -24,6 +27,10 @@ struct RaceDetailScreen: View {
             .navigationBarTitleDisplayMode(.inline)
         #endif
         .refreshable { await results.refresh() }
+        .task {
+            if results.race(id: raceID) == nil { await results.refresh() }
+            isLoading = false
+        }
     }
 }
 

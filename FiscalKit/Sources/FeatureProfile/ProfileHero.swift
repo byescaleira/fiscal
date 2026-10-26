@@ -143,22 +143,9 @@ struct BallotChip: View {
     let ballot: ProfileBallot
 
     var body: some View {
-        Label(ballot.title, systemImage: ballot.symbol)
-            .font(.chipLabel)
-            .foregroundStyle(ballot.color)
-            .lineLimit(1)
-            .fixedSize()
-            .padding(.horizontal, .spaceS)
-            .padding(.vertical, .space2XS)
-            .background(ballot.color.opacity(.opacityTint), in: .capsule)
-            .overlay {
-                if ballot == .absent {
-                    Capsule().strokeBorder(
-                        ballot.color,
-                        style: StrokeStyle(
-                            lineWidth: .spaceHairline / 2, dash: [.space2XS, .spaceHairline]))
-                }
-            }
+        StatusCircle(
+            ballot.title, symbol: ballot.symbol, color: ballot.color,
+            isDashed: ballot == .absent)
     }
 }
 

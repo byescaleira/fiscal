@@ -121,13 +121,7 @@ struct BallotChip: View {
     let ballot: TodayBallot
 
     var body: some View {
-        Label(ballot.title, systemImage: ballot.symbol)
-            .font(.chipLabel)
-            .foregroundStyle(ballot.color)
-            .lineLimit(1)
-            .padding(.horizontal, .spaceS)
-            .padding(.vertical, .space2XS)
-            .background(ballot.color.opacity(.opacityTint), in: .capsule)
+        StatusCircle(ballot.title, symbol: ballot.symbol, color: ballot.color)
     }
 }
 
@@ -135,15 +129,10 @@ struct ResultChip: View {
     let approved: Bool
 
     var body: some View {
-        let title: LocalizedStringKey = approved ? "Approved" : "Rejected"
-        Label(title, systemImage: approved ? "checkmark.seal" : "xmark.seal")
-            .font(.chipLabel)
-            .foregroundStyle(approved ? Color.positive : Color.negative)
-            .lineLimit(1)
-            .padding(.horizontal, .spaceS)
-            .padding(.vertical, .space2XS)
-            .background(
-                (approved ? Color.positive : Color.negative).opacity(.opacityTint), in: .capsule)
+        StatusCircle(
+            approved ? String(appLocalized: "Approved") : String(appLocalized: "Rejected"),
+            symbol: approved ? "checkmark" : "xmark",
+            color: approved ? Color.positive : Color.negative)
     }
 }
 

@@ -69,24 +69,8 @@ public struct BallotChip: View {
     }
 
     public var body: some View {
-        let color = choice?.color ?? .secondary
-        Label {
-            Text(verbatim: text)
-        } icon: {
-            Image(systemName: choice?.symbol ?? "circle.dotted")
-        }
-        .font(.chipLabel)
-        .foregroundStyle(color)
-        .padding(.horizontal, .spaceS)
-        .padding(.vertical, .space2XS)
-        .background(color.opacity(.opacityTint), in: .rect(cornerRadius: .radiusS))
-        .overlay {
-            if choice == .absent {
-                RoundedRectangle(cornerRadius: .radiusS)
-                    .strokeBorder(color, style: .dashed)
-            }
-        }
-        .lineLimit(1)
-        .fixedSize()
+        StatusCircle(
+            text, symbol: choice?.symbol ?? "circle.dotted", color: choice?.color ?? .secondary,
+            isDashed: choice == .absent)
     }
 }

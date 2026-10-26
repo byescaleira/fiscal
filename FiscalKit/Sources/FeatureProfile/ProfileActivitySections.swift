@@ -92,9 +92,13 @@ private struct ProfileProposalRow: View {
                     Chip(status, color: .secondary)
                 }
                 ForEach(proposal.themes) { theme in
-                    Label(theme.title, systemImage: theme.symbol)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    HStack(spacing: .space2XS) {
+                        Image(systemName: theme.symbol)
+                        Text(verbatim: theme.title)
+                    }
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize()
                 }
             }
             Text(verbatim: proposal.plainSummary ?? proposal.summary)
