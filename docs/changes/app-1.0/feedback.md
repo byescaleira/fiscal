@@ -117,6 +117,13 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Compartilhar o card de vitória nos Stories | em andamento | frente victory-share |
 | Credibilidade: só fatos, motivo da incerteza, sinal ausente não é zero | em andamento | frente credibility |
 
+| Selo de voto/resultado em círculo em todo o app | no iPhone | StatusCircle |
+| Propostas do perfil desconfiguradas (espaços enormes) | no iPhone | FlowLayout, ProfileProposalRow |
+| Card de vitória abrindo "disputa indisponível" | no iPhone (detalhe busca a disputa no servidor) | RaceDetailScreen |
+| Tirar a tag "Sua cidade" | no iPhone | MineHeroCard |
+| Destaque do momento parecido com o card de vitória | em andamento | frente credibility |
+| Salários sem sentido (todos iguais) → "Quanto custa um mandato" | em andamento | frente mandate-cost |
+
 ## Ícone
 
 | Pedido | Estado | Onde |
