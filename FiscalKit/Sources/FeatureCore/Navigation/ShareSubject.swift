@@ -5,4 +5,5 @@ public enum ShareSubject: Hashable, Sendable {
     case race(id: String)
     case compare(slugs: [String])
     case representatives(uf: String)
+    case highlight(id: String)
 }

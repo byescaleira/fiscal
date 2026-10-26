@@ -54,6 +54,7 @@ Rótulo em caixa alta espaçada → título (votação e apuração) → **heró
 | Gastos | Total da cota no ano | Notas fiscais, maior gasto (só no Stories), nome e partido |
 | Comparação | Duas pessoas em colunas iguais, cada uma com a faixa do partido | Presença, votações nominais e propostas (duas linhas na Mensagem) |
 | Representantes | Nome do lugar em rounded heavy | Todos os grupos em grade (contagem + cargo), sem lista de nomes |
+| Destaque do momento | A ementa oficial como veio, em rounded heavy, encolhendo pelo tamanho do texto (até 7, 5 e 4 linhas; 5, 3 e 2 quando há placar) | Nome e partido em faixas quando há pessoa, a linha "Casa · proposição · estágio", o placar SIM × NÃO da votação quando o item é votação e "Peso N de 100 · repercussão + impacto" em todos os formatos |
 | Apuração | Com dois candidatos, os dois percentuais lado a lado; com mais, todos em linhas | Nome, partido em faixas e "Eleito" quando o resultado é final; urnas apuradas, brancos e nulos em todos os formatos |
 
 ### Formatos

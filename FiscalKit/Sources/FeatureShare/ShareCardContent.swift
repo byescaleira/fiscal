@@ -9,6 +9,7 @@ public struct ShareCardContent: Hashable, Sendable {
         case race(ShareRace)
         case compare([ShareCompareRow])
         case representatives([ShareGroup])
+        case highlight(ShareHighlight)
     }
 
     public let eyebrow: String
@@ -122,4 +123,12 @@ public struct ShareGroup: Hashable, Sendable, Identifiable {
     public let names: [String]
 
     public var id: String { title }
+}
+
+public struct ShareHighlight: Hashable, Sendable {
+    public let title: String
+    public let person: ShareFace?
+    public let place: String
+    public let tally: ShareTally?
+    public let weight: String
 }
