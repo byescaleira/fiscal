@@ -213,7 +213,7 @@ public struct PublicDataClient: PublicDataService {
             } catch {}
         }
         do {
-            return try await grouped(path, base: dataURL)
+            return try await PublicDataResolver { try await fetch($0, base: dataURL) }.value(path)
         } catch PublicDataError.unavailable {
             return try await legacy(path)
         } catch PublicDataError.notFound where origin?.coversMissing(path) == true {

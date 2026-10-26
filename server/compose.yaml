@@ -70,6 +70,7 @@ services:
       SITE_MAX_FILES: ${SITE_MAX_FILES:-18000}
       SITE_MAX_DROP: ${SITE_MAX_DROP:-0.2}
       BACKUP_KEEP: ${BACKUP_KEEP:-14}
+      HOT_FROM_ORIGIN: ${HOT_FROM_ORIGIN:-1}
       PSEUDONYM_KEY_FILE: /run/fiscal/pseudonym-key
     volumes:
       - ./ingest-data:/data
