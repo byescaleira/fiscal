@@ -217,7 +217,9 @@ private struct PieceCard: View {
     var body: some View {
         HStack(spacing: .spaceS) {
             if case .person(let card) = piece {
-                PersonPortrait(slug: card.slug, name: card.name, party: card.party, size: .badgeM)
+                PersonPortrait(
+                    slug: card.slug, name: card.name, party: card.party, size: .badgeM,
+                    expression: board.phase == .loading ? .think : nil)
             } else {
                 SymbolBadge(piece.symbol, color: piece.kind.color, size: .badgeM)
             }

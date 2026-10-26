@@ -27,6 +27,9 @@ struct PortraitStoreTests {
             #expect(animation.frameTime(forMarker: expression.poseMarker) != nil, "\(expression)")
         }
         #expect(animation.frameTime(forMarker: "thinkLoop") != nil)
+        for gesture in PortraitGesture.allCases {
+            #expect(animation.frameTime(forMarker: gesture.rawValue) != nil, "\(gesture)")
+        }
     }
 
     @Test func colorsTheRigWithTheTraitsAndTheParty() throws {

@@ -42,7 +42,8 @@ HAIR_BACK = ("bob", "long", "wavy")
 FIELDS = ("party", "skin", "face", "hair", "hairColor", "brows", "beard", "beardColor", "glasses")
 
 SEGMENTS = [("idle", IDLE), ("wave", 72), ("thumbsUp", 60), ("nodYes", 48), ("shakeNo", 48), ("smile", 54),
-            ("celebrate", 72), ("sad", 60), ("think", 84)]
+            ("celebrate", 72), ("sad", 60), ("lookAround", 66), ("tilt", 54), ("browRaise", 42),
+            ("doubleBlink", 30), ("settle", 72), ("think", 84)]
 THINK_HOLD = 14
 POSES = {"wave": 18, "thumbsUp": 24, "nodYes": 12, "shakeNo": 20, "smile": 27, "celebrate": 18, "sad": 30,
          "think": 40}
@@ -376,8 +377,42 @@ def think_pose(u, d, pose):
     pose["blink"] = blink(u, ((50, 100), (53, 8), (57, 100)))
 
 
+def look_pose(u, d, pose):
+    e = envelope(u, d, 8, 10)
+    side = math.sin(2 * math.pi * u / d) * e
+    pose["eyeX"] += 3.0 * side
+    pose["turn"] += 2.4 * side
+    pose["roll"] += 0.8 * side
+
+
+def tilt_pose(u, d, pose):
+    e = envelope(u, d, 14, 16)
+    pose["roll"] += 5.5 * e
+    pose["headX"] += 1.0 * e
+    pose["browLeftY"] -= 0.8 * e
+
+
+def brow_pose(u, d, pose):
+    lift = math.sin(math.pi * u / d) ** 2
+    pose["browY"] -= 3.0 * lift
+    pose["eyeY"] -= 0.4 * lift
+
+
+def double_blink_pose(u, d, pose):
+    pose["blink"] = blink(u, ((3, 100), (6, 8), (10, 100), (14, 100), (17, 8), (21, 100)))
+
+
+def settle_pose(u, d, pose):
+    breath = math.sin(math.pi * u / d) ** 2
+    pose["bodyY"] -= 2.6 * breath
+    pose["headY"] -= 2.8 * breath
+    pose["eyeY"] -= 0.3 * breath
+
+
 EXPRESSIONS = {"wave": wave_pose, "thumbsUp": thumbs_pose, "nodYes": nod_pose, "shakeNo": shake_pose,
-               "smile": smile_pose, "celebrate": celebrate_pose, "sad": sad_pose, "think": think_pose}
+               "smile": smile_pose, "celebrate": celebrate_pose, "sad": sad_pose, "think": think_pose,
+               "lookAround": look_pose, "tilt": tilt_pose, "browRaise": brow_pose, "doubleBlink": double_blink_pose,
+               "settle": settle_pose}
 
 
 def compute(frame):

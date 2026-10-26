@@ -38,7 +38,12 @@ struct PortraitTests {
 
     @Test func portraitAsksForTheDrawingByPersonAndParty() {
         let request = PersonPortrait(slug: "lula", name: "Lula", party: "PT").request
-        #expect(request == PortraitRequest(slug: "lula", party: "PT", isStill: false))
+        #expect(
+            request
+                == PortraitRequest(slug: "lula", party: "PT", isStill: false, allowsGestures: true))
+        #expect(
+            !PersonPortrait(slug: "a", name: "A", party: "PT", size: .badgeM).request.allowsGestures
+        )
         let artwork = PortraitArtwork { _ in nil }
         #expect(artwork.view(for: request) == nil)
     }
