@@ -14,10 +14,14 @@ public struct PublicDataClient: PublicDataService {
             directory: URLCache.publicDataDirectory))
 
     private let baseURL: URL
+    private let dataURL: URL?
     private let session: URLSession
 
-    public init(baseURL: URL, session: URLSession = PublicDataClient.sharedSession) {
+    public init(
+        baseURL: URL, dataURL: URL? = nil, session: URLSession = PublicDataClient.sharedSession
+    ) {
         self.baseURL = baseURL
+        self.dataURL = dataURL
         self.session = session
     }
 
@@ -37,11 +41,26 @@ public struct PublicDataClient: PublicDataService {
             }
         #endif
         guard let value, !value.isEmpty, let url = URL(string: value) else { return nil }
-        return PublicDataClient(baseURL: url)
+        return PublicDataClient(baseURL: url, dataURL: dataURL(bundle))
+    }
+
+    static func dataURL(_ bundle: Bundle) -> URL? {
+        var value = bundle.object(forInfoDictionaryKey: "FiscalDataURL") as? String
+        #if DEBUG
+            if let override = UserDefaults.standard.string(forKey: "FiscalDataURL") {
+                value = override
+            }
+        #endif
+        guard let value, !value.isEmpty else { return nil }
+        return URL(string: value)
     }
 
     public func url(for path: String) -> URL {
         baseURL.appending(path: "v1").appending(path: path)
+    }
+
+    func layoutURL(for path: String, base: URL) -> URL {
+        base.appending(path: PublicDataLayout.version).appending(path: path)
     }
 
     public func meta() async throws -> PublicMeta { try await get(PublicDataPath.meta) }
@@ -137,15 +156,65 @@ public struct PublicDataClient: PublicDataService {
     }
 
     func get<Value: Decodable>(_ path: String) async throws -> Value {
-        var request = URLRequest(url: url(for: path))
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
-        request.timeoutInterval = 20
-        let data = try await load(request)
+        if let dataURL, await PublicDataRoute.shared.isLive(dataURL, session: session) {
+            do {
+                return try await grouped(path, base: dataURL)
+            } catch PublicDataError.unavailable {
+                return try await legacy(path)
+            }
+        }
+        return try await legacy(path)
+    }
+
+    private func legacy<Value: Decodable>(_ path: String) async throws -> Value {
+        let data = try await load(Self.request(url(for: path)))
+        return try decode(data, keys: [])
+    }
+
+    private func grouped<Value: Decodable>(_ path: String, base: URL) async throws -> Value {
+        switch PublicDataLayout.locate(path) {
+        case .file(let file):
+            return try decode(try await fetch(file, base: base), keys: [])
+        case .member(let file, let keys):
+            return try decode(try await fetch(file, base: base), keys: keys)
+        case .profile(let slug):
+            do {
+                return try decode(
+                    try await fetch("people/\(slug).json", base: base), keys: ["profile"])
+            } catch PublicDataError.notFound {
+                let index = PublicDataLayout.cityPeopleIndex.path(slug)
+                let code: String = try decode(
+                    try await fetch(index, base: base), keys: ["items", slug])
+                let city = try await fetch("places/city/\(code).json", base: base)
+                return try decode(city, keys: ["people", slug])
+            }
+        }
+    }
+
+    private func fetch(_ file: String, base: URL) async throws -> Data {
+        let url = layoutURL(for: file, base: base)
+        if let recent = await PublicDataRecent.shared.data(for: url) { return recent }
+        let data = try await load(Self.request(url))
+        await PublicDataRecent.shared.store(data, for: url)
+        return data
+    }
+
+    private func decode<Value: Decodable>(_ data: Data, keys: [String]) throws -> Value {
+        let value: Value?
         do {
-            return try PublicDataCoding.decoder().decode(Value.self, from: data)
+            value = try PublicDataMember<Value>.decode(data, keys: keys)
         } catch {
             throw PublicDataError.invalidData
         }
+        guard let value else { throw PublicDataError.notFound }
+        return value
+    }
+
+    private static func request(_ url: URL) -> URLRequest {
+        var request = URLRequest(url: url)
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.timeoutInterval = 20
+        return request
     }
 
     private func load(_ request: URLRequest) async throws -> Data {

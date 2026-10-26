@@ -265,6 +265,14 @@ func TestFamilyBucketIsStable(t *testing.T) {
 	if got := VoteBundles.Bucket("camara-1"); len(got) != 3 {
 		t.Fatalf("bucket = %s", got)
 	}
+	for key, want := range map[string]string{"camara-2416587": "111", "senado-7106": "01d"} {
+		if got := VoteBundles.Bucket(key); got != want {
+			t.Fatalf("vote bucket %s = %s, the app expects %s", key, got, want)
+		}
+	}
+	if got := CityPeopleIndex.Bucket("vereador-b"); got != "0e" {
+		t.Fatalf("city people bucket = %s, the app expects 0e", got)
+	}
 	if got := CityPeopleIndex.Bucket("vereador-b"); len(got) != 2 || got != CityPeopleIndex.Bucket("vereador-b") {
 		t.Fatalf("bucket = %s", got)
 	}

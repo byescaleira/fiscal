@@ -19,6 +19,8 @@
 	<string>https://fiscal.byescaleira.com/api</string>
 	<key>FiscalAppStoreID</key>
 	<string></string>
+	<key>FiscalDataURL</key>
+	<string>https://dados.fiscal.byescaleira.com</string>
 	<key>FiscalHelpURL</key>
 	<string></string>
 	<key>FiscalPrivacyURL</key>

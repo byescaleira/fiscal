@@ -6,6 +6,8 @@
 	<string>pt-BR</string>
 	<key>FiscalAPIURL</key>
 	<string>https://fiscal.byescaleira.com/api</string>
+	<key>FiscalDataURL</key>
+	<string>https://dados.fiscal.byescaleira.com</string>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionPointIdentifier</key>
