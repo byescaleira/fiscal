@@ -1,10 +1,17 @@
 import CoreGraphics
+import FiscalDesignSystem
 import SwiftUI
 
 @MainActor
 public enum ShareRenderer {
-    public static func render(_ card: ShareCard, code: CGImage?, scale: CGFloat) -> CGImage? {
-        let renderer = ImageRenderer(content: ShareCardView(card: card, code: code))
+    public static func render(
+        _ card: ShareCard, code: CGImage?, scale: CGFloat, portraits: PortraitArtwork? = nil
+    ) -> CGImage? {
+        let renderer = ImageRenderer(
+            content: ShareCardView(card: card, code: code)
+                .portraitArtwork(portraits)
+                .portraitsStill()
+                .partyMarksStill())
         renderer.scale = scale
         renderer.proposedSize = ProposedViewSize(card.format.size)
         renderer.isOpaque = true

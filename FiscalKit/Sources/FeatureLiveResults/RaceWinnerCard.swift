@@ -25,6 +25,7 @@ struct RaceWinnerCard: View {
             } else {
                 content
             }
+            RaceWinnerShare(raceID: summary.race.id)
         }
         .padding(.spaceInset)
         .foregroundStyle(.white)
@@ -39,11 +40,6 @@ struct RaceWinnerCard: View {
         .overlay { CelebrationBurst(colors: [palette.primary, palette.secondary, .white]) }
         .clipShape(.rect(cornerRadius: .radiusGroup))
         .fontDesign(.rounded)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(
-            Text(
-                verbatim: "\(summary.title), \(winner.candidate.name), \(summary.winnerText ?? "")")
-        )
         .onAppear {
             withAnimation(reduceMotion ? nil : .spring(duration: 0.8, bounce: 0.4)) {
                 appeared = true
@@ -116,5 +112,31 @@ struct RaceWinnerCard: View {
                 .opacity(.opacityStrong)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(
+            Text(
+                verbatim: "\(summary.title), \(winner.candidate.name), \(summary.winnerText ?? "")")
+        )
+    }
+}
+
+private struct RaceWinnerShare: View {
+    @Environment(\.open) private var open
+    @Environment(\.navigationSection) private var section
+    let raceID: String
+
+    var body: some View {
+        Button {
+            open(.share(.race(id: raceID)), in: section)
+        } label: {
+            Label("Share the result", systemImage: "square.and.arrow.up")
+                .font(.subheadline.weight(.bold))
+                .frame(maxWidth: .infinity, minHeight: .badgeL)
+                .contentShape(.capsule)
+        }
+        .buttonStyle(.plain)
+        .foregroundStyle(Color.scoreboard)
+        .background(.white, in: .capsule)
+        .accessibilityHint("Opens the result card for Stories, Feed and Message.")
     }
 }

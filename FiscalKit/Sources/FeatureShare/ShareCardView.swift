@@ -14,8 +14,24 @@ public struct ShareCardView: View {
 
     public var body: some View {
         let size = card.format.size
+        Group {
+            if let victory = card.victory {
+                ShareVictoryPoster(card: card, victory: victory, code: code)
+            } else {
+                standard
+            }
+        }
+        .frame(width: size.width, height: size.height)
+        .clipped()
+        .foregroundStyle(.white)
+        .environment(\.colorScheme, .dark)
+        .dynamicTypeSize(.large)
+    }
+
+    private var standard: some View {
+        let size = card.format.size
         let field = Color.posterField(card.artwork?.shade)
-        ZStack(alignment: .top) {
+        return ZStack(alignment: .top) {
             LinearGradient(
                 colors: [field.mix(with: .white, by: .opacityPosterGlow), field],
                 startPoint: .top, endPoint: .bottom)
@@ -43,11 +59,6 @@ public struct ShareCardView: View {
                 }
             }
         }
-        .frame(width: size.width, height: size.height)
-        .clipped()
-        .foregroundStyle(.white)
-        .environment(\.colorScheme, .dark)
-        .dynamicTypeSize(.large)
     }
 }
 

@@ -30,6 +30,7 @@ public struct ShareScreen: View {
 private struct ShareEditor: View {
     @Environment(ShareModel.self) private var model
     @Environment(\.displayScale) private var displayScale
+    @Environment(\.portraitArtwork) private var portraits
     @State private var rendered: RenderedCard?
 
     var body: some View {
@@ -38,7 +39,9 @@ private struct ShareEditor: View {
             VStack(spacing: .spaceXL) {
                 ShareCardPreview(rendered: rendered, card: model.card)
                 ShareFormatChooser(selection: $model.format)
-                ShareArtPicker()
+                if model.usesArt {
+                    ShareArtPicker()
+                }
                 ShareAction(rendered: rendered)
             }
             .padding(.spaceL)
@@ -48,8 +51,10 @@ private struct ShareEditor: View {
         .background(.groupedBackground)
         .task(id: model.card) {
             guard let card = model.card else { return }
-            rendered = ShareRenderer.render(card, code: model.code, scale: displayScale)
-                .map { RenderedCard(cgImage: $0, scale: displayScale) }
+            rendered = ShareRenderer.render(
+                card, code: model.code, scale: displayScale, portraits: portraits
+            )
+            .map { RenderedCard(cgImage: $0, scale: displayScale) }
         }
     }
 }
@@ -220,7 +225,9 @@ private struct ShareAction: View {
                 ProgressView("Preparing the image")
             }
             Text(
-                "The card carries the official source, the date and the art credit. Your Lens never goes into the image."
+                model.usesArt
+                    ? "The card carries the official source, the date and the art credit. Your Lens never goes into the image."
+                    : "The card carries the official TSE numbers and the time of the file. Your Lens never goes into the image."
             )
             .font(.footnote)
             .foregroundStyle(.secondary)

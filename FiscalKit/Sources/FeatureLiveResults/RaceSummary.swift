@@ -63,14 +63,10 @@ struct RaceSummary: Hashable, Sendable {
 
     var roundText: String { String(appLocalized: "Round \(race.round)") }
 
-    var isDecided: Bool {
-        race.final || race.sections.percent >= 100 || race.candidates.contains(where: \.elected)
-    }
+    var isDecided: Bool { race.isDecided }
 
     var winner: Contender? {
-        guard isDecided else { return nil }
-        if let elected = contenders.first(where: \.candidate.elected) { return elected }
-        return race.round == 2 || isDuel ? contenders.first : nil
+        race.winner.flatMap { winner in contenders.first { $0.id == winner.number } }
     }
 
     var others: [Contender] {

@@ -10,6 +10,7 @@ public struct ShareCardContent: Hashable, Sendable {
         case compare([ShareCompareRow])
         case representatives([ShareGroup])
         case highlight(ShareHighlight)
+        case victory(ShareVictory)
     }
 
     public let eyebrow: String
