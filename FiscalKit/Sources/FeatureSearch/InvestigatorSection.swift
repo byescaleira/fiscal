@@ -113,24 +113,18 @@ private struct InvestigatorSuggestions: View {
         VStack(alignment: .leading, spacing: .spaceS) {
             Text("Suggested investigations")
                 .sectionTitle()
-                .padding(.horizontal, .spaceS)
+                .padding(.horizontal, .railListMargin)
             if dynamicTypeSize.isAccessibilitySize {
                 VStack(spacing: .spaceM) {
                     ForEach(board.suggestions) { SuggestionCard(suggestion: $0) }
                 }
             } else {
-                ScrollView(.horizontal) {
-                    HStack(alignment: .top, spacing: .spaceM) {
-                        ForEach(board.suggestions) { suggestion in
-                            SuggestionCard(suggestion: suggestion)
-                                .frame(width: .caseSuggestion)
-                        }
+                EdgeToEdgeRail {
+                    ForEach(board.suggestions) { suggestion in
+                        SuggestionCard(suggestion: suggestion)
+                            .frame(width: .caseSuggestion)
                     }
-                    .scrollTargetLayout()
                 }
-                .scrollIndicators(.hidden)
-                .scrollTargetBehavior(.viewAligned)
-                .scrollClipDisabled()
             }
         }
     }

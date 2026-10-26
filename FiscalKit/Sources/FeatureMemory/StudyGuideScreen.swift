@@ -36,26 +36,18 @@ private struct GuideContent: View {
         AdaptiveList {
             GuideHeroSection(guide: guide)
             Section {
-                ScrollView(.horizontal) {
-                    LazyHStack(spacing: .spaceM) {
-                        ForEach(Array(guide.cards.enumerated()), id: \.element.id) { index, card in
-                            StudyCardView(
-                                card: card, index: index, total: guide.cards.count,
-                                color: ChartPalette.color(
-                                    at: index % ChartPalette.categorical.count)
-                            )
-                            .containerRelativeFrame(.horizontal) { width, _ in
-                                min(width * 0.86, .readableColumn * 0.8)
-                            }
+                EdgeToEdgeRail(lazy: true) {
+                    ForEach(Array(guide.cards.enumerated()), id: \.element.id) { index, card in
+                        StudyCardView(
+                            card: card, index: index, total: guide.cards.count,
+                            color: ChartPalette.color(
+                                at: index % ChartPalette.categorical.count)
+                        )
+                        .containerRelativeFrame(.horizontal) { width, _ in
+                            min(width * 0.86, .readableColumn * 0.8)
                         }
                     }
-                    .scrollTargetLayout()
                 }
-                .scrollTargetBehavior(.viewAligned)
-                .scrollIndicators(.hidden)
-                .contentMargins(.horizontal, .spaceL, for: .scrollContent)
-                .listRowInsets(EdgeInsets())
-                .listRowBackground(Color.clear)
             } header: {
                 Text("Swipe through the cards").sectionTitle()
             }

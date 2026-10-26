@@ -61,23 +61,17 @@ private struct LensSupportChosen: View {
                     .monospacedDigit()
                     .contentTransition(.numericText())
             }
-            ScrollView(.horizontal) {
-                HStack(alignment: .top, spacing: .spaceM) {
-                    ForEach(setup.chosen) { card in
-                        LensChosenSlot(card: card)
-                            .transition(.scale.combined(with: .opacity))
-                    }
-                    ForEach(0..<setup.openSlots, id: \.self) { _ in
-                        LensEmptySlot()
-                    }
+            EdgeToEdgeRail(.padded(.spaceInset), snaps: false) {
+                ForEach(setup.chosen) { card in
+                    LensChosenSlot(card: card)
+                        .transition(.scale.combined(with: .opacity))
                 }
-                .padding(.vertical, .spaceXS)
+                ForEach(0..<setup.openSlots, id: \.self) { _ in
+                    LensEmptySlot()
+                }
             }
-            .scrollIndicators(.hidden)
             .animation(reduceMotion ? nil : .smooth, value: setup.draft.supported)
         }
-        .padding(.spaceL)
-        .surface(in: .rect(cornerRadius: .radiusL))
     }
 }
 

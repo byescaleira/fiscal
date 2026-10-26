@@ -158,20 +158,16 @@ private struct BallotFilterPills: View {
     @Environment(VoteDetailModel.self) private var vote
 
     var body: some View {
-        ScrollView(.horizontal) {
-            HStack(spacing: .spaceS) {
-                ForEach(VoteDetailModel.BallotFilter.allCases) { filter in
-                    BallotFilterPill(
-                        filter: filter, count: vote.count(filter),
-                        isSelected: vote.ballotFilter == filter
-                    ) {
-                        vote.ballotFilter = filter
-                    }
+        EdgeToEdgeRail(spacing: .spaceS, snaps: false) {
+            ForEach(VoteDetailModel.BallotFilter.allCases) { filter in
+                BallotFilterPill(
+                    filter: filter, count: vote.count(filter),
+                    isSelected: vote.ballotFilter == filter
+                ) {
+                    vote.ballotFilter = filter
                 }
             }
-            .padding(.vertical, .spaceXS)
         }
-        .scrollIndicators(.hidden)
         .sensoryFeedback(.selection, trigger: vote.ballotFilter)
     }
 }

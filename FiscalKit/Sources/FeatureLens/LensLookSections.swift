@@ -82,12 +82,11 @@ struct LensLookSection: View {
         if lens.supportsIcons {
             Section {
                 LensIconStrip(
-                    inset: .spaceL, icons: lens.iconChoices, selected: lens.appIcon,
+                    icons: lens.iconChoices, selected: lens.appIcon,
                     suggested: lens.suggestedIcon
                 ) { icon in
                     Task { await lens.setIcon(icon) }
                 }
-                .padding(.vertical, .spaceXS)
             } header: {
                 Text("App Icon").sectionTitle()
             } footer: {
@@ -104,7 +103,7 @@ private struct LensArtSection: View {
         Section {
             if lens.collections.count > 1 {
                 LensCollectionPicker(
-                    inset: .spaceL, collections: lens.collections, isChosen: lens.isChosen(_:),
+                    collections: lens.collections, isChosen: lens.isChosen(_:),
                     count: { collection in
                         lens.catalog?.works(in: collection.id).count ?? 0
                     }
@@ -112,9 +111,8 @@ private struct LensArtSection: View {
                     Task { await lens.choose(collection) }
                 }
             }
-            LensArtCarousel(inset: .spaceL, works: lens.collectionWorks)
+            LensArtCarousel(works: lens.collectionWorks)
                 .id(lens.collection?.id)
-                .padding(.vertical, .spaceXS)
         } header: {
             Text("Art").sectionTitle()
         } footer: {

@@ -26,11 +26,12 @@ struct LensLookStep: View {
             }
             LensSetupArtCard()
             if setup.supportsIcons {
-                LensLookCard(
+                LensLookShelf(
                     "App Icon", detail: "One icon for each palette, or the Amazon at dawn."
                 ) {
                     LensIconStrip(
-                        inset: .spaceL, icons: setup.iconChoices, selected: setup.appIcon,
+                        placement: .padded(.spaceInset), icons: setup.iconChoices,
+                        selected: setup.appIcon,
                         suggested: setup.suggestedIcon
                     ) { icon in
                         Task { await setup.choose(icon) }
@@ -45,15 +46,16 @@ private struct LensSetupArtCard: View {
     @Environment(LensSetupModel.self) private var setup
 
     var body: some View {
-        LensLookCard("Art", detail: "Public domain works by Brazilian artists, always with credit.")
-        {
+        LensLookShelf(
+            "Art", detail: "Public domain works by Brazilian artists, always with credit."
+        ) {
             if setup.collections.count > 1 {
                 LensCollectionPicker(
-                    inset: .spaceL, collections: setup.collections,
+                    placement: .padded(.spaceInset), collections: setup.collections,
                     isChosen: setup.isChosen(_:), count: { setup.works(in: $0).count }
                 ) { setup.choose($0) }
             }
-            LensArtCarousel(inset: .spaceL, works: setup.collectionWorks)
+            LensArtCarousel(placement: .padded(.spaceInset), works: setup.collectionWorks)
                 .id(setup.collection?.id)
                 .transition(.opacity)
         }
@@ -84,6 +86,29 @@ struct LensLookCard<Content: View>: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.primary.opacity(.opacityFill))
         .clipShape(.rect(cornerRadius: .radiusGroup))
+    }
+}
+
+private struct LensLookShelf<Content: View>: View {
+    let title: LocalizedStringKey
+    let detail: LocalizedStringKey
+    let content: Content
+
+    init(
+        _ title: LocalizedStringKey, detail: LocalizedStringKey,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.title = title
+        self.detail = detail
+        self.content = content()
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: .spaceM) {
+            LensChoiceTitle(title, detail: detail)
+            content
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 

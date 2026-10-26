@@ -70,36 +70,28 @@ private struct PresidentialTimelineSection: View {
 
     var body: some View {
         Section {
-            ScrollView(.horizontal) {
-                LazyHStack(spacing: .spaceM) {
-                    ForEach(memory.presidential) { race in
-                        if let winner = memory.winner(of: race) {
-                            Button {
-                                open(.pastElection(year: race.year), in: section)
-                            } label: {
-                                PastWinnerCard(
-                                    year: race.year, caption: memory.roundLine(race),
-                                    winner: winner, runnerUp: memory.runnerUp(of: race),
-                                    footnote: memory.turnoutLine(race)
-                                )
-                                .containerRelativeFrame(.horizontal) { width, _ in
-                                    min(width * 0.82, .readableColumn * 0.7)
-                                }
+            EdgeToEdgeRail(lazy: true) {
+                ForEach(memory.presidential) { race in
+                    if let winner = memory.winner(of: race) {
+                        Button {
+                            open(.pastElection(year: race.year), in: section)
+                        } label: {
+                            PastWinnerCard(
+                                year: race.year, caption: memory.roundLine(race),
+                                winner: winner, runnerUp: memory.runnerUp(of: race),
+                                footnote: memory.turnoutLine(race)
+                            )
+                            .containerRelativeFrame(.horizontal) { width, _ in
+                                min(width * 0.82, .readableColumn * 0.7)
                             }
-                            .buttonStyle(.plain)
-                            .accessibilityLabel(Text(verbatim: memory.accessibility(race)))
-                            .accessibilityHint(
-                                Text("Shows every candidate, the map and the turnout"))
                         }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(Text(verbatim: memory.accessibility(race)))
+                        .accessibilityHint(
+                            Text("Shows every candidate, the map and the turnout"))
                     }
                 }
-                .scrollTargetLayout()
             }
-            .scrollTargetBehavior(.viewAligned)
-            .scrollIndicators(.hidden)
-            .contentMargins(.horizontal, .spaceL, for: .scrollContent)
-            .listRowInsets(EdgeInsets())
-            .listRowBackground(Color.clear)
         } header: {
             Text("Presidential elections").sectionTitle()
         } footer: {

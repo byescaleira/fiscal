@@ -97,7 +97,6 @@ struct PosterCarousel: View {
             .scrollIndicators(.hidden)
             .scrollClipDisabled()
         }
-        .clipped()
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("Artworks from the Fiscal collection, all in the public domain"))
     }

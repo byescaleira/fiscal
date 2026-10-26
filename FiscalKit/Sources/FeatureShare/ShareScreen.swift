@@ -125,18 +125,11 @@ private struct ShareArtPicker: View {
                 }
             }
             ScrollViewReader { proxy in
-                ScrollView(.horizontal) {
-                    HStack(alignment: .top, spacing: .spaceM) {
-                        ForEach(model.works.filter { $0.collection == current }) { work in
-                            ShareArtCard(work: work).id(work.id)
-                        }
+                EdgeToEdgeRail(.padded(.spaceL)) {
+                    ForEach(model.works.filter { $0.collection == current }) { work in
+                        ShareArtCard(work: work).id(work.id)
                     }
-                    .scrollTargetLayout()
-                    .padding(.vertical, .spaceXS)
                 }
-                .scrollIndicators(.hidden)
-                .scrollTargetBehavior(.viewAligned)
-                .scrollClipDisabled()
                 .onAppear {
                     if let id = model.selectedWorkID { proxy.scrollTo(id, anchor: .center) }
                 }
