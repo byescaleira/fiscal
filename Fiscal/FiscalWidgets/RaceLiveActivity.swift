@@ -62,7 +62,7 @@ private struct RaceLockScreen: View {
     var body: some View {
         let board = RaceBoard(context: context)
         VStack(spacing: .spaceS) {
-            HStack(spacing: .spaceS) {
+            HStack(alignment: .center, spacing: .spaceS) {
                 Label {
                     Text(board.state.final ? "FINAL" : "LIVE")
                 } icon: {
@@ -80,22 +80,24 @@ private struct RaceLockScreen: View {
                     .foregroundStyle(RaceStyle.primary)
                     .lineLimit(1)
                 Spacer(minLength: .spaceS)
-                Text(verbatim: board.sourceText)
-                    .font(.caption2.weight(.medium))
-                    .foregroundStyle(RaceStyle.secondary)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
+                VStack(alignment: .trailing, spacing: 0) {
+                    Text(verbatim: "\(board.centerValue) \(board.centerCaption)")
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(RaceStyle.primary)
+                        .monospacedDigit()
+                        .contentTransition(.numericText(value: board.state.sectionsPercent))
+                    Text(verbatim: board.sourceText)
+                        .font(.caption2)
+                        .foregroundStyle(RaceStyle.secondary)
+                }
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
             }
-            HStack(alignment: .center, spacing: .spaceS) {
-                if let first = board.first {
-                    ScoreColumn(row: first, score: board.score(first), alignment: .leading)
-                }
-                Spacer(minLength: 0)
-                CenterStatus(board: board)
-                Spacer(minLength: 0)
-                if let second = board.second {
-                    ScoreColumn(row: second, score: board.score(second), alignment: .trailing)
-                }
+            if let first = board.first {
+                ScoreRow(row: first, score: board.score(first))
+            }
+            if let second = board.second {
+                ScoreRow(row: second, score: board.score(second))
             }
             ShareBar(board: board, height: .spaceS)
         }
@@ -105,6 +107,34 @@ private struct RaceLockScreen: View {
         .fontDesign(.rounded)
         .partyMarksStill()
         .opacity(board.isStale ? .opacityStrong : 1)
+    }
+}
+
+private struct ScoreRow: View {
+    let row: RaceActivityRow
+    let score: CandidateScoreText
+
+    var body: some View {
+        HStack(alignment: .center, spacing: .spaceS) {
+            CandidatePhoto(row: row, side: .badgeM)
+            Text(verbatim: score.name.uppercased())
+                .font(.footnote.weight(.heavy))
+                .foregroundStyle(RaceStyle.primary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+            PartyMark(row.party)
+            Spacer(minLength: .spaceS)
+            Text(verbatim: score.percent)
+                .font(.scoreboardNumber)
+                .monospacedDigit()
+                .contentTransition(.numericText(value: score.value))
+                .foregroundStyle(RaceStyle.primary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+        }
+        .opacity(score.dimmed ? .opacitySoft : 1)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(verbatim: score.accessibility))
     }
 }
 
@@ -135,61 +165,6 @@ private struct CandidatePhoto: View {
             }
         }
         .accessibilityHidden(true)
-    }
-}
-
-private struct ScoreColumn: View {
-    let row: RaceActivityRow
-    let score: CandidateScoreText
-    let alignment: HorizontalAlignment
-
-    var body: some View {
-        VStack(alignment: alignment, spacing: .space2XS) {
-            HStack(spacing: .spaceXS) {
-                if alignment == .leading { CandidatePhoto(row: row, side: .badgeS) }
-                Text(verbatim: score.percent)
-                    .font(.scoreboardNumber)
-                    .monospacedDigit()
-                    .contentTransition(.numericText(value: score.value))
-                    .foregroundStyle(RaceStyle.primary)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.7)
-                if alignment == .trailing { CandidatePhoto(row: row, side: .badgeS) }
-            }
-            HStack(spacing: .space2XS) {
-                if alignment == .trailing { PartyMark(row.party) }
-                Text(verbatim: score.name.uppercased())
-                    .font(.caption2.weight(.heavy))
-                    .foregroundStyle(RaceStyle.secondary)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.6)
-                if alignment == .leading { PartyMark(row.party) }
-            }
-        }
-        .opacity(score.dimmed ? .opacitySoft : 1)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(verbatim: score.accessibility))
-    }
-}
-
-private struct CenterStatus: View {
-    let board: RaceBoard
-
-    var body: some View {
-        VStack(spacing: .space2XS) {
-            Text(verbatim: board.centerValue)
-                .font(.subheadline.weight(.bold))
-                .foregroundStyle(RaceStyle.primary)
-                .monospacedDigit()
-                .contentTransition(.numericText(value: board.state.sectionsPercent))
-                .lineLimit(1)
-            Text(verbatim: board.centerCaption)
-                .font(.caption2.weight(.medium))
-                .foregroundStyle(RaceStyle.secondary)
-                .lineLimit(1)
-        }
-        .frame(minWidth: .badgeXL)
-        .accessibilityElement(children: .combine)
     }
 }
 
