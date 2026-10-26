@@ -18,6 +18,22 @@ public struct VoteSummary: Codable, Hashable, Identifiable, Sendable {
         }
     }
 
+    public struct Related: Codable, Hashable, Identifiable, Sendable {
+        public let id: String
+        public let time: String?
+        public let summary: String
+        public let nominal: Bool
+        public let approved: Bool?
+
+        public init(id: String, time: String?, summary: String, nominal: Bool, approved: Bool?) {
+            self.id = id
+            self.time = time
+            self.summary = summary
+            self.nominal = nominal
+            self.approved = approved
+        }
+    }
+
     public let id: String
     public let house: House
     public let date: CalendarDay
@@ -33,11 +49,15 @@ public struct VoteSummary: Codable, Hashable, Identifiable, Sendable {
     public let yes: Int?
     public let no: Int?
     public let others: Int?
+    public let group: String?
+    public let relatedCount: Int?
+    public let related: [Related]?
 
     public init(
         id: String, house: House, date: CalendarDay, time: String?, proposition: String,
         kind: String?, summary: String, plainSummary: String?, themes: [Theme],
-        result: String?, approved: Bool?, nominal: Bool, tally: Tally
+        result: String?, approved: Bool?, nominal: Bool, tally: Tally,
+        group: String? = nil, related: [Related] = [], relatedCount: Int? = nil
     ) {
         self.id = id
         self.house = house
@@ -54,9 +74,38 @@ public struct VoteSummary: Codable, Hashable, Identifiable, Sendable {
         yes = tally.yes
         no = tally.no
         others = tally.others
+        self.group = group
+        self.related = related.isEmpty ? nil : related
+        self.relatedCount = relatedCount ?? (related.isEmpty ? nil : related.count)
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(String.self, forKey: .id)
+        house = try c.decode(House.self, forKey: .house)
+        date = try c.decode(CalendarDay.self, forKey: .date)
+        time = try c.decodeIfPresent(String.self, forKey: .time)
+        proposition = try c.decodeIfPresent(String.self, forKey: .proposition) ?? ""
+        kind = try c.decodeIfPresent(String.self, forKey: .kind)
+        summary = try c.decode(String.self, forKey: .summary)
+        plainSummary = try c.decodeIfPresent(String.self, forKey: .plainSummary)
+        themes = try c.decode([Theme].self, forKey: .themes)
+        result = try c.decodeIfPresent(String.self, forKey: .result)
+        approved = try c.decodeIfPresent(Bool.self, forKey: .approved)
+        nominal = try c.decode(Bool.self, forKey: .nominal)
+        yes = try c.decodeIfPresent(Int.self, forKey: .yes)
+        no = try c.decodeIfPresent(Int.self, forKey: .no)
+        others = try c.decodeIfPresent(Int.self, forKey: .others)
+        group = try c.decodeIfPresent(String.self, forKey: .group)
+        relatedCount = try c.decodeIfPresent(Int.self, forKey: .relatedCount)
+        related = try c.decodeIfPresent([Related].self, forKey: .related)
     }
 
     public var tally: Tally { Tally(yes: yes, no: no, others: others) }
+
+    public var sameDayVotes: [Related] { related ?? [] }
+
+    public var sameDayCount: Int { max(relatedCount ?? 0, sameDayVotes.count) }
 }
 
 public struct VoteDetail: Codable, Hashable, Identifiable, Sendable {

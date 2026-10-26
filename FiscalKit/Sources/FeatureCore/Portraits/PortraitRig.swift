@@ -20,6 +20,10 @@ struct PortraitRig {
         self.tones = tones
     }
 
+    func neutral(slug: String, party: String) -> PortraitLibrary.Traits {
+        PortraitLibrary.Traits(slug: slug, values: tones.neutral.merging(["party": party]) { $1 })
+    }
+
     func animation(for traits: PortraitLibrary.Traits, party: String) -> LottieAnimation? {
         guard let palette = tones.palette(for: traits, party: party) else { return nil }
         var animation = document
@@ -74,6 +78,8 @@ struct PortraitTones {
     let brow: [String: PortraitColor]
     let parties: [String: [PortraitColor]]
     let fallback: [PortraitColor]
+    let neutral: [String: String]
+    let neutralTones: [String: String]
 
     init?(_ root: [String: Any]) {
         guard let ink = (root["ink"] as? String).flatMap(PortraitColor.init(hex:)),
@@ -87,7 +93,10 @@ struct PortraitTones {
                 $0.compactMap(PortraitColor.init(hex:))
             }),
             let fallback = (root["fallback"] as? [String])?.compactMap(PortraitColor.init(hex:)),
-            fallback.count == 2
+            fallback.count == 2,
+            let neutral = root["neutral"] as? [String: Any],
+            let neutralTraits = neutral["traits"] as? [String: String],
+            let neutralTones = neutral["tones"] as? [String: String]
         else { return nil }
         self.ink = ink
         self.paper = paper
@@ -96,20 +105,35 @@ struct PortraitTones {
         self.brow = brow
         self.parties = parties
         self.fallback = fallback
+        self.neutral = neutralTraits
+        self.neutralTones = neutralTones
     }
 
     func palette(for traits: PortraitLibrary.Traits, party: String) -> PortraitPalette? {
+        let colors = parties[PortraitLibrary.partyKey(party)].flatMap { $0.count == 2 ? $0 : nil }
+        let pair = colors ?? fallback
+        guard traits["face"] != neutral["face"] else { return neutralPalette(pair) }
         guard let index = traits["skin"].flatMap(Int.init), skin.indices.contains(index - 1),
             let tone = traits["hairColor"].flatMap({ hair[$0] }) ?? hair["black"]
         else { return nil }
-        let colors = parties[PortraitLibrary.partyKey(party)].flatMap { $0.count == 2 ? $0 : nil }
-        let pair = colors ?? fallback
         return PortraitPalette(roles: [
             "skin": skin[index - 1], "hair": tone,
             "brow": traits["hairColor"].flatMap { brow[$0] } ?? tone,
             "beard": traits["beardColor"].flatMap { hair[$0] } ?? tone,
             "primary": pair[0], "secondary": pair[1], "ink": ink, "paper": paper,
         ])
+    }
+
+    private func neutralPalette(_ pair: [PortraitColor]) -> PortraitPalette? {
+        let base = PortraitPalette(roles: [
+            "primary": pair[0], "secondary": pair[1], "ink": ink, "paper": paper,
+        ])
+        var roles = base.roles
+        for (role, token) in neutralTones {
+            guard let color = base.resolve(token) else { return nil }
+            roles[role] = color
+        }
+        return PortraitPalette(roles: roles)
     }
 }
 

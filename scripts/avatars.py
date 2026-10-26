@@ -36,6 +36,11 @@ FACES = {
     "long": {"w": 68, "top": 47, "chin": 142, "jaw": 0.4},
     "square": {"w": 76, "top": 50, "chin": 139, "jaw": 0.95},
 }
+REAL_FACES = dict(FACES)
+FACES["neutral"] = dict(FACES["oval"])
+NEUTRAL = {"face": "neutral", "brows": "medium", "hair": "none", "hairColor": "", "beard": "none", "glasses": "none"}
+NEUTRAL_TONES = {"skin": "primary>paper@0.74", "hair": "primary>ink@0.4", "brow": "primary>ink@0.45",
+                 "beard": "primary>ink@0.4"}
 BROWS = {"light": 2.6, "medium": 3.4, "strong": 4.3}
 HAIR_FRONT = ("short", "thick", "swept", "receding", "bob", "long", "wavy")
 HAIR_BACK = ("bob", "long", "wavy")
@@ -659,7 +664,7 @@ def build_rig():
             b.add("brow", [group("brow", [path(points, closed=False), stroke("brow", width)])], parent=key,
                   fx={"brows": weight})
     for style in HAIR_FRONT:
-        for face_name, face in FACES.items():
+        for face_name, face in REAL_FACES.items():
             shapes = [group("hairFront", [path(piece) for piece in hair_front(style, face)] + [fill("hair")])]
             if style == "receding":
                 shapes.append(group("thinning", [path(thinning(face)), fill("hair", 38)]))
@@ -685,7 +690,7 @@ def build_rig():
           scale=track(lambda f: [100 + POSE[f]["smile"] * 16, 100 + POSE[f]["smile"] * 22, 100], 0.3),
           opacity=track(lambda f: 100 * (1 - POSE[f]["open"]), 0.5), parent="head")
     for style, tone in (("full", "beard"), ("short", "beard>skin@0.42")):
-        for face_name, face in FACES.items():
+        for face_name, face in REAL_FACES.items():
             b.add("beard", [group("mustache", [path(mustache()), fill(tone)]),
                             group("beard", [path(beard_shape(face)), fill(tone)])],
                   parent="beardTurn", fx={"beard": style, "face": face_name})
@@ -711,7 +716,7 @@ def build_rig():
     b.add("body", body_shapes(), anchor=(CX, 200),
           position=track(lambda f: [CX, 200 + POSE[f]["breath"] * 0.5 + POSE[f]["bodyY"], 0], 0.05), parent="rig")
     for style in HAIR_BACK:
-        for face_name, face in FACES.items():
+        for face_name, face in REAL_FACES.items():
             b.add("hairBack", [group("hairBack", [path(hair_back(style, face)), fill("hair>ink@0.12")])],
                   parent="hairSway", fx={"hair": style, "face": face_name})
     start, duration = TIMELINE["celebrate"]
@@ -879,7 +884,8 @@ def tones_document(traits, parties):
     return {"rigVersion": traits["rigVersion"], "ink": INK, "paper": PAPER, "skin": traits["scales"]["skin"],
             "hair": hair, "brow": {key: brow_color(value) for key, value in hair.items()},
             "parties": {key: [entry["primary"], entry["secondary"]] for key, entry in parties["parties"].items()},
-            "fallback": [parties["fallback"][0]["primary"], parties["fallback"][0]["secondary"]]}
+            "fallback": [parties["fallback"][0]["primary"], parties["fallback"][0]["secondary"]],
+            "neutral": {"traits": NEUTRAL, "tones": NEUTRAL_TONES}}
 
 
 def compact(value):
@@ -944,6 +950,12 @@ const toHex = (rgb) => "#" + rgb.map((v) => Math.round(v * 255).toString(16).pad
 const mix = (a, b, amount) => toHex(hex(a).map((x, i) => x + (hex(b)[i] - x) * amount));
 const partyKey = (party) => party.normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase().replace(/ /g, "");
 function palette(person) {
+  if (person.face === "neutral") {
+    const [primary, secondary] = tones.parties[partyKey(person.party)] || tones.fallback;
+    const base = { primary, secondary, ink: tones.ink, paper: tones.paper };
+    Object.entries(tones.neutral.tones).forEach(([role, token]) => { base[role] = resolve(token, base); });
+    return base;
+  }
   const hair = tones.hair[person.hairColor] || tones.hair.black;
   const [primary, secondary] = tones.parties[partyKey(person.party)] || tones.fallback;
   return { skin: tones.skin[Number(person.skin) - 1], hair, brow: tones.brow[person.hairColor] || hair,
@@ -1008,6 +1020,12 @@ const nav = document.getElementById("expressions");
 document.getElementById("search").addEventListener("change", (event) => {
   const slugs = event.target.value.split(",").map((s) => s.trim()).filter(Boolean);
   render(slugs.length ? slugs : data.sample);
+});
+["PT", "PL", "MDB", "PSD"].forEach((party, index) => {
+  const slug = "neutral-" + index;
+  people[slug] = Object.assign({ slug, party }, tones.neutral.traits);
+  data.names[slug] = "Neutro";
+  data.sample.unshift(slug);
 });
 render(data.sample);
 </script>

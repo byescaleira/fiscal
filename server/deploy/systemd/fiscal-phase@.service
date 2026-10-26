@@ -1,5 +1,5 @@
 [Unit]
-Description=Fiscal phase %i (refresh, stage and deploy to Pages)
+Description=Fiscal job %i forced by hand (ignores cadence and probe, then deploys to Pages within the budget)
 After=docker.service network-online.target
 Requires=docker.service
 Wants=network-online.target
@@ -7,7 +7,7 @@ Wants=network-online.target
 [Service]
 Type=oneshot
 WorkingDirectory=/opt/fiscal-api
-ExecStart=/usr/bin/docker compose --project-directory /opt/fiscal-api --profile jobs run --rm --no-deps -T fiscal-ingest -phase %i
+ExecStart=/usr/bin/docker compose --project-directory /opt/fiscal-api --profile jobs run --rm --no-deps -T fiscal-ingest -job %i
 ExecStart=/usr/bin/docker compose --project-directory /opt/fiscal-api --profile jobs run --rm --no-deps -T fiscal-pages
 SuccessExitStatus=75
 Nice=19

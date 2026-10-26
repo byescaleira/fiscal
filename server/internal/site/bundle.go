@@ -101,61 +101,119 @@ type reader func(path string) (json.RawMessage, error)
 
 type writer func(path string, v any) error
 
-func (p plan) write(read reader, write writer) error {
-	slugCity := map[string]string{}
-	codes := make([]string, 0, len(p.cities))
-	for code := range p.cities {
-		codes = append(codes, code)
+type cityRef struct {
+	slug string
+	src  string
+}
+
+func (p plan) cityRefs(code string, data json.RawMessage) ([]cityRef, error) {
+	var place struct {
+		Groups []struct {
+			People []struct {
+				Slug *string `json:"slug"`
+			} `json:"people"`
+		} `json:"groups"`
 	}
-	sort.Strings(codes)
-	for _, code := range codes {
-		data, err := read(p.cities[code])
+	if err := json.Unmarshal(data, &place); err != nil {
+		return nil, fmt.Errorf("%w: places/city/%s.json: %v", ErrValidation, code, err)
+	}
+	var out []cityRef
+	seen := map[string]bool{}
+	for _, g := range place.Groups {
+		for _, person := range g.People {
+			if person.Slug == nil || seen[*person.Slug] {
+				continue
+			}
+			src, ok := p.cityPeople[*person.Slug]
+			if !ok {
+				continue
+			}
+			seen[*person.Slug] = true
+			out = append(out, cityRef{slug: *person.Slug, src: src})
+		}
+	}
+	return out, nil
+}
+
+func (p plan) writeCity(code string, read reader, write writer) ([]cityRef, error) {
+	data, err := read(p.cities[code])
+	if err != nil {
+		return nil, err
+	}
+	refs, err := p.cityRefs(code, data)
+	if err != nil {
+		return nil, err
+	}
+	bundle := CityBundle{Place: data, People: map[string]json.RawMessage{}}
+	for _, r := range refs {
+		prof, err := read(r.src)
+		if err != nil {
+			return nil, err
+		}
+		bundle.People[r.slug] = prof
+	}
+	return refs, write("places/city/"+code+".json", bundle)
+}
+
+func writePerson(slug string, srcs []string, read reader, write writer) error {
+	pf := PersonFile{Profile: json.RawMessage("null"), Files: map[string]json.RawMessage{}}
+	for _, src := range srcs {
+		data, err := read(src)
 		if err != nil {
 			return err
 		}
-		var place struct {
-			Groups []struct {
-				People []struct {
-					Slug *string `json:"slug"`
-				} `json:"people"`
-			} `json:"groups"`
+		if src == "people/"+slug+".json" {
+			pf.Profile = data
+		} else {
+			pf.Files[strings.TrimPrefix(src, "people/"+slug+"/")] = data
 		}
-		if err := json.Unmarshal(data, &place); err != nil {
-			return fmt.Errorf("%w: places/city/%s.json: %v", ErrValidation, code, err)
-		}
-		bundle := CityBundle{Place: data, People: map[string]json.RawMessage{}}
-		for _, g := range place.Groups {
-			for _, person := range g.People {
-				if person.Slug == nil {
-					continue
-				}
-				src, ok := p.cityPeople[*person.Slug]
-				if !ok {
-					continue
-				}
-				if _, done := bundle.People[*person.Slug]; done {
-					continue
-				}
-				prof, err := read(src)
-				if err != nil {
-					return err
-				}
-				bundle.People[*person.Slug] = prof
-				if _, seen := slugCity[*person.Slug]; !seen {
-					slugCity[*person.Slug] = code
-				}
-			}
-		}
-		if err := write("places/city/"+code+".json", bundle); err != nil {
+	}
+	return write("people/"+slug+".json", pf)
+}
+
+func (p plan) writeVotes(bucket string, read reader, write writer) error {
+	items := map[string]json.RawMessage{}
+	for id, src := range p.votes[bucket] {
+		data, err := read(src)
+		if err != nil {
 			return err
+		}
+		items[id] = data
+	}
+	return write(VoteBundles.Dir+"/"+bucket+".json", Items[json.RawMessage]{Items: items})
+}
+
+func sortedKeys[V any](m map[string]V) []string {
+	out := make([]string, 0, len(m))
+	for k := range m {
+		out = append(out, k)
+	}
+	sort.Strings(out)
+	return out
+}
+
+func (p plan) write(read reader, write writer) error {
+	slugCity := map[string]string{}
+	for _, code := range sortedKeys(p.cities) {
+		refs, err := p.writeCity(code, read, write)
+		if err != nil {
+			return err
+		}
+		for _, r := range refs {
+			if _, seen := slugCity[r.slug]; !seen {
+				slugCity[r.slug] = code
+			}
 		}
 	}
 	index := map[string]map[string]string{}
-	orphans := map[string][]string{}
+	people := map[string][]string{}
+	for slug, srcs := range p.people {
+		people[slug] = srcs
+	}
 	for slug, src := range p.cityPeople {
 		code, ok := slugCity[slug]
 		if !ok {
-			orphans[slug] = []string{src}
+			people[slug] = []string{src}
 			continue
 		}
 		b := CityPeopleIndex.Bucket(slug)
@@ -169,42 +227,13 @@ func (p plan) write(read reader, write writer) error {
 			return err
 		}
 	}
-	people := p.people
-	for slug, srcs := range orphans {
-		people[slug] = srcs
-	}
-	slugs := make([]string, 0, len(people))
-	for slug := range people {
-		slugs = append(slugs, slug)
-	}
-	sort.Strings(slugs)
-	for _, slug := range slugs {
-		pf := PersonFile{Profile: json.RawMessage("null"), Files: map[string]json.RawMessage{}}
-		for _, src := range people[slug] {
-			data, err := read(src)
-			if err != nil {
-				return err
-			}
-			if src == "people/"+slug+".json" {
-				pf.Profile = data
-			} else {
-				pf.Files[strings.TrimPrefix(src, "people/"+slug+"/")] = data
-			}
-		}
-		if err := write("people/"+slug+".json", pf); err != nil {
+	for _, slug := range sortedKeys(people) {
+		if err := writePerson(slug, people[slug], read, write); err != nil {
 			return err
 		}
 	}
-	for b, ids := range p.votes {
-		items := map[string]json.RawMessage{}
-		for id, src := range ids {
-			data, err := read(src)
-			if err != nil {
-				return err
-			}
-			items[id] = data
-		}
-		if err := write(VoteBundles.Dir+"/"+b+".json", Items[json.RawMessage]{Items: items}); err != nil {
+	for b := range p.votes {
+		if err := p.writeVotes(b, read, write); err != nil {
 			return err
 		}
 	}

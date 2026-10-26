@@ -54,17 +54,68 @@
                 themes: [.education, .social], tally: (58, 11, 4)),
         ]
 
+        private struct Step {
+            let id: String
+            let time: String
+            let short: String
+            let official: String
+            let nominal: Bool
+            let tally: VoteSummary.Tally
+        }
+
+        private static let groupID = "camara-pl-1873-2026"
+
+        private static let steps: [Step] = [
+            Step(
+                id: "camara-1873-urgencia", time: "16:31", short: "Requerimento de urgência",
+                official: "Aprovado o Requerimento de Urgência (Art. 155 do RICD).", nominal: true,
+                tally: VoteSummary.Tally(yes: 389, no: 54, others: 6)),
+            Step(
+                id: "camara-18732026", time: "17:12", short: "Texto principal",
+                official: "", nominal: true,
+                tally: VoteSummary.Tally(yes: nil, no: nil, others: nil)),
+            Step(
+                id: "camara-1873-redacao", time: "17:20", short: "Redação final",
+                official: "Aprovada a Redação Final assinada pelo relator.", nominal: false,
+                tally: VoteSummary.Tally(yes: nil, no: nil, others: nil)),
+        ]
+
+        private static func related(excluding id: String) -> [VoteSummary.Related] {
+            steps.filter { $0.id != id }.map { step in
+                VoteSummary.Related(
+                    id: step.id, time: step.time, summary: step.short, nominal: step.nominal,
+                    approved: true)
+            }
+        }
+
         static func recent(now: Date, longText: Bool) -> [VoteSummary] {
             seeds.enumerated().map { index, seed in
                 summary(seed, index: index, now: now, longText: longText)
             }
         }
 
+        static func sameDay(now: Date, longText: Bool) -> [VoteSummary] {
+            guard let main = recent(now: now, longText: longText).first else { return [] }
+            return steps.filter { $0.id != main.id }.map { step in
+                VoteSummary(
+                    id: step.id, house: main.house, date: main.date, time: step.time,
+                    proposition: main.proposition, kind: main.kind, summary: step.official,
+                    plainSummary: main.plainSummary, themes: main.themes, result: "Aprovado",
+                    approved: true, nominal: step.nominal, tally: step.tally, group: groupID,
+                    related: related(excluding: step.id))
+            }
+        }
+
         static func detail(
             id: String, now: Date, people: [PersonCard], sources: [Source], longText: Bool
         ) -> VoteDetail? {
-            guard let summary = recent(now: now, longText: longText).first(where: { $0.id == id })
-            else { return nil }
+            let all = recent(now: now, longText: longText) + sameDay(now: now, longText: longText)
+            guard let summary = all.first(where: { $0.id == id }) else { return nil }
+            guard summary.nominal else {
+                return VoteDetail(
+                    vote: summary, quorum: nil, guidance: [], parties: [], people: [],
+                    sources: sources)
+            }
             let office: Office = summary.house == .camara ? .federalDeputy : .senator
             let voters = people.filter { $0.office == office && $0.status == .inOffice }
             let ballots = ShowcaseVoteRoll.complete(
@@ -197,7 +248,9 @@
                 plainSummary: seed.plain + suffix, themes: seed.themes,
                 result: approved ? "Aprovado" : "Rejeitado", approved: approved, nominal: true,
                 tally: VoteSummary.Tally(
-                    yes: seed.tally.yes, no: seed.tally.no, others: seed.tally.others))
+                    yes: seed.tally.yes, no: seed.tally.no, others: seed.tally.others),
+                group: index == 0 ? groupID : nil,
+                related: index == 0 ? related(excluding: "\(seed.house.rawValue)-\(number)") : [])
         }
     }
 #endif

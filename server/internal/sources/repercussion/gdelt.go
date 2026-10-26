@@ -17,24 +17,28 @@ const (
 	GDELTSite   = "https://www.gdeltproject.org"
 	NewsWindow  = "30d"
 	NewsTTL     = 72 * time.Hour
-	gdeltGap    = 6 * time.Second
+	gdeltGap    = 10 * time.Second
 	gdeltLimit  = 240
 	maxQueryLen = 240
 )
 
-var ErrThrottled = errors.New("gdelt: rate limited")
+var (
+	ErrThrottled  = errors.New("gdelt: rate limited")
+	gdeltBackoffs = []time.Duration{20 * time.Second, 45 * time.Second, 90 * time.Second}
+)
 
 type Getter interface {
 	JSON(ctx context.Context, rawURL string, v any) error
 }
 
 type GDELT struct {
-	Get   Getter
-	Base  string
-	Gap   time.Duration
-	Limit int
-	Sleep func(context.Context, time.Duration) error
-	Now   func() time.Time
+	Get      Getter
+	Base     string
+	Gap      time.Duration
+	Limit    int
+	Backoffs []time.Duration
+	Sleep    func(context.Context, time.Duration) error
+	Now      func() time.Time
 
 	calls int
 	last  time.Time
@@ -122,19 +126,27 @@ func (g *GDELT) Count(ctx context.Context, query string) (int64, error) {
 			}
 		}
 	}
-	g.calls++
+	backoffs := g.Backoffs
+	if backoffs == nil {
+		backoffs = gdeltBackoffs
+	}
 	var t timeline
-	err := g.Get.JSON(ctx, g.URL(query), &t)
-	g.last = g.now()
-	if err != nil {
-		var se *fetch.StatusError
-		if errors.As(err, &se) && se.Status == http.StatusTooManyRequests {
+	for attempt := 0; ; attempt++ {
+		g.calls++
+		err := g.Get.JSON(ctx, g.URL(query), &t)
+		g.last = g.now()
+		if err == nil {
+			break
+		}
+		if !throttled(err) {
+			return 0, err
+		}
+		if attempt >= len(backoffs) || g.Exhausted() {
 			return 0, ErrThrottled
 		}
-		if strings.Contains(err.Error(), "decode ") {
-			return 0, ErrThrottled
+		if err := g.sleep(ctx, backoffs[attempt]); err != nil {
+			return 0, err
 		}
-		return 0, err
 	}
 	var sum float64
 	for _, s := range t.Timeline {
@@ -143,4 +155,12 @@ func (g *GDELT) Count(ctx context.Context, query string) (int64, error) {
 		}
 	}
 	return int64(sum + 0.5), nil
+}
+
+func throttled(err error) bool {
+	var se *fetch.StatusError
+	if errors.As(err, &se) && se.Status == http.StatusTooManyRequests {
+		return true
+	}
+	return strings.Contains(err.Error(), "decode ")
 }

@@ -72,7 +72,8 @@ type Stats struct {
 }
 
 type Tree struct {
-	root string
+	root     string
+	manifest *Manifest
 
 	mu    sync.Mutex
 	seen  map[string]bool
@@ -81,6 +82,10 @@ type Tree struct {
 
 func NewTree(root string) *Tree {
 	return &Tree{root: root, seen: map[string]bool{}}
+}
+
+func (t *Tree) UseManifest(m *Manifest) {
+	t.manifest = m
 }
 
 func (t *Tree) Root() string {
@@ -104,9 +109,24 @@ func (t *Tree) Write(rel string, data []byte) error {
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		return err
 	}
-	wrote, err := WritePair(path, data)
-	if err != nil {
-		return err
+	key := filepath.ToSlash(clean)
+	var wrote bool
+	if t.manifest == nil {
+		w, err := WritePair(path, data)
+		if err != nil {
+			return err
+		}
+		wrote = w
+	} else {
+		h := ContentHash(data)
+		if old, ok := t.manifest.Get(key); !ok || old != h || !Exists(path) || !Exists(path+".gz") {
+			w, err := WritePair(path, data)
+			if err != nil {
+				return err
+			}
+			wrote = w
+		}
+		t.manifest.set(key, h, wrote)
 	}
 	var gz int64
 	if info, err := os.Stat(path + ".gz"); err == nil {
@@ -114,7 +134,7 @@ func (t *Tree) Write(rel string, data []byte) error {
 	}
 	t.mu.Lock()
 	defer t.mu.Unlock()
-	t.seen[filepath.ToSlash(clean)] = true
+	t.seen[key] = true
 	t.stats.Files++
 	t.stats.Bytes += int64(len(data))
 	t.stats.GzipBytes += gz
@@ -131,6 +151,9 @@ func (t *Tree) Retain(rels []string) {
 		clean := filepath.ToSlash(filepath.Clean(filepath.FromSlash(rel)))
 		if Exists(filepath.Join(t.root, filepath.FromSlash(clean))) {
 			t.seen[clean] = true
+			if t.manifest != nil {
+				t.manifest.keep(clean)
+			}
 		}
 	}
 }
@@ -173,6 +196,11 @@ func (t *Tree) Prune(dirs ...string) error {
 		for _, path := range stale {
 			if err := os.Remove(path); err != nil && !os.IsNotExist(err) {
 				return err
+			}
+			if t.manifest != nil && strings.HasSuffix(path, ".json") {
+				if rel, err := filepath.Rel(t.root, path); err == nil {
+					t.manifest.remove(filepath.ToSlash(rel))
+				}
 			}
 			t.mu.Lock()
 			t.stats.Removed++

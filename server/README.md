@@ -174,8 +174,11 @@ Roda como job que sai (imagem `fiscal-ingest`, perfil `jobs` do `compose.yaml`, 
 
 | Modo | O que faz |
 | --- | --- |
-| `-phase <nome>` | Lê só as fontes da fase (`camara`, `senado`, `assembleias`, `tse`, `cidades`, `checagens`, `indicadores`, `receita`, `repercussao`; `memoria` não lê nenhuma). O resto vem do SQLite pelo mesmo caminho de quando uma fonte cai (estado `skipped` em `sources_runs`), e as assembleias vêm de `DATA_DIR/cache/assembleias`. A fase reconstrói tudo, monta o site, salva o snapshot (`DATA_DIR/live-snapshot.gob`) e faz o backup do dia |
-| `-once live` | Atualização ao vivo a partir do snapshot da última fase: pauta, votações de hoje e card da apuração. Sem snapshot (ou com o de versão anterior à 2, de antes do pseudônimo com chave), pula até a próxima fase |
+| `-sync` | O tique de 5 min (`fiscal-sync.timer`): roda só os trabalhos do catálogo de cadência que estão devidos, com a sonda de mudança antes de baixar ([ADR 0008](../docs/adr/0008-smart-sync.md), tabela no [runbook](../docs/server-runbook.md#5-cadência-por-fonte)). Divergência na verificação semanal sai com código 3 |
+| `-plan` | Lista cada trabalho, se está devido e por quê, a cadência, a última execução e o resultado; não roda nada |
+| `-job <nome>` | Roda um trabalho do catálogo agora (`hot`, `destaques`, `checagens`, `senado`, `assembleias`, `camara`, `anp`, `sidra`, `receita`, `tse`, `cidades`, `historia`, `repercussao`, `memoria`), sem olhar cadência nem sonda. `-phase <trabalho>` faz o mesmo |
+| `-phase <nome>` | Lê só as fontes da fase (`camara`, `senado`, `assembleias`, `tse`, `cidades`, `checagens`, `indicadores`, `receita`, `repercussao`; `memoria` não lê nenhuma). O resto vem do SQLite pelo mesmo caminho de quando uma fonte cai (estado `skipped` em `sources_runs`), e as assembleias vêm de `DATA_DIR/cache/assembleias`. A fase reconstrói tudo, monta o site, salva o snapshot (`DATA_DIR/live-snapshot.json`, em JSON: o gob perdia `false` e `0` atrás de ponteiro) e faz o backup do dia |
+| `-once live` | Os trabalhos `hot` e `destaques` em seguida, a partir do snapshot da última fase. Sem snapshot (ou com o de versão anterior à 2, de antes do pseudônimo com chave), pula até a próxima fase |
 | `-once` ou `-once full` | Carga completa de todas as fontes numa execução (primeira carga ou manutenção) |
 | sem modo | O agendador antigo de longa duração, só para desenvolvimento |
 | `-site status`, `-site rollback [-to <nome>]` | Mostra a release pronta ou aponta `site/ready` para a anterior. O rollback pega o `ingest.lock` (espera até `INGEST_LOCK_WAIT`, depois sai com 75 sem mudar nada); o status não espera |
@@ -194,8 +197,8 @@ O que vale em toda execução:
 - `places/city/{ibge}.json` = `{ place, people: { slug: perfil } }`;
 - `index/city-people/{bucket}.json` = `{ items: { slug: ibge } }` (256 pacotes);
 - `votes/by-id/{bucket}.json` = `{ items: { id: votação } }` (512 pacotes);
-- o resto igual ao `v1`;
-- mais `release.json`, `_headers` (Cache-Control por tipo) e `404.html`.
+- o resto igual ao `v1`, inclusive a Memória (`history/*`);
+- mais `release.json` (com `base`, a release de onde saiu o delta, `rebuilt`, os pacotes refeitos, e `origin`, o quente lido primeiro na VPS), `_headers` (Cache-Control por tipo) e `404.html`.
 
 O bucket são os 2 primeiros bytes do SHA-256 da chave, módulo o número de pacotes, em hexadecimal.
 
@@ -215,10 +218,15 @@ São guardadas as últimas `SITE_KEEP`.
 
 Sem nenhum arquivo mudado, nenhuma release nova é criada. A carga não toca em `PUBLIC_DIR/published/`: quem copia o `highlights.json` para lá é o `fiscal-pages`, depois do deploy confirmado (veja "Deploy no Pages").
 
-Os dois ciclos de carga:
+**Incremental ([ADR 0008](../docs/adr/0008-smart-sync.md)):**
 
-1. **Carga completa** no boot e todo dia às `INGEST_FULL_AT` (hora de Brasília). Se falhar, nada novo é publicado (os arquivos anteriores ficam) e ela tenta de novo em 5, 15 e 30 min.
-2. **Atualização ao vivo** a cada `INGEST_LIVE_INTERVAL`: pauta do dia do Plenário das duas casas, votações de hoje (API da Câmara e `/votacao` do Senado), próxima sessão e o card da apuração (lido de `PUBLIC_DIR/v1/races.json` quando o arquivo é de hoje). Regrava `agenda/today.json`, `today.json`, `votes/*` e os votos por pessoa que mudaram.
+- **Quente (`hot`).** Lê a pauta do Plenário das duas casas, as votações de hoje (API da Câmara e `/votacao` do Senado), a próxima sessão e o card da apuração (de `PUBLIC_DIR/v1/races.json`, quando é de hoje). Com a impressão digital igual à da última leitura (`DATA_DIR/hot-today.json`), sai sem escrever nada. Senão, monta só `today.json`, `agenda/today.json`, `votes/recent.json` e os `votes/{id}.json` de hoje a partir de `DATA_DIR/hot-base.json` (as 60 votações mais recentes sem votos, as leis, as fontes e o mapa chave → slug, gravados por toda reconstrução nacional), sem carregar o snapshot. Votação nova marca `destaques` na fila.
+- **Derivados (`destaques`).** O snapshot mais a pauta e as votações de hoje, com o `Build` nacional sem cidades: perfis, `votes-{ano}`, fatos, destaques e peso.
+- **Sobreposição** (`checagens`, `anp`, `sidra`, `receita`, `repercussao`, `cidades`, `historia`). O snapshot com só a fonte do trabalho trocada; nenhuma outra fonte é restaurada do banco.
+- **Fontes de ligação** (`camara`, `senado`, `assembleias`, `tse`). Restauram o resto do banco como antes, mas mantêm os arquivos de cidades (`DATA_DIR/city-paths.json`) e a Memória. Os anos de assembleia fora do cache não são buscados por esses trabalhos.
+- **Manifesto** (`DATA_DIR/v1-manifest.json`). Guarda o caminho e o hash de cada arquivo do preparo, ignorando o `generatedAt`. Só o que mudou é regravado, e a lista do que mudou (`pending`, que sobrevive a uma queda) vai para o stager.
+- **Release por delta.** `site.StageDelta` liga por link físico os pacotes da release anterior que não mudaram e remonta só pessoa, município, índice de cidade, pacote de votações ou arquivo avulso afetados. A validação relê só o que foi reescrito, mas as checagens estruturais continuam completas. Com o manifesto recém-criado, a primeira release é completa.
+- **Verificação semanal (`memoria`).** Roda o caminho incremental e depois a reconstrução completa do banco (cidades e Memória incluídas, release completa), e compara o preparo e as duas releases. O resultado vai para `DATA_DIR/consistency.json`; divergência registra `ALERT consistency` e sai com código 3.
 
 Tudo o que é lido fica guardado no banco SQLite (`STORE_PATH`), com histórico, e os arquivos são gerados a partir dele; detalhes em [Banco da carga](#banco-da-carga-fiscaldb).
 
@@ -250,6 +258,7 @@ Cada arquivo sai com o `.gz` ao lado, por escrita atômica (`internal/publish`, 
 | `SITE_MAX_DROP` | `0.2` | Queda máxima de arquivos ou pessoas contra a release anterior |
 | `SITE_MAX_FILES` | `18000` | Teto de arquivos do site (de 100 a 20 000, o limite do Pages Free) |
 | `SITE_KEEP` | `3` | Releases guardadas em `PUBLIC_DIR/site/sites` |
+| `HOT_FROM_ORIGIN` | `1` | Põe `origin` no `release.json`: o app lê `today.json`, `agenda/today.json` e `votes/recent.json` primeiro no `api/v1` da VPS e busca lá a votação que o Pages ainda não tem; `0` tira |
 | `INGEST_LOCK_WAIT` | `20m` | Quanto uma fase espera o lock global |
 | `INGEST_NICE` | `19` | Prioridade do processo (`0` desliga) |
 | `INGEST_MAX_LOAD`, `INGEST_MIN_AVAILABLE_MB`, `INGEST_CAPACITY_WAIT` | `2`, `1536`, `20m` | Guarda de carga antes de cada fase (`0` desliga cada limite) |
@@ -268,14 +277,14 @@ Cada execução faz um ciclo:
 
 Quando há deploy:
 
-- **Release nova de fase, `full` ou rollback:** na hora.
-- **Release `live`:** no máximo uma a cada `PAGES_DATA_INTERVAL`.
+- **Release `full`, `memoria`, rollback ou `-force`:** na hora.
+- **Outras releases** (trabalhos de fonte, `hot`, `destaques`): esperam `tempo até o fim do mês ÷ deploys restantes` (`PAGES_MAX_DEPLOYS_PER_MONTH`); as quentes (`hot`, `destaques`, `live`) esperam também `PAGES_DATA_INTERVAL`.
 - **Apuração mudou:** na hora.
 - **Só o `status.json` mudou:** espera o próximo.
 
 Limites:
 
-- até `PAGES_MAX_DEPLOYS_PER_DAY` por dia;
+- até `PAGES_MAX_DEPLOYS_PER_DAY` por dia e `PAGES_MAX_DEPLOYS_PER_MONTH` (padrão 450) por mês, os dois como teto duro;
 - recusa mais de 20 000 arquivos;
 - um deploy por vez (`DATA_DIR/pages.lock`);
 - 3 tentativas com 30 s e 60 s de espera.
@@ -307,6 +316,7 @@ Variáveis: `PAGES_PROJECT` (`fiscal-dados`), `PAGES_BRANCH` (`main`), `CLOUDFLA
 - **Quem está no cargo:** a lista da própria casa para Câmara e Senado; deputados que aparecem nos votos do ano e estão de licença entram como `onLeave`. Presidente, vice, governador e vice vêm dos eleitos de 2022; quem disputou outro cargo em 2026 renunciou (Constituição, art. 14, § 6º), e o vice assume, sem vice no lugar. Deputados estaduais vêm dos eleitos de 2022; nas assembleias com SAPL, os mandatos da legislatura atual dizem quem está em exercício (os suplentes no cargo entram; os eleitos fora da lista viram `onLeave` quando a lista cobre ao menos 80% das cadeiras). Os eleitos de 2026 entram como `electedAwaiting`.
 - **Mandatos:** datas da Constituição (presidente até 05/01/2027 e governador até 06/01/2027, pela EC 111/2021; Câmara e Senado em 1º de fevereiro). Deputado estadual fica `null`.
 - **Salário:** R$ 46.366,19 para presidente, vice, senador e deputado federal (Decreto Legislativo nº 172/2022); os outros cargos ficam `null`.
+- **Votações do mesmo projeto no dia (`internal/publicdata/vote_groups.go`):** a Câmara e o Senado registram várias votações da mesma proposição num dia (requerimentos, emendas, destaques, texto principal, redação final). Elas viram um grupo por casa, proposição e dia (`group`, id estável como `camara-2026-10-15-pl-1123-2025`); PEC com 1º e 2º turno no mesmo dia fica com um grupo por turno, porque cada turno é uma deliberação com quórum próprio. A principal do grupo é a de mérito (projeto, substitutivo, subemenda substitutiva, texto da MP, PEC em turno, emendas do Senado), depois emenda de texto, por último as procedimentais (requerimento, redação final, "mantido o texto", destaque, pressupostos da MP); no empate, a nominal e depois a mais tarde. `votes/recent.json` traz uma linha por grupo (os 60 grupos mais recentes) com `relatedCount` e `related` (até 10, com resumo curto); `today.json` lista só a principal de cada grupo; `votes/{id}.json` continua existindo para cada votação, com o `group` e as outras do grupo. Os campos novos são opcionais e os ids não mudam. Contrato em `docs/changes/app-1.0/contract.md`.
 - **Temas e linguagem simples:** radicais escritos para o Fiscal (`internal/publicdata/themes.go`) e regras próprias (`internal/publicdata/plain.go`); a ementa oficial vai sempre ao lado.
 - **Slugs:** nome de urna em kebab-case, com `-uf` só quando o nome se repete em mais de uma UF; o registro em `DATA_DIR/slugs.json` mantém o slug de cada pessoa entre cargas e nunca o passa para outra.
 - **Neutralidade e ausência:** listas em ordem alfabética, sem ranking; dado que a fonte não publica ou que não foi carregado é `null`, com o motivo em `coverage`. Gasto de fornecedor pessoa física sai sem documento (só CNPJ é publicado).
@@ -380,9 +390,9 @@ O CPF não entra em claro: vira `cpf:<HMAC-SHA256 com a chave de PSEUDONYM_KEY_F
 
 ```sh
 cd /opt/fiscal-api
-systemctl stop 'fiscal-phase-*.timer' fiscal-live.timer
+systemctl stop fiscal-sync.timer
 docker compose --profile jobs run --rm --no-deps -T fiscal-ingest -restore /data/backups/fiscal-2026-10-25.db
-systemctl start 'fiscal-phase-*.timer' fiscal-live.timer
+systemctl start fiscal-sync.timer
 ```
 
 O `-restore` confere `PRAGMA integrity_check` do backup, troca `fiscal.db` por escrita atômica e apaga `fiscal.db-wal` e `fiscal.db-shm`. Na próxima carga as fontes são relidas e o histórico continua a partir do backup. Para olhar o banco sem parar nada, abra um backup (`sqlite3 ingest-backups/fiscal-AAAA-MM-DD.db`), nunca o `fiscal.db` em uso.
@@ -411,11 +421,10 @@ Checagens reais de 2026-10-25, com os 513 deputados federais, os 81 senadores e 
 
 ### Deploy da carga
 
-As fases e a atualização ao vivo são units do systemd em `deploy/systemd/`:
+As units do systemd ficam em `deploy/systemd/`:
 
-- **`fiscal-phase@.service`** roda `fiscal-ingest -phase %i` e, em seguida, `fiscal-pages`.
-- **`fiscal-phase-<nome>.timer`** agenda cada fase.
-- **`fiscal-live.service` e `fiscal-live.timer`** fazem a atualização ao vivo.
+- **`fiscal-sync.service` e `fiscal-sync.timer`** rodam a cada 5 min `fiscal-ingest -sync` e, em seguida, `fiscal-pages`.
+- **`fiscal-phase@.service`** força um trabalho à mão (`systemctl start fiscal-phase@camara`, que roda `-job camara` e depois `fiscal-pages`).
 - **`fiscal-pages.service` e `fiscal-pages.timer`** cuidam da apuração e ficam ligados só em dia de eleição.
 
 ```

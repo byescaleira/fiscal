@@ -14,6 +14,8 @@ import (
 const (
 	repercussionStoreFile = "repercussion.json"
 	defaultNewsBudget     = 120
+	newsTimeBudget        = 15 * time.Minute
+	newsThrottleStreak    = 2
 	repercussionKeep      = 14 * 24 * time.Hour
 )
 
@@ -134,25 +136,31 @@ func (in *Ingest) loadWiki(ctx context.Context, rep *Report, people []*publicdat
 
 func (in *Ingest) loadNews(ctx context.Context, rep *Report, plan publicdata.SignalPlan, store *repercussion.Store, sig *publicdata.Signals, now time.Time, stamp string, offline bool) bool {
 	g := &repercussion.GDELT{Get: in.get, Limit: in.newsBudget(), Now: in.now}
-	throttled := offline
+	stopped := offline
+	deadline := in.now().Add(newsTimeBudget)
+	streak, measured := 0, 0
 	measure := func(query string) (int64, bool) {
 		c, cached := store.News[query]
 		if cached && freshAt(c.FetchedAt, repercussion.NewsTTL, now) {
 			return c.Value, true
 		}
-		if throttled || g.Exhausted() {
+		if stopped || g.Exhausted() || !in.now().Before(deadline) {
 			return c.Value, cached
 		}
 		n, err := g.Count(ctx, query)
 		if err != nil {
-			if errors.Is(err, repercussion.ErrThrottled) && !g.Exhausted() {
-				throttled = true
-				in.warn(rep, "gdelt: rate limited (kept the counts already known)")
-			} else if !errors.Is(err, repercussion.ErrThrottled) {
+			if !errors.Is(err, repercussion.ErrThrottled) {
 				in.warn(rep, "gdelt %q: %v", query, err)
+				return c.Value, cached
+			}
+			if streak++; streak >= newsThrottleStreak && !g.Exhausted() {
+				stopped = true
+				in.warn(rep, "gdelt: rate limited after %d new counts (kept the counts already known)", measured)
 			}
 			return c.Value, cached
 		}
+		streak = 0
+		measured++
 		store.News[query] = repercussion.Count{Value: n, FetchedAt: stamp}
 		return n, true
 	}

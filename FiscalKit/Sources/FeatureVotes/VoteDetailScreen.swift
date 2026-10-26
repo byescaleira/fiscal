@@ -17,6 +17,7 @@ public struct VoteDetailScreen: View {
                 VoteHeroSection()
                 VoteExplainSection()
                 VoteSummarySection()
+                VoteSameDaySection()
                 VoteSupportSection()
                 VoteRepresentativesSection()
                 VoteGuidanceSection()

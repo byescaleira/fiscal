@@ -17,11 +17,13 @@ import (
 	"time"
 
 	"liveresults/internal/datastore"
+	"liveresults/internal/history"
 	"liveresults/internal/publicdata"
 	"liveresults/internal/publish"
 	"liveresults/internal/site"
 	"liveresults/internal/sources/fetch"
 	"liveresults/internal/sources/ibge"
+	"liveresults/internal/sources/tse"
 )
 
 type Fetcher interface {
@@ -47,6 +49,7 @@ type Config struct {
 	HistoryYears      []int
 	Refresh           map[string]bool
 	ReleaseKind       string
+	Rebuild           bool
 }
 
 func (c Config) Enabled(source string) bool {
@@ -96,7 +99,9 @@ type Ingest struct {
 	db  *datastore.Store
 	run *datastore.Run
 
-	site *site.Stager
+	site    *site.Stager
+	man     *publish.Manifest
+	probeFn func(context.Context, Job) (string, error)
 }
 
 func (in *Ingest) UseSite(s *site.Stager) {
@@ -154,6 +159,7 @@ func (s *sourceSet) add(id, name, url string, data any) {
 	defer s.mu.Unlock()
 	s.list[id] = publicdata.Source{ID: id, Name: name, URL: url, UpdatedAt: s.at}
 	s.hashes[id] = hex.EncodeToString(sum.Sum(nil))
+	delete(s.stale, id)
 }
 
 type sourceState struct {
@@ -201,23 +207,25 @@ func (s *sourceSet) settle(path string) error {
 }
 
 type Report struct {
-	People      int
-	Votes       int
-	Checks      int
-	CheckPeople int
-	CheckLinks  int
-	Reviews     int
-	Cities      int
-	CityPeople  int
-	Files       int
-	Written     int
-	Removed     int
-	Bytes       int64
-	Gzip        int64
-	Duration    time.Duration
-	Warnings    []string
-	Release     string
-	Unchanged   bool
+	People       int
+	Votes        int
+	Checks       int
+	CheckPeople  int
+	CheckLinks   int
+	Reviews      int
+	Cities       int
+	CityPeople   int
+	Files        int
+	Written      int
+	Removed      int
+	Bytes        int64
+	Gzip         int64
+	Duration     time.Duration
+	Warnings     []string
+	Release      string
+	Unchanged    bool
+	Changed      int
+	ChangedPaths []string
 }
 
 func (in *Ingest) warn(r *Report, format string, args ...any) {
@@ -348,7 +356,13 @@ func (in *Ingest) full(ctx context.Context) (Report, error) {
 		applyCoverage(p)
 	}
 	ds.People = people
-	if in.cfg.Enabled("cidades") {
+	var retain []string
+	if in.cfg.Enabled("cidades") && !in.cfg.Rebuild && !in.cfg.refresh("cidades") {
+		if paths, ok := in.loadCityPaths(); ok {
+			retain = paths
+		}
+	}
+	if in.cfg.Enabled("cidades") && retain == nil {
 		if len(ds.Municipalities) == 0 {
 			in.warn(&rep, "cities: skipped, the IBGE list of municipalities is not loaded")
 		} else {
@@ -380,9 +394,13 @@ func (in *Ingest) full(ctx context.Context) (Report, error) {
 	if in.cfg.Enabled("anp") || in.cfg.Enabled("sidra") {
 		ds.Indicators = in.loadIndicators(ctx, &rep, srcs)
 	}
-	if in.cfg.Enabled("historia") {
+	switch {
+	case in.cfg.Enabled("historia") && (in.cfg.Rebuild || in.cfg.refresh("historia")):
 		in.loadHistory(ctx, &rep, srcs)
-	} else {
+	case in.cfg.Enabled("historia"):
+		in.keepSources(srcs, map[string][2]string{"tse-historico": {historySourceName, tse.SiteURL}, "ipeadata": {history.IpeaName, history.IpeaSiteURL}})
+		in.skipped(ctx, "historia")
+	default:
 		in.skipped(ctx, "historia")
 	}
 	if err := srcs.settle(filepath.Join(in.cfg.DataDir, "sources.json")); err != nil {
@@ -394,15 +412,19 @@ func (in *Ingest) full(ctx context.Context) (Report, error) {
 		assemblies = in.storeAssemblies(ctx, srcs, people)
 	}
 	ds.Agenda = in.storedAgenda(ctx, ds.Today)
+	in.loadHotState().merge(ds)
 	in.refreshLive(ctx, ds, &rep)
 	in.storeLive(ctx, &rep, ds)
 	kind := in.cfg.ReleaseKind
 	if kind == "" {
 		kind = "full"
 	}
-	cities, slugs, err := in.publish(ctx, kind, ds, &rep, nil)
+	cities, slugs, err := in.publish(ctx, kind, ds, &rep, retain)
 	if err != nil {
 		return rep, err
+	}
+	if retain != nil {
+		cities = retain
 	}
 	in.storeFinal(ctx, &rep, ds.People, slugs, assemblies)
 	lite := *ds
@@ -416,26 +438,12 @@ func (in *Ingest) full(ctx context.Context) (Report, error) {
 }
 
 func (in *Ingest) Live(ctx context.Context) (Report, error) {
-	in.begin(ctx, "live")
-	rep, err := in.live(ctx)
-	in.end(ctx, rep, err)
-	return rep, err
-}
-
-func (in *Ingest) live(ctx context.Context) (Report, error) {
-	var rep Report
-	in.mu.Lock()
-	ds := in.dataset
-	cities := in.cities
-	in.mu.Unlock()
-	if ds == nil {
-		return rep, errors.New("live: no full load yet")
+	hot, err := in.Hot(ctx)
+	if err != nil && !errors.Is(err, ErrNoHotBase) {
+		return Report{Warnings: hot.Warnings}, err
 	}
-	ds.GeneratedAt = in.now()
-	ds.Today = in.today()
-	in.refreshLive(ctx, ds, &rep)
-	in.storeLive(ctx, &rep, ds)
-	_, _, err := in.publish(ctx, "live", ds, &rep, cities)
+	rep, err := in.Derived(ctx)
+	rep.Warnings = append(hot.Warnings, rep.Warnings...)
 	return rep, err
 }
 
@@ -445,7 +453,12 @@ func (in *Ingest) publish(ctx context.Context, kind string, ds *publicdata.Datas
 		return nil, nil, err
 	}
 	out := publicdata.Build(ds, slugs)
+	m, err := in.manifest()
+	if err != nil {
+		return nil, nil, err
+	}
 	tree := publish.NewTree(filepath.Join(in.cfg.PublicDir, "v1"))
+	tree.UseManifest(m)
 	tree.Retain(retain)
 	if err := publicdata.Publish(out, tree, true); err != nil {
 		return nil, nil, err
@@ -465,26 +478,39 @@ func (in *Ingest) publish(ctx context.Context, kind string, ds *publicdata.Datas
 	if err := slugs.Save(); err != nil {
 		return nil, nil, err
 	}
+	if err := m.Save(); err != nil {
+		return nil, nil, err
+	}
+	if err := in.saveHotBase(out.Hot); err != nil {
+		in.warn(rep, "hot base: %v", err)
+	}
+	if len(out.Cities) > 0 {
+		if err := in.saveCityPaths(out.Cities); err != nil {
+			in.warn(rep, "city paths: %v", err)
+		}
+	}
 	st := tree.Stats()
-	if in.site != nil {
-		cur, ok, err := in.site.Current()
-		if err != nil {
-			return nil, nil, fmt.Errorf("site: %w", err)
-		}
-		if ok && st.Written == 0 && st.Removed == 0 {
-			rep.Release, rep.Unchanged = cur.Release, true
-		} else {
-			rel, err := in.site.Stage(kind, append(tree.Seen(), in.historyPaths()...))
-			if err != nil {
-				return nil, nil, fmt.Errorf("site: %w", err)
-			}
-			rep.Release = rel.Release
-		}
+	rep.ChangedPaths = m.Changed()
+	rep.Changed = len(rep.ChangedPaths)
+	if err := in.stage(kind, m, rep); err != nil {
+		return nil, nil, err
 	}
 	rep.People = len(ds.People)
 	rep.Votes = len(ds.Votes)
 	rep.Files, rep.Written, rep.Removed, rep.Bytes, rep.Gzip = st.Files, st.Written, st.Removed, st.Bytes, st.GzipBytes
 	return out.Cities, out.Slugs, nil
+}
+
+func (in *Ingest) keepSources(srcs *sourceSet, ids map[string][2]string) {
+	prev := map[string]sourceState{}
+	if data, err := os.ReadFile(filepath.Join(in.cfg.DataDir, "sources.json")); err == nil {
+		json.Unmarshal(data, &prev)
+	}
+	for id, meta := range ids {
+		if _, ok := prev[id]; ok {
+			srcs.keep(id, meta[0], meta[1])
+		}
+	}
 }
 
 func (in *Ingest) currentYear() int {

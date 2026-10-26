@@ -278,12 +278,12 @@ func TestBuildFieldsMatchTheContract(t *testing.T) {
 		t.Fatalf("expenses = %+v", ex)
 	}
 	recent := files["votes/recent.json"].([]VoteSummary)
-	check("voteSummary", recent[0], "id,house,date,time,proposition,kind,summary,plainSummary,themes,result,approved,nominal,yes,no,others")
+	check("voteSummary", recent[0], "id,house,date,time,proposition,kind,summary,plainSummary,themes,result,approved,nominal,yes,no,others,group")
 	if len(recent) != 2 || recent[0].ID != "senado-7108" || recent[0].Time != nil || deref(recent[0].PlainSummary) != "Muda uma lei complementar para dispor sobre o limite de receita bruta anual do Microempreendedor Individual." {
 		t.Fatalf("recent = %+v", recent)
 	}
 	det := files["votes/camara-2236186-60.json"].(VoteDetail)
-	check("voteDetail", det, "id,house,date,time,proposition,kind,summary,plainSummary,themes,result,approved,nominal,yes,no,others,quorum,guidance,parties,people,sources")
+	check("voteDetail", det, "id,house,date,time,proposition,kind,summary,plainSummary,themes,result,approved,nominal,yes,no,others,group,quorum,guidance,parties,people,sources")
 	check("guidance", det.Guidance[0], "party,guidance")
 	check("partyTally", det.Parties[0], "party,yes,no,others")
 	check("votePerson", det.People[0], "slug,name,party,uf,vote")
@@ -360,5 +360,18 @@ func TestPublishWritesTreeAndPrunesStaleProfiles(t *testing.T) {
 	}
 	if st := again.Stats(); st.Written != 0 {
 		t.Fatalf("unchanged data rewrote %d files", st.Written)
+	}
+}
+
+func TestAVoteWithoutAPropositionStillHasALabel(t *testing.T) {
+	cases := map[string]*HouseVote{
+		"PL 1123/2025":        {Proposition: "PL 1123/2025", Description: "Aprovado o requerimento"},
+		"Requerimento":        {Description: "Aprovado, por unanimidade, o Requerimento."},
+		"Votação em Plenário": {Description: "Votos: Sra. Fulana: Sim: 388; Não: 22."},
+	}
+	for want, v := range cases {
+		if got := VoteLabel(v); got != want {
+			t.Fatalf("VoteLabel(%q) = %q, want %q", v.Description, got, want)
+		}
 	}
 }

@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/fs"
 	"os"
 	"path/filepath"
 	"sort"
@@ -23,6 +22,8 @@ const (
 	historyCacheVersion  = "7"
 	historyIndicatorFile = "history-indicators.json"
 )
+
+const historySourceName = "Tribunal Superior Eleitoral, resultados de eleições anteriores"
 
 func DefaultHistoryYears() []int {
 	years := []int{tse.UFOnlyYear, tse.UFOnlyYear + 1}
@@ -302,6 +303,11 @@ func (in *Ingest) loadHistory(ctx context.Context, rep *Report, srcs *sourceSet)
 		in.warn(rep, "history study: %v", serr)
 	}
 	tree := publish.NewTree(filepath.Join(in.cfg.PublicDir, "v1"))
+	if m, err := in.manifest(); err == nil {
+		tree.UseManifest(m)
+	} else {
+		in.warn(rep, "history manifest: %v", err)
+	}
 	var werr error
 	write := func(rel string, v any) {
 		if werr == nil {
@@ -321,7 +327,7 @@ func (in *Ingest) loadHistory(ctx context.Context, rep *Report, srcs *sourceSet)
 		sort.Ints(ys)
 		sort.Slice(gaps, func(i, j int) bool { return gaps[i].Year < gaps[j].Year })
 		write(history.IndexPath, history.Index{Years: ys, Races: history.Summarize(races), Gaps: gaps, Method: electionMethod, Sources: indexSources(ys)})
-		srcs.add("tse-historico", "Tribunal Superior Eleitoral, resultados de eleições anteriores", tse.SiteURL, history.Summarize(races))
+		srcs.add("tse-historico", historySourceName, tse.SiteURL, history.Summarize(races))
 	}
 	if terr == nil {
 		write(history.PeriodsPath, timeline)
@@ -378,21 +384,5 @@ func indexSources(years []int) []history.Ref {
 	for i := range out {
 		out[i].ID = fmt.Sprintf("tse-%d", years[i])
 	}
-	return out
-}
-
-func (in *Ingest) historyPaths() []string {
-	root := filepath.Join(in.cfg.PublicDir, "v1")
-	var out []string
-	filepath.WalkDir(filepath.Join(root, "history"), func(p string, d fs.DirEntry, err error) error {
-		if err != nil || d.IsDir() || !strings.HasSuffix(p, ".json") {
-			return nil
-		}
-		if rel, err := filepath.Rel(root, p); err == nil {
-			out = append(out, filepath.ToSlash(rel))
-		}
-		return nil
-	})
-	sort.Strings(out)
 	return out
 }

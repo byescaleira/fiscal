@@ -49,15 +49,15 @@ Peça compartilhada pelas frentes paralelas da mudança [`app-1.0`](proposal.md)
 | `people/{slug}/proposals-{year}.json` | `{ items: [Proposal], total }` | quando muda |
 | `people/{slug}/speeches-{year}.json` | `{ items: [Speech], total }` | quando muda |
 | `people/{slug}/expenses-{year}.json` | `{ items: [Expense], totalCents, byMonth: [{ month, cents }], byCategory: [{ category, cents, count }] }` | quando muda |
-| `votes/recent.json` | as 60 últimas votações do Plenário (Câmara e Senado): `[VoteSummary]` | diária e a cada 10 min em dia de sessão |
-| `votes/{id}.json` | `VoteDetail` | quando muda |
-| `agenda/today.json` | `{ date, houses: [{ house, inSession, nextSession, items: [AgendaItem] }] }` | a cada 10 min |
+| `votes/recent.json` | os 60 últimos grupos de votação do Plenário (Câmara e Senado), um item por grupo: `[VoteSummary]` com a votação principal do grupo, `relatedCount` e `related` (regra abaixo) | diária e a cada 5 min em dia de sessão (lido primeiro na origem, com cache de 30 s) |
+| `votes/{id}.json` | `VoteDetail`, um para cada votação, inclusive as que não são a principal do grupo; traz `group` e as outras votações do grupo em `related` | quando muda |
+| `agenda/today.json` | `{ date, houses: [{ house, inSession, nextSession, items: [AgendaItem] }] }` | a cada 5 min em dia de sessão, de hora em hora fora dela |
 | `money/overview.json` | `MoneyOverview` | diária |
 | `money/mandate-cost.json` | `MandateCost`: quanto custa um mandato por mês, item a item, com o ato oficial de cada valor; 404 quer dizer que a carga ainda não publicou, e o app esconde a seção | diária |
-| `today.json` | `TodayDigest` (o que aconteceu, para a aba Hoje) | a cada 10 min |
+| `today.json` | `TodayDigest` (o que aconteceu, para a aba Hoje) | a cada 5 min em dia de sessão, de hora em hora fora dela |
 | `people/{slug}/checks.json` | `{ items: [FactCheck], sources }`: checagens do Projeto Comprova que citam a pessoa pelo nome completo exato; só existe quando há ao menos uma | diária |
 | `people/{slug}/actions.json` | `{ items: [Action], sources }`: o que a pessoa fez nos dois últimos anos, ordenado pelo peso ([weight.md](weight.md)); cada ação traz `measured`, `missing` e `confidence` (`full` \| `partial` \| `impactOnly`), e `repercussion` é `null` sem sinal medido; só existe quando há ação | diária |
-| `highlights.json` | `{ generatedAt, items: [Highlight], method, sources }`: o Destaque do momento, nunca vazio quando há dado; cada item traz `measured`, `missing`, `confidence`, `themes`, `stage`, `house` e, em votação, `tally { yes, no, others }` | a cada 10 min |
+| `highlights.json` | `{ generatedAt, items: [Highlight], method, sources }`: o Destaque do momento, nunca vazio quando há dado; cada item traz `measured`, `missing`, `confidence`, `themes`, `stage`, `house` e, em votação, `tally { yes, no, others }` | no máximo a cada 20 min, quando entra votação nova |
 | `method/weight.json` | `WeightMethod` (versão 2): a regra do peso, para o "Como medimos", com `renormalization` (sinal ausente sai da conta, nunca vira zero), `confidence` e `alert { minWeight, maxAgeHours, text }`, `levels: [{ key ∈ high \| medium \| low, label, min, max }]` e `levelsText` (as faixas de relevância) | diária |
 | `index/benchmarks.json` | `{ generatedAt, items: [Benchmark], sources }`: a referência dos colegas por cargo e casa (deputados federais, senadores e deputados estaduais por UF), com p25, mediana, p75 e `n` de presença, cota por mês de mandato, propostas e discursos no ano | a cada carga |
 | `method/benchmarks.json` | `BenchmarkMethod` (versão 1): a regra da classificação em texto, para o "Como medimos" | a cada carga |
@@ -128,7 +128,20 @@ Speech { date, kind, summary, url }
 Expense { id, year, month, category, supplier, document, cents, url }
 
 VoteSummary { id, house ∈ camara | senado, date, time, proposition, kind, summary, plainSummary, themes,
-              result, approved, nominal, yes, no, others }
+              result, approved, nominal, yes, no, others,
+              group?, relatedCount?, related?: [{ id, time, summary, nominal, approved }] }
+
+Grupo de votação: votações da mesma casa, da mesma proposição e do mesmo dia (`group`, id estável,
+ex.: `camara-2026-10-15-pl-1123-2025`; sem proposição, o grupo é a própria votação). PEC com 1º e 2º turno
+no mesmo dia vira um grupo por turno (`…-turno-1`, `…-turno-2`): são deliberações distintas, cada uma com
+quórum de 3/5; votações sem turno no texto entram no turno em andamento na hora delas.
+A principal do grupo é, nesta ordem: (1) a deliberação de mérito (projeto, substitutivo, subemenda
+substitutiva, texto da MP ou da PEC em turno, emendas do Senado, "nos termos do parecer"); (2) emenda ou
+subemenda de texto; (3) as procedimentais (requerimento, redação final, "mantido o texto", destaque,
+pressupostos da MP, adiamento, preferência). Empate: a nominal, depois a mais tarde (hora e sequência do id).
+`relatedCount` conta as outras votações do grupo; `related` lista até 10, em ordem de hora, com um resumo
+curto ("Redação final", "Emenda nº 97", "Requerimento de urgência"). Os três campos são opcionais e somem
+quando não há outra votação no grupo; apps antigos os ignoram.
 VoteDetail extends VoteSummary + { quorum, guidance: [{ party, guidance }],
               parties: [{ party, yes, no, others }], people: [{ slug, name, party, uf, vote }], sources }
 

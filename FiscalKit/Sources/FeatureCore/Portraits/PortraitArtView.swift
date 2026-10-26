@@ -86,9 +86,7 @@ extension View {
         environment(store)
             .portraitArtwork(
                 PortraitArtwork { request in
-                    guard store.hasPortrait(slug: request.slug, party: request.party) else {
-                        return nil
-                    }
+                    guard store.drawsPortraits else { return nil }
                     return AnyView(PortraitArtView(store: store, request: request))
                 })
     }

@@ -50,8 +50,9 @@ extension VotesModel {
         [
             vote.proposition, summary(vote), VoteOutcome(vote).title,
             VoteTally.label(vote.tally), vote.house.title, vote.time,
+            SameDayVotes.mark(vote, today: CalendarDay(now())),
         ]
-        .compactMap(\.self).joined(separator: ". ")
+        .compactMap(\.self).filter { !$0.isEmpty }.joined(separator: ". ")
     }
 
     public func sourceText(_ day: Day) -> String {
