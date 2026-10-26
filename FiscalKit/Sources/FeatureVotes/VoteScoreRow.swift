@@ -27,6 +27,7 @@ struct VoteScoreRow: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .lineLimit(3)
+            SameDayVotesMark(vote: vote, now: votes.now())
             ScoreLine(
                 vote: vote, yes: votes.yesText(vote), no: votes.noText(vote),
                 others: votes.othersText(vote))
@@ -150,6 +151,7 @@ struct VoteHighlightRow: View {
                 Label(outcome.title, systemImage: outcome.symbol)
                     .font(.chipLabel)
                     .foregroundStyle(outcome.color)
+                SameDayVotesMark(vote: vote, now: votes.now())
             }
         }
         .accessibilityElement(children: .combine)

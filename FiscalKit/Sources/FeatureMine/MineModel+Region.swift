@@ -137,7 +137,9 @@ extension MineModel {
 
     public func voteAccessibility(_ vote: MineVote) -> String {
         let board = vote.board
-        return "\(board.accessibilityText) \(vote.heading): \(vote.countsText)."
+        let text = "\(board.accessibilityText) \(vote.heading): \(vote.countsText)."
+        guard let more = SameDayVotes.mark(vote.vote, today: CalendarDay(.now)) else { return text }
+        return "\(text) \(more)."
     }
 
     public func seatAccessibility(_ seat: MineSeat) -> String {

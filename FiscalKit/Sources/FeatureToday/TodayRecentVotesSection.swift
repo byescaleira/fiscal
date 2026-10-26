@@ -62,6 +62,7 @@ private struct RecentVoteRow: View {
                 Text(verbatim: vote.plainSummary ?? vote.summary)
                     .font(.headline)
                     .lineLimit(3)
+                SameDayVotesMark(vote: vote)
                 HStack(alignment: .bottom) {
                     TallyLine(tally: vote.tally, font: .amountRow.width(.condensed))
                     Spacer(minLength: .spaceS)

@@ -49,8 +49,8 @@ Peça compartilhada pelas frentes paralelas da mudança [`app-1.0`](proposal.md)
 | `people/{slug}/proposals-{year}.json` | `{ items: [Proposal], total }` | quando muda |
 | `people/{slug}/speeches-{year}.json` | `{ items: [Speech], total }` | quando muda |
 | `people/{slug}/expenses-{year}.json` | `{ items: [Expense], totalCents, byMonth: [{ month, cents }], byCategory: [{ category, cents, count }] }` | quando muda |
-| `votes/recent.json` | as 60 últimas votações do Plenário (Câmara e Senado): `[VoteSummary]` | diária e a cada 10 min em dia de sessão |
-| `votes/{id}.json` | `VoteDetail` | quando muda |
+| `votes/recent.json` | os 60 últimos grupos de votação do Plenário (Câmara e Senado), um item por grupo: `[VoteSummary]` com a votação principal do grupo, `relatedCount` e `related` (regra abaixo) | diária e a cada 10 min em dia de sessão |
+| `votes/{id}.json` | `VoteDetail`, um para cada votação, inclusive as que não são a principal do grupo; traz `group` e as outras votações do grupo em `related` | quando muda |
 | `agenda/today.json` | `{ date, houses: [{ house, inSession, nextSession, items: [AgendaItem] }] }` | a cada 10 min |
 | `money/overview.json` | `MoneyOverview` | diária |
 | `money/mandate-cost.json` | `MandateCost`: quanto custa um mandato por mês, item a item, com o ato oficial de cada valor; 404 quer dizer que a carga ainda não publicou, e o app esconde a seção | diária |
@@ -128,7 +128,20 @@ Speech { date, kind, summary, url }
 Expense { id, year, month, category, supplier, document, cents, url }
 
 VoteSummary { id, house ∈ camara | senado, date, time, proposition, kind, summary, plainSummary, themes,
-              result, approved, nominal, yes, no, others }
+              result, approved, nominal, yes, no, others,
+              group?, relatedCount?, related?: [{ id, time, summary, nominal, approved }] }
+
+Grupo de votação: votações da mesma casa, da mesma proposição e do mesmo dia (`group`, id estável,
+ex.: `camara-2026-10-15-pl-1123-2025`; sem proposição, o grupo é a própria votação). PEC com 1º e 2º turno
+no mesmo dia vira um grupo por turno (`…-turno-1`, `…-turno-2`): são deliberações distintas, cada uma com
+quórum de 3/5; votações sem turno no texto entram no turno em andamento na hora delas.
+A principal do grupo é, nesta ordem: (1) a deliberação de mérito (projeto, substitutivo, subemenda
+substitutiva, texto da MP ou da PEC em turno, emendas do Senado, "nos termos do parecer"); (2) emenda ou
+subemenda de texto; (3) as procedimentais (requerimento, redação final, "mantido o texto", destaque,
+pressupostos da MP, adiamento, preferência). Empate: a nominal, depois a mais tarde (hora e sequência do id).
+`relatedCount` conta as outras votações do grupo; `related` lista até 10, em ordem de hora, com um resumo
+curto ("Redação final", "Emenda nº 97", "Requerimento de urgência"). Os três campos são opcionais e somem
+quando não há outra votação no grupo; apps antigos os ignoram.
 VoteDetail extends VoteSummary + { quorum, guidance: [{ party, guidance }],
               parties: [{ party, yes, no, others }], people: [{ slug, name, party, uf, vote }], sources }
 

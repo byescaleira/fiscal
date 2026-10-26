@@ -267,6 +267,7 @@ struct ResultsVisual: View {
                             .font(.subheadline)
                             .foregroundStyle(Color.primary)
                             .lineLimit(2)
+                        SameDayVotesMark(vote: vote)
                     }
                 }
             }
