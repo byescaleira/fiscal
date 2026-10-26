@@ -37,6 +37,7 @@ struct ComparePicker: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Compare") { Task { await compare.confirm() } }
                         .disabled(!compare.canCompare)
+                        .tint(Color.primary)
                 }
             }
         }

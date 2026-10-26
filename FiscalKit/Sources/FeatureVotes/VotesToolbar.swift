@@ -21,7 +21,6 @@ struct VotesToolbar: ToolbarContent {
 
 private struct VotesFilterMenu: View {
     @Environment(VotesModel.self) private var votes
-    @Environment(\.appTint) private var tint
 
     var body: some View {
         @Bindable var votes = votes
@@ -42,7 +41,7 @@ private struct VotesFilterMenu: View {
         } label: {
             Label("Filters", systemImage: "line.3.horizontal.decrease")
                 .labelStyle(.iconOnly)
-                .foregroundStyle(votes.hasFilter ? tint : Color.primary)
+                .foregroundStyle(Color.primary)
                 .symbolEffect(.bounce, value: votes.hasFilter)
                 .accessibilityValue(Text(verbatim: votes.filterSummary))
         }

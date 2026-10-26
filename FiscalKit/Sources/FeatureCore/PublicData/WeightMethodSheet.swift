@@ -98,6 +98,7 @@ public struct WeightMethodSheet: View {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
+                        .tint(Color.primary)
                 }
             }
         }

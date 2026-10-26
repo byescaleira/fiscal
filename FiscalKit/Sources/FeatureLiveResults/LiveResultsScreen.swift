@@ -202,7 +202,7 @@ private struct LiveResultsFilterMenu: View {
         } label: {
             Label("Filters", systemImage: "line.3.horizontal.decrease")
                 .labelStyle(.iconOnly)
-                .foregroundStyle(results.hasFilter ? tint : Color.primary)
+                .foregroundStyle(Color.primary)
                 .symbolEffect(.bounce, value: results.hasFilter)
                 .accessibilityValue(Text(verbatim: results.filterSummary))
         }

@@ -29,12 +29,14 @@ public struct CompareScreen: View {
                 Button("Choose people", systemImage: "person.badge.plus") {
                     Task { await compare.pick() }
                 }
+                .tint(Color.primary)
             }
             if let share = compare.share {
                 ToolbarItem(placement: .primaryAction) {
                     Button("Share", systemImage: "square.and.arrow.up") {
                         open(share, in: section)
                     }
+                    .tint(Color.primary)
                 }
             }
         }

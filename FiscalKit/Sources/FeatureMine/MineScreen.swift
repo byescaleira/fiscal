@@ -63,18 +63,6 @@ private struct MineHeroCard: View {
                 .padding(.vertical, .space2XS)
                 .background(.fill.tertiary, in: .capsule)
                 Spacer(minLength: .spaceS)
-                if mine.hasPlace {
-                    Button {
-                        mine.isChoosingPlace = true
-                    } label: {
-                        Label("Change Place", systemImage: "mappin.and.ellipse")
-                            .font(.subheadline.weight(.semibold))
-                    }
-                    .buttonStyle(.plain)
-                    .padding(.horizontal, .spaceM)
-                    .padding(.vertical, .spaceXS)
-                    .background(.fill.tertiary, in: .capsule)
-                }
             }
             VStack(alignment: .leading, spacing: .space2XS) {
                 HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
@@ -159,6 +147,14 @@ private struct MineToolbar: ToolbarContent {
     @Environment(\.navigationSection) private var section
 
     var body: some ToolbarContent {
+        ToolbarItem(placement: .primaryAction) {
+            Button {
+                mine.isChoosingPlace = true
+            } label: {
+                Label("Change Place", systemImage: "mappin.and.ellipse")
+            }
+            .tint(Color.primary)
+        }
         if let route = mine.shareRoute {
             ToolbarItem(placement: .primaryAction) {
                 Button {
@@ -166,6 +162,7 @@ private struct MineToolbar: ToolbarContent {
                 } label: {
                     Label("Share My Representatives", systemImage: "square.and.arrow.up")
                 }
+                .tint(Color.primary)
             }
         }
     }

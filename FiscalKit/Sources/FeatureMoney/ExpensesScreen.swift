@@ -31,7 +31,7 @@ public struct ExpensesScreen: View {
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
             if expenses.years.count > 1 {
-                ToolbarItem(placement: .primaryAction) { ExpensesYearMenu() }
+                ToolbarItem(placement: .primaryAction) { ExpensesYearMenu().tint(Color.primary) }
             }
             ToolbarItem(placement: .primaryAction) {
                 Button {
@@ -40,6 +40,7 @@ public struct ExpensesScreen: View {
                     Label("Share", systemImage: "square.and.arrow.up")
                 }
                 .disabled(expenses.isEmpty)
+                .tint(Color.primary)
             }
         }
         .refreshable { await expenses.load() }

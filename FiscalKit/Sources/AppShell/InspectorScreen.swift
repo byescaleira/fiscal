@@ -14,6 +14,7 @@ struct InspectorScreen: View {
                 .toolbar {
                     ToolbarItem(placement: .primaryAction) {
                         Button("Close", systemImage: "xmark") { navigation.closeInspector() }
+                            .tint(Color.primary)
                     }
                 }
         }

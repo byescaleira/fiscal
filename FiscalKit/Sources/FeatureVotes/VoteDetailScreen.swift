@@ -48,6 +48,7 @@ private struct VoteDetailToolbar: ToolbarContent {
                 open(.share(.vote(id: vote.id)), in: section)
             }
             .disabled(vote.isEmpty)
+            .tint(Color.primary)
         }
     }
 }

@@ -40,6 +40,7 @@ struct MinePlacePicker: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Close") { dismiss() }
+                        .tint(Color.primary)
                 }
             }
             .task { await mine.loadPlaces() }
