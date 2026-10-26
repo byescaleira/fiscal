@@ -29,6 +29,8 @@ public final class MineModel {
     public private(set) var phase: PublicDataPhase = .idle
     public private(set) var places: [Place] = []
     public private(set) var placesPhase: PublicDataPhase = .idle
+    public private(set) var activity: MineActivity = .empty
+    public private(set) var activityPhase: PublicDataPhase = .idle
     public var query = ""
     public var isChoosingPlace = false
     public var error: FiscalError?
@@ -196,6 +198,19 @@ public final class MineModel {
             cityRepresentatives = cityList
             place = resolved
         }
+        if phase == .loaded { await loadActivity() }
+    }
+
+    public func loadActivity() async {
+        guard let service, let uf = representatives?.uf else { return }
+        if activity.isEmpty { activityPhase = .loading }
+        let loader = MineActivityLoader(service: service)
+        let found = await loader.load(
+            uf: uf, region: regionSlugs, executive: seats.flatMap(\.slugs),
+            seats: houseSeats)
+        guard !Task.isCancelled else { return }
+        activity = found
+        activityPhase = .loaded
     }
 
     public func choose(_ choice: Place) async {
@@ -203,6 +218,8 @@ public final class MineModel {
         place = nil
         representatives = nil
         cityRepresentatives = nil
+        activity = .empty
+        activityPhase = .idle
         isChoosingPlace = false
         query = ""
         await loadPlace()
@@ -213,6 +230,8 @@ public final class MineModel {
         place = nil
         representatives = nil
         cityRepresentatives = nil
+        activity = .empty
+        activityPhase = .idle
         phase = .idle
     }
 

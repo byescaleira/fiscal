@@ -123,7 +123,7 @@ private struct MineStateSection: View {
     }
 }
 
-private struct MinePlaceRow: View {
+struct MinePlaceRow: View {
     @Environment(MineModel.self) private var mine
     let place: Place
 

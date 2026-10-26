@@ -3,6 +3,7 @@ import Foundation
 
 extension MineModel {
     public static let resultLimit = 60
+    public static let inviteLimit = 8
 
     public static let capitalCodes: Set<String> = [
         "1100205", "1200401", "1302603", "1400100", "1501402", "1600303", "1721000", "2111300",
@@ -56,7 +57,7 @@ extension MineModel {
         searchNames[place.code] ?? Self.normalized(place.name)
     }
 
-    static func normalized(_ text: String) -> String {
+    nonisolated static func normalized(_ text: String) -> String {
         text.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: nil)
             .lowercased()
             .split { !($0.isLetter || $0.isNumber) }
