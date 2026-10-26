@@ -171,6 +171,7 @@ private struct MineVoteRow: View {
                     .font(.headline)
                     .foregroundStyle(.primary)
                     .lineLimit(3)
+                SameDayVotesMark(vote: vote.vote)
                 VStack(alignment: .leading, spacing: .spaceXS) {
                     Text(verbatim: vote.heading)
                         .font(.subheadline.weight(.semibold))

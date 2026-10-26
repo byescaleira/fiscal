@@ -7,10 +7,14 @@ public enum VoteOutcome: Equatable, Sendable {
     case approved, rejected, symbolic, pending
 
     public init(_ vote: VoteSummary) {
-        switch vote.approved {
+        self.init(approved: vote.approved, nominal: vote.nominal)
+    }
+
+    public init(approved: Bool?, nominal: Bool) {
+        switch approved {
         case true?: self = .approved
         case false?: self = .rejected
-        case nil: self = vote.nominal ? .pending : .symbolic
+        case nil: self = nominal ? .pending : .symbolic
         }
     }
 
