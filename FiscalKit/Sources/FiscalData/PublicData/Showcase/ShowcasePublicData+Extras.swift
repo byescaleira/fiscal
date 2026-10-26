@@ -72,6 +72,17 @@
             return isEmpty ? nil : ShowcaseMandate.cost(now: now)
         }
 
+        public func moneyPlaces() async throws -> MoneyPlaces? {
+            try check()
+            if let real: MoneyPlaces = real(PublicDataPath.moneyPlaces) { return real }
+            return isEmpty
+                ? nil
+                : ShowcaseMoneyPlaces.places(
+                    people: everyone, now: now, year: year,
+                    month: calendar.component(.month, from: now),
+                    sources: sources)
+        }
+
         public func indicators() async throws -> IndicatorCatalog? {
             try check()
             return isEmpty ? nil : series.catalog()
