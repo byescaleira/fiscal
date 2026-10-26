@@ -60,7 +60,10 @@ func main() {
 	case *healthCheck:
 		os.Exit(check(cfg.ingest.DataDir, time.Now(), 2*cfg.live+5*time.Minute))
 	case *siteCmd != "":
-		os.Exit(siteCommand(cfg, *siteCmd, *to))
+		ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+		code := siteCommand(ctx, cfg, *siteCmd, *to)
+		stop()
+		os.Exit(code)
 	}
 	if err := os.MkdirAll(cfg.ingest.DataDir, 0o700); err != nil {
 		log.Fatalf("data dir: %v", err)
@@ -84,7 +87,7 @@ func main() {
 	if kind == "live" {
 		wait = 0
 	}
-	lockPath := filepath.Join(cfg.ingest.DataDir, "ingest.lock")
+	lockPath := cfg.lockPath()
 	lock, err := jobctl.Acquire(ctx, lockPath, wait)
 	if errors.Is(err, jobctl.ErrBusy) {
 		log.Printf("skipped: another load holds %s", lockPath)
@@ -102,7 +105,11 @@ func main() {
 	os.Exit(code)
 }
 
-func siteCommand(cfg config, cmd, to string) int {
+func (c config) lockPath() string {
+	return filepath.Join(c.ingest.DataDir, "ingest.lock")
+}
+
+func siteCommand(ctx context.Context, cfg config, cmd, to string) int {
 	st := cfg.stager()
 	switch cmd {
 	case "status":
@@ -119,6 +126,20 @@ func siteCommand(cfg config, cmd, to string) int {
 		log.Printf("ready: %s (%s, %d files, %d logical, %d people, generated %s); kept: %v", cur.Release, cur.Kind, cur.Files, cur.Logical, cur.People, cur.GeneratedAt, names)
 		return 0
 	case "rollback":
+		if err := os.MkdirAll(cfg.ingest.DataDir, 0o700); err != nil {
+			log.Printf("data dir: %v", err)
+			return 1
+		}
+		lock, err := jobctl.Acquire(ctx, cfg.lockPath(), cfg.lockWait)
+		if errors.Is(err, jobctl.ErrBusy) {
+			log.Printf("site: a load still holds %s after %s; nothing changed, try again when it ends", cfg.lockPath(), cfg.lockWait)
+			return exitBusy
+		}
+		if err != nil {
+			log.Printf("lock: %v", err)
+			return 1
+		}
+		defer lock.Release()
 		name, err := st.Rollback(to)
 		if err != nil {
 			log.Printf("site: %v", err)

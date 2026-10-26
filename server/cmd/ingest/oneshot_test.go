@@ -1,9 +1,38 @@
 package main
 
 import (
+	"context"
 	"testing"
 	"time"
+
+	"liveresults/internal/jobctl"
 )
+
+func TestSiteRollbackWaitsForTheIngestLock(t *testing.T) {
+	cfg, err := loadConfig(env(map[string]string{"DATA_DIR": t.TempDir(), "PUBLIC_DIR": t.TempDir(), "INGEST_LOCK_WAIT": "0s"}), now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	held, err := jobctl.Acquire(context.Background(), cfg.lockPath(), 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if code := siteCommand(context.Background(), cfg, "rollback", ""); code != exitBusy {
+		t.Fatalf("rollback while a load runs = %d, want %d", code, exitBusy)
+	}
+	if code := siteCommand(context.Background(), cfg, "status", ""); code != 0 {
+		t.Fatalf("status while a load runs = %d", code)
+	}
+	held.Release()
+	if code := siteCommand(context.Background(), cfg, "rollback", ""); code != 1 {
+		t.Fatalf("rollback without staged sites = %d, want 1", code)
+	}
+	again, err := jobctl.Acquire(context.Background(), cfg.lockPath(), 0)
+	if err != nil {
+		t.Fatalf("rollback kept the lock: %v", err)
+	}
+	again.Release()
+}
 
 func TestOnceKind(t *testing.T) {
 	cases := []struct {
