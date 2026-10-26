@@ -97,7 +97,7 @@ extension ProfileModel {
     public var contextFootnote: String {
         String(
             appLocalized:
-                "The term starts at the month before taking office and runs to the latest month published; before is the same number of months ahead of it. It shows what changed, not why."
+                "The term starts at the month before taking office and runs to the latest month published; before is the same number of months ahead of it."
         )
     }
 

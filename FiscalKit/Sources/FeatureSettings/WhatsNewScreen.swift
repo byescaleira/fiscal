@@ -20,7 +20,6 @@ struct WhatsNewScreen: View {
         }
         .readableWidth()
         .background(.groupedBackground)
-        .fontDesign(.rounded)
         #if os(visionOS) || os(tvOS)
             .navigationTitle(String(appLocalized: "What's New in Version \(settings.info.number)"))
         #else

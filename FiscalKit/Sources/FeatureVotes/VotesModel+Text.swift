@@ -48,7 +48,7 @@ extension VotesModel {
 
     public func accessibility(_ vote: VoteSummary) -> String {
         [
-            vote.proposition, summary(vote), VoteOutcome(vote).title,
+            vote.heading, summary(vote), VoteOutcome(vote).title,
             VoteTally.label(vote.tally), vote.house.title, vote.time,
             SameDayVotes.mark(vote, today: CalendarDay(now())),
         ]

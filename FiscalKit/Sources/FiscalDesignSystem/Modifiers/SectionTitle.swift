@@ -2,6 +2,6 @@ import SwiftUI
 
 extension View {
     public func sectionTitle() -> some View {
-        font(.title3.weight(.semibold)).fontDesign(.rounded).foregroundStyle(Color.primary)
+        font(.emphasis(.title3, weight: .semibold)).foregroundStyle(Color.primary)
     }
 }

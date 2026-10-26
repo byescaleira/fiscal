@@ -21,7 +21,7 @@ struct VoteScoreRow: View {
                         .lineLimit(1)
                 }
             }
-            Text(verbatim: vote.proposition)
+            Text(verbatim: vote.heading)
                 .font(.headline)
             Text(verbatim: votes.summary(vote))
                 .font(.subheadline)
@@ -143,7 +143,7 @@ struct VoteHighlightRow: View {
                 SymbolBadge(theme.symbol, color: tint, size: .badgeM)
             }
             VStack(alignment: .leading, spacing: .space2XS) {
-                Text(verbatim: vote.proposition).font(.headline)
+                Text(verbatim: vote.heading).font(.headline)
                 Text(verbatim: votes.summary(vote))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)

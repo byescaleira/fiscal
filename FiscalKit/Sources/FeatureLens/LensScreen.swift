@@ -20,7 +20,6 @@ public struct LensScreen: View {
             }
             LensPrivacySection()
         }
-        .fontDesign(.rounded)
         .task { await lens.loadVotes() }
         .task(id: lens.supported) { await lens.loadSupport() }
         .navigationTitle("Lens")

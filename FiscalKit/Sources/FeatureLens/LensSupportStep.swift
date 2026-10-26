@@ -15,7 +15,7 @@ struct LensWelcomeStep: View {
                     .font(.headline)
                     .foregroundStyle(.secondary)
                 Text("What your representatives do with your vote")
-                    .font(.largeTitle.weight(.black))
+                    .font(.emphasis(.largeTitle, weight: .heavy))
                     .accessibilityAddTraits(.isHeader)
                 Text("The same facts for everyone, in the order that matters to you.")
                     .font(.body)
@@ -140,7 +140,7 @@ private struct LensPreferNotToSayCard: View {
                 SymbolBadge("hand.raised.fill", color: tint, size: .badgeXL, style: .filled)
                 VStack(alignment: .leading, spacing: .space2XS) {
                     Text("Prefer not to say")
-                        .font(.title3.weight(.bold))
+                        .font(.emphasis(.title3, weight: .bold))
                         .foregroundStyle(.primary)
                     Text("Fiscal stays neutral: topics in the order the data comes.")
                         .font(.subheadline)

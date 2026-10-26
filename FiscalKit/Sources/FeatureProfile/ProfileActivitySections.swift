@@ -37,7 +37,7 @@ private struct ProfileVoteRow: View {
                 .foregroundStyle(.secondary)
                 .frame(width: .badgeL, alignment: .leading)
             VStack(alignment: .leading, spacing: .space2XS) {
-                Text(verbatim: vote.proposition)
+                Text(verbatim: vote.heading)
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.secondary)
                 Text(verbatim: vote.summary)

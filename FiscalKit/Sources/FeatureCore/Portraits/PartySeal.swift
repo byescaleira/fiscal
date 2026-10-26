@@ -25,7 +25,7 @@ public struct PartySeal: View {
                 if let seal = store.seal {
                     colored(LottieView(animation: seal))
                         .playbackMode(
-                            reduceMotion || partyMarksAreStill
+                            reduceMotion || partyMarksAreStill || MotionBudget.isConstrained
                                 ? .paused(at: .progress(0))
                                 : .playing(.fromProgress(0, toProgress: 1, loopMode: .loop))
                         )

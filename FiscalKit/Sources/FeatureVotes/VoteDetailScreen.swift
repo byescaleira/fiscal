@@ -28,7 +28,6 @@ public struct VoteDetailScreen: View {
         } empty: {
             VoteDetailEmptyState()
         }
-        .fontDesign(.rounded)
         .navigationTitle(vote.title)
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
@@ -62,7 +61,7 @@ private struct VoteSummarySection: View {
         Section {
             if let plain = vote.plainSummary {
                 Text(verbatim: plain)
-                    .font(.title3.weight(.semibold))
+                    .font(.emphasis(.title3, weight: .semibold))
                     .padding(.vertical, .space2XS)
                 DisclosureGroup {
                     Text(verbatim: vote.officialSummary)

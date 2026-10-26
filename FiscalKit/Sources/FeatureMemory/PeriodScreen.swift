@@ -35,8 +35,7 @@ public struct PeriodScreen: View {
                 "Period not found", systemImage: "books.vertical",
                 description: Text("The timeline isn't published by Fiscal yet."))
         }
-        .fontDesign(.rounded)
-        .navigationTitle(Text(verbatim: model.period?.name ?? ""))
+        .emphasisTitle(Text(verbatim: model.period?.name ?? ""))
         .refreshable { await model.load() }
         .task { await model.load() }
     }

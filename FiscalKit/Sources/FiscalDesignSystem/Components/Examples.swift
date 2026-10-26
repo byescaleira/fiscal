@@ -107,7 +107,7 @@ public struct ExampleHeadline: View {
         VStack(spacing: .spaceXS) {
             if let chip { Chip(chip.uppercased(), color: appTint) }
             Text(value)
-                .font(.title.weight(.black))
+                .font(.emphasis(.title, weight: .heavy))
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)
             if let detail {

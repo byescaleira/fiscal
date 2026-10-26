@@ -117,7 +117,7 @@ struct LensFocusedVoteRow: View {
     var body: some View {
         RouteLink(.vote(id: vote.id)) {
             VStack(alignment: .leading, spacing: .space2XS) {
-                Text(verbatim: "\(vote.house.title) · \(vote.proposition)")
+                Text(verbatim: "\(vote.house.title) · \(vote.heading)")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.secondary)
                     .lineLimit(1)

@@ -213,7 +213,7 @@ struct ChangeVisual: View {
         HStack(alignment: .top, spacing: .spaceL) {
             column(title: String(appLocalized: "Before"), value: before)
             Image(systemName: "arrow.right")
-                .font(.title3.weight(.semibold))
+                .font(.emphasis(.title3, weight: .semibold))
                 .foregroundStyle(.tertiary)
                 .padding(.top, .spaceM)
                 .accessibilityHidden(true)
@@ -260,7 +260,7 @@ struct ResultsVisual: View {
             ForEach(votes) { vote in
                 RouteLink(.vote(id: vote.id)) {
                     VStack(alignment: .leading, spacing: .spaceHairline) {
-                        Text(verbatim: "\(vote.proposition) · \(vote.house.title)")
+                        Text(verbatim: "\(vote.heading) · \(vote.house.title)")
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(.secondary)
                         Text(verbatim: vote.plainSummary ?? vote.summary)

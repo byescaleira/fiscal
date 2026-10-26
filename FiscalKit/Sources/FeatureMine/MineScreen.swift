@@ -20,8 +20,7 @@ public struct MineScreen: View {
             }
             MineFollowingSection()
         }
-        .fontDesign(.rounded)
-        .navigationTitle("Region")
+        .emphasisTitle("Region")
         .toolbar { MineToolbar() }
         .sheet(isPresented: $mine.isChoosingPlace) {
             MinePlacePicker().environment(mine)
