@@ -26,6 +26,10 @@ extension TodayModel {
         }
     }
 
+    public func shareSubject(for highlight: Highlight) -> ShareSubject {
+        .highlight(id: highlight.id)
+    }
+
     public func highlightKicker(_ highlight: Highlight) -> String {
         let kind =
             switch highlight.kind {

@@ -8,6 +8,7 @@ public struct SharePoster: Hashable, Sendable {
         case tally(ShareTally)
         case race(ShareRace)
         case versus([ShareFace], [ShareCompareRow])
+        case highlight(ShareHighlight)
     }
 
     public struct Fact: Hashable, Sendable, Identifiable {
@@ -74,6 +75,12 @@ public struct SharePoster: Hashable, Sendable {
             facts = []
             note = [race.counted, race.footnote].joined(separator: " · ")
             person = nil
+        case .highlight(let highlight):
+            headline = nil
+            hero = .highlight(highlight)
+            facts = []
+            note = highlight.weight
+            person = nil
         }
     }
 
@@ -83,8 +90,10 @@ public struct SharePoster: Hashable, Sendable {
     }
 
     public var noteIsEssential: Bool {
-        if case .race = hero { return true }
-        return false
+        switch hero {
+        case .race, .highlight: true
+        case .figure, .place, .tally, .versus: false
+        }
     }
 
     public var texts: [String] {
@@ -112,6 +121,9 @@ extension SharePoster.Hero {
             }
         case .versus(let faces, let rows):
             faces.flatMap { [$0.name, $0.party] } + rows.flatMap { [$0.label] + $0.values }
+        case .highlight(let highlight):
+            [highlight.title] + (highlight.person.map { [$0.name, $0.party] } ?? [])
+                + [highlight.place] + (highlight.tally.map { Self.tally($0).texts } ?? [])
         }
     }
 }

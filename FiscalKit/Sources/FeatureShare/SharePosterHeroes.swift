@@ -22,11 +22,13 @@ struct ShareHero: View {
                 .lineLimit(2)
                 .minimumScaleFactor(.posterShrink)
         case .tally(let tally):
-            ShareTallyHero(tally: tally, format: format)
+            ShareTallyHero(tally: tally, format: format, size: format.scoreSize)
         case .race(let race):
             ShareRaceHero(race: race, format: format)
         case .versus(let faces, let rows):
             ShareVersusHero(faces: faces, rows: rows, format: format)
+        case .highlight(let highlight):
+            ShareHighlightHero(highlight: highlight, format: format)
         }
     }
 }
@@ -44,21 +46,22 @@ struct ShareFigure: View {
     }
 }
 
-private struct ShareTallyHero: View {
+struct ShareTallyHero: View {
     let tally: ShareTally
     let format: ShareFormat
+    let size: CGFloat
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceS) {
             HStack(alignment: .lastTextBaseline, spacing: .spaceL) {
                 ShareCount(
                     value: tally.yes, label: "YES", symbol: "checkmark", color: .voteYes,
-                    size: format.scoreSize
+                    size: size
                 )
                 .frame(width: format.column, alignment: .leading)
                 ShareCount(
                     value: tally.no, label: "NO", symbol: "xmark", color: .voteNo,
-                    size: format.scoreSize
+                    size: size
                 )
                 .frame(width: format.column, alignment: .leading)
             }

@@ -38,41 +38,58 @@ private struct TodayHighlightLead: View {
     let highlight: Highlight
 
     var body: some View {
-        Button {
-            if let route = today.route(for: highlight) { open(route, in: section) }
-        } label: {
-            VStack(alignment: .leading, spacing: .spaceM) {
-                HStack(alignment: .firstTextBaseline) {
-                    Text(verbatim: today.highlightKicker(highlight).uppercased())
-                        .font(.caption2.weight(.heavy))
-                        .foregroundStyle(.secondary)
-                    Spacer(minLength: .spaceS)
-                    Text(verbatim: "\(highlight.weight)")
-                        .font(.scoreboardNumber)
-                        .monospacedDigit()
-                        .contentTransition(.numericText(value: Double(highlight.weight)))
+        VStack(alignment: .leading, spacing: .spaceM) {
+            HStack(alignment: .center, spacing: .spaceS) {
+                Text(verbatim: today.highlightKicker(highlight).uppercased())
+                    .font(.caption2.weight(.heavy))
+                    .foregroundStyle(.secondary)
+                    .accessibilityHidden(true)
+                Spacer(minLength: .spaceS)
+                Text(verbatim: "\(highlight.weight)")
+                    .font(.scoreboardNumber)
+                    .monospacedDigit()
+                    .contentTransition(.numericText(value: Double(highlight.weight)))
+                    .accessibilityHidden(true)
+                Button("Share", systemImage: "square.and.arrow.up") {
+                    open(.share(today.shareSubject(for: highlight)), in: section)
                 }
-                Text(verbatim: highlight.title)
-                    .font(.titleMedium)
-                    .lineLimit(6)
-                    .fixedSize(horizontal: false, vertical: true)
-                ProgressBar(value: filled ? Double(highlight.weight) / 100 : 0, color: .retroTeal)
+                .labelStyle(.iconOnly)
+                .buttonStyle(.borderless)
+                .font(.body.weight(.semibold))
+            }
+            Button {
+                if let route = today.route(for: highlight) { open(route, in: section) }
+            } label: {
+                VStack(alignment: .leading, spacing: .spaceM) {
+                    Text(verbatim: highlight.title)
+                        .font(.titleMedium)
+                        .lineLimit(6)
+                        .fixedSize(horizontal: false, vertical: true)
+                    ProgressBar(
+                        value: filled ? Double(highlight.weight) / 100 : 0, color: .retroTeal
+                    )
                     .animation(reduceMotion ? nil : .smooth(duration: 1), value: filled)
                     .onAppear { filled = true }
-                TodayHighlightWho(highlight: highlight)
-                WeightChips(
-                    repercussion: highlight.repercussion, impact: highlight.impact,
-                    isTest: highlight.signals.isTest)
+                    TodayHighlightWho(highlight: highlight)
+                    WeightChips(
+                        repercussion: highlight.repercussion, impact: highlight.impact,
+                        isTest: highlight.signals.isTest)
+                }
+                .contentShape(.rect)
             }
-            .padding(.spaceInset)
-            .todayCard()
-            .contentShape(.rect)
+            .buttonStyle(.plain)
+            .disabled(today.route(for: highlight) == nil)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text(verbatim: today.highlightAccessibility(highlight)))
+            .accessibilityAddTraits(.isButton)
         }
-        .buttonStyle(.plain)
-        .disabled(today.route(for: highlight) == nil)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(verbatim: today.highlightAccessibility(highlight)))
-        .accessibilityAddTraits(.isButton)
+        .padding(.spaceInset)
+        .todayCard()
+        .contextMenu {
+            Button("Share", systemImage: "square.and.arrow.up") {
+                open(.share(today.shareSubject(for: highlight)), in: section)
+            }
+        }
     }
 }
 
@@ -152,5 +169,10 @@ private struct TodayHighlightRow: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: today.highlightAccessibility(highlight)))
         .accessibilityAddTraits(.isButton)
+        .contextMenu {
+            Button("Share", systemImage: "square.and.arrow.up") {
+                open(.share(today.shareSubject(for: highlight)), in: section)
+            }
+        }
     }
 }

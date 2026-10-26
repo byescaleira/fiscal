@@ -140,7 +140,27 @@ public final class ShareModel {
             return builder.representatives(place)
         case .race(let id):
             return try await race(id)
+        case .highlight(let id):
+            return try await highlight(id, from: service)
         }
+    }
+
+    private func highlight(_ id: String, from service: any PublicDataService) async throws
+        -> ShareCardContent
+    {
+        guard let list = try await service.highlights(),
+            let item = list.items.first(where: { $0.id == id })
+        else { throw PublicDataError.notFound }
+        let vote = item.kind == .vote ? try? await service.vote(id: item.route) : nil
+        var stage: String?
+        if item.kind == .action, let slug = item.person?.slug,
+            let actions = try? await service.actions(slug: slug),
+            let key = actions.items.first(where: { $0.id == id || "action-\($0.id)" == id })?
+                .stage
+        {
+            stage = list.method?.stages.first { $0.key == key }?.label
+        }
+        return builder.highlight(item, vote: vote, stage: stage, sources: list.sources)
     }
 
     private func race(_ id: String) async throws -> ShareCardContent {
