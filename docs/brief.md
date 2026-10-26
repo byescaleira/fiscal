@@ -227,6 +227,13 @@ O manifesto `art-credits.json` vai junto com o app e lista, por obra: autor, @, 
   - **Gratuitas e abertas:** volume na imprensa (GDELT), páginas da Wikipédia, Bluesky e YouTube, e o interesse de busca.
   - **Pagas:** X, Instagram e TikTok não têm busca aberta gratuita. Entrar com uma delas é decisão do usuário, porque tem custo.
 
+## Credibilidade: só fatos (pedido do usuário em 2026-10-26)
+
+- **Só fatos:** o app mostra números oficiais e textos oficiais como vieram. Nada de opinião, adjetivo de valor ou causa atribuída.
+- **Quando houver estimativa, dizer o motivo:** tudo que não é número oficial (peso das ações, repercussão, temas pelo apoio, explicação gerada) mostra ao lado, em uma linha, por que é estimado e o que ficou sem medir. Exemplo: "Repercussão medida só pela Wikipédia; notícias indisponíveis nesta carga".
+- **Sinal ausente não conta como zero:** se uma fonte de repercussão falhar, a fórmula usa só os sinais medidos e avisa quais faltaram.
+- **Compartilhar é o motor:** dados bem trabalhados e bem interpretados, em cards bonitos, fazem as pessoas compartilharem. O social e o design são o que atrai.
+
 ## Apple Design Award: onde competimos
 
 | Categoria | O que o Fiscal leva |
