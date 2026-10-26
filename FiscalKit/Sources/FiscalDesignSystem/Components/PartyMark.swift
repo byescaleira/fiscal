@@ -78,6 +78,8 @@ struct PartyMarkChip: View {
             .foregroundStyle(.white)
             .shadow(color: .black.opacity(.opacitySoft), radius: .spaceHairline)
             .lineLimit(1)
+            .minimumScaleFactor(.opacitySoft * 2)
+            .layoutPriority(1)
             .padding(.horizontal, .spaceS)
             .padding(.vertical, .space2XS)
             .background {

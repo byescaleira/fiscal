@@ -12,11 +12,11 @@ public struct TodayScreen: View {
         ScrollView {
             VStack(alignment: .leading, spacing: .spaceXL) {
                 TodayMasthead()
-                TodayHighlightSection()
                 if let board = today.liveBoard {
                     TodayRaceHero(board: board)
                         .transition(.opacity)
                 }
+                TodayHighlightSection()
                 TodayBody()
             }
             .padding(.horizontal, .spaceL)
