@@ -211,6 +211,16 @@
         }
       }
     },
+    "ELECTED" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ELEITO"
+          }
+        }
+      }
+    },
     "Federal Deputy" : {
       "extractionState" : "stale",
       "localizations" : {

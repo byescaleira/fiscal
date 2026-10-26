@@ -25,6 +25,10 @@ struct RaceBoard {
     }
 
     var first: RaceActivityRow? { rows.first }
+    var winner: RaceActivityRow? {
+        if let elected = rows.first(where: \.elected) { return elected }
+        return state.final || state.sectionsPercent >= 100 ? rows.first : nil
+    }
     var second: RaceActivityRow? { rows.dropFirst().first }
     var hasStarted: Bool { state.sectionsPercent > 0 }
     var firstPalette: PartyPalette { first.map(palette) ?? PartyPalette.of(party: "", fallback: 0) }

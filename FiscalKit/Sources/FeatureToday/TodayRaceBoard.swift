@@ -23,9 +23,17 @@ public struct TodayRaceBoard: Hashable, Sendable {
         self.isStale = isStale
     }
 
-    public static func featured(in races: [Race]) -> Race? {
+    public static let winnerWindow: TimeInterval = 24 * 60 * 60
+
+    public static func featured(in races: [Race], now: Date = .now) -> Race? {
         let live = races.filter { !$0.final }
-        return live.first { $0.office == .president } ?? live.first
+        if let race = live.first(where: { $0.office == .president }) ?? live.first { return race }
+        return races.first { race in
+            guard race.office == .president, race.final,
+                let date = try? Date(race.sourceGeneratedAt, strategy: .iso8601)
+            else { return false }
+            return now.timeIntervalSince(date) < winnerWindow
+        }
     }
 
     public var sides: [Side] {

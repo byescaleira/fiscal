@@ -15,6 +15,14 @@ public struct RaceHeroCard: View {
 
     public var body: some View {
         let summary = RaceSummary(race: race)
+        if let winner = summary.winner {
+            RaceWinnerCard(summary: summary, winner: winner, opensDetail: opensDetail)
+        } else {
+            liveCard(summary)
+        }
+    }
+
+    private func liveCard(_ summary: RaceSummary) -> some View {
         VStack(alignment: .leading, spacing: .spaceL) {
             RaceHeroHeader(summary: summary)
             if opensDetail {
@@ -86,7 +94,7 @@ private struct RaceHeroBackground: View {
     }
 }
 
-private struct RaceHeroHeader: View {
+struct RaceHeroHeader: View {
     @Environment(LiveResultsModel.self) private var results: LiveResultsModel?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.open) private var open
@@ -99,11 +107,11 @@ private struct RaceHeroHeader: View {
                 Text(verbatim: summary.statusText.uppercased())
             } icon: {
                 Image(
-                    systemName: summary.race.final
+                    systemName: summary.isDecided
                         ? "checkmark.seal" : "dot.radiowaves.left.and.right"
                 )
                 .symbolEffect(
-                    .pulse, isActive: !reduceMotion && summary.hasStarted && !summary.race.final)
+                    .pulse, isActive: !reduceMotion && summary.hasStarted && !summary.isDecided)
             }
             .font(.caption.weight(.heavy))
             .padding(.horizontal, .spaceS)
@@ -301,7 +309,7 @@ private struct RaceHeroSplit: View {
     }
 }
 
-private struct RaceHeroBallots: View {
+struct RaceHeroBallots: View {
     let summary: RaceSummary
 
     var body: some View {

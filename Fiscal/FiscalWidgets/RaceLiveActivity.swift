@@ -61,6 +61,14 @@ private struct RaceLockScreen: View {
 
     var body: some View {
         let board = RaceBoard(context: context)
+        if let winner = board.winner {
+            WinnerLockScreen(board: board, winner: winner)
+        } else {
+            live(board)
+        }
+    }
+
+    private func live(_ board: RaceBoard) -> some View {
         VStack(spacing: .spaceS) {
             HStack(alignment: .center, spacing: .spaceS) {
                 Label {
@@ -162,7 +170,7 @@ private struct SideColumn: View {
     }
 }
 
-private struct CandidatePhoto: View {
+struct CandidatePhoto: View {
     let row: RaceActivityRow
     let side: CGFloat
 

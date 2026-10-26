@@ -2955,6 +2955,16 @@
         }
       }
     },
+    "ELECTED" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ELEITO"
+          }
+        }
+      }
+    },
     "Elected in 2026" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2973,6 +2983,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Eleitos em 2026 aguardando posse: %lld"
+          }
+        }
+      }
+    },
+    "Elected with %@ of the valid votes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eleito com %@ dos votos válidos"
           }
         }
       }

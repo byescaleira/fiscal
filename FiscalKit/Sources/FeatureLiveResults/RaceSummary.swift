@@ -63,8 +63,26 @@ struct RaceSummary: Hashable, Sendable {
 
     var roundText: String { String(appLocalized: "Round \(race.round)") }
 
+    var isDecided: Bool {
+        race.final || race.sections.percent >= 100 || race.candidates.contains(where: \.elected)
+    }
+
+    var winner: Contender? {
+        guard isDecided else { return nil }
+        if let elected = contenders.first(where: \.candidate.elected) { return elected }
+        return race.round == 2 || isDuel ? contenders.first : nil
+    }
+
+    var others: [Contender] {
+        Array(contenders.filter { $0.id != winner?.id }.prefix(2))
+    }
+
+    var winnerText: String? {
+        winner.map { String(appLocalized: "Elected with \($0.percent) of the valid votes") }
+    }
+
     var statusText: String {
-        if race.final { return String(appLocalized: "Final result") }
+        if isDecided { return String(appLocalized: "Final result") }
         return race.hasStarted ? String(appLocalized: "Live") : String(appLocalized: "Today")
     }
 
