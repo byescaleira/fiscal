@@ -10,6 +10,7 @@ import (
 	"testing"
 	"time"
 
+	"liveresults/internal/publicdata"
 	"liveresults/internal/site"
 )
 
@@ -57,6 +58,31 @@ func TestOneShotLiveRunsFromTheSnapshotAndPublishesNothingWithoutNews(t *testing
 	}
 	if _, err := os.Stat(filepath.Join(in.cfg.PublicDir, PublishedDir, "highlights.json")); err != nil {
 		t.Fatalf("published highlights: %v", err)
+	}
+}
+
+func TestSnapshotKeepsFalseAndZeroBehindPointers(t *testing.T) {
+	in := testIngest(t, Config{}, senadoFixtures(t), time.Now())
+	no, zero, empty := false, 0, ""
+	in.dataset = &publicdata.Dataset{Votes: []*publicdata.HouseVote{{ID: "camara-1", Approved: &no, No: &zero}}, People: []*publicdata.Person{{Name: "A", Contact: &publicdata.Contact{Email: &empty}, Activity: map[int]*publicdata.YearActivity{2026: {Year: 2026, Present: &zero}}}}}
+	if err := in.SaveSnapshot(); err != nil {
+		t.Fatal(err)
+	}
+	fresh := testIngest(t, Config{DataDir: in.cfg.DataDir}, senadoFixtures(t), time.Now())
+	fresh.cfg.DataDir = in.cfg.DataDir
+	if err := fresh.LoadSnapshot(); err != nil {
+		t.Fatal(err)
+	}
+	v := fresh.dataset.Votes[0]
+	p := fresh.dataset.People[0]
+	if v.Approved == nil || *v.Approved || v.No == nil || *v.No != 0 || p.Contact.Email == nil || p.Activity[2026].Present == nil {
+		t.Fatalf("a rejected vote must stay rejected, not unknown: %+v %+v", v, p)
+	}
+	if err := os.WriteFile(fresh.SnapshotPath(), []byte("\x0e\xff gob"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if err := fresh.LoadSnapshot(); !errors.Is(err, ErrNoSnapshot) {
+		t.Fatalf("an unreadable snapshot means no snapshot: %v", err)
 	}
 }
 

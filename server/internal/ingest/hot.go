@@ -1,10 +1,8 @@
 package ingest
 
 import (
-	"bufio"
 	"context"
 	"crypto/sha256"
-	"encoding/gob"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -20,7 +18,7 @@ import (
 )
 
 const (
-	HotBaseFile  = "hot-base.gob"
+	HotBaseFile  = "hot-base.json"
 	HotStateFile = "hot-today.json"
 	ManifestFile = "v1-manifest.json"
 	CityPaths    = "city-paths.json"
@@ -91,37 +89,23 @@ func writeAtomic(path string, data []byte) error {
 }
 
 func (in *Ingest) saveHotBase(base publicdata.HotBase) error {
-	f, err := os.CreateTemp(in.cfg.DataDir, ".hot-base-*")
+	data, err := json.Marshal(base)
 	if err != nil {
 		return err
 	}
-	defer os.Remove(f.Name())
-	w := bufio.NewWriter(f)
-	if err := gob.NewEncoder(w).Encode(base); err != nil {
-		f.Close()
-		return err
-	}
-	if err := w.Flush(); err != nil {
-		f.Close()
-		return err
-	}
-	if err := f.Close(); err != nil {
-		return err
-	}
-	return os.Rename(f.Name(), in.path(HotBaseFile))
+	return writeAtomic(in.path(HotBaseFile), data)
 }
 
 func (in *Ingest) loadHotBase() (publicdata.HotBase, error) {
 	var base publicdata.HotBase
-	f, err := os.Open(in.path(HotBaseFile))
+	data, err := os.ReadFile(in.path(HotBaseFile))
 	if errors.Is(err, os.ErrNotExist) {
 		return base, ErrNoHotBase
 	}
 	if err != nil {
 		return base, err
 	}
-	defer f.Close()
-	if err := gob.NewDecoder(bufio.NewReader(f)).Decode(&base); err != nil || base.Version != publicdata.HotBaseVersion {
+	if err := json.Unmarshal(data, &base); err != nil || base.Version != publicdata.HotBaseVersion {
 		return base, ErrNoHotBase
 	}
 	return base, nil

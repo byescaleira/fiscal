@@ -2,7 +2,7 @@ package ingest
 
 import (
 	"bufio"
-	"encoding/gob"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -13,8 +13,9 @@ import (
 )
 
 const (
-	SnapshotFile    = "live-snapshot.gob"
-	snapshotVersion = 1
+	SnapshotFile    = "live-snapshot.json"
+	legacySnapshot  = "live-snapshot.gob"
+	snapshotVersion = 2
 	PublishedDir    = "published"
 )
 
@@ -47,7 +48,7 @@ func (in *Ingest) SaveSnapshot() error {
 	}
 	defer os.Remove(tmp.Name())
 	w := bufio.NewWriterSize(tmp, 1<<20)
-	if err := gob.NewEncoder(w).Encode(snap); err != nil {
+	if err := json.NewEncoder(w).Encode(snap); err != nil {
 		tmp.Close()
 		return fmt.Errorf("snapshot: %w", err)
 	}
@@ -66,7 +67,11 @@ func (in *Ingest) SaveSnapshot() error {
 	if err := tmp.Close(); err != nil {
 		return err
 	}
-	return os.Rename(tmp.Name(), path)
+	if err := os.Rename(tmp.Name(), path); err != nil {
+		return err
+	}
+	os.Remove(filepath.Join(in.cfg.DataDir, legacySnapshot))
+	return nil
 }
 
 func (in *Ingest) LoadSnapshot() error {
@@ -79,8 +84,8 @@ func (in *Ingest) LoadSnapshot() error {
 	}
 	defer f.Close()
 	var snap snapshot
-	if err := gob.NewDecoder(bufio.NewReaderSize(f, 1<<20)).Decode(&snap); err != nil {
-		return fmt.Errorf("snapshot: %w", err)
+	if err := json.NewDecoder(bufio.NewReaderSize(f, 1<<20)).Decode(&snap); err != nil {
+		return fmt.Errorf("%w: %v", ErrNoSnapshot, err)
 	}
 	if snap.Version != snapshotVersion || snap.Dataset == nil {
 		return ErrNoSnapshot
