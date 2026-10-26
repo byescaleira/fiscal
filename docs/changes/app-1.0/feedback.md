@@ -147,10 +147,10 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Folha "Como medimos" vazia (texto branco herdado do Destaque) | no iPhone, redesenhada em cartões | WeightMethodSheet |
 | Criar o app no App Store Connect (pt-BR, padrão de nome) | feito: Fiscal: Política Transparente, id 6826982117 | docs/app-store |
 | Preencher App Store Connect e TestFlight | feito, menos disponibilidade (sua confirmação), telefone de contato, rótulo de privacidade, capturas e build | docs/app-store/metadata.json |
-| Dinheiro: filtro de região não faz nada; primeira seção fora da identidade; tela sem propósito | em andamento | frente money3 |
+| Dinheiro: filtro de região não faz nada; primeira seção fora da identidade; tela sem propósito | no iPhone (money/places.json real só após deploy do ingest) | FeatureMoney |
 | Expressões neutras aleatórias de tempos em tempos nos retratos (positivas/negativas só quando o contexto pede) | no iPhone; "pensar" no Fiscalizar ligado | PersonPortrait, avatars.py |
-| Trilhos e carrosséis cortando as laterais: devem ir de ponta a ponta | em andamento | frente carousels |
-| Investigações salvas no iCloud (SwiftData + CloudKit) | em andamento | frente investigations-icloud |
+| Trilhos e carrosséis cortando as laterais: devem ir de ponta a ponta | no iPhone, 2ª correção (seção sem margem); aguardando conferência | EdgeToEdgeRail |
+| Investigações salvas no iCloud (SwiftData + CloudKit) | no iPhone; falta publicar o schema no console do CloudKit | FiscalData |
 | Servidor não pode cair no ingest; seguro; só o app consulta; 8 GB para milhões | aprovado tudo + Cloudflare; código em andamento (frente server-resilience); VPS própria e DNS são passos do usuário | server/, ADR |
 
 ## Ícone
