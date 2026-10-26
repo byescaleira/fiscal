@@ -59,18 +59,12 @@ struct LensOtherSection: View {
 }
 
 struct LensPrivacySection: View {
-    @Environment(LensModel.self) private var lens
 
     var body: some View {
         Section {
             LensPrivacyCard()
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)
-            if lens.hasLens {
-                Button("Delete My Choice", systemImage: "trash", role: .destructive) {
-                    lens.isConfirmingErase = true
-                }
-            }
         } header: {
             Text("Privacy").sectionTitle()
         } footer: {
