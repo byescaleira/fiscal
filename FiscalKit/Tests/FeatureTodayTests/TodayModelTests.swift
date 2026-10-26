@@ -10,12 +10,12 @@ struct TodayModelTests {
     private let now = Date(timeIntervalSince1970: 1_792_917_720)
 
     private func model(
-        _ scenario: PublicDataScenario = .normal, stance: PoliticalStance? = nil,
+        _ scenario: PublicDataScenario = .normal, lens: Lens? = nil,
         races: RaceScenario? = nil, follows: PublicDataScenario? = nil
     ) -> TodayModel {
         TodayModel(
             service: ShowcasePublicData(scenario: scenario, now: now),
-            lens: ShowcaseLensRepository(stance: stance),
+            lens: ShowcaseLensRepository(lens: lens),
             races: races.map(ShowcaseLiveResults.init(scenario:)),
             follows: follows.map { ShowcaseFollowRepository(scenario: $0, now: now) })
     }
@@ -46,23 +46,22 @@ struct TodayModelTests {
         #expect(model.briefing.count == 4)
     }
 
-    @Test func eachSideSeesItsTopicsFirstButTheSameFacts() async {
-        let right = model(stance: .right)
-        let left = model(stance: .left)
-        await right.load()
-        await left.load()
-        #expect(right.stance == .right)
-        #expect(right.lead?.value.themes.contains(.taxes) == true)
-        #expect(left.lead?.value.themes.contains(.rights) == true)
-        #expect(Set(right.events) == Set(left.events))
-        #expect(right.recentVotes == left.recentVotes)
+    @Test func eachSupportSeesItsTopicsFirstButTheSameFacts() async {
+        let first = model(lens: Lens(themes: [.taxes, .security, .economy], supported: ["lula"]))
+        let second = model(
+            lens: Lens(themes: [.rights, .social, .health], supported: ["tabata-amaral"]))
+        await first.load()
+        await second.load()
+        #expect(first.showsLensBadge)
+        #expect(Set(first.events) == Set(second.events))
+        #expect(first.recentVotes == second.recentVotes)
     }
 
-    @Test func impartialTakesTurnsAndShowsTheBadge() async {
-        let model = model(stance: .impartial)
+    @Test func preferNotToSayShowsTheBadgeWithNeutralTopics() async {
+        let model = model(lens: Lens.suggested(prefersNotToSay: true))
         await model.load()
-        #expect(model.mode == .alternating)
-        #expect(model.stance == .impartial)
+        #expect(model.mode == .themes(Array(Theme.neutralOrder.prefix(Lens.themeRange.upperBound))))
+        #expect(model.showsLensBadge)
         #expect(model.lensLine != nil)
     }
 
@@ -71,7 +70,7 @@ struct TodayModelTests {
         await model.load()
         #expect(model.hasCheckedLens)
         #expect(model.lens == nil)
-        #expect(model.stance == nil)
+        #expect(!model.showsLensBadge)
         #expect(model.briefing.allSatisfy { !$0.isLensPick })
     }
 

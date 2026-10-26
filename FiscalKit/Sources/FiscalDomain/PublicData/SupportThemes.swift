@@ -48,7 +48,8 @@ public enum SupportThemes {
         .sorted { lhs, rhs in
             lhs.count != rhs.count
                 ? lhs.count > rhs.count
-                : (neutral.firstIndex(of: lhs.theme) ?? 0) < (neutral.firstIndex(of: rhs.theme) ?? 0)
+                : (neutral.firstIndex(of: lhs.theme) ?? 0)
+                    < (neutral.firstIndex(of: rhs.theme) ?? 0)
         }
     }
 

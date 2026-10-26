@@ -186,11 +186,13 @@ private struct LensAddThemeRow: View {
                     Text(verbatim: theme.title)
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.primary)
-                    Text(verbatim: setup.entry(for: theme).map(setup.actionsText(for:))
-                        ?? theme.coverage)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(2)
+                    Text(
+                        verbatim: setup.entry(for: theme).map(setup.actionsText(for:))
+                            ?? theme.coverage
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
                 }
                 Spacer(minLength: .spaceS)
                 Image(systemName: "plus.circle.fill")

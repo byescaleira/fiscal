@@ -36,7 +36,9 @@ public final class MoneyModel {
             guard let lens, !lens.themes.isEmpty else { return allCases }
             return allCases.enumerated()
                 .sorted { lhs, rhs in
-                    (lhs.element.rank(in: lens), lhs.offset) < (rhs.element.rank(in: lens), rhs.offset)
+                    (lhs.element.rank(in: lens), lhs.offset) < (
+                        rhs.element.rank(in: lens), rhs.offset
+                    )
                 }
                 .map(\.element)
         }

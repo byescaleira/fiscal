@@ -8,7 +8,8 @@ public enum SupportedPeople {
     ) async -> [PersonCard] {
         guard !slugs.isEmpty else { return [] }
         var known: [String: PersonCard] = [:]
-        for person in (try? await follows?.followed()) ?? [] where slugs.contains(person.card.slug) {
+        for person in (try? await follows?.followed()) ?? [] where slugs.contains(person.card.slug)
+        {
             known[person.card.slug] = person.card
         }
         if known.count < slugs.count, let people = try? await service?.people() {

@@ -10,12 +10,11 @@ struct MoneyModelTests {
     private let now = Date(timeIntervalSince1970: 1_792_917_720)
 
     private func loaded(
-        _ scenario: PublicDataScenario = .normal, stance: PoliticalStance? = nil
+        _ scenario: PublicDataScenario = .normal, lens: Lens? = nil
     ) async throws -> MoneyModel {
         let repositories = try FiscalDatabase.open(inMemory: true).repositories
-        if let stance {
-            try await repositories.lens.save(
-                Lens(themes: [.health, .taxes, .economy], stance: stance))
+        if let lens {
+            try await repositories.lens.save(lens)
         }
         let model = MoneyModel(
             service: ShowcasePublicData(scenario: scenario, now: now), lens: repositories.lens)
@@ -75,14 +74,16 @@ struct MoneyModelTests {
 
     @Test func withoutALensTheOrderIsTheSameForEveryone() async throws {
         let model = try await loaded()
-        #expect(model.stance == nil)
+        #expect(model.lens == nil)
         #expect(model.sections == MoneyModel.Section.allCases)
         #expect(model.lensNote == nil)
     }
 
     @Test func theLensOnlyReordersTheSections() async throws {
-        let right = try await loaded(stance: .right)
-        let left = try await loaded(stance: .left)
+        let right = try await loaded(
+            lens: Lens(themes: [.taxes, .health, .economy], supported: ["lula"]))
+        let left = try await loaded(
+            lens: Lens(themes: [.politics, .health, .economy], supported: ["tabata-amaral"]))
         #expect(right.sections.first == .quota)
         #expect(left.sections.first == .campaigns)
         #expect(Set(right.sections) == Set(left.sections))
@@ -91,13 +92,12 @@ struct MoneyModelTests {
         #expect(left.lensNote != nil)
     }
 
-    @Test func impartialAndPreferNotToSayKeepTheDefaultOrder() async throws {
-        let impartial = try await loaded(stance: .impartial)
-        let undisclosed = try await loaded(stance: .preferNotToSay)
-        #expect(impartial.sections == MoneyModel.Section.allCases)
+    @Test func aLensWithoutMoneyTopicsKeepsTheDefaultOrder() async throws {
+        let undisclosed = try await loaded(
+            lens: Lens(themes: [.health, .education, .security], prefersNotToSay: true))
         #expect(undisclosed.sections == MoneyModel.Section.allCases)
-        #expect(impartial.lensNote == nil)
-        #expect(impartial.stance == .impartial)
+        #expect(undisclosed.lensNote == nil)
+        #expect(undisclosed.lens?.prefersNotToSay == true)
     }
 
     @Test func reportsAnOutage() async throws {

@@ -63,7 +63,9 @@ private struct LensSetupPresentation: ViewModifier {
                     .interactiveDismissDisabled()
             }
         #else
-            content.fullScreenCover(isPresented: $isShown) { LensSetupHost(service: service, follows: follows) }
+            content.fullScreenCover(isPresented: $isShown) {
+                LensSetupHost(service: service, follows: follows)
+            }
         #endif
     }
 }
@@ -100,9 +102,9 @@ private struct LensPreviewBanner: View {
                         ? LocalizedStringKey("Neutral order for a moment. Nothing is saved.")
                         : "What stands out for those who support someone else. Nothing is saved."
                 )
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
             }
             Spacer(minLength: .zero)
             Button("Back to Mine", systemImage: "arrow.uturn.backward") { context.endPreview() }

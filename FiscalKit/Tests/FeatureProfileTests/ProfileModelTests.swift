@@ -74,10 +74,10 @@ struct ProfileModelTests {
         await probe.load()
         let dataOrder = probe.themeLines.map(\.theme)
         let last = try #require(dataOrder.last)
-        try await lens.save(Lens(themes: [last, .taxes, .economy], stance: .right))
+        try await lens.save(Lens(themes: [last, .taxes, .economy], supported: ["lula"]))
         let model = makeModel("tabata-amaral", lens: lens)
         await model.load()
-        #expect(model.lensStance == .right)
+        #expect(model.showsLensBadge)
         #expect(model.isLensAdapted)
         #expect(model.themeLines.first?.theme == last)
         #expect(model.themeLines.first?.isLensTheme == true)
@@ -89,12 +89,12 @@ struct ProfileModelTests {
 
     @Test func theImpartialLensKeepsTheDataOrder() async throws {
         let lens = try FiscalDatabase.open(inMemory: true).repositories.lens
-        try await lens.save(Lens(themes: [.taxes, .security, .economy], stance: .preferNotToSay))
+        try await lens.save(Lens(prefersNotToSay: true))
         let model = makeModel("kim-kataguiri", lens: lens)
         await model.load()
         let probe = makeModel("kim-kataguiri")
         await probe.load()
-        #expect(model.lensStance == .preferNotToSay)
+        #expect(!model.showsLensBadge)
         #expect(!model.isLensAdapted)
         #expect(model.themeLines.map(\.theme) == probe.themeLines.map(\.theme))
         #expect(model.lensBallots.isEmpty)

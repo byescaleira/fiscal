@@ -22,33 +22,14 @@ struct TodayBriefingTests {
         #expect(ordered.count == topics.count)
     }
 
-    @Test func impartialTakesTurnsBetweenBothSides() {
-        let ordered = TodayBriefing.order(topics, mode: .alternating, themes: { $0 })
-        #expect(ordered.map(\.offset) == [0, 4, 3, 1, 2, 5])
-        #expect(ordered.map(\.isLensPick) == [false, true, true, false, false, false])
-        #expect(Set(ordered.map(\.offset)) == Set(topics.indices))
-    }
-
-    @Test func impartialKeepsGoingWhenOneSideRunsOut() {
-        let lopsided: [[Theme]] = [[.tributes], [.taxes], [.security], [.health]]
-        let ordered = TodayBriefing.order(lopsided, mode: .alternating, themes: { $0 })
-        #expect(ordered.map(\.offset) == [1, 3, 2, 0])
-    }
-
     @Test func theModeFollowsTheLens() {
         #expect(TodayBriefing.mode(for: nil) == .plain)
-        #expect(TodayBriefing.mode(for: Lens(stance: .left)) == .plain)
+        #expect(TodayBriefing.mode(for: Lens(supported: ["lula"])) == .plain)
         #expect(
-            TodayBriefing.mode(for: Lens(themes: [.health], stance: .right))
+            TodayBriefing.mode(for: Lens(themes: [.health], supported: ["lula"]))
                 == .themes([.health]))
         #expect(
-            TodayBriefing.mode(for: Lens(themes: [.health], stance: .impartial)) == .alternating)
-        #expect(TodayBriefing.mode(for: Lens(stance: .preferNotToSay)) == .alternating)
-    }
-
-    @Test func bothSidesGetTheSameNumberOfTopics() {
-        #expect(TodayBriefing.audiences.count == 2)
-        #expect(TodayBriefing.audiences[0].count == TodayBriefing.audiences[1].count)
-        #expect(Set(TodayBriefing.audiences[0]).isDisjoint(with: TodayBriefing.audiences[1]))
+            TodayBriefing.mode(for: Lens(themes: [.health], prefersNotToSay: true))
+                == .themes([.health]))
     }
 }

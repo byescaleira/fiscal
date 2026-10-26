@@ -16,12 +16,12 @@ struct DeviceStoreTests {
     @Test func savesAndReplacesTheLens() async throws {
         let lens = try FiscalDatabase.open(inMemory: true).repositories.lens
         #expect(try await lens.lens() == nil)
-        try await lens.save(Lens(themes: [.health, .taxes, .security], stance: .center))
+        try await lens.save(Lens(themes: [.health, .taxes, .security], supported: ["lula"]))
         try await lens.save(
             Lens(themes: [.education, .environment, .rights], artCollection: "academia"))
         let saved = try #require(try await lens.lens())
         #expect(saved.themes == [.education, .environment, .rights])
-        #expect(saved.stance == nil)
+        #expect(saved.supported.isEmpty)
         #expect(saved.artCollection == "academia")
         try await lens.reset()
         #expect(try await lens.lens() == nil)
@@ -63,8 +63,8 @@ struct DeviceStoreTests {
     }
 
     @Test func theLensNeverJoinsTheSyncedStore() {
-        let synced = FiscalSchemaV1.cloudModels.map { String(describing: $0) }
-        let device = FiscalSchemaV1.deviceModels.map { String(describing: $0) }
+        let synced = FiscalSchemaV2.cloudModels.map { String(describing: $0) }
+        let device = FiscalSchemaV2.deviceModels.map { String(describing: $0) }
         #expect(device.contains("LensEntity"))
         #expect(!synced.contains("LensEntity"))
         #expect(synced.contains("FollowEntity"))
