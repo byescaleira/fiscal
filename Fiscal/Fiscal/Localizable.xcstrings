@@ -793,6 +793,28 @@
         }
       }
     },
+    "%lld more aren't listed here." : {
+      "localizations" : {
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Mais %lld não aparece aqui."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Mais %lld não aparecem aqui."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld of %lld answered" : {
       "localizations" : {
         "pt-BR" : {
@@ -958,6 +980,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "+%lld candidatos"
+          }
+        }
+      }
+    },
+    "+%lld votes on this bill that day" : {
+      "localizations" : {
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "+%lld votação deste projeto no dia"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "+%lld votações deste projeto no dia"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "+%lld votes on this bill today" : {
+      "localizations" : {
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "+%lld votação deste projeto hoje"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "+%lld votações deste projeto hoje"
+                }
+              }
+            }
           }
         }
       }
@@ -9530,6 +9596,16 @@
         }
       }
     },
+    "Other Votes on This Bill That Day" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outras votações deste projeto no dia"
+          }
+        }
+      }
+    },
     "Other votes, such as abstention and obstruction: %@" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -11314,6 +11390,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Votos nominais · %@"
+          }
+        }
+      }
+    },
+    "Roll-call vote" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votação nominal"
           }
         }
       }
@@ -13557,6 +13643,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O card desta página está a caminho."
+          }
+        }
+      }
+    },
+    "The Chamber and the Senate often vote on the same bill several times in one day: requests, amendments, the main text and the final wording. The lists show the vote on the text." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Câmara e o Senado costumam votar o mesmo projeto várias vezes no mesmo dia: requerimentos, emendas, o texto principal e a redação final. As listas mostram a votação do texto."
           }
         }
       }

@@ -45,7 +45,13 @@ func cleanEmenta(s string) string {
 	return strings.TrimRight(strings.TrimSpace(s), ".;,")
 }
 
+var plainSummaries memo[string]
+
 func PlainSummary(ementa string) string {
+	return plainSummaries.get(ementa, func() string { return plainSummary(ementa) })
+}
+
+func plainSummary(ementa string) string {
 	s := cleanEmenta(ementa)
 	if s == "" {
 		return ""

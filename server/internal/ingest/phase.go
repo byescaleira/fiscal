@@ -3,10 +3,12 @@ package ingest
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"sort"
 	"strconv"
+	"time"
 
 	"liveresults/internal/sources/assembleias"
 )
@@ -51,6 +53,23 @@ func (c Config) refresh(source string) bool {
 	return len(c.Refresh) == 0 || c.Refresh[source]
 }
 
+const pastAssemblyTTL = 30 * 24 * time.Hour
+
+func (in *Ingest) recent(path string, ttl time.Duration) bool {
+	info, err := os.Stat(path)
+	return err == nil && in.now().Sub(info.ModTime()) < ttl
+}
+
+func (in *Ingest) previousAssembly(h assembleias.House, year int) (assembleias.Data, bool) {
+	var d assembleias.Data
+	raw, err := os.ReadFile(in.assemblyCache(h, year-1))
+	if year != in.currentYear() || err != nil || json.Unmarshal(raw, &d) != nil || len(d.Members) == 0 {
+		return assembleias.Data{}, false
+	}
+	d.Matters = nil
+	return d, true
+}
+
 func (in *Ingest) assemblyCache(h assembleias.House, year int) string {
 	return filepath.Join(in.cfg.DataDir, "cache", "assembleias", h.UF+"-"+strconv.Itoa(year)+".json")
 }
@@ -65,9 +84,16 @@ func (in *Ingest) assembly(ctx context.Context, h assembleias.House, year int) (
 		}
 		return d, true
 	}
-	if !in.cfg.refresh("assembleias") {
+	refresh := in.cfg.refresh("assembleias")
+	if !refresh || (year < in.currentYear() && in.recent(path, pastAssemblyTTL)) {
 		if d, ok := readCache(); ok {
 			return d, "", nil
+		}
+		if !refresh {
+			if prev, ok := in.previousAssembly(h, year); ok {
+				return prev, fmt.Sprintf("%d is not cached yet; members kept from %d until the assembleias job runs", year, year-1), nil
+			}
+			return assembleias.Data{}, "", fmt.Errorf("%s %d is not cached yet; only the assembleias job reads the SAPL", h.UF, year)
 		}
 	}
 	d, err := assembleias.Load(ctx, in.get, h, year, in.today())

@@ -21,22 +21,28 @@ public final class PortraitStore {
         self.library = library
     }
 
-    public func hasPortrait(slug: String, party: String) -> Bool {
-        library.rig != nil && library.traits(for: slug, party: party) != nil
+    public var drawsPortraits: Bool {
+        library.rig != nil
+    }
+
+    public func hasTraits(slug: String, party: String) -> Bool {
+        library.traits(for: slug, party: party) != nil
     }
 
     public func animation(slug: String, party: String) -> LottieAnimation? {
-        guard let traits = library.traits(for: slug, party: party) else { return nil }
-        let key = Self.key(slug: slug, party: party)
+        guard let rig = rig() else { return nil }
+        let key = key(slug: slug, party: party)
         if let cached = assembled[key] { return cached }
-        guard let animation = rig()?.animation(for: traits, party: party) else { return nil }
+        let traits =
+            library.traits(for: slug, party: party) ?? rig.neutral(slug: slug, party: party)
+        guard let animation = rig.animation(for: traits, party: party) else { return nil }
         if assembled.count >= Self.cacheLimit { assembled.removeAll(keepingCapacity: true) }
         assembled[key] = animation
         return animation
     }
 
     public func still(slug: String, party: String, pose: PortraitExpression? = nil) -> CGImage? {
-        let key = Self.key(slug: slug, party: party) + "|" + (pose?.rawValue ?? "")
+        let key = key(slug: slug, party: party) + "|" + (pose?.rawValue ?? "")
         if let cached = stills[key] { return cached }
         guard let animation = animation(slug: slug, party: party) else { return nil }
         let frame = pose.flatMap { animation.frameTime(forMarker: $0.poseMarker) } ?? 0
@@ -62,8 +68,10 @@ public final class PortraitStore {
         return loadedRig
     }
 
-    private static func key(slug: String, party: String) -> String {
-        slug + "|" + PortraitLibrary.partyKey(party)
+    private func key(slug: String, party: String) -> String {
+        let party = PortraitLibrary.partyKey(party)
+        guard library.traits(for: slug, party: party) != nil else { return "neutral|" + party }
+        return slug + "|" + party
     }
 }
 

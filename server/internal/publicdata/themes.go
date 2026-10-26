@@ -1,6 +1,9 @@
 package publicdata
 
-import "strings"
+import (
+	"strings"
+	"sync"
+)
 
 type Theme struct {
 	Key   string
@@ -106,26 +109,33 @@ var Themes = []Theme{
 	}},
 }
 
-type matcher struct {
-	key   string
-	words []string
-	heads []string
+type needle struct {
+	text  string
+	theme int
 }
 
-var matchers = func() []matcher {
-	out := make([]matcher, 0, len(Themes))
-	for _, t := range Themes {
-		m := matcher{key: t.Key}
+type themeIndex struct {
+	byPrefix map[string][]needle
+	short    []needle
+}
+
+var themeNeedles = func() themeIndex {
+	idx := themeIndex{byPrefix: map[string][]needle{}}
+	for i, t := range Themes {
 		for _, s := range t.Stems {
-			if strings.HasSuffix(s, "!") {
-				m.words = append(m.words, " "+Fold(strings.TrimSuffix(s, "!"))+" ")
+			text := " " + Fold(s)
+			if word, ok := strings.CutSuffix(s, "!"); ok {
+				text = " " + Fold(word) + " "
+			}
+			n := needle{text: text, theme: i}
+			if len(text) < 3 {
+				idx.short = append(idx.short, n)
 				continue
 			}
-			m.heads = append(m.heads, " "+Fold(s))
+			idx.byPrefix[text[1:3]] = append(idx.byPrefix[text[1:3]], n)
 		}
-		out = append(out, m)
 	}
-	return out
+	return idx
 }()
 
 func ThemeKeys() []string {
@@ -136,30 +146,64 @@ func ThemeKeys() []string {
 	return keys
 }
 
+const memoLimit = 1 << 19
+
+type memo[V any] struct {
+	mu     sync.Mutex
+	values map[string]V
+}
+
+func (m *memo[V]) get(key string, compute func() V) V {
+	m.mu.Lock()
+	v, ok := m.values[key]
+	m.mu.Unlock()
+	if ok {
+		return v
+	}
+	v = compute()
+	m.mu.Lock()
+	if m.values == nil || len(m.values) >= memoLimit {
+		m.values = map[string]V{}
+	}
+	m.values[key] = v
+	m.mu.Unlock()
+	return v
+}
+
+var classified memo[[]string]
+
 func Classify(texts ...string) []string {
-	padded := " " + Fold(strings.Join(texts, " ")) + " "
+	joined := strings.Join(texts, " ")
+	out := classified.get(joined, func() []string { return classify(joined) })
+	return out[:len(out):len(out)]
+}
+
+func classify(joined string) []string {
+	padded := " " + Fold(joined) + " "
 	out := []string{}
 	if strings.TrimSpace(padded) == "" {
 		return out
 	}
-	for _, m := range matchers {
-		if matches(padded, m) {
-			out = append(out, m.key)
+	hit := make([]bool, len(Themes))
+	for _, n := range themeNeedles.short {
+		if !hit[n.theme] && strings.Contains(padded, n.text) {
+			hit[n.theme] = true
+		}
+	}
+	for i := 0; i+3 <= len(padded); i++ {
+		if padded[i] != ' ' {
+			continue
+		}
+		for _, n := range themeNeedles.byPrefix[padded[i+1:i+3]] {
+			if !hit[n.theme] && strings.HasPrefix(padded[i:], n.text) {
+				hit[n.theme] = true
+			}
+		}
+	}
+	for i, t := range Themes {
+		if hit[i] {
+			out = append(out, t.Key)
 		}
 	}
 	return out
-}
-
-func matches(padded string, m matcher) bool {
-	for _, w := range m.words {
-		if strings.Contains(padded, w) {
-			return true
-		}
-	}
-	for _, h := range m.heads {
-		if strings.Contains(padded, h) {
-			return true
-		}
-	}
-	return false
 }
