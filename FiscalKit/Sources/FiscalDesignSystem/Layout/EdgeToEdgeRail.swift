@@ -41,6 +41,7 @@ public struct EdgeToEdgeRail<Content: View>: View {
         .padding(.horizontal, -bleed)
         .listRowInsets(EdgeInsets())
         .listRowBackground(Color.clear)
+        .railSectionMargins(placement == .listRow && !isGroupedColumn)
     }
 
     @ViewBuilder private var stack: some View {
@@ -67,6 +68,14 @@ public struct EdgeToEdgeRail<Content: View>: View {
 }
 
 extension View {
+    @ViewBuilder public func railSectionMargins(_ isFlush: Bool = true) -> some View {
+        #if os(iOS)
+            listSectionMargins(.horizontal, isFlush ? .zero : nil)
+        #else
+            self
+        #endif
+    }
+
     @ViewBuilder fileprivate func railSnapping(_ snaps: Bool) -> some View {
         if snaps {
             scrollTargetBehavior(.viewAligned)

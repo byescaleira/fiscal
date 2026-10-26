@@ -10,14 +10,17 @@ struct InvestigatorSection: View {
         Section {
             VStack(alignment: .leading, spacing: .spaceL) {
                 InvestigatorField()
-                if !board.suggestions.isEmpty {
-                    InvestigatorSuggestions()
-                } else if !board.hasData {
+                if board.suggestions.isEmpty, !board.hasData {
                     InvestigatorPlaceholder()
                 }
             }
             .listRowInsets(EdgeInsets())
             .listRowBackground(Color.clear)
+        }
+        if !board.suggestions.isEmpty {
+            Section {
+                InvestigatorSuggestions()
+            }
         }
     }
 }
@@ -118,6 +121,7 @@ private struct InvestigatorSuggestions: View {
                 VStack(spacing: .spaceM) {
                     ForEach(board.suggestions) { SuggestionCard(suggestion: $0) }
                 }
+                .padding(.horizontal, .spaceInset)
             } else {
                 EdgeToEdgeRail {
                     ForEach(board.suggestions) { suggestion in
@@ -127,6 +131,9 @@ private struct InvestigatorSuggestions: View {
                 }
             }
         }
+        .listRowInsets(EdgeInsets())
+        .listRowBackground(Color.clear)
+        .railSectionMargins()
     }
 }
 
