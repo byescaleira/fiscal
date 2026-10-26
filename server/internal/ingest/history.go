@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"sort"
@@ -377,5 +378,21 @@ func indexSources(years []int) []history.Ref {
 	for i := range out {
 		out[i].ID = fmt.Sprintf("tse-%d", years[i])
 	}
+	return out
+}
+
+func (in *Ingest) historyPaths() []string {
+	root := filepath.Join(in.cfg.PublicDir, "v1")
+	var out []string
+	filepath.WalkDir(filepath.Join(root, "history"), func(p string, d fs.DirEntry, err error) error {
+		if err != nil || d.IsDir() || !strings.HasSuffix(p, ".json") {
+			return nil
+		}
+		if rel, err := filepath.Rel(root, p); err == nil {
+			out = append(out, filepath.ToSlash(rel))
+		}
+		return nil
+	})
+	sort.Strings(out)
 	return out
 }

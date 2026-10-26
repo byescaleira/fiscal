@@ -468,7 +468,7 @@ func (in *Ingest) publish(ctx context.Context, kind string, ds *publicdata.Datas
 		if ok && st.Written == 0 && st.Removed == 0 {
 			rep.Release, rep.Unchanged = cur.Release, true
 		} else {
-			rel, err := in.site.Stage(kind, tree.Seen())
+			rel, err := in.site.Stage(kind, append(tree.Seen(), in.historyPaths()...))
 			if err != nil {
 				return nil, nil, fmt.Errorf("site: %w", err)
 			}
