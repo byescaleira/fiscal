@@ -90,8 +90,7 @@ public struct SettingsPage<Content: View>: View {
                 AdaptiveList { content }
             #endif
         }
-        .fontDesign(.rounded)
-        .navigationTitle(title)
+        .emphasisTitle(title)
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
         #endif

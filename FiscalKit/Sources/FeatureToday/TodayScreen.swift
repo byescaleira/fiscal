@@ -28,8 +28,7 @@ public struct TodayScreen<RaceHero: View>: View {
             .frame(maxWidth: .infinity)
         }
         .background(.groupedBackground)
-        .fontDesign(.rounded)
-        .navigationTitle("Today")
+        .emphasisTitle("Today")
         .toolbar { TodayToolbar() }
         .refreshable { await today.load() }
         .task {

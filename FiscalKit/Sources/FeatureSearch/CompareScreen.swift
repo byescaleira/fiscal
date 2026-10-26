@@ -19,8 +19,7 @@ public struct CompareScreen: View {
         } empty: {
             CompareEmptyState()
         }
-        .fontDesign(.rounded)
-        .navigationTitle("Compare")
+        .emphasisTitle("Compare")
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
         #endif

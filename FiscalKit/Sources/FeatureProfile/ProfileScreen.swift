@@ -34,8 +34,7 @@ public struct ProfileScreen: View {
         } empty: {
             ProfileEmptyState()
         }
-        .fontDesign(.rounded)
-        .navigationTitle(profile.title)
+        .emphasisTitle(profile.title)
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
         #endif

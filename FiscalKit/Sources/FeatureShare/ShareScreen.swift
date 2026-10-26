@@ -18,8 +18,7 @@ public struct ShareScreen: View {
                 "Nothing to share yet", systemImage: "square.and.arrow.up",
                 description: Text("This data isn't published yet."))
         }
-        .fontDesign(.rounded)
-        .navigationTitle("Share")
+        .emphasisTitle("Share")
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
         #endif
@@ -97,7 +96,7 @@ private struct ShareArtPicker: View {
         let current = collectionID ?? model.selectedWork?.collection ?? collections.first?.id
         VStack(alignment: .leading, spacing: .spaceM) {
             HStack {
-                Text("Art").font(.title3.weight(.bold))
+                Text("Art").font(.emphasis(.title3, weight: .bold))
                 Spacer()
                 if model.showsLensBadge {
                     LensBadge()

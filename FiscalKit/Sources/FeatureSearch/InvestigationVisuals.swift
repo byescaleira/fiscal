@@ -213,7 +213,7 @@ struct ChangeVisual: View {
         HStack(alignment: .top, spacing: .spaceL) {
             column(title: String(appLocalized: "Before"), value: before)
             Image(systemName: "arrow.right")
-                .font(.title3.weight(.semibold))
+                .font(.emphasis(.title3, weight: .semibold))
                 .foregroundStyle(.tertiary)
                 .padding(.top, .spaceM)
                 .accessibilityHidden(true)

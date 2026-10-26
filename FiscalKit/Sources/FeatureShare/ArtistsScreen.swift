@@ -16,8 +16,7 @@ public struct ArtistsScreen: View {
                 ArtistsGallery()
             }
         }
-        .fontDesign(.rounded)
-        .navigationTitle("Artists")
+        .emphasisTitle("Artists")
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
         #endif
@@ -93,7 +92,7 @@ private struct GalleryGroup: View {
         VStack(alignment: .leading, spacing: .spaceL) {
             VStack(alignment: .leading, spacing: .space2XS) {
                 Text(title)
-                    .font(.title3.weight(.bold))
+                    .font(.emphasis(.title3, weight: .bold))
                     .accessibilityAddTraits(.isHeader)
                 Text(footer)
                     .font(.footnote)

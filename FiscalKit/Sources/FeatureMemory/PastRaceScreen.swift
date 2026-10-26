@@ -33,8 +33,7 @@ public struct PastRaceScreen: View {
                 "No result", systemImage: "archivebox",
                 description: Text("This race isn't published by Fiscal yet."))
         }
-        .fontDesign(.rounded)
-        .navigationTitle(Text(verbatim: model.title))
+        .emphasisTitle(Text(verbatim: model.title))
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 RoundMenu(rounds: model.race?.rounds.map(\.round) ?? [], selection: $model.round)

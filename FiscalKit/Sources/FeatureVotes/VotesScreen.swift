@@ -26,8 +26,7 @@ public struct VotesScreen: View {
         } empty: {
             VotesEmptyState()
         }
-        .fontDesign(.rounded)
-        .navigationTitle("Votes")
+        .emphasisTitle("Votes")
         #if !os(visionOS)
             .navigationSubtitle(votes.filterSummary)
         #endif
@@ -96,7 +95,7 @@ struct DayHeader: View {
                 .monospacedDigit()
                 .foregroundStyle(.primary)
             Text(verbatim: title)
-                .font(.title3.weight(.semibold))
+                .font(.emphasis(.title3, weight: .semibold))
                 .foregroundStyle(.primary)
             Text(verbatim: detail)
                 .font(.subheadline)

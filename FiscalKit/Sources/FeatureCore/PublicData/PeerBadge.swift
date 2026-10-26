@@ -130,7 +130,7 @@ public struct PeerMethodSheet: View {
             }
             .scrollContentBackground(.hidden)
             .background(.sheetBackground)
-            .navigationTitle("How We Measure")
+            .emphasisTitle("How We Measure")
             #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
             #endif
@@ -142,7 +142,6 @@ public struct PeerMethodSheet: View {
             }
         }
         .foregroundStyle(Color.primary)
-        .fontDesign(.rounded)
         .presentationDetents([.medium, .large])
     }
 }

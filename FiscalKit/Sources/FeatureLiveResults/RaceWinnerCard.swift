@@ -38,7 +38,6 @@ struct RaceWinnerCard: View {
         }
         .overlay { CelebrationBurst(colors: [palette.primary, palette.secondary, .white]) }
         .clipShape(.rect(cornerRadius: .radiusGroup))
-        .fontDesign(.rounded)
         .onAppear {
             withAnimation(reduceMotion ? nil : .spring(duration: 0.8, bounce: 0.4)) {
                 appeared = true
@@ -69,7 +68,7 @@ struct RaceWinnerCard: View {
                     .padding(.vertical, .space2XS)
                     .background(.white.opacity(.opacityTint), in: .capsule)
                 Text(verbatim: winner.candidate.name)
-                    .font(.title.weight(.heavy))
+                    .font(.emphasis(.title, weight: .heavy))
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
                     .minimumScaleFactor(0.7)

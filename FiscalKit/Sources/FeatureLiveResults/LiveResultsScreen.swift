@@ -21,8 +21,7 @@ public struct LiveResultsScreen: View {
             }
         }
         .background(.groupedBackground)
-        .fontDesign(.rounded)
-        .navigationTitle("Live Results")
+        .emphasisTitle("Live Results")
         .toolbar { LiveResultsToolbar() }
         .refreshable { await results.refresh() }
         .task { await results.run() }

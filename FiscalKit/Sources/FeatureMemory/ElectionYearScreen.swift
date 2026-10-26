@@ -29,8 +29,7 @@ public struct ElectionYearScreen: View {
                 "No results for this year", systemImage: "archivebox",
                 description: Text("The TSE results for this year aren't published by Fiscal yet."))
         }
-        .fontDesign(.rounded)
-        .navigationTitle(Text(verbatim: model.title))
+        .emphasisTitle(Text(verbatim: model.title))
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 RoundMenu(

@@ -15,8 +15,7 @@ public struct GuidesHubScreen: View {
         }
         .readableWidth()
         .background(.groupedBackground)
-        .fontDesign(.rounded)
-        .navigationTitle("Guides")
+        .emphasisTitle("Guides")
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
         #endif
@@ -30,7 +29,7 @@ private struct GuidesCategory: View {
         VStack(alignment: .leading, spacing: .spaceM) {
             HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
                 Text(verbatim: category.title)
-                    .font(.title3.weight(.bold))
+                    .font(.emphasis(.title3, weight: .bold))
                     .accessibilityAddTraits(.isHeader)
                 Spacer(minLength: .zero)
                 Text("\(category.guides.count) guides")

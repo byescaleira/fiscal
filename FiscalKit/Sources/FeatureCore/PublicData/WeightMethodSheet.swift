@@ -115,7 +115,7 @@ public struct WeightMethodSheet: View {
                 .padding(.bottom, .space2XL)
             }
             .background(.sheetBackground)
-            .navigationTitle("How We Measure")
+            .emphasisTitle("How We Measure")
             #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
             #endif
@@ -127,7 +127,6 @@ public struct WeightMethodSheet: View {
         }
         .foregroundStyle(Color.primary)
         .tint(Color.primary)
-        .fontDesign(.rounded)
         .presentationDetents([.medium, .large])
     }
 }

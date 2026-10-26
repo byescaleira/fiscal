@@ -18,7 +18,6 @@ public struct SearchScreen: View {
                 SearchHub()
             }
         }
-        .fontDesign(.rounded)
         .navigationTitle("Search")
         .searchable(
             text: $search.query, tokens: $search.tokens,

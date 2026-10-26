@@ -27,7 +27,6 @@ struct ComparePicker: View {
                     Text("In alphabetical order.")
                 }
             }
-            .fontDesign(.rounded)
             .navigationTitle("Choose people")
             #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
@@ -52,7 +51,7 @@ private struct ChosenStrip: View {
         HStack(alignment: .center, spacing: .spaceS) {
             slot(0, chosen: chosen)
             Text("vs")
-                .font(.title3.weight(.heavy))
+                .font(.emphasis(.title3, weight: .heavy))
                 .foregroundStyle(.secondary)
                 .accessibilityHidden(true)
             slot(1, chosen: chosen)

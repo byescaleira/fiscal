@@ -23,8 +23,7 @@ public struct InvestigationScreen: View {
                 ConclusionSection()
             }
         }
-        .fontDesign(.rounded)
-        .navigationTitle("Investigation")
+        .emphasisTitle("Investigation")
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
         #endif

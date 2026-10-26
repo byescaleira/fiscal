@@ -199,8 +199,7 @@ struct MoneySpendersScreen: View {
                 Text(verbatim: money.sourceLine(for: .quota))
             }
         }
-        .fontDesign(.rounded)
-        .navigationTitle(Text(verbatim: title))
+        .emphasisTitle(Text(verbatim: title))
         .toolbarTitleDisplayMode(.inline)
     }
 }

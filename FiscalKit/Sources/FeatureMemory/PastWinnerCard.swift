@@ -39,7 +39,7 @@ struct PastWinnerCard: View {
                 }
                 VStack(alignment: .leading, spacing: .space2XS) {
                     Text(verbatim: MemoryText.name(winner.ballotName))
-                        .font(.title3.weight(.heavy))
+                        .font(.emphasis(.title3, weight: .heavy))
                         .lineLimit(2)
                         .minimumScaleFactor(0.7)
                     HStack(spacing: .spaceS) {
@@ -88,7 +88,6 @@ struct PastWinnerCard: View {
             }
         }
         .clipShape(.rect(cornerRadius: .radiusGroup))
-        .fontDesign(.rounded)
         .accessibilityElement(children: .combine)
     }
 }

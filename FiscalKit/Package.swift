@@ -18,7 +18,7 @@ let package = Package(
     targets: [
         .target(name: "FiscalDomain"),
         .target(name: "FiscalData", dependencies: ["FiscalDomain"]),
-        .target(name: "FiscalDesignSystem"),
+        .target(name: "FiscalDesignSystem", resources: [.copy("Fonts")]),
         .target(
             name: "FiscalResource",
             resources: [

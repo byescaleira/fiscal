@@ -146,7 +146,7 @@ private struct LensMoreThemes: View {
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceM) {
             VStack(alignment: .leading, spacing: .space2XS) {
-                Text("Add a topic").font(.title3.weight(.bold))
+                Text("Add a topic").font(.emphasis(.title3, weight: .bold))
                 Text(
                     setup.draft.canAddTheme
                         ? LocalizedStringKey("Nothing is hidden: the others stay one tap away.")

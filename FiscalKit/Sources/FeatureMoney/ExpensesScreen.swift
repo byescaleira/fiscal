@@ -26,8 +26,7 @@ public struct ExpensesScreen: View {
         } empty: {
             ExpensesEmptyState()
         }
-        .fontDesign(.rounded)
-        .navigationTitle(Text(verbatim: expenses.title))
+        .emphasisTitle(Text(verbatim: expenses.title))
         .toolbarTitleDisplayMode(.inline)
         .toolbar {
             if expenses.years.count > 1 {
