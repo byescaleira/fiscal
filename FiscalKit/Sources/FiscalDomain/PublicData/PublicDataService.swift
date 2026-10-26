@@ -25,6 +25,10 @@ public protocol PublicDataService: Sendable {
     func indicator(id: String) async throws -> Indicator?
     func context(slug: String) async throws -> PersonContext?
     func facts() async throws -> FactIndex?
+    func electionHistory() async throws -> ElectionHistory?
+    func pastRace(id: String) async throws -> PastRace?
+    func politicalTimeline() async throws -> PoliticalTimeline?
+    func studyCatalog() async throws -> StudyCatalog?
 }
 
 extension PublicDataService {
@@ -45,6 +49,14 @@ extension PublicDataService {
     public func context(slug: String) async throws -> PersonContext? { nil }
 
     public func facts() async throws -> FactIndex? { nil }
+
+    public func electionHistory() async throws -> ElectionHistory? { nil }
+
+    public func pastRace(id: String) async throws -> PastRace? { nil }
+
+    public func politicalTimeline() async throws -> PoliticalTimeline? { nil }
+
+    public func studyCatalog() async throws -> StudyCatalog? { nil }
 }
 
 public enum PublicDataError: LocalizedError, Equatable, Sendable {

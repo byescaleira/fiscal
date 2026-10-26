@@ -43,6 +43,7 @@ type Config struct {
 	ChecksMaxPages    int
 	CityYear          int
 	NewsBudget        int
+	HistoryYears      []int
 }
 
 func (c Config) Enabled(source string) bool {
@@ -345,6 +346,11 @@ func (in *Ingest) full(ctx context.Context) (Report, error) {
 	}
 	if in.cfg.Enabled("anp") || in.cfg.Enabled("sidra") {
 		ds.Indicators = in.loadIndicators(ctx, &rep, srcs)
+	}
+	if in.cfg.Enabled("historia") {
+		in.loadHistory(ctx, &rep, srcs)
+	} else {
+		in.skipped(ctx, "historia")
 	}
 	if err := srcs.settle(filepath.Join(in.cfg.DataDir, "sources.json")); err != nil {
 		return rep, err

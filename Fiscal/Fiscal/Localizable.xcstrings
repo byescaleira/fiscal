@@ -297,6 +297,16 @@
         }
       }
     },
+    "%@ to today" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ até hoje"
+          }
+        }
+      }
+    },
     "%@ voted" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -318,6 +328,16 @@
         }
       }
     },
+    "%@ voters registered" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ eleitores aptos"
+          }
+        }
+      }
+    },
     "%@ votes" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -325,6 +345,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ votos"
+          }
+        }
+      }
+    },
+    "%@ votes for candidates whose candidacy was not valid at the count are left out." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ votos de candidatos com candidatura não válida na totalização ficam de fora."
           }
         }
       }
@@ -421,6 +451,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@, %2$@"
+          }
+        }
+      }
+    },
+    "%@, %@, %@, %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %2$@, %3$@, %4$@"
           }
         }
       }
@@ -596,6 +636,26 @@
         }
       }
     },
+    "%lld cards" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld cards"
+          }
+        }
+      }
+    },
+    "%lld cards · %lld questions" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld cards · %2$lld perguntas"
+          }
+        }
+      }
+    },
     "%lld elected, awaiting inauguration" : {
       "localizations" : {
         "pt-BR" : {
@@ -628,6 +688,16 @@
         }
       }
     },
+    "%lld heads of government" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld chefes de governo"
+          }
+        }
+      }
+    },
     "%lld min" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -635,6 +705,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld min"
+          }
+        }
+      }
+    },
+    "%lld of %lld answered" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld de %2$lld respondidas"
           }
         }
       }
@@ -667,6 +747,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld de %lld pessoas escolhidas"
+          }
+        }
+      }
+    },
+    "%lld of %lld right" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld de %2$lld certas"
           }
         }
       }
@@ -725,6 +815,26 @@
         }
       }
     },
+    "%lld states" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld estados"
+          }
+        }
+      }
+    },
+    "%lld terms" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld termos"
+          }
+        }
+      }
+    },
     "%lld works" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -732,6 +842,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld obras"
+          }
+        }
+      }
+    },
+    "%lld years" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld anos"
           }
         }
       }
@@ -754,6 +874,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "+%lld candidatos"
+          }
+        }
+      }
+    },
+    "1 head of government" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 chefe de governo"
           }
         }
       }
@@ -1369,6 +1499,26 @@
         }
       }
     },
+    "Alphabetical order. Each definition follows the official source cited." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordem alfabética. Cada definição segue a fonte oficial citada."
+          }
+        }
+      }
+    },
+    "Alphabetical order. Source: TSE, candidates elected in 2026." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordem alfabética. Fonte: TSE, candidatos eleitos em 2026."
+          }
+        }
+      }
+    },
     "Amapá" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1769,6 +1919,16 @@
         }
       }
     },
+    "Average %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Média de %@"
+          }
+        }
+      }
+    },
     "Average band: %@ to %@" : {
       "localizations" : {
         "pt-BR" : {
@@ -1817,6 +1977,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abacate"
+          }
+        }
+      }
+    },
+    "Awaiting inauguration" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aguardando posse"
           }
         }
       }
@@ -1905,6 +2075,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "antes %@"
+          }
+        }
+      }
+    },
+    "Before and after" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antes e depois"
           }
         }
       }
@@ -2168,6 +2348,16 @@
         }
       }
     },
+    "Brazilian politics, phase by phase" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A política brasileira, fase a fase"
+          }
+        }
+      }
+    },
     "Brazilian Wildlife" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2175,6 +2365,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fauna do Brasil"
+          }
+        }
+      }
+    },
+    "Break in order" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ruptura"
           }
         }
       }
@@ -2802,6 +3002,16 @@
         }
       }
     },
+    "Coalition of the most voted" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coligação do mais votado"
+          }
+        }
+      }
+    },
     "Coffee" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2916,6 +3126,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Juntando as peças"
+          }
+        }
+      }
+    },
+    "Constitution" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Constituição"
           }
         }
       }
@@ -3332,6 +3552,26 @@
         }
       }
     },
+    "Decided in round 1" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Decidida no 1º turno"
+          }
+        }
+      }
+    },
+    "Decided in round 2" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Decidida no 2º turno"
+          }
+        }
+      }
+    },
     "Declared assets" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3645,6 +3885,16 @@
         }
       }
     },
+    "Each fact carries its source: CPDOC/FGV, Planalto, Senate, Chamber and reference books. Fiscal adds no opinion." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada fato traz a fonte: CPDOC/FGV, Planalto, Senado, Câmara e livros de referência. O Fiscal não acrescenta opinião."
+          }
+        }
+      }
+    },
     "Each number covers that person's own term and house, without adjusting for terms of different length." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3673,6 +3923,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cada nota abre o documento oficial publicado pela casa."
+          }
+        }
+      }
+    },
+    "Each square is a state, in the color of the party of the most voted candidate there. Votes abroad count in the national total." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada quadrado é um estado, na cor do partido do mais votado ali. Os votos do exterior entram no total nacional."
           }
         }
       }
@@ -3727,6 +3987,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Versão anterior"
+          }
+        }
+      }
+    },
+    "Economy" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Economia"
           }
         }
       }
@@ -3840,6 +4110,16 @@
         }
       }
     },
+    "ELECTED · 2 SEATS" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ELEITOS · 2 VAGAS"
+          }
+        }
+      }
+    },
     "Elected, awaiting inauguration" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3862,6 +4142,16 @@
         }
       }
     },
+    "Election calendar" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calendário das eleições"
+          }
+        }
+      }
+    },
     "Election count" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3880,6 +4170,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Eleições"
+          }
+        }
+      }
+    },
+    "Elections %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eleições %@"
           }
         }
       }
@@ -4043,6 +4343,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "o etanol"
+          }
+        }
+      }
+    },
+    "Event" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acontecimento"
           }
         }
       }
@@ -5029,6 +5339,16 @@
         }
       }
     },
+    "Full years of the period only. Values as published, without causes attributed." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Só os anos completos do período. Valores como foram publicados, sem atribuir causas."
+          }
+        }
+      }
+    },
     "gasoline" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -5139,6 +5459,16 @@
         }
       }
     },
+    "Governors and Senate" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Governadores e Senado"
+          }
+        }
+      }
+    },
     "Graphite" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -5167,6 +5497,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Salário mensal bruto, antes dos descontos. Cada valor é fixado pela lei que aparece embaixo do cargo."
+          }
+        }
+      }
+    },
+    "Guide not found" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guia não encontrado"
           }
         }
       }
@@ -5267,6 +5607,16 @@
         }
       }
     },
+    "Highest %@ in %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maior: %1$@ em %2$@"
+          }
+        }
+      }
+    },
     "Highest-weight highlights on the Lock Screen" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -5357,6 +5707,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Os destaques se revezam entre os temas dos dois lados. Os fatos são os mesmos para todos."
+          }
+        }
+      }
+    },
+    "Historians differ on this point. The positions appear side by side, each with its source." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os historiadores divergem neste ponto. As posições aparecem lado a lado, cada uma com a sua fonte."
           }
         }
       }
@@ -5539,6 +5899,16 @@
         }
       }
     },
+    "How we count" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como contamos"
+          }
+        }
+      }
+    },
     "How We Measure" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -5676,6 +6046,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Imparcial"
+          }
+        }
+      }
+    },
+    "Impeachment" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impeachment"
           }
         }
       }
@@ -6208,6 +6588,16 @@
         }
       }
     },
+    "Law" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lei"
+          }
+        }
+      }
+    },
     "Laws" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -6489,6 +6879,16 @@
         }
       }
     },
+    "Logarithmic scale, so small and very large values fit." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escala logarítmica, para caberem valores pequenos e muito grandes."
+          }
+        }
+      }
+    },
     "Lottie by Airbnb" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -6526,6 +6926,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mais baixa é melhor, por mês de mandato."
+          }
+        }
+      }
+    },
+    "Lowest %@ in %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menor: %1$@ em %2$@"
           }
         }
       }
@@ -6692,6 +7102,16 @@
         }
       }
     },
+    "Memory" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memória"
+          }
+        }
+      }
+    },
     "Message" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -6699,6 +7119,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mensagem"
+          }
+        }
+      }
+    },
+    "Milestones" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marcos"
           }
         }
       }
@@ -6969,6 +7399,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Musgo"
+          }
+        }
+      }
+    },
+    "MOST VOTED" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MAIS VOTADO"
           }
         }
       }
@@ -7535,6 +7975,16 @@
         }
       }
     },
+    "No presidential election this year" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem eleição para presidente neste ano"
+          }
+        }
+      }
+    },
     "No race matches these filters" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -7601,6 +8051,16 @@
         }
       }
     },
+    "No result" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem resultado"
+          }
+        }
+      }
+    },
     "No result yet" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -7608,6 +8068,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sem resultado ainda"
+          }
+        }
+      }
+    },
+    "No results for this year" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem resultados para este ano"
           }
         }
       }
@@ -7772,6 +8242,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nordeste"
+          }
+        }
+      }
+    },
+    "Not answered" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem resposta"
           }
         }
       }
@@ -8088,6 +8568,16 @@
         }
       }
     },
+    "Official indicators" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indicadores oficiais"
+          }
+        }
+      }
+    },
     "official inflation (IPCA)" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -8122,6 +8612,16 @@
     },
     "Official Sources" : {
       "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fontes oficiais"
+          }
+        }
+      }
+    },
+    "Official sources" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -8489,6 +8989,16 @@
         }
       }
     },
+    "Opens the source" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre a fonte"
+          }
+        }
+      }
+    },
     "Opens what your lens changes" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -8621,6 +9131,16 @@
         }
       }
     },
+    "Other option" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outra opção"
+          }
+        }
+      }
+    },
     "other parties" : {
       "localizations" : {
         "pt-BR" : {
@@ -8715,6 +9235,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OUTROS"
+          }
+        }
+      }
+    },
+    "Others (%lld)" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outros (%lld)"
           }
         }
       }
@@ -8860,6 +9390,26 @@
         }
       }
     },
+    "Past elections, the phases of Brazilian politics and guides to study, with a source on every fact." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eleições passadas, as fases da política brasileira e guias para estudar, com fonte em cada fato."
+          }
+        }
+      }
+    },
+    "Past elections, the phases of Brazilian politics and study guides" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eleições passadas, as fases da política brasileira e guias para estudar"
+          }
+        }
+      }
+    },
     "Pay" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -8924,6 +9474,16 @@
         }
       }
     },
+    "Percentages over valid votes, as the TSE publishes them." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Porcentagens sobre os votos válidos, como o TSE divulga."
+          }
+        }
+      }
+    },
     "Period" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -8931,6 +9491,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Período"
+          }
+        }
+      }
+    },
+    "Period not found" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Período não encontrado"
           }
         }
       }
@@ -9370,6 +9940,16 @@
         }
       }
     },
+    "President · %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presidente · %@"
+          }
+        }
+      }
+    },
     "President · Brazil" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -9388,6 +9968,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Presidente, governadores, Senado e deputados"
+          }
+        }
+      }
+    },
+    "Presidential elections" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eleições para presidente"
           }
         }
       }
@@ -9966,6 +10556,26 @@
         }
       }
     },
+    "Recorded advances" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avanços registrados"
+          }
+        }
+      }
+    },
+    "Recorded criticism" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Críticas registradas"
+          }
+        }
+      }
+    },
     "Recorded votes in %@: %@" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -10172,6 +10782,16 @@
         }
       }
     },
+    "Result" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resultado"
+          }
+        }
+      }
+    },
     "Result: approved" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -10234,6 +10854,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Direita"
+          }
+        }
+      }
+    },
+    "Right answer" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resposta certa"
           }
         }
       }
@@ -10344,6 +10974,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Roraima"
+          }
+        }
+      }
+    },
+    "Round" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turno"
           }
         }
       }
@@ -10597,6 +11237,16 @@
         }
       }
     },
+    "Search a term" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar um termo"
+          }
+        }
+      }
+    },
     "Search runs on this device, over the official list of places from IBGE." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -10723,6 +11373,16 @@
         }
       }
     },
+    "See the result, state by state" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver o resultado, estado por estado"
+          }
+        }
+      }
+    },
     "Selected" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -10751,6 +11411,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "mediana do Senado: %@"
+          }
+        }
+      }
+    },
+    "Senate · 2 seats" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senado · 2 vagas"
           }
         }
       }
@@ -10909,6 +11579,16 @@
         }
       }
     },
+    "Shares of the registered electorate." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parcelas do eleitorado apto."
+          }
+        }
+      }
+    },
     "Short guides for each part of the app" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -10927,6 +11607,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Guias curtos para cada parte do app."
+          }
+        }
+      }
+    },
+    "Short guides with the official source on each card, and a quiz with no score by side." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guias curtos com a fonte oficial em cada card e um teste sem pontuação de lado político."
           }
         }
       }
@@ -10992,6 +11682,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mostra todos os candidatos e os votos brancos e nulos"
+          }
+        }
+      }
+    },
+    "Shows every candidate, the map and the turnout" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra todos os candidatos, o mapa e o comparecimento"
           }
         }
       }
@@ -11102,6 +11802,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "desde %@"
+          }
+        }
+      }
+    },
+    "Since %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desde %@"
+          }
+        }
+      }
+    },
+    "SINCE 1889" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DESDE 1889"
+          }
+        }
+      }
+    },
+    "SINCE THE PROCLAMATION OF THE REPUBLIC" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DESDE A PROCLAMAÇÃO DA REPÚBLICA"
+          }
+        }
+      }
+    },
+    "Single round" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turno único"
           }
         }
       }
@@ -11226,6 +11966,16 @@
         }
       }
     },
+    "Source: %@." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fonte: %@."
+          }
+        }
+      }
+    },
     "Source: Chamber and Senate agendas · as published today" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -11298,6 +12048,16 @@
         }
       }
     },
+    "Source: TSE election calendar. Live counting from the TSE on election days." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fonte: calendário eleitoral do TSE. Apuração ao vivo do TSE nos dias de eleição."
+          }
+        }
+      }
+    },
     "Source: TSE election calendar. Mayors and city councillors come after version 1.0." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -11305,6 +12065,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fonte: calendário eleitoral do TSE. Prefeitos e vereadores entram depois da versão 1.0."
+          }
+        }
+      }
+    },
+    "Source: TSE open data" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fonte: dados abertos do TSE"
+          }
+        }
+      }
+    },
+    "Source: TSE open data, results by municipality and zone. Percentages over valid votes." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fonte: dados abertos do TSE, resultados por município e zona. Porcentagens sobre os votos válidos."
           }
         }
       }
@@ -11338,6 +12118,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fontes e método"
+          }
+        }
+      }
+    },
+    "Sources of this period" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fontes deste período"
           }
         }
       }
@@ -11514,6 +12304,16 @@
         }
       }
     },
+    "Start Over" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recomeçar"
+          }
+        }
+      }
+    },
     "Start · 1 min" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -11601,6 +12401,16 @@
         }
       }
     },
+    "State elections" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eleições estaduais"
+          }
+        }
+      }
+    },
     "State Government" : {
       "localizations" : {
         "pt-BR" : {
@@ -11661,6 +12471,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Estados primeiro, depois cidades."
+          }
+        }
+      }
+    },
+    "States in alphabetical order. Percentage over valid votes in the deciding round." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estados em ordem alfabética. Porcentagem sobre os votos válidos no turno que decidiu."
           }
         }
       }
@@ -11858,6 +12678,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "SUS, hospitais, remédios e vacinas"
+          }
+        }
+      }
+    },
+    "Swipe through the cards" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deslize pelos cards"
           }
         }
       }
@@ -12125,6 +12955,16 @@
         }
       }
     },
+    "Test yourself" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teste o que aprendeu"
+          }
+        }
+      }
+    },
     "Thank you for trusting Fiscal." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -12306,6 +13146,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "As votações, as sessões e a apuração do dia."
+          }
+        }
+      }
+    },
+    "The election calendar above still works." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O calendário das eleições acima continua funcionando."
           }
         }
       }
@@ -12811,6 +13661,16 @@
         }
       }
     },
+    "The study guides aren't published by Fiscal yet." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Fiscal ainda não publica os guias de estudo."
+          }
+        }
+      }
+    },
     "The tabs and what each one shows" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -12851,6 +13711,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "o artigo do tema na Wikipédia"
+          }
+        }
+      }
+    },
+    "The timeline isn't published by Fiscal yet." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Fiscal ainda não publica a linha do tempo."
+          }
+        }
+      }
+    },
+    "The TSE results for this year aren't published by Fiscal yet." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Fiscal ainda não publica os resultados do TSE deste ano."
           }
         }
       }
@@ -12928,6 +13808,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Temas das propostas e dos discursos, na ordem em que os dados chegam. Os números são os mesmos para todo mundo."
+          }
+        }
+      }
+    },
+    "There is disagreement" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Há divergência"
           }
         }
       }
@@ -13041,6 +13931,16 @@
         }
       }
     },
+    "This race isn't published by Fiscal yet." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Fiscal ainda não publica esta disputa."
+          }
+        }
+      }
+    },
     "This record no longer exists. Refresh the list." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -13081,6 +13981,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Esta votação não tem nomes: a casa não publicou quem votou como."
+          }
+        }
+      }
+    },
+    "To study" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para estudar"
           }
         }
       }
@@ -13283,6 +14193,16 @@
         }
       }
     },
+    "Touch a state to see who won there." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque num estado para ver quem venceu ali."
+          }
+        }
+      }
+    },
     "Touch the bar to see each party." : {
       "localizations" : {
         "pt-BR" : {
@@ -13369,6 +14289,26 @@
         }
       }
     },
+    "Turnout %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comparecimento de %@"
+          }
+        }
+      }
+    },
+    "Turnout: %@ of the electorate" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comparecimento: %@ do eleitorado"
+          }
+        }
+      }
+    },
     "Turquoise" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -13443,6 +14383,16 @@
         }
       }
     },
+    "Upcoming" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próximo"
+          }
+        }
+      }
+    },
     "Update" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -13498,6 +14448,16 @@
         }
       }
     },
+    "Valid votes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votos válidos"
+          }
+        }
+      }
+    },
     "Valid votes don't include blank and spoiled ballots." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -13505,6 +14465,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Votos válidos não contam brancos e nulos."
+          }
+        }
+      }
+    },
+    "Valid, blank, null and abstention" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Válidos, brancos, nulos e abstenção"
           }
         }
       }
@@ -13812,6 +14782,16 @@
         }
       }
     },
+    "Votes by candidate" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votos por candidato"
+          }
+        }
+      }
+    },
     "Votes cast" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -14113,6 +15093,16 @@
         }
       }
     },
+    "WENT TO ROUND 2" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FOI AO 2º TURNO"
+          }
+        }
+      }
+    },
     "Were there fact checks about %@?" : {
       "localizations" : {
         "pt-BR" : {
@@ -14288,6 +15278,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O que se destaca para quem apoia outra pessoa. Nada é salvo."
+          }
+        }
+      }
+    },
+    "What the cited sources record, in their order. Fiscal doesn't rank or judge." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que as fontes citadas registram, na ordem delas. O Fiscal não classifica nem julga."
           }
         }
       }
@@ -14636,6 +15636,16 @@
         }
       }
     },
+    "Who won in each state" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem venceu em cada estado"
+          }
+        }
+      }
+    },
     "Who you follow" : {
       "localizations" : {
         "pt-BR" : {
@@ -14970,6 +15980,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Você apoia: %@ de %lld"
+          }
+        }
+      }
+    },
+    "Your answer" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua resposta"
           }
         }
       }

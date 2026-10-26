@@ -1,6 +1,7 @@
 import FeatureCore
 import FeatureLens
 import FeatureLiveResults
+import FeatureMemory
 import FeatureMoney
 import FeatureProfile
 import FeatureSearch
@@ -39,6 +40,19 @@ struct RouteScreen: View {
         case .compare(let slugs):
             ModelHost(CompareModel(slugs: slugs, service: data)) { CompareScreen() }
         case .races: ModelHost(FiscalServices.shared.liveResults()) { LiveResultsScreen() }
+        case .memory:
+            ModelHost(
+                MemoryModel(service: data, races: FiscalServices.shared.liveResultsService())
+            ) {
+                MemoryScreen()
+            }
+        case .pastElection(let year):
+            ModelHost(ElectionYearModel(year: year, service: data)) { ElectionYearScreen() }
+        case .pastRace(let id):
+            ModelHost(PastRaceModel(id: id, service: data)) { PastRaceScreen() }
+        case .period(let id): ModelHost(PeriodModel(id: id, service: data)) { PeriodScreen() }
+        case .studyGuide(let id):
+            ModelHost(StudyGuideModel(id: id, service: data)) { StudyGuideScreen() }
         case .lens: LensDestination()
         case .artists: ArtistsDestination()
         case .settings:
