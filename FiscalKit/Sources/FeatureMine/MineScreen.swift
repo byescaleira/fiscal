@@ -13,11 +13,15 @@ public struct MineScreen: View {
         @Bindable var mine = mine
         AdaptiveList {
             MineHeroSection()
-            MineRepresentativesContent()
+            if mine.hasPlace {
+                MineRegionContent()
+            } else {
+                MineInviteSection()
+            }
             MineFollowingSection()
         }
         .fontDesign(.rounded)
-        .navigationTitle("Mine")
+        .navigationTitle("Region")
         .toolbar { MineToolbar() }
         .sheet(isPresented: $mine.isChoosingPlace) {
             MinePlacePicker().environment(mine)
@@ -29,19 +33,11 @@ public struct MineScreen: View {
 }
 
 private struct MineHeroSection: View {
-    @Environment(MineModel.self) private var mine
-
     var body: some View {
         Section {
             MineHeroCard()
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)
-            if !mine.hasPlace {
-                Button("Choose Your State or City") { mine.isChoosingPlace = true }
-                    .primaryButton()
-                    .listRowBackground(Color.clear)
-                    .listRowInsets(EdgeInsets())
-            }
         }
     }
 }
@@ -53,6 +49,9 @@ private struct MineHeroCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceL) {
             VStack(alignment: .leading, spacing: .space2XS) {
+                Text(verbatim: mine.placeKicker)
+                    .font(.caption.weight(.heavy))
+                    .foregroundStyle(.secondary)
                 HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
                     Text(verbatim: mine.placeTitle)
                         .font(.amountHero)
@@ -62,9 +61,10 @@ private struct MineHeroCard: View {
                 }
                 Text(verbatim: mine.placeDetail)
                     .font(.subheadline)
-                    .opacity(.opacityStrong)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            if mine.hasPlace, mine.phase == .loaded {
+            if mine.hasPlace, mine.phase == .loaded, mine.representativeCount > 0 {
                 HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
                     Text(verbatim: mine.countText)
                         .font(.scoreboardNumber)
@@ -74,9 +74,8 @@ private struct MineHeroCard: View {
                                 ? .identity : .numericText(value: Double(mine.representativeCount)))
                     Text("representatives")
                         .font(.subheadline.weight(.semibold))
-                        .opacity(.opacityStrong)
+                        .foregroundStyle(.secondary)
                 }
-                MineLevelStrip()
             }
         }
         .foregroundStyle(.primary)
@@ -85,33 +84,6 @@ private struct MineHeroCard: View {
         .background(.groupedRow, in: .rect(cornerRadius: .radiusGroup))
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isHeader)
-    }
-}
-
-private struct MineLevelStrip: View {
-    @Environment(MineModel.self) private var mine
-
-    var body: some View {
-        ScrollView(.horizontal) {
-            HStack(spacing: .spaceS) {
-                ForEach(mine.groups) { group in
-                    VStack(alignment: .leading, spacing: .space2XS) {
-                        Text(verbatim: PublicFormat.number(group.people.count))
-                            .font(.title3.weight(.heavy))
-                            .monospacedDigit()
-                        Text(verbatim: group.title)
-                            .font(.caption2.weight(.semibold))
-                            .opacity(.opacityStrong)
-                            .lineLimit(1)
-                    }
-                    .padding(.horizontal, .spaceM)
-                    .padding(.vertical, .spaceS)
-                    .background(.fill.tertiary, in: .rect(cornerRadius: .radiusS))
-                }
-            }
-        }
-        .scrollIndicators(.hidden)
-        .scrollClipDisabled()
     }
 }
 
@@ -126,6 +98,60 @@ private struct MineStatePlate: View {
             .overlay(
                 RoundedRectangle(cornerRadius: .radiusS)
                     .strokeBorder(.secondary, lineWidth: .spaceHairline))
+    }
+}
+
+private struct MineInviteSection: View {
+    @Environment(MineModel.self) private var mine
+    @FocusState private var isSearching: Bool
+
+    var body: some View {
+        @Bindable var mine = mine
+        Section {
+            HStack(spacing: .spaceS) {
+                Image(systemName: "magnifyingglass")
+                    .foregroundStyle(.secondary)
+                    .accessibilityHidden(true)
+                TextField("State or city", text: $mine.query)
+                    .focused($isSearching)
+                    .autocorrectionDisabled()
+                    .submitLabel(.search)
+                if !mine.query.isEmpty {
+                    Button("Clear", systemImage: "xmark.circle.fill") { mine.query = "" }
+                        .labelStyle(.iconOnly)
+                        .buttonStyle(.borderless)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            if mine.isSearchingPlaces {
+                if mine.placeResults.isEmpty {
+                    Text(
+                        mine.places.isEmpty
+                            ? LocalizedStringKey("Loading") : "No place with that name."
+                    )
+                    .foregroundStyle(.secondary)
+                } else {
+                    ForEach(mine.placeResults.prefix(MineModel.inviteLimit)) { place in
+                        MinePlaceRow(place: place)
+                    }
+                }
+            } else {
+                Button {
+                    mine.isChoosingPlace = true
+                } label: {
+                    IconRow(
+                        "See All States and Cities",
+                        detail: "State capitals first. Search finds any other city.",
+                        symbol: "map", color: .info)
+                }
+                .buttonStyle(.plain)
+            }
+        } header: {
+            Text("Find Your Place").sectionTitle()
+        } footer: {
+            Text("Your place stays only on this device. Fiscal never sends it anywhere.")
+        }
+        .task { await mine.loadPlaces() }
     }
 }
 
