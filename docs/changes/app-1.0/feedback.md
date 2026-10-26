@@ -133,9 +133,9 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Aba "Meus" vira "Região" | no iPhone | catálogo |
 | Retratos: +1.402 (estaduais, vice-governadores, prefeitos e vices de 157 cidades) | no iPhone (2.030 no total) | fiscal-portraits.pack |
 | Destaque do momento no estilo do card de vitória; incerteza do peso | no iPhone | TodayHighlightHero, WeightCoverage |
-| Classificar os números (favorável/na média/desfavorável; relevância alta/média/baixa) | em andamento | frente classify |
+| Classificar os números (favorável/na média/desfavorável; relevância alta/média/baixa) | no iPhone (servidor só no próximo deploy do ingest) | PeerClassification, benchmarks.go |
 | Área histórica (apurações passadas, história política, estudo) | em andamento | frente memory |
-| Refactor da aba Região (hierarquia, bancadas, quem governa) | em andamento | frente region |
+| Refactor da aba Região (hierarquia, bancadas, quem governa) | no iPhone | FeatureMine |
 
 ## Ícone
 
