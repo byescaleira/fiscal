@@ -2,16 +2,13 @@ package fetch
 
 import (
 	"context"
-	"crypto/sha256"
-	"encoding/hex"
+	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
-	"os"
-	"path/filepath"
 	"strconv"
 	"sync"
 	"time"
@@ -22,6 +19,9 @@ const (
 	maxJSONBytes   = 64 << 20
 	maxRetryWait   = 60 * time.Second
 	defaultRetries = 3
+
+	defaultStall         = 90 * time.Second
+	defaultCacheAttempts = 10
 )
 
 type StatusError struct {
@@ -45,6 +45,9 @@ type Client struct {
 	Retries  int
 	Sleep    func(context.Context, time.Duration) error
 
+	Stall         time.Duration
+	CacheAttempts int
+
 	mu    sync.Mutex
 	gates map[string]*gate
 }
@@ -55,11 +58,19 @@ type gate struct {
 }
 
 func New(cacheDir string, timeout time.Duration) *Client {
+	transport := http.DefaultTransport.(*http.Transport).Clone()
+	transport.ForceAttemptHTTP2 = false
+	transport.TLSNextProto = map[string]func(string, *tls.Conn) http.RoundTripper{}
+	transport.TLSClientConfig = &tls.Config{MinVersion: tls.VersionTLS12, NextProtos: []string{"http/1.1"}}
+	transport.MaxIdleConnsPerHost = 8
+	transport.ResponseHeaderTimeout = timeout
 	return &Client{
-		HTTP:     &http.Client{Timeout: timeout},
-		CacheDir: cacheDir,
-		Gap:      120 * time.Millisecond,
-		Retries:  defaultRetries,
+		HTTP:          &http.Client{Timeout: timeout, Transport: transport},
+		CacheDir:      cacheDir,
+		Gap:           120 * time.Millisecond,
+		Retries:       defaultRetries,
+		Stall:         defaultStall,
+		CacheAttempts: defaultCacheAttempts,
 	}
 }
 
@@ -106,6 +117,10 @@ func (c *Client) wait(ctx context.Context, host string) error {
 }
 
 func (c *Client) Do(ctx context.Context, method, rawURL string, header http.Header) (*http.Response, error) {
+	return c.do(ctx, c.HTTP, method, rawURL, header)
+}
+
+func (c *Client) do(ctx context.Context, hc *http.Client, method, rawURL string, header http.Header) (*http.Response, error) {
 	u, err := url.Parse(rawURL)
 	if err != nil {
 		return nil, err
@@ -132,7 +147,7 @@ func (c *Client) Do(ctx context.Context, method, rawURL string, header http.Head
 			}
 		}
 		req.Header.Set("User-Agent", UserAgent)
-		resp, err := c.HTTP.Do(req)
+		resp, err := hc.Do(req)
 		if err != nil {
 			last = err
 			if ctx.Err() != nil {
@@ -218,85 +233,4 @@ func (c *Client) JSONHeader(ctx context.Context, rawURL string, v any) (http.Hea
 		return nil, fmt.Errorf("decode %s: %w", rawURL, err)
 	}
 	return header, nil
-}
-
-type cacheMeta struct {
-	URL          string `json:"url"`
-	ETag         string `json:"etag,omitempty"`
-	LastModified string `json:"lastModified,omitempty"`
-	FetchedAt    string `json:"fetchedAt"`
-}
-
-type Cached struct {
-	Path    string
-	Changed bool
-	ETag    string
-}
-
-func (c *Client) Cache(ctx context.Context, rawURL string, limit int64) (Cached, error) {
-	if c.CacheDir == "" {
-		return Cached{}, errors.New("fetch: no cache directory")
-	}
-	if err := os.MkdirAll(c.CacheDir, 0o700); err != nil {
-		return Cached{}, err
-	}
-	sum := sha256.Sum256([]byte(rawURL))
-	key := hex.EncodeToString(sum[:12])
-	path := filepath.Join(c.CacheDir, key+".bin")
-	metaPath := filepath.Join(c.CacheDir, key+".meta.json")
-	var meta cacheMeta
-	if data, err := os.ReadFile(metaPath); err == nil {
-		json.Unmarshal(data, &meta)
-	}
-	h := http.Header{}
-	if _, err := os.Stat(path); err == nil {
-		if meta.ETag != "" {
-			h.Set("If-None-Match", meta.ETag)
-		}
-		if meta.LastModified != "" {
-			h.Set("If-Modified-Since", meta.LastModified)
-		}
-	}
-	resp, err := c.Do(ctx, http.MethodGet, rawURL, h)
-	if err != nil {
-		return Cached{}, err
-	}
-	defer resp.Body.Close()
-	switch resp.StatusCode {
-	case http.StatusNotModified:
-		io.Copy(io.Discard, io.LimitReader(resp.Body, 4096))
-		return Cached{Path: path, ETag: meta.ETag}, nil
-	case http.StatusOK:
-	default:
-		io.Copy(io.Discard, io.LimitReader(resp.Body, 4096))
-		return Cached{}, &StatusError{URL: rawURL, Status: resp.StatusCode}
-	}
-	tmp, err := os.CreateTemp(c.CacheDir, ".download-*")
-	if err != nil {
-		return Cached{}, err
-	}
-	tmpName := tmp.Name()
-	defer os.Remove(tmpName)
-	n, err := io.Copy(tmp, io.LimitReader(resp.Body, limit+1))
-	if cerr := tmp.Close(); err == nil {
-		err = cerr
-	}
-	if err != nil {
-		return Cached{}, fmt.Errorf("GET %s: %w", rawURL, err)
-	}
-	if n > limit {
-		return Cached{}, fmt.Errorf("GET %s: file larger than %d bytes", rawURL, limit)
-	}
-	if err := os.Chmod(tmpName, 0o600); err != nil {
-		return Cached{}, err
-	}
-	if err := os.Rename(tmpName, path); err != nil {
-		return Cached{}, err
-	}
-	meta = cacheMeta{URL: rawURL, ETag: resp.Header.Get("ETag"), LastModified: resp.Header.Get("Last-Modified"), FetchedAt: time.Now().UTC().Format(time.RFC3339)}
-	data, _ := json.Marshal(meta)
-	if err := os.WriteFile(metaPath, data, 0o600); err != nil {
-		return Cached{}, err
-	}
-	return Cached{Path: path, Changed: true, ETag: meta.ETag}, nil
 }

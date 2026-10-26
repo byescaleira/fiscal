@@ -7,7 +7,8 @@
     extension ShowcaseRoster {
         public static let bundled = ShowcaseRoster(
             people: { Bundled.people }, places: { Bundled.places },
-            city: { code in ShowcaseRosterFile.city(code: code).map(city) })
+            city: { code in ShowcaseRosterFile.city(code: code).map(city) },
+            document: { ShowcaseArchive.document($0) })
 
         private enum Bundled {
             static let people = ShowcaseRosterFile.people.compactMap(card)

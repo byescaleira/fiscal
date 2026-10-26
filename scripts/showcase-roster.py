@@ -32,6 +32,9 @@ def main():
         for p in read(os.path.join(v1, "index", "people.json"))
     ]
     write("showcase-people.json", {"source": SOURCE, "generatedAt": meta["generatedAt"], "people": people})
+    if not os.path.isdir(os.path.join(v1, "places", "city")):
+        print("showcase-cities.json: kept, this load has no city files")
+        return
     cities = []
     missing = []
     for place in read(os.path.join(v1, "index", "places.json")):
