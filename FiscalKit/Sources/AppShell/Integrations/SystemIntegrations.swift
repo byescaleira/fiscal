@@ -15,12 +15,16 @@ struct SystemIntegrations: ViewModifier {
             .task(id: session.generation) {
                 IntegrationCenter.shared.syncWidgets()
                 await IntegrationCenter.shared.refreshIndex(follows: session.repositories.follows)
+                await HighlightAlertCenter.shared.activate()
             }
             .task(id: openRoutes) {
                 await IntegrationCenter.shared.observe(
                     routes: openRoutes, follows: session.repositories.follows)
             }
             .onChange(of: scenePhase) { _, phase in
+                if phase == .active {
+                    Task { await HighlightAlertCenter.shared.activate() }
+                }
                 guard phase == .background else { return }
                 IntegrationCenter.shared.syncWidgets()
                 IntegrationCenter.shared.reloadWidgets()

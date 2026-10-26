@@ -43,6 +43,26 @@ impacto = 100 × (0,35 × tipo + 0,20 × abrangência + 0,25 × estágio + 0,20 
 - **Nunca vazio:** sem nada nos 90 dias, entra o candidato de maior peso de qualquer data.
 - **Tipos previstos:** `action`, `vote`, `money` e `indicator`. A carga desta frente gera `action` e `vote`; `money` e `indicator` entram quando as séries de preço (ANP, IPCA) e o antes e durante o mandato forem publicados.
 
+## Destaque na tela de bloqueio (Live Activity)
+
+Regra fixa e pública, a mesma para todos (publicada em `method/weight.json › alert`):
+
+- **Peso ≥ 85** de 100 (`minWeight: 85`).
+- **Fato do último dia** (`maxAgeHours: 24`): conta a partir do fim do dia do fato no horário de Brasília (as fontes só dão a data), então vale para fatos de hoje e de ontem até 24 h depois da meia-noite.
+- **Uma vez por aparelho:** o app guarda os ids já mostrados no App Group (`fiscal.highlightAlerts.shown`, últimos 60) e o servidor guarda os ids já enviados em `DATA_DIR/highlight-alerts.json` (14 dias). Só o primeiro destaque da lista que passa da regra entra; um novo tira o anterior da tela.
+- **Duração:** 8 h (`endsAt` e `stale-date`); o app encerra na abertura seguinte o que passou do prazo, e o sistema encerra sozinho em 8 h.
+- **Início:** local, quando o app abre ou volta para a frente e lê `highlights.json`; ou por push-to-start (iOS 17.2+), quando o servidor da apuração lê um `PUBLIC_DIR/v1/highlights.json` novo (confere a cada minuto, só relê quando o arquivo muda).
+- **Desligável** em Ajustes › Seus dados e privacidade › "Destaques importantes na tela de bloqueio" (ligado por padrão). Desligado, o app não inicia, encerra o que estiver na tela e apaga o registro do token no servidor.
+- **Privacidade:** o registro leva só o token de push-to-start da Apple e o ambiente, no corpo (nunca na URL), vale 30 dias e é renovado a cada abertura; nenhum dado da pessoa vai junto.
+
+```text
+POST   /api/v1/highlight-activities  { pushToken, environment } → 204 | 422 | 413 | 409 token_bound_to_other_environment | 429 | 507
+DELETE /api/v1/highlight-activities  { pushToken }              → 204 | 422 | 413 | 429
+push-to-start: aps { event: "start", attributes-type: "HighlightActivityAttributes",
+                     attributes { highlightId, kind, title, subtitle, date, route, personName?, personSlug?, party? },
+                     content-state { weight, endsAt }, alert { title, body }, stale-date, relevance-score }
+```
+
 ## Fontes de repercussão
 
 | Fonte | Endereço | O que conta | Estado |
@@ -67,7 +87,8 @@ Action { id, kind ∈ proposal | vote | speech, title, proposition, date, url, r
 Highlight { id, kind ∈ action | vote | money | indicator, title, subtitle, weight, repercussion, impact,
             route (slug, id da votação ou do indicador), person (PersonCard ou null), proposition, date, url, signals }
 WeightMethod { version, summary, formula, repercussion, impact, parts, signals, impactParts,
-               kinds, scopes, stages, themes, decay { halfLifeDays, windowDays, text }, rules, limits, sources }
+               kinds, scopes, stages, themes, decay { halfLifeDays, windowDays, text }, rules, limits, sources,
+               alert { minWeight, maxAgeHours } }
 ```
 
 `signals.*` é `null` quando o sinal não foi medido; `signals.test` é `true` só no showcase do app.

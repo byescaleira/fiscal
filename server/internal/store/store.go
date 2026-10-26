@@ -38,6 +38,7 @@ type fileFormat struct {
 }
 
 type Options struct {
+	FileName  string
 	Max       int
 	PerSource int
 	TTL       time.Duration
@@ -64,13 +65,16 @@ func Open(dir string, o Options) (*Store, error) {
 	if o.Now == nil {
 		o.Now = time.Now
 	}
+	if o.FileName == "" {
+		o.FileName = FileName
+	}
 	if err := os.MkdirAll(dir, 0o700); err != nil {
 		return nil, fmt.Errorf("data dir: %w", err)
 	}
 	if err := os.Chmod(dir, 0o700); err != nil {
 		return nil, fmt.Errorf("data dir: %w", err)
 	}
-	s := &Store{path: filepath.Join(dir, FileName), max: o.Max, perSource: o.PerSource, ttl: o.TTL, now: o.Now, byToken: map[string]Registration{}, bySource: map[string]int{}}
+	s := &Store{path: filepath.Join(dir, o.FileName), max: o.Max, perSource: o.PerSource, ttl: o.TTL, now: o.Now, byToken: map[string]Registration{}, bySource: map[string]int{}}
 	data, err := os.ReadFile(s.path)
 	if errors.Is(err, os.ErrNotExist) {
 		return s, nil

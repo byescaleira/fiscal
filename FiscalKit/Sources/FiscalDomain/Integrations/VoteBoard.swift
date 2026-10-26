@@ -122,6 +122,7 @@ public enum IntegrationLink {
     public static let mine = URL(string: "fiscal://mine")
     public static let votes = URL(string: "fiscal://votes")
     public static let races = URL(string: "fiscal://races")
+    public static let today = URL(string: "fiscal://today")
 
     public static func person(_ slug: String) -> URL? {
         path("person", slug)
@@ -129,6 +130,16 @@ public enum IntegrationLink {
 
     public static func vote(_ id: String) -> URL? {
         path("vote", id)
+    }
+
+    public static func highlight(kind: Highlight.Kind, route: String) -> URL? {
+        let link: URL? =
+            switch kind {
+            case .action: person(route)
+            case .vote: vote(route)
+            case .money, .indicator: nil
+            }
+        return link ?? today
     }
 
     private static func path(_ host: String, _ value: String) -> URL? {

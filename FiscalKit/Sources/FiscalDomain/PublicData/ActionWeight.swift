@@ -243,12 +243,13 @@ public struct WeightMethod: Codable, Hashable, Sendable {
     public let rules: [String]
     public let limits: [String]
     public let sources: [Source]
+    public let alert: HighlightAlertRule?
 
     public init(
         version: Int, summary: String, formula: String, repercussion: String, impact: String,
         parts: [Part], signals: [Signal], impactParts: [Part], kinds: [Value], scopes: [Value],
         stages: [Value], themes: [Reach], decay: Decay, rules: [String], limits: [String],
-        sources: [Source]
+        sources: [Source], alert: HighlightAlertRule? = nil
     ) {
         self.version = version
         self.summary = summary
@@ -266,5 +267,8 @@ public struct WeightMethod: Codable, Hashable, Sendable {
         self.rules = rules
         self.limits = limits
         self.sources = sources
+        self.alert = alert
     }
+
+    public var alertRule: HighlightAlertRule { alert ?? .standard }
 }

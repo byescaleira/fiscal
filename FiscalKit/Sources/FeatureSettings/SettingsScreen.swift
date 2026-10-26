@@ -131,6 +131,9 @@ private struct SettingsPrivacySection: View {
                 "The Lens stays here",
                 detail: "Your side never goes to a server, a log or a share card.",
                 symbol: "lock", color: .retroDenim)
+            #if os(iOS)
+                HighlightAlertsToggle()
+            #endif
             if let url = settings.info.privacyURL {
                 Link(destination: url) {
                     SettingsExternalLabel(
@@ -139,6 +142,21 @@ private struct SettingsPrivacySection: View {
             }
         } header: {
             Text("Your Data and Privacy").sectionTitle()
+        }
+    }
+}
+
+private struct HighlightAlertsToggle: View {
+    @Environment(SettingsModel.self) private var settings
+
+    var body: some View {
+        @Bindable var settings = settings
+        Toggle(isOn: $settings.highlightAlerts) {
+            SettingsLabel(
+                "Important highlights on the Lock Screen",
+                detail:
+                    "Only weight 85 or more, from the last day. Fiscal sends only an anonymous Apple token.",
+                symbol: "bell.badge", color: .retroRust)
         }
     }
 }

@@ -11,18 +11,30 @@ public final class SettingsModel {
     public var tint: String {
         didSet { defaults.set(tint, forKey: Key.tint) }
     }
+    public var highlightAlerts: Bool {
+        didSet {
+            guard highlightAlerts != oldValue else { return }
+            alertLedger.setEnabled(highlightAlerts)
+            Self.onHighlightAlertsChange?(highlightAlerts)
+        }
+    }
     public private(set) var appIcon: AppIcon
+    public static var onHighlightAlertsChange: (@MainActor (Bool) -> Void)?
     public let info: AppInfo
     @ObservationIgnored private let defaults: UserDefaults
     @ObservationIgnored private let languageSetting: LanguageSetting
     @ObservationIgnored private let iconSwitcher: any AppIconSwitching
+    @ObservationIgnored private let alertLedger: HighlightAlertLedger
 
     public init(
         defaults: UserDefaults = .standard, info: AppInfo = .main,
         languageSetting: LanguageSetting = .shared,
-        iconSwitcher: any AppIconSwitching = SystemAppIconSwitcher()
+        iconSwitcher: any AppIconSwitching = SystemAppIconSwitcher(),
+        alertLedger: HighlightAlertLedger = HighlightAlertLedger()
     ) {
         self.defaults = defaults
+        self.alertLedger = alertLedger
+        highlightAlerts = alertLedger.isEnabled
         self.iconSwitcher = iconSwitcher
         appIcon = iconSwitcher.current
         self.info = info

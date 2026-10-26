@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	"liveresults/internal/highlightalert"
 	"liveresults/internal/live"
 	"liveresults/internal/store"
 	"liveresults/internal/tse"
@@ -41,6 +42,7 @@ type Registrations interface {
 type Config struct {
 	Races         Races
 	Registrations Registrations
+	Highlights    Registrations
 	AdminToken    string
 	Limiter       *RateLimiter
 	Salt          []byte
@@ -51,6 +53,7 @@ type Config struct {
 type server struct {
 	races      Races
 	regs       Registrations
+	highlights Registrations
 	adminToken string
 	limiter    *RateLimiter
 	salt       []byte
@@ -72,13 +75,15 @@ func New(c Config) http.Handler {
 		c.Salt = make([]byte, 32)
 		rand.Read(c.Salt)
 	}
-	s := &server{races: c.Races, regs: c.Registrations, adminToken: c.AdminToken, limiter: c.Limiter, salt: c.Salt, now: c.Now, logger: c.Logger}
+	s := &server{races: c.Races, regs: c.Registrations, highlights: c.Highlights, adminToken: c.AdminToken, limiter: c.Limiter, salt: c.Salt, now: c.Now, logger: c.Logger}
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/health", s.health)
 	mux.HandleFunc("GET /api/v1/races", s.limit(ClassRead, s.listRaces))
 	mux.HandleFunc("GET /api/v1/races/{id}", s.limit(ClassRead, s.getRace))
 	mux.HandleFunc("POST /api/v1/live-activities", s.limit(ClassWrite, s.register))
 	mux.HandleFunc("DELETE /api/v1/live-activities", s.limit(ClassWrite, s.unregister))
+	mux.HandleFunc("POST /api/v1/highlight-activities", s.limit(ClassWrite, s.registerHighlights))
+	mux.HandleFunc("DELETE /api/v1/highlight-activities", s.limit(ClassWrite, s.unregisterHighlights))
 	mux.HandleFunc("POST /api/v1/admin/push-test", s.limit(ClassWrite, s.pushTest))
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusNotFound, "not_found", "route not found")
@@ -301,6 +306,60 @@ func (s *server) unregister(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.regs.Delete(strings.ToLower(body.PushToken))
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func (s *server) registerHighlights(w http.ResponseWriter, r *http.Request) {
+	if s.highlights == nil {
+		writeError(w, http.StatusNotFound, "not_found", "route not found")
+		return
+	}
+	var body struct {
+		PushToken   string `json:"pushToken"`
+		Environment string `json:"environment"`
+	}
+	if !readBody(w, r, &body) {
+		return
+	}
+	switch {
+	case !ValidToken(body.PushToken):
+		writeError(w, http.StatusUnprocessableEntity, "invalid_request", "pushToken must be 32 to 400 hexadecimal characters")
+		return
+	case body.Environment != "development" && body.Environment != "production":
+		writeError(w, http.StatusUnprocessableEntity, "invalid_request", "environment must be development or production")
+		return
+	}
+	err := s.highlights.Put(store.Registration{RaceID: highlightalert.Bucket, PushToken: strings.ToLower(body.PushToken), Environment: body.Environment, Source: s.sourceKey(ClientIP(r))})
+	switch {
+	case err == nil:
+		w.WriteHeader(http.StatusNoContent)
+	case errors.Is(err, store.ErrBound):
+		writeError(w, http.StatusConflict, "token_bound_to_other_environment", "pushToken is already registered for another environment")
+	case errors.Is(err, store.ErrSourceLimit):
+		writeError(w, http.StatusTooManyRequests, "too_many_registrations", "too many registrations from this address")
+	case errors.Is(err, store.ErrCapacity):
+		writeError(w, http.StatusInsufficientStorage, "capacity_reached", "registration capacity reached")
+	default:
+		writeError(w, http.StatusInternalServerError, "internal_error", "internal error")
+	}
+}
+
+func (s *server) unregisterHighlights(w http.ResponseWriter, r *http.Request) {
+	if s.highlights == nil {
+		writeError(w, http.StatusNotFound, "not_found", "route not found")
+		return
+	}
+	var body struct {
+		PushToken string `json:"pushToken"`
+	}
+	if !readBody(w, r, &body) {
+		return
+	}
+	if !ValidToken(body.PushToken) {
+		writeError(w, http.StatusUnprocessableEntity, "invalid_request", "pushToken must be 32 to 400 hexadecimal characters")
+		return
+	}
+	s.highlights.Delete(strings.ToLower(body.PushToken))
 	w.WriteHeader(http.StatusNoContent)
 }
 

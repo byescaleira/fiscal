@@ -43,6 +43,16 @@
         }
       }
     },
+    "%@, %@. %@. %@. Weight %lld of 100." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %2$@. %3$@. %4$@. Peso %5$lld de 100."
+          }
+        }
+      }
+    },
     "%lld federal deputies" : {
       "localizations" : {
         "pt-BR" : {
@@ -87,6 +97,16 @@
         }
       }
     },
+    "ALSO HIGHLIGHTED" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TAMBÉM EM DESTAQUE"
+          }
+        }
+      }
+    },
     "Approved" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -127,6 +147,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Câmara dos Deputados"
+          }
+        }
+      }
+    },
+    "Couldn't load the highlights" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não deu para carregar os destaques"
           }
         }
       }
@@ -243,6 +273,16 @@
         }
       }
     },
+    "Fiscal shows what weighs most as soon as the day's data is published." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Fiscal mostra o que mais pesa assim que os dados do dia saem."
+          }
+        }
+      }
+    },
     "Fiscal tries again in a while." : {
       "localizations" : {
         "pt-BR" : {
@@ -274,12 +314,52 @@
         }
       }
     },
+    "HIGHLIGHT" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DESTAQUE"
+          }
+        }
+      }
+    },
+    "Highlight of the Moment" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Destaque do momento"
+          }
+        }
+      }
+    },
+    "Indicator" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indicador"
+          }
+        }
+      }
+    },
     "LIVE" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "AO VIVO"
+          }
+        }
+      }
+    },
+    "Money" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dinheiro"
           }
         }
       }
@@ -300,6 +380,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "NÃO"
+          }
+        }
+      }
+    },
+    "No highlights yet" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum destaque ainda"
           }
         }
       }
@@ -361,6 +451,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Presidente"
+          }
+        }
+      }
+    },
+    "Proposal" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Proposta"
           }
         }
       }
@@ -514,6 +614,16 @@
         }
       }
     },
+    "Vote" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votação"
+          }
+        }
+      }
+    },
     "Vote of the Day" : {
       "localizations" : {
         "pt-BR" : {
@@ -530,6 +640,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Diferença de %@ votos"
+          }
+        }
+      }
+    },
+    "Weight %lld" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peso %lld"
+          }
+        }
+      }
+    },
+    "What weighs most in politics now, with the official text and who did it." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que mais pesa na política agora, com o texto oficial e quem fez."
           }
         }
       }
