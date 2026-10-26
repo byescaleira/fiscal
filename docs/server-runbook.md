@@ -60,8 +60,8 @@ O `APPATTEST_APP_ID` não precisa entrar no `.env`: ele sai de `APNS_TEAM_ID` + 
 
 | Variável | Padrão | Para quê |
 | --- | --- | --- |
-| `APPATTEST_MODE` | `optional` | `required` depois que todas as versões no ar tiverem App Attest; `off` desliga |
-| `APPATTEST_ALLOW_DEVELOPMENT` | `0` | `1` aceita o ambiente de desenvolvimento (builds do Xcode) |
+| `APPATTEST_MODE` | `optional` | `required` depois que todas as versões no ar tiverem App Attest; `off` desliga. Na VPS: `required` desde 26/10 (registro e remoção) |
+| `APPATTEST_ALLOW_DEVELOPMENT` | `0` | `1` aceita o ambiente de desenvolvimento (builds do Xcode). Na VPS: `1` enquanto o app roda por build do Xcode; voltar a `0` antes da loja |
 | `INGEST_MEM_LIMIT` / `INGEST_GOMEMLIMIT` | `1200m` / `900MiB` | Teto da fase; suba os dois juntos se o job for morto por memória. Na VPS atual (4 vCPU e 16 GB) ficou `8192m` / `7GiB`, com `INGEST_CPUS=3`, `INGEST_WORKERS=8` e `INGEST_REQUEST_GAP=150ms` (26/10, o usuário liberou os limites depois do upgrade). Com 1,2 GB e com 2 GB a montagem completa do site foi morta (137) |
 | `INGEST_MAX_LOAD` / `INGEST_MIN_AVAILABLE_MB` | `2` / `1536` | Guarda de carga: acima do load ou abaixo da memória livre, a fase espera e pula. Na VPS atual (4 vCPU e 16 GB desde 26/10) ficou `INGEST_MAX_LOAD=6` |
 | `PAGES_DATA_INTERVAL` | `1h` | Intervalo mínimo entre deploys da atualização ao vivo (as fases publicam logo) |

@@ -151,6 +151,9 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Expressões neutras aleatórias de tempos em tempos nos retratos (positivas/negativas só quando o contexto pede) | no iPhone; "pensar" no Fiscalizar ligado | PersonPortrait, avatars.py |
 | Trilhos e carrosséis cortando as laterais: devem ir de ponta a ponta | no iPhone, 2ª correção (seção sem margem); aguardando conferência | EdgeToEdgeRail |
 | Investigações salvas no iCloud (SwiftData + CloudKit) | no iPhone; falta publicar o schema no console do CloudKit | FiscalData |
+| Sincronização inteligente por fonte e tema (5 min a mensal), incremental, sem carga completa | em andamento | frente smart-sync |
+| Só o app escreve no servidor | no ar: App Attest obrigatório em registro e remoção (401 sem prova); dados de leitura públicos no CDN (decisão do usuário) | server/internal/httpapi |
+| Swift Charts no lugar dos gráficos desenhados à mão (começando por Por tipo de gasto) | em andamento | frente swift-charts |
 | Servidor não pode cair no ingest; seguro; só o app consulta; 8 GB para milhões | no ar (26/10): dados públicos na Cloudflare Pages em dados.fiscal.byescaleira.com, ingest em fases na VPS (4 vCPU/16 GB), publicação automática, App Attest no registro; app lendo do Pages | server/, ADR 0007, docs/server-runbook.md |
 
 ## Ícone
