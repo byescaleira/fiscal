@@ -92,7 +92,7 @@ public final class SearchModel {
 
     public func detail(for card: PersonCard) -> String {
         let place = card.uf == "br" ? "" : " · \(card.uf.uppercased())"
-        return "\(card.office.title)\(place)"
+        return "\(card.officeTitle)\(place)"
     }
 
     public func detail(for place: Place) -> String {

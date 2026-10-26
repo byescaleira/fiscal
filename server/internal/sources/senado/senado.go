@@ -70,6 +70,7 @@ type Senator struct {
 	Code          int64
 	Name          string
 	FullName      string
+	Sex           string
 	Party         string
 	UF            string
 	Photo         string
@@ -88,6 +89,7 @@ type identJSON struct {
 	CodigoParlamentar       string `json:"CodigoParlamentar"`
 	NomeParlamentar         string `json:"NomeParlamentar"`
 	NomeCompletoParlamentar string `json:"NomeCompletoParlamentar"`
+	SexoParlamentar         string `json:"SexoParlamentar"`
 	UrlFotoParlamentar      string `json:"UrlFotoParlamentar"`
 	EmailParlamentar        string `json:"EmailParlamentar"`
 	SiglaPartidoParlamentar string `json:"SiglaPartidoParlamentar"`
@@ -175,6 +177,7 @@ func (l listJSON) senators() []Senator {
 			Code:          code,
 			Name:          id.NomeParlamentar,
 			FullName:      id.NomeCompletoParlamentar,
+			Sex:           id.SexoParlamentar,
 			Party:         id.SiglaPartidoParlamentar,
 			UF:            id.UfParlamentar,
 			Photo:         secure(id.UrlFotoParlamentar),
@@ -207,6 +210,9 @@ func ParseCurrent(data []byte) ([]Senator, error) {
 type detailJSON struct {
 	DetalheParlamentar struct {
 		Parlamentar struct {
+			IdentificacaoParlamentar struct {
+				SexoParlamentar string `json:"SexoParlamentar"`
+			} `json:"IdentificacaoParlamentar"`
 			DadosBasicosParlamentar struct {
 				DataNascimento      string `json:"DataNascimento"`
 				Naturalidade        string `json:"Naturalidade"`
@@ -218,6 +224,7 @@ type detailJSON struct {
 }
 
 type Detail struct {
+	Sex        string
 	BirthDate  string
 	BirthPlace string
 	BirthUF    string
@@ -226,7 +233,7 @@ type Detail struct {
 
 func (d detailJSON) detail() Detail {
 	b := d.DetalheParlamentar.Parlamentar.DadosBasicosParlamentar
-	return Detail{BirthDate: b.DataNascimento, BirthPlace: b.Naturalidade, BirthUF: b.UfNaturalidade, Address: strings.Join(strings.Fields(b.EnderecoParlamentar), " ")}
+	return Detail{Sex: d.DetalheParlamentar.Parlamentar.IdentificacaoParlamentar.SexoParlamentar, BirthDate: b.DataNascimento, BirthPlace: b.Naturalidade, BirthUF: b.UfNaturalidade, Address: strings.Join(strings.Fields(b.EnderecoParlamentar), " ")}
 }
 
 func (a API) Detail(ctx context.Context, code int64) (Detail, error) {

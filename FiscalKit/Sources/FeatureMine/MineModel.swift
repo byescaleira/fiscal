@@ -130,7 +130,7 @@ public final class MineModel {
 
     public func detail(for person: FollowedPerson) -> String {
         let place = person.card.uf == "br" ? "" : " · \(person.card.uf.uppercased())"
-        return "\(person.card.office.title) · \(person.card.party)\(place)"
+        return "\(person.card.officeTitle) · \(person.card.party)\(place)"
     }
 
     public func status(of card: PersonCard) -> String? {
@@ -138,7 +138,7 @@ public final class MineModel {
     }
 
     public func accessibilityLabel(for card: PersonCard) -> String {
-        let parts = [card.name, card.party, card.office.title, status(of: card)]
+        let parts = [card.name, card.party, card.officeTitle, status(of: card)]
         return parts.compactMap(\.self).joined(separator: ", ")
     }
 
@@ -149,13 +149,30 @@ public final class MineModel {
 
     public func loadFollowed() async {
         do {
-            let list = try await follows?.followed() ?? []
+            let stored = try await follows?.followed() ?? []
+            let list = await withGenders(stored)
             followed = list.sorted {
                 $0.card.name.localizedStandardCompare($1.card.name) == .orderedAscending
             }
             hasLoaded = true
         } catch is CancellationError {} catch {
             self.error = error as? FiscalError ?? .onFetch
+        }
+    }
+
+    private func withGenders(_ list: [FollowedPerson]) async -> [FollowedPerson] {
+        guard list.contains(where: { $0.card.gender == nil }),
+            let people = try? await service?.people()
+        else { return list }
+        let genders = Dictionary(
+            people.compactMap { card in card.gender.map { (card.slug, $0) } },
+            uniquingKeysWith: { first, _ in first })
+        return list.map { person in
+            guard person.card.gender == nil, let gender = genders[person.card.slug] else {
+                return person
+            }
+            return FollowedPerson(
+                card: person.card.with(gender: gender), followedAt: person.followedAt)
         }
     }
 

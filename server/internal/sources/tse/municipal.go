@@ -40,6 +40,7 @@ type Official struct {
 	Party      string
 	BirthDate  string
 	BirthUF    string
+	Gender     string
 	Education  string
 	Result     string
 }
@@ -76,6 +77,7 @@ func ReadOfficials(r io.Reader, unit func(uf, code, name string), fn func(Offici
 			Party:      row.Str("SG_PARTIDO"),
 			BirthDate:  isoDate(row.Raw("DT_NASCIMENTO")),
 			BirthUF:    row.Str("SG_UF_NASCIMENTO"),
+			Gender:     row.Str("DS_GENERO"),
 			Education:  row.Str("DS_GRAU_INSTRUCAO"),
 			Result:     result,
 		})

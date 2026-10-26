@@ -41,7 +41,7 @@ struct SearchIndex: Sendable {
             uniquingKeysWith: { first, _ in first })
         self.people = Self.alphabetical(people, by: \.name).map { card in
             let text = [
-                card.name, card.party, card.uf, states[card.uf] ?? "", card.office.title,
+                card.name, card.party, card.uf, states[card.uf] ?? "", card.officeTitle,
                 SearchText.aliases(for: card.office), SearchText.aliases(for: card.status),
             ]
             return Entry(value: card, words: SearchText.words(text.joined(separator: " ")))

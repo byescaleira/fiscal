@@ -16,56 +16,60 @@
         ]
 
         static let regular: [PersonCard] = [
-            card("lula", "Lula", .president, "br", "PT"),
-            card("geraldo-alckmin", "Geraldo Alckmin", .vicePresident, "br", "PSB"),
-            card("damares-alves", "Damares Alves", .senator, "df", "REPUBLICANOS"),
-            card("fabiano-contarato", "Fabiano Contarato", .senator, "es", "PT"),
-            card("sergio-moro", "Sergio Moro", .senator, "pr", "UNIÃO"),
-            card("humberto-costa", "Humberto Costa", .senator, "pe", "PT"),
-            card("tereza-cristina", "Tereza Cristina", .senator, "ms", "PP"),
-            card("tabata-amaral", "Tabata Amaral", .federalDeputy, "sp", "PSB"),
-            card("kim-kataguiri", "Kim Kataguiri", .federalDeputy, "sp", "UNIÃO"),
-            card("erika-hilton", "Erika Hilton", .federalDeputy, "sp", "PSOL"),
-            card("nikolas-ferreira", "Nikolas Ferreira", .federalDeputy, "mg", "PL"),
-            card("duda-salabert", "Duda Salabert", .federalDeputy, "mg", "PDT"),
-            card("marcel-van-hattem", "Marcel van Hattem", .federalDeputy, "rs", "NOVO"),
+            card("lula", "Lula", .president, "br", "PT", gender: .male),
+            card("geraldo-alckmin", "Geraldo Alckmin", .vicePresident, "br", "PSB", gender: .male),
+            card("damares-alves", "Damares Alves", .senator, "df", "REPUBLICANOS", gender: .female),
+            card("fabiano-contarato", "Fabiano Contarato", .senator, "es", "PT", gender: .male),
+            card("sergio-moro", "Sergio Moro", .senator, "pr", "UNIÃO", gender: .male),
+            card("humberto-costa", "Humberto Costa", .senator, "pe", "PT", gender: .male),
+            card("tereza-cristina", "Tereza Cristina", .senator, "ms", "PP", gender: .female),
+            card("tabata-amaral", "Tabata Amaral", .federalDeputy, "sp", "PSB", gender: .female),
+            card("kim-kataguiri", "Kim Kataguiri", .federalDeputy, "sp", "UNIÃO", gender: .male),
+            card("erika-hilton", "Erika Hilton", .federalDeputy, "sp", "PSOL", gender: .female),
+            card("nikolas-ferreira", "Nikolas Ferreira", .federalDeputy, "mg", "PL", gender: .male),
+            card("duda-salabert", "Duda Salabert", .federalDeputy, "mg", "PDT", gender: .female),
+            card(
+                "marcel-van-hattem", "Marcel van Hattem", .federalDeputy, "rs", "NOVO",
+                gender: .male),
             card(
                 "ana-clara-moura", "Ana Clara Moura", .federalDeputy, "ba", "PSD",
-                status: .electedAwaiting),
-            card("tarcisio-de-freitas", "Tarcísio de Freitas", .governor, "sp", "REPUBLICANOS"),
-            card("jeronimo-rodrigues", "Jerônimo Rodrigues", .governor, "ba", "PT"),
-            card("eduardo-suplicy", "Eduardo Suplicy", .stateDeputy, "sp", "PT"),
-            card("gil-diniz", "Gil Diniz", .stateDeputy, "sp", "PL"),
+                gender: .female, status: .electedAwaiting),
+            card(
+                "tarcisio-de-freitas", "Tarcísio de Freitas", .governor, "sp", "REPUBLICANOS",
+                gender: .male),
+            card("jeronimo-rodrigues", "Jerônimo Rodrigues", .governor, "ba", "PT", gender: .male),
+            card("eduardo-suplicy", "Eduardo Suplicy", .stateDeputy, "sp", "PT", gender: .male),
+            card("gil-diniz", "Gil Diniz", .stateDeputy, "sp", "PL", gender: .male),
             card(
                 "joao-batista-lima", "João Batista Lima", .stateDeputy, "mg", "MDB",
-                status: .onLeave),
+                gender: .male, status: .onLeave),
         ]
 
         static let long: [PersonCard] = [
             card(
                 "maria-da-conceicao-albuquerque", "Maria da Conceição Albuquerque de Vasconcellos",
-                .senator, "pe", "REPUBLICANOS"),
+                .senator, "pe", "REPUBLICANOS", gender: .female),
             card(
                 "jose-roberto-figueiredo", "José Roberto Figueiredo dos Santos Magalhães Neto",
-                .federalDeputy, "ba", "SOLIDARIEDADE"),
+                .federalDeputy, "ba", "SOLIDARIEDADE", gender: .male),
             card(
                 "ana-luiza-bittencourt", "Ana Luiza Bittencourt Cavalcanti de Oliveira",
-                .federalDeputy, "rj", "CIDADANIA"),
+                .federalDeputy, "rj", "CIDADANIA", gender: .female),
             card(
                 "francisco-de-assis-nogueira", "Francisco de Assis Nogueira Bezerra da Silva",
-                .stateDeputy, "ce", "PODEMOS", status: .electedAwaiting),
+                .stateDeputy, "ce", "PODEMOS", gender: .male, status: .electedAwaiting),
             card(
                 "maria-aparecida-goncalves", "Maria Aparecida Gonçalves Toledo de Andrade",
-                .governor, "go", "REPUBLICANOS"),
+                .governor, "go", "REPUBLICANOS", gender: .female),
         ]
 
         static func card(
             _ slug: String, _ name: String, _ office: Office, _ uf: String, _ party: String,
-            status: PersonStatus = .inOffice
+            gender: Gender? = nil, status: PersonStatus = .inOffice
         ) -> PersonCard {
             PersonCard(
                 slug: slug, name: name, office: office, uf: uf, party: party, photo: nil,
-                status: status)
+                status: status, gender: gender)
         }
 
         static let longCouncil: [(office: Office, name: String, party: String)] = [
@@ -75,6 +79,10 @@
             ),
             (.cityCouncilor, "José Roberto Figueiredo dos Santos Magalhães Neto", "SOLIDARIEDADE"),
         ]
+
+        static func longCouncilCards(in place: Place) -> [PersonCard] {
+            ShowcaseRoster.cards(longCouncil, in: place, genders: [.female, .male])
+        }
 
         static func places(cities: [Place]) -> [Place] {
             let states = states.map { Place(code: $0.uf, name: $0.name, uf: $0.uf) }

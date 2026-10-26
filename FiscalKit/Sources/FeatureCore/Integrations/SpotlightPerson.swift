@@ -14,10 +14,10 @@ public struct SpotlightPerson: Hashable, Identifiable, Sendable {
         id = card.slug
         title = card.name
         let place = card.uf.lowercased() == "br" ? nil : card.uf.uppercased(with: .app)
-        detail = ([card.office.title, card.party] + [place].compactMap(\.self))
+        detail = ([card.officeTitle, card.party] + [place].compactMap(\.self))
             .joined(separator: " · ")
         keywords = [
-            card.office.title, card.party, place, place.map { _ in HomePlace.name(of: card.uf) },
+            card.officeTitle, card.party, place, place.map { _ in HomePlace.name(of: card.uf) },
         ]
         .compactMap(\.self)
         url = IntegrationLink.person(card.slug)

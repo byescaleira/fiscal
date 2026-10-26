@@ -112,42 +112,16 @@
             if !longText,
                 let real: PlaceRepresentatives = real(PublicDataPath.representatives(uf: uf))
             {
-                return real
+                return gendered(real)
             }
             return ShowcasePeople.representatives(uf: uf, people: everyone, sources: sources)
         }
 
-        public func cityRepresentatives(code: String) async throws -> PlaceRepresentatives? {
-            try check()
-            guard !isEmpty, let city = roster.city(code) else { return nil }
-            let hall = city.officials.filter { $0.office != .cityCouncilor }
-                .sorted { $0.office == .mayor && $1.office != .mayor }
-            let extra =
-                longText && !city.officials.isEmpty
-                ? ShowcaseRoster.cards(ShowcasePeople.longCouncil, in: city.place)
-                    .map { card in
-                        PersonCard(
-                            slug: "teste-\(card.slug)", name: card.name, office: card.office,
-                            uf: card.uf, party: card.party, photo: nil, status: card.status)
-                    } : []
-            let council = (city.officials.filter { $0.office == .cityCouncilor } + extra)
-                .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
-            let groups = [
-                RepresentativeGroup(
-                    level: .city, office: .mayor, title: "Prefeitura", people: hall),
-                RepresentativeGroup(
-                    level: .city, office: .cityCouncilor, title: "Câmara Municipal",
-                    people: council),
-            ]
-            return PlaceRepresentatives(
-                code: city.place.code, uf: city.place.uf, name: city.place.name,
-                groups: groups.filter { !$0.people.isEmpty }, note: city.note,
-                sources: municipalSources)
-        }
-
         public func profile(slug: String) async throws -> Profile {
             try check()
-            if let real: Profile = real(PublicDataPath.profile(slug: slug)) { return real }
+            if let real: Profile = real(PublicDataPath.profile(slug: slug)) {
+                return real.gender == nil ? real.with(gender: genders[slug]) : real
+            }
             if let card = curated.first(where: { $0.slug == slug }) {
                 return ShowcaseProfiles.profile(for: card, year: year, sources: sources)
             }
@@ -156,20 +130,6 @@
             }
             guard !isEmpty, let card = municipal(slug) else { throw PublicDataError.notFound }
             return ShowcaseProfiles.minimal(for: card, sources: municipalSources)
-        }
-
-        func municipal(_ slug: String) -> PersonCard? {
-            if let card = roster.official(slug: slug) { return card }
-            guard longText, slug.hasPrefix("teste-"),
-                let code = ShowcaseRoster.code(in: slug), let city = roster.city(code)
-            else { return nil }
-            return ShowcaseRoster.cards(ShowcasePeople.longCouncil, in: city.place)
-                .first { "teste-\($0.slug)" == slug }
-                .map {
-                    PersonCard(
-                        slug: slug, name: $0.name, office: $0.office, uf: $0.uf, party: $0.party,
-                        photo: nil, status: $0.status)
-                }
         }
 
         public func votes(slug: String, year: Int) async throws -> PublicList<PersonVote> {
@@ -227,6 +187,49 @@
     }
 
     extension ShowcasePublicData {
+        public func cityRepresentatives(code: String) async throws -> PlaceRepresentatives? {
+            try check()
+            guard !isEmpty, let city = roster.city(code) else { return nil }
+            let hall = city.officials.filter { $0.office != .cityCouncilor }
+                .sorted { $0.office == .mayor && $1.office != .mayor }
+            let extra =
+                longText && !city.officials.isEmpty
+                ? ShowcasePeople.longCouncilCards(in: city.place)
+                    .map { card in
+                        PersonCard(
+                            slug: "teste-\(card.slug)", name: card.name, office: card.office,
+                            uf: card.uf, party: card.party, photo: nil, status: card.status,
+                            gender: card.gender)
+                    } : []
+            let council = (city.officials.filter { $0.office == .cityCouncilor } + extra)
+                .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+            let groups = [
+                RepresentativeGroup(
+                    level: .city, office: .mayor, title: "Prefeitura", people: hall),
+                RepresentativeGroup(
+                    level: .city, office: .cityCouncilor, title: "Câmara Municipal",
+                    people: council),
+            ]
+            return PlaceRepresentatives(
+                code: city.place.code, uf: city.place.uf, name: city.place.name,
+                groups: groups.filter { !$0.people.isEmpty }, note: city.note,
+                sources: municipalSources)
+        }
+
+        func municipal(_ slug: String) -> PersonCard? {
+            if let card = roster.official(slug: slug) { return card }
+            guard longText, slug.hasPrefix("teste-"),
+                let code = ShowcaseRoster.code(in: slug), let city = roster.city(code)
+            else { return nil }
+            return ShowcasePeople.longCouncilCards(in: city.place)
+                .first { "teste-\($0.slug)" == slug }
+                .map {
+                    PersonCard(
+                        slug: slug, name: $0.name, office: $0.office, uf: $0.uf, party: $0.party,
+                        photo: nil, status: $0.status, gender: $0.gender)
+                }
+        }
+
         var regular: [PersonCard] {
             guard loaded else { return ShowcasePeople.regular }
             let people = roster.people()
@@ -251,6 +254,28 @@
             guard stored(PublicDataPath.profile(slug: slug)) != nil else { return nil }
             guard let value: Value = real(path) else { throw PublicDataError.notFound }
             return value
+        }
+    }
+
+    extension ShowcasePublicData {
+        fileprivate var genders: [String: Gender] {
+            Dictionary(
+                everyone.compactMap { card in card.gender.map { (card.slug, $0) } },
+                uniquingKeysWith: { first, _ in first })
+        }
+
+        fileprivate func gendered(_ list: PlaceRepresentatives) -> PlaceRepresentatives {
+            let genders = genders
+            let groups = list.groups.map { group in
+                RepresentativeGroup(
+                    level: group.level, office: group.office, title: group.title,
+                    people: group.people.map { card in
+                        card.gender == nil ? card.with(gender: genders[card.slug]) : card
+                    })
+            }
+            return PlaceRepresentatives(
+                code: list.code, uf: list.uf, name: list.name, groups: groups, note: list.note,
+                sources: list.sources)
         }
     }
 #endif

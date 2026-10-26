@@ -104,3 +104,30 @@ func strPtr(s string) *string {
 	}
 	return &s
 }
+
+const (
+	GenderFemale = "f"
+	GenderMale   = "m"
+)
+
+func GenderCode(raw string) string {
+	switch strings.ToUpper(strings.TrimSpace(raw)) {
+	case "F", "FEMININO", "FEMININA", "FEMALE":
+		return GenderFemale
+	case "M", "MASCULINO", "MALE":
+		return GenderMale
+	}
+	return ""
+}
+
+func genderOf(p *Person) *string {
+	if g := GenderCode(p.Gender); g != "" {
+		return &g
+	}
+	for _, c := range p.Candidacies {
+		if g := GenderCode(c.Gender); g != "" {
+			return &g
+		}
+	}
+	return nil
+}

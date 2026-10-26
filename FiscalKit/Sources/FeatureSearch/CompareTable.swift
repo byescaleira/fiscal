@@ -53,7 +53,7 @@ public struct CompareTable: Equatable, Sendable {
             let place = profile.uf == "br" ? "" : " · \(profile.uf.uppercased())"
             return Column(
                 slug: profile.slug, name: profile.name, party: profile.party,
-                detail: "\(profile.office.title)\(place)",
+                detail: "\(profile.officeTitle)\(place)",
                 usesSecondaryColor: !repeats.isMultiple(of: 2))
         }
         guard profiles.count >= 2 else {

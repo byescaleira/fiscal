@@ -22,7 +22,7 @@
             return PersonCard(
                 slug: person.slug, name: person.name, office: office, uf: person.uf,
                 party: person.party, photo: person.photo.flatMap(URL.init(string:)),
-                status: status)
+                status: status, gender: person.gender.flatMap(Gender.init(rawValue:)))
         }
 
         static func place(_ city: ShowcaseRosterFile.City) -> Place {
@@ -31,11 +31,14 @@
 
         static func city(_ city: ShowcaseRosterFile.City) -> ShowcaseRoster.City {
             let place = place(city)
-            let officials = city.officials.compactMap { official in
+            let known = city.officials.filter { Office(rawValue: $0.office) != nil }
+            let officials = known.compactMap { official in
                 Office(rawValue: official.office).map { ($0, official.name, official.party) }
             }
+            let genders = known.map { $0.gender.flatMap(Gender.init(rawValue:)) }
             return ShowcaseRoster.City(
-                place: place, officials: cards(officials, in: place), note: city.note)
+                place: place, officials: cards(officials, in: place, genders: genders),
+                note: city.note)
         }
     }
 #endif

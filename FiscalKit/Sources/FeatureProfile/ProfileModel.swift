@@ -59,7 +59,7 @@ public final class ProfileModel {
     public var officeLine: String {
         guard let profile else { return "" }
         return profile.uf == "br"
-            ? profile.office.title : "\(profile.office.title) · \(profile.uf.uppercased())"
+            ? profile.officeTitle : "\(profile.officeTitle) · \(profile.uf.uppercased())"
     }
 
     public var statusText: String? { profile?.status.title }

@@ -94,6 +94,7 @@ type detailJSON struct {
 		UfNasc       string `json:"ufNascimento"`
 		MunNasc      string `json:"municipioNascimento"`
 		Escolaridade string `json:"escolaridade"`
+		Sexo         string `json:"sexo"`
 		UltimoStatus struct {
 			deputyJSON
 			NomeEleitoral     string `json:"nomeEleitoral"`
@@ -124,6 +125,7 @@ func (d detailJSON) detail() Detail {
 		BirthCity:     d.Dados.MunNasc,
 		BirthUF:       d.Dados.UfNasc,
 		Education:     d.Dados.Escolaridade,
+		Sex:           d.Dados.Sexo,
 		Situation:     s.Situacao,
 		Condition:     s.CondicaoEleitoral,
 		Building:      s.Gabinete.Predio,

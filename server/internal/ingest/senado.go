@@ -47,6 +47,9 @@ func (in *Ingest) loadSenado(ctx context.Context, rep *Report) (senadoResult, er
 		s := sens[i]
 		p := senatorPerson(s)
 		if d, err := api.Detail(ctx, s.Code); err == nil {
+			if p.Gender == "" {
+				p.Gender = publicdata.GenderCode(d.Sex)
+			}
 			p.BirthDate = d.BirthDate
 			if d.BirthPlace != "" {
 				p.BirthPlace = d.BirthPlace
@@ -149,6 +152,7 @@ func senatorPerson(s senado.Senator) *publicdata.Person {
 		Keys:      []string{"senado:" + strconv.FormatInt(s.Code, 10)},
 		Name:      strings.TrimSpace(s.Name),
 		CivilName: strings.TrimSpace(s.FullName),
+		Gender:    publicdata.GenderCode(s.Sex),
 		Roles:     []publicdata.Role{{Office: publicdata.OfficeSenator, UF: strings.ToLower(s.UF), Status: publicdata.StatusInOffice, Party: s.Party, MandateStart: s.MandateStart, MandateEnd: s.MandateEnd}},
 		Photo:     s.Photo,
 		House:     publicdata.HouseSenado,

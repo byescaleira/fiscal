@@ -1761,6 +1761,16 @@
         }
       }
     },
+    "City Councilor (female)" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vereadora"
+          }
+        }
+      }
+    },
     "City councilors" : {
       "localizations" : {
         "pt-BR" : {
@@ -2871,6 +2881,16 @@
         }
       }
     },
+    "Federal Deputy (female)" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deputada federal"
+          }
+        }
+      }
+    },
     "Federal revenue" : {
       "localizations" : {
         "pt-BR" : {
@@ -3398,6 +3418,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Governador"
+          }
+        }
+      }
+    },
+    "Governor (female)" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Governadora"
           }
         }
       }
@@ -4278,6 +4308,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prefeito"
+          }
+        }
+      }
+    },
+    "Mayor (female)" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prefeita"
           }
         }
       }
@@ -7102,6 +7142,16 @@
         }
       }
     },
+    "Senator (female)" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senadora"
+          }
+        }
+      }
+    },
     "Senators" : {
       "localizations" : {
         "pt-BR" : {
@@ -7688,6 +7738,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Deputado estadual"
+          }
+        }
+      }
+    },
+    "State Deputy (female)" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deputada estadual"
           }
         }
       }
@@ -9132,6 +9192,16 @@
         }
       }
     },
+    "Vice Governor (female)" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vice-governadora"
+          }
+        }
+      }
+    },
     "Vice governors" : {
       "localizations" : {
         "pt-BR" : {
@@ -9148,6 +9218,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vice-prefeito"
+          }
+        }
+      }
+    },
+    "Vice Mayor (female)" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vice-prefeita"
           }
         }
       }

@@ -163,7 +163,7 @@ func lessPerson(a, c *Person, slugs map[*Person]string) bool {
 }
 
 func (b *builder) card(p *Person, r Role) PersonCard {
-	return PersonCard{Slug: b.slugs[p], Name: p.Name, Office: r.Office, UF: r.UF, Party: r.Party, Photo: strPtr(p.Photo), Status: r.Status}
+	return PersonCard{Slug: b.slugs[p], Name: p.Name, Office: r.Office, UF: r.UF, Party: r.Party, Photo: strPtr(p.Photo), Status: r.Status, Gender: genderOf(p)}
 }
 
 func (b *builder) ballotsOf(p *Person) []personBallot {
@@ -381,6 +381,7 @@ func (b *builder) person(p *Person) {
 		Party:      role.Party,
 		Photo:      strPtr(p.Photo),
 		Status:     role.Status,
+		Gender:     genderOf(p),
 		Mandate:    Mandate{Start: strPtr(role.MandateStart), End: strPtr(role.MandateEnd)},
 		BirthDate:  strPtr(p.BirthDate),
 		BirthPlace: strPtr(p.BirthPlace),

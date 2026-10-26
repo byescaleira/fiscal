@@ -65,7 +65,9 @@ Peça compartilhada pelas frentes paralelas da mudança [`app-1.0`](proposal.md)
 ### Tipos
 
 ```text
-PersonCard { slug, name, office, uf, party, photo (URL ou null), status }
+PersonCard { slug, name, office, uf, party, photo (URL ou null), status, gender (opcional) }
+  gender ∈ f | m | null: vem do Senado (`SexoParlamentar`), da Câmara (`sexo` do detalhe) e, para os demais,
+           do `DS_GENERO` da candidatura do TSE; sem dado, `null` (o app usa o cargo no masculino genérico)
   office ∈ president | vicePresident | senator | federalDeputy | governor | viceGovernor | stateDeputy
            | mayor | viceMayor | cityCouncilor
   status ∈ inOffice | electedAwaiting | onLeave
@@ -76,7 +78,7 @@ RepresentativeGroup { level ∈ country | state | city, office, title, people: [
 CityRepresentatives { code, name, uf, groups: [RepresentativeGroup], note (string ou null), sources }
 
 Profile {
-  slug, name, civilName, office, uf, party, photo, status,
+  slug, name, civilName, office, uf, party, photo, status, gender (opcional, como no PersonCard),
   mandate { start, end }, birthDate, birthPlace, education,
   contact { email, phone, office } | null,
   salary { monthlyCents, law } | null,

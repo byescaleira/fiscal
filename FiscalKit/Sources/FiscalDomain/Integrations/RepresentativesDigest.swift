@@ -45,11 +45,11 @@ public struct RepresentativesDigest: Hashable, Sendable {
     }
 
     public func detail(for person: PersonCard) -> String {
-        "\(person.office.title) · \(person.party)"
+        "\(person.officeTitle) · \(person.party)"
     }
 
     public func accessibility(for person: PersonCard) -> String {
-        "\(person.name), \(person.office.title), \(person.party), \(ufText)"
+        "\(person.name), \(person.officeTitle), \(person.party), \(ufText)"
     }
 
     public var url: URL? { IntegrationLink.mine }
