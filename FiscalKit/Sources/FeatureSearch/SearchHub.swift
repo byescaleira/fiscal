@@ -8,6 +8,7 @@ struct SearchHub: View {
 
     var body: some View {
         SearchDoorsSection()
+        MemoryDoorSection()
         if search.comparesFirst {
             SuggestionsSection()
         }
@@ -59,6 +60,28 @@ private struct SearchDoorsSection: View {
 
     private var liveChip: LocalizedStringKey {
         search.elections.contains { $0.liveRound != nil } ? "LIVE TODAY" : "TSE"
+    }
+}
+
+private struct MemoryDoorSection: View {
+    @Environment(\.open) private var open
+    @Environment(\.navigationSection) private var section
+
+    var body: some View {
+        Section {
+            Button {
+                open(.memory, in: section)
+            } label: {
+                DoorTile(
+                    chip: "SINCE 1889", title: "Memory",
+                    detail: "Past elections, the phases of Brazilian politics and study guides",
+                    symbol: "books.vertical",
+                    colors: [.retroPlum, .retroPlum.mix(with: .black, by: .opacitySoft)])
+            }
+            .buttonStyle(.plain)
+            .listRowInsets(EdgeInsets())
+            .listRowBackground(Color.clear)
+        }
     }
 }
 

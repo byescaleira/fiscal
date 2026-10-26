@@ -128,6 +128,22 @@ public struct PublicDataClient: PublicDataService {
         try await optional(PublicDataPath.context(slug: slug))
     }
 
+    public func electionHistory() async throws -> ElectionHistory? {
+        try await optional(HistoryPath.elections)
+    }
+
+    public func pastRace(id: String) async throws -> PastRace? {
+        try await optional(HistoryPath.race(id: id))
+    }
+
+    public func politicalTimeline() async throws -> PoliticalTimeline? {
+        try await optional(HistoryPath.periods)
+    }
+
+    public func studyCatalog() async throws -> StudyCatalog? {
+        try await optional(HistoryPath.study)
+    }
+
     func optional<Value: Decodable>(_ path: String) async throws -> Value? {
         do {
             return try await get(path)

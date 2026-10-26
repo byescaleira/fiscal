@@ -28,6 +28,11 @@ enum DeepLink: Equatable {
             path.map { DeepLink.route(.expenses(slug: $0, year: year(in: url)), in: .money) }
         case "compare": .route(.compare(slugs: slugs(in: url)), in: .search)
         case "races": .route(.races, in: .search)
+        case "memory": .route(.memory, in: .search)
+        case "election":
+            path.flatMap(Int.init).map { DeepLink.route(.pastElection(year: $0), in: .search) }
+        case "period": path.map { DeepLink.route(.period(id: $0), in: .search) }
+        case "study": path.map { DeepLink.route(.studyGuide(id: $0), in: .search) }
         case "lens": .route(.lens, in: .today)
         case "artists": .route(.artists, in: .today)
         case "settings": .route(.settings, in: .today)
