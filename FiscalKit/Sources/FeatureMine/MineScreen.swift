@@ -33,49 +33,115 @@ private struct MineHeroSection: View {
 
     var body: some View {
         Section {
+            MineHeroCard()
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
             if !mine.hasPlace {
                 Button("Choose Your State or City") { mine.isChoosingPlace = true }
                     .primaryButton()
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets())
             }
-        } header: {
-            MineHero()
         }
     }
 }
 
-private struct MineHero: View {
+private struct MineHeroCard: View {
+    @Environment(MineModel.self) private var mine
+    @Environment(\.appTint) private var tint
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: .spaceL) {
+            HStack(spacing: .spaceS) {
+                Label {
+                    Text(verbatim: mine.placeKicker)
+                } icon: {
+                    Image(systemName: mine.place?.isState == true ? "map" : "building.2")
+                }
+                .font(.chipLabel)
+                .padding(.horizontal, .spaceS)
+                .padding(.vertical, .space2XS)
+                .background(.white.opacity(.opacityTint), in: .capsule)
+                Spacer(minLength: .spaceS)
+                if mine.hasPlace {
+                    Button {
+                        mine.isChoosingPlace = true
+                    } label: {
+                        Label("Change Place", systemImage: "mappin.and.ellipse")
+                            .font(.subheadline.weight(.semibold))
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal, .spaceM)
+                    .padding(.vertical, .spaceXS)
+                    .background(.white.opacity(.opacityTint), in: .capsule)
+                }
+            }
+            VStack(alignment: .leading, spacing: .space2XS) {
+                HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
+                    Text(verbatim: mine.placeTitle)
+                        .font(.amountHero)
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.6)
+                    if let uf = mine.ufText { MineStatePlate(uf: uf) }
+                }
+                Text(verbatim: mine.placeDetail)
+                    .font(.subheadline)
+                    .opacity(.opacityStrong)
+            }
+            if mine.hasPlace, mine.phase == .loaded {
+                HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
+                    Text(verbatim: mine.countText)
+                        .font(.scoreboardNumber)
+                        .monospacedDigit()
+                        .contentTransition(
+                            reduceMotion
+                                ? .identity : .numericText(value: Double(mine.representativeCount)))
+                    Text("representatives")
+                        .font(.subheadline.weight(.semibold))
+                        .opacity(.opacityStrong)
+                }
+                MineLevelStrip()
+            }
+        }
+        .foregroundStyle(.white)
+        .padding(.spaceInset)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background {
+            LinearGradient(
+                colors: [tint, tint.opacity(.opacityStrong)], startPoint: .topLeading,
+                endPoint: .bottomTrailing)
+        }
+        .clipShape(.rect(cornerRadius: .radiusGroup))
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isHeader)
+    }
+}
+
+private struct MineLevelStrip: View {
     @Environment(MineModel.self) private var mine
 
     var body: some View {
-        VStack(alignment: .leading, spacing: .spaceS) {
-            Text(verbatim: mine.placeKicker)
-                .font(.chipLabel)
-                .foregroundStyle(.secondary)
-            AdaptiveStack(alignment: .bottom, spacing: .spaceL) {
-                VStack(alignment: .leading, spacing: .spaceXS) {
-                    HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
-                        Text(verbatim: mine.placeTitle)
-                            .font(.amountHero)
-                            .minimumScaleFactor(0.6)
-                        if let uf = mine.ufText { MineStatePlate(uf: uf) }
+        ScrollView(.horizontal) {
+            HStack(spacing: .spaceS) {
+                ForEach(mine.groups) { group in
+                    VStack(alignment: .leading, spacing: .space2XS) {
+                        Text(verbatim: PublicFormat.number(group.people.count))
+                            .font(.title3.weight(.heavy))
+                            .monospacedDigit()
+                        Text(verbatim: group.title)
+                            .font(.caption2.weight(.semibold))
+                            .opacity(.opacityStrong)
+                            .lineLimit(1)
                     }
-                    Text(verbatim: mine.placeDetail)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                if mine.hasPlace, mine.phase == .loaded {
-                    MineCount()
+                    .padding(.horizontal, .spaceM)
+                    .padding(.vertical, .spaceS)
+                    .background(.white.opacity(.opacityTint), in: .rect(cornerRadius: .radiusS))
                 }
             }
         }
-        .foregroundStyle(.primary)
-        .textCase(nil)
-        .padding(.vertical, .spaceL)
-        .accessibilityElement(children: .combine)
-        .accessibilityAddTraits(.isHeader)
+        .scrollIndicators(.hidden)
+        .scrollClipDisabled()
     }
 }
 
@@ -89,26 +155,7 @@ private struct MineStatePlate: View {
             .padding(.horizontal, .spaceS)
             .overlay(
                 RoundedRectangle(cornerRadius: .radiusS)
-                    .strokeBorder(.secondary, lineWidth: .spaceHairline))
-    }
-}
-
-private struct MineCount: View {
-    @Environment(MineModel.self) private var mine
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
-    var body: some View {
-        VStack(alignment: .trailing, spacing: .space2XS) {
-            Text(verbatim: mine.countText)
-                .font(.scoreboardNumber)
-                .monospacedDigit()
-                .contentTransition(
-                    reduceMotion ? .identity : .numericText(value: Double(mine.representativeCount))
-                )
-            Text("representatives")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-        }
+                    .strokeBorder(.white.opacity(.opacityStrong), lineWidth: .spaceHairline))
     }
 }
 
@@ -118,13 +165,6 @@ private struct MineToolbar: ToolbarContent {
     @Environment(\.navigationSection) private var section
 
     var body: some ToolbarContent {
-        ToolbarItem(placement: .primaryAction) {
-            Button {
-                mine.isChoosingPlace = true
-            } label: {
-                Label("Change Place", systemImage: "mappin.and.ellipse")
-            }
-        }
         if let route = mine.shareRoute {
             ToolbarItem(placement: .primaryAction) {
                 Button {
