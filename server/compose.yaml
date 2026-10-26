@@ -116,7 +116,7 @@ services:
         bind:
           create_host_path: false
     tmpfs:
-      - /tmp:size=256m,mode=1777
+      - /tmp:size=2g,mode=1777
     read_only: true
     cap_drop:
       - ALL

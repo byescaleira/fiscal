@@ -21,6 +21,7 @@ type harness struct {
 	calls  [][]string
 	envs   [][]string
 	fail   bool
+	silent bool
 	seen   []string
 }
 
@@ -47,7 +48,10 @@ func (h *harness) run(_ context.Context, name string, args, env []string) ([]byt
 	if h.fail {
 		return []byte("error: token tok-secret-123 rejected"), errors.New("exit status 1")
 	}
-	return []byte("ok"), nil
+	if h.silent {
+		return []byte("Uploading... (0/3)"), nil
+	}
+	return []byte("✨ Deployment complete! Take a peek over at https://x.fiscal-dados.pages.dev"), nil
 }
 
 func (h *harness) write(path, body string) {
@@ -174,5 +178,19 @@ func TestBudgetFailureAndDryRun(t *testing.T) {
 	h.cfg.Force = true
 	if _, err := h.cfg.Cycle(context.Background()); !errors.Is(err, ErrBudget) {
 		t.Fatalf("err = %v", err)
+	}
+}
+
+func TestASilentWranglerExitIsNotADeploy(t *testing.T) {
+	h := newHarness(t)
+	h.stage("full", "2026-10-26")
+	h.silent = true
+	_, err := h.cfg.Cycle(context.Background())
+	if err == nil || !strings.Contains(err.Error(), "finished without a deployment") {
+		t.Fatalf("err = %v", err)
+	}
+	st, _ := h.cfg.LoadState()
+	if st.Release != "" || len(h.calls) != 2 {
+		t.Fatalf("a silent exit must retry and not move the state: %d calls", len(h.calls))
 	}
 }

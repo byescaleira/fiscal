@@ -22,9 +22,10 @@ import (
 )
 
 const (
-	StateFile = "pages-state.json"
-	DeployDir = "deploy"
-	FreeFiles = 20000
+	StateFile      = "pages-state.json"
+	DeployDir      = "deploy"
+	deployedMarker = "Deployment complete"
+	FreeFiles      = 20000
 )
 
 type Runner func(ctx context.Context, name string, args, env []string) ([]byte, error)
@@ -337,8 +338,11 @@ func (c *Config) deploy(ctx context.Context, dir, release string) error {
 			}
 		}
 		output, err := run(ctx, c.Wrangler, args, env)
-		if err == nil {
+		if err == nil && strings.Contains(string(output), deployedMarker) {
 			return nil
+		}
+		if err == nil {
+			err = errors.New("finished without a deployment")
 		}
 		last = fmt.Errorf("wrangler pages deploy: %w: %s", err, tail(redact(string(output), c.Token), 2000))
 	}
