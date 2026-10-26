@@ -148,6 +148,8 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Criar o app no App Store Connect (pt-BR, padrão de nome) | feito: Fiscal: Política Transparente, id 6826982117 | docs/app-store |
 | Preencher App Store Connect e TestFlight | feito, menos disponibilidade (sua confirmação), telefone de contato, rótulo de privacidade, capturas e build | docs/app-store/metadata.json |
 | Dinheiro: filtro de região não faz nada; primeira seção fora da identidade; tela sem propósito | em andamento | frente money3 |
+| Expressões neutras aleatórias de tempos em tempos nos retratos (positivas/negativas só quando o contexto pede) | em andamento | sessão retratos-lottie-com-expr |
+| Trilhos e carrosséis cortando as laterais: devem ir de ponta a ponta | em andamento | frente carousels |
 
 ## Ícone
 
