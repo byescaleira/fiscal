@@ -15,10 +15,18 @@ import (
 type fakeAttest struct {
 	registered [][]byte
 	checked    [][]byte
+	clients    []string
+	busy       bool
 	err        error
 }
 
-func (f *fakeAttest) Challenge() (string, error) { return "challenge-1", nil }
+func (f *fakeAttest) Challenge(client string) (string, error) {
+	f.clients = append(f.clients, client)
+	if f.busy {
+		return "", appattest.ErrBusy
+	}
+	return "challenge-1", nil
+}
 
 func (f *fakeAttest) Register(keyID, attestation []byte, challenge string) error {
 	if f.err != nil {
@@ -56,6 +64,14 @@ func TestAttestChallengeAndKeyRoutes(t *testing.T) {
 	if rec.Code != 200 || !strings.Contains(rec.Body.String(), "challenge-1") || rec.Header().Get("Cache-Control") != "no-store" {
 		t.Fatalf("challenge %d %s", rec.Code, rec.Body.String())
 	}
+	if len(a.clients) != 1 || a.clients[0] == "" {
+		t.Fatalf("challenge must be issued per client, got %v", a.clients)
+	}
+	a.busy = true
+	if rec := e.do("POST", "/api/v1/attest/challenge", "", nil); rec.Code != 429 || errorCode(t, rec) != "rate_limited" || rec.Header().Get("Retry-After") != "120" {
+		t.Fatalf("busy client %d %s", rec.Code, rec.Body.String())
+	}
+	a.busy = false
 	key := base64.StdEncoding.EncodeToString(bytes.Repeat([]byte{2}, 32))
 	rec = e.do("POST", "/api/v1/attest/keys", `{"keyId":"`+key+`","attestation":"`+base64.StdEncoding.EncodeToString([]byte{1, 2})+`","challenge":"challenge-1"}`, nil)
 	if rec.Code != 204 || len(a.registered) != 1 {
