@@ -111,6 +111,12 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Contraste dos botões principais no escuro | no iPhone | ProminentButton |
 | Reiniciar o servidor da apuração (aprovado) | no ar: push dos destaques e abstenção | fiscal-api |
 
+| Card do vencedor quando a disputa termina (sem "ao vivo"), com animação | no iPhone | RaceWinnerCard, WinnerLockScreen |
+| Sem tag de "lente" no Hoje; a palavra lente sai da interface | no iPhone | TodayScreen, badges |
+| Testar o disparo da Live Activity do destaque | no iPhone (forçado); pelo servidor não dispara: peso máx. 50 sem notícias | frente credibility |
+| Compartilhar o card de vitória nos Stories | em andamento | frente victory-share |
+| Credibilidade: só fatos, motivo da incerteza, sinal ausente não é zero | em andamento | frente credibility |
+
 ## Ícone
 
 | Pedido | Estado | Onde |
