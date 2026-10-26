@@ -104,6 +104,7 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Sem "Apagar minha escolha" na Privacidade da Lente | no iPhone | LensPrivacySection |
 | Destaque do momento no widget (sempre) e na Live Activity (só peso ≥ 85, últimas 24 h) | em andamento | frente highlight-out |
 | Lente pelos candidatos que a pessoa apoia, no lugar do lado (apoiar ≠ seguir) | em andamento | frente support-lens |
+| Tela "O que mais importa para você?" (temas) no layout do app | em andamento | frente support-lens |
 
 ## Ícone
 
