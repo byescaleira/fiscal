@@ -294,7 +294,19 @@ func (d *delta) cities() (map[string]bool, error) {
 	}
 	next := map[string]map[string]string{}
 	touched := map[string]bool{}
+	gone := map[string]bool{}
 	for code := range dirty {
+		gone[code] = true
+	}
+	for c := range d.changed {
+		if rest, ok := strings.CutPrefix(c, "places/city/"); ok && !strings.Contains(rest, "/") {
+			code := strings.TrimSuffix(rest, ".json")
+			if _, exists := d.plan.cities[code]; !exists {
+				gone[code] = true
+			}
+		}
+	}
+	for code := range gone {
 		prev, err := d.prevCityPeople(code)
 		if err != nil {
 			return nil, err

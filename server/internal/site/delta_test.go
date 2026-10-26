@@ -106,7 +106,7 @@ func (w *world) mutate() []string {
 	}
 	for range 1 + w.rng.IntN(6) {
 		codes := w.codes()
-		switch w.rng.IntN(9) {
+		switch w.rng.IntN(10) {
 		case 0:
 			w.writePerson(w.people[w.rng.IntN(len(w.people))])
 		case 1:
@@ -147,6 +147,16 @@ func (w *world) mutate() []string {
 			w.f.write("people/"+p+"/checks.json", `{"items":[],`+w.bump()+`}`)
 		case 8:
 			w.f.write("money/overview.json", `{`+w.bump()+`}`)
+		case 9:
+			if len(codes) < 5 {
+				continue
+			}
+			code := codes[w.rng.IntN(len(codes))]
+			for _, slug := range w.cities[code] {
+				w.f.remove("people/" + slug + ".json")
+			}
+			w.f.remove("places/city/" + code + ".json")
+			delete(w.cities, code)
 		}
 	}
 	var changed []string
