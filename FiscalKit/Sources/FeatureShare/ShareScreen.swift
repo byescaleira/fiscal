@@ -213,8 +213,7 @@ private struct ShareAction: View {
         VStack(spacing: .spaceM) {
             if let rendered {
                 ShareLink(
-                    item: rendered.image, subject: Text("Fiscal card"),
-                    message: Text(verbatim: model.shareMessage),
+                    item: rendered.file,
                     preview: SharePreview(Text("Fiscal card"), image: rendered.image)
                 ) {
                     Label("Share Image", systemImage: "square.and.arrow.up")
