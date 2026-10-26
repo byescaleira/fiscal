@@ -62,6 +62,8 @@ const Headers = `/*
   Cache-Control: public, max-age=3600, stale-while-revalidate=86400
 /v2/indicators/*
   Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+/v2/history/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
 `
 
 const NotFoundPage = "<!doctype html><meta charset=\"utf-8\"><title>404</title><p>404</p>\n"
@@ -83,6 +85,15 @@ type Release struct {
 	Logical     int            `json:"logical"`
 	People      int            `json:"people"`
 	Buckets     map[string]int `json:"buckets"`
+	Base        string         `json:"base,omitempty"`
+	Rebuilt     int            `json:"rebuilt"`
+	Origin      *Origin        `json:"origin,omitempty"`
+}
+
+type Origin struct {
+	First     []string `json:"first"`
+	OnMissing []string `json:"onMissing"`
+	MaxAge    int      `json:"maxAge"`
 }
 
 type Stager struct {
@@ -90,6 +101,7 @@ type Stager struct {
 	Root    string
 	Keep    int
 	Rules   Rules
+	Origin  *Origin
 	Now     func() time.Time
 	Logger  *log.Logger
 }
@@ -292,7 +304,7 @@ func (s *Stager) Stage(kind string, paths []string) (Release, error) {
 	tmp := filepath.Join(s.sites(), ".tmp-"+name)
 	rel, err := s.build(tmp, name, kind, paths, indexed, people)
 	if err == nil {
-		err = s.validate(tmp, rel)
+		err = s.validate(tmp, rel, nil)
 	}
 	if err == nil {
 		err = os.Rename(tmp, filepath.Join(s.sites(), name))
@@ -319,7 +331,7 @@ func (s *Stager) clearTemp() {
 }
 
 func (s *Stager) build(tmp, name, kind string, paths []string, indexed map[string]bool, people int) (Release, error) {
-	rel := Release{Release: name, Kind: kind, Layout: Layout, GeneratedAt: s.now().UTC().Format(time.RFC3339), Logical: len(paths), People: people, Buckets: map[string]int{CityPeopleIndex.Dir: CityPeopleIndex.Count, VoteBundles.Dir: VoteBundles.Count}}
+	rel := s.newRelease(name, kind, len(paths), people)
 	out := filepath.Join(tmp, Layout)
 	for _, p := range paths {
 		if !validPath(p) {
@@ -371,6 +383,14 @@ func (s *Stager) build(tmp, name, kind string, paths []string, indexed map[strin
 	if err := pl.write(read, write); err != nil {
 		return rel, err
 	}
+	return s.finish(tmp, rel, -1)
+}
+
+func (s *Stager) newRelease(name, kind string, logical, people int) Release {
+	return Release{Release: name, Kind: kind, Layout: Layout, GeneratedAt: s.now().UTC().Format(time.RFC3339), Logical: logical, People: people, Buckets: map[string]int{CityPeopleIndex.Dir: CityPeopleIndex.Count, VoteBundles.Dir: VoteBundles.Count}, Origin: s.Origin}
+}
+
+func (s *Stager) finish(tmp string, rel Release, rebuilt int) (Release, error) {
 	if err := writeFile(filepath.Join(tmp, "_headers"), []byte(Headers)); err != nil {
 		return rel, err
 	}
@@ -388,14 +408,18 @@ func (s *Stager) build(tmp, name, kind string, paths []string, indexed map[strin
 		return rel, err
 	}
 	rel.Files = count + 1 + LiveFiles
+	rel.Rebuilt = rebuilt
+	if rebuilt < 0 {
+		rel.Rebuilt = count - 2
+	}
 	data, err := json.Marshal(rel)
 	if err != nil {
 		return rel, err
 	}
-	return rel, writeFile(filepath.Join(out, ReleaseFile), data)
+	return rel, writeFile(filepath.Join(tmp, Layout, ReleaseFile), data)
 }
 
-func (s *Stager) validate(dir string, rel Release) error {
+func (s *Stager) validate(dir string, rel Release, only map[string]bool) error {
 	fail := func(format string, args ...any) error {
 		return fmt.Errorf("%w: %s", ErrValidation, fmt.Sprintf(format, args...))
 	}
@@ -461,12 +485,15 @@ func (s *Stager) validate(dir string, rel Release) error {
 		if err != nil || d.IsDir() {
 			return err
 		}
+		relPath, _ := filepath.Rel(v1, p)
+		relPath = filepath.ToSlash(relPath)
+		if only != nil && !only[relPath] {
+			return nil
+		}
 		data, err := os.ReadFile(p)
 		if err != nil {
 			return err
 		}
-		relPath, _ := filepath.Rel(v1, p)
-		relPath = filepath.ToSlash(relPath)
 		if !json.Valid(data) {
 			return fail("%s is not valid JSON", relPath)
 		}

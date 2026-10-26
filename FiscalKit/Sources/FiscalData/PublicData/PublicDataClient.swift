@@ -201,15 +201,24 @@ public struct PublicDataClient: PublicDataService {
     }
 
     private func online<Value: Decodable>(_ path: String) async throws -> Value {
-        if let dataURL, await PublicDataRoute.shared.isLive(dataURL, session: session) {
-            do {
-                return try await PublicDataResolver { try await fetch($0, base: dataURL) }
-                    .value(path)
-            } catch PublicDataError.unavailable {
-                return try await legacy(path)
-            }
+        guard let dataURL, await PublicDataRoute.shared.isLive(dataURL, session: session) else {
+            return try await legacy(path)
         }
-        return try await legacy(path)
+        let origin = await PublicDataRoute.shared.origin(dataURL, session: session)
+        if origin?.readsFirst(path) == true {
+            do {
+                return try await legacy(path)
+            } catch is CancellationError {
+                throw CancellationError()
+            } catch {}
+        }
+        do {
+            return try await grouped(path, base: dataURL)
+        } catch PublicDataError.unavailable {
+            return try await legacy(path)
+        } catch PublicDataError.notFound where origin?.coversMissing(path) == true {
+            return try await legacy(path)
+        }
     }
 
     private func packed<Value: Decodable>(_ path: String, from store: OfflinePackStore)

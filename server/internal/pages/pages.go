@@ -43,6 +43,7 @@ type Config struct {
 	Wrangler     string
 	DataInterval time.Duration
 	MaxPerDay    int
+	MaxPerMonth  int
 	Timeout      time.Duration
 	Attempts     int
 	Backoff      time.Duration
@@ -60,6 +61,7 @@ type State struct {
 	DeployedAt string         `json:"deployedAt"`
 	DataAt     string         `json:"dataAt"`
 	Days       map[string]int `json:"days"`
+	Months     map[string]int `json:"months"`
 }
 
 type Outcome struct {
@@ -90,7 +92,7 @@ func (c *Config) statePath() string {
 }
 
 func (c *Config) LoadState() (State, error) {
-	st := State{Days: map[string]int{}}
+	st := State{Days: map[string]int{}, Months: map[string]int{}}
 	data, err := os.ReadFile(c.statePath())
 	if errors.Is(err, fs.ErrNotExist) {
 		return st, nil
@@ -103,6 +105,9 @@ func (c *Config) LoadState() (State, error) {
 	}
 	if st.Days == nil {
 		st.Days = map[string]int{}
+	}
+	if st.Months == nil {
+		st.Months = map[string]int{}
 	}
 	return st, nil
 }
@@ -206,15 +211,23 @@ func (c *Config) Cycle(ctx context.Context) (Outcome, error) {
 		c.promote(siteDir, current)
 		return out, nil
 	}
-	if dataChanged && !racesChanged && !c.Force && rel.Kind == "live" && current > st.Release {
-		if last, err := time.Parse(time.RFC3339, st.DataAt); err == nil && now.Sub(last) < c.DataInterval {
-			out.Reason = "data waits for the interval (" + c.DataInterval.String() + ")"
+	month := now.UTC().Format("2006-01")
+	if dataChanged && !racesChanged && !c.Force && !immediate(rel.Kind) && current > st.Release {
+		wait := c.Spread(now, st.Months[month])
+		if hotKinds[rel.Kind] && c.DataInterval > wait {
+			wait = c.DataInterval
+		}
+		if last, err := time.Parse(time.RFC3339, st.DataAt); err == nil && now.Sub(last) < wait {
+			out.Reason = "data waits for the interval (" + wait.Round(time.Minute).String() + ", " + strconv.Itoa(st.Months[month]) + " deploys this month)"
 			return out, nil
 		}
 	}
 	day := now.UTC().Format("2006-01-02")
 	if c.MaxPerDay > 0 && st.Days[day] >= c.MaxPerDay {
 		return out, fmt.Errorf("%w (%d today)", ErrBudget, st.Days[day])
+	}
+	if c.MaxPerMonth > 0 && st.Months[month] >= c.MaxPerMonth {
+		return out, fmt.Errorf("%w (%d this month)", ErrBudget, st.Months[month])
 	}
 	dir := filepath.Join(c.PublicDir, DeployDir, current+"-"+strconv.FormatInt(now.Unix(), 10))
 	os.RemoveAll(filepath.Join(c.PublicDir, DeployDir))
@@ -243,6 +256,12 @@ func (c *Config) Cycle(ctx context.Context) (Outcome, error) {
 	}
 	st.Release, st.RacesHash, st.StatusHash, st.DeployedAt = current, racesHash, statusHash, now.UTC().Format(time.RFC3339)
 	st.Days[day]++
+	st.Months[month]++
+	for m := range st.Months {
+		if t, err := time.Parse("2006-01", m); err != nil || now.Sub(t) > 62*24*time.Hour {
+			delete(st.Months, m)
+		}
+	}
 	for d := range st.Days {
 		if t, err := time.Parse("2006-01-02", d); err != nil || now.Sub(t) > 72*time.Hour {
 			delete(st.Days, d)
@@ -251,7 +270,7 @@ func (c *Config) Cycle(ctx context.Context) (Outcome, error) {
 	if err := c.saveState(st); err != nil {
 		return out, err
 	}
-	c.logf("deployed %s to %s/%s: files=%d data=%v races=%v today=%d", current, c.Project, c.Branch, count, dataChanged, racesChanged, st.Days[day])
+	c.logf("deployed %s to %s/%s: files=%d data=%v races=%v today=%d month=%d", current, c.Project, c.Branch, count, dataChanged, racesChanged, st.Days[day], st.Months[month])
 	c.promote(siteDir, current)
 	return out, nil
 }
@@ -279,6 +298,25 @@ func (c *Config) promote(siteDir, release string) {
 	if changed {
 		c.logf("published highlights of %s for the lock screen alert", release)
 	}
+}
+
+var hotKinds = map[string]bool{"live": true, "hot": true, "destaques": true, "incremental": true}
+
+func immediate(kind string) bool {
+	return kind == "full" || kind == "memoria"
+}
+
+func (c *Config) Spread(now time.Time, used int) time.Duration {
+	if c.MaxPerMonth <= 0 {
+		return 0
+	}
+	u := now.UTC()
+	end := time.Date(u.Year(), u.Month()+1, 1, 0, 0, 0, 0, time.UTC)
+	left := c.MaxPerMonth - used
+	if left <= 0 {
+		return end.Sub(u)
+	}
+	return end.Sub(u) / time.Duration(left)
 }
 
 func assemble(siteDir, dir, staging string, live []string) (int, error) {

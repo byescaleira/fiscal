@@ -1,0 +1,12 @@
+[Unit]
+Description=Fiscal smart sync every 5 minutes (the cadence catalog decides what runs)
+
+[Timer]
+OnCalendar=*-*-* *:00/5:00
+RandomizedDelaySec=20
+AccuracySec=10s
+Persistent=false
+Unit=fiscal-sync.service
+
+[Install]
+WantedBy=timers.target

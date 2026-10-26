@@ -155,6 +155,43 @@ func TestLiveDataWaitsForTheIntervalButFullAndRollbackDoNot(t *testing.T) {
 	}
 }
 
+func TestMonthlyBudgetSpreadsRoutineDeploys(t *testing.T) {
+	h := newHarness(t)
+	h.cfg.MaxPerDay = 0
+	h.cfg.MaxPerMonth = 300
+	spread := h.cfg.Spread(h.clock, 0)
+	if spread < 26*time.Minute || spread > 27*time.Minute {
+		t.Fatalf("spread = %s, want 132h/300", spread)
+	}
+	h.stage("full", "2026-10-26")
+	h.cycle()
+	h.stage("camara", "2026-10-27")
+	if out := h.cycle(); out.Deployed || !strings.Contains(out.Reason, "interval") {
+		t.Fatalf("a phase release waits for the monthly spread: %+v", out)
+	}
+	h.clock = h.clock.Add(30 * time.Minute)
+	if out := h.cycle(); !out.Deployed {
+		t.Fatalf("after the spread = %+v", out)
+	}
+	h.stage("hot", "2026-10-28")
+	h.clock = h.clock.Add(30 * time.Minute)
+	if out := h.cycle(); out.Deployed {
+		t.Fatal("hot releases also wait for PAGES_DATA_INTERVAL")
+	}
+	st, _ := h.cfg.LoadState()
+	if st.Months["2026-10"] != 2 {
+		t.Fatalf("months = %v", st.Months)
+	}
+	h.cfg.MaxPerMonth = 2
+	h.cfg.Force = true
+	if _, err := h.cfg.Cycle(context.Background()); !errors.Is(err, ErrBudget) {
+		t.Fatalf("the monthly cap is hard: %v", err)
+	}
+	if got := h.cfg.Spread(h.clock, 2); got <= 24*time.Hour {
+		t.Fatalf("with no budget left the spread runs to the end of the month: %s", got)
+	}
+}
+
 func TestBudgetFailureAndDryRun(t *testing.T) {
 	h := newHarness(t)
 	h.stage("full", "2026-10-26")

@@ -49,6 +49,7 @@ type config struct {
 	nice       int
 	capacity   jobctl.Capacity
 	pseudonym  []byte
+	origin     bool
 }
 
 const defaultPseudonymKeyFile = "/run/fiscal/pseudonym-key"
@@ -300,6 +301,16 @@ func siteConfig(getenv func(string) string, c config) (config, error) {
 		}
 		c.nice = n
 	}
+	c.origin = true
+	if v := strings.TrimSpace(getenv("HOT_FROM_ORIGIN")); v != "" {
+		switch v {
+		case "1", "true":
+		case "0", "false":
+			c.origin = false
+		default:
+			return c, errors.New("HOT_FROM_ORIGIN must be 1 or 0")
+		}
+	}
 	c.capacity = jobctl.Capacity{MaxLoad: 2, MinAvailable: 1536 << 20, Wait: 20 * time.Minute}
 	if v := strings.TrimSpace(getenv("INGEST_MAX_LOAD")); v != "" {
 		f, err := strconv.ParseFloat(v, 64)
@@ -326,8 +337,14 @@ func siteConfig(getenv func(string) string, c config) (config, error) {
 }
 
 func (c config) stager() *site.Stager {
-	return &site.Stager{Staging: filepath.Join(c.ingest.PublicDir, "v1"), Root: filepath.Join(c.ingest.PublicDir, "site"), Keep: c.siteKeep, Rules: c.site, Logger: log.Default()}
+	st := &site.Stager{Staging: filepath.Join(c.ingest.PublicDir, "v1"), Root: filepath.Join(c.ingest.PublicDir, "site"), Keep: c.siteKeep, Rules: c.site, Logger: log.Default()}
+	if c.origin {
+		st.Origin = &site.Origin{First: publicdata.HotPaths, OnMissing: []string{"votes/"}, MaxAge: originMaxAge}
+	}
+	return st
 }
+
+const originMaxAge = 30
 
 type onceFlag struct {
 	value string

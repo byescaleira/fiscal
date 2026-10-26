@@ -17,6 +17,7 @@ type Output struct {
 	Slugs   map[*Person]string
 	Reviews []CheckReview
 	Cities  []string
+	Hot     HotBase
 }
 
 const RecentVotes = 60
@@ -37,6 +38,7 @@ type builder struct {
 	classes     map[*Person]*Classification
 	themes      map[*Person][]string
 	checkCounts map[*Person]int
+	keySlugs    map[string]string
 }
 
 type personBallot struct {
@@ -87,7 +89,7 @@ func Build(ds *Dataset, registry *Slugs) Output {
 	reviews := b.checks(people)
 	b.facts(people)
 	b.weights(people)
-	b.votes()
+	b.votes(nil)
 	b.agenda()
 	b.money()
 	b.mandate()
@@ -95,7 +97,7 @@ func Build(ds *Dataset, registry *Slugs) Output {
 	b.today()
 	b.indicators()
 	b.add("meta.json", Meta{GeneratedAt: stamp(ds.GeneratedAt), Sources: b.sources(sortedSourceIDs(ds.Sources)...), Counts: counts})
-	return Output{Files: b.files, Slugs: b.slugs, Reviews: reviews, Cities: b.cities}
+	return Output{Files: b.files, Slugs: b.slugs, Reviews: reviews, Cities: b.cities, Hot: b.hotBase()}
 }
 
 func (b *builder) checks(people []*Person) []CheckReview {
@@ -700,8 +702,7 @@ func quorum(kind, house string) *string {
 	return ptr(fmt.Sprintf("Para passar, precisa da maioria dos votos, com pelo menos %d de %d presentes.", members[1], members[0]))
 }
 
-func (b *builder) votes() {
-	all := append([]*HouseVote(nil), b.ds.Votes...)
+func sortVotes(all []*HouseVote) {
 	sort.SliceStable(all, func(i, j int) bool {
 		if all[i].Date != all[j].Date {
 			return all[i].Date > all[j].Date
@@ -711,11 +712,29 @@ func (b *builder) votes() {
 		}
 		return all[i].ID > all[j].ID
 	})
+}
+
+func (b *builder) slugOf(key string) *string {
+	if p, ok := b.byKey[key]; ok {
+		return ptr(b.slugs[p])
+	}
+	if slug, ok := b.keySlugs[key]; ok && key != "" {
+		return ptr(slug)
+	}
+	return nil
+}
+
+func (b *builder) votes(detail func(*HouseVote) bool) {
+	all := append([]*HouseVote(nil), b.ds.Votes...)
+	sortVotes(all)
 	recent := []VoteSummary{}
 	for i, v := range all {
 		s := b.summary(v)
 		if i < RecentVotes {
 			recent = append(recent, s)
+		}
+		if detail != nil && !detail(v) {
+			continue
 		}
 		guidance := append([]PartyGuidance{}, v.Guidance...)
 		sort.SliceStable(guidance, func(i, j int) bool { return Fold(guidance[i].Party) < Fold(guidance[j].Party) })
@@ -737,10 +756,7 @@ func (b *builder) votes() {
 					t.Others++
 				}
 			}
-			var slug *string
-			if p, ok := b.byKey[bl.PersonKey]; ok {
-				slug = ptr(b.slugs[p])
-			}
+			slug := b.slugOf(bl.PersonKey)
 			people = append(people, VotePerson{Slug: slug, Name: bl.Name, Party: bl.Party, UF: strings.ToLower(bl.UF), Vote: bl.Vote})
 		}
 		sort.SliceStable(people, func(i, j int) bool { return Fold(people[i].Name) < Fold(people[j].Name) })

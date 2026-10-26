@@ -90,20 +90,46 @@ struct PublicDataMember<Value: Decodable>: Decodable {
     }
 }
 
+struct PublicDataOrigin: Decodable, Equatable {
+    let first: [String]
+    let onMissing: [String]
+
+    func readsFirst(_ path: String) -> Bool { first.contains(path) }
+
+    func coversMissing(_ path: String) -> Bool { onMissing.contains { path.hasPrefix($0) } }
+}
+
 actor PublicDataRoute {
     static let shared = PublicDataRoute()
 
     private struct Release: Decodable {
         let release: String
         let layout: String
+        let origin: PublicDataOrigin?
     }
 
-    private var known: [URL: (live: Bool, at: Date)] = [:]
+    private struct Entry {
+        let live: Bool
+        let origin: PublicDataOrigin?
+        let at: Date
+    }
+
+    private var known: [URL: Entry] = [:]
     private let defaultsKey = "PublicDataLayoutLive"
 
     func isLive(_ base: URL, session: URLSession) async -> Bool {
+        await route(base, session: session).live
+    }
+
+    func origin(_ base: URL, session: URLSession) async -> PublicDataOrigin? {
+        await route(base, session: session).origin
+    }
+
+    private func route(_ base: URL, session: URLSession) async -> (
+        live: Bool, origin: PublicDataOrigin?
+    ) {
         if let entry = known[base], Date().timeIntervalSince(entry.at) < (entry.live ? 600 : 120) {
-            return entry.live
+            return (entry.live, entry.origin)
         }
         var request = URLRequest(
             url: base.appending(path: PublicDataLayout.version).appending(path: "release.json"))
@@ -114,18 +140,19 @@ actor PublicDataRoute {
             let status = (response as? HTTPURLResponse)?.statusCode ?? 0
             let release = try? JSONDecoder().decode(Release.self, from: data)
             let live = status == 200 && release?.layout == PublicDataLayout.version
-            remember(base, live)
-            return live
+            let origin = live ? release?.origin : nil
+            remember(base, live, origin)
+            return (live, origin)
         } catch {
-            if let entry = known[base] { return entry.live }
-            return UserDefaults.standard.bool(forKey: defaultsKey)
+            if let entry = known[base] { return (entry.live, entry.origin) }
+            return (UserDefaults.standard.bool(forKey: defaultsKey), nil)
         }
     }
 
     func forget() { known = [:] }
 
-    private func remember(_ base: URL, _ live: Bool) {
-        known[base] = (live, Date())
+    private func remember(_ base: URL, _ live: Bool, _ origin: PublicDataOrigin?) {
+        known[base] = Entry(live: live, origin: origin, at: Date())
         UserDefaults.standard.set(live, forKey: defaultsKey)
     }
 }

@@ -1,7 +1,9 @@
 package history
 
 import (
+	"crypto/sha256"
 	_ "embed"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"sort"
@@ -22,6 +24,15 @@ var periodsJSON []byte
 
 //go:embed content/study.json
 var studyJSON []byte
+
+func ContentVersion() string {
+	sum := sha256.New()
+	for _, b := range [][]byte{sourcesJSON, periodsJSON, studyJSON} {
+		fmt.Fprintf(sum, "%d:", len(b))
+		sum.Write(b)
+	}
+	return hex.EncodeToString(sum.Sum(nil))
+}
 
 type Ref struct {
 	ID   string  `json:"id"`
