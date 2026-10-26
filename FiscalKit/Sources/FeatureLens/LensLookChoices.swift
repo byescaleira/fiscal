@@ -87,27 +87,23 @@ private struct LensPaletteTile: View {
 }
 
 struct LensCollectionPicker: View {
-    var inset: CGFloat = .zero
+    var placement: RailPlacement = .listRow
     let collections: [ArtCollection]
     let isChosen: (ArtCollection) -> Bool
     let count: (ArtCollection) -> Int
     let choose: (ArtCollection) -> Void
 
     var body: some View {
-        ScrollView(.horizontal) {
-            HStack(spacing: .spaceS) {
-                ForEach(collections) { collection in
-                    LensCollectionButton(
-                        collection: collection, count: count(collection),
-                        isSelected: isChosen(collection)
-                    ) {
-                        choose(collection)
-                    }
+        EdgeToEdgeRail(placement, spacing: .spaceS, snaps: false) {
+            ForEach(collections) { collection in
+                LensCollectionButton(
+                    collection: collection, count: count(collection),
+                    isSelected: isChosen(collection)
+                ) {
+                    choose(collection)
                 }
             }
         }
-        .scrollIndicators(.hidden)
-        .lensBleed(inset)
     }
 }
 
@@ -149,47 +145,35 @@ private struct LensCollectionButton: View {
 }
 
 struct LensArtCarousel: View {
-    var inset: CGFloat = .zero
+    var placement: RailPlacement = .listRow
     let works: [ArtWork]
 
     var body: some View {
-        ScrollView(.horizontal) {
-            LazyHStack(spacing: .spaceM) {
-                ForEach(works) { work in
-                    ArtPoster(work: work, width: .lensArtCardWidth, height: .lensArtCardHeight)
-                }
+        EdgeToEdgeRail(placement, lazy: true) {
+            ForEach(works) { work in
+                ArtPoster(work: work, width: .lensArtCardWidth, height: .lensArtCardHeight)
             }
-            .scrollTargetLayout()
         }
-        .scrollTargetBehavior(.viewAligned)
-        .scrollIndicators(.hidden)
-        .lensBleed(inset)
-        .frame(height: .lensArtCardHeight)
     }
 }
 
 struct LensIconStrip: View {
-    var inset: CGFloat = .zero
+    var placement: RailPlacement = .listRow
     let icons: [AppIcon]
     let selected: AppIcon
     let suggested: AppIcon?
     let choose: (AppIcon) -> Void
 
     var body: some View {
-        ScrollView(.horizontal) {
-            HStack(alignment: .top, spacing: .spaceL) {
-                ForEach(icons) { icon in
-                    LensIconButton(
-                        icon: icon, isSelected: icon == selected, isSuggested: icon == suggested
-                    ) {
-                        choose(icon)
-                    }
+        EdgeToEdgeRail(placement, spacing: .spaceL, snaps: false) {
+            ForEach(icons) { icon in
+                LensIconButton(
+                    icon: icon, isSelected: icon == selected, isSuggested: icon == suggested
+                ) {
+                    choose(icon)
                 }
             }
-            .padding(.vertical, .space2XS)
         }
-        .scrollIndicators(.hidden)
-        .lensBleed(inset)
         .sensoryFeedback(.selection, trigger: selected)
     }
 }
@@ -228,12 +212,5 @@ private struct LensIconButton: View {
         .accessibilityLabel(Text(verbatim: icon.title))
         .accessibilityValue(isSuggested ? Text("Suggested") : Text(verbatim: ""))
         .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
-    }
-}
-
-extension View {
-    func lensBleed(_ inset: CGFloat) -> some View {
-        contentMargins(.horizontal, inset, for: .scrollContent)
-            .padding(.horizontal, -inset)
     }
 }

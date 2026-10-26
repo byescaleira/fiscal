@@ -104,14 +104,9 @@ struct MineFollowingSection: View {
             } else if dynamicTypeSize.isAccessibilitySize {
                 ForEach(mine.followedCards) { MineRosterRow(card: $0, showsPlace: true) }
             } else {
-                ScrollView(.horizontal) {
-                    HStack(alignment: .top, spacing: .spaceL) {
-                        ForEach(mine.followedCards) { MineFace(card: $0) }
-                    }
-                    .padding(.vertical, .spaceXS)
+                EdgeToEdgeRail(spacing: .spaceL, snaps: false) {
+                    ForEach(mine.followedCards) { MineFace(card: $0) }
                 }
-                .scrollIndicators(.hidden)
-                .scrollClipDisabled()
             }
         } header: {
             Text("Following").sectionTitle()

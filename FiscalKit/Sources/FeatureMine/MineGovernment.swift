@@ -17,21 +17,14 @@ struct MineGovernSection: View {
                             ForEach(seats) { MineSeatCard(seat: $0) }
                         }
                     } else {
-                        ScrollView(.horizontal) {
-                            HStack(alignment: .top, spacing: .spaceM) {
-                                ForEach(seats) { seat in
-                                    MineSeatCard(seat: seat)
-                                        .containerRelativeFrame(.horizontal) { length, _ in
-                                            min(length * .regionCardShare, .cardColumn)
-                                        }
-                                }
+                        EdgeToEdgeRail {
+                            ForEach(seats) { seat in
+                                MineSeatCard(seat: seat)
+                                    .containerRelativeFrame(.horizontal) { length, _ in
+                                        min(length * .regionCardShare, .cardColumn)
+                                    }
                             }
-                            .fixedSize(horizontal: false, vertical: true)
-                            .scrollTargetLayout()
                         }
-                        .scrollTargetBehavior(.viewAligned)
-                        .scrollIndicators(.hidden)
-                        .scrollClipDisabled()
                     }
                 }
                 .listRowInsets(EdgeInsets())

@@ -117,39 +117,35 @@ private struct GalleryChips: View {
     let select: (ArtCollection.ID) -> Void
 
     var body: some View {
-        ScrollView(.horizontal) {
-            HStack(spacing: .spaceS) {
-                ForEach(sections) { section in
-                    let isOn = section.id == current
-                    Button {
-                        select(section.id)
-                    } label: {
-                        HStack(spacing: .spaceXS) {
-                            HStack(spacing: -.space2XS) {
-                                ForEach(section.collection.palette.prefix(3), id: \.self) { hex in
-                                    Circle()
-                                        .fill(Color(hex: hex))
-                                        .frame(width: .gallerySwatch, height: .gallerySwatch)
-                                }
+        EdgeToEdgeRail(.padded(.spaceL), spacing: .spaceS, snaps: false) {
+            ForEach(sections) { section in
+                let isOn = section.id == current
+                Button {
+                    select(section.id)
+                } label: {
+                    HStack(spacing: .spaceXS) {
+                        HStack(spacing: -.space2XS) {
+                            ForEach(section.collection.palette.prefix(3), id: \.self) { hex in
+                                Circle()
+                                    .fill(Color(hex: hex))
+                                    .frame(width: .gallerySwatch, height: .gallerySwatch)
                             }
-                            .accessibilityHidden(true)
-                            Text(verbatim: section.collection.name)
-                                .font(.subheadline.weight(.semibold))
                         }
-                        .foregroundStyle(isOn ? AnyShapeStyle(.white) : AnyShapeStyle(tint))
-                        .padding(.horizontal, .spaceM)
-                        .padding(.vertical, .spaceS)
-                        .background(
-                            isOn ? AnyShapeStyle(tint) : AnyShapeStyle(tint.opacity(.opacityTint)),
-                            in: .capsule)
+                        .accessibilityHidden(true)
+                        Text(verbatim: section.collection.name)
+                            .font(.subheadline.weight(.semibold))
                     }
-                    .buttonStyle(.plain)
-                    .accessibilityAddTraits(isOn ? [.isButton, .isSelected] : .isButton)
+                    .foregroundStyle(isOn ? AnyShapeStyle(.white) : AnyShapeStyle(tint))
+                    .padding(.horizontal, .spaceM)
+                    .padding(.vertical, .spaceS)
+                    .background(
+                        isOn ? AnyShapeStyle(tint) : AnyShapeStyle(tint.opacity(.opacityTint)),
+                        in: .capsule)
                 }
+                .buttonStyle(.plain)
+                .accessibilityAddTraits(isOn ? [.isButton, .isSelected] : .isButton)
             }
         }
-        .scrollIndicators(.hidden)
-        .scrollClipDisabled()
     }
 }
 
@@ -157,16 +153,9 @@ private struct GalleryShelf: View {
     let section: GallerySection
 
     var body: some View {
-        ScrollView(.horizontal) {
-            LazyHStack(alignment: .top, spacing: .spaceL) {
-                ForEach(section.works) { ArtworkCard(work: $0) }
-            }
-            .scrollTargetLayout()
-            .padding(.vertical, .spaceXS)
+        EdgeToEdgeRail(.padded(.spaceL), spacing: .spaceL, lazy: true) {
+            ForEach(section.works) { ArtworkCard(work: $0) }
         }
-        .scrollIndicators(.hidden)
-        .scrollTargetBehavior(.viewAligned)
-        .scrollClipDisabled()
     }
 }
 
