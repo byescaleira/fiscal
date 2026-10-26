@@ -25,7 +25,6 @@ struct RaceWinnerCard: View {
             } else {
                 content
             }
-            RaceWinnerShare(raceID: summary.race.id)
         }
         .padding(.spaceInset)
         .foregroundStyle(.white)
@@ -117,26 +116,5 @@ struct RaceWinnerCard: View {
             Text(
                 verbatim: "\(summary.title), \(winner.candidate.name), \(summary.winnerText ?? "")")
         )
-    }
-}
-
-private struct RaceWinnerShare: View {
-    @Environment(\.open) private var open
-    @Environment(\.navigationSection) private var section
-    let raceID: String
-
-    var body: some View {
-        Button {
-            open(.share(.race(id: raceID)), in: section)
-        } label: {
-            Label("Share the result", systemImage: "square.and.arrow.up")
-                .font(.subheadline.weight(.bold))
-                .frame(maxWidth: .infinity, minHeight: .badgeL)
-                .contentShape(.capsule)
-        }
-        .buttonStyle(.plain)
-        .foregroundStyle(Color.scoreboard)
-        .background(.white, in: .capsule)
-        .accessibilityHint("Opens the result card for Stories, Feed and Message.")
     }
 }

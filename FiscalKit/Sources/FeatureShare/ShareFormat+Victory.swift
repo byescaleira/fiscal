@@ -48,6 +48,14 @@ extension ShareFormat {
 
     public var victoryIsSideBySide: Bool { self == .message }
 
+    public var victoryMargin: CGFloat {
+        switch self {
+        case .stories: .posterVictoryMarginStories
+        case .feed: .posterVictoryMarginFeed
+        case .message: margin
+        }
+    }
+
     public var victorySpacing: CGFloat { self == .stories ? .spaceM : .spaceS }
 
     public var victoryChip: Font {

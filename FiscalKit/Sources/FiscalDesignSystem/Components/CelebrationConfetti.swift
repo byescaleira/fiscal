@@ -1,7 +1,7 @@
 import SwiftUI
 
 public struct CelebrationConfetti: View {
-    private static let pieces = 30
+    private static let pieces = 80
     private static let sweep: CGFloat = 1.24
     private static let inner: CGFloat = 0.6
     private static let pieceWidth: CGFloat = 0.024

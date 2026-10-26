@@ -134,8 +134,11 @@ private struct PartyLegend: View {
     var body: some View {
         FlowLayout(spacing: .spaceS) {
             ForEach(BallotChoice.allCases) { choice in
-                Label(choice.groupTitle, systemImage: choice.symbol)
-                    .foregroundStyle(choice.color)
+                HStack(spacing: .space2XS) {
+                    Image(systemName: choice.symbol)
+                    Text(choice.groupTitle)
+                }
+                .foregroundStyle(choice.color)
             }
         }
         .font(.caption.weight(.semibold))

@@ -23,7 +23,7 @@ struct ShareVictoryPoster: View {
             .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-        .padding(format.margin)
+        .padding(format.victoryMargin)
         .background { ShareVictoryField(party: victory.winner.party) }
         .clipped()
     }

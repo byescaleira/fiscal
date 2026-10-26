@@ -131,9 +131,12 @@ struct RepresentativeRow: View {
                             Text(verbatim: detail).font(.footnote).foregroundStyle(.secondary)
                         }
                         if let status {
-                            Label(status, systemImage: "clock")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                            HStack(spacing: .space2XS) {
+                                Image(systemName: "clock")
+                                Text(status)
+                            }
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                         }
                     }
                 }
