@@ -57,8 +57,6 @@ private struct ProfileActionLink: View {
 
 private struct ProfileActionRow: View {
     @Environment(ProfileModel.self) private var profile
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var filled = false
     let item: ActionItem
 
     var body: some View {
@@ -77,13 +75,12 @@ private struct ProfileActionRow: View {
                 .foregroundStyle(.primary)
                 .lineLimit(4)
             HStack(spacing: .spaceS) {
-                ProgressBar(value: filled ? Double(item.weight) / 100 : 0, color: .retroTeal)
-                    .animation(reduceMotion ? nil : .smooth(duration: 1), value: filled)
-                    .onAppear { filled = true }
-                Text(verbatim: "\(item.weight)")
-                    .font(.caption.weight(.bold))
+                RelevanceBadge(weight: item.weight)
+                Text(verbatim: Relevance.detail(weight: item.weight))
+                    .font(.caption)
                     .monospacedDigit()
                     .foregroundStyle(.secondary)
+                Spacer(minLength: 0)
             }
             WeightChips(
                 repercussion: item.repercussion, impact: item.impact,

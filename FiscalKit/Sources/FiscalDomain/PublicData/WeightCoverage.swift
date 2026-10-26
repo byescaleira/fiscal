@@ -100,7 +100,8 @@ public struct WeightCoverage: Hashable, Sendable {
                     appLocalized:
                         "Weight \(weight) of 100, impact \(impact), repercussion not measured.")
             }
-        return [base, uncertainty].compactMap(\.self).joined(separator: " ")
+        return [Relevance(weight: weight).title + ".", base, uncertainty].compactMap(\.self)
+            .joined(separator: " ")
     }
 
     static func list(_ parts: [String]) -> String {

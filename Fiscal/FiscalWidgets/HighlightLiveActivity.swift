@@ -42,9 +42,8 @@ struct HighlightLiveActivity: Widget {
                     .foregroundStyle(RaceStyle.accent)
                     .accessibilityLabel(Text(verbatim: board.kindTitle))
             } compactTrailing: {
-                Text(verbatim: "\(board.weight)")
+                Text(verbatim: board.relevance.shortTitle)
                     .font(.caption.weight(.heavy))
-                    .monospacedDigit()
                     .foregroundStyle(RaceStyle.accent)
                     .accessibilityLabel(Text(verbatim: board.weightText))
             } minimal: {

@@ -36,6 +36,12 @@ public final class CompareModel {
 
     public var table: CompareTable { CompareTable(profiles: profiles, lens: lens) }
 
+    public var peerItems: [PeerMethodItem] {
+        profiles.compactMap { profile in
+            profile.classification.map { PeerMethodItem(name: profile.name, classification: $0) }
+        }
+    }
+
     public var showsLensBadge: Bool { !(lens?.themes.isEmpty ?? true) }
 
     public var sourceLine: String? { SourceLine.text(profiles.flatMap(\.sources)) }

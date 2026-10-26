@@ -147,8 +147,11 @@ struct HighlightLarge: View {
                     .font(.headline)
                     .lineLimit(5)
                     .minimumScaleFactor(0.85)
-                ProgressBar(value: deck.lead.weightShare, color: .retroTeal)
-                    .widgetAccentable()
+                SegmentedBar(
+                    count: Relevance.segments, value: deck.lead.relevance.filledSegments,
+                    color: .retroTeal
+                )
+                .widgetAccentable()
                 HighlightUncertainty(board: deck.lead)
                 HighlightWho(board: deck.lead)
             }
@@ -189,10 +192,9 @@ private struct HighlightRow: View {
             }
             .lineLimit(1)
             Spacer(minLength: .spaceXS)
-            Text(verbatim: "\(board.weight)")
+            Text(verbatim: board.relevance.shortTitle)
                 .font(.caption.weight(.bold))
                 .foregroundStyle(.secondary)
-                .monospacedDigit()
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: board.accessibilityText))
@@ -210,8 +212,7 @@ struct HighlightRectangular: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
                 Spacer(minLength: .space2XS)
-                Text(verbatim: "\(board.weight)")
-                    .monospacedDigit()
+                Text(verbatim: board.relevance.shortTitle)
             }
             .font(.caption2.weight(.bold))
             .widgetAccentable()

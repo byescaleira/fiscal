@@ -100,6 +100,12 @@ private struct CompareGroupSection: View {
                         "Each number covers that person's own term and house, without adjusting for terms of different length."
                     )
                 }
+                if group.id == "office" || group.id == "money", !compare.peerItems.isEmpty {
+                    Text(
+                        "Each badge compares the person with peers in the same office and house in the same year."
+                    )
+                    PeerMethodButton(items: compare.peerItems)
+                }
                 if !group.missing.isEmpty {
                     Text(
                         "Not published for these offices: \(group.missing.formatted(.list(type: .and).locale(.app)))"

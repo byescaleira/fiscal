@@ -41,6 +41,13 @@ impacto = 100 × (0,35 × tipo + 0,20 × abrangência + 0,25 × estágio + 0,20 
 | campo, cultura | 0,4 | atinge um grupo específico |
 | homenagens | 0,1 | datas e títulos simbólicos, sem efeito material |
 
+## Faixas de relevância (decisão do usuário em 2026-10-26)
+
+- **Na tela:** o peso aparece como faixa, em destaque: "Alta relevância" (70 ou mais), "Média relevância" (de 40 a 69) e "Baixa relevância" (abaixo de 40), no Destaque do momento, no perfil, no widget, na Live Activity e no card de compartilhar.
+- **O número:** fica no detalhe (linha pequena com peso, repercussão e impacto) e no "Como medimos", que lista as três faixas.
+- **Dado publicado:** `relevance` (`high` \| `medium` \| `low`) em cada `Action` e `Highlight`, e `levels` com `levelsText` em `method/weight.json`.
+- **Neutralidade:** a faixa ordena; não diz se a medida é boa ou ruim.
+
 ## Destaque do momento
 
 - **Candidatos:** cada proposição apresentada no escopo (uma vez só, mesmo com vários autores; vale o autor de maior peso e o subtítulo diz "e mais N") e cada votação nominal de plenário de PEC, PLP, MPV, PL ou PDL. Discursos e votos individuais ficam só no perfil.

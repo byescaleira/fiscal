@@ -175,7 +175,7 @@
                 coverage: coverage(for: card, legislator: legislator))
         }
 
-        private static func years(seed: Int, through year: Int) -> [Profile.Year] {
+        static func years(seed: Int, through year: Int) -> [Profile.Year] {
             (2_023...max(2_023, year)).map { value in
                 let eligible = 70 + (seed + value) % 25
                 return Profile.Year(

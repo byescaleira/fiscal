@@ -34,6 +34,7 @@ type builder struct {
 	votesBy map[string][]personBallot
 	files   []File
 	cities  []string
+	classes map[*Person]*Classification
 }
 
 type personBallot struct {
@@ -60,6 +61,7 @@ func Build(ds *Dataset, registry *Slugs) Output {
 	}
 	people := append([]*Person(nil), ds.People...)
 	sort.SliceStable(people, func(i, j int) bool { return lessPerson(people[i], people[j], b.slugs) })
+	b.classes = b.benchmarks(people)
 	cards := make([]PersonCard, 0, len(people))
 	counts := Counts{}
 	for _, p := range people {
@@ -374,30 +376,31 @@ func (b *builder) person(p *Person) {
 	}
 	sort.Strings(srcIDs)
 	profile := Profile{
-		Slug:       slug,
-		Name:       p.Name,
-		CivilName:  strPtr(p.CivilName),
-		Office:     role.Office,
-		UF:         role.UF,
-		Party:      role.Party,
-		Photo:      strPtr(p.Photo),
-		Status:     role.Status,
-		Gender:     genderOf(p),
-		Mandate:    Mandate{Start: strPtr(role.MandateStart), End: strPtr(role.MandateEnd)},
-		BirthDate:  strPtr(p.BirthDate),
-		BirthPlace: strPtr(p.BirthPlace),
-		Education:  strPtr(p.Education),
-		Contact:    p.Contact,
-		Salary:     salary,
-		Numbers:    nums,
-		Years:      nonNil(years),
-		Themes:     themes,
-		Committees: committees,
-		Assets:     assets,
-		Campaigns:  campaigns,
-		Timeline:   timeline,
-		Coverage:   coverage,
-		Sources:    b.sources(srcIDs...),
+		Slug:           slug,
+		Name:           p.Name,
+		CivilName:      strPtr(p.CivilName),
+		Office:         role.Office,
+		UF:             role.UF,
+		Party:          role.Party,
+		Photo:          strPtr(p.Photo),
+		Status:         role.Status,
+		Gender:         genderOf(p),
+		Mandate:        Mandate{Start: strPtr(role.MandateStart), End: strPtr(role.MandateEnd)},
+		BirthDate:      strPtr(p.BirthDate),
+		BirthPlace:     strPtr(p.BirthPlace),
+		Education:      strPtr(p.Education),
+		Contact:        p.Contact,
+		Salary:         salary,
+		Numbers:        nums,
+		Years:          nonNil(years),
+		Themes:         themes,
+		Committees:     committees,
+		Assets:         assets,
+		Campaigns:      campaigns,
+		Timeline:       timeline,
+		Coverage:       coverage,
+		Classification: b.classes[p],
+		Sources:        b.sources(srcIDs...),
 	}
 	b.add("people/"+slug+".json", profile)
 }

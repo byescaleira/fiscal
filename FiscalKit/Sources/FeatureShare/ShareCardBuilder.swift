@@ -66,19 +66,23 @@ public struct ShareCardBuilder: Sendable {
                     value: profile.mandate?.end.map(fullDate) ?? PublicFormat.missing),
             ]
         }
+        let peers = profile.classification
         return [
             ShareMetric(
                 label: String(appLocalized: "Attendance"),
-                value: PublicFormat.percent(numbers.attendance?.fraction)),
+                value: PublicFormat.percent(numbers.attendance?.fraction),
+                peer: peers?.presence?.band.title, peerDetail: peers?.detailText(.presence)),
             ShareMetric(
                 label: String(appLocalized: "Roll-call votes"),
                 value: PublicFormat.number(numbers.votes)),
             ShareMetric(
                 label: String(appLocalized: "Bills filed"),
-                value: PublicFormat.number(numbers.proposals)),
+                value: PublicFormat.number(numbers.proposals),
+                peer: peers?.proposals?.band.title, peerDetail: peers?.detailText(.proposals)),
             ShareMetric(
                 label: String(appLocalized: "Office allowance used"),
-                value: PublicFormat.compactMoney(cents: numbers.quotaCents)),
+                value: PublicFormat.compactMoney(cents: numbers.quotaCents),
+                peer: peers?.quota?.band.title, peerDetail: peers?.detailText(.quota)),
         ]
     }
 

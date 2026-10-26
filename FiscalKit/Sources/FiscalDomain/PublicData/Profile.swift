@@ -24,12 +24,14 @@ public struct Profile: Codable, Hashable, Identifiable, Sendable {
     public let campaigns: [Campaign]
     public let timeline: [Career]
     public let coverage: [Coverage]
+    public private(set) var classification: PeerClassification?
     public let sources: [Source]
 
     public init(
         card: PersonCard, civilName: String?, mandate: Mandate?, birthDate: CalendarDay?,
         birthPlace: String?, education: String?, contact: Contact?, salary: Salary?,
-        numbers: Numbers, history: History, sources: [Source]
+        numbers: Numbers, history: History, sources: [Source],
+        classification: PeerClassification? = nil
     ) {
         slug = card.slug
         name = card.name
@@ -54,6 +56,7 @@ public struct Profile: Codable, Hashable, Identifiable, Sendable {
         campaigns = history.campaigns
         timeline = history.timeline
         coverage = history.coverage
+        self.classification = classification
         self.sources = sources
     }
 
@@ -70,6 +73,12 @@ public struct Profile: Codable, Hashable, Identifiable, Sendable {
     public func with(gender: Gender?) -> Profile {
         var copy = self
         copy.gender = gender
+        return copy
+    }
+
+    public func with(classification: PeerClassification?) -> Profile {
+        var copy = self
+        copy.classification = classification
         return copy
     }
 

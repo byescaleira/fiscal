@@ -12,7 +12,8 @@ extension ShareCardBuilder {
             place: place(highlight, house: house, vote: vote, stage: stage),
             tally: vote.map(tally),
             weight: String(
-                appLocalized: "Weight \(highlight.weight) of 100 · repercussion + impact"),
+                appLocalized:
+                    "\(Relevance(weight: highlight.weight).title) · repercussion + impact"),
             uncertainty: highlight.coverage.uncertainty)
         return ShareCardContent(
             eyebrow: eyebrow(

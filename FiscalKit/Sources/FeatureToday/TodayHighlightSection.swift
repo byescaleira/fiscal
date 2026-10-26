@@ -14,7 +14,7 @@ struct TodayHighlightSection: View {
                     if !today.highlightOthers.isEmpty {
                         TodayHighlightList(items: today.highlightOthers)
                     }
-                    Text("Weight orders what is happening; it never rates it.")
+                    Text("Relevance orders what is happening; it never rates it.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -61,6 +61,7 @@ private struct TodayHighlightRow: View {
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                         .lineLimit(2)
+                    RelevanceBadge(weight: highlight.weight)
                     if let short = highlight.coverage.uncertaintyShort {
                         Text(verbatim: short)
                             .font(.caption2)
@@ -68,9 +69,6 @@ private struct TodayHighlightRow: View {
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                Text(verbatim: "\(highlight.weight)")
-                    .font(.amountRow)
-                    .monospacedDigit()
             }
             .padding(.spaceL)
             .contentShape(.rect)

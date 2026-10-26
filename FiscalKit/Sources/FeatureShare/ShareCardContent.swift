@@ -54,10 +54,14 @@ public struct ShareFace: Hashable, Sendable, Identifiable {
 public struct ShareMetric: Hashable, Sendable, Identifiable {
     public let label: String
     public let value: String
+    public let peer: String?
+    public let peerDetail: String?
 
-    public init(label: String, value: String) {
+    public init(label: String, value: String, peer: String? = nil, peerDetail: String? = nil) {
         self.label = label
         self.value = value
+        self.peer = peer
+        self.peerDetail = peerDetail
     }
 
     public var id: String { label }

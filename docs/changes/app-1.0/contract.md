@@ -58,7 +58,9 @@ Peça compartilhada pelas frentes paralelas da mudança [`app-1.0`](proposal.md)
 | `people/{slug}/checks.json` | `{ items: [FactCheck], sources }`: checagens do Projeto Comprova que citam a pessoa pelo nome completo exato; só existe quando há ao menos uma | diária |
 | `people/{slug}/actions.json` | `{ items: [Action], sources }`: o que a pessoa fez nos dois últimos anos, ordenado pelo peso ([weight.md](weight.md)); cada ação traz `measured`, `missing` e `confidence` (`full` \| `partial` \| `impactOnly`), e `repercussion` é `null` sem sinal medido; só existe quando há ação | diária |
 | `highlights.json` | `{ generatedAt, items: [Highlight], method, sources }`: o Destaque do momento, nunca vazio quando há dado; cada item traz `measured`, `missing`, `confidence`, `themes`, `stage`, `house` e, em votação, `tally { yes, no, others }` | a cada 10 min |
-| `method/weight.json` | `WeightMethod` (versão 2): a regra do peso, para o "Como medimos", com `renormalization` (sinal ausente sai da conta, nunca vira zero), `confidence` e `alert { minWeight, maxAgeHours, text }` | diária |
+| `method/weight.json` | `WeightMethod` (versão 2): a regra do peso, para o "Como medimos", com `renormalization` (sinal ausente sai da conta, nunca vira zero), `confidence` e `alert { minWeight, maxAgeHours, text }`, `levels: [{ key ∈ high \| medium \| low, label, min, max }]` e `levelsText` (as faixas de relevância) | diária |
+| `index/benchmarks.json` | `{ generatedAt, items: [Benchmark], sources }`: a referência dos colegas por cargo e casa (deputados federais, senadores e deputados estaduais por UF), com p25, mediana, p75 e `n` de presença, cota por mês de mandato, propostas e discursos no ano | a cada carga |
+| `method/benchmarks.json` | `BenchmarkMethod` (versão 1): a regra da classificação em texto, para o "Como medimos" | a cada carga |
 | `avatars/index.json` | `{ rigVersion, people: [{ slug, updatedAt }] }`: quem já tem retrato desenhado | quando muda |
 | `avatars/{slug}.json` | Lottie do retrato animado (esqueleto do Fiscal com os traços da pessoa e a cor do partido); sem arquivo, o app mostra o retrato genérico | quando muda |
 | `races.json`, `races/{id}.json` | apuração (já existe, fase `live-results`) | 20 s em eleição |
@@ -94,8 +96,31 @@ Profile {
   campaigns: [{ year, office, result, revenueCents, expenseCents }],
   timeline: [{ year, office, place, party, result, votes }],
   coverage: [{ kind, status ∈ available | notPublished | notLoaded, source }],
+  classification: Classification | null,
   sources
 }
+
+Classification {
+  year, office, house ∈ camara | senado | assembleia, uf (só deputado estadual; senão null),
+  presence | quota | proposals | speeches: { value, band, median, p25, p75, n } | null
+}
+  presence: value em % (uma casa decimal); band ∈ better | average | worse (mais alta é melhor)
+  quota: value em centavos por mês de mandato no ano; band ∈ better | average | worse (mais baixa é melhor)
+  proposals, speeches: value é a contagem no ano; band ∈ more | average | less (sem direção, sem cor)
+  regra: acima do p75 / entre p25 e p75 (limites incluídos) / abaixo do p25, com a direção da métrica;
+  quartis por interpolação linear entre os colegas em exercício com dado publicado; menos de 5 colegas
+  com dado, a métrica sai null; o ano é o mais recente com dado para ao menos 5 colegas
+
+Benchmark { office, house, uf | null, year,
+            metrics: { presence, quota, proposals, speeches: { p25, median, p75, n } | null }, sources }
+
+BenchmarkMethod { version, summary, groups, year, quartiles, minPeers,
+                  metrics: [{ key, label, unit, direction ∈ higherIsBetter | lowerIsBetter | none, text,
+                              bands: [{ key, label, rule }] }], limits, sources }
+
+Action e Highlight ganham relevance ∈ high (peso 70 ou mais) | medium (40 a 69) | low (abaixo de 40);
+  a tela mostra a faixa, e o número do peso fica no detalhe e no "Como medimos"
+
 
 PersonVote { voteId, date, proposition, summary, vote, partyGuidance, approved, themes }
 Proposal { id, kind, number, year, summary, plainSummary, canBecomeLaw, themes, url }

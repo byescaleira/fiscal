@@ -70,13 +70,11 @@ public struct HighlightBoard: Hashable, Identifiable, Sendable {
         "\(kindTitle) · \(dayText)".uppercased(with: .app)
     }
 
-    public var weightText: String {
-        String(appLocalized: "Weight \(weight)")
-    }
+    public var relevance: Relevance { Relevance(weight: weight) }
 
-    public var weightShare: Double {
-        min(max(Double(weight) / 100, 0), 1)
-    }
+    public var weightText: String { relevance.title }
+
+    public var weightDetail: String { Relevance.detail(weight: weight) }
 
     public var hasPerson: Bool {
         !(personName ?? "").isEmpty
@@ -89,7 +87,8 @@ public struct HighlightBoard: Hashable, Identifiable, Sendable {
     public var accessibilityText: String {
         let base = String(
             appLocalized:
-                "\(kindTitle), \(dayText). \(title). \(subtitle). Weight \(weight) of 100.")
+                "\(kindTitle), \(dayText). \(title). \(subtitle). \(relevance.title), weight \(weight) of 100."
+        )
         return [base, uncertainty].compactMap(\.self).joined(separator: " ")
     }
 }

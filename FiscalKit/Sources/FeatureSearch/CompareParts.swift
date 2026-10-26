@@ -76,6 +76,14 @@ struct CompareMetricRow: View {
                         } label: {
                             Text(verbatim: column.name)
                         }
+                        if let band = value.band {
+                            PeerBadge(band: band)
+                        }
+                        if let median = value.median {
+                            Text(verbatim: median)
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
             } else {
@@ -120,6 +128,16 @@ private struct CompareCell: View {
                     .font(.caption2)
                     .foregroundStyle(.secondary)
                     .lineLimit(2)
+            }
+            if let band = value.band {
+                PeerBadge(band: band)
+            }
+            if let median = value.median {
+                Text(verbatim: median)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+                    .multilineTextAlignment(alignment == .leading ? .leading : .trailing)
             }
             if let fraction = value.fraction {
                 ProgressBar(value: isShown ? fraction : 0, color: color)

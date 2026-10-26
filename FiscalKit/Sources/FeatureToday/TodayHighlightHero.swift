@@ -119,18 +119,14 @@ struct TodayHighlightHero: View {
 
     private var weight: some View {
         VStack(alignment: .leading, spacing: .spaceXS) {
-            HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
-                Text(verbatim: "\(highlight.weight)")
-                    .font(.scoreboardHero)
-                    .monospacedDigit()
-                    .contentTransition(.numericText(value: Double(highlight.weight)))
-                Text("weight of 100")
-                    .font(.subheadline.weight(.semibold))
-                    .opacity(.opacityStrong)
-                Spacer(minLength: 0)
-            }
-            ProgressBar(value: appeared ? Double(highlight.weight) / 100 : 0, color: .white)
-                .animation(reduceMotion ? nil : .smooth(duration: 1), value: appeared)
+            Text(verbatim: relevance.title)
+                .font(.title.weight(.heavy))
+                .contentTransition(.interpolate)
+            SegmentedBar(
+                count: Relevance.segments, value: appeared ? relevance.filledSegments : 0,
+                color: .white
+            )
+            .animation(reduceMotion ? nil : .smooth(duration: 1), value: appeared)
             if let text = highlight.coverage.uncertainty {
                 Label {
                     Text(verbatim: text)
@@ -146,13 +142,16 @@ struct TodayHighlightHero: View {
         }
     }
 
+    private var relevance: Relevance { Relevance(weight: highlight.weight) }
+
     private var parts: String {
+        let weight = Relevance.detail(weight: highlight.weight)
         if let repercussion = highlight.repercussion, !highlight.signals.isTest {
-            return String(
-                appLocalized: "Repercussion \(repercussion) · impact \(highlight.impact)")
+            return
+                "\(weight) · \(String(appLocalized: "Repercussion \(repercussion) · impact \(highlight.impact)"))"
         }
-        return String(
-            appLocalized: "Impact \(highlight.impact) · repercussion not measured")
+        return
+            "\(weight) · \(String(appLocalized: "Impact \(highlight.impact) · repercussion not measured"))"
     }
 }
 
