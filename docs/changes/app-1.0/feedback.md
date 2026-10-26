@@ -136,6 +136,11 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Classificar os números (favorável/na média/desfavorável; relevância alta/média/baixa) | no iPhone (servidor só no próximo deploy do ingest) | PeerClassification, benchmarks.go |
 | Área histórica (apurações passadas, história política, estudo) | em andamento | frente memory |
 | Refactor da aba Região (hierarquia, bancadas, quem governa) | no iPhone | FeatureMine |
+| O que falta do Politicômetro | respondido; dado novo só depois do catálogo de leituras | docs/research/api-politicometro.md |
+| Objetivo claro por tela, fluxo e seção; só leituras (sem dado bruto); backend pré-processa tudo; sincronização inteligente | proposta enviada, aguardando decisões | — |
+| Documentar os padrões de tela aprovados | cartão proposto | docs/design-system.md |
+| Fiscalizar como investigação: busca contextual com IA local, quadro de peças, conclusão e pôster; Eleições sai da tela | em andamento | frente investigate |
+| Status dos turnos em Eleições ainda em cápsula (deve ser círculo) | em andamento | frente memory, com StatusCircle |
 
 ## Ícone
 
