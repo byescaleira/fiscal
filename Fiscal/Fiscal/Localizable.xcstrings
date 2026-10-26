@@ -1947,6 +1947,16 @@
         }
       }
     },
+    "Author: %@, %@, %@, %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autor: %1$@, %2$@, %3$@, %4$@"
+          }
+        }
+      }
+    },
     "Automatic" : {
       "extractionState" : "stale",
       "localizations" : {
