@@ -49,7 +49,7 @@ struct LensBackdrop: View {
 
     var body: some View {
         ZStack {
-            Color.black
+            Color.groupedBackground
             if let work {
                 work.image
                     .resizable()
@@ -60,8 +60,8 @@ struct LensBackdrop: View {
                     .transition(.opacity)
             }
             LinearGradient(
-                colors: [.black.opacity(.opacityTint), .black.opacity(.opacityStrong)],
-                startPoint: .top, endPoint: .bottom)
+                colors: [Color.groupedBackground.opacity(.opacitySoft), Color.groupedBackground],
+                startPoint: .top, endPoint: .center)
         }
         .ignoresSafeArea()
         .accessibilityHidden(true)

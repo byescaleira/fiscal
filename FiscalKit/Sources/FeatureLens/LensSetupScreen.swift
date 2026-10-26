@@ -29,7 +29,6 @@ public struct LensSetupScreen: View {
             LensSetupActionBar()
         }
         .background { LensBackdrop(work: setup.backdrop) }
-        .environment(\.colorScheme, .dark)
         .appTint(tint)
         .fontDesign(.rounded)
         .animation(reduceMotion ? nil : .smooth(duration: 0.45), value: setup.step)
