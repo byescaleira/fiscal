@@ -43,7 +43,7 @@ private struct VotesHighlightsSection: View {
     @Environment(VotesModel.self) private var votes
 
     var body: some View {
-        if let stance = votes.lensStance, !votes.highlights.isEmpty {
+        if votes.showsLensBadge, !votes.highlights.isEmpty {
             Section {
                 ForEach(votes.highlights) { vote in
                     RouteLink(.vote(id: vote.id)) { VoteHighlightRow(vote: vote) }
@@ -52,7 +52,7 @@ private struct VotesHighlightsSection: View {
                 AdaptiveRow(spacing: .spaceS) {
                     Text("In Your Topics").sectionTitle()
                     Spacer(minLength: .spaceS)
-                    LensBadge(stance)
+                    LensBadge()
                 }
                 .textCase(nil)
             } footer: {

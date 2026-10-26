@@ -56,7 +56,7 @@ public final class TodayModel {
 
     public var mode: TodayBriefing.Mode { TodayBriefing.mode(for: lens) }
 
-    public var stance: PoliticalStance? { lens?.stance }
+    public var showsLensBadge: Bool { lens?.hasChoice == true }
 
     public var lensLine: String? { TodayText.lensLine(lens) }
 
@@ -137,7 +137,13 @@ public final class TodayModel {
     }
 
     public var representatives: [Representative] {
-        followed.prefix(Self.representativesLimit).map { card in
+        let ordered = followed.enumerated()
+            .sorted { lhs, rhs in
+                (lens?.supportRank(of: lhs.element.slug) ?? 0, lhs.offset)
+                    < (lens?.supportRank(of: rhs.element.slug) ?? 0, rhs.offset)
+            }
+            .map(\.element)
+        return ordered.prefix(Self.representativesLimit).map { card in
             let vote = Self.house(for: card.office).flatMap { latestVotes[$0] }
             return Representative(
                 card: card, vote: vote, ballot: ballots[card.slug].map(TodayBallot.init))

@@ -3,17 +3,24 @@
     import Foundation
 
     public enum LensScenario: Equatable, Sendable {
-        case stance(PoliticalStance)
+        case support([String])
+        case none
         case setup
 
         public static let launchKey = "FiscalLensScenario"
+        static let supportPrefix = "support:"
 
         public static func named(_ value: String?) -> LensScenario? {
+            guard let value else { return nil }
             switch value {
-            case nil: nil
-            case "setup": .setup
-            case "none": .stance(.preferNotToSay)
-            case let name?: PoliticalStance(rawValue: name).map(LensScenario.stance)
+            case "setup": return .setup
+            case "none": return LensScenario.none
+            default:
+                guard value.hasPrefix(supportPrefix) else { return nil }
+                let slugs = value.dropFirst(supportPrefix.count).split(separator: ",")
+                    .map { $0.trimmingCharacters(in: .whitespaces) }
+                    .filter { !$0.isEmpty }
+                return slugs.isEmpty ? nil : .support(slugs)
             }
         }
 
@@ -26,7 +33,8 @@
         public var lens: Lens? {
             switch self {
             case .setup: nil
-            case .stance(let stance): LensPreset.suggested(for: stance).lens(stance: stance)
+            case .none: Lens.suggested(prefersNotToSay: true)
+            case .support(let slugs): Lens.suggested(supported: slugs)
             }
         }
     }
@@ -38,8 +46,8 @@
             stored = scenario.lens
         }
 
-        public init(stance: PoliticalStance?) {
-            stored = stance.flatMap { LensScenario.stance($0).lens }
+        public init(lens: Lens?) {
+            stored = lens
         }
 
         public func lens() -> Lens? { stored }

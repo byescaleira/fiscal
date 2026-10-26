@@ -7,36 +7,58 @@ import Observation
 
 @MainActor @Observable
 public final class LensModel {
+    public static let othersLimit = 4
+
     public var editing: LensSetupModel.Step?
     public var isConfirmingErase = false
     public private(set) var isErasing = false
     public private(set) var recentVotes: [VoteSummary]?
     public private(set) var isLoadingVotes = false
     public private(set) var appIcon: AppIcon
+    public private(set) var supportedCards: [PersonCard] = []
+    public private(set) var others: [PersonCard] = []
+    public private(set) var loadingOther: String?
     public var focusedTheme: Theme?
     public let catalog: ArtCatalog?
     @ObservationIgnored public let context: LensContext
     @ObservationIgnored private let service: (any PublicDataService)?
+    @ObservationIgnored private let follows: (any FollowRepository)?
     @ObservationIgnored let icons: (any AppIconSwitching)?
 
     public init(
         context: LensContext, catalog: ArtCatalog? = try? ArtCatalog.bundled(),
-        service: (any PublicDataService)? = nil, icons: (any AppIconSwitching)? = nil
+        service: (any PublicDataService)? = nil, icons: (any AppIconSwitching)? = nil,
+        follows: (any FollowRepository)? = nil
     ) {
         self.context = context
         self.catalog = catalog
         self.service = service
         self.icons = icons
+        self.follows = follows
         appIcon = icons?.current ?? .standard
     }
 
     public var lens: Lens? { context.saved }
 
-    public var stance: PoliticalStance? { lens?.stance }
+    public var hasLens: Bool { lens?.hasChoice == true }
 
-    public var hasLens: Bool { stance != nil }
+    public var supported: [String] { lens?.supported ?? [] }
 
-    public var stanceTitle: String { stance?.title ?? "—" }
+    public var prefersNotToSay: Bool { lens?.prefersNotToSay == true }
+
+    public var heroTitle: String {
+        if !supportedCards.isEmpty { return SupportedPeople.names(supportedCards) }
+        if prefersNotToSay { return String(appLocalized: "Prefer not to say") }
+        return "—"
+    }
+
+    public var supportSummary: String {
+        if prefersNotToSay {
+            return String(appLocalized: "Neutral: topics in the order the data comes.")
+        }
+        let count = PublicFormat.number(supported.count)
+        return String(appLocalized: "You support: \(count) of \(Lens.supportLimit)")
+    }
 
     public var themes: [Theme] { lens?.themes ?? [] }
 
@@ -54,29 +76,35 @@ public final class LensModel {
 
     public var isPreviewing: Bool { context.isPreviewing }
 
-    public var previewStance: PoliticalStance? { context.preview?.stance }
+    public var isPreviewingNeutral: Bool { context.preview?.isNeutral == true }
 
-    public var otherStances: [PoliticalStance] {
-        PoliticalStance.choices.filter { $0 != stance?.effective }
+    public func isPreviewing(_ card: PersonCard) -> Bool {
+        context.preview?.supported == [card.slug]
     }
 
     public var otherLensFooter: String {
-        if let stance, stance.isImpartial {
-            return String(
-                appLocalized:
-                    "With the impartial lens, every other lens stays one tap away. Nothing is saved and the numbers do not change."
-            )
-        }
-        return String(
+        String(
             appLocalized:
-                "See the app through the topics of another side for a moment. Nothing is saved and the numbers do not change."
+                "For a moment, see what stands out in the neutral order or for those who support someone else. Nothing is saved and the numbers do not change."
         )
     }
 
-    public func isPreviewing(_ other: PoliticalStance) -> Bool { previewStance == other }
+    public func previewNeutral() {
+        context.show(
+            Lens(
+                themes: SupportThemes.suggested([], prefersNotToSay: true), prefersNotToSay: true,
+                artCollection: lens?.artCollection, palette: lens?.palette))
+    }
 
-    public func preview(_ other: PoliticalStance) {
-        context.show(LensPreset.suggested(for: other).lens(stance: other))
+    public func preview(_ card: PersonCard) async {
+        guard loadingOther == nil else { return }
+        loadingOther = card.slug
+        let activity = await SupportedPeople.activity(for: [card], service: service)
+        context.show(
+            Lens(
+                themes: SupportThemes.suggested(activity), supported: [card.slug],
+                artCollection: lens?.artCollection, palette: lens?.palette))
+        loadingOther = nil
     }
 
     public func endPreview() {
@@ -88,7 +116,9 @@ public final class LensModel {
     }
 
     public func editor(for step: LensSetupModel.Step) -> LensSetupModel {
-        LensSetupModel(context: context, catalog: catalog, editing: step, icons: icons)
+        LensSetupModel(
+            context: context, catalog: catalog, editing: step, icons: icons, service: service,
+            follows: follows)
     }
 
     public func loadVotes() async {
@@ -96,6 +126,17 @@ public final class LensModel {
         isLoadingVotes = true
         recentVotes = (try? await service.recentVotes()) ?? []
         isLoadingVotes = false
+    }
+
+    public func loadSupport() async {
+        supportedCards = await SupportedPeople.cards(
+            for: supported, service: service, follows: follows)
+        guard others.isEmpty, let highlights = try? await service?.highlights() else { return }
+        var seen: Set<String> = Set(supported)
+        others = Array(
+            highlights.items.compactMap(\.person)
+                .filter { seen.insert($0.slug).inserted }
+                .prefix(Self.othersLimit))
     }
 
     public func update(_ change: (inout Lens) -> Void) async {
@@ -109,7 +150,11 @@ public final class LensModel {
         guard let icons, icon != appIcon else { return }
         let previous = appIcon
         appIcon = icon
-        if (try? await icons.set(icon)) == nil { appIcon = previous }
+        if (try? await icons.set(icon)) == nil {
+            appIcon = previous
+        } else {
+            await update { $0.icon = icon.rawValue }
+        }
     }
 
     public func erase() async {

@@ -156,7 +156,7 @@ struct ProfileLensSection: View {
                     Text(profile.lensThemes.isEmpty ? LocalizedStringKey("Themes") : "By Your Lens")
                         .sectionTitle()
                     Spacer(minLength: 0)
-                    if let stance = profile.lensStance { LensBadge(stance) }
+                    if profile.showsLensBadge { LensBadge() }
                 }
                 .textCase(nil)
             } footer: {

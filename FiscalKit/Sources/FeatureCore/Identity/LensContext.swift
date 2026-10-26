@@ -17,7 +17,9 @@ public final class LensContext {
 
     public var isPreviewing: Bool { preview != nil }
 
-    public var needsSetup: Bool { hasLoaded && saved?.stance == nil }
+    public var needsSetup: Bool { hasLoaded && saved?.hasChoice != true }
+
+    public var supported: [String] { active?.supported ?? [] }
 
     public func load() async {
         guard !hasLoaded else { return }

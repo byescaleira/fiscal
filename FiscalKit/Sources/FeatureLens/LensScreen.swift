@@ -14,7 +14,7 @@ public struct LensScreen: View {
         AdaptiveList {
             LensHeroSection()
             if lens.hasLens {
-                LensStanceSection()
+                LensSupportSection()
                 LensThemesSection()
                 LensLookSection()
                 LensOtherSection()
@@ -23,6 +23,7 @@ public struct LensScreen: View {
         }
         .fontDesign(.rounded)
         .task { await lens.loadVotes() }
+        .task(id: lens.supported) { await lens.loadSupport() }
         .navigationTitle("Lens")
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
@@ -94,11 +95,16 @@ private struct LensHeroText: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceS) {
-            if let stance = lens.stance {
-                LensBadge(stance)
+            if lens.hasLens {
+                LensBadge()
             }
-            Text(verbatim: lens.stanceTitle)
-                .font(.amountHero)
+            if !lens.supportedCards.isEmpty {
+                LensFaces(cards: lens.supportedCards, size: .badgeL)
+            }
+            Text(verbatim: lens.heroTitle)
+                .font(.titleMedium)
+                .lineLimit(3)
+                .minimumScaleFactor(0.7)
                 .contentTransition(.opacity)
             if let work = lens.leadWork {
                 Text(verbatim: "\(work.artist) · \(work.caption) · \(work.licenseTitle)")
@@ -123,7 +129,7 @@ private struct LensEraseGuide: View {
             GuidePage(
                 title: "Delete your lens?",
                 message:
-                    "Your side, topics and look leave this iPhone for good. Then Fiscal asks for them again."
+                    "Who you support, your topics and your look leave this iPhone for good. Then Fiscal asks for them again."
             ) {
                 FiscalAnimationView(.privacy)
             }

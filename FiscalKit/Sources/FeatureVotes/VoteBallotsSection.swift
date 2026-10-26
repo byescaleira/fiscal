@@ -3,6 +3,35 @@ import FiscalDesignSystem
 import FiscalDomain
 import SwiftUI
 
+struct VoteSupportSection: View {
+    @Environment(VoteDetailModel.self) private var vote
+
+    var body: some View {
+        let ballots = vote.supportedBallots
+        if !ballots.isEmpty {
+            Section {
+                if let headline = vote.supportedHeadline {
+                    Text(verbatim: headline)
+                        .font(.headline)
+                        .padding(.vertical, .space2XS)
+                }
+                ForEach(ballots) { BallotRow(ballot: $0, size: .badgeL) }
+            } header: {
+                AdaptiveRow(spacing: .spaceS) {
+                    Text("How the people you support voted").sectionTitle()
+                    Spacer(minLength: .spaceS)
+                    LensBadge()
+                }
+                .textCase(nil)
+            } footer: {
+                Text(
+                    "Only who you support and who was on this roll call. Who you support stays on this iPhone."
+                )
+            }
+        }
+    }
+}
+
 struct VoteRepresentativesSection: View {
     @Environment(VoteDetailModel.self) private var vote
 

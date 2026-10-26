@@ -36,10 +36,7 @@ public final class CompareModel {
 
     public var table: CompareTable { CompareTable(profiles: profiles, lens: lens) }
 
-    public var badgeStance: PoliticalStance? {
-        guard let lens, !lens.themes.isEmpty else { return nil }
-        return lens.stance ?? .preferNotToSay
-    }
+    public var showsLensBadge: Bool { !(lens?.themes.isEmpty ?? true) }
 
     public var sourceLine: String? { SourceLine.text(profiles.flatMap(\.sources)) }
 

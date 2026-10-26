@@ -61,7 +61,7 @@ public struct MainScreen: View {
         .onChange(of: navigation.selectedSection) { navigation.closeInspectorOutsideSelection() }
         .modifier(DeepLinks())
         .modifier(UpdateRecommendation())
-        .lensExperience(isReady: launch.isDismissed)
+        .lensExperience(isReady: launch.isDismissed, service: FiscalServices.shared.publicData())
         .modifier(SystemIntegrations())
     }
 }

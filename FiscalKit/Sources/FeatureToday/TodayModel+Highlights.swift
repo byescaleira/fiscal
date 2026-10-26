@@ -5,10 +5,25 @@ import Foundation
 extension TodayModel {
     public static let highlightSecondaryLimit = 3
 
-    public var highlightLead: Highlight? { highlights?.items.first }
+    public var orderedHighlights: [Highlight] {
+        let items = highlights?.items ?? []
+        guard let lens, !lens.supported.isEmpty else { return items }
+        return items.enumerated()
+            .sorted { lhs, rhs in
+                (lens.supportRank(of: lhs.element.person?.slug), lhs.offset)
+                    < (lens.supportRank(of: rhs.element.person?.slug), rhs.offset)
+            }
+            .map(\.element)
+    }
+
+    public var highlightLead: Highlight? { orderedHighlights.first }
 
     public var highlightOthers: [Highlight] {
-        Array((highlights?.items ?? []).dropFirst().prefix(Self.highlightSecondaryLimit))
+        Array(orderedHighlights.dropFirst().prefix(Self.highlightSecondaryLimit))
+    }
+
+    public func isSupportPick(_ highlight: Highlight) -> Bool {
+        lens?.supports(highlight.person?.slug) == true
     }
 
     public var highlightMethod: WeightMethod? { highlights?.method }

@@ -62,12 +62,13 @@ struct RouteScreen: View {
 
 private struct LensDestination: View {
     @Environment(LensContext.self) private var lens
+    @Environment(SessionModel.self) private var session
 
     var body: some View {
         ModelHost(
             LensModel(
                 context: lens, service: FiscalServices.shared.publicData(),
-                icons: SystemAppIconSwitcher())
+                icons: SystemAppIconSwitcher(), follows: session.repositories.follows)
         ) {
             LensScreen()
         }

@@ -18,7 +18,7 @@ struct SettingsLensCard: View {
                         .font(.chipLabel)
                         .textCase(.uppercase)
                         .foregroundStyle(tint)
-                    Text(verbatim: summary.stanceTitle)
+                    Text(verbatim: summary.title)
                         .font(.titleMedium)
                         .foregroundStyle(.primary)
                         .lineLimit(2)
@@ -27,14 +27,14 @@ struct SettingsLensCard: View {
                 }
                 Spacer(minLength: .zero)
             }
-            if summary.isOnSpectrum, let stance = summary.stance {
-                LensMiniRuler(stance: stance)
-            } else if summary.isSet {
-                Label("Without picking a side", systemImage: "scale.3d")
+            if !summary.cards.isEmpty {
+                LensFaces(cards: summary.cards, size: .badgeL)
+            } else if summary.prefersNotToSay {
+                Label("Neutral, without supporting anyone", systemImage: "hand.raised")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(tint)
             } else {
-                Text("Choose your themes, your side and your look. It takes about a minute.")
+                Text("Choose who you support, your topics and your look. It takes about a minute.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -106,50 +106,6 @@ private struct LensCardDetails: View {
                     .lineLimit(2)
             }
         }
-    }
-}
-
-private struct LensMiniRuler: View {
-    @Environment(\.appTint) private var tint
-    let stance: PoliticalStance
-
-    var body: some View {
-        VStack(spacing: .spaceXS) {
-            HStack(spacing: .zero) {
-                ForEach(LensSummary.spectrum) { stop in
-                    ZStack {
-                        if stop == stance {
-                            Circle()
-                                .fill(tint)
-                                .overlay {
-                                    Circle().strokeBorder(.white, lineWidth: .selectionStroke)
-                                }
-                                .frame(width: .badgeS, height: .badgeS)
-                        } else {
-                            Circle()
-                                .fill(Color.primary.opacity(.opacitySoft))
-                                .frame(width: .spectrumDot, height: .spectrumDot)
-                        }
-                    }
-                    .frame(maxWidth: .infinity)
-                    .frame(height: .badgeS)
-                }
-            }
-            .background {
-                Capsule()
-                    .fill(Color.primary.opacity(.opacityTint))
-                    .frame(height: .spectrumTrack)
-                    .padding(.horizontal, .spaceL)
-            }
-            HStack {
-                Text(verbatim: PoliticalStance.left.title)
-                Spacer()
-                Text(verbatim: PoliticalStance.right.title)
-            }
-            .font(.caption2.weight(.semibold))
-            .foregroundStyle(.secondary)
-        }
-        .accessibilityHidden(true)
     }
 }
 

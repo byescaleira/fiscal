@@ -18,7 +18,7 @@ public struct SettingsScreen<LensDestination: View, ArtistsDestination: View>: V
 
     public var body: some View {
         ModelHost(SourcesModel(service: service)) {
-            SettingsContent(destinations: destinations)
+            SettingsContent(service: service, destinations: destinations)
         }
     }
 }
@@ -37,6 +37,7 @@ struct SettingsDestinations<Lens: View, Artists: View> {
 
 private struct SettingsContent<Lens: View, Artists: View>: View {
     @Environment(SourcesModel.self) private var sources
+    let service: (any PublicDataService)?
     let destinations: SettingsDestinations<Lens, Artists>?
 
     var body: some View {
@@ -54,7 +55,7 @@ private struct SettingsContent<Lens: View, Artists: View>: View {
 
     @ViewBuilder private var sections: some View {
         if let destinations {
-            SettingsYourFiscalSection(destinations: destinations)
+            SettingsYourFiscalSection(service: service, destinations: destinations)
         }
         SettingsAppearanceSection()
         SettingsPrivacySection()
@@ -68,7 +69,10 @@ private struct SettingsContent<Lens: View, Artists: View>: View {
 
 private struct SettingsYourFiscalSection<Lens: View, Artists: View>: View {
     @Environment(LensContext.self) private var lens: LensContext?
+    @Environment(SessionModel.self) private var session: SessionModel?
     @State private var catalog: ArtCatalog?
+    @State private var faces: [PersonCard] = []
+    let service: (any PublicDataService)?
     let destinations: SettingsDestinations<Lens, Artists>
 
     var body: some View {
@@ -78,7 +82,7 @@ private struct SettingsYourFiscalSection<Lens: View, Artists: View>: View {
                     destinations.lens
                 } label: {
                     SettingsLensCard(
-                        summary: LensSummary(lens: lens?.saved, catalog: catalog))
+                        summary: LensSummary(lens: lens?.saved, catalog: catalog, cards: faces))
                 }
             }
             SettingsRow(
@@ -88,11 +92,18 @@ private struct SettingsYourFiscalSection<Lens: View, Artists: View>: View {
                 destinations.artists
             }
         } footer: {
-            Text("Your side, themes and look stay on this device, outside iCloud and backups.")
+            Text(
+                "Who you support, your topics and your look stay on this device, outside iCloud and backups."
+            )
         }
         .task {
             await lens?.load()
             if catalog == nil { catalog = try? ArtCatalog.bundled() }
+        }
+        .task(id: lens?.saved?.supported) {
+            faces = await SupportedPeople.cards(
+                for: lens?.saved?.supported ?? [], service: service,
+                follows: session?.repositories.follows)
         }
     }
 }
@@ -129,7 +140,7 @@ private struct SettingsPrivacySection: View {
                 symbol: "icloud", color: .retroTeal)
             SettingsLabel(
                 "The Lens stays here",
-                detail: "Your side never goes to a server, a log or a share card.",
+                detail: "Who you support never goes to a server, a log or a share card.",
                 symbol: "lock", color: .retroDenim)
             if let url = settings.info.privacyURL {
                 Link(destination: url) {

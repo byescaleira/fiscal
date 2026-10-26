@@ -78,8 +78,8 @@ private struct CompareGroupSection: View {
         } header: {
             VStack(alignment: .leading, spacing: .spaceXS) {
                 Text(verbatim: group.title).sectionTitle()
-                if group.isLensOrdered, let stance = compare.badgeStance {
-                    LensBadge(stance)
+                if group.isLensOrdered, compare.showsLensBadge {
+                    LensBadge()
                 }
             }
             .textCase(nil)

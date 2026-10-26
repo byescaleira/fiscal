@@ -63,8 +63,8 @@ private struct ArtistsHero: View {
         VStack(spacing: .spaceS) {
             HStack(spacing: .spaceS) {
                 Chip("COLLECTION", color: tint, shape: .capsule)
-                if let stance = artists.badgeStance {
-                    LensBadge(stance)
+                if artists.showsLensBadge {
+                    LensBadge()
                 }
             }
             Text(artists.workCount, format: .number)

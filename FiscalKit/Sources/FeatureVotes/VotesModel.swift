@@ -83,10 +83,7 @@ public final class VotesModel {
         return lens?.ordered(present) ?? present
     }
 
-    public var lensStance: PoliticalStance? {
-        guard let lens, !lens.themes.isEmpty else { return nil }
-        return lens.stance ?? .preferNotToSay
-    }
+    public var showsLensBadge: Bool { !(lens?.themes.isEmpty ?? true) }
 
     public var lensThemeChoices: [Theme] { themeChoices.filter(isLensTheme) }
 

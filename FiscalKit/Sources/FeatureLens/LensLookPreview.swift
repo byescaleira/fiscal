@@ -7,7 +7,6 @@ struct LensLookPreview: View {
     @Environment(\.appTint) private var inheritedTint
     let palette: LensPaletteSwatch?
     let theme: Theme?
-    let stance: PoliticalStance?
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceM) {
@@ -17,7 +16,7 @@ struct LensLookPreview: View {
                     .textCase(.uppercase)
                     .foregroundStyle(.secondary)
                 Spacer(minLength: .zero)
-                if let stance { LensBadge(stance) }
+                LensBadge()
             }
             LensPreviewVoteCard(theme: theme ?? .health)
             LensPreviewControls()

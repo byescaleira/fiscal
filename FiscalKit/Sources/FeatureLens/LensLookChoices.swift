@@ -57,7 +57,7 @@ private struct LensPaletteTile: View {
                         .foregroundStyle(.primary)
                         .lineLimit(2)
                     if isSuggested {
-                        Text("Suggested for your side")
+                        Text("Suggested to start")
                             .font(.caption2.weight(.semibold))
                             .foregroundStyle(swatch.accent)
                     } else {

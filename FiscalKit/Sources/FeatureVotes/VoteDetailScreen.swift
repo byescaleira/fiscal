@@ -17,6 +17,7 @@ public struct VoteDetailScreen: View {
                 VoteHeroSection()
                 VoteExplainSection()
                 VoteSummarySection()
+                VoteSupportSection()
                 VoteRepresentativesSection()
                 VoteGuidanceSection()
                 VotePartySection()
@@ -80,8 +81,8 @@ private struct VoteSummarySection: View {
             AdaptiveRow(spacing: .spaceS) {
                 Text("What Changes").sectionTitle()
                 Spacer(minLength: .spaceS)
-                if let stance = vote.lensStance {
-                    LensBadge(stance)
+                if vote.showsLensBadge {
+                    LensBadge()
                 }
             }
             .textCase(nil)
