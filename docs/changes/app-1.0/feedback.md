@@ -98,8 +98,8 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Barra do card ao vivo como estava na apuração | no iPhone | RaceHeroCard |
 | Seletor de imagens do compartilhar melhor | no iPhone | ShareArtPicker |
 | Card ao vivo no topo do Hoje | no iPhone | TodayScreen |
-| Compartilhar o Destaque do momento | em andamento | frente share-highlight |
-| Cargo no feminino (Deputada, Senadora…) | em andamento | frente gender |
+| Compartilhar o Destaque do momento | no iPhone | SharePosterHighlight, TodayHighlightSection |
+| Cargo no feminino (Deputada, Senadora…) | no iPhone (dados de teste; real após a próxima carga) | Office.title(for:) |
 | Ajustes e telas internas no padrão do app | em andamento | frente settings |
 
 ## Ícone
