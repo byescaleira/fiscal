@@ -8,43 +8,6 @@ struct PublicDataLayoutTests {
     private static let city =
         #"{ "code": "1200708", "name": "Xapuri", "uf": "ac", "note": null, "sources": [], "groups": [{ "level": "city", "office": "mayor", "title": "Prefeitura", "people": [{ "slug": "maxsuel-maia-xapuri-ac", "name": "Maxsuel Maia", "office": "mayor", "uf": "ac", "party": "PP", "photo": null, "status": "inOffice" }] }] }"#
 
-    private struct Harness {
-        let data: String
-        let api: String
-        let client: PublicDataClient
-
-        init() throws {
-            data = PublicDataStub.makeHost()
-            api = PublicDataStub.makeHost()
-            let configuration = URLSessionConfiguration.ephemeral
-            configuration.protocolClasses = [PublicDataStub.self]
-            configuration.urlCache = URLCache(
-                memoryCapacity: 1_024 * 1_024, diskCapacity: 0, directory: nil)
-            configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
-            client = PublicDataClient(
-                baseURL: try #require(URL(string: "https://\(api)/api")),
-                dataURL: URL(string: "https://\(data)"),
-                session: URLSession(configuration: configuration))
-        }
-
-        func onData(_ path: String, _ json: String, status: Int = 200) {
-            PublicDataStub.reply(
-                .init(status: status, body: Data(json.utf8)), to: "/v2/\(path)", on: data)
-        }
-
-        func onAPI(_ path: String, _ json: String) {
-            PublicDataStub.reply(
-                .init(status: 200, body: Data(json.utf8)), to: "/api/v1/\(path)", on: api)
-        }
-
-        func live() {
-            onData("release.json", #"{ "release": "20261026T093000Z-camara", "layout": "v2" }"#)
-        }
-
-        var dataPaths: [String] { PublicDataStub.seen(on: data).map(\.path) }
-        var apiPaths: [String] { PublicDataStub.seen(on: api).map(\.path) }
-    }
-
     @Test func bucketsMatchTheServer() {
         #expect(PublicDataLayout.voteBundles.bucket("camara-2416587") == "111")
         #expect(PublicDataLayout.voteBundles.bucket("senado-7106") == "01d")
@@ -68,7 +31,7 @@ struct PublicDataLayoutTests {
     }
 
     @Test func readsTheGroupedFilesWhenTheReleaseIsLive() async throws {
-        let harness = try Harness()
+        let harness = try LayoutHarness()
         harness.live()
         harness.onData("places/city/1200708.json", #"{ "place": \#(Self.city), "people": {} }"#)
         harness.onData(
@@ -86,7 +49,7 @@ struct PublicDataLayoutTests {
     }
 
     @Test func findsACityOfficialThroughTheIndex() async throws {
-        let harness = try Harness()
+        let harness = try LayoutHarness()
         harness.live()
         let slug = "maxsuel-maia-xapuri-ac"
         let bucket = PublicDataLayout.cityPeopleIndex.bucket(slug)
@@ -106,7 +69,7 @@ struct PublicDataLayoutTests {
     }
 
     @Test func fallsBackToTheCurrentServerUntilTheReleaseIsLive() async throws {
-        let harness = try Harness()
+        let harness = try LayoutHarness()
         harness.onData("release.json", "{}", status: 404)
         harness.onAPI("today.json", #"{ "date": "2026-10-26", "events": [], "sources": [] }"#)
         let today = try await harness.client.today()
@@ -116,7 +79,7 @@ struct PublicDataLayoutTests {
     }
 
     @Test func fallsBackWhenTheCDNIsDown() async throws {
-        let harness = try Harness()
+        let harness = try LayoutHarness()
         harness.live()
         PublicDataStub.reply(.init(status: 503), to: "/v2/today.json", on: harness.data)
         harness.onAPI("today.json", #"{ "date": "2026-10-26", "events": [], "sources": [] }"#)
