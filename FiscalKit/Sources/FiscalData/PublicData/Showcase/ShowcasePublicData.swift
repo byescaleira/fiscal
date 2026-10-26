@@ -124,6 +124,10 @@
             }
             if let card = curated.first(where: { $0.slug == slug }) {
                 return ShowcaseProfiles.profile(for: card, year: year, sources: sources)
+                    .with(
+                        classification: ShowcaseBenchmarks.classification(
+                            for: card, peers: curated, year: year,
+                            month: calendar.component(.month, from: now)))
             }
             if let card = everyone.first(where: { $0.slug == slug }) {
                 return ShowcaseProfiles.minimal(for: card, sources: sources)

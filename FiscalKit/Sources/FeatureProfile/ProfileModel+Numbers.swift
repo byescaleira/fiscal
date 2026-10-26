@@ -11,30 +11,50 @@ extension ProfileModel {
         public let caption: String?
         public let source: String?
         public let fraction: Double?
+        public var peer: Peer?
 
         public var isMissing: Bool { value == PublicFormat.missing }
+    }
+
+    public struct Peer: Equatable, Sendable {
+        public let band: PeerClassification.Band
+        public let detail: String
+        public let spoken: String
+    }
+
+    public var classification: PeerClassification? { profile?.classification }
+
+    func peer(_ metric: PeerClassification.Metric) -> Peer? {
+        guard let classification, let entry = classification.entry(metric),
+            let detail = classification.detailText(metric),
+            let spoken = classification.spoken(metric)
+        else { return nil }
+        return Peer(band: entry.band, detail: detail, spoken: spoken)
     }
 
     public var facts: [NumberTile] {
         guard let profile else { return [] }
         let numbers = profile.numbers
         return [
-            attendanceTile(numbers.attendance),
+            attendanceTile(numbers.attendance).with(peer: peer(.presence)),
             tile(
                 "proposals", String(appLocalized: "Proposals"), "doc.text",
-                PublicFormat.number(numbers.proposals), kind: "proposals"),
+                PublicFormat.number(numbers.proposals), kind: "proposals"
+            ).with(peer: peer(.proposals)),
             tile(
                 "laws", String(appLocalized: "Laws"), "checkmark.seal",
                 PublicFormat.number(numbers.laws), kind: "proposals"),
             tile(
                 "speeches", String(appLocalized: "Speeches"), "quote.bubble",
-                PublicFormat.number(numbers.speeches), kind: "speeches"),
+                PublicFormat.number(numbers.speeches), kind: "speeches"
+            ).with(peer: peer(.speeches)),
             tile(
                 "votes", String(appLocalized: "Votes"), "checkmark.square",
                 PublicFormat.number(numbers.votes), kind: "votes"),
             tile(
                 "quota", String(appLocalized: "Office allowance"), "brazilianrealsign",
-                PublicFormat.compactMoney(cents: numbers.quotaCents), kind: "expenses"),
+                PublicFormat.compactMoney(cents: numbers.quotaCents), kind: "expenses"
+            ).with(peer: peer(.quota)),
             tile(
                 "assets", String(appLocalized: "Declared assets"), "building.columns",
                 PublicFormat.compactMoney(cents: numbers.assetsCents), kind: "assets"),
@@ -105,5 +125,13 @@ extension ProfileModel {
         return NumberTile(
             id: id, title: title, symbol: symbol, value: value, caption: caption,
             source: sourceName(for: kind), fraction: nil)
+    }
+}
+
+extension ProfileModel.NumberTile {
+    func with(peer: ProfileModel.Peer?) -> Self {
+        var copy = self
+        copy.peer = peer
+        return copy
     }
 }

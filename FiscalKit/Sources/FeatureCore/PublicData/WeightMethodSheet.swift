@@ -100,6 +100,7 @@ public struct WeightMethodSheet: View {
                 } header: {
                     Text("Weight").sectionTitle()
                 }
+                WeightRelevanceSection()
                 WeightPartsSection(
                     title: "Repercussion", text: method.repercussion, parts: method.parts)
                 WeightCoverageSection(method: method)
@@ -138,6 +139,30 @@ public struct WeightMethodSheet: View {
         }
         .fontDesign(.rounded)
         .presentationDetents([.medium, .large])
+    }
+}
+
+private struct WeightRelevanceSection: View {
+    var body: some View {
+        Section {
+            ForEach(Relevance.allCases, id: \.self) { level in
+                HStack {
+                    RelevanceBadge(weight: level.minimumWeight)
+                    Spacer(minLength: .spaceS)
+                    Text(verbatim: level.range)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .monospacedDigit()
+                }
+                .accessibilityElement(children: .combine)
+            }
+        } header: {
+            Text("Relevance").sectionTitle()
+        } footer: {
+            Text(
+                "On screen the weight shows as a level; the number stays in the detail. The level orders, it never says whether a measure is good or bad."
+            )
+        }
     }
 }
 

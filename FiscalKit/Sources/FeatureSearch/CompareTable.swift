@@ -16,6 +16,17 @@ public struct CompareTable: Equatable, Sendable {
         public let text: String
         public let detail: String?
         public let fraction: Double?
+        public var band: PeerClassification.Band?
+        public var median: String?
+
+        public func classified(
+            _ metric: PeerClassification.Metric, in classification: PeerClassification?
+        ) -> Value {
+            var copy = self
+            copy.band = classification?.entry(metric)?.band
+            copy.median = classification?.medianText(metric)
+            return copy
+        }
     }
 
     public struct Metric: Equatable, Identifiable, Sendable {
@@ -26,8 +37,8 @@ public struct CompareTable: Equatable, Sendable {
         public func spoken(by columns: [Column]) -> String {
             zip(columns, values)
                 .map { column, value in
-                    [column.name, value.text, value.detail].compactMap(\.self).joined(
-                        separator: ", ")
+                    [column.name, value.text, value.detail, value.band?.title, value.median]
+                        .compactMap(\.self).joined(separator: ", ")
                 }
                 .joined(separator: "; ")
         }
@@ -81,12 +92,16 @@ public struct CompareTable: Equatable, Sendable {
                             detail: attendance.map {
                                 String(appLocalized: "\($0.present) of \($0.eligible) sessions")
                             },
-                            fraction: attendance?.fraction)
+                            fraction: attendance?.fraction
+                        ).classified(.presence, in: profile.classification)
                     }),
                 count("votes", String(appLocalized: "Votes cast"), profiles) { $0.numbers.votes },
                 count("proposals", String(appLocalized: "Proposals"), profiles) {
                     $0.numbers.proposals
-                },
+                }.classified(.proposals, in: profiles),
+                count("speeches", String(appLocalized: "Speeches"), profiles) {
+                    $0.numbers.speeches
+                }.classified(.speeches, in: profiles),
                 count("laws", String(appLocalized: "Laws passed"), profiles) { $0.numbers.laws },
             ])
     }
@@ -97,7 +112,7 @@ public struct CompareTable: Equatable, Sendable {
             metrics: [
                 cents("quota", String(appLocalized: "Office allowance used"), profiles) {
                     $0.numbers.quotaCents
-                },
+                }.classified(.quota, in: profiles),
                 cents("assets", String(appLocalized: "Declared assets"), profiles) {
                     $0.numbers.assetsCents
                 },
@@ -172,5 +187,15 @@ extension CompareTable.Group {
             id: id, title: title, metrics: published,
             missing: metrics.filter { !published.contains($0) }.map(\.title),
             isLensOrdered: isLensOrdered && !published.isEmpty)
+    }
+}
+
+extension CompareTable.Metric {
+    func classified(_ metric: PeerClassification.Metric, in profiles: [Profile]) -> Self {
+        CompareTable.Metric(
+            id: id, title: title,
+            values: zip(values, profiles).map { value, profile in
+                value.classified(metric, in: profile.classification)
+            })
     }
 }

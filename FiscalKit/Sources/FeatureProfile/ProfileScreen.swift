@@ -61,6 +61,12 @@ struct ProfileNumbersSection: View {
             }
             .listRowInsets(EdgeInsets())
             .listRowBackground(Color.clear)
+            if profile.classification != nil {
+                PeerMethodButton(classification: profile.classification)
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+            }
             ProfileNumbersExplainer()
         } header: {
             Text("Term in Numbers").sectionTitle()
@@ -93,6 +99,13 @@ private struct NumberTileView: View {
             }
             if let caption = tile.caption {
                 Text(verbatim: caption).font(.caption).foregroundStyle(.secondary)
+            }
+            if let peer = tile.peer {
+                PeerBadge(band: peer.band)
+                Text(verbatim: peer.detail)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             Spacer(minLength: 0)
             if let source = tile.source {

@@ -38,11 +38,15 @@ public struct SharePoster: Hashable, Sendable {
             let lead = metrics.firstIndex { $0.value != PublicFormat.missing } ?? 0
             let rest = metrics.indices.filter { $0 != lead }.map { metrics[$0] }
             headline = nil
+            let leading = metrics.indices.contains(lead) ? metrics[lead] : nil
             hero = .figure(
-                value: metrics.indices.contains(lead) ? metrics[lead].value : PublicFormat.missing,
-                caption: metrics.indices.contains(lead) ? metrics[lead].label : "")
+                value: leading?.value ?? PublicFormat.missing,
+                caption: leading.map {
+                    [$0.label, $0.peer].compactMap(\.self).joined(separator: " · ")
+                }
+                    ?? "")
             facts = rest.prefix(Self.factLimit).map { Fact(value: $0.value, label: $0.label) }
-            note = nil
+            note = leading?.peerDetail
             person = content.faces.first
         case .vote(let tally):
             headline = content.headline
