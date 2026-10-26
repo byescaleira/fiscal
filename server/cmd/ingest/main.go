@@ -18,6 +18,7 @@ import (
 	"liveresults/internal/datastore"
 	"liveresults/internal/ingest"
 	"liveresults/internal/jobctl"
+	"liveresults/internal/publicdata"
 	"liveresults/internal/site"
 	"liveresults/internal/sources/tse"
 )
@@ -47,7 +48,10 @@ type config struct {
 	lockWait   time.Duration
 	nice       int
 	capacity   jobctl.Capacity
+	pseudonym  []byte
 }
+
+const defaultPseudonymKeyFile = "/run/fiscal/pseudonym-key"
 
 func parseYears(v string, def []int) ([]int, error) {
 	v = strings.TrimSpace(v)
@@ -120,6 +124,9 @@ func loadConfig(getenv func(string) string, now time.Time) (config, error) {
 	c := config{location: loc, live: 10 * time.Minute, gap: 150 * time.Millisecond, timeout: 120 * time.Second, fullAt: [2]int{6, 30}}
 	c.ingest.PublicDir = envOr(getenv, "PUBLIC_DIR", "./public")
 	c.ingest.DataDir = envOr(getenv, "DATA_DIR", "./data")
+	if c.pseudonym, err = publicdata.ReadPseudonymKey(envOr(getenv, "PSEUDONYM_KEY_FILE", defaultPseudonymKeyFile)); err != nil {
+		return c, fmt.Errorf("PSEUDONYM_KEY_FILE: %w", err)
+	}
 	c.storePath = envOr(getenv, "STORE_PATH", filepath.Join(c.ingest.DataDir, datastore.FileName))
 	if !strings.HasSuffix(c.storePath, ".db") {
 		return c, errors.New("STORE_PATH must be a path ending in .db")

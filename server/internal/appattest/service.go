@@ -1,6 +1,7 @@
 package appattest
 
 import (
+	"container/list"
 	"context"
 	"crypto/ecdsa"
 	"crypto/rand"
@@ -18,8 +19,9 @@ import (
 
 const (
 	KeysFile       = "attest-keys.json"
-	challengeTTL   = 5 * time.Minute
+	ChallengeTTL   = 2 * time.Minute
 	maxChallenges  = 100000
+	maxPerClient   = 8
 	keyIdle        = 400 * 24 * time.Hour
 	challengeBytes = 32
 )
@@ -28,7 +30,18 @@ var (
 	ErrChallenge  = errors.New("appattest: unknown or expired challenge")
 	ErrUnknownKey = errors.New("appattest: unknown key")
 	ErrCapacity   = errors.New("appattest: key capacity reached")
+	ErrBusy       = errors.New("appattest: too many open challenges")
 )
+
+type pending struct {
+	client  string
+	expires time.Time
+}
+
+type issued struct {
+	challenge string
+	expires   time.Time
+}
 
 type record struct {
 	PublicKey   []byte `json:"pk"`
@@ -47,11 +60,13 @@ type Service struct {
 	mu         sync.Mutex
 	keys       map[string]*record
 	dirty      bool
-	challenges map[string]time.Time
+	challenges map[string]pending
+	perClient  map[string]int
+	order      *list.List
 }
 
 func Open(dataDir string, v *Verifier, max int) (*Service, error) {
-	s := &Service{verifier: v, path: filepath.Join(dataDir, KeysFile), max: max, now: v.now, keys: map[string]*record{}, challenges: map[string]time.Time{}}
+	s := &Service{verifier: v, path: filepath.Join(dataDir, KeysFile), max: max, now: v.now, keys: map[string]*record{}, challenges: map[string]pending{}, perClient: map[string]int{}, order: list.New()}
 	data, err := os.ReadFile(s.path)
 	if err != nil && !errors.Is(err, os.ErrNotExist) {
 		return nil, err
@@ -78,7 +93,7 @@ func (s *Service) Count() int {
 	return len(s.keys)
 }
 
-func (s *Service) Challenge() (string, error) {
+func (s *Service) Challenge(client string) (string, error) {
 	b := make([]byte, challengeBytes)
 	if _, err := rand.Read(b); err != nil {
 		return "", err
@@ -87,27 +102,49 @@ func (s *Service) Challenge() (string, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	now := s.now()
-	if len(s.challenges) >= maxChallenges {
-		for k, exp := range s.challenges {
-			if now.After(exp) {
-				delete(s.challenges, k)
-			}
-		}
-		if len(s.challenges) >= maxChallenges {
-			return "", ErrCapacity
-		}
+	s.expire(now)
+	if s.perClient[client] >= maxPerClient {
+		return "", ErrBusy
 	}
-	s.challenges[c] = now.Add(challengeTTL)
+	if len(s.challenges) >= maxChallenges {
+		return "", ErrCapacity
+	}
+	exp := now.Add(ChallengeTTL)
+	s.challenges[c] = pending{client: client, expires: exp}
+	s.perClient[client]++
+	s.order.PushBack(issued{challenge: c, expires: exp})
 	return c, nil
 }
 
+func (s *Service) expire(now time.Time) {
+	for e := s.order.Front(); e != nil; e = s.order.Front() {
+		it := e.Value.(issued)
+		if !now.After(it.expires) {
+			return
+		}
+		s.order.Remove(e)
+		if p, ok := s.challenges[it.challenge]; ok && p.expires.Equal(it.expires) {
+			s.forget(it.challenge, p)
+		}
+	}
+}
+
+func (s *Service) forget(c string, p pending) {
+	delete(s.challenges, c)
+	if s.perClient[p.client] <= 1 {
+		delete(s.perClient, p.client)
+	} else {
+		s.perClient[p.client]--
+	}
+}
+
 func (s *Service) consume(c string) bool {
-	exp, ok := s.challenges[c]
+	p, ok := s.challenges[c]
 	if !ok {
 		return false
 	}
-	delete(s.challenges, c)
-	return !s.now().After(exp)
+	s.forget(c, p)
+	return !s.now().After(p.expires)
 }
 
 func (s *Service) Register(keyID, attestation []byte, challenge string) error {
@@ -210,12 +247,7 @@ func (s *Service) markDirty() {
 func (s *Service) sweep() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	now := s.now()
-	for k, exp := range s.challenges {
-		if now.After(exp) {
-			delete(s.challenges, k)
-		}
-	}
+	s.expire(s.now())
 }
 
 func (s *Service) Run(ctx context.Context, every time.Duration) {

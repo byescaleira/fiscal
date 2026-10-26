@@ -1,24 +1,13 @@
 package publicdata
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 	"sort"
-	"strings"
 )
-
-func CPFKey(cpf string) string {
-	if strings.HasPrefix(cpf, "cpf:") {
-		return cpf
-	}
-	sum := sha256.Sum256([]byte("fiscal-person:" + cpf))
-	return "cpf:" + hex.EncodeToString(sum[:10])
-}
 
 type Slugs struct {
 	path  string

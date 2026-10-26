@@ -7,6 +7,7 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"strconv"
 
 	"liveresults/internal/appattest"
 )
@@ -23,7 +24,7 @@ const (
 )
 
 type Attestor interface {
-	Challenge() (string, error)
+	Challenge(client string) (string, error)
 	Register(keyID, attestation []byte, challenge string) error
 	Check(keyID, assertion, body []byte) error
 }
@@ -33,7 +34,12 @@ func (s *server) challenge(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusNotFound, "not_found", "route not found")
 		return
 	}
-	c, err := s.attest.Challenge()
+	c, err := s.attest.Challenge(ClientIP(r))
+	if errors.Is(err, appattest.ErrBusy) {
+		w.Header().Set("Retry-After", strconv.Itoa(int(appattest.ChallengeTTL.Seconds())))
+		writeError(w, http.StatusTooManyRequests, "rate_limited", "too many open challenges")
+		return
+	}
 	if err != nil {
 		w.Header().Set("Retry-After", "60")
 		writeError(w, http.StatusServiceUnavailable, "attest_busy", "try again later")

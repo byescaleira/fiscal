@@ -238,6 +238,7 @@ func (in *Ingest) Full(ctx context.Context) (Report, error) {
 func (in *Ingest) full(ctx context.Context) (Report, error) {
 	start := in.now()
 	var rep Report
+	pseud := publicdata.NewPseudonyms()
 	srcs := newSourceSet(in.stamp())
 	ds := &publicdata.Dataset{GeneratedAt: in.now(), Today: in.today(), Years: in.cfg.Years}
 	for _, s := range ibge.States {
@@ -266,7 +267,7 @@ func (in *Ingest) full(ctx context.Context) (Report, error) {
 		if fresh {
 			srcs.add("camara", "Câmara dos Deputados", "https://dadosabertos.camara.leg.br", []any{cam.people, cam.votes, cam.laws, cam.quotaTotal, cam.quotaByCategory})
 		}
-		pseudonymizePeople(cam.people)
+		pseudonymizePeople(pseud, cam.people)
 		people = append(people, cam.people...)
 		ds.Votes = append(ds.Votes, cam.votes...)
 		ds.Laws = append(ds.Laws, cam.laws...)
@@ -284,7 +285,7 @@ func (in *Ingest) full(ctx context.Context) (Report, error) {
 		if fresh {
 			srcs.add("senado", "Senado Federal", "https://legis.senado.leg.br/dadosabertos", []any{sen.people, sen.votes, sen.quotaTotal, sen.quotaByCategory})
 		}
-		pseudonymizePeople(sen.people)
+		pseudonymizePeople(pseud, sen.people)
 		people = append(people, sen.people...)
 		ds.Votes = append(ds.Votes, sen.votes...)
 		ds.Quota.Senators = sen.quotaTotal
@@ -308,13 +309,18 @@ func (in *Ingest) full(ctx context.Context) (Report, error) {
 		if fresh {
 			srcs.add("tse", "Tribunal Superior Eleitoral", "https://dadosabertos.tse.jus.br", []any{t.candidacies, t.campaigns})
 		}
-		pseudonymizeCandidacies(t.candidacies)
+		pseudonymizeCandidacies(pseud, t.candidacies)
 		cands = t.candidacies
 		campaigns = t.campaigns
 	} else {
 		in.skipped(ctx, "tse")
 	}
 	prev, next := electionYears(in.cfg.TSEYears)
+	pseudonymizePeople(pseud, people)
+	pseudonymizeCandidacies(pseud, cands)
+	if err := in.migrateSlugs(pseud); err != nil {
+		return rep, err
+	}
 	people = publicdata.Link(publicdata.LinkInput{People: people, Candidacies: cands, PreviousYear: prev, ElectionYear: next, StateNames: states})
 	people = in.filterScope(people)
 	if in.cfg.Enabled("assembleias") {
@@ -434,7 +440,7 @@ func (in *Ingest) live(ctx context.Context) (Report, error) {
 }
 
 func (in *Ingest) publish(ctx context.Context, kind string, ds *publicdata.Dataset, rep *Report, retain []string) ([]string, map[*publicdata.Person]string, error) {
-	slugs, err := publicdata.LoadSlugs(filepath.Join(in.cfg.DataDir, "slugs.json"))
+	slugs, err := publicdata.LoadSlugs(in.slugsPath())
 	if err != nil {
 		return nil, nil, err
 	}
@@ -475,7 +481,6 @@ func (in *Ingest) publish(ctx context.Context, kind string, ds *publicdata.Datas
 			rep.Release = rel.Release
 		}
 	}
-	in.promote(rep)
 	rep.People = len(ds.People)
 	rep.Votes = len(ds.Votes)
 	rep.Files, rep.Written, rep.Removed, rep.Bytes, rep.Gzip = st.Files, st.Written, st.Removed, st.Bytes, st.GzipBytes

@@ -283,7 +283,7 @@ func TestServiceRegistersKeysAndConsumesChallenges(t *testing.T) {
 		t.Fatal(err)
 	}
 	s.now = func() time.Time { return clock }
-	ch, err := s.Challenge()
+	ch, err := s.Challenge("198.51.100.7")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -296,7 +296,7 @@ func TestServiceRegistersKeysAndConsumesChallenges(t *testing.T) {
 	if err := s.Register(d.keyID, att, ch); !errors.Is(err, ErrChallenge) {
 		t.Fatalf("reused challenge = %v", err)
 	}
-	ch2, _ := s.Challenge()
+	ch2, _ := s.Challenge("198.51.100.7")
 	body := []byte(`{"raceId":"presidente-br","pushToken":"abcd","environment":"production","challenge":"` + ch2 + `"}`)
 	if err := s.Check(d.keyID, d.assert(t, appID, 1, body), body); err != nil {
 		t.Fatal(err)
@@ -307,8 +307,8 @@ func TestServiceRegistersKeysAndConsumesChallenges(t *testing.T) {
 	if err := s.Check(newDevice().keyID, d.assert(t, appID, 3, body), body); !errors.Is(err, ErrUnknownKey) {
 		t.Fatalf("unknown key = %v", err)
 	}
-	ch3, _ := s.Challenge()
-	clock = clock.Add(6 * time.Minute)
+	ch3, _ := s.Challenge("198.51.100.7")
+	clock = clock.Add(ChallengeTTL + time.Second)
 	late := []byte(`{"challenge":"` + ch3 + `"}`)
 	if err := s.Check(d.keyID, d.assert(t, appID, 4, late), late); !errors.Is(err, ErrChallenge) {
 		t.Fatalf("expired challenge = %v", err)
@@ -321,10 +321,58 @@ func TestServiceRegistersKeysAndConsumesChallenges(t *testing.T) {
 		t.Fatalf("reopen = %d %v", again.Count(), err)
 	}
 	again.now = func() time.Time { return clock }
-	ch4, _ := again.Challenge()
+	ch4, _ := again.Challenge("198.51.100.7")
 	replay := []byte(`{"challenge":"` + ch4 + `"}`)
 	if err := again.Check(d.keyID, d.assert(t, appID, 1, replay), replay); !errors.Is(err, ErrInvalid) {
 		t.Fatalf("the counter must survive a restart: %v", err)
+	}
+}
+
+func TestChallengesAreCappedPerClientAndExpire(t *testing.T) {
+	clock := time.Date(2026, 10, 26, 12, 0, 0, 0, time.UTC)
+	v := &Verifier{AppID: appID, Now: func() time.Time { return clock }}
+	s, err := Open(t.TempDir(), v, 10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	s.now = func() time.Time { return clock }
+	flood := "2001:db8:1:2::/64"
+	var first string
+	for i := range maxPerClient {
+		c, err := s.Challenge(flood)
+		if err != nil {
+			t.Fatalf("challenge %d: %v", i, err)
+		}
+		if i == 0 {
+			first = c
+		}
+	}
+	if _, err := s.Challenge(flood); !errors.Is(err, ErrBusy) {
+		t.Fatalf("over the client cap = %v", err)
+	}
+	if _, err := s.Challenge("198.51.100.7"); err != nil {
+		t.Fatalf("another client must still get a challenge: %v", err)
+	}
+	s.mu.Lock()
+	used := s.consume(first)
+	s.mu.Unlock()
+	if !used {
+		t.Fatal("the first challenge must be valid")
+	}
+	if _, err := s.Challenge(flood); err != nil {
+		t.Fatalf("a used challenge frees its slot: %v", err)
+	}
+	clock = clock.Add(ChallengeTTL + time.Second)
+	for range maxPerClient {
+		if _, err := s.Challenge(flood); err != nil {
+			t.Fatalf("expired challenges free the client: %v", err)
+		}
+	}
+	s.mu.Lock()
+	open, clients, queued := len(s.challenges), len(s.perClient), s.order.Len()
+	s.mu.Unlock()
+	if open != maxPerClient || clients != 1 || queued != maxPerClient {
+		t.Fatalf("after expiry open=%d clients=%d queued=%d", open, clients, queued)
 	}
 }
 

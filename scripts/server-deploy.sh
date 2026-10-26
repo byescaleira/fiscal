@@ -63,18 +63,19 @@ done
 run cp "$server"/deploy/docker/*.Dockerfile "$stage/docker/"
 run cp "$server"/deploy/systemd/* "$stage/systemd/"
 run cp "$server/compose.yaml" "$stage/compose.yaml"
+run cp "$server/deploy/promote-image.sh" "$stage/promote-image.sh"
 echo "2. Enviar binários, Dockerfiles, compose e units (sem tocar em .env, secrets/, data/, ingest-data/, public/)"
 remote_run "mkdir -p $remote/builds/$sha"
 run rsync -a --delete "$stage/" "$host:$remote/builds/$sha/"
 echo "3. Montar as imagens na VPS com prioridade mínima (só COPY dos binários; sem go build)"
 build_image() {
-  remote_run "cd $remote/builds/$sha && nice -n 19 ionice -c3 docker build -q -f docker/$1.Dockerfile -t fiscal-$1:$sha ."
+  remote_run "cd $remote/builds/$sha && nice -n 19 ionice -c3 docker build -q --label fiscal.sha=$sha -f docker/$1.Dockerfile -t fiscal-$1:$sha ."
 }
 want api && build_image api
 want ingest && build_image ingest
 want pages && build_image pages
 promote() {
-  remote_run "if docker image inspect fiscal-$1:current >/dev/null 2>&1; then docker tag fiscal-$1:current fiscal-$1:previous; elif docker image inspect fiscal-$1:latest >/dev/null 2>&1; then docker tag fiscal-$1:latest fiscal-$1:previous; fi; docker tag fiscal-$1:$sha fiscal-$1:current"
+  remote_run "sh $remote/builds/$sha/promote-image.sh $1 $sha"
 }
 if want units; then
   echo "4. compose.yaml e units"

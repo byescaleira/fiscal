@@ -56,6 +56,21 @@ echo "CLOUDFLARE_ACCOUNT_ID=<o Account ID>" >> .env && chmod 600 .env
 mkdir -p pages-data && chown 1000:1000 pages-data && chmod 700 pages-data
 ```
 
+Chave do pseudônimo do CPF (`secrets/pseudonym-key`). O `fiscal-ingest` guarda o CPF só como HMAC-SHA256 com essa chave e **não sobe sem ela** (o `-config-check` falha com `PSEUDONYM_KEY_FILE: ... (create it once with openssl rand -hex 32 ...)` e o `compose run` recusa a montagem). Crie antes do primeiro deploy da imagem nova, uma vez só:
+
+```sh
+ssh root@179.198.114.91
+cd /opt/fiscal-api
+install -m 600 -o 1000 -g 1000 /dev/null secrets/pseudonym-key
+openssl rand -hex 32 > secrets/pseudonym-key
+wc -c < secrets/pseudonym-key   # 65 (64 caracteres hexadecimais e a quebra de linha)
+```
+
+- **Guarde uma cópia** no gerenciador de senhas (`ssh root@179.198.114.91 cat /opt/fiscal-api/secrets/pseudonym-key | pbcopy`). Não cole no chat nem no repositório.
+- **Não troque nem perca a chave.** Ela é só interna: os slugs públicos ficam em `ingest-data/slugs.json`, que liga cada slug às chaves internas da pessoa. Com outra chave, o CPF das fontes deixa de bater com o que está no banco e no arquivo de slugs, e quem só tem CPF (governadores, deputados estaduais) ganharia slug novo.
+- **Migração automática.** Na primeira carga com a chave, cada CPF lido em claro (Câmara, Senado, TSE) também calcula o pseudônimo antigo, sem segredo, e o `slugs.json` troca o antigo pelo novo com o mesmo slug. Quem ainda não foi lido em claro fica com o antigo até a próxima fase `tse` (domingo). O banco e os backups antigos ainda guardam o pseudônimo antigo nas linhas históricas.
+- **Atualização ao vivo.** O snapshot da carga passou para a versão 2: depois do deploy, o `fiscal-live` pula ("no full load yet") até a primeira fase terminar.
+
 O `APPATTEST_APP_ID` não precisa entrar no `.env`: ele sai de `APNS_TEAM_ID` + `APNS_TOPIC` sem o sufixo, ou seja, `TEAMID.com.byescaleira.fiscal`. Opcionais:
 
 | Variável | Padrão | Para quê |
@@ -80,7 +95,7 @@ O que o script faz:
 1. **Compila no Mac** (`GOOS=linux GOARCH=amd64`) os três binários.
 2. **Envia** binários, Dockerfiles, `compose.yaml` e units para `/opt/fiscal-api/builds/<sha>`. Não toca em `.env`, `secrets/`, `data/`, `ingest-data/` nem `public/`.
 3. **Monta as imagens na VPS** com `nice -n 19 ionice -c3`. Só há `COPY`, sem compilação. A imagem `fiscal-pages` instala o `wrangler@4.149.0` na primeira vez.
-4. **Promove `:current`**, guardando a anterior em `:previous`. A API troca com `docker compose up -d --no-deps fiscal-api`. Se não ficar `healthy` em 90 s, o script volta sozinho para `:previous`.
+4. **Promove `:current`**, guardando a anterior em `:previous` só quando o sha muda. Cada imagem leva o rótulo `fiscal.sha`; rodar de novo o mesmo sha (o `server/deploy/promote-image.sh` confere) não apaga o alvo do rollback. A API troca com `docker compose up -d --no-deps fiscal-api`. Se não ficar `healthy` em 90 s, o script volta sozinho para `:previous`.
 5. **Units.**
    - Instala as units, remove o container antigo de longa duração `fiscal-ingest` e liga os timers das fases e o da atualização ao vivo.
    - O `fiscal-pages.timer` fica **desligado**.
@@ -131,6 +146,7 @@ Regras dos jobs:
 - **Lock global.** Uma fase que encontra outra rodando espera até 20 min e desiste com código 75 (tenta na próxima janela). A atualização ao vivo pula na hora.
 - **Guarda de carga.** Com load acima de 2 ou menos de 1,5 GB livres, a fase espera até 20 min e pula.
 - **Deploy em série.** Ao terminar, cada fase chama o `fiscal-pages`, que faz o deploy só do que mudou, um deploy por vez e com 3 tentativas.
+- **Alerta de destaque depois do Pages.** Só o `fiscal-pages`, depois do "Deployment complete", copia o `v2/highlights.json` da release que subiu para `public/published/highlights.json`, que o `fiscal-api` lê para o push-to-start. Uma release ao vivo que espera o `PAGES_DATA_INTERVAL` não dispara alerta antes de estar no Pages. Se a cópia falhar, a próxima execução sem mudança tenta de novo.
 
 ## 6. Operação
 
@@ -141,7 +157,7 @@ Regras dos jobs:
 - **Pausar tudo:** `systemctl stop 'fiscal-phase-*.timer' fiscal-live.timer`. Para voltar, use `start`.
 - **Voltar os dados publicados:**
   1. **Na hora:** painel do Pages › `fiscal-dados` › Deployments › o deploy bom › **Rollback**.
-  2. **Para o próximo deploy não trazer a release ruim de volta:** `docker compose --profile jobs run --rm --no-deps -T fiscal-ingest -site rollback`, que aponta `ready` para a release anterior (ou `-to <nome>`).
+  2. **Para o próximo deploy não trazer a release ruim de volta:** `docker compose --profile jobs run --rm --no-deps -T fiscal-ingest -site rollback`, que aponta `ready` para a release anterior (ou `-to <nome>`). O rollback pega o `ingest.lock`: com uma fase rodando, espera até `INGEST_LOCK_WAIT` (20 min) e, se ela não acabar, sai com código 75 sem mudar nada. O `-site status` não espera.
   3. **Pausar os timers** até corrigir a fonte.
 - **Queda de volume legítima** (troca de legislatura, por exemplo): rode a fase uma vez com `-allow-drop`.
 - **Job morto por memória** (`journalctl` mostra `OOMKilled` ou código 137):
@@ -173,5 +189,6 @@ Quando todas as versões no ar lerem o Pages, `@data` pode sair, e a VPS deixa d
 
 - **No app.** O `LiveResultsClient` pede um desafio (`POST /api/v1/attest/challenge`). Na primeira vez, gera e atesta a chave (`POST /api/v1/attest/keys`). A cada registro, manda a asserção do corpo exato nos cabeçalhos `X-Fiscal-Attest-Key` e `X-Fiscal-Attest-Assertion`, com o desafio no corpo.
 - **Sem suporte ou com o servidor antigo.** O aparelho sem suporte e o servidor antigo, que responde 404 no desafio, caem para o registro sem asserção. No modo `optional`, ele tem limite de 10 por minuto por IP.
+- **Desafios.** Cada desafio vale 2 min e serve uma vez. Cada cliente (IPv4, ou o /64 do IPv6) tem no máximo 8 desafios abertos; o nono responde `429 rate_limited` com `Retry-After: 120`, e um desafio usado ou vencido libera a vaga. O teto global continua em 100 mil.
 - **No servidor.** As chaves ficam em `DATA_DIR/attest-keys.json`, sem IP. Uma chave sem uso por 400 dias sai. A resposta `attest_unknown_key` faz o app atestar de novo.
 - **Pendência.** Falta o entitlement `com.apple.developer.devicecheck.appattest-environment = production` nos builds de distribuição (TestFlight e App Store já usam produção); builds do Xcode usam `development`.

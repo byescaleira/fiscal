@@ -197,6 +197,9 @@ type Watcher struct {
 	hash     [32]byte
 	sent     map[string]time.Time
 	reported bool
+	items    []Item
+	pending  bool
+	waiting  string
 }
 
 func New(o Options) *Watcher {
@@ -297,30 +300,44 @@ func (w *Watcher) read() ([]Item, bool) {
 
 func (w *Watcher) CheckOnce(ctx context.Context) {
 	w.mu.Lock()
-	items, changed := w.read()
-	if !changed {
+	if items, changed := w.read(); changed {
+		w.items, w.pending = items, true
+	}
+	if !w.pending {
 		w.mu.Unlock()
 		return
 	}
 	now := w.now()
-	it, ok := Pick(items, w.sent, now)
-	w.mu.Unlock()
+	it, ok := Pick(w.items, w.sent, now)
 	if !ok {
+		w.pending, w.waiting = false, ""
+		w.mu.Unlock()
 		return
 	}
+	w.mu.Unlock()
 	payload, err := BuildStart(it, now)
 	if err != nil {
 		w.logger.Printf("highlight alerts: build %s: %v", it.ID, err)
+		w.mu.Lock()
+		w.pending = false
+		w.mu.Unlock()
 		return
 	}
 	regs := w.registry.ForRace(Bucket)
 	if len(regs) == 0 {
-		w.logger.Printf("highlight alerts: %s eligible, no registrations", it.ID)
+		w.mu.Lock()
+		first := w.waiting != it.ID
+		w.waiting = it.ID
+		w.mu.Unlock()
+		if first {
+			w.logger.Printf("highlight alerts: %s eligible, waiting for registrations", it.ID)
+		}
 		return
 	}
 	sent, failed, removed := w.dispatch(ctx, regs, payload)
 	w.mu.Lock()
 	w.sent[it.ID] = now
+	w.pending, w.waiting = false, ""
 	w.saveLocked()
 	w.mu.Unlock()
 	w.logger.Printf("highlight alerts: start id=%s weight=%d registrations=%d sent=%d failed=%d removed=%d", it.ID, it.Weight, len(regs), sent, failed, removed)

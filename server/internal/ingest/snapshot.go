@@ -9,13 +9,11 @@ import (
 	"path/filepath"
 
 	"liveresults/internal/publicdata"
-	"liveresults/internal/publish"
 )
 
 const (
 	SnapshotFile    = "live-snapshot.gob"
-	snapshotVersion = 1
-	PublishedDir    = "published"
+	snapshotVersion = 2
 )
 
 var ErrNoSnapshot = errors.New("no full load snapshot yet")
@@ -90,19 +88,4 @@ func (in *Ingest) LoadSnapshot() error {
 	in.cities = snap.Cities
 	in.mu.Unlock()
 	return nil
-}
-
-func (in *Ingest) promote(rep *Report) {
-	data, err := os.ReadFile(filepath.Join(in.cfg.PublicDir, "v1", "highlights.json"))
-	if err != nil {
-		return
-	}
-	dst := filepath.Join(in.cfg.PublicDir, PublishedDir, "highlights.json")
-	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
-		in.warn(rep, "published highlights: %v", err)
-		return
-	}
-	if _, err := publish.WritePair(dst, data); err != nil {
-		in.warn(rep, "published highlights: %v", err)
-	}
 }

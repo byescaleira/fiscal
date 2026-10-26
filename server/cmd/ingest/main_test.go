@@ -1,13 +1,62 @@
 package main
 
 import (
+	"os"
+	"path/filepath"
 	"reflect"
+	"strings"
 	"testing"
 	"time"
+
+	"liveresults/internal/publicdata"
 )
 
+var testKeyFile string
+
+func TestMain(m *testing.M) {
+	dir, err := os.MkdirTemp("", "fiscal-ingest-key-")
+	if err != nil {
+		panic(err)
+	}
+	testKeyFile = filepath.Join(dir, "pseudonym-key")
+	if err := os.WriteFile(testKeyFile, []byte(strings.Repeat("5a", publicdata.PseudonymKeyBytes)+"\n"), 0o600); err != nil {
+		panic(err)
+	}
+	code := m.Run()
+	os.RemoveAll(dir)
+	os.Exit(code)
+}
+
 func env(m map[string]string) func(string) string {
-	return func(k string) string { return m[k] }
+	return func(k string) string {
+		if v, ok := m[k]; ok {
+			return v
+		}
+		if k == "PSEUDONYM_KEY_FILE" {
+			return testKeyFile
+		}
+		return ""
+	}
+}
+
+func TestPseudonymKeyFailsClosed(t *testing.T) {
+	missing := filepath.Join(t.TempDir(), "pseudonym-key")
+	_, err := loadConfig(env(map[string]string{"PSEUDONYM_KEY_FILE": missing}), now)
+	if err == nil || !strings.Contains(err.Error(), "PSEUDONYM_KEY_FILE") || !strings.Contains(err.Error(), "openssl rand -hex 32") {
+		t.Fatalf("missing key = %v", err)
+	}
+	weak := filepath.Join(t.TempDir(), "weak")
+	os.WriteFile(weak, []byte("secret"), 0o600)
+	if _, err := loadConfig(env(map[string]string{"PSEUDONYM_KEY_FILE": weak}), now); err == nil {
+		t.Fatal("a short key must fail")
+	}
+	c, err := loadConfig(env(nil), now)
+	if err != nil || len(c.pseudonym) != publicdata.PseudonymKeyBytes {
+		t.Fatalf("key = %d %v", len(c.pseudonym), err)
+	}
+	if defaultPseudonymKeyFile != "/run/fiscal/pseudonym-key" {
+		t.Fatalf("default = %s", defaultPseudonymKeyFile)
+	}
 }
 
 var now = time.Date(2026, 10, 25, 18, 0, 0, 0, time.UTC)
