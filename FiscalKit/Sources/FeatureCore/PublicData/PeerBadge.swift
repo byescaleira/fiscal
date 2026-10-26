@@ -141,6 +141,7 @@ public struct PeerMethodSheet: View {
                 }
             }
         }
+        .foregroundStyle(Color.primary)
         .fontDesign(.rounded)
         .presentationDetents([.medium, .large])
     }

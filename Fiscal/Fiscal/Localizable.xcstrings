@@ -5960,6 +5960,16 @@
         }
       }
     },
+    "Measured" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medido"
+          }
+        }
+      }
+    },
     "Median" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -10886,6 +10896,16 @@
         }
       }
     },
+    "Technical Details" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detalhes técnicos"
+          }
+        }
+      }
+    },
     "Term %@–%@" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -12845,6 +12865,16 @@
         }
       }
     },
+    "What comes first" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que vem primeiro"
+          }
+        }
+      }
+    },
     "What each party's leader asked the bench to vote. Parties in alphabetical order." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -12995,6 +13025,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Novidades da versão %@"
+          }
+        }
+      }
+    },
+    "When a Signal Is Missing" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando um sinal falta"
           }
         }
       }

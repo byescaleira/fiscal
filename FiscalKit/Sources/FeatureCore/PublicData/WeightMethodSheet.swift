@@ -92,39 +92,28 @@ public struct WeightMethodSheet: View {
 
     public var body: some View {
         NavigationStack {
-            List {
-                Section {
-                    Text(verbatim: method.summary)
-                    Text(verbatim: method.formula)
-                        .font(.headline)
-                } header: {
-                    Text("Weight").sectionTitle()
+            ScrollView {
+                VStack(alignment: .leading, spacing: .spaceL) {
+                    WeightFormulaCard(method: method)
+                    WeightLevelsCard()
+                    WeightPartCard(
+                        title: "Repercussion", symbol: "megaphone.fill", color: .retroDenim,
+                        text: method.repercussion, parts: method.parts
+                    ) {
+                        WeightSignalsList(signals: method.signals)
+                    }
+                    WeightPartCard(
+                        title: "Impact", symbol: "person.3.fill", color: .retroTeal,
+                        text: method.impact, parts: method.impactParts
+                    ) {
+                        EmptyView()
+                    }
+                    WeightNotesCard(method: method)
+                    WeightDetailsCard(method: method)
                 }
-                WeightRelevanceSection()
-                WeightPartsSection(
-                    title: "Repercussion", text: method.repercussion, parts: method.parts)
-                WeightCoverageSection(method: method)
-                WeightSignalsSection(signals: method.signals)
-                WeightPartsSection(
-                    title: "Impact", text: method.impact, parts: method.impactParts)
-                WeightValuesSection(title: "Type", values: method.kinds)
-                WeightValuesSection(title: "Reach", values: method.scopes)
-                WeightValuesSection(title: "Stage", values: method.stages)
-                WeightThemesSection(themes: method.themes)
-                Section {
-                    Text(verbatim: method.decay.text)
-                } header: {
-                    Text("Highlight of the Moment").sectionTitle()
-                }
-                Section {
-                    Text(verbatim: method.alertRule.summary)
-                } header: {
-                    Text("Lock Screen Alert").sectionTitle()
-                }
-                WeightListSection(title: "Rules", lines: method.rules)
-                WeightListSection(title: "Limits", lines: method.limits)
+                .padding(.horizontal, .spaceL)
+                .padding(.bottom, .space2XL)
             }
-            .scrollContentBackground(.hidden)
             .background(.sheetBackground)
             .navigationTitle("How We Measure")
             #if os(iOS)
@@ -133,191 +122,338 @@ public struct WeightMethodSheet: View {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
-                        .tint(Color.primary)
                 }
             }
         }
+        .foregroundStyle(Color.primary)
+        .tint(Color.primary)
         .fontDesign(.rounded)
         .presentationDetents([.medium, .large])
     }
 }
 
-private struct WeightRelevanceSection: View {
+private struct WeightCard<Content: View>: View {
+    let content: Content
+
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+
     var body: some View {
-        Section {
-            ForEach(Relevance.allCases, id: \.self) { level in
-                HStack {
-                    RelevanceBadge(weight: level.minimumWeight)
-                    Spacer(minLength: .spaceS)
-                    Text(verbatim: level.range)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .monospacedDigit()
-                }
-                .accessibilityElement(children: .combine)
-            }
-        } header: {
-            Text("Relevance").sectionTitle()
-        } footer: {
-            Text(
-                "On screen the weight shows as a level; the number stays in the detail. The level orders, it never says whether a measure is good or bad."
-            )
+        VStack(alignment: .leading, spacing: .spaceM) {
+            content
         }
+        .padding(.spaceL)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.groupedRow, in: .rect(cornerRadius: .radiusGroup))
     }
 }
 
-private struct WeightPartsSection: View {
-    let title: LocalizedStringKey
-    let text: String
-    let parts: [WeightMethod.Part]
-
-    var body: some View {
-        Section {
-            Text(verbatim: text).font(.subheadline)
-            ForEach(parts) { part in
-                VStack(alignment: .leading, spacing: .space2XS) {
-                    HStack {
-                        Text(verbatim: part.label).font(.subheadline)
-                        Spacer(minLength: .spaceS)
-                        Text(verbatim: PublicFormat.percent(part.share))
-                            .font(.subheadline.weight(.semibold))
-                            .monospacedDigit()
-                    }
-                    ProgressBar(value: part.share, color: .retroDenim)
-                }
-                .accessibilityElement(children: .combine)
-            }
-        } header: {
-            Text(title).sectionTitle()
-        }
-    }
-}
-
-private struct WeightCoverageSection: View {
+private struct WeightFormulaCard: View {
     let method: WeightMethod
 
     var body: some View {
-        Section {
-            Text(verbatim: method.renormalization ?? Self.fallback)
+        WeightCard {
+            Text("What comes first")
+                .font(.titleMedium)
+                .accessibilityAddTraits(.isHeader)
+            Text(verbatim: method.summary)
                 .font(.subheadline)
-            ForEach(method.confidence ?? []) { level in
-                VStack(alignment: .leading, spacing: .space2XS) {
-                    Text(verbatim: level.label).font(.rowTitle)
-                    Text(verbatim: level.text)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                }
-                .accessibilityElement(children: .combine)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: .spaceS) { terms }
+                VStack(alignment: .leading, spacing: .spaceS) { terms }
             }
-        } header: {
-            Text("Missing Signals").sectionTitle()
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text(verbatim: method.formula))
         }
     }
 
-    private static var fallback: String {
-        String(
-            appLocalized:
-                "A missing signal doesn't count as zero: repercussion is the weighted average of only the signals measured in this load. With no signal measured, the weight is the impact alone, and the app says so."
-        )
+    @ViewBuilder private var terms: some View {
+        WeightTerm(
+            title: "Repercussion", value: share(0), symbol: "megaphone.fill",
+            color: .retroDenim)
+        Image(systemName: "plus").font(.headline).foregroundStyle(.secondary)
+        WeightTerm(
+            title: "Impact", value: share(1), symbol: "person.3.fill",
+            color: .retroTeal)
+        Image(systemName: "equal").font(.headline).foregroundStyle(.secondary)
+        WeightTerm(title: "Weight", value: "0–100", symbol: "scalemass.fill", color: .primary)
+    }
+
+    private func share(_ index: Int) -> String {
+        let shares = method.formula.matches(of: /\d+%/).map { String($0.output) }
+        return shares.indices.contains(index) ? shares[index] : "—"
     }
 }
 
-private struct WeightSignalsSection: View {
+private struct WeightTerm: View {
+    let title: LocalizedStringKey
+    let value: String
+    let symbol: String
+    let color: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: .space2XS) {
+            Image(systemName: symbol)
+                .font(.icon(.s, weight: .semibold))
+                .foregroundStyle(color)
+            Text(verbatim: value)
+                .font(.scoreboardNumber)
+                .monospacedDigit()
+                .lineLimit(1)
+                .minimumScaleFactor(.shareTextShrink)
+            Text(title)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+        }
+        .padding(.spaceM)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(color.opacity(.opacityTint), in: .rect(cornerRadius: .radiusM))
+    }
+}
+
+private struct WeightLevelsCard: View {
+    var body: some View {
+        WeightCard {
+            Label("Relevance", systemImage: "chart.bar.fill")
+                .font(.rowTitle)
+            HStack(spacing: .spaceHairline) {
+                ForEach(Relevance.allCases.reversed(), id: \.self) { level in
+                    VStack(alignment: .leading, spacing: .spaceXS) {
+                        Capsule()
+                            .fill(Color.retroTeal.opacity(opacity(level)))
+                            .frame(height: .spaceS)
+                        Text(verbatim: level.shortTitle)
+                            .font(.subheadline.weight(.bold))
+                        Text(verbatim: level.range)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .accessibilityElement(children: .combine)
+                }
+            }
+            Text(
+                "On screen the weight shows as a level; the number stays in the detail. The level orders, it never says whether a measure is good or bad."
+            )
+            .font(.footnote)
+            .foregroundStyle(.secondary)
+            .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private func opacity(_ level: Relevance) -> Double {
+        switch level {
+        case .low: .opacitySoft
+        case .medium: .opacityStrong - .opacityTint
+        case .high: 1
+        }
+    }
+}
+
+private struct WeightPartCard<Extra: View>: View {
+    let title: LocalizedStringKey
+    let symbol: String
+    let color: Color
+    let text: String
+    let parts: [WeightMethod.Part]
+    let extra: Extra
+
+    init(
+        title: LocalizedStringKey, symbol: String, color: Color, text: String,
+        parts: [WeightMethod.Part], @ViewBuilder extra: () -> Extra
+    ) {
+        self.title = title
+        self.symbol = symbol
+        self.color = color
+        self.text = text
+        self.parts = parts
+        self.extra = extra()
+    }
+
+    var body: some View {
+        WeightCard {
+            Label(title, systemImage: symbol)
+                .font(.rowTitle)
+                .foregroundStyle(color)
+            Text(verbatim: text)
+                .font(.subheadline)
+                .fixedSize(horizontal: false, vertical: true)
+            VStack(alignment: .leading, spacing: .spaceS) {
+                ForEach(parts) { part in
+                    HStack(spacing: .spaceM) {
+                        Text(verbatim: part.label)
+                            .font(.footnote)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        ProgressBar(value: part.share, color: color)
+                            .frame(maxWidth: .infinity)
+                        Text(verbatim: PublicFormat.percent(part.share))
+                            .font(.footnote.weight(.semibold))
+                            .monospacedDigit()
+                    }
+                    .accessibilityElement(children: .combine)
+                }
+            }
+            extra
+        }
+    }
+}
+
+private struct WeightSignalsList: View {
     let signals: [WeightMethod.Signal]
 
     var body: some View {
-        Section {
-            ForEach(signals) { signal in
-                VStack(alignment: .leading, spacing: .space2XS) {
-                    HStack {
-                        Text(verbatim: signal.name).font(.rowTitle)
-                        Spacer(minLength: .spaceS)
-                        if !signal.isMeasured {
-                            Chip("Not measured", color: .secondary)
+        if !signals.isEmpty {
+            Divider()
+            VStack(alignment: .leading, spacing: .spaceS) {
+                Text("Sources")
+                    .font(.caption.weight(.heavy))
+                    .textCase(.uppercase)
+                    .foregroundStyle(.secondary)
+                ForEach(signals) { signal in
+                    HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
+                        StatusCircle(
+                            signal.isMeasured
+                                ? String(appLocalized: "Measured")
+                                : String(appLocalized: "Not measured"),
+                            symbol: signal.isMeasured ? "checkmark" : "minus",
+                            color: signal.isMeasured ? .positive : .secondary)
+                        VStack(alignment: .leading, spacing: .spaceHairline) {
+                            Text(verbatim: signal.name).font(.subheadline.weight(.semibold))
+                            Text(verbatim: "\(signal.measures) · \(signal.window)")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
                         }
                     }
-                    Text(verbatim: "\(signal.measures) · \(signal.window)")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                    if let note = signal.note {
-                        Text(verbatim: note).font(.caption).foregroundStyle(.tertiary)
-                    }
+                    .accessibilityElement(children: .combine)
                 }
-                .accessibilityElement(children: .combine)
             }
-        } header: {
-            Text("Sources").sectionTitle()
         }
     }
 }
 
-private struct WeightValuesSection: View {
-    let title: LocalizedStringKey
-    let values: [WeightMethod.Value]
+private struct WeightNotesCard: View {
+    let method: WeightMethod
 
     var body: some View {
-        Section {
-            ForEach(values) { value in
-                VStack(alignment: .leading, spacing: .space2XS) {
-                    HStack(alignment: .firstTextBaseline) {
-                        Text(verbatim: value.label).font(.subheadline)
-                        Spacer(minLength: .spaceS)
-                        Text(verbatim: PublicFormat.percent(value.value))
-                            .font(.subheadline.weight(.semibold))
-                            .monospacedDigit()
-                    }
-                    if let note = value.note {
-                        Text(verbatim: note).font(.caption).foregroundStyle(.secondary)
-                    }
-                }
-                .accessibilityElement(children: .combine)
-            }
-        } header: {
-            Text(title).sectionTitle()
+        WeightCard {
+            note(
+                "When a Signal Is Missing", symbol: "questionmark.circle.fill",
+                text: method.renormalization
+                    ?? String(
+                        appLocalized:
+                            "A missing signal doesn't count as zero: repercussion is the weighted average of only the signals measured in this load. With no signal measured, the weight is the impact alone, and the app says so."
+                    ))
+            Divider()
+            note("Highlight of the Moment", symbol: "sparkles", text: method.decay.text)
+            Divider()
+            note("Lock Screen Alert", symbol: "bell.badge.fill", text: method.alertRule.summary)
         }
+    }
+
+    private func note(_ title: LocalizedStringKey, symbol: String, text: String) -> some View {
+        VStack(alignment: .leading, spacing: .space2XS) {
+            Label(title, systemImage: symbol).font(.rowTitle)
+            Text(verbatim: text)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .accessibilityElement(children: .combine)
     }
 }
 
-private struct WeightThemesSection: View {
-    let themes: [WeightMethod.Reach]
+private struct WeightDetailsCard: View {
+    let method: WeightMethod
 
     var body: some View {
-        Section {
-            ForEach(themes) { reach in
-                VStack(alignment: .leading, spacing: .space2XS) {
-                    HStack(alignment: .firstTextBaseline) {
-                        Text(verbatim: Theme(rawValue: reach.key)?.title ?? reach.key)
-                            .font(.subheadline)
-                        Spacer(minLength: .spaceS)
-                        Text(verbatim: PublicFormat.percent(reach.reach))
-                            .font(.subheadline.weight(.semibold))
-                            .monospacedDigit()
-                    }
-                    Text(verbatim: reach.reason).font(.caption).foregroundStyle(.secondary)
+        WeightCard {
+            DisclosureGroup {
+                VStack(alignment: .leading, spacing: .spaceL) {
+                    values("Type", method.kinds)
+                    values("Reach", method.scopes)
+                    values("Stage", method.stages)
+                    themes
+                    lines("Rules", method.rules)
+                    lines("Limits", method.limits)
                 }
-                .accessibilityElement(children: .combine)
+                .padding(.top, .spaceM)
+            } label: {
+                Label("Technical Details", systemImage: "list.bullet.rectangle")
+                    .font(.rowTitle)
             }
-        } header: {
-            Text("Theme Reach").sectionTitle()
-        } footer: {
-            Text("Each theme counts only by how many people it reaches, never by political side.")
         }
     }
-}
 
-private struct WeightListSection: View {
-    let title: LocalizedStringKey
-    let lines: [String]
+    @ViewBuilder private func values(_ title: LocalizedStringKey, _ values: [WeightMethod.Value])
+        -> some View
+    {
+        if !values.isEmpty {
+            group(title) {
+                ForEach(values) { value in
+                    row(value.label, PublicFormat.percent(value.value), note: value.note)
+                }
+            }
+        }
+    }
 
-    var body: some View {
+    @ViewBuilder private var themes: some View {
+        if !method.themes.isEmpty {
+            group("Theme Reach") {
+                ForEach(method.themes) { reach in
+                    row(
+                        Theme(rawValue: reach.key)?.title ?? reach.key,
+                        PublicFormat.percent(reach.reach), note: reach.reason)
+                }
+            }
+        }
+    }
+
+    @ViewBuilder private func lines(_ title: LocalizedStringKey, _ lines: [String]) -> some View {
         if !lines.isEmpty {
-            Section {
+            group(title) {
                 ForEach(lines, id: \.self) { line in
-                    Text(verbatim: line).font(.subheadline)
+                    Text(verbatim: line)
+                        .font(.footnote)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-            } header: {
-                Text(title).sectionTitle()
             }
         }
+    }
+
+    private func group<Content: View>(
+        _ title: LocalizedStringKey, @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: .spaceS) {
+            Text(title)
+                .font(.caption.weight(.heavy))
+                .textCase(.uppercase)
+                .foregroundStyle(.secondary)
+            content()
+        }
+    }
+
+    private func row(_ label: String, _ value: String, note: String?) -> some View {
+        VStack(alignment: .leading, spacing: .spaceHairline) {
+            HStack(alignment: .firstTextBaseline) {
+                Text(verbatim: label).font(.footnote)
+                Spacer(minLength: .spaceS)
+                Text(verbatim: value)
+                    .font(.footnote.weight(.semibold))
+                    .monospacedDigit()
+            }
+            if let note {
+                Text(verbatim: note)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .accessibilityElement(children: .combine)
     }
 }
