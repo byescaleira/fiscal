@@ -168,7 +168,7 @@ Cada arquivo sai com o `.gz` ao lado, por escrita atômica (`internal/publish`, 
 | `TSE_YEARS` | `2022,2026` | Eleições lidas por inteiro (candidaturas, bens, votos por município e contas). A penúltima é a do mandato atual, a última é a dos eleitos aguardando posse |
 | `TSE_CANDIDATE_YEARS` | `2018` | Eleições lidas só para candidaturas e bens (ligação dos senadores eleitos em 2018 e linha do tempo) |
 | `INGEST_UFS` | vazio (todas) | Limita a carga a UFs (`ac,sp`). O presidente e o vice entram sempre. Os arquivos anuais da Câmara são nacionais e são baixados inteiros mesmo assim |
-| `INGEST_SOURCES` | vazio (todas) | Subconjunto de `camara,senado,tse,ibge,receita,assembleias,comprova,cidades,repercussao,anp,sidra` |
+| `INGEST_SOURCES` | vazio (todas) | Subconjunto de `camara,senado,tse,ibge,receita,assembleias,comprova,cidades,repercussao,anp,sidra,historia` |
 | `TSE_CITY_YEAR` | `2024` | Eleição municipal lida para prefeitos, vices e vereadores (`2016`, `2020`, `2024`…; nunca no futuro) |
 | `INGEST_FULL_AT` | `06:30` | Hora (Brasília) da carga completa diária; a Câmara regera os arquivos anuais entre 00h e 04h |
 | `INGEST_LIVE_INTERVAL` | `10m` | Intervalo da atualização ao vivo (de 2 min a 1 h) |
@@ -178,6 +178,7 @@ Cada arquivo sai com o `.gz` ao lado, por escrita atômica (`internal/publish`, 
 | `INGEST_REQUEST_GAP` | `150ms` | Intervalo mínimo entre requisições ao mesmo host (o Senado devolve 429 acima de 10 por segundo) |
 | `STORE_PATH` | `DATA_DIR/fiscal.db` (`/data/fiscal.db` no container) | Banco SQLite da carga; precisa terminar em `.db` |
 | `BACKUP_KEEP` | `14` | Quantos backups diários manter em `DATA_DIR/backups` (1 a 365) |
+| `HISTORY_YEARS` | `1989,1990,1994,1998,2002,2006,2010,2014,2018,2022` | Eleições da Memória (`historia`): 1989 e anos gerais a partir de 1990, sempre no passado |
 
 Configuração inválida derruba o processo no boot (falha fechada). Nenhuma variável é segredo.
 
@@ -196,6 +197,7 @@ Configuração inválida derruba o processo no boot (falha fechada). Nenhuma var
 | ANP, Série Histórica do Levantamento de Preços (`anp`) | as planilhas mensais `shlp/2001-2012/mensal-brasil-2001-a-2012.xlsx`, `mensal-estados-2001-a-2012.xlsx`, `shlp/mensal/mensal-brasil-desde-jan2013.xlsx` e `mensal-estados-desde-jan2013.xlsx` em `https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/precos-revenda-e-de-distribuicao-combustiveis/`, lidas por um leitor de XLSX próprio (`internal/sources/xlsx`); o preço médio de revenda do mês de gasolina comum, etanol hidratado, diesel S10 e GLP (13 kg), no Brasil e nas 27 UFs | `indicators/{gasolina,etanol,diesel-s10,glp}.json` |
 | IBGE, SIDRA (`sidra`) | `https://apisidra.ibge.gov.br/values`: tabela 1737 (número-índice do IPCA, Brasil, desde 1995) e a variação mensal (variável 63) das tabelas 2938 (jul/2006 a dez/2011), 1419 (2012 a 2019) e 7060 (desde 2020), no Brasil, nas 11 regiões metropolitanas e nas 5 capitais do IPCA, para o índice geral (7169), alimentação no domicílio (7171), aluguel residencial (7448), energia elétrica residencial (7485) e gasolina (7657). Fora do índice geral do Brasil, o índice é encadeado das variações mensais (base 100 no mês antes do primeiro dado seguido) | `indicators/ipca*.json` |
 | Projeto Comprova (CC BY-ND 4.0) | API pública do WordPress, `/wp-json/wp/v2/publicacoes` (100 por página, até `X-WP-TotalPages`, só os campos usados). A primeira carga lê a janela inteira; as seguintes pedem só o que mudou (`modified_after`, com 1 h de folga) e a cada 7 dias a janela é relida inteira, para tirar o que saiu do ar | `people/{slug}/checks.json` (título, selo, data e link; o corpo da checagem não é guardado nem publicado) |
+| Memória (`historia`) | TSE: `votacao_candidato_uf` e `detalhe_votacao_uf` (1989 e 1990, TXT sem cabeçalho), `votacao_candidato_munzona` e `detalhe_votacao_munzona` (1994 a 2022; o CSV `BRASIL` quando existe, senão os das UFs e o `BR`) e, quando o arquivo de votos vem sem situação do candidato (presidente em 2006 e 2010), `consulta_cand`. Ipeadata: `SCN10_PIBG10` (PIB, IBGE), `PRECOS_IPCAG` (IPCA, IBGE), `IGP_IGPDIG` (IGP-DI, FGV) e `PNADC12_TDESOC12` (desocupação, IBGE). Conteúdo curado em `internal/history/content/` (períodos, guias e o catálogo de fontes), embutido no binário e validado a cada carga | `history/elections/index.json`, `history/elections/{ano}-{presidente\|governador\|senador}-{br\|uf}.json`, `history/periods.json` e `history/study.json` |
 | Repercussão (`repercussao`) | GDELT DOC 2.0 (`mode=timelinevolraw`, 30 dias, `sourcelang:portuguese`, uma consulta a cada 6 s, até `NEWS_BUDGET` por carga) pela proposição e pelo nome; Wikipédia em português (`action=query` com redirecionamento, em lotes de 50) e Wikimedia Pageviews (`per-article`, `user`, 30 dias) do artigo do político e do tema. O Bluesky fica de fora: `searchPosts` responde 403 sem autenticação | `people/{slug}/actions.json`, `highlights.json` e `method/weight.json` (só contagens; regra em `docs/changes/app-1.0/weight.md`) |
 
 ### Regras
@@ -220,6 +222,15 @@ Configuração inválida derruba o processo no boot (falha fechada). Nenhuma var
   - **Antes e durante o mandato:** `people/{slug}/context.json` para todo político federal e estadual em exercício com data de posse (deputado estadual sem data usa 1º de fevereiro do ano seguinte à eleição): `{ mandateStart, scope, indicators: [{ id, name, unit, kind, scope, area, atStart, atStartDate, latest, latestDate, months, changeDuring, beforeDate, changeBefore, series }], sources }`. O valor da posse é o do mês anterior ao mês da posse; `changeDuring` é a variação dele até o último mês publicado (`months` meses) e `changeBefore` a variação nos mesmos `months` meses antes; `series` traz o recorte de `2 × months` meses. A jurisdição é o Brasil para presidente e vice e a UF para os demais; sem série na UF (o IPCA só cobre 16 UFs), vale a do Brasil, e o item diz qual (`scope`, `area`). Prefeitos, vices e vereadores ficam sem o arquivo (seriam 69 mil cópias do mesmo recorte por UF); o app faz o mesmo cálculo a partir de `indicators/{id}.json`. Eleitos aguardando posse também não ganham o arquivo. Nenhum texto de causa: só valores e variações.
   - **Falha:** as duas fontes são opcionais. Se a ANP ou o SIDRA falharem (ou vierem com menos de 100 meses no Brasil, ou a ANP sem as 27 UFs), a carga segue com a última leitura boa de `DATA_DIR/indicators.json`; sem leitura anterior, sai sem esses arquivos.
 - **Falha:** se a Câmara listar menos de 400 deputados, o Senado menos de 70 senadores, o IBGE menos de 5.000 municípios, ou uma fonte obrigatória (Câmara, Senado, TSE das eleições inteiras, IBGE) falhar, a carga usa a última leitura guardada no banco daquela fonte (estado `fallback`, `updatedAt` mantido); sem leitura guardada, para sem publicar. Receita e assembleias que falham viram `null` ou `notLoaded`, com aviso no log. Se o Comprova falhar, a carga segue com as checagens da última leitura boa (`DATA_DIR/comprova.json`), e os arquivos publicados ficam iguais.
+
+### Memória (`historia`)
+
+- **Votos:** soma por candidato, turno e UF dos arquivos por município e zona; presidente no total nacional (com exterior e voto em trânsito) e por UF para o mapa. A porcentagem é sobre a soma dos votos válidos dados a candidatos, como o TSE divulga. Nos anos sem a coluna `QT_VOTOS_NOMINAIS_VALIDOS` (2002 a 2014), vale o voto de quem estava `APTO` ou `DEFERIDO`; o resto entra em `annulled`. A carga compara a soma com o `QT_VOTOS_NOMINAIS_VALIDOS` do detalhe e só avisa no log quando difere.
+- **Comparecimento:** aptos, comparecimento, abstenção, brancos e nulos do arquivo de detalhe do mesmo ano.
+- **Senado:** `seats` é 2 em 1994, 2002, 2010 e 2018 (renovação de dois terços) e 1 nos outros anos.
+- **Cache:** cada ano fica em `DATA_DIR/cache/history/elections-{ano}.json`, com o `ETag` dos ZIPs; sem mudança no TSE, a carga só faz `HEAD`. Se o TSE falhar, vale a última leitura; sem leitura, o ano vira um item de `gaps`.
+- **Indicadores:** séries anuais em `DATA_DIR/history-indicators.json` (última leitura boa). A desocupação anual é a média dos quatro trimestres civis da PNAD Contínua, calculada pelo Fiscal.
+- **Conteúdo curado:** cada item dos períodos e dos guias referencia uma fonte do catálogo (`content/sources.json`); fonte desconhecida, data inválida ou resposta de teste fora das opções derrubam só o arquivo afetado, com aviso no log.
 
 ### Checagens (Projeto Comprova)
 
@@ -297,7 +308,7 @@ O Caddy precisa servir os novos arquivos estáticos antes do `handle /api/*` (pr
 ```
 	@data {
 		method GET HEAD
-		path_regexp data ^/api/v1/((meta|today|status)|(index|places|people|votes|agenda|money)/[a-z0-9/-]+)\.json$
+		path_regexp data ^/api/v1/((meta|today|status)|(index|places|people|votes|agenda|money|history)/[a-z0-9/-]+)\.json$
 	}
 	handle @data {
 		root * /opt/fiscal-api/public

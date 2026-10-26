@@ -1,6 +1,7 @@
 package tse
 
 import (
+	"archive/zip"
 	"fmt"
 	"io"
 	"strings"
@@ -47,6 +48,31 @@ type VoteRow struct {
 	Nominal    int64
 }
 
+func countsAsValid(row table.Row) bool {
+	if status := strings.ToUpper(row.Str("DS_SITUACAO_CANDIDATURA")); status != "" {
+		return status == "APTO" || strings.HasPrefix(status, "DEFERIDO")
+	}
+	switch strings.ToUpper(row.Str("DS_DETALHE_SITUACAO_CAND")) {
+	case "", "DEFERIDO", "DEFERIDO COM RECURSO", "SUB JUDICE":
+		return true
+	}
+	return false
+}
+
+func WholeCountry(zr *zip.Reader, prefix string, year int) *zip.File {
+	want := strings.ToLower(fmt.Sprintf("%s_%d_BRASIL.csv", prefix, year))
+	for _, f := range zr.File {
+		name := f.Name
+		if i := strings.LastIndexByte(name, '/'); i >= 0 {
+			name = name[i+1:]
+		}
+		if strings.ToLower(name) == want {
+			return f
+		}
+	}
+	return nil
+}
+
 type TurnoutRow struct {
 	Round       int
 	Office      int
@@ -57,6 +83,7 @@ type TurnoutRow struct {
 	Abstentions int64
 	Blank       int64
 	Null        int64
+	Nominal     int64
 }
 
 func count(row table.Row, col string) int64 {
@@ -68,14 +95,22 @@ func count(row table.Row, col string) int64 {
 }
 
 func ReadMajoritarianVotes(r io.Reader, fn func(VoteRow)) error {
-	t, err := open(r, "NR_TURNO", "CD_CARGO", "SG_UF", "SG_UE", "SQ_CANDIDATO", "NR_CANDIDATO", "NM_CANDIDATO", "NM_URNA_CANDIDATO", "SG_PARTIDO", "QT_VOTOS_NOMINAIS_VALIDOS", "DS_SIT_TOT_TURNO")
+	t, err := open(r, "NR_TURNO", "CD_CARGO", "SG_UF", "SG_UE", "SQ_CANDIDATO", "NR_CANDIDATO", "NM_CANDIDATO", "NM_URNA_CANDIDATO", "SG_PARTIDO", "QT_VOTOS_NOMINAIS", "DS_SIT_TOT_TURNO")
 	if err != nil {
 		return err
 	}
+	hasValid := t.Has("QT_VOTOS_NOMINAIS_VALIDOS")
 	return t.Each(func(row table.Row) error {
 		office := atoi(row.Raw("CD_CARGO"))
 		if !Majoritarian(office) {
 			return nil
+		}
+		nominal := count(row, "QT_VOTOS_NOMINAIS")
+		valid := nominal
+		if hasValid {
+			valid = count(row, "QT_VOTOS_NOMINAIS_VALIDOS")
+		} else if !countsAsValid(row) {
+			valid = 0
 		}
 		fn(VoteRow{
 			Round:      atoi(row.Raw("NR_TURNO")),
@@ -91,8 +126,8 @@ func ReadMajoritarianVotes(r io.Reader, fn func(VoteRow)) error {
 			Coalition:  row.Str("NM_COLIGACAO"),
 			Members:    row.Str("DS_COMPOSICAO_COLIGACAO"),
 			Result:     row.Str("DS_SIT_TOT_TURNO"),
-			Valid:      count(row, "QT_VOTOS_NOMINAIS_VALIDOS"),
-			Nominal:    count(row, "QT_VOTOS_NOMINAIS"),
+			Valid:      valid,
+			Nominal:    nominal,
 		})
 		return nil
 	})
@@ -122,6 +157,7 @@ func ReadTurnout(r io.Reader, fn func(TurnoutRow)) error {
 			Abstentions: count(row, "QT_ABSTENCOES"),
 			Blank:       count(row, "QT_VOTOS_BRANCOS"),
 			Null:        null,
+			Nominal:     count(row, "QT_VOTOS_NOMINAIS_VALIDOS"),
 		})
 		return nil
 	})

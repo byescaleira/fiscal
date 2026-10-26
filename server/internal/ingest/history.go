@@ -19,7 +19,7 @@ import (
 )
 
 const (
-	historyCacheVersion  = "1"
+	historyCacheVersion  = "7"
 	historyIndicatorFile = "history-indicators.json"
 )
 
@@ -100,33 +100,42 @@ func (in *Ingest) electionYear(ctx context.Context, year int) ([]history.Race, e
 			tally.SetDate(round, date)
 		}
 		if err := eachText(vz, "VOTACAO_CANDIDATO_UF", func(r io.Reader) error {
-			return tse.ReadUFVotes(r, func(v tse.VoteRow) { tally.Vote(v, v.Office == tse.President) })
+			return tse.ReadUFVotes(r, tally.Vote)
 		}); err != nil {
 			return nil, err
 		}
 		if err := eachText(tz, "DETALHE_VOTACAO_UF", func(r io.Reader) error {
-			return tse.ReadUFTurnout(r, func(t tse.TurnoutRow) { tally.Turnout(t, t.Office == tse.President) })
+			return tse.ReadUFTurnout(r, tally.Turnout)
 		}); err != nil {
 			return nil, err
 		}
 	} else {
-		vf := tse.Entries(vz, "votacao_candidato_munzona", year, nil)
-		tf := tse.Entries(tz, "detalhe_votacao_munzona", year, nil)
-		if len(vf) == 0 || len(tf) == 0 {
-			return nil, errors.New("no matching CSV inside the ZIP")
-		}
-		if err := tse.EachEntry(vf, func(name string, r io.Reader) error {
-			national := nationalEntry(name)
-			return tse.ReadMajoritarianVotes(r, func(v tse.VoteRow) { tally.Vote(v, national) })
+		if err := readMunZone(vz, "votacao_candidato_munzona", year, func(r io.Reader, keep func(int) bool) error {
+			return tse.ReadMajoritarianVotes(r, func(v tse.VoteRow) {
+				if keep(v.Office) {
+					tally.Vote(v)
+				}
+			})
 		}); err != nil {
 			return nil, err
 		}
-		if err := tse.EachEntry(tf, func(name string, r io.Reader) error {
-			national := nationalEntry(name)
-			return tse.ReadTurnout(r, func(t tse.TurnoutRow) { tally.Turnout(t, national) })
+		if err := readMunZone(tz, "detalhe_votacao_munzona", year, func(r io.Reader, keep func(int) bool) error {
+			return tse.ReadTurnout(r, func(t tse.TurnoutRow) {
+				if keep(t.Office) {
+					tally.Turnout(t)
+				}
+			})
 		}); err != nil {
 			return nil, err
 		}
+	}
+	if tally.NeedsResults() {
+		if err := in.fillResults(ctx, year, tally); err != nil {
+			in.logger.Printf("warning: history %d: results missing in the vote file and the candidates file failed: %v", year, err)
+		}
+	}
+	if bad := tally.Mismatches(); len(bad) > 0 {
+		in.logger.Printf("warning: history %d: valid votes differ from the detail file in %d races: %s", year, len(bad), strings.Join(bad, "; "))
 	}
 	races := tally.Races(historySources(year))
 	if len(races) == 0 {
@@ -139,8 +148,59 @@ func (in *Ingest) electionYear(ctx context.Context, year int) ([]history.Race, e
 	return races, nil
 }
 
-func nationalEntry(name string) bool {
-	return strings.HasSuffix(strings.ToUpper(name), "_BR.CSV")
+func readMunZone(zr *zip.Reader, prefix string, year int, read func(r io.Reader, keep func(int) bool) error) error {
+	if whole := tse.WholeCountry(zr, prefix, year); whole != nil {
+		return tse.EachEntry([]*zip.File{whole}, func(_ string, r io.Reader) error {
+			return read(r, func(int) bool { return true })
+		})
+	}
+	files := tse.Entries(zr, prefix, year, nil)
+	if len(files) == 0 {
+		return errors.New("no matching CSV inside the ZIP")
+	}
+	return tse.EachEntry(files, func(name string, r io.Reader) error {
+		national := strings.HasSuffix(strings.ToUpper(name), "_BR.CSV")
+		return read(r, func(office int) bool { return (office == tse.President) == national })
+	})
+}
+
+func (in *Ingest) fillResults(ctx context.Context, year int, tally *history.Tally) error {
+	cands, err := cached(ctx, in, "consulta_cand", year, nil, tse.CandidatesURL(year), func(r io.Reader, out *[]tse.Candidate) error {
+		return tse.ReadCandidates(r, func(c tse.Candidate) { *out = append(*out, c) })
+	})
+	if err != nil {
+		return err
+	}
+	type key struct {
+		sq    string
+		round int
+	}
+	type seat struct {
+		office, scope, number string
+		round                 int
+	}
+	bySQ := map[key]string{}
+	byNumber := map[seat]string{}
+	for _, c := range cands {
+		office, ok := history.OfficeOf(c.Office)
+		if !ok || c.Result == "" {
+			continue
+		}
+		scope := strings.ToLower(c.UF)
+		if office == history.OfficePresident {
+			scope = history.ScopeBrazil
+		}
+		bySQ[key{c.SQ, c.Round}] = c.Result
+		byNumber[seat{office, scope, c.Number, c.Round}] = c.Result
+	}
+	filled := tally.FillResults(func(office, scope string, round int, sq, number string) string {
+		if r := bySQ[key{sq, round}]; r != "" {
+			return r
+		}
+		return byNumber[seat{office, scope, number, round}]
+	})
+	in.logger.Printf("history %d: filled %d results from the candidates file", year, filled)
+	return nil
 }
 
 var ufRoundDates = map[int]map[int]string{

@@ -20,6 +20,11 @@ const (
 
 var officeByCode = map[int]string{tse.President: OfficePresident, tse.Governor: OfficeGovernor, tse.Senator: OfficeSenator}
 
+func OfficeOf(code int) (string, bool) {
+	o, ok := officeByCode[code]
+	return o, ok
+}
+
 var officeSlug = map[string]string{OfficePresident: "presidente", OfficeGovernor: "governador", OfficeSenator: "senador"}
 
 var officeOrder = map[string]int{OfficePresident: 0, OfficeGovernor: 1, OfficeSenator: 2}
@@ -141,6 +146,8 @@ func ScopeName(scope string) string {
 		return "Brasil"
 	case ScopeAbroad:
 		return "Exterior"
+	case "vt":
+		return "Voto em trânsito"
 	}
 	return ibge.StateName(strings.ToUpper(scope))
 }
@@ -165,7 +172,7 @@ type stateKey struct {
 }
 
 type turnout struct {
-	electorate, turnout, abstentions, blank, null int64
+	electorate, turnout, abstentions, blank, null, nominal int64
 }
 
 type Tally struct {
@@ -184,12 +191,9 @@ func NewTally(year int) *Tally {
 	}
 }
 
-func (t *Tally) scope(office string, uf string, national bool) (string, bool) {
+func (t *Tally) scope(office, uf string) (string, bool) {
 	if office == OfficePresident {
-		return ScopeBrazil, national
-	}
-	if national {
-		return "", false
+		return ScopeBrazil, true
 	}
 	uf = strings.ToLower(uf)
 	if len(uf) != 2 || ibge.StateName(strings.ToUpper(uf)) == "" {
@@ -198,7 +202,7 @@ func (t *Tally) scope(office string, uf string, national bool) (string, bool) {
 	return uf, true
 }
 
-func (t *Tally) Vote(v tse.VoteRow, national bool) {
+func (t *Tally) Vote(v tse.VoteRow) {
 	office, ok := officeByCode[v.Office]
 	sq := v.SQ
 	if sq == "" {
@@ -207,7 +211,7 @@ func (t *Tally) Vote(v tse.VoteRow, national bool) {
 	if !ok || v.Round < 1 || sq == "|" {
 		return
 	}
-	scope, ok := t.scope(office, v.UF, national)
+	scope, ok := t.scope(office, v.UF)
 	if !ok {
 		return
 	}
@@ -237,12 +241,12 @@ func (t *Tally) Vote(v tse.VoteRow, national bool) {
 	}
 }
 
-func (t *Tally) Turnout(r tse.TurnoutRow, national bool) {
+func (t *Tally) Turnout(r tse.TurnoutRow) {
 	office, ok := officeByCode[r.Office]
 	if !ok || r.Round < 1 {
 		return
 	}
-	scope, ok := t.scope(office, r.UF, national)
+	scope, ok := t.scope(office, r.UF)
 	if !ok {
 		return
 	}
@@ -257,6 +261,55 @@ func (t *Tally) Turnout(r tse.TurnoutRow, national bool) {
 	agg.abstentions += r.Abstentions
 	agg.blank += r.Blank
 	agg.null += r.Null
+	agg.nominal += r.Nominal
+}
+
+func (t *Tally) Mismatches() []string {
+	sums := map[groupKey]int64{}
+	for k, c := range t.cands {
+		sums[groupKey{office: k.office, round: k.round, scope: k.scope}] += c.Votes
+	}
+	var out []string
+	for k, agg := range t.turnout {
+		if agg.nominal > 0 && sums[k] != agg.nominal {
+			out = append(out, fmt.Sprintf("%s %s round %d: candidates %d, detail %d", k.office, k.scope, k.round, sums[k], agg.nominal))
+		}
+	}
+	sort.Strings(out)
+	return out
+}
+
+func (t *Tally) NeedsResults() bool {
+	missing := map[groupKey]bool{}
+	for k, c := range t.cands {
+		g := groupKey{office: k.office, round: k.round, scope: k.scope}
+		if _, seen := missing[g]; !seen {
+			missing[g] = true
+		}
+		if c.Result != "" {
+			missing[g] = false
+		}
+	}
+	for _, m := range missing {
+		if m {
+			return true
+		}
+	}
+	return false
+}
+
+func (t *Tally) FillResults(result func(office, scope string, round int, sq, number string) string) int {
+	filled := 0
+	for k, c := range t.cands {
+		if c.Result != "" {
+			continue
+		}
+		if r := result(k.office, k.scope, k.round, k.sq, c.Number); r != "" {
+			c.Result = r
+			filled++
+		}
+	}
+	return filled
 }
 
 func (t *Tally) SetDate(round int, date string) {
@@ -299,14 +352,32 @@ func (t *Tally) Races(sources []Ref) []Race {
 		for _, n := range nums {
 			race.Rounds = append(race.Rounds, t.round(rk.office, rk.scope, n, byRound[n]))
 		}
+		var notes []string
 		if race.Seats == 2 {
-			note := "Duas vagas: cada eleitor deu dois votos, e a porcentagem é sobre o total de votos válidos dados aos candidatos."
+			notes = append(notes, "Duas vagas: cada eleitor deu dois votos, e a porcentagem é sobre o total de votos válidos dados aos candidatos.")
+		}
+		if last := len(race.Rounds) - 1; last >= 0 && race.Rounds[last].Round == 2 && noResults(race.Rounds[last].Candidates) && len(race.Rounds[last].Candidates) > 0 {
+			top := &race.Rounds[last].Candidates[0]
+			top.Elected = true
+			notes = append(notes, "O arquivo do TSE não traz a situação final do 2º turno; aparece como eleito o mais votado, como manda a Constituição (art. 77, § 3º, e art. 28).")
+		}
+		if len(notes) > 0 {
+			note := strings.Join(notes, " ")
 			race.Note = &note
 		}
 		out = append(out, race)
 	}
 	sort.Slice(out, func(i, j int) bool { return less(out[i].Office, out[i].Scope, out[j].Office, out[j].Scope) })
 	return out
+}
+
+func noResults(cands []Candidate) bool {
+	for _, c := range cands {
+		if strings.TrimSpace(c.Result) != "" {
+			return false
+		}
+	}
+	return true
 }
 
 func less(o1, s1, o2, s2 string) bool {
