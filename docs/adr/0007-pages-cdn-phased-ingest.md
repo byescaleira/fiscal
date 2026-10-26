@@ -1,6 +1,6 @@
 # 0007. Dados públicos no Cloudflare Pages, carga em fases na VPS atual e App Attest no registro
 
-- **Estado:** Proposto
+- **Estado:** Proposto; os itens 4 (carga em fases) e 5 (publicação) foram substituídos por [0008](0008-smart-sync.md)
 - **Data:** 2026-10-26
 - **Mudança:** [`app-1.0`](../changes/app-1.0/proposal.md)
 
