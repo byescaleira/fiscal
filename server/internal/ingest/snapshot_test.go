@@ -51,8 +51,8 @@ func TestOneShotLiveRunsFromTheSnapshotAndPublishesNothingWithoutNews(t *testing
 	if !live.Unchanged || live.Written != 0 || live.Release != rep.Release {
 		t.Fatalf("live = %+v", live)
 	}
-	if _, err := os.Stat(filepath.Join(in.cfg.PublicDir, PublishedDir, "highlights.json")); err != nil {
-		t.Fatalf("published highlights: %v", err)
+	if _, err := os.Stat(filepath.Join(in.cfg.PublicDir, "published", "highlights.json")); !errors.Is(err, os.ErrNotExist) {
+		t.Fatalf("the load must leave published highlights to the Pages job: %v", err)
 	}
 }
 

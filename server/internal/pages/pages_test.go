@@ -194,3 +194,66 @@ func TestASilentWranglerExitIsNotADeploy(t *testing.T) {
 		t.Fatalf("a silent exit must retry and not move the state: %d calls", len(h.calls))
 	}
 }
+
+func (h *harness) stageHighlights(kind, day, highlights string) string {
+	h.t.Helper()
+	h.write("highlights.json", highlights)
+	h.write("index/people.json", `[{"slug":"a","name":"A"}]`)
+	h.write("people/a.json", `{"slug":"a"}`)
+	h.write("meta.json", `{"generatedAt":"2026-10-26T06:30:00-03:00","counts":{"people":1}}`)
+	h.write("today.json", `{"date":"`+day+`"}`)
+	h.clock = h.clock.Add(time.Minute)
+	rel, err := h.stager.Stage(kind, []string{"index/people.json", "people/a.json", "meta.json", "today.json", "highlights.json"})
+	if err != nil {
+		h.t.Fatal(err)
+	}
+	return rel.Release
+}
+
+func (h *harness) published() string {
+	data, err := os.ReadFile(filepath.Join(h.public, PublishedDir, HighlightsFile))
+	if err != nil {
+		return ""
+	}
+	return string(data)
+}
+
+func TestHighlightsArePublishedOnlyAfterTheDeployIsConfirmed(t *testing.T) {
+	h := newHarness(t)
+	first := `{"items":[{"id":"h1"}]}`
+	h.stageHighlights("full", "2026-10-26", first)
+	h.cfg.DryRun = true
+	h.cycle()
+	h.cfg.DryRun = false
+	if got := h.published(); got != "" {
+		t.Fatalf("a dry run published %s", got)
+	}
+	h.silent = true
+	if _, err := h.cfg.Cycle(context.Background()); err == nil {
+		t.Fatal("silent wrangler must fail")
+	}
+	if got := h.published(); got != "" {
+		t.Fatalf("an unconfirmed deploy published %s", got)
+	}
+	h.silent = false
+	if out := h.cycle(); !out.Deployed || h.published() != first {
+		t.Fatalf("after the deploy: %+v published=%q", out, h.published())
+	}
+	if _, err := os.Stat(filepath.Join(h.public, PublishedDir, HighlightsFile+".gz")); err != nil {
+		t.Fatalf("gzip pair: %v", err)
+	}
+	second := `{"items":[{"id":"h2"}]}`
+	h.stageHighlights("live", "2026-10-27", second)
+	if out := h.cycle(); out.Deployed || h.published() != first {
+		t.Fatalf("waiting for the interval: %+v published=%q", out, h.published())
+	}
+	h.clock = h.clock.Add(time.Hour)
+	if out := h.cycle(); !out.Deployed || h.published() != second {
+		t.Fatalf("after the interval: %+v published=%q", out, h.published())
+	}
+	h.write("highlights.json", `{"items":[{"id":"staged-only"}]}`)
+	os.Remove(filepath.Join(h.public, PublishedDir, HighlightsFile))
+	if out := h.cycle(); out.Deployed || out.Reason != "nothing changed" || h.published() != second {
+		t.Fatalf("nothing changed must restore the deployed highlights: %+v published=%q", out, h.published())
+	}
+}

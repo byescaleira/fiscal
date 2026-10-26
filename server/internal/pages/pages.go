@@ -18,6 +18,7 @@ import (
 	"strings"
 	"time"
 
+	"liveresults/internal/publish"
 	"liveresults/internal/site"
 )
 
@@ -26,6 +27,8 @@ const (
 	DeployDir      = "deploy"
 	deployedMarker = "Deployment complete"
 	FreeFiles      = 20000
+	PublishedDir   = "published"
+	HighlightsFile = "highlights.json"
 )
 
 type Runner func(ctx context.Context, name string, args, env []string) ([]byte, error)
@@ -200,6 +203,7 @@ func (c *Config) Cycle(ctx context.Context) (Outcome, error) {
 	racesChanged := racesHash != st.RacesHash
 	if !dataChanged && !racesChanged && !c.Force {
 		out.Reason = "nothing changed"
+		c.promote(siteDir, current)
 		return out, nil
 	}
 	if dataChanged && !racesChanged && !c.Force && rel.Kind == "live" && current > st.Release {
@@ -248,7 +252,33 @@ func (c *Config) Cycle(ctx context.Context) (Outcome, error) {
 		return out, err
 	}
 	c.logf("deployed %s to %s/%s: files=%d data=%v races=%v today=%d", current, c.Project, c.Branch, count, dataChanged, racesChanged, st.Days[day])
+	c.promote(siteDir, current)
 	return out, nil
+}
+
+func (c *Config) promote(siteDir, release string) {
+	data, err := os.ReadFile(filepath.Join(siteDir, site.Layout, HighlightsFile))
+	if errors.Is(err, fs.ErrNotExist) {
+		return
+	}
+	if err == nil && !json.Valid(data) {
+		err = errors.New("not valid JSON")
+	}
+	dst := filepath.Join(c.PublicDir, PublishedDir, HighlightsFile)
+	if err == nil {
+		err = os.MkdirAll(filepath.Dir(dst), 0o755)
+	}
+	changed := false
+	if err == nil {
+		changed, err = publish.WritePair(dst, data)
+	}
+	if err != nil {
+		c.logf("published highlights of %s: %v (the next run tries again)", release, err)
+		return
+	}
+	if changed {
+		c.logf("published highlights of %s for the lock screen alert", release)
+	}
 }
 
 func assemble(siteDir, dir, staging string, live []string) (int, error) {

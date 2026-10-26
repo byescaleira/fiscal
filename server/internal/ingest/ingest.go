@@ -475,7 +475,6 @@ func (in *Ingest) publish(ctx context.Context, kind string, ds *publicdata.Datas
 			rep.Release = rel.Release
 		}
 	}
-	in.promote(rep)
 	rep.People = len(ds.People)
 	rep.Votes = len(ds.Votes)
 	rep.Files, rep.Written, rep.Removed, rep.Bytes, rep.Gzip = st.Files, st.Written, st.Removed, st.Bytes, st.GzipBytes
