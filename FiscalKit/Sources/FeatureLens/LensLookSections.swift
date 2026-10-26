@@ -88,10 +88,11 @@ struct LensLookSection: View {
                     Task { await lens.setIcon(icon) }
                 }
             } header: {
-                Text("App Icon").sectionTitle()
+                Text("App Icon").sectionTitle().railHeader()
             } footer: {
-                Text("One icon for each palette, or the Amazon at dawn.")
+                Text("One icon for each palette, or the Amazon at dawn.").railHeader()
             }
+            .railSection()
         }
     }
 }
@@ -114,11 +115,13 @@ private struct LensArtSection: View {
             LensArtCarousel(works: lens.collectionWorks)
                 .id(lens.collection?.id)
         } header: {
-            Text("Art").sectionTitle()
+            Text("Art").sectionTitle().railHeader()
         } footer: {
             Text(
                 "Public domain works by Brazilian artists, always with credit. The art dresses your cards; the data stays the same."
             )
+            .railHeader()
         }
+        .railSection()
     }
 }

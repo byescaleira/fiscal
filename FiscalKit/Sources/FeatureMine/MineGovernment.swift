@@ -16,6 +16,7 @@ struct MineGovernSection: View {
                         VStack(spacing: .spaceL) {
                             ForEach(seats) { MineSeatCard(seat: $0) }
                         }
+                        .padding(.horizontal, .railListMargin)
                     } else {
                         EdgeToEdgeRail {
                             ForEach(seats) { seat in
@@ -29,9 +30,11 @@ struct MineGovernSection: View {
                 }
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
             } header: {
-                Text("Who Governs").sectionTitle()
+                Text("Who Governs").sectionTitle().railHeader()
             }
+            .railSection()
         }
     }
 }

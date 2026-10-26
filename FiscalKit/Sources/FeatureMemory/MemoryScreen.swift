@@ -93,10 +93,11 @@ private struct PresidentialTimelineSection: View {
                 }
             }
         } header: {
-            Text("Presidential elections").sectionTitle()
+            Text("Presidential elections").sectionTitle().railHeader()
         } footer: {
-            Text(verbatim: memory.electionFooter)
+            Text(verbatim: memory.electionFooter).railHeader()
         }
+        .railSection()
     }
 }
 

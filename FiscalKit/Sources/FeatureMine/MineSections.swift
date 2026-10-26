@@ -109,10 +109,15 @@ struct MineFollowingSection: View {
                 }
             }
         } header: {
-            Text("Following").sectionTitle()
+            Text("Following").sectionTitle().railHeader(showsRail)
         } footer: {
-            Text("Who you follow stays on this device.")
+            Text("Who you follow stays on this device.").railHeader(showsRail)
         }
+        .railSection(showsRail)
+    }
+
+    private var showsRail: Bool {
+        !mine.isEmpty && !dynamicTypeSize.isAccessibilitySize
     }
 }
 

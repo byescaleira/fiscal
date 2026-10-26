@@ -41,7 +41,7 @@ public struct EdgeToEdgeRail<Content: View>: View {
         .padding(.horizontal, -bleed)
         .listRowInsets(EdgeInsets())
         .listRowBackground(Color.clear)
-        .railSectionMargins(placement == .listRow && !isGroupedColumn)
+        .listRowSeparator(.hidden)
     }
 
     @ViewBuilder private var stack: some View {
@@ -76,11 +76,37 @@ extension View {
         #endif
     }
 
+    public func railSection(_ isActive: Bool = true) -> some View {
+        modifier(RailSectionModifier(isActive: isActive))
+    }
+
+    public func railHeader(_ isActive: Bool = true) -> some View {
+        modifier(RailHeaderModifier(isActive: isActive))
+    }
+
     @ViewBuilder fileprivate func railSnapping(_ snaps: Bool) -> some View {
         if snaps {
             scrollTargetBehavior(.viewAligned)
         } else {
             self
         }
+    }
+}
+
+private struct RailSectionModifier: ViewModifier {
+    @Environment(\.isGroupedColumn) private var isGroupedColumn
+    let isActive: Bool
+
+    func body(content: Content) -> some View {
+        content.railSectionMargins(isActive && !isGroupedColumn)
+    }
+}
+
+private struct RailHeaderModifier: ViewModifier {
+    @Environment(\.isGroupedColumn) private var isGroupedColumn
+    let isActive: Bool
+
+    func body(content: Content) -> some View {
+        content.padding(.horizontal, isActive && !isGroupedColumn ? .railHeaderInset : .zero)
     }
 }

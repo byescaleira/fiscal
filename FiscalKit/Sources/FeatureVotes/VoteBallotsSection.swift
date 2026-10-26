@@ -63,8 +63,11 @@ struct VoteBallotsSection: View {
         @Bindable var vote = vote
         Section {
             BallotFilterPills()
-                .listRowInsets(EdgeInsets())
-                .listRowBackground(Color.clear)
+        } header: {
+            Text(verbatim: vote.ballotsTitle).sectionTitle().railHeader()
+        }
+        .railSection()
+        Section {
             if let party = vote.party {
                 Button {
                     vote.select(party: nil)
@@ -87,8 +90,6 @@ struct VoteBallotsSection: View {
             } else {
                 ForEach(ballots) { BallotRow(ballot: $0, size: .badgeM) }
             }
-        } header: {
-            Text(verbatim: vote.ballotsTitle).sectionTitle()
         } footer: {
             VStack(alignment: .leading, spacing: .space2XS) {
                 Text("Names in alphabetical order. Search by name, party or state.")

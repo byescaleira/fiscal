@@ -49,8 +49,9 @@ private struct GuideContent: View {
                     }
                 }
             } header: {
-                Text("Swipe through the cards").sectionTitle()
+                Text("Swipe through the cards").sectionTitle().railHeader()
             }
+            .railSection()
             if !guide.quiz.isEmpty {
                 QuizSections(guide: guide)
             }

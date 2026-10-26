@@ -12,11 +12,20 @@ struct SpendingSection: View {
                 Text(verbatim: headline)
                     .font(.headline)
                     .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal, .railTitleMargin)
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
             }
             if !money.spenderPreview.isEmpty {
                 SpenderCarousel(spenders: money.spenderPreview)
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
+            }
+        } header: {
+            Text(verbatim: MoneyModel.Section.quota.title).sectionTitle().railHeader()
+        }
+        .railSection()
+        Section {
+            if !money.spenderPreview.isEmpty {
                 if money.spenders.count > money.spenderPreview.count {
                     NavigationLink {
                         MoneySpendersScreen(
@@ -44,8 +53,6 @@ struct SpendingSection: View {
             if let note = money.spendScopeNote {
                 IconRow(verbatim: note, symbol: "map", color: .secondary)
             }
-        } header: {
-            Text(verbatim: MoneyModel.Section.quota.title).sectionTitle()
         } footer: {
             VStack(alignment: .leading, spacing: .space2XS) {
                 Text(
@@ -69,22 +76,19 @@ private struct SpenderCarousel: View {
             VStack(spacing: .spaceM) {
                 ForEach(spenders) { SpenderCard(spender: $0) }
             }
+            .padding(.horizontal, .railListMargin)
+            .listRowInsets(EdgeInsets())
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
         } else {
-            ScrollView(.horizontal) {
-                HStack(alignment: .top, spacing: .spaceM) {
-                    ForEach(spenders) { spender in
-                        SpenderCard(spender: spender)
-                            .containerRelativeFrame(.horizontal) { length, _ in
-                                min(length * .moneySpenderShare, .moneySpenderCard)
-                            }
-                    }
+            EdgeToEdgeRail {
+                ForEach(spenders) { spender in
+                    SpenderCard(spender: spender)
+                        .containerRelativeFrame(.horizontal) { length, _ in
+                            min(length * .moneySpenderShare, .moneySpenderCard)
+                        }
                 }
-                .fixedSize(horizontal: false, vertical: true)
-                .scrollTargetLayout()
             }
-            .scrollTargetBehavior(.viewAligned)
-            .scrollIndicators(.hidden)
-            .scrollClipDisabled()
         }
     }
 }

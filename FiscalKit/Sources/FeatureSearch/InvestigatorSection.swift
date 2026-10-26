@@ -21,6 +21,7 @@ struct InvestigatorSection: View {
             Section {
                 InvestigatorSuggestions()
             }
+            .railSection()
         }
     }
 }
@@ -116,7 +117,7 @@ private struct InvestigatorSuggestions: View {
         VStack(alignment: .leading, spacing: .spaceS) {
             Text("Suggested investigations")
                 .sectionTitle()
-                .padding(.horizontal, .railListMargin)
+                .padding(.horizontal, .railTitleMargin)
             if dynamicTypeSize.isAccessibilitySize {
                 VStack(spacing: .spaceM) {
                     ForEach(board.suggestions) { SuggestionCard(suggestion: $0) }
@@ -133,7 +134,7 @@ private struct InvestigatorSuggestions: View {
         }
         .listRowInsets(EdgeInsets())
         .listRowBackground(Color.clear)
-        .railSectionMargins()
+        .listRowSeparator(.hidden)
     }
 }
 
