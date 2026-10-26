@@ -16,6 +16,22 @@ O Fiscal mostra o que os seus representantes fazem com o seu voto, a partir do q
   - viram uma enciclopédia neutra que ninguém abre duas vezes.
 - O Brasil está dividido em dois públicos grandes, com prioridades diferentes, e os dois querem fiscalizar. A direita costuma olhar para gasto público, impostos, segurança, corrupção e liberdade. A esquerda costuma olhar para desigualdade, programas sociais, meio ambiente, direitos e serviços públicos. Os dois olham para corrupção, privilégios de político e emendas.
 
+## A Lente pelo apoio (decisão do usuário em 2026-10-26; substitui o lado)
+
+- **Sai o lado:** a régua esquerda/centro/direita deixa de existir. A Lente passa a ser **quem a pessoa apoia**: de 1 a 5 políticos de qualquer cargo, do vereador ao presidente, escolhidos por busca com foto e tag, ou "Prefiro não dizer", que é uma escolha legítima e deixa o app neutro.
+- **O que o apoio muda:**
+  - **Temas:** vêm primeiro os temas em que os apoiados mais atuam, tirados dos projetos, votos e discursos deles.
+  - **Hoje e Destaque do momento:** priorizam o que eles fizeram.
+  - **Votações:** mostram "como quem você apoia votou".
+- **O que continua igual:**
+  - **Fatos:** os mesmos para todos.
+  - **Outra lente:** mostra o que se destaca para quem apoia outras pessoas, para não virar bolha.
+  - **Nunca qualifica:** o app não dá nota nem ranking a ninguém.
+- **Apoiar e seguir são separados:** seguir, na aba Meus, é acompanhar qualquer pessoa, inclusive quem a pessoa não apoia. Apoiar define a Lente, e quem é apoiado passa a ser seguido automaticamente.
+- **Privacidade:** apoio político é dado sensível pela LGPD (art. 5º, II). Fica só no aparelho: não vai para servidor, iCloud, backup, notificação, Spotlight nem imagem compartilhada.
+- **Visual:** paleta, arte e ícone não vêm da cor do partido do apoiado, porque isso viraria material de campanha. A pessoa escolhe em Aparência.
+- O texto abaixo, sobre o lado, fica como histórico.
+
 ## A ideia: o app se adapta ao seu lado, os fatos são os mesmos
 
 O Brasil está polarizado, e o Fiscal assume isso de frente: **o app se adapta ao lado da pessoa, e deixa isso claro o tempo todo** (decisão do usuário em 2026-10-25). Quem se vê à direita, à esquerda ou no centro, ou quem prefere ser imparcial, abre um app que parece feito para si, com os mesmos dados oficiais por baixo.
