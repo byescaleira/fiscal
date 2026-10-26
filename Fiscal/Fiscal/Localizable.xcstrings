@@ -9442,6 +9442,16 @@
         }
       }
     },
+    "Weight %lld of 100 · repercussion + impact" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peso %lld de 100 · repercussão + impacto"
+          }
+        }
+      }
+    },
     "Weight orders what is happening; it never rates it." : {
       "localizations" : {
         "pt-BR" : {
