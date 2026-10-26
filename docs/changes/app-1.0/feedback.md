@@ -151,7 +151,7 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Expressões neutras aleatórias de tempos em tempos nos retratos (positivas/negativas só quando o contexto pede) | no iPhone; "pensar" no Fiscalizar ligado | PersonPortrait, avatars.py |
 | Trilhos e carrosséis cortando as laterais: devem ir de ponta a ponta | no iPhone, 2ª correção (seção sem margem); aguardando conferência | EdgeToEdgeRail |
 | Investigações salvas no iCloud (SwiftData + CloudKit) | no iPhone; falta publicar o schema no console do CloudKit | FiscalData |
-| Servidor não pode cair no ingest; seguro; só o app consulta; 8 GB para milhões | aprovado tudo + Cloudflare; código em andamento (frente server-resilience); VPS própria e DNS são passos do usuário | server/, ADR |
+| Servidor não pode cair no ingest; seguro; só o app consulta; 8 GB para milhões | Cloudflare Pages grátis no ar em dados.fiscal.byescaleira.com (CNAME na Vercel); código da migração em andamento (frente server-resilience) | server/, ADR |
 
 ## Ícone
 
