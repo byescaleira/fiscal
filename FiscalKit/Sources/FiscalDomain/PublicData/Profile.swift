@@ -9,6 +9,7 @@ public struct Profile: Codable, Hashable, Identifiable, Sendable {
     public let party: String
     public let photo: URL?
     public let status: PersonStatus
+    public private(set) var gender: Gender?
     public let mandate: Mandate?
     public let birthDate: CalendarDay?
     public let birthPlace: String?
@@ -38,6 +39,7 @@ public struct Profile: Codable, Hashable, Identifiable, Sendable {
         party = card.party
         photo = card.photo
         status = card.status
+        gender = card.gender
         self.mandate = mandate
         self.birthDate = birthDate
         self.birthPlace = birthPlace
@@ -60,7 +62,15 @@ public struct Profile: Codable, Hashable, Identifiable, Sendable {
     public var card: PersonCard {
         PersonCard(
             slug: slug, name: name, office: office, uf: uf, party: party, photo: photo,
-            status: status)
+            status: status, gender: gender)
+    }
+
+    public var officeTitle: String { office.title(for: gender) }
+
+    public func with(gender: Gender?) -> Profile {
+        var copy = self
+        copy.gender = gender
+        return copy
     }
 
     public var history: History {

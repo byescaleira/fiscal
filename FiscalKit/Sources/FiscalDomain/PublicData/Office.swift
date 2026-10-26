@@ -21,6 +21,21 @@ public enum Office: String, CaseIterable, Codable, Identifiable, Sendable {
         }
     }
 
+    public func title(for gender: Gender?) -> String {
+        guard gender == .female else { return title }
+        return switch self {
+        case .president, .vicePresident: title
+        case .senator: String(appLocalized: "Senator (female)")
+        case .federalDeputy: String(appLocalized: "Federal Deputy (female)")
+        case .governor: String(appLocalized: "Governor (female)")
+        case .viceGovernor: String(appLocalized: "Vice Governor (female)")
+        case .stateDeputy: String(appLocalized: "State Deputy (female)")
+        case .mayor: String(appLocalized: "Mayor (female)")
+        case .viceMayor: String(appLocalized: "Vice Mayor (female)")
+        case .cityCouncilor: String(appLocalized: "City Councilor (female)")
+        }
+    }
+
     public var isFederal: Bool {
         switch self {
         case .president, .vicePresident, .senator, .federalDeputy: true
@@ -35,8 +50,8 @@ public enum Office: String, CaseIterable, Codable, Identifiable, Sendable {
         }
     }
 
-    public static func title(of raw: String) -> String {
-        Office(rawValue: raw)?.title ?? raw
+    public static func title(of raw: String, for gender: Gender? = nil) -> String {
+        Office(rawValue: raw)?.title(for: gender) ?? raw
     }
 }
 

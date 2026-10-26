@@ -62,7 +62,7 @@ public final class CompareModel {
     }
 
     public func detail(for card: PersonCard) -> String {
-        card.uf == "br" ? card.office.title : "\(card.office.title) · \(card.uf.uppercased())"
+        card.uf == "br" ? card.officeTitle : "\(card.officeTitle) · \(card.uf.uppercased())"
     }
 
     public func isChosen(_ card: PersonCard) -> Bool { slugs.contains(card.slug) }

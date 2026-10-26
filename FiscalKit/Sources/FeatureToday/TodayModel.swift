@@ -147,7 +147,7 @@ public final class TodayModel {
     public var moreFollowed: Int { max(followed.count - Self.representativesLimit, 0) }
 
     public func detail(for card: PersonCard) -> String {
-        card.uf == "br" ? card.office.title : "\(card.office.title) · \(card.uf.uppercased())"
+        card.uf == "br" ? card.officeTitle : "\(card.officeTitle) · \(card.uf.uppercased())"
     }
 
     public var notice: (text: String, symbol: String)? {

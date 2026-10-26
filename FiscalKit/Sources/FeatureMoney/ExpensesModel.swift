@@ -59,7 +59,7 @@ public final class ExpensesModel {
     public var header: Header? {
         guard let profile else { return nil }
         let place = profile.uf == "br" ? nil : profile.uf.uppercased()
-        let detail = [profile.party, place, profile.office.title].compactMap(\.self)
+        let detail = [profile.party, place, profile.officeTitle].compactMap(\.self)
             .joined(separator: " · ")
         return Header(name: profile.name, party: profile.party, detail: detail)
     }

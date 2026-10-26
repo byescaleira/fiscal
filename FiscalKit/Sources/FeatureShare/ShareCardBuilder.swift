@@ -13,7 +13,7 @@ public struct ShareCardBuilder: Sendable {
     public func person(_ profile: Profile) -> ShareCardContent {
         let source = primarySource(profile.sources, for: profile.office)
         return ShareCardContent(
-            eyebrow: eyebrow(String(appLocalized: "Profile"), profile.office.title, uf(profile.uf)),
+            eyebrow: eyebrow(String(appLocalized: "Profile"), profile.officeTitle, uf(profile.uf)),
             headline: nil, faces: [face(profile)], body: .person(metrics(profile)),
             source: sourceLine(source),
             stamp: stamp(source, "PER", profile.slug, source?.updatedAt),
@@ -45,7 +45,7 @@ public struct ShareCardBuilder: Sendable {
     func face(_ profile: Profile) -> ShareFace {
         ShareFace(
             slug: profile.slug, name: profile.name, party: profile.party,
-            detail: [uf(profile.uf), profile.office.title].joined(separator: " · "))
+            detail: [uf(profile.uf), profile.officeTitle].joined(separator: " · "))
     }
 
     func metrics(_ profile: Profile) -> [ShareMetric] {

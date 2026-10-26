@@ -8,10 +8,11 @@ public struct PersonCard: Codable, Hashable, Identifiable, Sendable {
     public let party: String
     public let photo: URL?
     public let status: PersonStatus
+    public let gender: Gender?
 
     public init(
         slug: String, name: String, office: Office, uf: String, party: String, photo: URL?,
-        status: PersonStatus
+        status: PersonStatus, gender: Gender? = nil
     ) {
         self.slug = slug
         self.name = name
@@ -20,9 +21,18 @@ public struct PersonCard: Codable, Hashable, Identifiable, Sendable {
         self.party = party
         self.photo = photo
         self.status = status
+        self.gender = gender
     }
 
     public var id: String { slug }
+
+    public var officeTitle: String { office.title(for: gender) }
+
+    public func with(gender: Gender?) -> PersonCard {
+        PersonCard(
+            slug: slug, name: name, office: office, uf: uf, party: party, photo: photo,
+            status: status, gender: gender)
+    }
 }
 
 public struct RepresentativeGroup: Codable, Hashable, Sendable {
