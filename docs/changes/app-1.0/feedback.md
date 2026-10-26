@@ -89,6 +89,19 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Backend que guarda tudo e sincroniza sozinho (SQLite, decisão do usuário) | pronto no código; entra no próximo deploy | datastore, ADR 0006 |
 | Deploy da carga na VPS (aprovado pelo usuário) | no ar; primeira carga completa rodando | fiscal-ingest, Caddy /api/v1 |
 
+## Rodada de 26/10
+
+| Pedido | Estado | Onde |
+| --- | --- | --- |
+| Fotos dos dois escolhidos maiores na comparação | no iPhone | ComparePicker |
+| Live Activity parecida com o card ao vivo, com padding adequado | no iPhone | RaceLiveActivity |
+| Barra do card ao vivo como estava na apuração | no iPhone | RaceHeroCard |
+| Seletor de imagens do compartilhar melhor | no iPhone | ShareArtPicker |
+| Card ao vivo no topo do Hoje | no iPhone | TodayScreen |
+| Compartilhar o Destaque do momento | em andamento | frente share-highlight |
+| Cargo no feminino (Deputada, Senadora…) | em andamento | frente gender |
+| Ajustes e telas internas no padrão do app | em andamento | frente settings |
+
 ## Ícone
 
 | Pedido | Estado | Onde |
