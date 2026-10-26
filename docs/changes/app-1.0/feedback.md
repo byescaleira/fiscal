@@ -153,8 +153,11 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Investigações salvas no iCloud (SwiftData + CloudKit) | no iPhone; falta publicar o schema no console do CloudKit | FiscalData |
 | Sincronização inteligente por fonte e tema (5 min a mensal), incremental, sem carga completa | em andamento | frente smart-sync |
 | Só o app escreve no servidor | no ar: App Attest obrigatório em registro e remoção (401 sem prova); dados de leitura públicos no CDN (decisão do usuário) | server/internal/httpapi |
-| Swift Charts no lugar dos gráficos desenhados à mão (começando por Por tipo de gasto) | em andamento | frente swift-charts |
+| Swift Charts no lugar dos gráficos desenhados à mão (começando por Por tipo de gasto) | no iPhone; Por tipo de gasto conferido no simulador (espaçamento entre linhas a ajustar) | FiscalDesignSystem/Charts |
 | Quem você apoia: tirar Paleta, Arte e Ícone (já estão nos Ajustes) e a tag "Por quem você apoia" do primeiro card | no iPhone, conferido no simulador | FeatureLens |
+| Dados que não carregavam (investigação, votação, Memória) | corrigido: quorum como frase, votos sem proposição, Memória incluída na release; checagem de contrato contra os dados publicados | FiscalDomain, server/internal/ingest, PublishedContractTests |
+| Destaque do momento: cor do partido do autor, sem rosto, relevância pequena | no iPhone, conferido no simulador; resumo simples entra com a próxima publicação | TodayHighlightHero |
+| Modo offline com pacote mínimo de dados | em andamento | frente offline |
 | Servidor não pode cair no ingest; seguro; só o app consulta; 8 GB para milhões | no ar (26/10): dados públicos na Cloudflare Pages em dados.fiscal.byescaleira.com, ingest em fases na VPS (4 vCPU/16 GB), publicação automática, App Attest no registro; app lendo do Pages | server/, ADR 0007, docs/server-runbook.md |
 
 ## Ícone
