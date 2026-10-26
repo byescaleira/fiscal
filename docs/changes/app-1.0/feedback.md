@@ -122,7 +122,7 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Card de vitória abrindo "disputa indisponível" | no iPhone (detalhe busca a disputa no servidor) | RaceDetailScreen |
 | Tirar a tag "Sua cidade" | no iPhone | MineHeroCard |
 | Destaque do momento parecido com o card de vitória | em andamento | frente credibility |
-| Salários sem sentido (todos iguais) → "Quanto custa um mandato" | em andamento | frente mandate-cost |
+| Salários sem sentido (todos iguais) → "Quanto custa um mandato" | no iPhone (dados de teste; real após deploy da carga) | FeatureMoney Mandate* |
 | Mais retratos: deputados estaduais, vice-governadores, prefeitos de capitais e cidades > 200 mil | em andamento | frentes faces e–h |
 
 | Compartilhar não abria no Instagram ("content unavailable") | no iPhone (PNG de verdade, sem texto junto) | ShareCardFile |
@@ -134,7 +134,8 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Retratos: +1.402 (estaduais, vice-governadores, prefeitos e vices de 157 cidades) | no iPhone (2.030 no total) | fiscal-portraits.pack |
 | Destaque do momento no estilo do card de vitória; incerteza do peso | no iPhone | TodayHighlightHero, WeightCoverage |
 | Classificar os números (favorável/na média/desfavorável; relevância alta/média/baixa) | em andamento | frente classify |
-| Área histórica (apurações passadas, história política, estudo) | na fila | — |
+| Área histórica (apurações passadas, história política, estudo) | em andamento | frente memory |
+| Refactor da aba Região (hierarquia, bancadas, quem governa) | em andamento | frente region |
 
 ## Ícone
 
