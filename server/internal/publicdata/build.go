@@ -37,6 +37,8 @@ type builder struct {
 	classes     map[*Person]*Classification
 	themes      map[*Person][]string
 	checkCounts map[*Person]int
+	voteGroups  []VoteGroup
+	groupOf     map[string]VoteGroup
 }
 
 type personBallot struct {
@@ -679,7 +681,28 @@ func (b *builder) summary(v *HouseVote) VoteSummary {
 	if v.Ementa != "" {
 		s.PlainSummary = strPtr(PlainSummary(v.Ementa))
 	}
+	if g, ok := b.groups()[v.ID]; ok {
+		s.Group = g.ID
+		if n := len(g.Votes) - 1; n > 0 {
+			s.RelatedCount = ptr(n)
+			s.Related = g.RelatedTo(v)
+		}
+	}
 	return s
+}
+
+func (b *builder) groups() map[string]VoteGroup {
+	if b.groupOf != nil {
+		return b.groupOf
+	}
+	b.voteGroups = GroupVotes(b.ds.Votes)
+	b.groupOf = map[string]VoteGroup{}
+	for _, g := range b.voteGroups {
+		for _, v := range g.Votes {
+			b.groupOf[v.ID] = g
+		}
+	}
+	return b.groupOf
 }
 
 func quorum(kind, house string) *string {
@@ -711,12 +734,16 @@ func (b *builder) votes() {
 		}
 		return all[i].ID > all[j].ID
 	})
+	b.groups()
 	recent := []VoteSummary{}
-	for i, v := range all {
-		s := b.summary(v)
-		if i < RecentVotes {
-			recent = append(recent, s)
+	for i, g := range b.voteGroups {
+		if i == RecentVotes {
+			break
 		}
+		recent = append(recent, b.summary(g.Main))
+	}
+	for _, v := range all {
+		s := b.summary(v)
 		guidance := append([]PartyGuidance{}, v.Guidance...)
 		sort.SliceStable(guidance, func(i, j int) bool { return Fold(guidance[i].Party) < Fold(guidance[j].Party) })
 		tally := map[string]*PartyTally{}
@@ -826,10 +853,11 @@ func (b *builder) today() {
 			events = append(events, TodayEvent{Kind: "session", Title: s.Title, Summary: s.Summary, Themes: Classify(s.Summary), Ref: strPtr(s.URL)})
 		}
 	}
+	b.groups()
 	var todays []*HouseVote
-	for _, v := range b.ds.Votes {
-		if v.Date == b.ds.Today {
-			todays = append(todays, v)
+	for _, g := range b.voteGroups {
+		if g.Main.Date == b.ds.Today {
+			todays = append(todays, g.Main)
 		}
 	}
 	sort.SliceStable(todays, func(i, j int) bool {

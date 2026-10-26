@@ -251,21 +251,24 @@ type ExpenseFile struct {
 }
 
 type VoteSummary struct {
-	ID           string   `json:"id"`
-	House        string   `json:"house"`
-	Date         string   `json:"date"`
-	Time         *string  `json:"time"`
-	Proposition  *string  `json:"proposition"`
-	Kind         *string  `json:"kind"`
-	Summary      string   `json:"summary"`
-	PlainSummary *string  `json:"plainSummary"`
-	Themes       []string `json:"themes"`
-	Result       *string  `json:"result"`
-	Approved     *bool    `json:"approved"`
-	Nominal      bool     `json:"nominal"`
-	Yes          *int     `json:"yes"`
-	No           *int     `json:"no"`
-	Others       *int     `json:"others"`
+	ID           string        `json:"id"`
+	House        string        `json:"house"`
+	Date         string        `json:"date"`
+	Time         *string       `json:"time"`
+	Proposition  *string       `json:"proposition"`
+	Kind         *string       `json:"kind"`
+	Summary      string        `json:"summary"`
+	PlainSummary *string       `json:"plainSummary"`
+	Themes       []string      `json:"themes"`
+	Result       *string       `json:"result"`
+	Approved     *bool         `json:"approved"`
+	Nominal      bool          `json:"nominal"`
+	Yes          *int          `json:"yes"`
+	No           *int          `json:"no"`
+	Others       *int          `json:"others"`
+	Group        string        `json:"group,omitempty"`
+	RelatedCount *int          `json:"relatedCount,omitempty"`
+	Related      []VoteRelated `json:"related,omitempty"`
 }
 
 type PartyGuidance struct {

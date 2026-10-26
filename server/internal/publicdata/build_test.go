@@ -278,12 +278,12 @@ func TestBuildFieldsMatchTheContract(t *testing.T) {
 		t.Fatalf("expenses = %+v", ex)
 	}
 	recent := files["votes/recent.json"].([]VoteSummary)
-	check("voteSummary", recent[0], "id,house,date,time,proposition,kind,summary,plainSummary,themes,result,approved,nominal,yes,no,others")
+	check("voteSummary", recent[0], "id,house,date,time,proposition,kind,summary,plainSummary,themes,result,approved,nominal,yes,no,others,group")
 	if len(recent) != 2 || recent[0].ID != "senado-7108" || recent[0].Time != nil || deref(recent[0].PlainSummary) != "Muda uma lei complementar para dispor sobre o limite de receita bruta anual do Microempreendedor Individual." {
 		t.Fatalf("recent = %+v", recent)
 	}
 	det := files["votes/camara-2236186-60.json"].(VoteDetail)
-	check("voteDetail", det, "id,house,date,time,proposition,kind,summary,plainSummary,themes,result,approved,nominal,yes,no,others,quorum,guidance,parties,people,sources")
+	check("voteDetail", det, "id,house,date,time,proposition,kind,summary,plainSummary,themes,result,approved,nominal,yes,no,others,group,quorum,guidance,parties,people,sources")
 	check("guidance", det.Guidance[0], "party,guidance")
 	check("partyTally", det.Parties[0], "party,yes,no,others")
 	check("votePerson", det.People[0], "slug,name,party,uf,vote")
