@@ -10,11 +10,17 @@ import Testing
 struct PortraitStoreTests {
     @Test func assemblesBundledPortraitsOnlyForTheSameParty() {
         let store = PortraitStore()
-        #expect(store.hasPortrait(slug: "lula", party: "PT"))
-        #expect(!store.hasPortrait(slug: "lula", party: "PL"))
-        #expect(!store.hasPortrait(slug: "nobody", party: "PSB"))
-        #expect(store.animation(slug: "lula", party: "PT") != nil)
-        #expect(store.animation(slug: "lula", party: "PL") == nil)
+        #expect(store.drawsPortraits)
+        #expect(store.hasTraits(slug: "lula", party: "PT"))
+        #expect(!store.hasTraits(slug: "lula", party: "PL"))
+        #expect(!store.hasTraits(slug: "nobody", party: "PSB"))
+        let lula = store.animation(slug: "lula", party: "PT")
+        #expect(lula != nil)
+        let neutral = store.animation(slug: "nobody", party: "PSB")
+        #expect(neutral != nil)
+        #expect(neutral === store.animation(slug: "someone-else", party: "psb"))
+        #expect(lula !== store.animation(slug: "lula", party: "PL"))
+        #expect(!PortraitStore(library: .empty).drawsPortraits)
         #expect(store.seal != nil)
     }
 
@@ -46,6 +52,10 @@ struct PortraitStoreTests {
                 "hair": ["black": "#1F1A17", "white": white],
                 "brow": ["white": "#A49E98"], "parties": ["pt": [partyPrimary, "#8E0A12"]],
                 "fallback": [fallbackPrimary, "#62ABA2"],
+                "neutral": [
+                    "traits": ["face": "neutral", "hair": "none"],
+                    "tones": ["skin": "primary>paper@1", "hair": "primary"],
+                ],
             ]))
         let palette = try #require(tones.palette(for: traits, party: "PT"))
         #expect(palette.resolve("skin") == PortraitColor(hex: skin))
@@ -55,6 +65,10 @@ struct PortraitStoreTests {
         #expect(palette.resolve("paper>ink@1") == PortraitColor(hex: ink))
         let other = try #require(tones.palette(for: traits, party: "Novo"))
         #expect(other.resolve("primary") == PortraitColor(hex: fallbackPrimary))
+        let neutral = PortraitLibrary.Traits(slug: "b", values: ["face": "neutral"])
+        let faceless = try #require(tones.palette(for: neutral, party: "PT"))
+        #expect(faceless.resolve("skin") == PortraitColor(hex: "#FFFFFF"))
+        #expect(faceless.resolve("hair") == PortraitColor(hex: partyPrimary))
     }
 
     @Test func rendersAStillForShareCards() throws {
@@ -62,6 +76,6 @@ struct PortraitStoreTests {
         let image = try #require(store.still(slug: "lula", party: "PT"))
         #expect(image.width == Int(PortraitStore.stillSide))
         #expect(store.still(slug: "lula", party: "PT", pose: .celebrate) != nil)
-        #expect(store.still(slug: "lula", party: "PL") == nil)
+        #expect(store.still(slug: "nobody", party: "PL") != nil)
     }
 }
