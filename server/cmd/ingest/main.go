@@ -24,7 +24,7 @@ import (
 	"liveresults/internal/sources/tse"
 )
 
-var knownSources = []string{"camara", "senado", "tse", "ibge", "receita", "assembleias", "comprova", "cidades", "repercussao", "anp", "sidra"}
+var knownSources = []string{"camara", "senado", "tse", "ibge", "receita", "assembleias", "comprova", "cidades", "repercussao", "anp", "sidra", "historia"}
 
 var knownUFs = map[string]bool{}
 
@@ -83,6 +83,31 @@ func parseYears(v string, def []int) ([]int, error) {
 	return out, nil
 }
 
+func parseHistoryYears(v string) ([]int, error) {
+	v = strings.TrimSpace(v)
+	if v == "" {
+		return ingest.DefaultHistoryYears(), nil
+	}
+	set := map[int]bool{}
+	for _, part := range strings.Split(v, ",") {
+		part = strings.TrimSpace(part)
+		if part == "" {
+			continue
+		}
+		y, err := strconv.Atoi(part)
+		if err != nil {
+			return nil, fmt.Errorf("invalid year %q", part)
+		}
+		set[y] = true
+	}
+	out := make([]int, 0, len(set))
+	for y := range set {
+		out = append(out, y)
+	}
+	sort.Ints(out)
+	return out, nil
+}
+
 func loadConfig(getenv func(string) string, now time.Time) (config, error) {
 	loc, err := time.LoadLocation("America/Sao_Paulo")
 	if err != nil {
@@ -127,6 +152,14 @@ func loadConfig(getenv func(string) string, now time.Time) (config, error) {
 	}
 	if c.ingest.TSECandidateYears, err = parseYears(getenv("TSE_CANDIDATE_YEARS"), []int{2018}); err != nil {
 		return c, fmt.Errorf("TSE_CANDIDATE_YEARS: %w", err)
+	}
+	if c.ingest.HistoryYears, err = parseHistoryYears(getenv("HISTORY_YEARS")); err != nil {
+		return c, fmt.Errorf("HISTORY_YEARS: %w", err)
+	}
+	for _, y := range c.ingest.HistoryYears {
+		if y != tse.UFOnlyYear && (y%4 != 2 || y < tse.UFOnlyYear+1 || y >= year) {
+			return c, fmt.Errorf("HISTORY_YEARS: %d is not a past general election year from 1989 on", y)
+		}
 	}
 	c.ingest.CityYear = 2024
 	if v := strings.TrimSpace(getenv("TSE_CITY_YEAR")); v != "" {
