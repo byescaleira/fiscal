@@ -34,6 +34,10 @@ public struct SearchScreen: View {
         }
         .environment(board)
         .task { await search.load() }
+        .onChange(of: board.isBoardOpen) { _, isOpen in
+            guard !isOpen else { return }
+            Task { await board.loadSaved() }
+        }
     }
 }
 

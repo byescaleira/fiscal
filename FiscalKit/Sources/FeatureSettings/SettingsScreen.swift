@@ -139,6 +139,11 @@ private struct SettingsPrivacySection: View {
                 detail: "Who you follow syncs only through your own iCloud account.",
                 symbol: "icloud", color: .retroTeal)
             SettingsLabel(
+                "Investigations in your iCloud",
+                detail:
+                    "Your investigations sync through your own iCloud account. Who you support never leaves this device.",
+                symbol: "magnifyingglass", color: .retroPlum)
+            SettingsLabel(
                 "The Lens stays here",
                 detail: "Who you support never goes to a server, a log or a share card.",
                 symbol: "lock", color: .retroDenim)

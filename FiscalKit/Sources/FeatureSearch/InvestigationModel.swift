@@ -9,13 +9,14 @@ public final class InvestigationModel {
     public var isBoardOpen = false
     public var picking: InvestigationPiece.Kind?
     public var pickerQuery = ""
-    public private(set) var current: Investigation?
+    public internal(set) var current: Investigation?
     public private(set) var board = InvestigationBoard.empty
     public private(set) var phase: PublicDataPhase = .idle
     public private(set) var writing: InvestigationWriting?
     public private(set) var origin: InvestigationPlan.Origin?
     public private(set) var isReading = false
-    public private(set) var saved: [Investigation] = []
+    public internal(set) var saved: [Investigation] = []
+    public internal(set) var isOnDevice = true
     public private(set) var suggestions: [InvestigationSuggestion] = []
     public private(set) var highlights: [Highlight] = []
     public private(set) var followed: [PersonCard] = []
@@ -25,23 +26,27 @@ public final class InvestigationModel {
     @ObservationIgnored private let service: (any PublicDataService)?
     @ObservationIgnored private let lensRepository: (any LensRepository)?
     @ObservationIgnored private let follows: (any FollowRepository)?
-    @ObservationIgnored private let store: (any InvestigationStore)?
-    @ObservationIgnored private let now: @Sendable () -> Date
+    @ObservationIgnored let repository: (any InvestigationRepository)?
+    @ObservationIgnored let legacy: DeviceInvestigations?
+    @ObservationIgnored var saving: Task<Void, Never>?
+    @ObservationIgnored let now: @Sendable () -> Date
     @ObservationIgnored let homeUF: String?
     @ObservationIgnored let planner: InvestigationPlanner
     private var revision = 0
 
     public init(
         service: (any PublicDataService)?, lens: (any LensRepository)? = nil,
-        follows: (any FollowRepository)? = nil, homeUF: String? = nil,
-        store: (any InvestigationStore)? = DeviceInvestigations(), usesModel: Bool = true,
+        follows: (any FollowRepository)? = nil,
+        repository: (any InvestigationRepository)? = nil, homeUF: String? = nil,
+        legacy: DeviceInvestigations? = DeviceInvestigations(), usesModel: Bool = true,
         now: @escaping @Sendable () -> Date = { .now }
     ) {
         self.service = service
         lensRepository = lens
         self.follows = follows
         self.homeUF = homeUF
-        self.store = store
+        self.repository = repository
+        self.legacy = legacy
         self.now = now
         planner = InvestigationPlanner(usesModel: usesModel)
     }
@@ -54,6 +59,8 @@ public final class InvestigationModel {
         guard let current else { return false }
         return saved.contains { $0.id == current.id }
     }
+
+    public var isPinned: Bool { current?.isPinned ?? false }
 
     public var hasData: Bool {
         _ = revision
@@ -81,7 +88,7 @@ public final class InvestigationModel {
     }
 
     public func load() async {
-        saved = store?.load() ?? []
+        await loadSaved()
         lens = try? await lensRepository?.lens()
         followed = (try? await follows?.followed())?.map(\.card) ?? []
         if highlights.isEmpty, let list = try? await service?.highlights() {
@@ -118,6 +125,7 @@ public final class InvestigationModel {
 
     public func open(_ investigation: Investigation) async {
         current = investigation
+        if !isSaved { persist(investigation) }
         board = .empty
         writing = nil
         isBoardOpen = true
@@ -139,6 +147,7 @@ public final class InvestigationModel {
         investigation.add(piece)
         investigation.updatedAt = now()
         current = investigation
+        persist(investigation)
         await refresh()
     }
 
@@ -147,14 +156,8 @@ public final class InvestigationModel {
         investigation.remove(piece)
         investigation.updatedAt = now()
         current = investigation
+        persist(investigation)
         await refresh()
-    }
-
-    public func rename(_ text: String) {
-        guard var investigation = current else { return }
-        investigation.question = text
-        current = investigation
-        if isSaved { persist(investigation) }
     }
 
     public func refresh() async {
@@ -177,37 +180,19 @@ public final class InvestigationModel {
             board = InvestigationLinks(pieces: pieces, evidence: evidence).board()
             writing = nil
         }
-        guard phase == .loaded, let conclusion = board.conclusion else { return }
-        var updated = investigation
-        updated.conclusion = conclusion.reading
-        updated.keyNumber = conclusion.numbers.first.map { "\($0.value) · \($0.label)" }
-        current = updated
-        if isSaved { persist(updated) }
+        guard phase == .loaded, let conclusion = board.conclusion,
+            var updated = current, updated.id == investigation.id
+        else { return }
+        let keyNumber = conclusion.numbers.first.map { "\($0.value) · \($0.label)" }
+        if updated.conclusion != conclusion.reading || updated.keyNumber != keyNumber {
+            updated.conclusion = conclusion.reading
+            updated.keyNumber = keyNumber
+            current = updated
+            persist(updated)
+        }
         let facts = board.facts
         let result = await planner.summary(facts: facts, fixed: conclusion.reading)
         if current?.id == updated.id { writing = result }
-    }
-
-    public func save() {
-        guard let current else { return }
-        persist(current)
-    }
-
-    public func delete(_ investigation: Investigation) {
-        saved.removeAll { $0.id == investigation.id }
-        store?.save(saved)
-    }
-
-    public func delete(at offsets: IndexSet) {
-        let ids = offsets.compactMap { saved.indices.contains($0) ? saved[$0].id : nil }
-        saved.removeAll { ids.contains($0.id) }
-        store?.save(saved)
-    }
-
-    private func persist(_ investigation: Investigation) {
-        saved.removeAll { $0.id == investigation.id }
-        saved.insert(investigation, at: 0)
-        store?.save(saved)
     }
 
     public var summary: InvestigationSummary? {

@@ -23,7 +23,7 @@ public struct FiscalWindow {
             if let scenario = LensScenario.fromLaunchArguments() {
                 return Repositories(
                     lens: ShowcaseLensRepository(scenario: scenario),
-                    follows: repositories.follows)
+                    follows: repositories.follows, investigations: repositories.investigations)
             }
         #endif
         return repositories

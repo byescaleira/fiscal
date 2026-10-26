@@ -41,6 +41,7 @@ struct SectionScreen: View {
                     board: InvestigationModel(
                         service: data, lens: session.repositories.lens,
                         follows: session.repositories.follows,
+                        repository: session.repositories.investigations,
                         homeUF: HomePlace.chosenUF(in: .standard)))
             ) {
                 SearchScreen()
