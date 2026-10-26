@@ -106,6 +106,7 @@ services:
       CLOUDFLARE_API_TOKEN_FILE: /run/fiscal/cloudflare-pages-token
       PAGES_DATA_INTERVAL: ${PAGES_DATA_INTERVAL:-1h}
       PAGES_MAX_DEPLOYS_PER_DAY: ${PAGES_MAX_DEPLOYS_PER_DAY:-400}
+      PAGES_MAX_DEPLOYS_PER_MONTH: ${PAGES_MAX_DEPLOYS_PER_MONTH:-450}
     volumes:
       - ./pages-data:/data
       - ./public:/public

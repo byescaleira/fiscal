@@ -34,6 +34,7 @@ func loadConfig(getenv func(string) string, dryRun bool) (pages.Config, error) {
 		Wrangler:     envOr(getenv, "WRANGLER", "/usr/local/bin/wrangler"),
 		DataInterval: time.Hour,
 		MaxPerDay:    400,
+		MaxPerMonth:  450,
 		Attempts:     3,
 		Backoff:      30 * time.Second,
 		DryRun:       dryRun,
@@ -57,6 +58,13 @@ func loadConfig(getenv func(string) string, dryRun bool) (pages.Config, error) {
 			return c, errors.New("PAGES_MAX_DEPLOYS_PER_DAY must be between 1 and 2000")
 		}
 		c.MaxPerDay = n
+	}
+	if v := strings.TrimSpace(getenv("PAGES_MAX_DEPLOYS_PER_MONTH")); v != "" {
+		n, err := strconv.Atoi(v)
+		if err != nil || n < 0 || n > 100000 {
+			return c, errors.New("PAGES_MAX_DEPLOYS_PER_MONTH must be between 0 (no monthly cap) and 100000")
+		}
+		c.MaxPerMonth = n
 	}
 	if dryRun {
 		return c, nil
