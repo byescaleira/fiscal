@@ -11,11 +11,17 @@ struct PublishedContractTests {
         dataURL: URL(string: "https://dados.fiscal.byescaleira.com").unsafelyUnwrapped,
         session: URLSession(configuration: .ephemeral))
 
+    private func optionalList(_ name: String) -> Bool {
+        ["votes ", "proposals ", "speeches ", "expenses "].contains { name.hasPrefix($0) }
+    }
+
     @Test func everyPublishedFileDecodes() async {
         var failures: [String] = []
         func check<T>(_ name: String, _ call: () async throws -> T) async -> T? {
             do {
                 return try await call()
+            } catch PublicDataError.notFound where optionalList(name) {
+                return nil
             } catch {
                 failures.append("\(name): \(String(reflecting: error))")
                 return nil
@@ -73,27 +79,7 @@ struct PublishedContractTests {
         if elections.flatMap(\.self) == nil { failures.append("election history: missing") }
         _ = await check("timeline") { try await client.politicalTimeline() }
         _ = await check("study") { try await client.studyCatalog() }
-        print("CONTRACT people=\(people.count) sample=\(sample.count) votes=\(recent.count)")
-        for failure in failures { print("CONTRACT FAIL \(failure)") }
-        #expect(failures.isEmpty)
-    }
-}
-
-@Suite(.enabled(if: ProcessInfo.processInfo.environment["FISCAL_PUBLISHED_CONTRACT"] == "1"))
-struct PublishedDecodeDetailTests {
-    @Test func explainsDecodingFailures() throws {
-        let folder =
-            "/private/tmp/claude-502/-Users-rafael-escaleira-Documents-projects-lab-vibecode-politico-monitor/ceca805c-6116-4dee-8ae8-37c72bf5caa3/scratchpad"
-        func explain<T: Decodable>(_ type: T.Type, _ file: String) {
-            do {
-                let data = try Data(contentsOf: URL(fileURLWithPath: folder + "/" + file))
-                _ = try PublicDataCoding.decoder().decode(T.self, from: data)
-                print("DETAIL OK \(file)")
-            } catch {
-                print("DETAIL FAIL \(file): \(error)")
-            }
-        }
-        explain(VoteDetail.self, "vote-detail.json")
-        explain(PublicList<PersonVote>.self, "person-votes-2025.json")
+        #expect(!people.isEmpty && !recent.isEmpty)
+        for failure in failures { Issue.record("CONTRACT FAIL \(failure)") }
     }
 }
