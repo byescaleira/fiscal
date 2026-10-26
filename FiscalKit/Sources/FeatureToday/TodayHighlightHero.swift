@@ -8,6 +8,7 @@ struct TodayHighlightHero: View {
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var appeared = false
     let highlight: Highlight
 
@@ -24,13 +25,15 @@ struct TodayHighlightHero: View {
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(Text(verbatim: today.highlightAccessibility(highlight)))
             .accessibilityAddTraits(.isButton)
-            WeightMethodButton(method: today.highlightMethod)
-                .tint(.white)
+            if let person = highlight.person {
+                TodayHighlightAuthor(person: person)
+            }
+            footer
         }
         .padding(.spaceInset)
         .foregroundStyle(.white)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background { TodayHighlightBackdrop(slot: today.highlightThemeSlot(highlight)) }
+        .background { backdrop }
         .clipShape(.rect(cornerRadius: .radiusGroup))
         .fontDesign(.rounded)
         .contextMenu {
@@ -39,19 +42,27 @@ struct TodayHighlightHero: View {
             }
         }
         .onAppear {
-            withAnimation(reduceMotion ? nil : .spring(duration: 0.8, bounce: 0.3)) {
+            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) {
                 appeared = true
             }
         }
     }
 
+    @ViewBuilder private var backdrop: some View {
+        if let party = highlight.person?.party, !party.isEmpty {
+            PartyBackdrop(party: party)
+        } else {
+            TodayHighlightBackdrop(slot: today.highlightThemeSlot(highlight))
+        }
+    }
+
     private var header: some View {
-        HStack(alignment: .center, spacing: .spaceS) {
-            Text(verbatim: today.highlightKicker(highlight).uppercased(with: .app))
+        HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
+            Text(verbatim: today.highlightHeroKicker(highlight).uppercased(with: .app))
                 .font(.caption.weight(.heavy))
-                .padding(.horizontal, .spaceM)
-                .padding(.vertical, .space2XS)
-                .background(.white.opacity(.opacityTint), in: .capsule)
+                .tracking(.spaceHairline / 4)
+                .opacity(.opacityStrong)
+                .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: .spaceS)
             Button("Share", systemImage: "square.and.arrow.up") {
                 open(.share(today.shareSubject(for: highlight)), in: section)
@@ -64,93 +75,127 @@ struct TodayHighlightHero: View {
     }
 
     private var content: some View {
-        VStack(alignment: .leading, spacing: .spaceL) {
-            if let person = highlight.person {
-                protagonist(person)
-            } else if let tally = highlight.tally {
-                TodayHighlightScore(tally: tally, large: true)
-            }
-            Text(verbatim: highlight.title)
+        VStack(alignment: .leading, spacing: .spaceM) {
+            Text(verbatim: highlight.plainSummary ?? highlight.title)
                 .font(.title2.weight(.bold))
-                .lineLimit(6)
+                .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 5)
                 .fixedSize(horizontal: false, vertical: true)
-            if highlight.person != nil, let tally = highlight.tally {
+            if highlight.plainSummary != nil {
+                Text(verbatim: highlight.title)
+                    .font(.footnote)
+                    .opacity(.opacityStrong)
+                    .lineLimit(2)
+            }
+            if let tally = highlight.tally {
                 TodayHighlightScore(tally: tally, large: false)
             }
-            if highlight.person == nil {
-                Text(verbatim: today.highlightPlace(highlight) ?? highlight.subtitle)
-                    .font(.subheadline.weight(.semibold))
+            if let reference = today.highlightReference(highlight) {
+                Text(verbatim: reference)
+                    .font(.footnote.weight(.semibold))
                     .opacity(.opacityStrong)
             }
-            weight
         }
     }
 
-    private func protagonist(_ person: PersonCard) -> some View {
-        VStack(spacing: .spaceS) {
-            PersonPortrait(
-                slug: person.slug, name: person.name, party: person.party, size: .badgeXL * 2
-            )
-            .overlay { Circle().strokeBorder(.white, lineWidth: .space2XS) }
-            .scaleEffect(appeared ? 1 : 0.6)
-            .opacity(appeared ? 1 : 0)
-            Text(verbatim: person.name)
-                .font(.title.weight(.heavy))
-                .multilineTextAlignment(.center)
-                .lineLimit(2)
-                .minimumScaleFactor(0.7)
-            HStack(spacing: .spaceS) {
-                PartyMark(person.party)
-                if let place = today.highlightPlace(highlight) {
-                    Text(verbatim: place)
-                        .font(.subheadline.weight(.semibold))
-                        .opacity(.opacityStrong)
-                }
+    private var footer: some View {
+        let layout =
+            dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: .spaceS))
+            : AnyLayout(HStackLayout(alignment: .center, spacing: .spaceS))
+        return layout {
+            TodayHighlightRelevance(weight: highlight.weight, filled: appeared)
+            if !dynamicTypeSize.isAccessibilitySize { Spacer(minLength: .spaceS) }
+            WeightMethodButton(method: today.highlightMethod)
+                .tint(.white)
+        }
+    }
+}
+
+private struct TodayHighlightAuthor: View {
+    @Environment(TodayModel.self) private var today
+    @Environment(\.open) private var open
+    @Environment(\.navigationSection) private var section
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    let person: PersonCard
+
+    var body: some View {
+        Button {
+            open(.person(slug: person.slug), in: section)
+        } label: {
+            HStack(alignment: .center, spacing: .spaceS) {
+                details
+                Spacer(minLength: .spaceS)
+                Image(systemName: "chevron.forward")
+                    .font(.footnote.weight(.bold))
+                    .opacity(.opacityStrong)
             }
-            Text(verbatim: highlight.subtitle)
+            .padding(.vertical, .spaceS)
+            .padding(.horizontal, .spaceM)
+            .background(.white.opacity(.opacityFill), in: .rect(cornerRadius: .radiusM))
+            .contentShape(.rect)
+        }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(verbatim: today.highlightAuthorAccessibility(person)))
+        .accessibilityHint(Text("Opens the profile"))
+        .accessibilityAddTraits(.isButton)
+    }
+
+    private var details: some View {
+        let layout =
+            dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: .space2XS))
+            : AnyLayout(HStackLayout(alignment: .center, spacing: .spaceS))
+        return layout {
+            Text(verbatim: person.name)
+                .font(.subheadline.weight(.semibold))
+                .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
+            PartyMark(person.party)
+                .overlay {
+                    Capsule().strokeBorder(
+                        .white.opacity(.opacitySoft), lineWidth: .spaceHairline / 2)
+                }
+            Text(verbatim: "\(person.officeTitle) · \(person.uf)")
                 .font(.footnote)
                 .opacity(.opacityStrong)
-                .multilineTextAlignment(.center)
-                .lineLimit(2)
+                .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
         }
-        .frame(maxWidth: .infinity)
     }
+}
 
-    private var weight: some View {
-        VStack(alignment: .leading, spacing: .spaceXS) {
+private struct TodayHighlightRelevance: View {
+    let weight: Int
+    let filled: Bool
+
+    var body: some View {
+        let relevance = Relevance(weight: weight)
+        HStack(spacing: .spaceXS) {
+            StatusCircle(relevance.title, symbol: relevance.symbol, color: .white)
             Text(verbatim: relevance.title)
-                .font(.title.weight(.heavy))
-                .contentTransition(.interpolate)
-            SegmentedBar(
-                count: Relevance.segments, value: appeared ? relevance.filledSegments : 0,
-                color: .white
-            )
-            .animation(reduceMotion ? nil : .smooth(duration: 1), value: appeared)
-            if let text = highlight.coverage.uncertainty {
-                Label {
-                    Text(verbatim: text)
-                        .fixedSize(horizontal: false, vertical: true)
-                } icon: {
-                    Image(systemName: "info.circle")
-                }
-                .font(.footnote.weight(.medium))
-            }
-            Text(verbatim: parts)
                 .font(.caption.weight(.semibold))
-                .opacity(.opacityStrong)
+            HStack(spacing: .spaceHairline) {
+                ForEach(0..<Relevance.segments, id: \.self) { index in
+                    Capsule()
+                        .fill(
+                            .white.opacity(
+                                filled && Double(index) < relevance.filledSegments
+                                    ? 1 : .opacityTint)
+                        )
+                        .frame(width: .spaceM, height: .space2XS)
+                }
+            }
         }
+        .accessibilityHidden(true)
     }
+}
 
-    private var relevance: Relevance { Relevance(weight: highlight.weight) }
-
-    private var parts: String {
-        let weight = Relevance.detail(weight: highlight.weight)
-        if let repercussion = highlight.repercussion, !highlight.signals.isTest {
-            return
-                "\(weight) · \(String(appLocalized: "Repercussion \(repercussion) · impact \(highlight.impact)"))"
+extension Relevance {
+    fileprivate var symbol: String {
+        switch self {
+        case .high: "gauge.with.dots.needle.100percent"
+        case .medium: "gauge.with.dots.needle.50percent"
+        case .low: "gauge.with.dots.needle.0percent"
         }
-        return
-            "\(weight) · \(String(appLocalized: "Impact \(highlight.impact) · repercussion not measured"))"
     }
 }
 

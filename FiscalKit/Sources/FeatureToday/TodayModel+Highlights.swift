@@ -64,27 +64,38 @@ extension TodayModel {
             String(appLocalized: "\($0.yes) yes, \($0.no) no.")
         }
         return [
-            "\(highlightKicker(highlight)). \(highlight.title). \(highlight.subtitle).", tally,
+            "\(highlightKicker(highlight)). \(highlight.plainSummary ?? highlight.title). \(highlight.subtitle).",
+            tally,
             weight,
         ]
         .compactMap(\.self).joined(separator: " ")
     }
 
-    public func highlightStage(_ highlight: Highlight) -> String? {
-        guard let key = highlight.stage else { return nil }
-        return highlightMethod?.stages.first { $0.key == key }?.label
+    public func highlightHeroKicker(_ highlight: Highlight) -> String {
+        [highlightKicker(highlight), highlightStage(highlight)].compactMap(\.self)
+            .filter { !$0.isEmpty }.joined(separator: " · ")
     }
 
-    public func highlightPlace(_ highlight: Highlight) -> String? {
+    public func highlightReference(_ highlight: Highlight) -> String? {
         let house: String? =
             switch highlight.house {
             case .senado: String(appLocalized: "Senate")
             case .camara: String(appLocalized: "Chamber")
             case nil: nil
             }
-        let parts = [house, highlight.proposition, highlightStage(highlight)].compactMap(\.self)
-            .filter { !$0.isEmpty }
+        let parts = [house, highlight.proposition].compactMap(\.self).filter { !$0.isEmpty }
         return parts.isEmpty ? nil : parts.joined(separator: " · ")
+    }
+
+    public func highlightAuthorAccessibility(_ person: PersonCard) -> String {
+        String(
+            appLocalized:
+                "Author: \(person.name), \(person.party), \(person.officeTitle), \(person.uf)")
+    }
+
+    public func highlightStage(_ highlight: Highlight) -> String? {
+        guard let key = highlight.stage else { return nil }
+        return highlightMethod?.stages.first { $0.key == key }?.label
     }
 
     public func highlightThemeSlot(_ highlight: Highlight) -> Int? {

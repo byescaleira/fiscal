@@ -22,6 +22,7 @@ type Highlight struct {
 	ID           string        `json:"id"`
 	Kind         string        `json:"kind"`
 	Title        string        `json:"title"`
+	PlainSummary *string       `json:"plainSummary,omitempty"`
 	Subtitle     string        `json:"subtitle"`
 	Weight       int           `json:"weight"`
 	Relevance    string        `json:"relevance"`
@@ -38,6 +39,17 @@ type Highlight struct {
 	House        *string       `json:"house"`
 	Tally        *Tally        `json:"tally"`
 	SignalCoverage
+}
+
+func highlightPlain(a Action) *string {
+	if a.Kind != ActionProposal && a.Kind != ActionVote {
+		return nil
+	}
+	plain := PlainSummary(a.Title)
+	if plain == "" || plain == strings.TrimSpace(a.Title) {
+		return nil
+	}
+	return &plain
 }
 
 type Tally struct {
@@ -347,7 +359,7 @@ func (b *builder) weights(people []*Person) {
 		a := g.best
 		score, in := decayed(a.Weight, a.Date, today)
 		cands = append(cands, candidate{key: k, score: score, inRange: in, h: Highlight{
-			ID: "action-" + a.ID, Kind: HighlightAction, Title: a.Title, Subtitle: joinParts(deref(a.Proposition), who),
+			ID: "action-" + a.ID, Kind: HighlightAction, Title: a.Title, PlainSummary: highlightPlain(a), Subtitle: joinParts(deref(a.Proposition), who),
 			Weight: a.Weight, Relevance: a.Relevance, Repercussion: a.Repercussion, Impact: a.Impact, Route: card.Slug, Person: &card,
 			Proposition: a.Proposition, Date: a.Date, URL: a.URL, Signals: a.Signals, SignalCoverage: a.SignalCoverage,
 			Themes: a.Themes, Stage: a.Stage, House: strPtr(personHouse(g.person)),
@@ -382,7 +394,7 @@ func (b *builder) weights(people []*Person) {
 			k = d.id
 		}
 		cands = append(cands, candidate{key: k, score: score, inRange: in, h: Highlight{
-			ID: d.id, Kind: HighlightVote, Title: a.Title, Subtitle: joinParts(houseName(v.House), v.Proposition, v.Result),
+			ID: d.id, Kind: HighlightVote, Title: a.Title, PlainSummary: highlightPlain(a), Subtitle: joinParts(houseName(v.House), v.Proposition, v.Result),
 			Weight: a.Weight, Relevance: a.Relevance, Repercussion: a.Repercussion, Impact: a.Impact, Route: v.ID,
 			Proposition: a.Proposition, Date: a.Date, Signals: a.Signals, SignalCoverage: a.SignalCoverage,
 			Themes: a.Themes, Stage: a.Stage, House: strPtr(v.House), Tally: tallyOf(v),

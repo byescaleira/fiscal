@@ -129,6 +129,7 @@ public struct Highlight: Codable, Hashable, Identifiable, Sendable {
     public let stage: String?
     public let house: House?
     public let tally: HighlightTally?
+    public let plainSummary: String?
 
     public init(
         id: String, kind: Kind, title: String, subtitle: String, weight: Int,
@@ -136,7 +137,7 @@ public struct Highlight: Codable, Hashable, Identifiable, Sendable {
         proposition: String?, date: CalendarDay, url: URL?, signals: WeightSignals,
         measured: [String]? = nil, missing: [String]? = nil, confidence: String? = nil,
         themes: [Theme]? = nil, stage: String? = nil, house: House? = nil,
-        tally: HighlightTally? = nil
+        tally: HighlightTally? = nil, plainSummary: String? = nil
     ) {
         self.id = id
         self.kind = kind
@@ -158,6 +159,7 @@ public struct Highlight: Codable, Hashable, Identifiable, Sendable {
         self.stage = stage
         self.house = house
         self.tally = tally
+        self.plainSummary = plainSummary
     }
 
     public var coverage: WeightCoverage {
