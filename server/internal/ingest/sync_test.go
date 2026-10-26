@@ -224,3 +224,21 @@ func TestFirstSyncAssumesTheDataIsCurrentInsteadOfRunningEverything(t *testing.T
 		t.Fatal("the first sync seeds the state")
 	}
 }
+
+func TestADivergentRebuildLeavesTheIncrementalReleasePublished(t *testing.T) {
+	h := newSyncHarness(t)
+	first := h.run("senado").Release
+	h.clock = h.clock.Add(time.Minute)
+	m, err := h.in.manifest()
+	if err != nil {
+		t.Fatal(err)
+	}
+	rebuilt, err := h.in.site.Stage("memoria", m.Paths())
+	if err != nil || rebuilt.Release == first {
+		t.Fatalf("stage: %v %s", err, rebuilt.Release)
+	}
+	h.in.keepPublished(first)
+	if current, _ := h.in.site.CurrentName(); current != first {
+		t.Fatalf("ready = %s, want the incremental %s", current, first)
+	}
+}

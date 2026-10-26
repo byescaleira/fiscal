@@ -84,7 +84,19 @@ func (in *Ingest) Verify(ctx context.Context, hooks SyncHooks, j Job) (string, e
 	line := fmt.Sprintf("reconstrução completa (%d arquivos, release %s); divergência do incremental: %d no preparo, %d no site", rep.Files, rep.Release, c.Staging, c.Site)
 	if c.Staging+c.Site > 0 {
 		in.logger.Printf("ALERT consistency: %s; amostra: %s", line, strings.Join(c.Sample, ", "))
+		in.keepPublished(incremental.Release)
 		return line, fmt.Errorf("%w: %d staging files and %d site files differ", ErrDivergence, c.Staging, c.Site)
 	}
 	return line, nil
+}
+
+func (in *Ingest) keepPublished(release string) {
+	if in.site == nil || release == "" {
+		return
+	}
+	if _, err := in.site.Rollback(release); err != nil {
+		in.logger.Printf("ALERT consistency: could not keep %s published: %v", release, err)
+		return
+	}
+	in.logger.Printf("consistency: kept %s published until the divergence is explained", release)
 }
