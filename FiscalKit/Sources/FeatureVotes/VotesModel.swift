@@ -70,7 +70,8 @@ public final class VotesModel {
     public var days: [Day] {
         var order: [CalendarDay] = []
         var groups: [CalendarDay: [VoteSummary]] = [:]
-        for vote in filtered {
+        let featured = Set(highlights.map(\.id))
+        for vote in filtered where !featured.contains(vote.id) {
             if groups[vote.date] == nil { order.append(vote.date) }
             groups[vote.date, default: []].append(vote)
         }

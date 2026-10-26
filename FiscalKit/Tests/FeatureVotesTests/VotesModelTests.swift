@@ -97,8 +97,12 @@ struct VotesModelTests {
         #expect(votes.highlights.count == VotesModel.highlightLimit)
         #expect(votes.highlights.allSatisfy { $0.themes.contains(where: lens.contains) })
         #expect(votes.filtered.count == 6)
+        let listed = votes.highlights.map(\.id) + votes.days.flatMap(\.votes).map(\.id)
+        #expect(listed.count == Set(listed).count)
+        #expect(Set(listed) == Set(votes.filtered.map(\.id)))
         votes.house = .camara
         #expect(votes.highlights.isEmpty)
+        #expect(votes.days.flatMap(\.votes).count == votes.filtered.count)
     }
 
     @Test func withoutALensNothingIsAdapted() async {

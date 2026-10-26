@@ -260,7 +260,7 @@ struct ResultsVisual: View {
             ForEach(votes) { vote in
                 RouteLink(.vote(id: vote.id)) {
                     VStack(alignment: .leading, spacing: .spaceHairline) {
-                        Text(verbatim: "\(vote.proposition) · \(vote.house.title)")
+                        Text(verbatim: "\(vote.heading) · \(vote.house.title)")
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(.secondary)
                         Text(verbatim: vote.plainSummary ?? vote.summary)

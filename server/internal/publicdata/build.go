@@ -694,6 +694,9 @@ func (b *builder) summary(v *HouseVote) VoteSummary {
 	if v.Ementa != "" {
 		s.PlainSummary = strPtr(PlainSummary(v.Ementa))
 	}
+	if t := voteTurn(v); t > 0 {
+		s.Turn = ptr(t)
+	}
 	if g, ok := b.groups()[v.ID]; ok {
 		s.Group = g.ID
 		if n := len(g.Votes) - 1; n > 0 {

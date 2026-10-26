@@ -266,6 +266,7 @@ type VoteSummary struct {
 	Yes          *int          `json:"yes"`
 	No           *int          `json:"no"`
 	Others       *int          `json:"others"`
+	Turn         *int          `json:"turn,omitempty"`
 	Group        string        `json:"group,omitempty"`
 	RelatedCount *int          `json:"relatedCount,omitempty"`
 	Related      []VoteRelated `json:"related,omitempty"`

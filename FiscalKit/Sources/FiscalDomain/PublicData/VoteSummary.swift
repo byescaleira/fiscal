@@ -49,6 +49,7 @@ public struct VoteSummary: Codable, Hashable, Identifiable, Sendable {
     public let yes: Int?
     public let no: Int?
     public let others: Int?
+    public let turn: Int?
     public let group: String?
     public let relatedCount: Int?
     public let related: [Related]?
@@ -57,7 +58,7 @@ public struct VoteSummary: Codable, Hashable, Identifiable, Sendable {
         id: String, house: House, date: CalendarDay, time: String?, proposition: String,
         kind: String?, summary: String, plainSummary: String?, themes: [Theme],
         result: String?, approved: Bool?, nominal: Bool, tally: Tally,
-        group: String? = nil, related: [Related] = [], relatedCount: Int? = nil
+        group: String? = nil, related: [Related] = [], relatedCount: Int? = nil, turn: Int? = nil
     ) {
         self.id = id
         self.house = house
@@ -74,6 +75,7 @@ public struct VoteSummary: Codable, Hashable, Identifiable, Sendable {
         yes = tally.yes
         no = tally.no
         others = tally.others
+        self.turn = turn
         self.group = group
         self.related = related.isEmpty ? nil : related
         self.relatedCount = relatedCount ?? (related.isEmpty ? nil : related.count)
@@ -96,12 +98,19 @@ public struct VoteSummary: Codable, Hashable, Identifiable, Sendable {
         yes = try c.decodeIfPresent(Int.self, forKey: .yes)
         no = try c.decodeIfPresent(Int.self, forKey: .no)
         others = try c.decodeIfPresent(Int.self, forKey: .others)
+        turn = try c.decodeIfPresent(Int.self, forKey: .turn)
         group = try c.decodeIfPresent(String.self, forKey: .group)
         relatedCount = try c.decodeIfPresent(Int.self, forKey: .relatedCount)
         related = try c.decodeIfPresent([Related].self, forKey: .related)
     }
 
     public var tally: Tally { Tally(yes: yes, no: no, others: others) }
+
+    public var heading: String {
+        guard let turn, turn > 0 else { return proposition }
+        let label = String(appLocalized: "Turn \(turn)")
+        return proposition.isEmpty ? label : "\(proposition) · \(label)"
+    }
 
     public var sameDayVotes: [Related] { related ?? [] }
 
