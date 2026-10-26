@@ -24,6 +24,7 @@ public protocol PublicDataService: Sendable {
     func indicators() async throws -> IndicatorCatalog?
     func indicator(id: String) async throws -> Indicator?
     func context(slug: String) async throws -> PersonContext?
+    func facts() async throws -> FactIndex?
 }
 
 extension PublicDataService {
@@ -42,6 +43,8 @@ extension PublicDataService {
     public func indicator(id: String) async throws -> Indicator? { nil }
 
     public func context(slug: String) async throws -> PersonContext? { nil }
+
+    public func facts() async throws -> FactIndex? { nil }
 }
 
 public enum PublicDataError: LocalizedError, Equatable, Sendable {
@@ -77,6 +80,7 @@ public enum PublicDataPath {
     public static let highlights = "highlights.json"
     public static let weightMethod = "method/weight.json"
     public static let indicators = "indicators/index.json"
+    public static let facts = "index/facts.json"
 
     public static func indicator(id: String) -> String { "indicators/\(id).json" }
 

@@ -132,6 +132,10 @@ public struct PublicDataClient: PublicDataService {
         try await optional(PublicDataPath.context(slug: slug))
     }
 
+    public func facts() async throws -> FactIndex? {
+        try await optional(PublicDataPath.facts)
+    }
+
     func optional<Value: Decodable>(_ path: String) async throws -> Value? {
         do {
             return try await get(path)
