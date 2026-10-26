@@ -82,3 +82,7 @@ scripts/verify.sh --quick
 O fluxo é spec-driven: a [constituição](docs/constitution.md) traz as regras inegociáveis, as [specs](docs/specs/README.md) a verdade atual de cada capacidade, as [mudanças](docs/changes/README.md) o que está em andamento e os [ADRs](docs/adr/README.md) as decisões. Para agentes de código, o ponto de partida é o [AGENTS.md](AGENTS.md).
 
 Mais: [arquitetura](docs/architecture.md) · [design system](docs/design-system.md) · [roadmap](docs/roadmap.md) · [site e Fiscal na Web](docs/web.md) · [App Store](docs/app-store/README.md) · [validação antes de distribuir](docs/validation.md).
+
+## Licença
+
+O código está sob a [PolyForm Noncommercial 1.0.0](LICENSE.md): pode ler, estudar, modificar e usar para fins pessoais, educativos e de pesquisa, e por organizações sem fins lucrativos. Qualquer uso comercial é proibido. Os dados exibidos são públicos e vêm das fontes oficiais citadas em cada tela; as obras de arte dos cartazes estão em domínio público ([créditos](FiscalKit/Sources/FiscalResource/art-credits.json)).
