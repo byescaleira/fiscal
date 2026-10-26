@@ -211,6 +211,26 @@
         }
       }
     },
+    "%@ of %@ deputies and senators spend above the peer range in %@." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ de %@ deputados e senadores gastam acima da faixa dos colegas em %@."
+          }
+        }
+      }
+    },
+    "%@ of %@ from %@ spend above the peer range in %@." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ de %@ de %@ gastam acima da faixa dos colegas em %@."
+          }
+        }
+      }
+    },
     "%@ of %@ in %@: %@. %@." : {
       "localizations" : {
         "pt-BR" : {
@@ -286,6 +306,16 @@
         }
       }
     },
+    "%@ paid %@, %@ of the total." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ pagou %@, %@ do total."
+          }
+        }
+      }
+    },
     "%@ since taking office" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -293,6 +323,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ desde a posse"
+          }
+        }
+      }
+    },
+    "%@ spent in %@. The largest item: %@." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ gastos em %@. O maior item: %@."
           }
         }
       }
@@ -1100,6 +1140,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sobre o Fiscal"
+          }
+        }
+      }
+    },
+    "Above the peer range means spending per month above the third quartile of the same house. It doesn't mean anything irregular; the cap changes by state." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acima da faixa dos colegas quer dizer gasto por mês acima do terceiro quartil da mesma casa. Não quer dizer nada irregular; o teto muda por estado."
           }
         }
       }
@@ -2348,6 +2398,16 @@
         }
       }
     },
+    "Brazil: the office allowance is the average of the state caps. Pick a state in the toolbar to see its own cap." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brasil: a cota é a média dos tetos dos estados. Escolha um estado na barra para ver o teto dele."
+          }
+        }
+      }
+    },
     "Brazilian politics, phase by phase" : {
       "localizations" : {
         "pt-BR" : {
@@ -2715,6 +2775,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Variação: %@"
+          }
+        }
+      }
+    },
+    "Changes every block to the place picked" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muda todos os blocos para o lugar escolhido"
           }
         }
       }
@@ -3116,6 +3186,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Composição por partido"
+          }
+        }
+      }
+    },
+    "Congress · %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Congresso · %@"
           }
         }
       }
@@ -4217,6 +4297,16 @@
         }
       }
     },
+    "Equal to %@ minimum wages every month" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Equivale a %@ salários mínimos por mês"
+          }
+        }
+      }
+    },
     "Espírito Santo" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4754,6 +4844,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Senado Federal"
+          }
+        }
+      }
+    },
+    "Federal taxes paid in each state in the last full year, for context: it's what funds every public expense, not only politics. Touch a state to see its total." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impostos federais pagos em cada estado no último ano completo, como contexto: é o que banca todo o gasto público, não só a política. Toque num estado para ver o total."
           }
         }
       }
@@ -5476,6 +5576,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Grafite"
+          }
+        }
+      }
+    },
+    "Gross amounts the law sets for each month. The housing allowance is paid only to those who don't live in an official apartment." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valores brutos que a lei fixa para cada mês. O auxílio-moradia só é pago a quem não mora em apartamento funcional."
           }
         }
       }
@@ -6369,6 +6479,16 @@
         }
       }
     },
+    "Investigations in your iCloud" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Investigações no seu iCloud"
+          }
+        }
+      }
+    },
     "Ipê" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -6398,6 +6518,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Foi uma votação simbólica: o resultado foi anunciado sem registrar o voto de cada um."
+          }
+        }
+      }
+    },
+    "It's a ceiling: salary, office allowance, staff budget and housing allowance at full value. Not everyone uses the whole allowance or the housing allowance." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "É um teto: salário, cota, verba de gabinete e auxílio-moradia pelo valor cheio. Nem todos usam a cota inteira ou o auxílio-moradia."
           }
         }
       }
@@ -7285,6 +7415,16 @@
         }
       }
     },
+    "Monthly cap of a federal deputy, by the state that elected them. States farther from Brasília get more, because flights cost more. Touch a column to see its value." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teto mensal de um deputado federal, pelo estado que o elegeu. Estados mais longe de Brasília recebem mais, porque as passagens custam mais. Toque numa coluna para ver o valor."
+          }
+        }
+      }
+    },
     "Monthly cap of a federal deputy, by the state that elected them. Touch a column to pick the state." : {
       "localizations" : {
         "pt-BR" : {
@@ -7921,6 +8061,16 @@
         }
       }
     },
+    "No one from %@ spends above the peer range in %@." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ninguém de %@ gasta acima da faixa dos colegas em %@."
+          }
+        }
+      }
+    },
     "No one matches these filters" : {
       "localizations" : {
         "pt-BR" : {
@@ -7938,6 +8088,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ninguém encontrado nessa busca."
+          }
+        }
+      }
+    },
+    "No one spends above the peer range in %@." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ninguém gasta acima da faixa dos colegas em %@."
           }
         }
       }
@@ -8420,6 +8580,16 @@
         }
       }
     },
+    "Office allowance actually spent in %@: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cota de fato gasta em %@: %@"
+          }
+        }
+      }
+    },
     "Office allowance against peers" : {
       "localizations" : {
         "pt-BR" : {
@@ -8436,6 +8606,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cota parlamentar por estado"
+          }
+        }
+      }
+    },
+    "Office allowance cap by state" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teto da cota por estado"
           }
         }
       }
@@ -8945,6 +9125,16 @@
         }
       }
     },
+    "Opens the official act" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre o ato oficial"
+          }
+        }
+      }
+    },
     "Opens the official receipt" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -8952,6 +9142,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abre a nota oficial"
+          }
+        }
+      }
+    },
+    "Opens the profile" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre o perfil"
           }
         }
       }
@@ -9700,6 +9900,16 @@
         }
       }
     },
+    "Pin to top" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fixar no topo"
+          }
+        }
+      }
+    },
     "Pink River Dolphin" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -9707,6 +9917,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Boto-cor-de-rosa"
+          }
+        }
+      }
+    },
+    "Pinned" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fixada"
           }
         }
       }
@@ -10705,6 +10925,26 @@
         }
       }
     },
+    "Rename" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Renomear"
+          }
+        }
+      }
+    },
+    "Rename investigation" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Renomear investigação"
+          }
+        }
+      }
+    },
     "Repercussion" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -11173,6 +11413,16 @@
         }
       }
     },
+    "Saved in your iCloud. Swipe to pin or delete." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvas no seu iCloud. Deslize para fixar ou apagar."
+          }
+        }
+      }
+    },
     "Saved investigations and pinned pieces stay on this device." : {
       "localizations" : {
         "pt-BR" : {
@@ -11200,6 +11450,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Salvas só neste aparelho. Deslize para apagar."
+          }
+        }
+      }
+    },
+    "Saved only on this device. Swipe to pin or delete." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvas só neste aparelho. Deslize para fixar ou apagar."
           }
         }
       }
@@ -11337,6 +11597,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ver como votaram os representantes de ${state}"
+          }
+        }
+      }
+    },
+    "See Receipts" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver Notas"
           }
         }
       }
@@ -11661,6 +11931,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mostrando as %1$lld de maior peso entre %2$lld."
+          }
+        }
+      }
+    },
+    "Showing the last data loaded." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrando os últimos dados carregados."
           }
         }
       }
@@ -13019,6 +13299,16 @@
         }
       }
     },
+    "The allowance by state isn't published yet, so this block shows Brazil and doesn't follow the state picked." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A cota por estado ainda não foi publicada, por isso este bloco mostra o Brasil e não segue o estado escolhido."
+          }
+        }
+      }
+    },
     "The allowance only pays for work costs. Salary is separate and has its own section." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -13389,6 +13679,56 @@
         }
       }
     },
+    "The most one federal deputy's mandate can cost each month, with the average allowance cap of the states." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O máximo que o mandato de um deputado federal pode custar por mês, com a média dos tetos de cota dos estados."
+          }
+        }
+      }
+    },
+    "The most one federal deputy's mandate from %@ can cost each month." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O máximo que o mandato de um deputado federal de %@ pode custar por mês."
+          }
+        }
+      }
+    },
+    "The most the law allows each month for the %@ federal deputies and %@ senators from %@." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O máximo que a lei permite por mês para os %@ deputados federais e %@ senadores de %@."
+          }
+        }
+      }
+    },
+    "The most the law allows each month for the %@ federal deputies and %@ senators in office." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O máximo que a lei permite por mês para os %@ deputados federais e %@ senadores em exercício."
+          }
+        }
+      }
+    },
+    "The office allowance pays for work costs, such as flights, office and fuel, with a receipt for each expense. It isn't salary." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A cota paga custos do trabalho, como passagens, escritório e combustível, com nota fiscal para cada gasto. Não é salário."
+          }
+        }
+      }
+    },
     "The office allowance reimburses term expenses, such as travel and office rent, and is not salary." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -13396,6 +13736,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "A cota reembolsa gastos do mandato, como passagens e aluguel de escritório, e não é salário."
+          }
+        }
+      }
+    },
+    "The office allowance shown is the cap for %@." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A cota mostrada é o teto de %@."
           }
         }
       }
@@ -13440,6 +13790,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "A ordem ainda pode mudar até todas as urnas serem apuradas."
+          }
+        }
+      }
+    },
+    "The origin of the money is published only for the whole country, so the chart shows Brazil." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A origem do dinheiro só é publicada para o país inteiro, por isso o gráfico mostra o Brasil."
           }
         }
       }
@@ -13735,6 +14095,16 @@
         }
       }
     },
+    "The winning campaigns of the %@ in office from %@ raised %@ (%@)." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As campanhas vencedoras dos %@ em exercício por %@ arrecadaram %@ (%@)."
+          }
+        }
+      }
+    },
     "The works behind the share cards, with their licenses" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -13812,12 +14182,52 @@
         }
       }
     },
+    "There are no campaign figures for %@ yet." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ainda não há números de campanha para %@."
+          }
+        }
+      }
+    },
+    "There are no figures by state yet. Showing Brazil." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ainda não há números por estado. Mostrando o Brasil."
+          }
+        }
+      }
+    },
+    "There are too few peers with data in %@ to compare." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Há poucos colegas com dados em %@ para comparar."
+          }
+        }
+      }
+    },
     "There is disagreement" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Há divergência"
+          }
+        }
+      }
+    },
+    "There is no revenue figure for %@." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não há número de arrecadação para %@."
           }
         }
       }
@@ -14358,6 +14768,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Incerteza"
+          }
+        }
+      }
+    },
+    "Unpin" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desafixar"
           }
         }
       }
@@ -15123,6 +15543,26 @@
         }
       }
     },
+    "What a Mandate Costs" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quanto Custa um Mandato"
+          }
+        }
+      }
+    },
+    "What a mandate costs, the office allowance and campaign money show up here, each with its official source." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quanto custa um mandato, a cota parlamentar e o dinheiro das campanhas aparecem aqui, cada um com a fonte oficial."
+          }
+        }
+      }
+    },
     "What changed before and during the term of %@?" : {
       "localizations" : {
         "pt-BR" : {
@@ -15288,6 +15728,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O que as fontes citadas registram, na ordem delas. O Fiscal não classifica nem julga."
+          }
+        }
+      }
+    },
+    "What the Country Collects" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quanto o País Arrecada"
           }
         }
       }
@@ -15519,6 +15969,16 @@
         }
       }
     },
+    "Who Funds the Campaigns" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem Financia as Campanhas"
+          }
+        }
+      }
+    },
     "Who Governs" : {
       "localizations" : {
         "pt-BR" : {
@@ -15590,6 +16050,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quem representa o seu estado, com um toque para cada perfil."
+          }
+        }
+      }
+    },
+    "Who Spends More, and on What" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem Gasta Mais e em Quê"
           }
         }
       }
@@ -16081,6 +16551,26 @@
         }
       }
     },
+    "Your investigations stay saved, even without a connection." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suas investigações continuam salvas, mesmo sem conexão."
+          }
+        }
+      }
+    },
+    "Your investigations sync through your own iCloud account. Who you support never leaves this device." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suas investigações sincronizam pela sua própria conta do iCloud. Quem você apoia nunca sai deste aparelho."
+          }
+        }
+      }
+    },
     "Your lens" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -16175,6 +16665,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Seu lugar fica só neste aparelho. O Fiscal nunca o envia para lugar nenhum."
+          }
+        }
+      }
+    },
+    "Your Region" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua Região"
           }
         }
       }
