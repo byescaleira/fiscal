@@ -15,9 +15,9 @@ Sem --apply, só imprime o plano (nada é enviado nem executado na VPS).
 Com --apply, precisa do ok explícito do usuário a cada vez (AGENTS.md).
 
   api     imagem fiscal-api, troca sem queda com healthcheck e rollback automático
-  ingest  imagem fiscal-ingest (os timers usam a nova na próxima execução)
+  ingest  imagem fiscal-ingest (o timer usa a nova na próxima execução)
   pages   imagem fiscal-pages (wrangler fixado no Dockerfile)
-  units   compose.yaml e as units do systemd (timers das fases)
+  units   compose.yaml e as units do systemd (fiscal-sync.timer, a cada 5 min)
 EOF
 }
 while [ $# -gt 0 ]; do
@@ -81,7 +81,8 @@ if want units; then
   remote_run "cd $remote && cp -p compose.yaml compose.yaml.bak.$sha 2>/dev/null; install -m 0644 builds/$sha/compose.yaml compose.yaml && mkdir -p pages-data && chown 1000:1000 pages-data && chmod 700 pages-data"
   remote_run "install -m 0644 $remote/builds/$sha/systemd/* /etc/systemd/system/ && systemctl daemon-reload"
   remote_run "docker rm -f fiscal-ingest 2>/dev/null || true"
-  remote_run "for t in /etc/systemd/system/fiscal-phase-*.timer /etc/systemd/system/fiscal-live.timer; do systemctl enable --now \$(basename \$t); done"
+  remote_run "for t in /etc/systemd/system/fiscal-phase-*.timer /etc/systemd/system/fiscal-live.timer; do [ -e \$t ] || continue; systemctl disable --now \$(basename \$t); rm -f \$t; done; rm -f /etc/systemd/system/fiscal-live.service; systemctl daemon-reload"
+  remote_run "systemctl enable --now fiscal-sync.timer"
   plan "(fiscal-pages.timer fica desligado; ligue só em dia de apuração: systemctl enable --now fiscal-pages.timer)"
 fi
 if want ingest; then

@@ -1,0 +1,18 @@
+[Unit]
+Description=Fiscal smart sync (runs the due jobs of the cadence catalog, then deploys to Pages within the budget)
+After=docker.service network-online.target
+Requires=docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/fiscal-api
+ExecStart=/usr/bin/docker compose --project-directory /opt/fiscal-api --profile jobs run --rm --no-deps -T fiscal-ingest -sync
+ExecStart=/usr/bin/docker compose --project-directory /opt/fiscal-api --profile jobs run --rm --no-deps -T fiscal-pages
+Nice=19
+IOSchedulingClass=idle
+CPUSchedulingPolicy=idle
+CPUQuota=100%
+MemoryMax=256M
+OOMScoreAdjust=1000
+TimeoutStartSec=3h
