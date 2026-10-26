@@ -19,7 +19,7 @@ public enum AppSection: String, CaseIterable, Identifiable, Sendable {
     public var systemImage: String {
         switch self {
         case .today: "calendar.badge.checkmark"
-        case .mine: "map"
+        case .mine: "mappin.and.ellipse"
         case .votes: "archivebox.fill"
         case .money: "building.columns.fill"
         case .search: "magnifyingglass"

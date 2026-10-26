@@ -44,6 +44,7 @@
       }
     },
     "%@, %@. %@. %@. Weight %lld of 100." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -345,6 +346,7 @@
       }
     },
     "Indicator" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -365,6 +367,7 @@
       }
     },
     "Money" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -466,6 +469,7 @@
       }
     },
     "Proposal" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -625,6 +629,7 @@
       }
     },
     "Vote" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -655,6 +660,7 @@
       }
     },
     "Weight %lld" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {

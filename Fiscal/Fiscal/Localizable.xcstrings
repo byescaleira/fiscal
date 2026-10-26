@@ -265,6 +265,16 @@
         }
       }
     },
+    "%@, %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %2$@"
+          }
+        }
+      }
+    },
     "%@, %@, %@. Yes: %@. No: %@. Other: %@. %@." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -305,6 +315,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@, encerrado"
+          }
+        }
+      }
+    },
+    "%@, in force since %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, em vigor desde %2$@"
           }
         }
       }
@@ -354,11 +374,22 @@
       }
     },
     "%@: %@ actions" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@: %@ ações"
+          }
+        }
+      }
+    },
+    "%@: %@ have no current official table published, so they are left out of the sum." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@: %2$@ sem tabela oficial atual publicada; ficam fora da soma."
           }
         }
       }
@@ -397,6 +428,7 @@
       }
     },
     "%lld guides" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -429,6 +461,7 @@
       }
     },
     "%lld of %lld people chosen" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -460,6 +493,17 @@
         }
       }
     },
+    "%lld other votes" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld outros votos"
+          }
+        }
+      }
+    },
     "%lld state deputies" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -478,6 +522,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld obras"
+          }
+        }
+      }
+    },
+    "%lld yes, %lld no." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld Sim, %2$lld Não."
           }
         }
       }
@@ -577,6 +632,37 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dia sem barra não teve votação nestes temas."
+          }
+        }
+      }
+    },
+    "A federal deputy's salary equals %@ minimum wages and %@ times the average labor income in Brazil." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O subsídio de um deputado federal equivale a %1$@ salários mínimos e a %2$@ vezes a renda média do trabalho no Brasil."
+          }
+        }
+      }
+    },
+    "A federal deputy's salary equals %@ minimum wages." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O subsídio de um deputado federal equivale a %@ salários mínimos."
+          }
+        }
+      }
+    },
+    "A missing signal doesn't count as zero: repercussion is the weighted average of only the signals measured in this load. With no signal measured, the weight is the impact alone, and the app says so." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sinal ausente não conta como zero: a repercussão é a média ponderada só dos sinais medidos nesta carga. Sem nenhum sinal medido, o peso é só o impacto, e o app avisa."
           }
         }
       }
@@ -725,6 +811,7 @@
       }
     },
     "Add a topic" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -746,6 +833,7 @@
       }
     },
     "Adds this topic to your lens" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -789,6 +877,7 @@
       }
     },
     "Agribusiness, family farming and land" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -865,6 +954,7 @@
       }
     },
     "All of them voted %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -914,6 +1004,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Todos os temas"
+          }
+        }
+      }
+    },
+    "Allowance" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cota"
           }
         }
       }
@@ -1106,6 +1206,7 @@
       }
     },
     "Art: %@ · %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -1254,6 +1355,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Média"
+          }
+        }
+      }
+    },
+    "Average monthly labor income: %@ (IBGE, %@)" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Renda média mensal do trabalho: %1$@ (IBGE, %2$@)"
           }
         }
       }
@@ -1523,6 +1634,7 @@
       }
     },
     "Bolsa Família, pensions and social aid" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -1649,6 +1761,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pela sua lente"
+          }
+        }
+      }
+    },
+    "Calculated from %@ recent actions of %@. Estimated: each action's topic comes from keywords in its official summary and can miss." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calculado a partir de %1$@ ações recentes de %2$@. Estimado: o tema de cada ação vem de palavras-chave da ementa oficial e pode errar."
+          }
+        }
+      }
+    },
+    "Calculated from the proposals and speeches of %@. Estimated: each one's topic comes from keywords in its official summary and can miss." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calculado a partir das propostas e dos discursos de %@. Estimado: o tema de cada uma vem de palavras-chave da ementa oficial e pode errar."
           }
         }
       }
@@ -1874,6 +2008,7 @@
       }
     },
     "Change Who You Support" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -1983,6 +2118,7 @@
       }
     },
     "Choose who you support, your topics and your look. It takes about a minute." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -2004,6 +2140,7 @@
       }
     },
     "Choose your themes, your side and your look. It takes about a minute." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -2234,6 +2371,7 @@
       }
     },
     "Consumer rights, banks and services" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -2474,6 +2612,7 @@
       }
     },
     "Culture, sports and leisure" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -2846,6 +2985,17 @@
         }
       }
     },
+    "Each number covers that person's own term and house, without adjusting for terms of different length." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada número cobre o mandato e a casa da própria pessoa, sem ajuste para mandatos de duração diferente."
+          }
+        }
+      }
+    },
     "Each receipt opens the official document published by the house." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2891,6 +3041,7 @@
       }
     },
     "Earlier Version" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -2956,6 +3107,7 @@
       }
     },
     "ELECTED" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -2988,6 +3140,7 @@
       }
     },
     "Elected with %@ of the valid votes" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -3042,6 +3195,7 @@
       }
     },
     "Elections, parties and how Congress works" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -3080,6 +3234,94 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Espírito Santo"
+          }
+        }
+      }
+    },
+    "Estimated: each one's topic comes from keywords in its official summary and can miss." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estimado: o tema de cada uma vem de palavras-chave da ementa oficial e pode errar."
+          }
+        }
+      }
+    },
+    "Estimated: each proposal's topic comes from keywords in its official summary and can miss." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estimado: o tema de cada proposta vem de palavras-chave da ementa oficial e pode errar."
+          }
+        }
+      }
+    },
+    "Estimated: impact only" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estimado: só o impacto"
+          }
+        }
+      }
+    },
+    "Estimated: only %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estimado: só %@"
+          }
+        }
+      }
+    },
+    "Estimated: repercussion measured only with %@." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estimado: repercussão medida só com %@."
+          }
+        }
+      }
+    },
+    "Estimated: repercussion measured only with %@; %@ was missing in this load." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estimado: repercussão medida só com %1$@; faltou %2$@ nesta carga."
+          }
+        }
+      }
+    },
+    "Estimated: repercussion measured only with %@; %@ were missing in this load." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estimado: repercussão medida só com %1$@; faltaram %2$@ nesta carga."
+          }
+        }
+      }
+    },
+    "Estimated: weight from impact only; no repercussion signal was measured in this load (missing %@)." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estimado: peso só pelo impacto; nenhum sinal de repercussão foi medido nesta carga (faltaram %@)."
           }
         }
       }
@@ -3238,6 +3480,17 @@
         }
       }
     },
+    "Explanation generated by Apple Intelligence on your Apple Vision Pro · it can be wrong; the official text is the source" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explicação gerada pela Apple Intelligence no seu Apple Vision Pro · pode errar; vale o texto oficial"
+          }
+        }
+      }
+    },
     "Explanation generated by Apple Intelligence on your iPad · impartial" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3245,6 +3498,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Explicação gerada pela Apple Intelligence no seu iPad · imparcial"
+          }
+        }
+      }
+    },
+    "Explanation generated by Apple Intelligence on your iPad · it can be wrong; the official text is the source" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explicação gerada pela Apple Intelligence no seu iPad · pode errar; vale o texto oficial"
           }
         }
       }
@@ -3260,6 +3524,17 @@
         }
       }
     },
+    "Explanation generated by Apple Intelligence on your iPhone · it can be wrong; the official text is the source" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explicação gerada pela Apple Intelligence no seu iPhone · pode errar; vale o texto oficial"
+          }
+        }
+      }
+    },
     "Explanation generated by Apple Intelligence on your Mac · impartial" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3267,6 +3542,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Explicação gerada pela Apple Intelligence no seu Mac · imparcial"
+          }
+        }
+      }
+    },
+    "Explanation generated by Apple Intelligence on your Mac · it can be wrong; the official text is the source" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explicação gerada pela Apple Intelligence no seu Mac · pode errar; vale o texto oficial"
           }
         }
       }
@@ -3470,6 +3756,7 @@
       }
     },
     "Final TSE result" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -3480,6 +3767,7 @@
       }
     },
     "Final TSE result at %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -3612,6 +3900,7 @@
       }
     },
     "Fiscal doesn't ask who you are and doesn't measure what you do." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -3677,6 +3966,7 @@
       }
     },
     "Fiscal shows only what these bodies publish. When a piece of data is missing, you see a dash, never a zero." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -3698,6 +3988,7 @@
       }
     },
     "Fiscal stays neutral: topics in the order the data comes." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -3829,6 +4120,7 @@
       }
     },
     "For a moment, see what stands out in the neutral order or for those who support someone else. Nothing is saved and the numbers do not change." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -3839,6 +4131,7 @@
       }
     },
     "For who you support" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -3871,6 +4164,7 @@
       }
     },
     "Forests, climate, water and animals" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -4056,6 +4350,16 @@
         }
       }
     },
+    "Gross amounts the law sets for each month; the year multiplies the month by 12. The office allowance follows the state picked in the toolbar. The housing allowance is paid only to deputies who don't live in an official apartment." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valores brutos que a norma fixa para cada mês; o ano multiplica o mês por 12. A cota segue o estado escolhido no botão de mapa, no alto da tela. O auxílio-moradia só é pago ao deputado que não ocupa imóvel funcional."
+          }
+        }
+      }
+    },
     "Gross monthly pay, before taxes. Each one is set by the law shown under the office." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4133,6 +4437,27 @@
         }
       }
     },
+    "Highest-weight highlights on the Lock Screen" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Destaques de maior peso na tela de bloqueio"
+          }
+        }
+      }
+    },
+    "Highest: %@, %@. Lowest: %@, %@. Difference: %@ per month." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maior: %1$@, %2$@. Menor: %3$@, %4$@. Diferença: %5$@ por mês."
+          }
+        }
+      }
+    },
     "Highlight of the Moment" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4178,6 +4503,7 @@
       }
     },
     "Honors, commemorative dates and names" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -4220,7 +4546,18 @@
         }
       }
     },
+    "Housing allowance" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auxílio-moradia"
+          }
+        }
+      }
+    },
     "Housing, sanitation and urban life" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -4242,6 +4579,7 @@
       }
     },
     "How the people you support voted" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -4273,6 +4611,7 @@
       }
     },
     "How weight puts what happens in order" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -4283,6 +4622,7 @@
       }
     },
     "Human rights, minorities and equality" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -4358,6 +4698,17 @@
         }
       }
     },
+    "Impact %lld · repercussion not measured" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impacto %lld · repercussão não medida"
+          }
+        }
+      }
+    },
     "Impartial" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4370,6 +4721,7 @@
       }
     },
     "Important highlights on the Lock Screen" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -4386,6 +4738,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "em %@"
+          }
+        }
+      }
+    },
+    "In 12 months" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em 12 meses"
           }
         }
       }
@@ -4501,6 +4863,7 @@
       }
     },
     "In the order the data comes. Put first what matters to you, from 3 to 5 topics." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -4566,6 +4929,7 @@
       }
     },
     "Internet, data, science and innovation" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -4642,6 +5006,7 @@
       }
     },
     "Jobs, income, prices and companies" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -4839,6 +5204,7 @@
       }
     },
     "Lens" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -4998,6 +5364,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Carregando seu conteúdo"
+          }
+        }
+      }
+    },
+    "Lock Screen Alert" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alerta na tela de bloqueio"
           }
         }
       }
@@ -5178,6 +5555,26 @@
         }
       }
     },
+    "Minimum wage: %@ (%@)" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salário mínimo: %1$@ (%2$@)"
+          }
+        }
+      }
+    },
+    "Minister of State" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ministro de Estado"
+          }
+        }
+      }
+    },
     "Mint" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -5201,6 +5598,7 @@
       }
     },
     "Mirrored pairs side by side. Never taken from the color of a party." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -5217,6 +5615,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pares espelhados. Qualquer paleta serve para qualquer lado."
+          }
+        }
+      }
+    },
+    "Missing Signals" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sinais que faltam"
           }
         }
       }
@@ -5272,6 +5681,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Média mensal: %@"
+          }
+        }
+      }
+    },
+    "Monthly cap of a federal deputy, by the state that elected them. Touch a column to pick the state." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limite mensal de um deputado federal, pelo estado que o elegeu. Toque numa coluna para escolher o estado."
+          }
+        }
+      }
+    },
+    "Monthly cost by office, item by item" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custo mensal por cargo, item a item"
           }
         }
       }
@@ -5464,6 +5893,7 @@
       }
     },
     "Neutral order" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -5474,6 +5904,7 @@
       }
     },
     "Neutral order for a moment. Nothing is saved." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -5484,6 +5915,7 @@
       }
     },
     "Neutral, without supporting anyone" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -5494,6 +5926,7 @@
       }
     },
     "Neutral: topics in the order the data comes." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -5521,6 +5954,39 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lei nova"
+          }
+        }
+      }
+    },
+    "news" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "notícias"
+          }
+        }
+      }
+    },
+    "news about the bill" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "notícias da proposição"
+          }
+        }
+      }
+    },
+    "news citing the politician" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "notícias que citam o político"
           }
         }
       }
@@ -5592,6 +6058,7 @@
       }
     },
     "No account and no ads" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -5602,6 +6069,7 @@
       }
     },
     "No account to create. Your Lens never leaves this device." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -5722,6 +6190,7 @@
       }
     },
     "No lens yet" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -5754,6 +6223,7 @@
       }
     },
     "No one with that name" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -5808,6 +6278,7 @@
       }
     },
     "No recent actions of the people you support yet. Choose from 3 to 5 topics." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -6082,6 +6553,7 @@
       }
     },
     "Nothing is hidden: the others stay one tap away." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -6168,6 +6640,16 @@
         }
       }
     },
+    "Office allowance by state" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cota parlamentar por estado"
+          }
+        }
+      }
+    },
     "Office Allowance in %@" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -6186,6 +6668,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gastos da cota parlamentar em %@"
+          }
+        }
+      }
+    },
+    "Office allowance state" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estado da cota parlamentar"
           }
         }
       }
@@ -6245,6 +6737,16 @@
         }
       }
     },
+    "Office allowances, what a mandate costs and campaign money show up here, each with its official source." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cota parlamentar, quanto custa um mandato e dinheiro de campanha aparecem aqui, cada um com a fonte oficial."
+          }
+        }
+      }
+    },
     "Office: %@" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -6278,7 +6780,18 @@
         }
       }
     },
+    "Official salary" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Subsídio"
+          }
+        }
+      }
+    },
     "Official Sources" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -6289,6 +6802,7 @@
       }
     },
     "official sources, the same for everyone" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -6364,7 +6878,19 @@
         }
       }
     },
+    "On the Lock Screen (Live Activity), only a highlight with weight %lld or more enters, for a fact up to %lld hours after the end of its day (Brasília time), once per device and for up to 8 hours." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na tela de bloqueio (Live Activity) só entra destaque com peso %1$lld ou mais, de um fato de até %2$lld horas depois do fim do dia dele (horário de Brasília), uma vez por aparelho e por até 8 horas."
+          }
+        }
+      }
+    },
     "One icon for each Lens palette." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -6408,6 +6934,7 @@
       }
     },
     "Only on this device" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -6429,6 +6956,7 @@
       }
     },
     "Only weight 85 or more, from the last day. Fiscal sends only an anonymous Apple token." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -6439,6 +6967,7 @@
       }
     },
     "Only who you support and who was on this roll call. Who you support stays on this iPhone." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -6579,6 +7108,7 @@
       }
     },
     "Opens the result card for Stories, Feed and Message." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -6611,6 +7141,7 @@
       }
     },
     "Opens your Lens" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -6653,12 +7184,35 @@
         }
       }
     },
+    "Ordered by weight, from 0 to 100: repercussion plus impact, with the same rule for every politician. A source that wasn't measured is left out of the count, never counted as zero." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em ordem de peso, de 0 a 100: repercussão mais impacto, com a mesma regra para todo político. Fonte que não foi medida fica fora da conta, nunca vira zero."
+          }
+        }
+      }
+    },
     "Ordered by what the people you support do the most. Reorder or remove as you like." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Na ordem do que quem você apoia mais faz. Reordene ou tire como quiser."
+          }
+        }
+      }
+    },
+    "Ordered by what the people you support do the most. Reorder or remove as you like. %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na ordem do que quem você apoia mais faz. Reordene ou tire como quiser. %@"
           }
         }
       }
@@ -6960,6 +7514,16 @@
         }
       }
     },
+    "Per month" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por mês"
+          }
+        }
+      }
+    },
     "Period" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -7181,6 +7745,7 @@
       }
     },
     "Plenary approves the bill that takes vaccination to public schools" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7202,6 +7767,7 @@
       }
     },
     "Police, crime and prisons" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7223,6 +7789,7 @@
       }
     },
     "Politicians" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7387,6 +7954,7 @@
       }
     },
     "Preview of the look" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7540,6 +8108,7 @@
       }
     },
     "Public data" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7737,6 +8306,7 @@
       }
     },
     "Reading what they did" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7901,6 +8471,7 @@
       }
     },
     "Remove" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7911,6 +8482,7 @@
       }
     },
     "Remove a topic to add another. Up to 5." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7943,6 +8515,7 @@
       }
     },
     "Removes this person from who you support" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7970,6 +8543,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Repercussão %lld"
+          }
+        }
+      }
+    },
+    "Repercussion %lld · impact %lld" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repercussão %1$lld · impacto %2$lld"
           }
         }
       }
@@ -8129,6 +8713,7 @@
       }
     },
     "Roads, traffic and public transport" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -8370,6 +8955,7 @@
       }
     },
     "Schools, universities and teachers" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -8643,6 +9229,7 @@
       }
     },
     "Share the result" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -8653,6 +9240,7 @@
       }
     },
     "Short guides for each part of the app" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -8883,6 +9471,7 @@
       }
     },
     "Source" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -9003,6 +9592,7 @@
       }
     },
     "Sources and Method" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -9107,6 +9697,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "gastos por deputados federais e senadores em %@"
+          }
+        }
+      }
+    },
+    "Staff budget" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verba de gabinete"
           }
         }
       }
@@ -9365,11 +9965,23 @@
       }
     },
     "Suggested to start" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sugerida para começar"
+          }
+        }
+      }
+    },
+    "Summary in plain words, rewritten automatically from the official text by fixed rules; the official text is the source." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resumo em palavras simples, reescrito automaticamente do texto oficial por regras fixas; vale o texto oficial."
           }
         }
       }
@@ -9419,6 +10031,7 @@
       }
     },
     "Supporting is not following: in Mine you follow anyone. The people you support are also followed, and their topics and actions come first." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -9429,6 +10042,7 @@
       }
     },
     "SUS, hospitals, medicines and vaccines" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -9571,6 +10185,7 @@
       }
     },
     "Taxes, the budget and how public money is spent" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -9713,6 +10328,7 @@
       }
     },
     "The accent color appears on buttons, tabs and theme chips. Votes, charts and parties keep their own colors." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -9745,6 +10361,7 @@
       }
     },
     "The Amazon at dawn is the main icon. Pick the one you like best." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -9799,6 +10416,7 @@
       }
     },
     "The card carries the official TSE numbers and the time of the file. Your Lens never goes into the image." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -10018,6 +10636,7 @@
       }
     },
     "The Lens stays here" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -10039,6 +10658,7 @@
       }
     },
     "The list of sources isn't published yet." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -10132,6 +10752,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O resumo simples é uma reescrita do Fiscal. A ementa oficial fica sempre a um toque."
+          }
+        }
+      }
+    },
+    "the politician's Wikipedia article" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "o artigo do político na Wikipédia"
           }
         }
       }
@@ -10236,6 +10867,7 @@
       }
     },
     "The same rule for every politician, of every party." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -10322,7 +10954,19 @@
         }
       }
     },
+    "the theme's Wikipedia article" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "o artigo do tema na Wikipédia"
+          }
+        }
+      }
+    },
     "The works behind the share cards, with their licenses" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -10366,6 +11010,7 @@
       }
     },
     "Theme, accent color and app icon" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -10409,6 +11054,7 @@
       }
     },
     "These topics come first in Today, Votes and Money, in this order. Drag, or touch and hold to move or remove. Nothing is hidden." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -10441,6 +11087,7 @@
       }
     },
     "They did not all vote the same way" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -10649,6 +11296,7 @@
       }
     },
     "Topics in the order the data comes, no one first." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -10845,6 +11493,7 @@
       }
     },
     "Up to 5 politicians, from city councilor to president. Fiscal puts first what they do. The facts are the same for everyone." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -10888,6 +11537,7 @@
       }
     },
     "Updated %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -10926,6 +11576,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Valor"
+          }
+        }
+      }
+    },
+    "Values checked at the source on %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valores conferidos na fonte em %@"
           }
         }
       }
@@ -11041,6 +11701,7 @@
       }
     },
     "Violence against women, work and care" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11357,6 +12018,39 @@
         }
       }
     },
+    "Weight %lld of 100, impact %lld, repercussion not measured." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peso %1$lld de 100, impacto %2$lld, repercussão não medida."
+          }
+        }
+      }
+    },
+    "Weight %lld of 100, repercussion %lld, impact %lld." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peso %1$lld de 100, repercussão %2$lld, impacto %3$lld."
+          }
+        }
+      }
+    },
+    "weight of 100" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "de peso, de 0 a 100"
+          }
+        }
+      }
+    },
     "Weight orders what is happening; it never rates it." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -11375,6 +12069,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Boas-vindas ao Fiscal"
+          }
+        }
+      }
+    },
+    "What a mandate costs" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quanto custa um mandato"
           }
         }
       }
@@ -11413,6 +12117,7 @@
       }
     },
     "What Fiscal Covers" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11467,6 +12172,7 @@
       }
     },
     "What stands out for those who support someone else. Nothing is saved." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11521,6 +12227,7 @@
       }
     },
     "What your representatives do with your vote, from official sources." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11575,6 +12282,7 @@
       }
     },
     "Where every number comes from" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11607,6 +12315,7 @@
       }
     },
     "Where the Data Comes From" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11650,6 +12359,7 @@
       }
     },
     "Who do you support?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11660,6 +12370,7 @@
       }
     },
     "Who makes it, credits and contact" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11714,6 +12425,7 @@
       }
     },
     "Who supports %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11746,6 +12458,7 @@
       }
     },
     "Who you follow syncs only through your own iCloud account." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11756,6 +12469,7 @@
       }
     },
     "Who you support" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11766,6 +12480,7 @@
       }
     },
     "Who You Support" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11776,6 +12491,7 @@
       }
     },
     "Who you support never goes to a server, a log or a share card." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11786,6 +12502,7 @@
       }
     },
     "Who you support stays only on this iPhone. It does not go to any server, it is not in iCloud, backups, notifications or shared images, and Fiscal does not know who it is." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11796,6 +12513,7 @@
       }
     },
     "Who you support, your topics and your look leave this iPhone for good. Then Fiscal asks for them again." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11806,11 +12524,23 @@
       }
     },
     "Who you support, your topics and your look stay on this device, outside iCloud and backups." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quem você apoia, seus temas e seu visual ficam neste aparelho, fora do iCloud e do backup."
+          }
+        }
+      }
+    },
+    "Wikipedia" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wikipédia"
           }
         }
       }
@@ -11860,6 +12590,7 @@
       }
     },
     "Without picking a side" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -12002,6 +12733,7 @@
       }
     },
     "You support" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -12012,6 +12744,7 @@
       }
     },
     "You support: %@ of %lld" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -12044,6 +12777,7 @@
       }
     },
     "Your Data and Privacy" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -12098,6 +12832,7 @@
       }
     },
     "Your lens" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -12218,6 +12953,7 @@
       }
     },
     "Your side never goes to a server, a log or a share card." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -12228,6 +12964,7 @@
       }
     },
     "Your side, themes and look stay on this device, outside iCloud and backups." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
