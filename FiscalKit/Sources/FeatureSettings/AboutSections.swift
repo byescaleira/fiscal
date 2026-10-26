@@ -6,15 +6,15 @@ import SwiftUI
 struct AboutValuesSection: View {
     var body: some View {
         Section {
-            IconRow(
+            SettingsLabel(
                 "Private by design",
-                detail: "No account to create. Your lens never leaves this iPhone.",
+                detail: "No account to create. Your Lens never leaves this device.",
                 symbol: "lock", color: .retroDenim)
-            IconRow(
+            SettingsLabel(
                 "Your iCloud, your call",
                 detail: "Sync goes only through your own iCloud account.", symbol: "icloud",
                 color: .retroTeal)
-            IconRow(
+            SettingsLabel(
                 "No ads, no tracking", detail: "Nothing about you is sold, shared or measured.",
                 symbol: "hand.raised", color: .retroOlive)
         } header: {
@@ -81,12 +81,14 @@ struct AboutLinksSection: View {
             DisclosureLink {
                 WhatsNewScreen()
             } label: {
-                IconRow("What's New", symbol: "sparkles", color: .companion)
+                SettingsLabel(
+                    "What's New", symbol: "sparkles", color: .companion,
+                    value: settings.info.number)
             }
             ForEach(Array(settings.info.links.enumerated()), id: \.element.id) { index, link in
                 Link(destination: link.url) {
-                    AboutLinkLabel(
-                        title: link.title, symbol: link.symbol,
+                    SettingsExternalLabel(
+                        link.title, symbol: link.symbol,
                         color: index.isMultiple(of: 2) ? appTint : .companion)
                 }
             }
@@ -103,7 +105,7 @@ private struct AboutRateRow: View {
     var body: some View {
         if let url = settings.info.reviewURL {
             Link(destination: url) {
-                AboutLinkLabel(title: "Rate Fiscal", symbol: "star", color: appTint)
+                SettingsExternalLabel("Rate Fiscal", symbol: "star", color: appTint)
             }
         }
     }
@@ -114,14 +116,14 @@ struct AboutCreditsSection: View {
 
     var body: some View {
         Section {
-            IconRow(
+            SettingsLabel(
                 "Made by one person in Brazil",
                 detail: "Every message reaches the person who writes the code.", symbol: "person",
                 color: .retroMustard)
             if let url = about.lottieURL {
                 Link(destination: url) {
-                    AboutLinkLabel(
-                        title: "Lottie by Airbnb", detail: "Animations · Apache License 2.0",
+                    SettingsExternalLabel(
+                        "Lottie by Airbnb", detail: "Animations · Apache License 2.0",
                         symbol: "wand.and.sparkles", color: .retroPlum)
                 }
             }
@@ -132,23 +134,6 @@ struct AboutCreditsSection: View {
                 .frame(maxWidth: .infinity)
                 .multilineTextAlignment(.center)
                 .padding(.top, .spaceL)
-        }
-    }
-}
-
-private struct AboutLinkLabel: View {
-    let title: LocalizedStringKey
-    var detail: LocalizedStringKey?
-    let symbol: String
-    let color: Color
-
-    var body: some View {
-        HStack(spacing: .spaceS) {
-            IconRow(title, detail: detail, symbol: symbol, color: color)
-            Image(systemName: "arrow.up.right")
-                .font(.footnote.weight(.semibold))
-                .foregroundStyle(.tertiary)
-                .accessibilityHidden(true)
         }
     }
 }

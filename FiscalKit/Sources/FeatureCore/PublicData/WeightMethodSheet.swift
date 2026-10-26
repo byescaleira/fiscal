@@ -54,11 +54,15 @@ public struct WeightChips: View {
     }
 }
 
-struct WeightMethodSheet: View {
+public struct WeightMethodSheet: View {
     @Environment(\.dismiss) private var dismiss
-    let method: WeightMethod
+    private let method: WeightMethod
 
-    var body: some View {
+    public init(method: WeightMethod) {
+        self.method = method
+    }
+
+    public var body: some View {
         NavigationStack {
             List {
                 Section {
