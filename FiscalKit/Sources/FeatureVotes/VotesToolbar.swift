@@ -13,7 +13,7 @@ struct VotesToolbar: ToolbarContent {
         }
         FixedToolbarSpacer(placement: .primaryAction)
         ToolbarItem(placement: .primaryAction) {
-            Button("Lens", systemImage: "eyeglasses") { open(.lens, in: section) }
+            Button("Who You Support", systemImage: "heart") { open(.lens, in: section) }
                 .tint(Color.primary)
         }
     }

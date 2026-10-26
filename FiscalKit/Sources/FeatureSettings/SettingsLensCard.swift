@@ -63,7 +63,7 @@ private struct LensArtThumb: View {
                     } else {
                         tint.opacity(.opacityTint)
                     }
-                    Image(systemName: "eyeglasses")
+                    Image(systemName: "heart")
                         .font(.icon(.l, weight: .semibold))
                         .foregroundStyle(summary.palette == nil ? tint : .white)
                 }

@@ -69,7 +69,7 @@ struct LensPickMark: View {
     @Environment(\.appTint) private var tint
 
     var body: some View {
-        Label("By your lens", systemImage: "eyeglasses")
+        Label("For who you support", systemImage: "heart")
             .font(.caption2.weight(.bold))
             .foregroundStyle(tint)
             .labelStyle(.titleAndIcon)

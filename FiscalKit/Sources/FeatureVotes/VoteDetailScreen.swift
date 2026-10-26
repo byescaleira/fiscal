@@ -111,7 +111,7 @@ private struct VoteThemes: View {
                     Image(systemName: theme.symbol)
                     Text(verbatim: theme.title)
                     if vote.isLensTheme(theme) {
-                        Image(systemName: "eyeglasses")
+                        Image(systemName: "heart")
                             .accessibilityLabel(Text("One of your lens topics"))
                     }
                 }

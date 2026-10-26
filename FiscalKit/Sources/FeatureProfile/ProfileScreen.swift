@@ -144,9 +144,9 @@ struct ProfileLensSection: View {
                         }
                         Spacer(minLength: .spaceS)
                         if line.isLensTheme {
-                            Image(systemName: "eyeglasses")
+                            Image(systemName: "heart")
                                 .foregroundStyle(tint)
-                                .accessibilityLabel(Text("By your lens"))
+                                .accessibilityLabel(Text("For who you support"))
                         }
                     }
                     .accessibilityElement(children: .combine)

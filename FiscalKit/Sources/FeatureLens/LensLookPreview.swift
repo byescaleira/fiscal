@@ -49,7 +49,7 @@ private struct LensPreviewVoteCard: View {
                 .foregroundStyle(tint)
                 .lineLimit(1)
                 Spacer(minLength: .zero)
-                Label("By your lens", systemImage: "eyeglasses")
+                Label("For who you support", systemImage: "heart")
                     .font(.caption2.weight(.bold))
                     .foregroundStyle(tint)
                     .lineLimit(1)

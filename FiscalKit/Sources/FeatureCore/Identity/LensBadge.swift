@@ -8,7 +8,7 @@ public struct LensBadge: View {
     public init() {}
 
     public var body: some View {
-        Label("By your lens", systemImage: "eyeglasses")
+        Label("For who you support", systemImage: "heart")
             .font(.chipLabel)
             .foregroundStyle(tint)
             .padding(.horizontal, .spaceM)

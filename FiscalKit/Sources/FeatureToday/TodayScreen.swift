@@ -67,8 +67,6 @@ private struct TodayBody: View {
 private struct TodayMasthead: View {
     @Environment(TodayModel.self) private var today
     @Environment(\.appTint) private var tint
-    @Environment(\.open) private var open
-    @Environment(\.navigationSection) private var section
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceS) {
@@ -76,58 +74,8 @@ private struct TodayMasthead: View {
                 .font(.subheadline.weight(.heavy))
                 .foregroundStyle(tint)
                 .accessibilityLabel(Text(verbatim: today.dateLine))
-            if today.showsLensBadge {
-                Button {
-                    open(.lens, in: section)
-                } label: {
-                    LensBadge()
-                }
-                .buttonStyle(.plain)
-                .accessibilityHint(Text("Shows what the lens changes and lets you switch it"))
-            }
-            if let line = today.lensLine {
-                Text(verbatim: line)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            if today.hasCheckedLens, today.lens == nil {
-                TodayLensInvite()
-            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-    }
-}
-
-private struct TodayLensInvite: View {
-    @Environment(\.open) private var open
-    @Environment(\.navigationSection) private var section
-    @Environment(\.appTint) private var tint
-
-    var body: some View {
-        Button {
-            open(.lens, in: section)
-        } label: {
-            HStack(spacing: .spaceM) {
-                SymbolBadge("eyeglasses", color: tint, size: .badgeL)
-                VStack(alignment: .leading, spacing: .spaceHairline) {
-                    Text("Put your topics first").font(.rowTitle)
-                    Text("Your lens changes the order, never the facts. It stays on this iPhone.")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                Spacer(minLength: .spaceS)
-                Image(systemName: "chevron.forward")
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(.tertiary)
-            }
-            .padding(.spaceL)
-            .todayCard()
-            .contentShape(.rect)
-        }
-        .buttonStyle(.plain)
-        .padding(.top, .spaceS)
     }
 }
 
@@ -137,7 +85,7 @@ private struct TodayToolbar: ToolbarContent {
 
     var body: some ToolbarContent {
         ToolbarItem(placement: .primaryAction) {
-            Button("Lens", systemImage: "eyeglasses") { open(.lens, in: section) }
+            Button("Who You Support", systemImage: "heart") { open(.lens, in: section) }
                 .tint(Color.primary)
         }
         ToolbarItem(placement: .primaryAction) {

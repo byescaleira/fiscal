@@ -750,7 +750,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Adiciona este tema à sua lente"
+            "value" : "Adiciona este tema aos seus temas"
           }
         }
       }
@@ -3818,6 +3818,16 @@
         }
       }
     },
+    "For who you support" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por quem você apoia"
+          }
+        }
+      }
+    },
     "Forest" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4809,12 +4819,11 @@
       }
     },
     "Lens" : {
-      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lente"
+            "value" : "Quem você apoia"
           }
         }
       }
@@ -5577,7 +5586,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nenhuma conta para criar. Sua Lente nunca sai deste aparelho."
+            "value" : "Nenhuma conta para criar. Quem você apoia nunca sai deste aparelho."
           }
         }
       }
@@ -5697,7 +5706,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ainda sem Lente"
+            "value" : "Você ainda não escolheu quem apoia"
           }
         }
       }
@@ -6340,7 +6349,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Um ícone para cada paleta da Lente."
+            "value" : "Um ícone para cada paleta."
           }
         }
       }
@@ -6576,7 +6585,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abre a sua Lente"
+            "value" : "Abre quem você apoia"
           }
         }
       }
@@ -9963,7 +9972,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A Lente fica aqui"
+            "value" : "Sua escolha fica aqui"
           }
         }
       }
@@ -11706,6 +11715,16 @@
         }
       }
     },
+    "Who You Support" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem você apoia"
+          }
+        }
+      }
+    },
     "Who you support never goes to a server, a log or a share card." : {
       "localizations" : {
         "pt-BR" : {
@@ -12033,7 +12052,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sua lente"
+            "value" : "Quem você apoia"
           }
         }
       }
