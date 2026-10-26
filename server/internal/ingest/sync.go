@@ -132,6 +132,9 @@ func (in *Ingest) RunJob(ctx context.Context, name string, hooks SyncHooks) ([]O
 	if !ok || j.Kind == JobExternal {
 		return nil, fmt.Errorf("unknown job %q", name)
 	}
+	if err := in.seedSyncState(); err != nil {
+		return nil, err
+	}
 	return in.runJobs(ctx, []Job{j}, map[string]bool{name: true}, hooks)
 }
 
