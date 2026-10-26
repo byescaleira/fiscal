@@ -16,7 +16,6 @@ public struct LensScreen: View {
             if lens.hasLens {
                 LensSupportSection()
                 LensThemesSection()
-                LensLookSection()
                 LensOtherSection()
             }
             LensPrivacySection()
@@ -95,9 +94,6 @@ private struct LensHeroText: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceS) {
-            if lens.hasLens {
-                LensBadge()
-            }
             if !lens.supportedCards.isEmpty {
                 LensFaces(cards: lens.supportedCards, size: .badgeL, expression: .wave)
             }
