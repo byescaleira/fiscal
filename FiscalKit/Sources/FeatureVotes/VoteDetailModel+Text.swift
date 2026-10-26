@@ -5,7 +5,7 @@ import Foundation
 extension VoteDetailModel {
     public static let amendmentShare = 3.0 / 5.0
 
-    public var title: String { vote?.proposition ?? String(appLocalized: "Vote") }
+    public var title: String { vote?.heading ?? String(appLocalized: "Vote") }
 
     public var heroCaption: String {
         guard let vote else { return "" }

@@ -14,8 +14,7 @@ extension View {
             .prominentButton()
             .controlSize(.large)
             .buttonSizing(.flexible)
-            .font(.headline.weight(.bold))
-            .fontDesign(.rounded)
+            .font(.emphasis(.headline, weight: .bold))
     }
 }
 

@@ -23,7 +23,6 @@ public struct StudyGuideScreen: View {
                 "Guide not found", systemImage: "book",
                 description: Text("The study guides aren't published by Fiscal yet."))
         }
-        .fontDesign(.rounded)
         .navigationTitle(Text(verbatim: model.guide?.title ?? ""))
         .task { await model.load() }
     }
@@ -76,7 +75,7 @@ private struct GuideHeroSection: View {
                 SymbolBadge(StudySymbols.symbol(for: guide.id), color: tint, size: .badgeXL)
                 Chip(model.heroChip, color: tint, shape: .capsule)
                 Text(verbatim: guide.summary)
-                    .font(.title3.weight(.semibold))
+                    .font(.emphasis(.title3, weight: .semibold))
                     .foregroundStyle(.primary)
                     .multilineTextAlignment(.center)
             }
@@ -105,7 +104,7 @@ private struct StudyCardView: View {
                 Spacer(minLength: .spaceS)
             }
             Text(verbatim: card.title)
-                .font(.title2.weight(.heavy))
+                .font(.emphasis(.title2, weight: .heavy))
                 .fixedSize(horizontal: false, vertical: true)
             Text(verbatim: card.text)
                 .font(.body)

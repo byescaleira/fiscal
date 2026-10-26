@@ -60,7 +60,6 @@ public struct SplashScreen<Footer: View>: View {
                 .shadow(color: .black.opacity(.opacityFill), radius: .spaceM, y: .spaceS)
             Text(verbatim: "Fiscal")
                 .font(.titleLarge)
-                .fontDesign(.rounded)
             VStack(spacing: .spaceS) {
                 if let progress {
                     ProgressBar(value: progress, color: appTint)
@@ -76,7 +75,6 @@ public struct SplashScreen<Footer: View>: View {
             .animation(reduceMotion ? nil : .easeOut(duration: 0.25), value: progress)
             footer
         }
-        .fontDesign(.rounded)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.groupedBackground)
         .accessibilityElement(children: .combine)

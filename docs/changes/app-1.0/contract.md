@@ -122,14 +122,18 @@ Action e Highlight ganham relevance ∈ high (peso 70 ou mais) | medium (40 a 69
   a tela mostra a faixa, e o número do peso fica no detalhe e no "Como medimos"
 
 
-PersonVote { voteId, date, proposition, summary, vote, partyGuidance, approved, themes }
+PersonVote { voteId, date, proposition, summary, vote, partyGuidance, approved, themes, turn? }
 Proposal { id, kind, number, year, summary, plainSummary, canBecomeLaw, themes, url }
 Speech { date, kind, summary, url }
 Expense { id, year, month, category, supplier, document, cents, url }
 
 VoteSummary { id, house ∈ camara | senado, date, time, proposition, kind, summary, plainSummary, themes,
-              result, approved, nominal, yes, no, others,
+              result, approved, nominal, yes, no, others, turn?,
               group?, relatedCount?, related?: [{ id, time, summary, nominal, approved }] }
+
+`turn` (1 ou 2) sai quando o texto oficial da votação diz o turno ("em primeiro turno", "em segundo turno"); o app
+mostra "PEC 221/2019 · 1º turno" para que os turnos do mesmo dia não pareçam repetidos. `proposition` nunca sai nula:
+sem proposição, o servidor manda "Requerimento" ou "Votação em Plenário".
 
 Grupo de votação: votações da mesma casa, da mesma proposição e do mesmo dia (`group`, id estável,
 ex.: `camara-2026-10-15-pl-1123-2025`; sem proposição, o grupo é a própria votação). PEC com 1º e 2º turno

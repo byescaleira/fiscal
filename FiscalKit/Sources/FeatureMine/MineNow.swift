@@ -117,7 +117,7 @@ private struct MineHighlightCard: View {
                 }
             }
             Text(verbatim: highlight.title)
-                .font(.title3.weight(.bold))
+                .font(.emphasis(.title3, weight: .bold))
                 .lineLimit(5)
                 .fixedSize(horizontal: false, vertical: true)
             if highlight.person == nil {

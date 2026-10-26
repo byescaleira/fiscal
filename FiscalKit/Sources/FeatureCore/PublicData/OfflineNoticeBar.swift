@@ -44,7 +44,6 @@ public struct OfflineNoticeBar: View {
         .padding(.horizontal, .spaceM)
         .padding(.vertical, .spaceXS)
         .surface(in: .capsule)
-        .fontDesign(.rounded)
         .accessibilityElement(children: .combine)
     }
 

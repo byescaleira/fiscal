@@ -68,7 +68,7 @@ private struct RepresentativeRow: View {
                 if let ballot = person.ballot, let vote = person.vote {
                     VStack(alignment: .trailing, spacing: .space2XS) {
                         BallotChip(ballot: ballot)
-                        Text(verbatim: vote.proposition)
+                        Text(verbatim: vote.heading)
                             .font(.caption2)
                             .foregroundStyle(.secondary)
                             .lineLimit(1)

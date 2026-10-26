@@ -21,7 +21,6 @@ struct RaceDetailScreen: View {
             }
         }
         .background(.groupedBackground)
-        .fontDesign(.rounded)
         .navigationTitle(Text(verbatim: results.race(id: raceID).map(results.title) ?? ""))
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)

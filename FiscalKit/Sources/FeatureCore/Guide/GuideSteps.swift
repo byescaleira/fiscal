@@ -81,6 +81,5 @@ public struct GuideLink: View {
         .buttonStyle(.bordered)
         .buttonBorderShape(.capsule)
         .controlSize(.large)
-        .fontDesign(.rounded)
     }
 }

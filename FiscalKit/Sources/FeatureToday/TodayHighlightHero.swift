@@ -35,7 +35,6 @@ struct TodayHighlightHero: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background { backdrop }
         .clipShape(.rect(cornerRadius: .radiusGroup))
-        .fontDesign(.rounded)
         .contextMenu {
             Button("Share", systemImage: "square.and.arrow.up") {
                 open(.share(today.shareSubject(for: highlight)), in: section)
@@ -77,7 +76,7 @@ struct TodayHighlightHero: View {
     private var content: some View {
         VStack(alignment: .leading, spacing: .spaceM) {
             Text(verbatim: highlight.plainSummary ?? highlight.title)
-                .font(.title2.weight(.bold))
+                .font(.emphasis(.title2, weight: .bold))
                 .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 5)
                 .fixedSize(horizontal: false, vertical: true)
             if highlight.plainSummary != nil {

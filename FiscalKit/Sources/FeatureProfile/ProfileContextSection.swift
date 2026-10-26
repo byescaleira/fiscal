@@ -10,6 +10,11 @@ struct ProfileContextSection: View {
     var body: some View {
         if profile.hasContext, let item = profile.selectedContext {
             Section {
+                IconRow(
+                    "Context, not cause",
+                    detail:
+                        "Prices, jobs and these indicators move for many reasons: the economy, other governments, the whole Congress. They show what happened during the term, not what this person caused.",
+                    symbol: "info.circle", color: .retroDenim)
                 ProfileContextSummary(item: item)
                 ProfileContextChart(item: item)
                     .id(item.id)

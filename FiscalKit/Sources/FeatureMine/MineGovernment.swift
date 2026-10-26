@@ -91,7 +91,7 @@ private struct MineSeatCard: View {
                 .scaleEffect(appeared ? 1 : 0.6)
                 .opacity(appeared ? 1 : 0)
                 Text(verbatim: card.name)
-                    .font(.title2.weight(.heavy))
+                    .font(.emphasis(.title2, weight: .heavy))
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
                     .minimumScaleFactor(0.7)

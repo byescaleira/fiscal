@@ -28,8 +28,7 @@ public struct MemoryScreen: View {
                 MemoryIssueSection(error: error)
             }
         }
-        .fontDesign(.rounded)
-        .navigationTitle("Memory")
+        .emphasisTitle("Memory")
         .refreshable { await memory.load() }
         .task { await memory.load() }
     }

@@ -78,7 +78,7 @@ struct PosterCarousel: View {
     }
 
     var body: some View {
-        TimelineView(.animation(paused: reduceMotion)) { timeline in
+        TimelineView(.animation(paused: reduceMotion || MotionBudget.isConstrained)) { timeline in
             ScrollView(.horizontal) {
                 HStack(spacing: .spaceL) {
                     ForEach(Array((works + works).enumerated()), id: \.offset) { index, work in
