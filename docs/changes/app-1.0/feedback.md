@@ -107,6 +107,9 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Botões da toolbar na cor do texto; Trocar lugar na toolbar de Meus | no iPhone | toolbars |
 | Lente pelos candidatos que a pessoa apoia, no lugar do lado (apoiar ≠ seguir) | no iPhone | FeatureLens, SupportThemes, FiscalSchemaV2 |
 | Tela "O que mais importa para você?" (temas) no layout do app | no iPhone | LensThemesStep |
+| Boas-vindas (setup da Lente) no claro e no escuro | no iPhone | LensSetupScreen, LensBackdrop |
+| Contraste dos botões principais no escuro | no iPhone | ProminentButton |
+| Reiniciar o servidor da apuração (aprovado) | no ar: push dos destaques e abstenção | fiscal-api |
 
 ## Ícone
 
