@@ -34,14 +34,14 @@ public struct InvestigationScreen: View {
             }
             ToolbarItem(placement: .primaryAction) {
                 Button {
-                    board.save()
+                    board.togglePin()
                 } label: {
                     Label(
-                        board.isSaved ? LocalizedStringKey("Saved") : "Save",
-                        systemImage: board.isSaved ? "checkmark.circle" : "bookmark")
+                        board.isPinned ? LocalizedStringKey("Unpin") : "Pin to top",
+                        systemImage: board.isPinned ? "pin.slash" : "pin")
                 }
                 .tint(Color.primary)
-                .disabled(board.pieces.isEmpty)
+                .disabled(!board.isSaved)
             }
             if let share = board.share {
                 ToolbarItem(placement: .primaryAction) {

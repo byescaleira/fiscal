@@ -125,7 +125,7 @@ private struct LoadIssueSection: View {
             Button("Try Again") { Task { await search.load() } }
                 .font(.buttonLabel)
         } footer: {
-            Text("Saved investigations and pinned pieces stay on this device.")
+            Text("Your investigations stay saved, even without a connection.")
         }
     }
 }

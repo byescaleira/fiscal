@@ -30,7 +30,7 @@ public final class SearchModel {
         self.service = service
         lensRepository = lens
         recentStore = recents
-        self.board = board ?? InvestigationModel(service: service, store: nil, usesModel: false)
+        self.board = board ?? InvestigationModel(service: service, legacy: nil, usesModel: false)
     }
 
     public var isSearching: Bool { !SearchText.words(query).isEmpty || !tokens.isEmpty }

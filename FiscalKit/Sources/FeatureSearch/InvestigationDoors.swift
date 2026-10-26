@@ -112,6 +112,8 @@ extension InvestigationPiece.Kind {
 
 struct SavedInvestigationsSection: View {
     @Environment(InvestigationModel.self) private var board
+    @State private var renaming: Investigation?
+    @State private var name = ""
 
     var body: some View {
         if !board.saved.isEmpty {
@@ -123,18 +125,67 @@ struct SavedInvestigationsSection: View {
                         SavedRow(investigation: investigation)
                     }
                     .buttonStyle(.plain)
+                    .deleteAction { board.delete(investigation) }
+                    .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                        PinButton(investigation: investigation)
+                    }
+                    .contextMenu {
+                        Button("Rename", systemImage: "pencil") { startRenaming(investigation) }
+                        PinButton(investigation: investigation)
+                        Button("Delete", systemImage: "trash", role: .destructive) {
+                            board.delete(investigation)
+                        }
+                    }
                 }
-                .onDelete { board.delete(at: $0) }
             } header: {
                 Text("Your investigations").sectionTitle()
             } footer: {
-                Text("Saved only on this device. Swipe to delete.")
+                if board.isOnDevice {
+                    Text("Saved only on this device. Swipe to pin or delete.")
+                } else {
+                    Text("Saved in your iCloud. Swipe to pin or delete.")
+                }
+            }
+            .alert("Rename investigation", isPresented: isRenaming, presenting: renaming) {
+                investigation in
+                TextField("Name", text: $name)
+                Button("Cancel", role: .cancel) {}
+                Button("Save") { board.rename(investigation, to: name) }
             }
         }
+    }
+
+    private var isRenaming: Binding<Bool> {
+        Binding {
+            renaming != nil
+        } set: {
+            if !$0 { renaming = nil }
+        }
+    }
+
+    private func startRenaming(_ investigation: Investigation) {
+        name = investigation.title
+        renaming = investigation
+    }
+}
+
+private struct PinButton: View {
+    @Environment(InvestigationModel.self) private var board
+    let investigation: Investigation
+
+    var body: some View {
+        Button(
+            investigation.isPinned ? LocalizedStringKey("Unpin") : "Pin to top",
+            systemImage: investigation.isPinned ? "pin.slash" : "pin"
+        ) {
+            board.togglePin(investigation)
+        }
+        .tint(.info)
     }
 }
 
 private struct SavedRow: View {
+    @Environment(\.appTint) private var tint
     let investigation: Investigation
 
     var body: some View {
@@ -154,12 +205,20 @@ private struct SavedRow: View {
                 PieceStrip(pieces: investigation.pieces)
             }
             Spacer(minLength: .spaceS)
-            Text(
-                verbatim: investigation.updatedAt.formatted(
-                    .dateTime.day().month(.abbreviated).locale(.app))
-            )
-            .font(.caption)
-            .foregroundStyle(.secondary)
+            VStack(alignment: .trailing, spacing: .space2XS) {
+                if investigation.isPinned {
+                    Image(systemName: "pin.fill")
+                        .font(.caption)
+                        .foregroundStyle(tint)
+                        .accessibilityLabel(Text("Pinned"))
+                }
+                Text(
+                    verbatim: investigation.updatedAt.formatted(
+                        .dateTime.day().month(.abbreviated).locale(.app))
+                )
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            }
         }
         .padding(.vertical, .space2XS)
         .contentShape(.rect)
