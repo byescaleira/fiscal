@@ -276,7 +276,7 @@ func TestServiceRegistersKeysAndConsumesChallenges(t *testing.T) {
 	c := newChain(t)
 	d := newDevice()
 	dir := t.TempDir()
-	clock := time.Date(2026, 10, 26, 12, 0, 0, 0, time.UTC)
+	clock := time.Now().UTC().Truncate(time.Second)
 	v := &Verifier{AppID: appID, Roots: c.pool, Now: func() time.Time { return clock }}
 	s, err := Open(dir, v, 10)
 	if err != nil {
