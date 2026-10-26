@@ -29,6 +29,13 @@ public struct MandateRoleTotal: Identifiable, Equatable, Sendable {
     public var fullYearly: String { PublicFormat.money(cents: yearlyCents) }
 }
 
+public struct MandateActItem: Identifiable, Equatable, Sendable {
+    public let id: String
+    public let title: String
+    public let act: String
+    public let url: URL?
+}
+
 public struct QuotaStateBar: Identifiable, Equatable, Sendable {
     public let uf: String
     public let cents: Int
@@ -64,9 +71,5 @@ public enum MandateText {
     public static func act(_ act: MandateCost.Act) -> String {
         guard let since = act.since else { return act.name }
         return String(appLocalized: "\(act.name), in force since \(day(since))")
-    }
-
-    public static func itemLine(_ item: MandateCost.Item) -> String {
-        "\(kindTitle(item.kind)): \(act(item.act))"
     }
 }

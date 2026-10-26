@@ -1,42 +1,41 @@
 import FiscalDesignSystem
 import SwiftUI
 
-struct MoneyCard<Background: ShapeStyle, Content: View>: View {
-    private let background: Background
+struct MoneyCard<Content: View>: View {
     private let content: Content
 
-    init(_ background: Background, @ViewBuilder content: () -> Content) {
-        self.background = background
+    init(@ViewBuilder content: () -> Content) {
         self.content = content()
     }
 
     var body: some View {
         VStack(spacing: .spaceM) { content }
             .multilineTextAlignment(.center)
-            .foregroundStyle(.white)
+            .foregroundStyle(.primary)
             .padding(.spaceInset)
             .frame(maxWidth: .infinity)
-            .background(background, in: .rect(cornerRadius: .radiusGroup))
-            .environment(\.colorScheme, .dark)
+            .background(.groupedRow, in: .rect(cornerRadius: .radiusGroup))
             .listRowInsets(EdgeInsets())
             .listRowBackground(Color.clear)
     }
 }
 
 struct MoneyHeroValue: View {
+    @Environment(\.appTint) private var tint
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let chip: String
     let value: String
     let cents: Int
     let caption: String
-    let accent: Color
 
     var body: some View {
         VStack(spacing: .spaceS) {
-            Chip(chip, color: accent, shape: .capsule)
+            Text(verbatim: chip)
+                .font(.caption.weight(.heavy))
+                .foregroundStyle(tint)
             Text(verbatim: value)
                 .font(.amountHero)
-                .foregroundStyle(.white)
+                .monospacedDigit()
                 .contentTransition(reduceMotion ? .identity : .numericText(value: Double(cents)))
                 .amountLine()
             Text(verbatim: caption)
@@ -44,40 +43,5 @@ struct MoneyHeroValue: View {
                 .foregroundStyle(.secondary)
         }
         .accessibilityElement(children: .combine)
-    }
-}
-
-struct MoneyScoreSide: View {
-    let label: LocalizedStringKey
-    let value: String
-    let alignment: HorizontalAlignment
-
-    var body: some View {
-        VStack(alignment: alignment, spacing: .space2XS) {
-            Text(label)
-                .font(.chipLabel)
-                .textCase(.uppercase)
-                .foregroundStyle(.secondary)
-            Text(verbatim: value)
-                .font(.scoreboardNumber)
-                .monospacedDigit()
-                .foregroundStyle(.white)
-                .amountLine()
-        }
-        .accessibilityElement(children: .combine)
-    }
-}
-
-struct RevealingBar: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var revealed = false
-    let value: Double
-    let color: Color
-
-    var body: some View {
-        ProgressBar(value: revealed ? value : 0, color: color)
-            .onAppear {
-                withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
-            }
     }
 }

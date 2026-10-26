@@ -91,6 +91,7 @@ func Build(ds *Dataset, registry *Slugs) Output {
 	b.agenda()
 	b.money()
 	b.mandate()
+	b.moneyPlaces(people)
 	b.today()
 	b.indicators()
 	b.add("meta.json", Meta{GeneratedAt: stamp(ds.GeneratedAt), Sources: b.sources(sortedSourceIDs(ds.Sources)...), Counts: counts})

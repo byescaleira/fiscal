@@ -9,7 +9,6 @@ struct MandateSections: View {
     var body: some View {
         if money.hasMandate {
             MandateCostSection()
-            MandateComparisonSection()
             if !money.quotaStateBars.isEmpty {
                 QuotaStatesSection()
             }
@@ -22,27 +21,33 @@ private struct MandateCostSection: View {
 
     var body: some View {
         Section {
-            if let highlight = money.mandateHighlight {
-                MandateHighlightCard(chip: money.mandateHighlightChip, total: highlight)
-            }
             VStack(alignment: .leading, spacing: .spaceM) {
-                Text("Monthly cost by office, item by item").font(.headline)
+                Text(
+                    verbatim: money.mandateComparison
+                        ?? String(appLocalized: "Monthly cost by office, item by item")
+                )
+                .font(.headline)
+                .fixedSize(horizontal: false, vertical: true)
                 MandateStackChart(
                     segments: money.mandateSegments, totals: money.mandateTotals,
                     kinds: money.mandateKinds)
             }
             .padding(.vertical, .spaceXS)
+            ForEach(money.mandateActs) { MandateActRow(item: $0) }
         } header: {
-            Text("What a mandate costs").sectionTitle()
+            Text(verbatim: MoneyModel.Section.mandate.title).sectionTitle()
         } footer: {
             VStack(alignment: .leading, spacing: .space2XS) {
                 Text(
-                    "Gross amounts the law sets for each month; the year multiplies the month by 12. The office allowance follows the state picked in the toolbar. The housing allowance is paid only to deputies who don't live in an official apartment."
+                    "Gross amounts the law sets for each month. The housing allowance is paid only to those who don't live in an official apartment."
                 )
+                if let note = money.mandateScopeNote {
+                    Text(verbatim: note)
+                }
                 if let note = money.mandateMissingNote {
                     Text(verbatim: note)
                 }
-                ForEach(money.mandateActLines, id: \.self) { Text(verbatim: $0) }
+                ForEach(money.mandateReferenceLines, id: \.self) { Text(verbatim: $0) }
                 if let checked = money.mandateCheckedLine {
                     Text(verbatim: checked)
                 }
@@ -52,44 +57,44 @@ private struct MandateCostSection: View {
     }
 }
 
-private struct MandateHighlightCard: View {
-    let chip: String
-    let total: MandateRoleTotal
+private struct MandateActRow: View {
+    let item: MandateActItem
 
     var body: some View {
-        MoneyCard(
-            LinearGradient(
-                colors: [.scoreboard, .scoreboard, .scoreboardAccent.opacity(.opacitySoft)],
-                startPoint: .topLeading, endPoint: .bottomTrailing)
-        ) {
-            Chip(chip, color: .scoreboardAccent, shape: .capsule)
-            AdaptiveRow(spacing: .spaceM) {
-                MoneyScoreSide(label: "Per month", value: total.monthly, alignment: .leading)
-                Spacer(minLength: .spaceS)
-                MoneyScoreSide(label: "In 12 months", value: total.yearly, alignment: .trailing)
+        if let url = item.url {
+            Link(destination: url) {
+                content(showsLink: true)
             }
-            .contentTransition(.numericText(value: Double(total.monthlyCents)))
-            .animation(.smooth, value: total.monthlyCents)
+            .buttonStyle(.plain)
+            .accessibilityHint(Text("Opens the official act"))
+        } else {
+            content(showsLink: false)
         }
-        .accessibilityElement(children: .combine)
-        .accessibilityValue(Text(verbatim: total.fullYearly))
     }
-}
 
-private struct MandateComparisonSection: View {
-    @Environment(MoneyModel.self) private var money
-
-    var body: some View {
-        if let comparison = money.mandateComparison {
-            Section {
-                IconRow(verbatim: comparison, symbol: "equal.square", color: .retroDenim)
-            } footer: {
-                VStack(alignment: .leading, spacing: .space2XS) {
-                    ForEach(money.mandateReferenceLines, id: \.self) { Text(verbatim: $0) }
-                    Text(verbatim: money.sourceLine(for: .mandate))
-                }
+    private func content(showsLink: Bool) -> some View {
+        HStack(spacing: .spaceM) {
+            Image(systemName: "text.book.closed")
+                .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: .spaceHairline) {
+                Text(verbatim: item.title)
+                    .font(.subheadline.weight(.semibold))
+                Text(verbatim: item.act)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer(minLength: .spaceS)
+            if showsLink {
+                Image(systemName: "arrow.up.forward")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+                    .accessibilityHidden(true)
             }
         }
+        .contentShape(.rect)
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -100,23 +105,22 @@ private struct QuotaStatesSection: View {
         Section {
             VStack(alignment: .leading, spacing: .spaceM) {
                 if let headline = money.quotaRangeHeadline {
-                    Text(verbatim: headline).font(.headline)
+                    Text(verbatim: headline)
+                        .font(.headline)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
                 QuotaStatesChart(bars: money.quotaStateBars)
             }
             .padding(.vertical, .spaceXS)
         } header: {
-            Text("Office allowance by state").sectionTitle()
+            Text("Office allowance cap by state").sectionTitle()
         } footer: {
             VStack(alignment: .leading, spacing: .space2XS) {
                 Text(
-                    "Monthly cap of a federal deputy, by the state that elected them. Touch a column to pick the state."
+                    "Monthly cap of a federal deputy, by the state that elected them. States farther from Brasília get more, because flights cost more. Touch a column to see its value."
                 )
                 if let act = money.quotaActLine {
                     Text(verbatim: act)
-                }
-                if let checked = money.mandateCheckedLine {
-                    Text(verbatim: checked)
                 }
                 Text(verbatim: money.sourceLine(for: .mandate))
             }

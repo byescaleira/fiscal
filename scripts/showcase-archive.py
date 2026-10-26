@@ -48,7 +48,7 @@ def pack(name, documents):
 
 def core(v1):
     docs = {}
-    for name in ["meta.json", "today.json", "agenda/today.json", "money/overview.json"]:
+    for name in ["meta.json", "today.json", "agenda/today.json", "money/overview.json", "money/mandate-cost.json", "money/places.json"]:
         path = os.path.join(v1, name)
         if os.path.exists(path):
             docs[name] = raw(path)

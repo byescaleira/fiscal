@@ -25,20 +25,22 @@ struct MoneyModelTests {
     @Test func showsTheMandateCostWithItsActs() async throws {
         let model = try await loaded()
         #expect(!model.isEmpty)
-        model.selectedUF = "sp"
+        model.select(scope: "sp")
         let deputy = try #require(model.mandateHighlight)
         #expect(deputy.monthlyCents == 4_636_619 + 4_872_746 + 16_580_607 + 425_300)
         #expect(model.quotaStateBars.first?.uf == "rr")
-        #expect(model.mandateActLines.contains { $0.contains("Decreto Legislativo nº 172/2022") })
+        #expect(model.mandateActs.contains { $0.act.contains("Decreto Legislativo nº 172/2022") })
     }
 
-    @Test func theHeroAddsTheChamberAndTheSenate() async throws {
+    @Test func theAnswerFollowsThePlacePicked() async throws {
         let model = try await loaded()
-        let hero = try #require(model.hero)
-        #expect(hero.cents == 19_840_000_000 + 2_715_000_000)
-        #expect(hero.chamberShare > 0.87 && hero.chamberShare < 0.89)
-        #expect(hero.chip == hero.chip.uppercased(with: .app))
-        #expect(hero.value != PublicFormat.missing)
+        model.select(scope: "br")
+        let country = try #require(model.answer)
+        #expect(country.kicker == country.kicker.uppercased(with: .app))
+        #expect(country.value != PublicFormat.missing)
+        model.select(scope: "sp")
+        let state = try #require(model.answer)
+        #expect(state.cents < country.cents)
     }
 
     @Test func categoriesComeLargestFirstWithTheirSymbol() async throws {
@@ -53,7 +55,7 @@ struct MoneyModelTests {
     @Test func campaignsAndRevenueKeepTheirSources() async throws {
         let model = try await loaded()
         #expect(model.campaignOrigins.count == 4)
-        #expect(model.revenueStates.first?.title == "São Paulo")
+        #expect(model.revenueTiles.contains { $0.title == "São Paulo" && $0.cents != nil })
         #expect(model.sourceLine(for: .campaigns).contains("Tribunal Superior Eleitoral"))
         #expect(!model.sourceLine(for: .campaigns).contains("Câmara"))
         #expect(model.sourceLine(for: .quota).contains("Câmara dos Deputados"))
@@ -64,11 +66,11 @@ struct MoneyModelTests {
         let model = try await loaded(.empty)
         #expect(model.isEmpty)
         #expect(model.revenue == nil)
-        #expect(model.revenueStates.isEmpty)
+        #expect(model.revenueTiles.allSatisfy { $0.cents == nil })
         let empty = MoneyModel(service: nil)
         #expect(empty.campaignFigures.raised == PublicFormat.missing)
         #expect(empty.campaignFigures.spent == PublicFormat.missing)
-        #expect(empty.hero == nil)
+        #expect(empty.answer == nil)
     }
 
     @Test func withoutALensTheOrderIsTheSameForEveryone() async throws {
@@ -83,10 +85,10 @@ struct MoneyModelTests {
             lens: Lens(themes: [.taxes, .health, .economy], supported: ["lula"]))
         let left = try await loaded(
             lens: Lens(themes: [.politics, .health, .economy], supported: ["tabata-amaral"]))
-        #expect(right.sections.first == .quota)
+        #expect(right.sections.first == .mandate)
         #expect(left.sections.first == .campaigns)
         #expect(Set(right.sections) == Set(left.sections))
-        #expect(right.hero == left.hero)
+        #expect(right.answer == left.answer)
         #expect(right.categories == left.categories)
         #expect(left.lensNote != nil)
     }

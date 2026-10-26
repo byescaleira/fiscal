@@ -9,9 +9,16 @@ struct StateTileMap: View {
     @State private var scrubbedRow: Double?
     @State private var picked: String?
     let tiles: [StateTile]
+    let focus: String?
+
+    init(tiles: [StateTile], focus: String? = nil) {
+        self.tiles = tiles
+        self.focus = focus
+    }
 
     private var focused: StateTile? {
-        tiles.first { $0.uf == picked } ?? tiles.max { ($0.cents ?? 0) < ($1.cents ?? 0) }
+        tiles.first { $0.uf == (picked ?? focus) }
+            ?? tiles.max { ($0.cents ?? 0) < ($1.cents ?? 0) }
     }
 
     var body: some View {

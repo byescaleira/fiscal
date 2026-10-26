@@ -53,25 +53,18 @@ private struct ExpensesHeroSection: View {
 
     var body: some View {
         Section {
-            MoneyCard(heroBackground) {
+            MoneyCard {
                 if let header = expenses.header {
                     ExpensesIdentity(slug: expenses.slug, header: header)
                 }
                 MoneyHeroValue(
                     chip: expenses.chip, value: expenses.total, cents: expenses.totalCents,
-                    caption: expenses.receiptsCaption, accent: .white)
+                    caption: expenses.receiptsCaption)
             }
 
         } footer: {
             Text(verbatim: expenses.sourceLine)
         }
-    }
-
-    private var heroBackground: AnyShapeStyle {
-        guard let party = expenses.header?.party else {
-            return AnyShapeStyle(Color.scoreboard.gradient)
-        }
-        return AnyShapeStyle(PartyPalette.of(party: party).gradient)
     }
 }
 
@@ -82,11 +75,9 @@ private struct ExpensesIdentity: View {
     var body: some View {
         AdaptiveRow(spacing: .spaceM) {
             PersonPortrait(slug: slug, name: header.name, party: header.party, size: .badgeXL)
-                .overlay(Circle().stroke(.white.opacity(.opacityStrong), lineWidth: .spaceHairline))
             VStack(alignment: .leading, spacing: .spaceHairline) {
                 Text(verbatim: header.name)
                     .font(.titleMedium)
-                    .foregroundStyle(.white)
                 Text(verbatim: header.detail)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
