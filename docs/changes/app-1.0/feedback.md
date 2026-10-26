@@ -102,7 +102,9 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Cargo no feminino (Deputada, Senadora…) | no iPhone (dados de teste; real após a próxima carga) | Office.title(for:) |
 | Ajustes e telas internas no padrão do app | no iPhone | FeatureSettings |
 | Sem "Apagar minha escolha" na Privacidade da Lente | no iPhone | LensPrivacySection |
-| Destaque do momento no widget (sempre) e na Live Activity (só peso ≥ 85, últimas 24 h) | em andamento | frente highlight-out |
+| Destaque do momento no widget (sempre) e na Live Activity (só peso ≥ 85, últimas 24 h) | no código; falta instalar (iPhone fora do alcance) e deploy do servidor da apuração | HighlightWidget, HighlightLiveActivity |
+| Cabeçalho de Meus melhor, sem cor | no iPhone | MineHeroCard |
+| Botões da toolbar na cor do texto; Trocar lugar na toolbar de Meus | no código | toolbars |
 | Lente pelos candidatos que a pessoa apoia, no lugar do lado (apoiar ≠ seguir) | em andamento | frente support-lens |
 | Tela "O que mais importa para você?" (temas) no layout do app | em andamento | frente support-lens |
 
