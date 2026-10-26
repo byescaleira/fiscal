@@ -79,7 +79,8 @@ public struct SharePoster: Hashable, Sendable {
             headline = nil
             hero = .highlight(highlight)
             facts = []
-            note = highlight.weight
+            note = [highlight.weight, highlight.uncertainty].compactMap(\.self)
+                .joined(separator: " · ")
             person = nil
         }
     }

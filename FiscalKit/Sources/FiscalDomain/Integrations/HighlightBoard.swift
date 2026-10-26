@@ -11,11 +11,12 @@ public struct HighlightBoard: Hashable, Identifiable, Sendable {
     public let personName: String?
     public let personSlug: String?
     public let party: String?
+    public let coverage: WeightCoverage?
 
     public init(
         id: String, kind: Highlight.Kind, title: String, subtitle: String, weight: Int,
         day: CalendarDay, route: String, personName: String?, personSlug: String?,
-        party: String?
+        party: String?, coverage: WeightCoverage? = nil
     ) {
         self.id = id
         self.kind = kind
@@ -27,6 +28,7 @@ public struct HighlightBoard: Hashable, Identifiable, Sendable {
         self.personName = personName
         self.personSlug = personSlug
         self.party = party
+        self.coverage = coverage
     }
 
     public init(_ highlight: Highlight) {
@@ -34,8 +36,13 @@ public struct HighlightBoard: Hashable, Identifiable, Sendable {
             id: highlight.id, kind: highlight.kind, title: highlight.title,
             subtitle: highlight.subtitle, weight: highlight.weight, day: highlight.date,
             route: highlight.route, personName: highlight.person?.name,
-            personSlug: highlight.person?.slug, party: highlight.person?.party)
+            personSlug: highlight.person?.slug, party: highlight.person?.party,
+            coverage: highlight.coverage)
     }
+
+    public var uncertainty: String? { coverage?.uncertainty }
+
+    public var uncertaintyShort: String? { coverage?.uncertaintyShort }
 
     public var kindTitle: String {
         switch kind {
@@ -80,9 +87,10 @@ public struct HighlightBoard: Hashable, Identifiable, Sendable {
     }
 
     public var accessibilityText: String {
-        String(
+        let base = String(
             appLocalized:
                 "\(kindTitle), \(dayText). \(title). \(subtitle). Weight \(weight) of 100.")
+        return [base, uncertainty].compactMap(\.self).joined(separator: " ")
     }
 }
 

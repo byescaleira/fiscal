@@ -28,29 +28,57 @@ public struct WeightMethodButton: View {
 }
 
 public struct WeightChips: View {
-    private let repercussion: Int
+    private let repercussion: Int?
     private let impact: Int
     private let isTest: Bool
+    private let coverage: WeightCoverage?
 
-    public init(repercussion: Int, impact: Int, isTest: Bool) {
+    public init(
+        repercussion: Int?, impact: Int, isTest: Bool, coverage: WeightCoverage? = nil
+    ) {
         self.repercussion = repercussion
         self.impact = impact
         self.isTest = isTest
+        self.coverage = coverage
     }
 
     public var body: some View {
-        FlowLayout(spacing: .spaceXS) {
-            if isTest {
-                Chip("Repercussion not measured", color: .secondary)
-            } else {
-                Chip("Repercussion \(repercussion)", color: .retroDenim)
+        VStack(alignment: .leading, spacing: .spaceXS) {
+            FlowLayout(spacing: .spaceXS) {
+                if let repercussion, !isTest {
+                    Chip("Repercussion \(repercussion)", color: .retroDenim)
+                } else {
+                    Chip("Repercussion not measured", color: .secondary)
+                }
+                Chip("Impact \(impact)", color: .retroTeal)
+                if isTest {
+                    Chip("Test data", color: .retroMustard)
+                }
             }
-            Chip("Impact \(impact)", color: .retroTeal)
-            if isTest {
-                Chip("Test data", color: .retroMustard)
+            if let text = coverage?.uncertainty {
+                WeightUncertaintyLine(text: text)
             }
         }
         .accessibilityElement(children: .combine)
+    }
+}
+
+public struct WeightUncertaintyLine: View {
+    private let text: String
+
+    public init(text: String) {
+        self.text = text
+    }
+
+    public var body: some View {
+        Label {
+            Text(verbatim: text)
+                .fixedSize(horizontal: false, vertical: true)
+        } icon: {
+            Image(systemName: "info.circle")
+        }
+        .font(.caption)
+        .foregroundStyle(.secondary)
     }
 }
 
@@ -74,6 +102,7 @@ public struct WeightMethodSheet: View {
                 }
                 WeightPartsSection(
                     title: "Repercussion", text: method.repercussion, parts: method.parts)
+                WeightCoverageSection(method: method)
                 WeightSignalsSection(signals: method.signals)
                 WeightPartsSection(
                     title: "Impact", text: method.impact, parts: method.impactParts)
@@ -85,6 +114,11 @@ public struct WeightMethodSheet: View {
                     Text(verbatim: method.decay.text)
                 } header: {
                     Text("Highlight of the Moment").sectionTitle()
+                }
+                Section {
+                    Text(verbatim: method.alertRule.summary)
+                } header: {
+                    Text("Lock Screen Alert").sectionTitle()
                 }
                 WeightListSection(title: "Rules", lines: method.rules)
                 WeightListSection(title: "Limits", lines: method.limits)
@@ -131,6 +165,35 @@ private struct WeightPartsSection: View {
         } header: {
             Text(title).sectionTitle()
         }
+    }
+}
+
+private struct WeightCoverageSection: View {
+    let method: WeightMethod
+
+    var body: some View {
+        Section {
+            Text(verbatim: method.renormalization ?? Self.fallback)
+                .font(.subheadline)
+            ForEach(method.confidence ?? []) { level in
+                VStack(alignment: .leading, spacing: .space2XS) {
+                    Text(verbatim: level.label).font(.rowTitle)
+                    Text(verbatim: level.text)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+                .accessibilityElement(children: .combine)
+            }
+        } header: {
+            Text("Missing Signals").sectionTitle()
+        }
+    }
+
+    private static var fallback: String {
+        String(
+            appLocalized:
+                "A missing signal doesn't count as zero: repercussion is the weighted average of only the signals measured in this load. With no signal measured, the weight is the impact alone, and the app says so."
+        )
     }
 }
 

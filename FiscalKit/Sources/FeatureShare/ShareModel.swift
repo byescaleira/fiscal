@@ -150,8 +150,8 @@ public final class ShareModel {
             let item = list.items.first(where: { $0.id == id })
         else { throw PublicDataError.notFound }
         let vote = item.kind == .vote ? try? await service.vote(id: item.route) : nil
-        var stage: String?
-        if item.kind == .action, let slug = item.person?.slug,
+        var stage = item.stage.flatMap { key in list.method?.stages.first { $0.key == key }?.label }
+        if stage == nil, item.kind == .action, let slug = item.person?.slug,
             let actions = try? await service.actions(slug: slug),
             let key = actions.items.first(where: { $0.id == id || "action-\($0.id)" == id })?
                 .stage

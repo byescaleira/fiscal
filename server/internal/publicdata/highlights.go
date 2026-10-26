@@ -32,7 +32,28 @@ type Highlight struct {
 	Date         string        `json:"date"`
 	URL          *string       `json:"url"`
 	Signals      ActionSignals `json:"signals"`
+	Themes       []string      `json:"themes"`
+	Stage        string        `json:"stage"`
+	House        *string       `json:"house"`
+	Tally        *Tally        `json:"tally"`
 	SignalCoverage
+}
+
+type Tally struct {
+	Yes    int `json:"yes"`
+	No     int `json:"no"`
+	Others int `json:"others"`
+}
+
+func tallyOf(v *HouseVote) *Tally {
+	if v.Yes == nil || v.No == nil {
+		return nil
+	}
+	t := &Tally{Yes: *v.Yes, No: *v.No}
+	if v.Others != nil {
+		t.Others = *v.Others
+	}
+	return t
 }
 
 type HighlightFile struct {
@@ -174,7 +195,6 @@ func Method(sources []Source) WeightMethod {
 			"O título é sempre o texto oficial (a ementa), sem resumo opinativo.",
 			"O peso ordena e destaca; ele não qualifica a medida nem o político.",
 			"Guardamos só contagens; nenhum texto de notícia ou post é copiado.",
-			alert,
 		},
 		Limits: []string{
 			"A repercussão mede quanto se fala, não se o que se fala é verdade nem o tom.",
@@ -228,6 +248,13 @@ func houseName(h string) string {
 		return "Câmara"
 	case HouseSenado:
 		return "Senado"
+	}
+	return ""
+}
+
+func personHouse(p *Person) string {
+	if p.House == HouseCamara || p.House == HouseSenado {
+		return p.House
 	}
 	return ""
 }
@@ -307,6 +334,7 @@ func (b *builder) weights(people []*Person) {
 			ID: "action-" + a.ID, Kind: HighlightAction, Title: a.Title, Subtitle: joinParts(deref(a.Proposition), who),
 			Weight: a.Weight, Repercussion: a.Repercussion, Impact: a.Impact, Route: card.Slug, Person: &card,
 			Proposition: a.Proposition, Date: a.Date, URL: a.URL, Signals: a.Signals, SignalCoverage: a.SignalCoverage,
+			Themes: a.Themes, Stage: a.Stage, House: strPtr(personHouse(g.person)),
 		}})
 	}
 	idx := newStageIndex(b.ds)
@@ -341,6 +369,7 @@ func (b *builder) weights(people []*Person) {
 			ID: d.id, Kind: HighlightVote, Title: a.Title, Subtitle: joinParts(houseName(v.House), v.Proposition, v.Result),
 			Weight: a.Weight, Repercussion: a.Repercussion, Impact: a.Impact, Route: v.ID,
 			Proposition: a.Proposition, Date: a.Date, Signals: a.Signals, SignalCoverage: a.SignalCoverage,
+			Themes: a.Themes, Stage: a.Stage, House: strPtr(v.House), Tally: tallyOf(v),
 		}})
 	}
 	sort.SliceStable(cands, func(i, j int) bool {

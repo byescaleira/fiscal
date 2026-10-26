@@ -6,10 +6,20 @@ public struct HighlightAlertRule: Codable, Hashable, Sendable {
 
     public let minWeight: Int
     public let maxAgeHours: Int
+    public let text: String?
 
-    public init(minWeight: Int, maxAgeHours: Int) {
+    public init(minWeight: Int, maxAgeHours: Int, text: String? = nil) {
         self.minWeight = minWeight
         self.maxAgeHours = maxAgeHours
+        self.text = text
+    }
+
+    public var summary: String {
+        text
+            ?? String(
+                appLocalized:
+                    "On the Lock Screen (Live Activity), only a highlight with weight \(minWeight) or more enters, for a fact up to \(maxAgeHours) hours after the end of its day (Brasília time), once per device and for up to 8 hours."
+            )
     }
 
     public static var brasilia: Calendar {

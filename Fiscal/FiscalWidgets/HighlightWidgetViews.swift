@@ -31,6 +31,21 @@ struct HighlightWeightText: View {
     }
 }
 
+struct HighlightUncertainty: View {
+    let board: HighlightBoard
+    var isShort = false
+
+    var body: some View {
+        if let text = isShort ? board.uncertaintyShort : board.uncertainty {
+            Text(verbatim: text)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .lineLimit(isShort ? 1 : 2)
+                .minimumScaleFactor(0.85)
+        }
+    }
+}
+
 struct HighlightWho: View {
     let board: HighlightBoard
     var showsPortrait = true
@@ -85,6 +100,7 @@ struct HighlightSmall: View {
                     .minimumScaleFactor(0.8)
             }
             HighlightWeightText(board: board)
+            HighlightUncertainty(board: board, isShort: true)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .accessibilityElement(children: .ignore)
@@ -106,6 +122,7 @@ struct HighlightMedium: View {
                 .font(.headline)
                 .lineLimit(3)
                 .minimumScaleFactor(0.85)
+            HighlightUncertainty(board: board, isShort: true)
             Spacer(minLength: 0)
             HighlightWho(board: board)
         }
@@ -132,6 +149,7 @@ struct HighlightLarge: View {
                     .minimumScaleFactor(0.85)
                 ProgressBar(value: deck.lead.weightShare, color: .retroTeal)
                     .widgetAccentable()
+                HighlightUncertainty(board: deck.lead)
                 HighlightWho(board: deck.lead)
             }
             .accessibilityElement(children: .ignore)
@@ -199,7 +217,8 @@ struct HighlightRectangular: View {
             .widgetAccentable()
             Text(verbatim: board.title)
                 .font(.caption)
-                .lineLimit(2)
+                .lineLimit(board.uncertaintyShort == nil ? 2 : 1)
+            HighlightUncertainty(board: board, isShort: true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .ignore)

@@ -55,14 +55,18 @@ public struct ActionItem: Codable, Hashable, Identifiable, Sendable {
     public let stage: String?
     public let themes: [Theme]
     public let weight: Int
-    public let repercussion: Int
+    public let repercussion: Int?
     public let impact: Int
     public let signals: WeightSignals
+    public let measured: [String]?
+    public let missing: [String]?
+    public let confidence: String?
 
     public init(
         id: String, kind: Kind, title: String, proposition: String?, date: CalendarDay,
         url: URL?, ref: String?, ballot: String?, stage: String?, themes: [Theme], weight: Int,
-        repercussion: Int, impact: Int, signals: WeightSignals
+        repercussion: Int?, impact: Int, signals: WeightSignals, measured: [String]? = nil,
+        missing: [String]? = nil, confidence: String? = nil
     ) {
         self.id = id
         self.kind = kind
@@ -78,6 +82,15 @@ public struct ActionItem: Codable, Hashable, Identifiable, Sendable {
         self.repercussion = repercussion
         self.impact = impact
         self.signals = signals
+        self.measured = measured
+        self.missing = missing
+        self.confidence = confidence
+    }
+
+    public var coverage: WeightCoverage {
+        WeightCoverage(
+            measured: measured, missing: missing, confidence: confidence, signals: signals,
+            personal: true)
     }
 }
 
@@ -101,7 +114,7 @@ public struct Highlight: Codable, Hashable, Identifiable, Sendable {
     public let title: String
     public let subtitle: String
     public let weight: Int
-    public let repercussion: Int
+    public let repercussion: Int?
     public let impact: Int
     public let route: String
     public let person: PersonCard?
@@ -109,11 +122,21 @@ public struct Highlight: Codable, Hashable, Identifiable, Sendable {
     public let date: CalendarDay
     public let url: URL?
     public let signals: WeightSignals
+    public let measured: [String]?
+    public let missing: [String]?
+    public let confidence: String?
+    public let themes: [Theme]?
+    public let stage: String?
+    public let house: House?
+    public let tally: HighlightTally?
 
     public init(
         id: String, kind: Kind, title: String, subtitle: String, weight: Int,
-        repercussion: Int, impact: Int, route: String, person: PersonCard?,
-        proposition: String?, date: CalendarDay, url: URL?, signals: WeightSignals
+        repercussion: Int?, impact: Int, route: String, person: PersonCard?,
+        proposition: String?, date: CalendarDay, url: URL?, signals: WeightSignals,
+        measured: [String]? = nil, missing: [String]? = nil, confidence: String? = nil,
+        themes: [Theme]? = nil, stage: String? = nil, house: House? = nil,
+        tally: HighlightTally? = nil
     ) {
         self.id = id
         self.kind = kind
@@ -128,6 +151,31 @@ public struct Highlight: Codable, Hashable, Identifiable, Sendable {
         self.date = date
         self.url = url
         self.signals = signals
+        self.measured = measured
+        self.missing = missing
+        self.confidence = confidence
+        self.themes = themes
+        self.stage = stage
+        self.house = house
+        self.tally = tally
+    }
+
+    public var coverage: WeightCoverage {
+        WeightCoverage(
+            measured: measured, missing: missing, confidence: confidence, signals: signals,
+            personal: person != nil)
+    }
+}
+
+public struct HighlightTally: Codable, Hashable, Sendable {
+    public let yes: Int
+    public let no: Int
+    public let others: Int
+
+    public init(yes: Int, no: Int, others: Int) {
+        self.yes = yes
+        self.no = no
+        self.others = others
     }
 }
 
@@ -215,6 +263,20 @@ public struct WeightMethod: Codable, Hashable, Sendable {
         public var id: String { key }
     }
 
+    public struct ConfidenceLevel: Codable, Hashable, Identifiable, Sendable {
+        public let key: String
+        public let label: String
+        public let text: String
+
+        public init(key: String, label: String, text: String) {
+            self.key = key
+            self.label = label
+            self.text = text
+        }
+
+        public var id: String { key }
+    }
+
     public struct Decay: Codable, Hashable, Sendable {
         public let halfLifeDays: Int
         public let windowDays: Int
@@ -231,6 +293,8 @@ public struct WeightMethod: Codable, Hashable, Sendable {
     public let summary: String
     public let formula: String
     public let repercussion: String
+    public let renormalization: String?
+    public let confidence: [ConfidenceLevel]?
     public let impact: String
     public let parts: [Part]
     public let signals: [Signal]
@@ -249,12 +313,15 @@ public struct WeightMethod: Codable, Hashable, Sendable {
         version: Int, summary: String, formula: String, repercussion: String, impact: String,
         parts: [Part], signals: [Signal], impactParts: [Part], kinds: [Value], scopes: [Value],
         stages: [Value], themes: [Reach], decay: Decay, rules: [String], limits: [String],
-        sources: [Source], alert: HighlightAlertRule? = nil
+        sources: [Source], alert: HighlightAlertRule? = nil, renormalization: String? = nil,
+        confidence: [ConfidenceLevel]? = nil
     ) {
         self.version = version
         self.summary = summary
         self.formula = formula
         self.repercussion = repercussion
+        self.renormalization = renormalization
+        self.confidence = confidence
         self.impact = impact
         self.parts = parts
         self.signals = signals

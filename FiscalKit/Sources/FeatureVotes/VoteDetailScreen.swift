@@ -90,7 +90,9 @@ private struct VoteSummarySection: View {
         } footer: {
             VStack(alignment: .leading, spacing: .space2XS) {
                 if vote.plainSummary != nil {
-                    Text("Summary in plain words, written from the official text.")
+                    Text(
+                        "Summary in plain words, rewritten automatically from the official text by fixed rules; the official text is the source."
+                    )
                 }
                 if let kind = vote.kindText {
                     Text(verbatim: kind)
