@@ -375,3 +375,28 @@ func TestAVoteWithoutAPropositionStillHasALabel(t *testing.T) {
 		}
 	}
 }
+
+func TestEachTurnOfAProposalSaysWhichTurnItIs(t *testing.T) {
+	ds := sampleDataset()
+	first := &HouseVote{ID: "senado-7106", House: HouseSenado, Date: "2026-10-14", Proposition: "PEC 221/2019", Kind: "PEC", Description: "Votação nominal da Proposta de Emenda à Constituição nº 221, de 2019, em primeiro turno.", Nominal: true, Yes: iptr(75), No: iptr(1)}
+	second := &HouseVote{ID: "senado-7107", House: HouseSenado, Date: "2026-10-14", Proposition: "PEC 221/2019", Kind: "PEC", Description: "Votação nominal da Proposta de Emenda à Constituição nº 221, de 2019, em segundo turno.", Nominal: true, Yes: iptr(75), No: iptr(1)}
+	ds.Votes = append(ds.Votes, first, second)
+	files := marshalFiles(t, Build(ds, &Slugs{byKey: map[string]string{}}).Files)
+	recent := files["votes/recent.json"]
+	if !strings.Contains(recent, `"id":"senado-7106"`) || !strings.Contains(recent, `"id":"senado-7107"`) {
+		t.Fatalf("both turns are listed: %s", recent)
+	}
+	var items []VoteSummary
+	if err := json.Unmarshal([]byte(recent), &items); err != nil {
+		t.Fatal(err)
+	}
+	turns := map[string]int{}
+	for _, v := range items {
+		if v.Turn != nil {
+			turns[v.ID] = *v.Turn
+		}
+	}
+	if turns["senado-7106"] != 1 || turns["senado-7107"] != 2 {
+		t.Fatalf("turns = %v", turns)
+	}
+}

@@ -48,8 +48,7 @@ private struct SettingsContent<Lens: View, Artists: View>: View {
                 AdaptiveList { sections }
             #endif
         }
-        .fontDesign(.rounded)
-        .navigationTitle("Settings")
+        .emphasisTitle("Settings")
         .task { await sources.load() }
     }
 

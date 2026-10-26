@@ -23,6 +23,16 @@ struct VoteSummaryRelatedTests {
         #expect(vote.sameDayCount == 2)
     }
 
+    @Test func namesTheTurnNextToTheProposition() throws {
+        let second = try decode(#", "turn": 2"#)
+        let plain = try decode("")
+        #expect(second.turn == 2)
+        #expect(second.heading.hasPrefix("PL 1873/2026 · "))
+        #expect(second.heading != plain.heading)
+        #expect(plain.turn == nil)
+        #expect(plain.heading == "PL 1873/2026")
+    }
+
     @Test func countsVotesBeyondTheListedOnes() throws {
         let vote = try decode(
             #", "relatedCount": 7, "related": [{ "id": "camara-2576389-3", "time": "15:10", "summary": "Requerimento.", "nominal": false, "approved": true }]"#

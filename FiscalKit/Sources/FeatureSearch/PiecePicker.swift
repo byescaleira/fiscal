@@ -89,7 +89,6 @@ struct PiecePicker: View {
                 }
             }
         }
-        .fontDesign(.rounded)
         .presentationDetents([.medium, .large])
         .onDisappear { board.pickerQuery = "" }
     }

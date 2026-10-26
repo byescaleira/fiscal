@@ -32,7 +32,6 @@ struct MinePlacePicker: View {
             }
             .searchable(text: $mine.query, prompt: Text("State or city"))
             .searchFocused($isSearching)
-            .fontDesign(.rounded)
             .navigationTitle("Your Place")
             #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)

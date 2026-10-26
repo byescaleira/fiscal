@@ -178,7 +178,6 @@ private struct AwaitingScreen: View {
                 Text("Alphabetical order. Source: TSE, candidates elected in 2026.")
             }
         }
-        .fontDesign(.rounded)
-        .navigationTitle("Awaiting inauguration")
+        .emphasisTitle("Awaiting inauguration")
     }
 }

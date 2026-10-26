@@ -26,7 +26,6 @@ public struct ExpensesScreen: View {
         } empty: {
             ExpensesEmptyState()
         }
-        .fontDesign(.rounded)
         .navigationTitle(Text(verbatim: expenses.title))
         .toolbarTitleDisplayMode(.inline)
         .toolbar {

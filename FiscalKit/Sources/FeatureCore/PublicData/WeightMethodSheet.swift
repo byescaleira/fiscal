@@ -127,7 +127,6 @@ public struct WeightMethodSheet: View {
         }
         .foregroundStyle(Color.primary)
         .tint(Color.primary)
-        .fontDesign(.rounded)
         .presentationDetents([.medium, .large])
     }
 }

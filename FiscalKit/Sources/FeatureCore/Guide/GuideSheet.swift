@@ -68,7 +68,6 @@ public struct GuideSheet<Page: View>: View {
         }
         .padding([.horizontal, .bottom], .spaceXL)
         .padding(.top, .spaceL)
-        .fontDesign(.rounded)
         .animation(.smooth, value: index)
         .onChange(of: index, initial: true) { shownIndex = index }
     }

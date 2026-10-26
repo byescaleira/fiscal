@@ -27,8 +27,7 @@ public struct MoneyScreen: View {
         } empty: {
             MoneyEmptyState()
         }
-        .fontDesign(.rounded)
-        .navigationTitle("Money")
+        .emphasisTitle("Money")
         .toolbar { MoneyToolbar() }
         .refreshable { await money.load() }
         .task { await money.load() }

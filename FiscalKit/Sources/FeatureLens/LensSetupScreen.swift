@@ -30,7 +30,6 @@ public struct LensSetupScreen: View {
         }
         .background { LensBackdrop(work: setup.backdrop) }
         .appTint(tint)
-        .fontDesign(.rounded)
         .animation(reduceMotion ? nil : .smooth(duration: 0.45), value: setup.step)
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.6), value: setup.backdrop)
         .sensoryFeedback(.selection, trigger: setup.draft)
@@ -127,7 +126,7 @@ struct LensStepHeader: View {
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceS) {
             Text(title)
-                .font(.largeTitle.weight(.black))
+                .font(.emphasis(.largeTitle, weight: .heavy))
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.isHeader)
             if let message {

@@ -47,7 +47,6 @@ public struct RaceHeroCard: View {
         .foregroundStyle(.white)
         .background { RaceHeroBackground(summary: summary) }
         .clipShape(.rect(cornerRadius: .radiusGroup))
-        .fontDesign(.rounded)
         .opacity(results?.isOffline == true ? .opacityStrong : 1)
     }
 }
@@ -242,7 +241,7 @@ private struct RaceHeroCenter: View {
     var body: some View {
         VStack(spacing: .space2XS) {
             Text(verbatim: summary.race.final ? String(appLocalized: "Final") : summary.countedText)
-                .font(.title3.weight(.heavy))
+                .font(.emphasis(.title3, weight: .heavy))
                 .monospacedDigit()
                 .contentTransition(
                     reduceMotion ? .identity : .numericText(value: summary.race.sections.percent)

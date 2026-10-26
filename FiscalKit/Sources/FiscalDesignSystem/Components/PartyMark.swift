@@ -3,6 +3,7 @@ import SwiftUI
 public struct PartyMark: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.partyMarksAreStill) private var partyMarksAreStill
+    @State private var appearances = 0
     private let party: String
 
     public init(_ party: String) {
@@ -14,11 +15,12 @@ public struct PartyMark: View {
             if isStill {
                 PartyMarkChip(party: party, phase: .rest)
             } else {
-                PhaseAnimator(PartyMarkPhase.allCases) { phase in
+                PhaseAnimator(PartyMarkPhase.allCases, trigger: appearances) { phase in
                     PartyMarkChip(party: party, phase: phase)
                 } animation: { phase in
                     phase.animation
                 }
+                .onAppear { appearances += 1 }
             }
         }
         .accessibilityElement(children: .ignore)
@@ -26,7 +28,7 @@ public struct PartyMark: View {
     }
 
     var isStill: Bool {
-        reduceMotion || partyMarksAreStill
+        reduceMotion || partyMarksAreStill || MotionBudget.isConstrained
     }
 }
 

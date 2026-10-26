@@ -109,7 +109,7 @@ private struct PastHeroCard: View {
                     .padding(.vertical, .space2XS)
                     .background(.white.opacity(.opacityTint), in: .capsule)
                 Text(verbatim: names)
-                    .font(.title.weight(.heavy))
+                    .font(.emphasis(.title, weight: .heavy))
                     .multilineTextAlignment(.center)
                     .lineLimit(3)
                     .minimumScaleFactor(0.7)
@@ -162,7 +162,6 @@ private struct PastHeroCard: View {
             }
         }
         .clipShape(.rect(cornerRadius: .radiusGroup))
-        .fontDesign(.rounded)
         .accessibilityElement(children: .combine)
         .onAppear {
             withAnimation(reduceMotion ? nil : .spring(duration: 0.8, bounce: 0.4)) {

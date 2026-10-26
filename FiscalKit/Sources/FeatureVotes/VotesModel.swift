@@ -70,12 +70,15 @@ public final class VotesModel {
     public var days: [Day] {
         var order: [CalendarDay] = []
         var groups: [CalendarDay: [VoteSummary]] = [:]
-        for vote in filtered {
+        let featured = Set(highlights.map(\.id))
+        for vote in filtered where !featured.contains(vote.id) {
             if groups[vote.date] == nil { order.append(vote.date) }
             groups[vote.date, default: []].append(vote)
         }
         return order.sorted(by: >).map { Day(id: $0, votes: groups[$0] ?? []) }
     }
+
+    public var showsNoMatch: Bool { days.isEmpty && highlights.isEmpty }
 
     public var themeChoices: [Theme] {
         let used = Set(votes.flatMap(\.themes))

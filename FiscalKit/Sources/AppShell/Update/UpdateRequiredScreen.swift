@@ -34,7 +34,6 @@ public struct UpdateRequiredScreen: View {
         }
         .frame(maxWidth: 440)
         .padding(.spaceXL)
-        .fontDesign(.rounded)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.groupedBackground)
     }

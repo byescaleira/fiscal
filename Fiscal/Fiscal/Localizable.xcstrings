@@ -3343,6 +3343,16 @@
         }
       }
     },
+    "Context, not cause" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contexto, não causa"
+          }
+        }
+      }
+    },
     "Continue" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -6565,16 +6575,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Internet, dados, ciência e inovação"
-          }
-        }
-      }
-    },
-    "INVESTIGATE" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "INVESTIGAR"
           }
         }
       }
@@ -10486,6 +10486,16 @@
         }
       }
     },
+    "Prices, jobs and these indicators move for many reasons: the economy, other governments, the whole Congress. They show what happened during the term, not what this person caused." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preços, empregos e esses indicadores mudam por muitos motivos: a economia, outros governos, o Congresso inteiro. Eles mostram o que aconteceu durante o mandato, não o que esta pessoa causou."
+          }
+        }
+      }
+    },
     "Privacy" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -14303,13 +14313,12 @@
         }
       }
     },
-    "The term starts at the month before taking office and runs to the latest month published; before is the same number of months ahead of it. It shows what changed, not why." : {
-      "extractionState" : "stale",
+    "The term starts at the month before taking office and runs to the latest month published; before is the same number of months ahead of it." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O mandato vai do mês anterior à posse até o último mês publicado; o antes são os mesmos meses que antecedem a posse. Mostra o que mudou, não o porquê."
+            "value" : "O mandato vai do mês anterior à posse até o último mês publicado; o antes são os mesmos meses que antecedem a posse."
           }
         }
       }
@@ -14953,6 +14962,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Arquivo do TSE das %@"
+          }
+        }
+      }
+    },
+    "Turn %lld" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lldº turno"
           }
         }
       }

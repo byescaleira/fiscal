@@ -123,7 +123,7 @@ struct LensChoiceTitle: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: .space2XS) {
-            Text(title).font(.title3.weight(.bold)).accessibilityAddTraits(.isHeader)
+            Text(title).font(.emphasis(.title3, weight: .bold)).accessibilityAddTraits(.isHeader)
             Text(detail).font(.footnote).foregroundStyle(.secondary)
         }
     }

@@ -135,7 +135,7 @@ private struct VoteResultRow: View {
     var body: some View {
         RouteLink(.vote(id: vote.id)) {
             VStack(alignment: .leading, spacing: .space2XS) {
-                Text(verbatim: "\(vote.proposition) · \(vote.house.title)")
+                Text(verbatim: "\(vote.heading) · \(vote.house.title)")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.secondary)
                 Text(verbatim: vote.plainSummary ?? vote.summary)

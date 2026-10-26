@@ -34,7 +34,6 @@ private struct InvestigatorField: View {
     var body: some View {
         @Bindable var board = board
         VStack(alignment: .leading, spacing: .spaceS) {
-            Chip("INVESTIGATE", color: tint, shape: .capsule)
             HStack(alignment: .top, spacing: .spaceM) {
                 TextField(
                     "What do you want to investigate?", text: $board.question, axis: .vertical

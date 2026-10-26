@@ -38,7 +38,6 @@ struct MineRosterScreen: View {
             }
         }
         .searchable(text: $query, prompt: Text("Name"))
-        .fontDesign(.rounded)
         .navigationTitle(Text(verbatim: roster.title))
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
