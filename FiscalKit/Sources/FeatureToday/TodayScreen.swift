@@ -3,17 +3,20 @@ import FiscalDesignSystem
 import FiscalDomain
 import SwiftUI
 
-public struct TodayScreen: View {
+public struct TodayScreen<RaceHero: View>: View {
     @Environment(TodayModel.self) private var today
+    private let raceHero: (Race) -> RaceHero
 
-    public init() {}
+    public init(@ViewBuilder raceHero: @escaping (Race) -> RaceHero) {
+        self.raceHero = raceHero
+    }
 
     public var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: .spaceXL) {
                 TodayMasthead()
                 if let board = today.liveBoard {
-                    TodayRaceHero(board: board)
+                    TodayRaceHero(board: board) { raceHero(board.race) }
                         .transition(.opacity)
                 }
                 TodayHighlightSection()
