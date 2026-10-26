@@ -189,7 +189,7 @@ func TestBuildFieldsMatchTheContract(t *testing.T) {
 		t.Fatalf("meta = %+v", meta)
 	}
 	cards := files["index/people.json"].([]PersonCard)
-	check("card", cards[0], "slug,name,office,uf,party,photo,status")
+	check("card", cards[0], "slug,name,office,uf,party,photo,status,gender")
 	if len(cards) != 3 || cards[0].Name != "Acácio Favacho" || cards[2].Name != "Mailza Assis" || cards[2].Photo != nil {
 		t.Fatalf("cards = %+v", cards)
 	}
@@ -209,7 +209,7 @@ func TestBuildFieldsMatchTheContract(t *testing.T) {
 		t.Fatalf("ac groups = %+v", ac.Groups)
 	}
 	prof := files["people/acacio-favacho-ap.json"].(Profile)
-	check("profile", prof, "slug,name,civilName,office,uf,party,photo,status,mandate,birthDate,birthPlace,education,contact,salary,numbers,years,themes,committees,assets,campaigns,timeline,coverage,sources")
+	check("profile", prof, "slug,name,civilName,office,uf,party,photo,status,mandate,birthDate,birthPlace,education,contact,salary,numbers,years,themes,committees,assets,campaigns,timeline,coverage,sources,gender,classification")
 	check("mandate", prof.Mandate, "start,end")
 	check("contact", *prof.Contact, "email,phone,office")
 	check("salary", *prof.Salary, "monthlyCents,law")

@@ -45,6 +45,12 @@ func NewRateLimiter(now func() time.Time, readPerMinute, writePerMinute int) *Ra
 	}
 }
 
+func (l *RateLimiter) SetLimit(class string, perMinute int) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	l.limits[class] = perMinute
+}
+
 func (l *RateLimiter) drop(e *list.Element) {
 	l.order.Remove(e)
 	delete(l.buckets, e.Value.(*bucket).key)

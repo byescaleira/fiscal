@@ -17,6 +17,10 @@ import (
 )
 
 func (in *Ingest) refreshLive(ctx context.Context, ds *publicdata.Dataset, rep *Report) {
+	if !in.cfg.refresh("agenda") {
+		ds.Races = in.races()
+		return
+	}
 	prev := map[string]publicdata.RawAgendaHouse{}
 	for _, h := range ds.Agenda {
 		prev[h.House] = h

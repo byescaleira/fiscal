@@ -64,24 +64,28 @@ func (in *Ingest) loadIndicators(ctx context.Context, rep *Report, srcs *sourceS
 	}
 	next := prev
 	changed := false
-	if in.cfg.Enabled("anp") {
+	if in.cfg.Enabled("anp") && (in.cfg.refresh("anp") || len(prev.ANP) == 0) {
 		list, err := in.loadANP(ctx)
 		if err != nil {
 			in.warn(rep, "anp: %v (kept the prices from the last load)", err)
 		} else {
 			next.ANP, changed = list, true
 		}
+	}
+	if in.cfg.Enabled("anp") {
 		if len(next.ANP) > 0 {
 			srcs.add("anp", anp.Name, anp.SiteURL, next.ANP)
 		}
 	}
-	if in.cfg.Enabled("sidra") {
+	if in.cfg.Enabled("sidra") && (in.cfg.refresh("sidra") || len(prev.SIDRA) == 0) {
 		list, err := in.loadSIDRA(ctx)
 		if err != nil {
 			in.warn(rep, "sidra: %v (kept the IPCA from the last load)", err)
 		} else {
 			next.SIDRA, changed = list, true
 		}
+	}
+	if in.cfg.Enabled("sidra") {
 		if len(next.SIDRA) > 0 {
 			srcs.add("sidra", sidra.Name, sidra.SiteURL, next.SIDRA)
 		}

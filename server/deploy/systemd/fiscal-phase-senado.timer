@@ -1,0 +1,11 @@
+[Unit]
+Description=Fiscal phase senado (daily)
+
+[Timer]
+OnCalendar=*-*-* 01:10:00 America/Sao_Paulo
+RandomizedDelaySec=5min
+Persistent=true
+Unit=fiscal-phase@senado.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,11 @@
+[Unit]
+Description=Fiscal live refresh every 10 minutes from 07:00 to 23:50 (Brasília)
+
+[Timer]
+OnCalendar=*-*-* 07..23:00/10:00 America/Sao_Paulo
+RandomizedDelaySec=60
+Persistent=false
+Unit=fiscal-live.service
+
+[Install]
+WantedBy=timers.target

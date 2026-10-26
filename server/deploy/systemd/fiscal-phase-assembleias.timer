@@ -1,0 +1,11 @@
+[Unit]
+Description=Fiscal phase assembleias (daily)
+
+[Timer]
+OnCalendar=*-*-* 02:00:00 America/Sao_Paulo
+RandomizedDelaySec=5min
+Persistent=true
+Unit=fiscal-phase@assembleias.service
+
+[Install]
+WantedBy=timers.target

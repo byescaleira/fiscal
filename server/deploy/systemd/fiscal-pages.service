@@ -1,0 +1,17 @@
+[Unit]
+Description=Fiscal Pages deploy (picks up the ready site and the live race files)
+After=docker.service network-online.target
+Requires=docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/fiscal-api
+ExecStart=/usr/bin/docker compose --project-directory /opt/fiscal-api --profile jobs run --rm --no-deps -T fiscal-pages
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+CPUQuota=100%
+MemoryMax=256M
+OOMScoreAdjust=900
+TimeoutStartSec=15min

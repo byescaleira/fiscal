@@ -10,18 +10,22 @@ public struct LiveResultsClient: LiveResultsService, HighlightAlertService {
         let raceId: String
         let pushToken: String
         let environment: PushEnvironment
+        let challenge: String?
     }
 
     private struct HighlightRegistration: Encodable {
         let pushToken: String
         let environment: PushEnvironment
+        let challenge: String?
     }
 
     private let baseURL: URL
+    private let dataURL: URL?
     private let session: URLSession
 
-    public init(baseURL: URL, session: URLSession = .shared) {
+    public init(baseURL: URL, dataURL: URL? = nil, session: URLSession = .shared) {
         self.baseURL = baseURL
+        self.dataURL = dataURL
         self.session = session
     }
 
@@ -33,11 +37,21 @@ public struct LiveResultsClient: LiveResultsService, HighlightAlertService {
             }
         #endif
         guard let value, !value.isEmpty, let url = URL(string: value) else { return nil }
-        return LiveResultsClient(baseURL: url)
+        return LiveResultsClient(baseURL: url, dataURL: PublicDataClient.dataURL(bundle))
     }
 
     public func races() async throws -> [Race] {
-        var request = URLRequest(url: baseURL.appending(path: "v1/races"))
+        if let dataURL,
+            let races = try? await races(
+                at: dataURL.appending(path: PublicDataLayout.version).appending(path: "races.json"))
+        {
+            return races
+        }
+        return try await races(at: baseURL.appending(path: "v1/races"))
+    }
+
+    private func races(at url: URL) async throws -> [Race] {
+        var request = URLRequest(url: url)
         request.cachePolicy = .reloadIgnoringLocalCacheData
         request.timeoutInterval = 15
         let (data, response) = try await session.data(for: request)
@@ -48,14 +62,11 @@ public struct LiveResultsClient: LiveResultsService, HighlightAlertService {
     public func follow(raceID: String, pushToken: String, environment: PushEnvironment)
         async throws
     {
-        var request = URLRequest(url: baseURL.appending(path: "v1/live-activities"))
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.timeoutInterval = 15
-        request.httpBody = try JSONEncoder().encode(
-            Registration(raceId: raceID, pushToken: pushToken, environment: environment))
-        let (_, response) = try await session.data(for: request)
-        try Self.check(response)
+        try await attested(path: "v1/live-activities") { challenge in
+            Registration(
+                raceId: raceID, pushToken: pushToken, environment: environment,
+                challenge: challenge)
+        }
     }
 
     public func unfollow(pushToken: String) async throws {
@@ -65,9 +76,10 @@ public struct LiveResultsClient: LiveResultsService, HighlightAlertService {
     public func registerHighlights(pushToken: String, environment: PushEnvironment)
         async throws
     {
-        try await send(
-            "POST", path: "v1/highlight-activities",
-            body: HighlightRegistration(pushToken: pushToken, environment: environment))
+        try await attested(path: "v1/highlight-activities") { challenge in
+            HighlightRegistration(
+                pushToken: pushToken, environment: environment, challenge: challenge)
+        }
     }
 
     public func unregisterHighlights(pushToken: String) async throws {
@@ -76,13 +88,56 @@ public struct LiveResultsClient: LiveResultsService, HighlightAlertService {
     }
 
     private func send(_ method: String, path: String, body: some Encodable) async throws {
+        let (_, response) = try await raw(
+            method, path: path, body: try JSONEncoder().encode(body), headers: [:])
+        try Self.check(response)
+    }
+
+    private func attested<Body: Encodable>(
+        path: String, body make: (String?) -> Body, retry: Bool = true
+    ) async throws {
+        let attestor = AppAttestor.shared
+        if let prepared = await attestor.prepare(base: baseURL, session: session) {
+            let body = try JSONEncoder().encode(make(prepared.challenge))
+            if let assertion = await attestor.assertion(keyID: prepared.keyID, body: body) {
+                let (data, response) = try await raw(
+                    "POST", path: path, body: body,
+                    headers: [
+                        "X-Fiscal-Attest-Key": prepared.keyID,
+                        "X-Fiscal-Attest-Assertion": assertion,
+                    ])
+                if retry, (response as? HTTPURLResponse)?.statusCode == 401,
+                    Self.code(data) == "attest_unknown_key"
+                {
+                    await attestor.forget()
+                    try await attested(path: path, body: make, retry: false)
+                    return
+                }
+                try Self.check(response)
+                return
+            }
+        }
+        try await send("POST", path: path, body: make(nil))
+    }
+
+    private func raw(_ method: String, path: String, body: Data, headers: [String: String])
+        async throws -> (Data, URLResponse)
+    {
         var request = URLRequest(url: baseURL.appending(path: path))
         request.httpMethod = method
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        for (name, value) in headers { request.setValue(value, forHTTPHeaderField: name) }
         request.timeoutInterval = 15
-        request.httpBody = try JSONEncoder().encode(body)
-        let (_, response) = try await session.data(for: request)
-        try Self.check(response)
+        request.httpBody = body
+        return try await session.data(for: request)
+    }
+
+    private static func code(_ data: Data) -> String? {
+        struct Failure: Decodable {
+            struct Detail: Decodable { let code: String }
+            let error: Detail
+        }
+        return (try? JSONDecoder().decode(Failure.self, from: data))?.error.code
     }
 
     private static func check(_ response: URLResponse) throws {

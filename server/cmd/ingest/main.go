@@ -4,23 +4,21 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"flag"
 	"fmt"
 	"log"
 	"os"
-	"os/signal"
 	"path/filepath"
 	"sort"
 	"strconv"
 	"strings"
 	"sync"
-	"syscall"
 	"time"
 	_ "time/tzdata"
 
 	"liveresults/internal/datastore"
 	"liveresults/internal/ingest"
-	"liveresults/internal/sources/fetch"
+	"liveresults/internal/jobctl"
+	"liveresults/internal/site"
 	"liveresults/internal/sources/tse"
 )
 
@@ -44,6 +42,11 @@ type config struct {
 	gap        time.Duration
 	timeout    time.Duration
 	location   *time.Location
+	site       site.Rules
+	siteKeep   int
+	lockWait   time.Duration
+	nice       int
+	capacity   jobctl.Capacity
 }
 
 func parseYears(v string, def []int) ([]int, error) {
@@ -237,7 +240,127 @@ func loadConfig(getenv func(string) string, now time.Time) (config, error) {
 		}
 		c.ingest.NewsBudget = n
 	}
+	return siteConfig(getenv, c)
+}
+
+func siteConfig(getenv func(string) string, c config) (config, error) {
+	c.site = site.Rules{MinPeople: 1, MaxDrop: 0.2, MaxFiles: site.DefaultFiles}
+	if len(c.ingest.UFs) == 0 && len(c.ingest.Sources) == 0 {
+		c.site.MinPeople = 500
+	}
+	if v := strings.TrimSpace(getenv("SITE_MIN_PEOPLE")); v != "" {
+		n, err := strconv.Atoi(v)
+		if err != nil || n < 0 || n > 100000 {
+			return c, errors.New("SITE_MIN_PEOPLE must be between 0 and 100000")
+		}
+		c.site.MinPeople = n
+	}
+	if v := strings.TrimSpace(getenv("SITE_MAX_DROP")); v != "" {
+		f, err := strconv.ParseFloat(v, 64)
+		if err != nil || f <= 0 || f >= 1 {
+			return c, errors.New("SITE_MAX_DROP must be a fraction between 0 and 1 (0.2 = 20%)")
+		}
+		c.site.MaxDrop = f
+	}
+	if v := strings.TrimSpace(getenv("SITE_MAX_FILES")); v != "" {
+		n, err := strconv.Atoi(v)
+		if err != nil || n < 100 || n > 20000 {
+			return c, errors.New("SITE_MAX_FILES must be between 100 and 20000 (the Pages free plan limit)")
+		}
+		c.site.MaxFiles = n
+	}
+	c.siteKeep = 3
+	if v := strings.TrimSpace(getenv("SITE_KEEP")); v != "" {
+		n, err := strconv.Atoi(v)
+		if err != nil || n < 2 || n > 20 {
+			return c, errors.New("SITE_KEEP must be between 2 and 20")
+		}
+		c.siteKeep = n
+	}
+	c.lockWait = 20 * time.Minute
+	if v := strings.TrimSpace(getenv("INGEST_LOCK_WAIT")); v != "" {
+		d, err := time.ParseDuration(v)
+		if err != nil || d < 0 || d > 3*time.Hour {
+			return c, errors.New("INGEST_LOCK_WAIT must be a duration between 0s and 3h")
+		}
+		c.lockWait = d
+	}
+	c.nice = 19
+	if v := strings.TrimSpace(getenv("INGEST_NICE")); v != "" {
+		n, err := strconv.Atoi(v)
+		if err != nil || n < 0 || n > 19 {
+			return c, errors.New("INGEST_NICE must be between 0 and 19")
+		}
+		c.nice = n
+	}
+	c.capacity = jobctl.Capacity{MaxLoad: 2, MinAvailable: 1536 << 20, Wait: 20 * time.Minute}
+	if v := strings.TrimSpace(getenv("INGEST_MAX_LOAD")); v != "" {
+		f, err := strconv.ParseFloat(v, 64)
+		if err != nil || f < 0 || f > 64 {
+			return c, errors.New("INGEST_MAX_LOAD must be a number between 0 (off) and 64")
+		}
+		c.capacity.MaxLoad = f
+	}
+	if v := strings.TrimSpace(getenv("INGEST_MIN_AVAILABLE_MB")); v != "" {
+		n, err := strconv.Atoi(v)
+		if err != nil || n < 0 || n > 65536 {
+			return c, errors.New("INGEST_MIN_AVAILABLE_MB must be between 0 (off) and 65536")
+		}
+		c.capacity.MinAvailable = int64(n) << 20
+	}
+	if v := strings.TrimSpace(getenv("INGEST_CAPACITY_WAIT")); v != "" {
+		d, err := time.ParseDuration(v)
+		if err != nil || d < 0 || d > 3*time.Hour {
+			return c, errors.New("INGEST_CAPACITY_WAIT must be a duration between 0s and 3h")
+		}
+		c.capacity.Wait = d
+	}
 	return c, nil
+}
+
+func (c config) stager() *site.Stager {
+	return &site.Stager{Staging: filepath.Join(c.ingest.PublicDir, "v1"), Root: filepath.Join(c.ingest.PublicDir, "site"), Keep: c.siteKeep, Rules: c.site, Logger: log.Default()}
+}
+
+type onceFlag struct {
+	value string
+}
+
+func (o *onceFlag) String() string {
+	return o.value
+}
+
+func (o *onceFlag) Set(v string) error {
+	switch v {
+	case "true", "full", "live":
+		o.value = v
+		return nil
+	case "false":
+		o.value = ""
+		return nil
+	}
+	return errors.New("-once takes full or live")
+}
+
+func (o *onceFlag) IsBoolFlag() bool {
+	return true
+}
+
+func onceKind(o onceFlag, args []string) (string, error) {
+	switch o.value {
+	case "", "full", "live":
+		if len(args) > 0 {
+			return "", fmt.Errorf("unexpected argument %q", args[0])
+		}
+		return o.value, nil
+	}
+	if len(args) == 0 {
+		return "full", nil
+	}
+	if len(args) == 1 && (args[0] == "full" || args[0] == "live") {
+		return args[0], nil
+	}
+	return "", fmt.Errorf("-once takes full or live, got %q", strings.Join(args, " "))
 }
 
 func envOr(getenv func(string) string, name, def string) string {
@@ -294,57 +417,6 @@ func check(dataDir string, now time.Time, maxAge time.Duration) int {
 		return 1
 	}
 	return 0
-}
-
-func main() {
-	once := flag.Bool("once", false, "run one full load, publish and exit")
-	healthCheck := flag.Bool("check", false, "exit 0 when the scheduler wrote a heartbeat recently")
-	restore := flag.String("restore", "", "replace the store with this backup (stop the scheduler first) and exit")
-	flag.Parse()
-	log.SetFlags(log.LstdFlags | log.LUTC)
-	cfg, err := loadConfig(os.Getenv, time.Now())
-	if err != nil {
-		log.Fatalf("config: %v", err)
-	}
-	if *healthCheck {
-		os.Exit(check(cfg.ingest.DataDir, time.Now(), 2*cfg.live+5*time.Minute))
-	}
-	if err := os.MkdirAll(cfg.ingest.DataDir, 0o700); err != nil {
-		log.Fatalf("data dir: %v", err)
-	}
-	if *restore != "" {
-		if err := datastore.Restore(context.Background(), *restore, cfg.storePath); err != nil {
-			log.Fatalf("restore: %v", err)
-		}
-		log.Printf("restored %s from %s", cfg.storePath, filepath.Base(*restore))
-		return
-	}
-	db, err := datastore.Open(cfg.storePath, nil)
-	if err != nil {
-		log.Fatalf("store: %v", err)
-	}
-	defer db.Close()
-	if err := os.MkdirAll(filepath.Join(cfg.ingest.PublicDir, "v1"), 0o755); err != nil {
-		log.Fatalf("public dir: %v", err)
-	}
-	client := fetch.New(filepath.Join(cfg.ingest.DataDir, "cache", "http"), cfg.timeout)
-	client.Gap = cfg.gap
-	in := ingest.New(cfg.ingest, client, nil, nil)
-	in.UseStore(db)
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
-	defer stop()
-	log.Printf("ingest years=%v tse=%v+%v ufs=%v sources=%v live=%s fullAt=%02d:%02d", cfg.ingest.Years, cfg.ingest.TSEYears, cfg.ingest.TSECandidateYears, cfg.ingest.UFs, keys(cfg.ingest.Sources), cfg.live, cfg.fullAt[0], cfg.fullAt[1])
-	if *once {
-		rep, err := in.Full(ctx)
-		logReport("full", rep, err)
-		if err != nil {
-			db.Close()
-			os.Exit(1)
-		}
-		backup(ctx, db, in, cfg)
-		return
-	}
-	run(ctx, in, db, cfg)
 }
 
 func keys(m map[string]bool) []string {

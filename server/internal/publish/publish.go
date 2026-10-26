@@ -197,6 +197,17 @@ func removeEmptyDirs(base string) {
 	}
 }
 
+func (t *Tree) Seen() []string {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	out := make([]string, 0, len(t.seen))
+	for k := range t.seen {
+		out = append(out, k)
+	}
+	sort.Strings(out)
+	return out
+}
+
 func (t *Tree) Stats() Stats {
 	t.mu.Lock()
 	defer t.mu.Unlock()

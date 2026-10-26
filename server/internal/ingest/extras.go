@@ -69,10 +69,13 @@ func (in *Ingest) loadAssemblies(ctx context.Context, rep *Report, people []*pub
 		if !in.cfg.wantUF(h.UF) {
 			continue
 		}
-		data, err := assembleias.Load(ctx, in.get, h, year, in.today())
+		data, note, err := in.assembly(ctx, h, year)
 		if err != nil {
 			in.warn(rep, "assembleia %s: %v", h.UF, err)
 			continue
+		}
+		if note != "" {
+			in.warn(rep, "assembleia %s: %s", h.UF, note)
 		}
 		source := data.Members
 		if data.CurrentKnown {
@@ -98,10 +101,13 @@ func (in *Ingest) loadAssemblies(ctx context.Context, rep *Report, people []*pub
 			if y == year {
 				continue
 			}
-			more, err := assembleias.Load(ctx, in.get, h, y, in.today())
+			more, note, err := in.assembly(ctx, h, y)
 			if err != nil {
 				in.warn(rep, "assembleia %s %d: %v", h.UF, y, err)
 				continue
+			}
+			if note != "" {
+				in.warn(rep, "assembleia %s %d: %s", h.UF, y, note)
 			}
 			matters = append(matters, more.Matters...)
 			loaded[y] = true

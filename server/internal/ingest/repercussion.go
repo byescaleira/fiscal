@@ -42,8 +42,9 @@ func (in *Ingest) loadSignals(ctx context.Context, rep *Report, ds *publicdata.D
 		Wiki:       map[string]int64{},
 		ThemeWiki:  map[string]int64{},
 	}
-	wikiOK := in.loadWiki(ctx, rep, plan.People, store, sig, now, stamp)
-	newsOK := in.loadNews(ctx, rep, plan, store, sig, now, stamp)
+	offline := !in.cfg.refresh("repercussao") && (len(store.Views) > 0 || len(store.News) > 0)
+	wikiOK := in.loadWiki(ctx, rep, plan.People, store, sig, now, stamp, offline)
+	newsOK := in.loadNews(ctx, rep, plan, store, sig, now, stamp, offline)
 	if err := store.Save(path); err != nil {
 		in.warn(rep, "repercussion store: %v", err)
 	}
@@ -59,7 +60,7 @@ func (in *Ingest) loadSignals(ctx context.Context, rep *Report, ds *publicdata.D
 	return sig
 }
 
-func (in *Ingest) loadWiki(ctx context.Context, rep *Report, people []*publicdata.Person, store *repercussion.Store, sig *publicdata.Signals, now time.Time, stamp string) bool {
+func (in *Ingest) loadWiki(ctx context.Context, rep *Report, people []*publicdata.Person, store *repercussion.Store, sig *publicdata.Signals, now time.Time, stamp string, offline bool) bool {
 	w := repercussion.Wiki{Get: in.get}
 	var pending []string
 	seen := map[string]bool{}
@@ -75,7 +76,7 @@ func (in *Ingest) loadWiki(ctx context.Context, rep *Report, people []*publicdat
 			pending = append(pending, n)
 		}
 	}
-	if len(pending) > 0 {
+	if len(pending) > 0 && !offline {
 		found, err := w.Resolve(ctx, pending, true)
 		for n, t := range found {
 			store.Titles[n] = repercussion.Title{Title: t, FetchedAt: stamp}
@@ -85,7 +86,7 @@ func (in *Ingest) loadWiki(ctx context.Context, rep *Report, people []*publicdat
 		}
 	}
 	end := now.UTC().AddDate(0, 0, -1)
-	failed := false
+	failed := offline
 	views := func(title string) (int64, bool) {
 		if c, ok := store.Views[title]; ok && (failed || freshAt(c.FetchedAt, repercussion.ViewsTTL, now)) {
 			return c.Value, true
@@ -131,9 +132,9 @@ func (in *Ingest) loadWiki(ctx context.Context, rep *Report, people []*publicdat
 	return len(sig.Wiki) > 0 || len(sig.ThemeWiki) > 0
 }
 
-func (in *Ingest) loadNews(ctx context.Context, rep *Report, plan publicdata.SignalPlan, store *repercussion.Store, sig *publicdata.Signals, now time.Time, stamp string) bool {
+func (in *Ingest) loadNews(ctx context.Context, rep *Report, plan publicdata.SignalPlan, store *repercussion.Store, sig *publicdata.Signals, now time.Time, stamp string, offline bool) bool {
 	g := &repercussion.GDELT{Get: in.get, Limit: in.newsBudget(), Now: in.now}
-	throttled := false
+	throttled := offline
 	measure := func(query string) (int64, bool) {
 		c, cached := store.News[query]
 		if cached && freshAt(c.FetchedAt, repercussion.NewsTTL, now) {

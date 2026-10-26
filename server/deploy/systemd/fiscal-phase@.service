@@ -1,0 +1,19 @@
+[Unit]
+Description=Fiscal phase %i (refresh, stage and deploy to Pages)
+After=docker.service network-online.target
+Requires=docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/fiscal-api
+ExecStart=/usr/bin/docker compose --project-directory /opt/fiscal-api --profile jobs run --rm --no-deps -T fiscal-ingest -phase %i
+ExecStart=/usr/bin/docker compose --project-directory /opt/fiscal-api --profile jobs run --rm --no-deps -T fiscal-pages
+SuccessExitStatus=75
+Nice=19
+IOSchedulingClass=idle
+CPUSchedulingPolicy=idle
+CPUQuota=100%
+MemoryMax=256M
+OOMScoreAdjust=1000
+TimeoutStartSec=3h
