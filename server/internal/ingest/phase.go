@@ -3,6 +3,7 @@ package ingest
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"sort"
@@ -69,6 +70,7 @@ func (in *Ingest) assembly(ctx context.Context, h assembleias.House, year int) (
 		if d, ok := readCache(); ok {
 			return d, "", nil
 		}
+		return assembleias.Data{}, "", fmt.Errorf("%s %d is not cached yet; only the assembleias job reads the SAPL", h.UF, year)
 	}
 	d, err := assembleias.Load(ctx, in.get, h, year, in.today())
 	if err != nil {

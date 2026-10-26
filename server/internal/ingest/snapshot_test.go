@@ -38,10 +38,14 @@ func TestOneShotLiveRunsFromTheSnapshotAndPublishesNothingWithoutNews(t *testing
 	}
 	fresh := New(in.cfg, get, func() time.Time { return now }, log.New(io.Discard, "", 0))
 	fresh.UseSite(stager(fresh))
-	if _, err := fresh.Live(context.Background()); err == nil {
-		t.Fatal("live without the snapshot must fail")
+	aside := fresh.SnapshotPath() + ".aside"
+	if err := os.Rename(fresh.SnapshotPath(), aside); err != nil {
+		t.Fatal(err)
 	}
-	if err := fresh.LoadSnapshot(); err != nil {
+	if _, err := fresh.Live(context.Background()); !errors.Is(err, ErrNoSnapshot) {
+		t.Fatalf("live without the snapshot must fail: %v", err)
+	}
+	if err := os.Rename(aside, fresh.SnapshotPath()); err != nil {
 		t.Fatal(err)
 	}
 	live, err := fresh.Live(context.Background())

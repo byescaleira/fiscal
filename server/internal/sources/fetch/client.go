@@ -190,6 +190,22 @@ func retryAfter(v string, fallback time.Duration) time.Duration {
 	return fallback
 }
 
+func (c *Client) Head(ctx context.Context, rawURL string) (http.Header, error) {
+	resp, err := c.Do(ctx, http.MethodHead, rawURL, nil)
+	if err != nil {
+		return nil, err
+	}
+	resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return nil, &StatusError{URL: rawURL, Status: resp.StatusCode}
+	}
+	h := resp.Header.Clone()
+	if resp.ContentLength >= 0 {
+		h.Set("Content-Length", strconv.FormatInt(resp.ContentLength, 10))
+	}
+	return h, nil
+}
+
 func (c *Client) Bytes(ctx context.Context, rawURL string, accept string, limit int64) ([]byte, error) {
 	data, _, err := c.bytesWithHeader(ctx, rawURL, accept, limit)
 	return data, err

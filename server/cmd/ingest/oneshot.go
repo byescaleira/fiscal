@@ -30,6 +30,9 @@ func main() {
 	allowDrop := flag.Bool("allow-drop", false, "accept a release with more than SITE_MAX_DROP fewer files or people (this run only)")
 	configCheck := flag.Bool("config-check", false, "validate the configuration and exit")
 	phaseName := flag.String("phase", "", "run one phase ("+strings.Join(ingest.PhaseNames(), ", ")+"): refresh only its sources, rebuild the site from the store and exit")
+	syncMode := flag.Bool("sync", false, "run every job of the cadence catalog that is due now (the 5-minute timer) and exit")
+	planMode := flag.Bool("plan", false, "print the cadence catalog, what is due now and why, and exit")
+	jobName := flag.String("job", "", "run one catalog job now ("+strings.Join(ingest.JobNames(), ", ")+"), ignoring its cadence and probe, and exit")
 	flag.Parse()
 	log.SetFlags(log.LstdFlags | log.LUTC)
 	kind, err := onceKind(once, flag.Args())
@@ -42,9 +45,33 @@ func main() {
 	}
 	cfg.site.AllowDrop = *allowDrop
 	if *phaseName != "" {
-		if kind != "" {
-			log.Fatalf("flags: -phase and -once are exclusive")
+		if _, ok := ingest.JobByName(*phaseName); ok {
+			*jobName = *phaseName
+			*phaseName = ""
 		}
+	}
+	modes := 0
+	for _, on := range []bool{kind != "", *phaseName != "", *syncMode, *jobName != ""} {
+		if on {
+			modes++
+		}
+	}
+	if modes > 1 {
+		log.Fatalf("flags: -once, -phase, -job and -sync are exclusive")
+	}
+	if *jobName != "" {
+		if _, ok := ingest.JobByName(*jobName); !ok {
+			log.Fatalf("flags: unknown job %q (known: %s)", *jobName, strings.Join(ingest.JobNames(), ", "))
+		}
+		kind = "job"
+	}
+	if *syncMode {
+		kind = "sync"
+	}
+	if kind == "full" && *phaseName == "" {
+		cfg.ingest.Rebuild = true
+	}
+	if *phaseName != "" {
 		ph, ok := ingest.PhaseByName(*phaseName)
 		if !ok {
 			log.Fatalf("flags: unknown phase %q (known: %s)", *phaseName, strings.Join(ingest.PhaseNames(), ", "))
@@ -61,6 +88,8 @@ func main() {
 		os.Exit(check(cfg.ingest.DataDir, time.Now(), 2*cfg.live+5*time.Minute))
 	case *siteCmd != "":
 		os.Exit(siteCommand(cfg, *siteCmd, *to))
+	case *planMode:
+		os.Exit(planCommand(cfg))
 	}
 	if err := os.MkdirAll(cfg.ingest.DataDir, 0o700); err != nil {
 		log.Fatalf("data dir: %v", err)
@@ -72,7 +101,7 @@ func main() {
 	}
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
-	if kind != "" {
+	if kind != "" && kind != "sync" && kind != "live" {
 		r, err := cfg.capacity.WaitFor(ctx)
 		if err != nil {
 			log.Printf("skipped: %v; the next window tries again", err)
@@ -81,14 +110,14 @@ func main() {
 		log.Printf("capacity ok: %s", r)
 	}
 	wait := cfg.lockWait
-	if kind == "live" {
+	if kind == "live" || kind == "sync" {
 		wait = 0
 	}
 	lockPath := filepath.Join(cfg.ingest.DataDir, "ingest.lock")
 	lock, err := jobctl.Acquire(ctx, lockPath, wait)
 	if errors.Is(err, jobctl.ErrBusy) {
 		log.Printf("skipped: another load holds %s", lockPath)
-		if kind == "live" {
+		if kind == "live" || kind == "sync" {
 			return
 		}
 		os.Exit(exitBusy)
@@ -96,7 +125,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("lock: %v", err)
 	}
-	code := runLocked(ctx, cfg, kind, *restore)
+	code := runLocked(ctx, cfg, kind, *restore, *jobName)
 	lock.Release()
 	stop()
 	os.Exit(code)
@@ -131,7 +160,7 @@ func siteCommand(cfg config, cmd, to string) int {
 	return 2
 }
 
-func runLocked(ctx context.Context, cfg config, kind, restore string) int {
+func runLocked(ctx context.Context, cfg config, kind, restore, job string) int {
 	if restore != "" {
 		if err := datastore.Restore(context.Background(), restore, cfg.storePath); err != nil {
 			log.Printf("restore: %v", err)
@@ -157,6 +186,8 @@ func runLocked(ctx context.Context, cfg config, kind, restore string) int {
 	in.UseSite(cfg.stager())
 	log.Printf("ingest mode=%s phase=%s years=%v tse=%v+%v ufs=%v sources=%v live=%s fullAt=%02d:%02d site=min%d/drop%.0f%%/max%d", modeName(kind), cfg.ingest.ReleaseKind, cfg.ingest.Years, cfg.ingest.TSEYears, cfg.ingest.TSECandidateYears, cfg.ingest.UFs, keys(cfg.ingest.Sources), cfg.live, cfg.fullAt[0], cfg.fullAt[1], cfg.site.MinPeople, cfg.site.MaxDrop*100, cfg.site.MaxFiles)
 	switch kind {
+	case "sync", "job":
+		return runSync(ctx, in, db, cfg, job)
 	case "full":
 		rep, err := in.Full(ctx)
 		logReport("full", rep, err)

@@ -23,6 +23,8 @@ const (
 	historyIndicatorFile = "history-indicators.json"
 )
 
+const historySourceName = "Tribunal Superior Eleitoral, resultados de eleições anteriores"
+
 func DefaultHistoryYears() []int {
 	years := []int{tse.UFOnlyYear, tse.UFOnlyYear + 1}
 	for y := tse.FirstMunZoneYear; y <= 2022; y += 4 {
@@ -301,6 +303,11 @@ func (in *Ingest) loadHistory(ctx context.Context, rep *Report, srcs *sourceSet)
 		in.warn(rep, "history study: %v", serr)
 	}
 	tree := publish.NewTree(filepath.Join(in.cfg.PublicDir, "v1"))
+	if m, err := in.manifest(); err == nil {
+		tree.UseManifest(m)
+	} else {
+		in.warn(rep, "history manifest: %v", err)
+	}
 	var werr error
 	write := func(rel string, v any) {
 		if werr == nil {
@@ -320,7 +327,7 @@ func (in *Ingest) loadHistory(ctx context.Context, rep *Report, srcs *sourceSet)
 		sort.Ints(ys)
 		sort.Slice(gaps, func(i, j int) bool { return gaps[i].Year < gaps[j].Year })
 		write(history.IndexPath, history.Index{Years: ys, Races: history.Summarize(races), Gaps: gaps, Method: electionMethod, Sources: indexSources(ys)})
-		srcs.add("tse-historico", "Tribunal Superior Eleitoral, resultados de eleições anteriores", tse.SiteURL, history.Summarize(races))
+		srcs.add("tse-historico", historySourceName, tse.SiteURL, history.Summarize(races))
 	}
 	if terr == nil {
 		write(history.PeriodsPath, timeline)
