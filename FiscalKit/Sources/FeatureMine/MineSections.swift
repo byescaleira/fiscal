@@ -73,7 +73,7 @@ private struct MineFailureSection: View {
             VStack(alignment: .leading, spacing: .spaceM) {
                 Label {
                     VStack(alignment: .leading, spacing: .space2XS) {
-                        Text("Couldn't load the data").font(.rowTitle)
+                        Text(verbatim: error.title).font(.rowTitle)
                         Text(verbatim: error.message)
                             .font(.footnote)
                             .foregroundStyle(.secondary)

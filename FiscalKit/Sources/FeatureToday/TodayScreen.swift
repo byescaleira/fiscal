@@ -109,8 +109,14 @@ private struct TodayFailure: View {
         VStack(spacing: .spaceL) {
             SymbolBadge(error.symbol, color: .secondary, size: .badgeXL)
             VStack(spacing: .spaceXS) {
-                Text("Couldn't load the summary of the day")
-                    .font(.headline)
+                Group {
+                    if error == .offline {
+                        Text(verbatim: error.title)
+                    } else {
+                        Text("Couldn't load the summary of the day")
+                    }
+                }
+                .font(.headline)
                 Text(verbatim: error.message)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)

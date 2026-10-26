@@ -1,0 +1,20 @@
+{
+  "This isn't saved for offline use. Connect to the internet to see it.": "Isso não está salvo para uso offline. Conecte-se à internet para ver.",
+  "Available with a connection": "Disponível com conexão",
+  "No connection · saved data": "Sem conexão · dados salvos",
+  "No connection · data from %@": "Sem conexão · dados de %@",
+  "Offline Data": "Dados offline",
+  "Today, your region and your people, ready without a connection": "Hoje, sua região e suas pessoas, prontos sem conexão",
+  "Today's summary, the latest votes, the vote count, your region and the full profiles of who you follow, support and represents you.": "O resumo do dia, as votações recentes, a apuração, a sua região e o perfil completo de quem você segue, apoia e de quem representa você.",
+  "People saved": "Pessoas salvas",
+  "Files": "Arquivos",
+  "Without compression": "Sem compressão",
+  "Update Now": "Atualizar agora",
+  "Delete Offline Data": "Apagar dados offline",
+  "Delete the offline data?": "Apagar os dados offline?",
+  "Fiscal downloads it again on the next update with a connection.": "O Fiscal baixa de novo na próxima atualização com conexão.",
+  "It updates by itself when there's a connection, only for what changed. It stays on this device, outside iCloud and backups. The profiles of who you support download like any other profile: the server never learns it's support.": "Atualiza sozinho quando há conexão, só o que mudou. Fica neste aparelho, fora do iCloud e dos backups. Os perfis de quem você apoia são baixados como qualquer outro perfil: o servidor nunca sabe que é apoio.",
+  "On This Device": "Neste aparelho",
+  "Up to %@": "Até %@",
+  "Not downloaded yet": "Ainda não baixado"
+}

@@ -8,8 +8,10 @@ struct SectionStack: View {
     var body: some View {
         NavigationStack(path: navigation.path(for: section)) {
             SectionScreen(section: section)
+                .offlineNotice()
                 .navigationDestination(for: Route.self) { route in
                     RouteScreen(route: route)
+                        .offlineNotice()
                         .environment(
                             \.close,
                             CloseAction { navigation.close(in: section, inspecting: false) })

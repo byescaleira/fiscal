@@ -74,9 +74,19 @@ public enum PublicDataError: LocalizedError, Equatable, Sendable {
         case .notFound: String(appLocalized: "This data isn't published yet.")
         case .rejected, .unavailable:
             String(appLocalized: "Couldn't reach the public data server. Try again in a moment.")
-        case .offline: String(appLocalized: "No connection. Check the internet and try again.")
+        case .offline:
+            String(
+                appLocalized: "This isn't saved for offline use. Connect to the internet to see it."
+            )
         case .invalidData:
             String(appLocalized: "The public data came in a format Fiscal can't read.")
+        }
+    }
+
+    public var title: String {
+        switch self {
+        case .offline: String(appLocalized: "Available with a connection")
+        default: String(appLocalized: "Couldn't load the data")
         }
     }
 

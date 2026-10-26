@@ -11,6 +11,7 @@ public struct MainScreen: View {
     @Environment(LaunchProgress.self) private var launch
     @Environment(\.featureFlags) private var flags
     @Environment(\.locale) private var locale
+    @Environment(\.scenePhase) private var scenePhase
     public init() {}
 
     @ViewBuilder
@@ -63,5 +64,17 @@ public struct MainScreen: View {
         .modifier(UpdateRecommendation())
         .lensExperience(isReady: launch.isDismissed, service: FiscalServices.shared.publicData())
         .modifier(SystemIntegrations())
+        .environment(OfflineDataCenter.shared.model)
+        .task(id: launch.isDismissed) {
+            guard launch.isDismissed else { return }
+            await OfflineDataCenter.shared.refreshIfDue()
+        }
+        .onChange(of: scenePhase) { _, phase in
+            switch phase {
+            case .active: Task { await OfflineDataCenter.shared.refreshIfDue() }
+            case .background: OfflineDataCenter.shared.scheduleBackgroundRefresh()
+            default: break
+            }
+        }
     }
 }

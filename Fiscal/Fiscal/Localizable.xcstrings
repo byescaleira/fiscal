@@ -1968,6 +1968,16 @@
         }
       }
     },
+    "Available with a connection" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disponível com conexão"
+          }
+        }
+      }
+    },
     "Average" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3706,6 +3716,26 @@
         }
       }
     },
+    "Delete Offline Data" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar dados offline"
+          }
+        }
+      }
+    },
+    "Delete the offline data?" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar os dados offline?"
+          }
+        }
+      }
+    },
     "Delete your lens?" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4912,6 +4942,16 @@
         }
       }
     },
+    "Files" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arquivos"
+          }
+        }
+      }
+    },
     "Filters" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -5106,6 +5146,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O Fiscal não pergunta quem você é e não mede o que você faz."
+          }
+        }
+      }
+    },
+    "Fiscal downloads it again on the next update with a connection." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Fiscal baixa de novo na próxima atualização com conexão."
           }
         }
       }
@@ -6517,6 +6567,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Não é salário"
+          }
+        }
+      }
+    },
+    "It updates by itself when there's a connection, only for what changed. It stays on this device, outside iCloud and backups. The profiles of who you support download like any other profile: the server never learns it's support." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atualiza sozinho quando há conexão, só o que mudou. Fica neste aparelho, fora do iCloud e dos backups. Os perfis de quem você apoia são baixados como qualquer outro perfil: o servidor nunca sabe que é apoio."
           }
         }
       }
@@ -7954,6 +8014,26 @@
         }
       }
     },
+    "No connection · data from %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem conexão · dados de %@"
+          }
+        }
+      }
+    },
+    "No connection · saved data" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem conexão · dados salvos"
+          }
+        }
+      }
+    },
     "No connection. Check the internet and try again." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -8426,6 +8506,16 @@
         }
       }
     },
+    "Not downloaded yet" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ainda não baixado"
+          }
+        }
+      }
+    },
     "Not loaded yet" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -8865,6 +8955,16 @@
         }
       }
     },
+    "Offline Data" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dados offline"
+          }
+        }
+      }
+    },
     "OK" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -8915,6 +9015,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Na tela de bloqueio (Live Activity) só entra destaque com peso %1$lld ou mais, de um fato de até %2$lld horas depois do fim do dia dele (horário de Brasília), uma vez por aparelho e por até 8 horas."
+          }
+        }
+      }
+    },
+    "On This Device" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neste aparelho"
           }
         }
       }
@@ -9659,6 +9769,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pessoas no Fiscal: %lld"
+          }
+        }
+      }
+    },
+    "People saved" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pessoas salvas"
           }
         }
       }
@@ -14349,6 +14469,16 @@
         }
       }
     },
+    "This isn't saved for offline use. Connect to the internet to see it." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Isso não está salvo para uso offline. Conecte-se à internet para ver."
+          }
+        }
+      }
+    },
     "This Month" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -14490,6 +14620,16 @@
         }
       }
     },
+    "Today's summary, the latest votes, the vote count, your region and the full profiles of who you follow, support and represents you." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O resumo do dia, as votações recentes, a apuração, a sua região e o perfil completo de quem você segue, apoia e de quem representa você."
+          }
+        }
+      }
+    },
     "Today, Votes and Money open with these topics. Everything else stays one tap away." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -14497,6 +14637,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hoje, Votações e Dinheiro abrem com estes temas. Todo o resto fica a um toque."
+          }
+        }
+      }
+    },
+    "Today, your region and your people, ready without a connection" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoje, sua região e suas pessoas, prontos sem conexão"
           }
         }
       }
@@ -14812,6 +14962,16 @@
         }
       }
     },
+    "Up to %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Até %@"
+          }
+        }
+      }
+    },
     "Up to %lld pieces. Fiscal connects them only with published data." : {
       "localizations" : {
         "pt-BR" : {
@@ -14872,6 +15032,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Atualize para ter as correções e melhorias mais recentes. Leva só um instante."
+          }
+        }
+      }
+    },
+    "Update Now" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atualizar agora"
           }
         }
       }
@@ -16305,6 +16475,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sem a Apple Intelligence, o Fiscal lê nomes, partidos, estados, temas e números de projetos. Você também pode fixar as peças à mão."
+          }
+        }
+      }
+    },
+    "Without compression" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem compressão"
           }
         }
       }

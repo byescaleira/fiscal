@@ -30,6 +30,11 @@ struct FiscalApp: App {
                 .featureFlags(bootstrap.flags)
                 .fiscalSettings(settings)
         }
+        #if os(iOS) || os(visionOS)
+            .backgroundTask(.appRefresh(OfflineDataCenter.refreshIdentifier)) {
+                await OfflineDataCenter.shared.refreshInBackground()
+            }
+        #endif
         #if os(macOS)
             Settings {
                 FiscalSettingsWindow()
