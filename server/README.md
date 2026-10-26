@@ -57,14 +57,15 @@ Registros:
 
 Destaque na tela de bloqueio (regra em `docs/changes/app-1.0/weight.md`):
 - Os tokens de push-to-start ficam em `DATA_DIR/highlight-registrations.json` (sem IP), valem 30 dias e são renovados a cada abertura do app; até 200 000 registros e 100 por IP.
-- A cada minuto o servidor confere `PUBLIC_DIR/published/highlights.json` (copiado pela carga só depois de uma release validada) e só relê quando data ou tamanho mudam. O primeiro item com peso ≥ 85, de fato até 24 h depois do fim do dia dele (Brasília), e ainda não enviado vira um push-to-start (`event: start`, prioridade 10) para todos os tokens; o id vai para `DATA_DIR/highlight-alerts.json` (14 dias). Sem nenhum token registrado, nada é marcado como enviado.
+- A cada minuto o servidor confere `PUBLIC_DIR/published/highlights.json` (copiado pelo `fiscal-pages` só depois que o Pages confirma o deploy da release) e só relê quando data ou tamanho mudam. O primeiro item com peso ≥ 85, de fato até 24 h depois do fim do dia dele (Brasília), e ainda não enviado vira um push-to-start (`event: start`, prioridade 10) para todos os tokens; o id vai para `DATA_DIR/highlight-alerts.json` (14 dias). Um alerta por arquivo publicado.
+- Sem nenhum token registrado, nada é marcado como enviado: o item fica pendente e é reavaliado a cada minuto (o log avisa uma vez por item), e sai assim que houver o primeiro registro ou quando passar da janela de 24 h.
 
 Rate limit por IP: 120 GET e 120 POST/DELETE por minuto (CGNAT), `429 rate_limited` acima. IPv6 conta por /64. `X-Forwarded-For` (último valor) só é aceito quando a conexão vem de loopback ou de rede privada (gateway do Docker, `10/8`, `172.16/12`, `192.168/16`, `fc00::/7`); de qualquer outro endereço vale o `RemoteAddr`. Quando o mapa de buckets lota (100 000), o mais antigo é descartado.
 
 App Attest (`internal/appattest`, só biblioteca padrão):
 
 - **Rotas.**
-  - `POST /api/v1/attest/challenge` devolve `{"challenge"}`: 32 bytes em base64url, de uso único, válido por 5 min.
+  - `POST /api/v1/attest/challenge` devolve `{"challenge"}`: 32 bytes em base64url, de uso único, válido por 2 min. Cada cliente (IPv4, ou o /64 do IPv6, pelo mesmo `X-Forwarded-For` do rate limit) tem até 8 desafios abertos; acima disso, `429 rate_limited` com `Retry-After: 120`. O teto global é de 100 mil (`503 attest_busy`).
   - `POST /api/v1/attest/keys` recebe `{"keyId","attestation","challenge"}` (base64, até 16 KiB) e responde `204`, `401 attest_invalid` ou `507 capacity_reached`.
 - **Verificação da chave:**
   - CBOR próprio;
@@ -103,9 +104,10 @@ Só com o ok do usuário, pedido a cada vez. O passo a passo está no [runbook](
 - **O plano.** `scripts/server-deploy.sh` mostra o plano sem `--apply`.
 - **Sem compilação na VPS.** Os binários são compilados no Mac e enviados para `/opt/fiscal-api/builds/<sha>`, e as imagens são montadas lá só com `COPY`.
 - **A API.** Ela troca sozinha (`docker compose up -d --no-deps fiscal-api`), com healthcheck e volta automática para `:previous`.
+- **`:previous` preservada.** `deploy/promote-image.sh` (rodado na VPS) só move `:current` para `:previous` quando o sha muda; as imagens levam o rótulo `fiscal.sha`, e repetir o deploy do mesmo sha não apaga o alvo do rollback.
 - **As fases.** As units do systemd (`deploy/systemd/`) agendam cada uma.
 
-`.env`, `secrets/`, `data/`, `ingest-data/`, `ingest-backups/`, `pages-data/` e `public/` nunca saem da VPS nem são sobrescritos. O `ADMIN_TOKEN` é gerado na própria VPS (`openssl rand -hex 32`) e vai só para o `.env`.
+`.env`, `secrets/`, `data/`, `ingest-data/`, `ingest-backups/`, `pages-data/` e `public/` nunca saem da VPS nem são sobrescritos. O `ADMIN_TOKEN` é gerado na própria VPS (`openssl rand -hex 32`) e vai só para o `.env`. A chave do pseudônimo do CPF (`secrets/pseudonym-key`, também `openssl rand -hex 32`) precisa existir antes do deploy da imagem `fiscal-ingest`; o passo a passo está no runbook.
 
 A rota de teste do admin não passa pelo Caddy (ele responde 404 em `/api/v1/admin/*`); use só por SSH, direto no loopback:
 
@@ -173,10 +175,10 @@ Roda como job que sai (imagem `fiscal-ingest`, perfil `jobs` do `compose.yaml`, 
 | Modo | O que faz |
 | --- | --- |
 | `-phase <nome>` | Lê só as fontes da fase (`camara`, `senado`, `assembleias`, `tse`, `cidades`, `checagens`, `indicadores`, `receita`, `repercussao`; `memoria` não lê nenhuma). O resto vem do SQLite pelo mesmo caminho de quando uma fonte cai (estado `skipped` em `sources_runs`), e as assembleias vêm de `DATA_DIR/cache/assembleias`. A fase reconstrói tudo, monta o site, salva o snapshot (`DATA_DIR/live-snapshot.gob`) e faz o backup do dia |
-| `-once live` | Atualização ao vivo a partir do snapshot da última fase: pauta, votações de hoje e card da apuração. Sem snapshot, pula |
+| `-once live` | Atualização ao vivo a partir do snapshot da última fase: pauta, votações de hoje e card da apuração. Sem snapshot (ou com o de versão anterior à 2, de antes do pseudônimo com chave), pula até a próxima fase |
 | `-once` ou `-once full` | Carga completa de todas as fontes numa execução (primeira carga ou manutenção) |
 | sem modo | O agendador antigo de longa duração, só para desenvolvimento |
-| `-site status`, `-site rollback [-to <nome>]` | Mostra a release pronta ou aponta `site/ready` para a anterior |
+| `-site status`, `-site rollback [-to <nome>]` | Mostra a release pronta ou aponta `site/ready` para a anterior. O rollback pega o `ingest.lock` (espera até `INGEST_LOCK_WAIT`, depois sai com 75 sem mudar nada); o status não espera |
 | `-allow-drop` | Aceita, nesta execução, uma release com mais de `SITE_MAX_DROP` a menos de arquivos ou pessoas |
 | `-config-check` | Valida a configuração e sai |
 
@@ -211,7 +213,7 @@ A release só vira `site/ready` (troca atômica de link simbólico) depois da va
 
 São guardadas as últimas `SITE_KEEP`.
 
-Sem nenhum arquivo mudado, nenhuma release nova é criada. Depois de cada release, `highlights.json` é copiado para `PUBLIC_DIR/published/highlights.json`, que é o que o alerta de destaque do `fiscal-api` lê.
+Sem nenhum arquivo mudado, nenhuma release nova é criada. A carga não toca em `PUBLIC_DIR/published/`: quem copia o `highlights.json` para lá é o `fiscal-pages`, depois do deploy confirmado (veja "Deploy no Pages").
 
 Os dois ciclos de carga:
 
@@ -251,8 +253,9 @@ Cada arquivo sai com o `.gz` ao lado, por escrita atômica (`internal/publish`, 
 | `INGEST_LOCK_WAIT` | `20m` | Quanto uma fase espera o lock global |
 | `INGEST_NICE` | `19` | Prioridade do processo (`0` desliga) |
 | `INGEST_MAX_LOAD`, `INGEST_MIN_AVAILABLE_MB`, `INGEST_CAPACITY_WAIT` | `2`, `1536`, `20m` | Guarda de carga antes de cada fase (`0` desliga cada limite) |
+| `PSEUDONYM_KEY_FILE` | `/run/fiscal/pseudonym-key` (montado de `secrets/pseudonym-key`) | Chave do HMAC-SHA256 do CPF: 64 caracteres hexadecimais (`openssl rand -hex 32`). Obrigatória em todos os modos, inclusive `-config-check` |
 
-Configuração inválida derruba o processo no boot (falha fechada). Nenhuma variável é segredo.
+Configuração inválida derruba o processo no boot (falha fechada). Nenhuma variável é segredo; a chave do pseudônimo fica num arquivo fora do repositório.
 
 ### Deploy no Pages (`fiscal-pages`)
 
@@ -261,6 +264,7 @@ Cada execução faz um ciclo:
 1. **Lê `PUBLIC_DIR/site/ready`.**
 2. **Monta `PUBLIC_DIR/deploy/<release>`.** São links físicos da release, mais `v1/races.json`, `v1/races/*.json` e `v1/status.json` copiados para `v2/`, sem `.gz`.
 3. **Roda `wrangler pages deploy … --project-name=$PAGES_PROJECT --branch=$PAGES_BRANCH`.** O token vai só no ambiente do processo, e o log o mascara.
+4. **Publica o destaque.** Só com "Deployment complete" na saída, copia `v2/highlights.json` da release que subiu para `PUBLIC_DIR/published/highlights.json` (com `.gz`), que o alerta da tela de bloqueio lê. Assim o push nunca anuncia um item que ainda não está no Pages. Dry run, deploy falho e release ao vivo esperando o intervalo não copiam nada; uma execução sem mudança copia de novo o da release no ar, se faltar.
 
 Quando há deploy:
 
@@ -364,7 +368,7 @@ SQLite em WAL, aberto só pelo `fiscal-ingest` (pacote `internal/datastore`, uma
 | `series` | por fonte | série + escopo + data | `quota.total` (casa, ano), `revenue.total` (UF ou `br`, ano), `checks.published` (`br`, mês); preços, indicadores e sinais de repercussão entram aqui |
 | `sources_runs` | | | uma linha por execução (`source = 'all'`, `kind` `full`, `live` ou `backup`) e uma por fonte: início, fim, estado (`ok`, `failed`, `fallback`, `skipped`), contagens (`inserted`, `changed`, `unchanged`, `closed`) e erro |
 
-O CPF não entra em claro: vira `cpf:<hash>` antes de gravar e antes da ligação entre bases.
+O CPF não entra em claro: vira `cpf:<HMAC-SHA256 com a chave de PSEUDONYM_KEY_FILE, 16 bytes em hex>` antes de gravar e antes da ligação entre bases. O pseudônimo é só interno (banco, `slugs.json`, snapshot): nenhum arquivo público leva o CPF nem o pseudônimo, e o slug público não depende dele. Os pseudônimos antigos (SHA-256 sem segredo, 10 bytes) são trocados no `slugs.json` e nos dados restaurados do banco assim que o CPF é lido em claro numa carga, mantendo o mesmo slug.
 
 **Fonte fora do ar.** Câmara, Senado, TSE, IBGE e Receita voltam do banco quando a leitura falha; municípios e checagens, quando a leitura e o cache próprio falham. A pauta do dia guardada cobre a primeira carga depois de um reinício. As assembleias seguem o fluxo de antes.
 
