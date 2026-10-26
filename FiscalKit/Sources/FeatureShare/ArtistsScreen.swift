@@ -48,6 +48,7 @@ private struct ArtistsGallery: View {
                 }
             }
             .padding(.spaceL)
+            .readableWidth()
             .frame(maxWidth: .infinity)
         }
         .background(.groupedBackground)
@@ -81,55 +82,91 @@ private struct ArtistsHero: View {
 }
 
 private struct GalleryGroup: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var collectionID: ArtCollection.ID?
     let title: LocalizedStringKey
     let footer: LocalizedStringKey
     let sections: [GallerySection]
 
     var body: some View {
+        let current = sections.first { $0.id == collectionID } ?? sections.first
         VStack(alignment: .leading, spacing: .spaceL) {
             VStack(alignment: .leading, spacing: .space2XS) {
                 Text(title)
-                    .font(.titleMedium)
+                    .font(.title3.weight(.bold))
                     .accessibilityAddTraits(.isHeader)
                 Text(footer)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            ForEach(sections) { section in
-                GalleryCollection(section: section)
+            GalleryChips(sections: sections, current: current?.id) { collectionID = $0 }
+            if let current {
+                GalleryShelf(section: current).id(current.id)
             }
         }
+        .animation(reduceMotion ? nil : .smooth, value: collectionID)
+        .sensoryFeedback(.selection, trigger: collectionID)
     }
 }
 
-private struct GalleryCollection: View {
-    let section: GallerySection
+private struct GalleryChips: View {
+    @Environment(\.appTint) private var tint
+    let sections: [GallerySection]
+    let current: ArtCollection.ID?
+    let select: (ArtCollection.ID) -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: .spaceM) {
+        ScrollView(.horizontal) {
             HStack(spacing: .spaceS) {
-                Text(verbatim: section.collection.name)
-                    .font(.headline)
-                    .accessibilityAddTraits(.isHeader)
-                HStack(spacing: .space2XS) {
-                    ForEach(section.collection.palette, id: \.self) { hex in
-                        Circle()
-                            .fill(Color(hex: hex))
-                            .frame(width: .gallerySwatch, height: .gallerySwatch)
+                ForEach(sections) { section in
+                    let isOn = section.id == current
+                    Button {
+                        select(section.id)
+                    } label: {
+                        HStack(spacing: .spaceXS) {
+                            HStack(spacing: -.space2XS) {
+                                ForEach(section.collection.palette.prefix(3), id: \.self) { hex in
+                                    Circle()
+                                        .fill(Color(hex: hex))
+                                        .frame(width: .gallerySwatch, height: .gallerySwatch)
+                                }
+                            }
+                            .accessibilityHidden(true)
+                            Text(verbatim: section.collection.name)
+                                .font(.subheadline.weight(.semibold))
+                        }
+                        .foregroundStyle(isOn ? AnyShapeStyle(.white) : AnyShapeStyle(tint))
+                        .padding(.horizontal, .spaceM)
+                        .padding(.vertical, .spaceS)
+                        .background(
+                            isOn ? AnyShapeStyle(tint) : AnyShapeStyle(tint.opacity(.opacityTint)),
+                            in: .capsule)
                     }
-                }
-                .accessibilityHidden(true)
-            }
-            LazyVGrid(
-                columns: [GridItem(.adaptive(minimum: .galleryColumn), spacing: .spaceL)],
-                alignment: .leading, spacing: .spaceL
-            ) {
-                ForEach(section.works) { work in
-                    ArtworkCard(work: work)
+                    .buttonStyle(.plain)
+                    .accessibilityAddTraits(isOn ? [.isButton, .isSelected] : .isButton)
                 }
             }
         }
+        .scrollIndicators(.hidden)
+        .scrollClipDisabled()
+    }
+}
+
+private struct GalleryShelf: View {
+    let section: GallerySection
+
+    var body: some View {
+        ScrollView(.horizontal) {
+            LazyHStack(alignment: .top, spacing: .spaceL) {
+                ForEach(section.works) { ArtworkCard(work: $0) }
+            }
+            .scrollTargetLayout()
+            .padding(.vertical, .spaceXS)
+        }
+        .scrollIndicators(.hidden)
+        .scrollTargetBehavior(.viewAligned)
+        .scrollClipDisabled()
     }
 }
 
@@ -138,47 +175,62 @@ private struct ArtworkCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceM) {
-            ZStack {
-                work.image
-                    .resizable()
-                    .scaledToFill()
-                    .blur(radius: .shareBlur)
-                    .opacity(.opacitySoft)
-                work.image
-                    .resizable()
-                    .scaledToFit()
-            }
-            .frame(maxWidth: .infinity)
-            .frame(height: .galleryArtwork)
-            .clipShape(.rect(cornerRadius: .radiusM))
-            .accessibilityLabel(Text(verbatim: "\(work.title), \(work.artist)"))
-            .accessibilityAddTraits(.isImage)
+            Color.clear
+                .frame(width: .artistCardWidth, height: .artistCardHeight)
+                .overlay { work.image.resizable().scaledToFill() }
+                .overlay(alignment: .bottomLeading) { ArtworkCaption(work: work) }
+                .clipShape(.rect(cornerRadius: .radiusL, style: .continuous))
+                .shadow(color: .black.opacity(.opacityTint), radius: .spaceS, y: .space2XS)
+                .accessibilityLabel(Text(verbatim: "\(work.title), \(work.artist)"))
+                .accessibilityAddTraits(.isImage)
             VStack(alignment: .leading, spacing: .space2XS) {
                 Text(verbatim: work.title)
                     .font(.headline)
-                Text(verbatim: "\(work.artist) · \(work.artistLife)")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
                 Text(verbatim: "\(work.year) · \(work.holder)")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
+                    .lineLimit(2)
             }
             .fixedSize(horizontal: false, vertical: true)
             .accessibilityElement(children: .combine)
-            Chip(work.license, color: work.isPublicDomain ? .positive : .info)
+            Chip(work.licenseLabel, color: work.isPublicDomain ? .positive : .info)
                 .accessibilityLabel(Text("License: \(work.license)"))
-            AdaptiveStack(spacing: .spaceM) {
+            HStack(spacing: .spaceM) {
                 Link(destination: work.licenseUrl) {
                     Label("License", systemImage: "doc.text")
                 }
                 Link(destination: work.sourceUrl) {
-                    Label("Source on Commons", systemImage: "arrow.up.right.square")
+                    Label("Source", systemImage: "arrow.up.right.square")
                 }
             }
             .font(.footnote.weight(.semibold))
+            .labelStyle(.titleAndIcon)
         }
+        .frame(width: .artistCardWidth, alignment: .leading)
+    }
+}
+
+private struct ArtworkCaption: View {
+    let work: ArtWork
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: .spaceHairline) {
+            Text(verbatim: work.artist).font(.subheadline.weight(.bold))
+            if let life = work.lifeSpan {
+                Text(verbatim: life).font(.caption2)
+            }
+        }
+        .foregroundStyle(.white)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.spaceM)
-        .background(.groupedRow, in: .rect(cornerRadius: .radiusL))
+        .padding(.top, .spaceXL)
+        .background(
+            LinearGradient(
+                colors: [.clear, .black.opacity(.opacityStrong)], startPoint: .top,
+                endPoint: .bottom)
+        )
+        .accessibilityHidden(true)
     }
 }
 

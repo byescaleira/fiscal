@@ -1,5 +1,6 @@
 import FeatureCore
 import FiscalDesignSystem
+import FiscalDomain
 import SwiftUI
 
 struct ThemePreview: View {
@@ -15,7 +16,7 @@ struct ThemePreview: View {
                     ThemeCanvas().environment(\.colorScheme, .light)
                     ThemeCanvas().environment(\.colorScheme, .dark)
                         .mask {
-                            HStack(spacing: 0) {
+                            HStack(spacing: .zero) {
                                 Color.clear
                                 Color.black
                             }
@@ -27,61 +28,73 @@ struct ThemePreview: View {
         .clipShape(.rect(cornerRadius: .radiusM, style: .continuous))
         .overlay {
             RoundedRectangle(cornerRadius: .radiusM, style: .continuous)
-                .stroke(.separator, lineWidth: 1)
+                .stroke(.separator, lineWidth: .spaceHairline / 2)
         }
         .dynamicTypeSize(.large)
+        .partyMarksStill()
         .allowsHitTesting(false)
         .accessibilityHidden(true)
     }
 }
 
 private struct ThemeCanvas: View {
-    @Environment(SettingsModel.self) private var settings
-
     var body: some View {
-        let sample = settings.themeSample
         GeometryReader { proxy in
             VStack(alignment: .leading, spacing: .spaceM) {
-                Text(sample.title).font(.titleLarge)
-                VStack(alignment: .leading, spacing: .space2XS) {
-                    Text(sample.caption).font(.rowDetail).foregroundStyle(.secondary)
-                    Text(sample.headline).font(.amountTitle).amountLine()
-                }
-                VStack(spacing: .spaceM) {
-                    ForEach(sample.rows) { ThemeCanvasRow(row: $0) }
-                }
-                .padding(.spaceM)
-                .frame(maxWidth: .infinity)
-                .background(.groupedRow, in: .rect(cornerRadius: .radiusM))
-                Spacer(minLength: 0)
+                Text("Today").font(.titleLarge)
+                ThemeCanvasLive()
+                ThemeCanvasHighlight()
+                Spacer(minLength: .zero)
                 ThemeCanvasTabBar()
             }
             .padding(.spaceL)
             .foregroundStyle(.primary)
-            .frame(
-                width: CGSize.themeCanvas.width, height: CGSize.themeCanvas.height,
-                alignment: .topLeading
-            )
+            .frame(width: .themeCanvasWidth, height: .themeCanvasHeight, alignment: .topLeading)
             .background(.groupedBackground)
-            .scaleEffect(proxy.size.width / CGSize.themeCanvas.width, anchor: .topLeading)
+            .scaleEffect(proxy.size.width / .themeCanvasWidth, anchor: .topLeading)
         }
     }
 }
 
-private struct ThemeCanvasRow: View {
+private struct ThemeCanvasLive: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: .spaceS) {
+            Chip("Live", color: .negative, shape: .capsule).textCase(.uppercase)
+            HStack(alignment: .lastTextBaseline) {
+                Text(verbatim: "312").font(.scoreboardNumber).foregroundStyle(Color.voteYes)
+                Spacer(minLength: .zero)
+                Text(verbatim: "141").font(.scoreboardNumber).foregroundStyle(Color.voteNo)
+            }
+            .monospacedDigit()
+            TallyBar(segments: [
+                TallyBar.Segment(id: "yes", value: 312, color: .voteYes),
+                TallyBar.Segment(id: "no", value: 141, color: .voteNo),
+            ])
+        }
+        .padding(.spaceM)
+        .background(.groupedRow, in: .rect(cornerRadius: .radiusM))
+    }
+}
+
+private struct ThemeCanvasHighlight: View {
     @Environment(\.appTint) private var appTint
-    let row: ThemeSample.Row
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceS) {
             HStack(spacing: .spaceS) {
-                SymbolBadge(row.symbol, color: row.color.color, size: .badgeS)
-                Text(row.title).font(.rowTitle).lineLimit(1)
-                Spacer(minLength: 0)
+                SymbolBadge(Theme.health.symbol, color: appTint, size: .badgeS)
+                Text(verbatim: Theme.health.title).font(.rowTitle).lineLimit(1)
+                Spacer(minLength: .zero)
             }
-            ProgressBar(value: row.fraction, color: appTint)
-            Text(row.detail).font(.rowDetail).foregroundStyle(.secondary)
+            HStack(spacing: .spaceXS) {
+                PartyMark("MDB")
+                PartyMark("PT")
+                Spacer(minLength: .zero)
+            }
+            ProgressBar(value: 0.7, color: .companion)
         }
+        .padding(.spaceM)
+        .background(.groupedRow, in: .rect(cornerRadius: .radiusM))
     }
 }
 
@@ -96,16 +109,16 @@ private struct ThemeCanvasTabBar: View {
                         .foregroundStyle(section == .today ? appTint : Color.secondary)
                 }
             }
-            .padding(.horizontal, .spaceM)
-            .padding(.vertical, .spaceM)
+            .padding(.spaceM)
             .background(.groupedRow, in: .capsule)
-            Spacer(minLength: 0)
+            Spacer(minLength: .zero)
         }
         .font(.icon(.s))
-        .shadow(color: .black.opacity(.opacityFill), radius: 6, y: 2)
+        .shadow(color: .black.opacity(.opacityFill), radius: .spaceXS, y: .spaceHairline)
     }
 }
 
 extension CGSize {
-    fileprivate static let themeCanvas = CGSize(width: 240, height: 400)
+    fileprivate static let themeCanvas = CGSize(
+        width: .themeCanvasWidth, height: .themeCanvasHeight)
 }

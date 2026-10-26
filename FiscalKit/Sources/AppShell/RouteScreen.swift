@@ -41,7 +41,12 @@ struct RouteScreen: View {
         case .races: ModelHost(FiscalServices.shared.liveResults()) { LiveResultsScreen() }
         case .lens: LensDestination()
         case .artists: ArtistsDestination()
-        case .settings: SettingsScreen { SettingsExtraSection() }
+        case .settings:
+            SettingsScreen(service: data) {
+                LensDestination()
+            } artists: {
+                ArtistsDestination()
+            }
         case .share(let subject):
             ModelHost(
                 ShareModel(
@@ -74,20 +79,5 @@ private struct ArtistsDestination: View {
 
     var body: some View {
         ModelHost(ArtistsModel(lens: session.repositories.lens)) { ArtistsScreen() }
-    }
-}
-
-private struct SettingsExtraSection: View {
-    var body: some View {
-        Section {
-            SettingsRow("Lens", symbol: "eyeglasses", color: .retroTeal) {
-                LensDestination()
-            }
-            SettingsRow("Artists", symbol: "paintpalette", color: .retroPlum) {
-                ArtistsDestination()
-            }
-        } header: {
-            Text("Your Fiscal")
-        }
     }
 }

@@ -25,25 +25,33 @@ private struct AboutPage: View {
 private struct AboutHeroSection: View {
     @Environment(SettingsModel.self) private var settings
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.appTint) private var appTint
     @State private var isShown = false
 
     var body: some View {
         Section {
+            EmptyView()
+        } header: {
             VStack(spacing: .spaceM) {
-                AppIconImage(icon: settings.appIcon, size: .badgeXL * 1.5)
-                    .shadow(color: .black.opacity(.opacityTint), radius: 10, y: 4)
+                AppIconImage(icon: settings.appIcon, size: .medallion)
+                    .shadow(color: .black.opacity(.opacityTint), radius: .spaceM, y: .space2XS)
                     .scaleEffect(isShown || reduceMotion ? 1 : 0.7)
                     .opacity(isShown || reduceMotion ? 1 : 0)
+                Chip(
+                    "Version \(settings.info.version)", color: appTint, shape: .capsule
+                )
+                .monospacedDigit()
                 VStack(spacing: .space2XS) {
-                    Text(verbatim: "Fiscal").font(.titleLarge)
-                    Text("Version \(settings.info.version)")
+                    Text(verbatim: "Fiscal").font(.amountHero).foregroundStyle(.primary)
+                    Text("What your representatives do with your vote, from official sources.")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
-                        .monospacedDigit()
+                        .multilineTextAlignment(.center)
                 }
             }
             .frame(maxWidth: .infinity)
-            .padding(.vertical, .spaceM)
+            .padding(.vertical, .spaceL)
+            .textCase(nil)
             .animation(reduceMotion ? nil : .bouncy, value: isShown)
             .accessibilityElement(children: .combine)
             .task { isShown = true }
