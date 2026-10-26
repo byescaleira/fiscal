@@ -142,24 +142,24 @@ private struct TodayHighlightAuthor: View {
     }
 
     private var details: some View {
-        let layout =
-            dynamicTypeSize.isAccessibilitySize
-            ? AnyLayout(VStackLayout(alignment: .leading, spacing: .space2XS))
-            : AnyLayout(HStackLayout(alignment: .center, spacing: .spaceS))
-        return layout {
-            Text(verbatim: person.name)
-                .font(.subheadline.weight(.semibold))
-                .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
-            PartyMark(person.party)
-                .overlay {
-                    Capsule().strokeBorder(
-                        .white.opacity(.opacitySoft), lineWidth: .spaceHairline / 2)
-                }
-            Text(verbatim: "\(person.officeTitle) · \(person.uf)")
+        VStack(alignment: .leading, spacing: .space2XS) {
+            HStack(alignment: .center, spacing: .spaceS) {
+                Text(verbatim: person.name)
+                    .font(.subheadline.weight(.semibold))
+                    .fixedSize(horizontal: false, vertical: true)
+                PartyMark(person.party)
+                    .fixedSize()
+                    .overlay {
+                        Capsule().strokeBorder(
+                            .white.opacity(.opacitySoft), lineWidth: .spaceHairline / 2)
+                    }
+            }
+            Text(verbatim: "\(person.officeTitle) · \(person.uf.uppercased())")
                 .font(.footnote)
                 .opacity(.opacityStrong)
-                .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
+                .fixedSize(horizontal: false, vertical: true)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -173,6 +173,8 @@ private struct TodayHighlightRelevance: View {
             StatusCircle(relevance.title, symbol: relevance.symbol, color: .white)
             Text(verbatim: relevance.title)
                 .font(.caption.weight(.semibold))
+                .lineLimit(1)
+                .fixedSize()
             HStack(spacing: .spaceHairline) {
                 ForEach(0..<Relevance.segments, id: \.self) { index in
                     Capsule()
