@@ -4,6 +4,7 @@ import FeatureMoney
 import FeatureSearch
 import FeatureToday
 import FeatureVotes
+import FiscalDomain
 import SwiftUI
 
 struct SectionScreen: View {
@@ -33,7 +34,17 @@ struct SectionScreen: View {
             }
         case .money:
             ModelHost(MoneyModel(service: data, lens: session.repositories.lens)) { MoneyScreen() }
-        case .search: ModelHost(SearchModel(service: data)) { SearchScreen() }
+        case .search:
+            ModelHost(
+                SearchModel(
+                    service: data,
+                    board: InvestigationModel(
+                        service: data, lens: session.repositories.lens,
+                        follows: session.repositories.follows,
+                        homeUF: HomePlace.chosenUF(in: .standard)))
+            ) {
+                SearchScreen()
+            }
         }
     }
 }

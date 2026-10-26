@@ -42,11 +42,13 @@ public final class ShareModel {
 
     public var card: ShareCard? {
         content.map {
-            ShareCard(content: $0, artwork: $0.isVictory ? nil : artwork, format: format)
+            ShareCard(content: $0, artwork: $0.hasOwnPoster ? nil : artwork, format: format)
         }
     }
 
-    public var usesArt: Bool { content?.isVictory != true }
+    public var usesArt: Bool { content?.hasOwnPoster != true }
+
+    public var isInvestigation: Bool { content?.investigation != nil }
 
     public var shareMessage: String {
         guard let content else { return ShareCardBuilder.host }
@@ -115,6 +117,7 @@ public final class ShareModel {
 
     private func fetch() async throws -> ShareCardContent {
         if case .race(let id) = subject { return try await race(id) }
+        if case .investigation(let summary) = subject { return builder.investigation(summary) }
         guard let service else { throw PublicDataError.unavailable }
         return try await fetch(from: service)
     }
@@ -144,6 +147,8 @@ public final class ShareModel {
             return try await race(id)
         case .highlight(let id):
             return try await highlight(id, from: service)
+        case .investigation(let summary):
+            return builder.investigation(summary)
         }
     }
 

@@ -31,6 +31,8 @@ struct ShareHero: View {
             ShareHighlightHero(highlight: highlight, format: format)
         case .victory(let victory):
             ShareVictoryHero(victory: victory, format: format)
+        case .investigation(let investigation):
+            ShareInvestigationHero(investigation: investigation, format: format)
         }
     }
 }

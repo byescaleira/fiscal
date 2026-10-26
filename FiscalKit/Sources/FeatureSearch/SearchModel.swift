@@ -14,31 +14,23 @@ public final class SearchModel {
     public private(set) var recents: [String] = []
     public private(set) var sources: [Source] = []
     public private(set) var updatedAt: Date?
-    public private(set) var liveCount: LiveCount?
     public private(set) var recentVotes: [VoteSummary]?
     @ObservationIgnored private var index = SearchIndex()
     @ObservationIgnored private let service: (any PublicDataService)?
     @ObservationIgnored private let lensRepository: (any LensRepository)?
     @ObservationIgnored private let recentStore: (any RecentSearchStore)?
-    @ObservationIgnored private let races: (any LiveResultsService)?
-    @ObservationIgnored private let now: @Sendable () -> Date
+    @ObservationIgnored public let board: InvestigationModel
     private var revision = 0
-
-    public struct LiveCount: Equatable, Sendable {
-        public let counted: Double
-        public let races: Int
-    }
 
     public init(
         service: (any PublicDataService)?, lens: (any LensRepository)? = nil,
         recents: (any RecentSearchStore)? = DeviceRecentSearches(),
-        races: (any LiveResultsService)? = nil, now: @escaping @Sendable () -> Date = { .now }
+        board: InvestigationModel? = nil
     ) {
         self.service = service
         lensRepository = lens
         recentStore = recents
-        self.races = races
-        self.now = now
+        self.board = board ?? InvestigationModel(service: service, store: nil, usesModel: false)
     }
 
     public var isSearching: Bool { !SearchText.words(query).isEmpty || !tokens.isEmpty }
@@ -65,13 +57,6 @@ public final class SearchModel {
     }
 
     public var sourceLine: String? { SourceLine.text(sources, updatedAt: updatedAt) }
-
-    public var elections: [Election] { ElectionCalendar.elections(now: now()) }
-
-    public var electedAwaiting: Int {
-        _ = revision
-        return index.count(of: .electedAwaiting)
-    }
 
     public var suggestions: [CompareSuggestion] {
         _ = revision
@@ -146,14 +131,9 @@ public final class SearchModel {
             recentVotes = voteList
             updatedAt = info?.generatedAt
             revision += 1
+            board.prepare(index: index, recent: voteList ?? [])
         }
-        await loadLiveCount()
-    }
-
-    private func loadLiveCount() async {
-        guard let races, let list = try? await races.races(), !list.isEmpty else { return }
-        let lead = list.first { $0.office == .president } ?? list[0]
-        liveCount = LiveCount(counted: lead.sections.percent / 100, races: list.count)
+        await board.load()
     }
 }
 
