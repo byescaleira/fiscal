@@ -52,18 +52,6 @@ private struct MineHeroCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceL) {
-            HStack(spacing: .spaceS) {
-                Label {
-                    Text(verbatim: mine.placeKicker)
-                } icon: {
-                    Image(systemName: mine.place?.isState == true ? "map" : "building.2")
-                }
-                .font(.chipLabel)
-                .padding(.horizontal, .spaceS)
-                .padding(.vertical, .space2XS)
-                .background(.fill.tertiary, in: .capsule)
-                Spacer(minLength: .spaceS)
-            }
             VStack(alignment: .leading, spacing: .space2XS) {
                 HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
                     Text(verbatim: mine.placeTitle)
