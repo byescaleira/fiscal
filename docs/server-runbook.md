@@ -146,7 +146,7 @@ Horários em Brasília.
 | `tse` | candidaturas, bens, votos e contas das eleições gerais | domingo 00:20 | `HEAD` dos ZIPs (`ETag` e tamanho) | Só muda quando o TSE republica |
 | `cidades` | municípios do IBGE, prefeitos, vices e vereadores | sábado 00:20 | `HEAD` dos ZIPs de 2024 e hash da lista do IBGE | Só reconstrói os ~75 mil arquivos de cidades quando a fonte muda |
 | `historia` | Memória (eleições de 1989 a 2022 e indicadores) | dia 1º, 03:50 | `HEAD` dos ZIPs e versão do conteúdo curado | Resultados fechados; o conteúdo muda com o deploy |
-| `repercussao` | contagens do GDELT e da Wikipédia | a cada 6 h | nenhuma | Janelas de 30 dias e cota do GDELT |
+| `repercussao` | contagens do GDELT e da Wikipédia | a cada 3 h | nenhuma | Janelas de 30 dias valendo 72 h; o GDELT recusa rajadas (429), então cada leitura mede no máximo 15 min, espera 20, 45 e 90 s entre recusas e para depois de duas consultas recusadas seguidas |
 | `memoria` | nada: reconstrução completa do banco e verificação | quarta 00:20 | — | Compara o incremental com o completo; divergência vira alerta |
 | `apuracao` | TSE ao vivo (poller do `fiscal-api`, 20 s) | só em dia de eleição | — | `fiscal-pages.timer` ligado à mão (seção 6) |
 
