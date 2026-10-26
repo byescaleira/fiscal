@@ -13,7 +13,7 @@ struct SearchModelThemesTests {
         let now = now
         return SearchModel(
             service: ShowcasePublicData(scenario: scenario, now: now),
-            recents: MemoryRecentSearches(), now: { now })
+            recents: MemoryRecentSearches())
     }
 
     @Test func showsLoadingUntilTheVotesArrive() async {

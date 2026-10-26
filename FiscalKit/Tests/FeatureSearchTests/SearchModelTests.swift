@@ -29,7 +29,7 @@ struct SearchModelTests {
         let now = now
         return SearchModel(
             service: ShowcasePublicData(scenario: scenario, now: now), lens: lens,
-            recents: recents, now: { now })
+            recents: recents)
     }
 
     @Test func searchesOnlyWithTextOrAFilter() {
@@ -128,7 +128,6 @@ struct SearchModelTests {
         #expect(search.results.people.map(\.slug) == ["erika-hilton"])
         search.apply(.electedAwaiting)
         #expect(search.results.people.map(\.slug) == ["ana-clara-moura"])
-        #expect(search.electedAwaiting == 1)
     }
 
     @Test func remembersRecentSearchesOnlyOnTheDevice() async {
@@ -187,8 +186,7 @@ struct SearchModelTests {
     }
 
     @Test func showsTheElectionTimeline() {
-        let search = model()
-        let elections = search.elections
+        let elections = ElectionCalendar.elections(now: now)
         #expect(elections.map(\.year) == [2_026, 2_022, 2_018])
         #expect(elections[0].isCurrent)
         #expect(elections[0].liveRound?.number == 2)
@@ -207,7 +205,6 @@ struct SearchModelTests {
         let offline = model(.offline)
         await offline.load()
         #expect(offline.phase == .failed(.offline))
-        #expect(offline.elections.count == 3)
         let missing = SearchModel(service: nil, recents: nil)
         await missing.load()
         #expect(missing.phase.error == .unavailable)
