@@ -234,6 +234,21 @@ O manifesto `art-credits.json` vai junto com o app e lista, por obra: autor, @, 
 - **Sinal ausente não conta como zero:** se uma fonte de repercussão falhar, a fórmula usa só os sinais medidos e avisa quais faltaram.
 - **Compartilhar é o motor:** dados bem trabalhados e bem interpretados, em cards bonitos, fazem as pessoas compartilharem. O social e o design são o que atrai.
 
+## Classificar os números (decisão do usuário em 2026-10-26)
+
+- **Por que classificar:** para quem lê, um número solto não diz nada. Cada indicador ganha uma classificação com regra pública, explicada no "Como medimos", e o número continua ao lado.
+- **Desempenho comparado aos colegas do mesmo cargo e casa:**
+  - **Com direção clara para o cidadão:**
+    - **Presença:** mais alta é melhor.
+    - **Gasto da cota:** mais baixo é melhor.
+    - **Rótulos e cores:** "Melhor que a média" em verde, "Na média" em cinza, "Pior que a média" em vermelho.
+    - **Faixas:** pelo quartil da casa.
+  - **Sem direção clara (propostas, discursos):** só a posição, como "Mais ativo que a média", "Na média" ou "Menos ativo que a média", sem cor de bom ou ruim. Mais projetos não quer dizer projetos melhores.
+- **Peso das ações:**
+  - **Faixas:** "Alta relevância" (70 ou mais), "Média relevância" (de 40 a 69) e "Baixa relevância" (menos de 40).
+  - **O número:** fica no detalhe.
+- **Conteúdo:** projetos e votos nunca são chamados de bons ou ruins. Isso é opinião, e a regra de credibilidade continua valendo.
+
 ## Apple Design Award: onde competimos
 
 | Categoria | O que o Fiscal leva |
