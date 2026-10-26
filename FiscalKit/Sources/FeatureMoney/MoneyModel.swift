@@ -7,14 +7,14 @@ import Observation
 @MainActor @Observable
 public final class MoneyModel {
     public enum Section: String, CaseIterable, Identifiable, Sendable {
-        case quota, salaries, campaigns, revenue
+        case quota, mandate, campaigns, revenue
 
         public var id: String { rawValue }
 
         public var title: String {
             switch self {
             case .quota: String(appLocalized: "Office allowance")
-            case .salaries: String(appLocalized: "Salaries")
+            case .mandate: String(appLocalized: "What a mandate costs")
             case .campaigns: String(appLocalized: "Campaigns")
             case .revenue: String(appLocalized: "Federal revenue")
             }
@@ -22,7 +22,7 @@ public final class MoneyModel {
 
         public var themes: [Theme] {
             switch self {
-            case .quota, .salaries: [.taxes]
+            case .quota, .mandate: [.taxes]
             case .campaigns: [.politics]
             case .revenue: [.economy, .taxes]
             }
@@ -44,17 +44,6 @@ public final class MoneyModel {
         }
     }
 
-    public struct Salary: Identifiable, Equatable, Sendable {
-        public let id: String
-        public let title: String
-        public let law: String
-        public let symbol: String
-        public let cents: Int
-        public let value: String
-
-        public var reais: Double { Double(cents) / 100 }
-    }
-
     public struct Hero: Equatable, Sendable {
         public let chip: String
         public let value: String
@@ -66,19 +55,25 @@ public final class MoneyModel {
     }
 
     public private(set) var overview: MoneyOverview?
+    public private(set) var mandate: MandateCost?
+    public var selectedUF: String
     public private(set) var lens: Lens?
     public private(set) var phase: PublicDataPhase = .idle
     @ObservationIgnored private let service: (any PublicDataService)?
     @ObservationIgnored private let lensRepository: (any LensRepository)?
 
-    public init(service: (any PublicDataService)?, lens: (any LensRepository)? = nil) {
+    public init(
+        service: (any PublicDataService)?, lens: (any LensRepository)? = nil,
+        homeUF: String? = HomePlace.chosenUF(in: .standard)
+    ) {
         self.service = service
         lensRepository = lens
+        selectedUF = homeUF ?? MandateText.fallbackUF
     }
 
     public var isEmpty: Bool {
         guard let overview else { return true }
-        return overview.salaries.isEmpty && quotaCents == 0
+        return (mandate?.roles.isEmpty ?? true) && quotaCents == 0
             && (overview.campaigns?.revenueCents ?? 0) == 0 && overview.revenue == nil
     }
 
@@ -123,16 +118,6 @@ public final class MoneyModel {
     public var categoriesHeadline: String? {
         guard let first = categories.first else { return nil }
         return String(appLocalized: "\(first.title) was the largest item: \(first.value)")
-    }
-
-    public var salaries: [Salary] {
-        (overview?.salaries ?? []).map { salary in
-            Salary(
-                id: salary.office.rawValue, title: salary.office.title,
-                law: salary.law ?? PublicFormat.missing,
-                symbol: MoneyKind.office(salary.office), cents: salary.monthlyCents,
-                value: PublicFormat.money(cents: salary.monthlyCents))
-        }
     }
 
     public var campaigns: MoneyOverview.Campaigns? { overview?.campaigns }
@@ -186,11 +171,13 @@ public final class MoneyModel {
     public func sourceLine(for section: Section) -> String {
         let ids: [String] =
             switch section {
-            case .quota, .salaries: ["camara", "senado"]
+            case .quota: ["camara", "senado"]
+            case .mandate: (mandate?.sources ?? []).map(\.id)
             case .campaigns: ["tse"]
             case .revenue: ["receita"]
             }
-        return MoneyText.sourceLine(MoneyText.sources(overview?.sources ?? [], ids: ids))
+        let all = section == .mandate ? mandate?.sources ?? [] : overview?.sources ?? []
+        return MoneyText.sourceLine(MoneyText.sources(all, ids: ids))
     }
 
     public func load() async {
@@ -199,6 +186,7 @@ public final class MoneyModel {
             lens = try? await lensRepository?.lens()
             guard let service else { throw PublicDataError.unavailable }
             overview = try await service.money()
+            mandate = try? await service.mandateCost()
         }
     }
 }

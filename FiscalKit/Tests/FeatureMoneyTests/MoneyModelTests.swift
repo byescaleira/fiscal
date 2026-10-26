@@ -22,15 +22,14 @@ struct MoneyModelTests {
         return model
     }
 
-    @Test func showsSalariesInReaisWithTheirLaw() async throws {
+    @Test func showsTheMandateCostWithItsActs() async throws {
         let model = try await loaded()
         #expect(!model.isEmpty)
-        #expect(
-            model.salaries.map(\.id) == ["president", "vicePresident", "senator", "federalDeputy"])
-        let salary = try #require(model.salaries.first)
-        #expect(salary.value.replacingOccurrences(of: "\u{00A0}", with: " ") == "R$ 46.366,19")
-        #expect(salary.law == "Decreto Legislativo 173/2022")
-        #expect(salary.symbol == "star")
+        model.selectedUF = "sp"
+        let deputy = try #require(model.mandateHighlight)
+        #expect(deputy.monthlyCents == 4_636_619 + 4_872_746 + 16_580_607 + 425_300)
+        #expect(model.quotaStateBars.first?.uf == "rr")
+        #expect(model.mandateActLines.contains { $0.contains("Decreto Legislativo nº 172/2022") })
     }
 
     @Test func theHeroAddsTheChamberAndTheSenate() async throws {

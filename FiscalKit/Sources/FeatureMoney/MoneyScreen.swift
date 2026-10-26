@@ -19,7 +19,7 @@ public struct MoneyScreen: View {
                     case .quota:
                         QuotaCategoriesSection()
                         QuotaExplainerSection()
-                    case .salaries: SalariesSection()
+                    case .mandate: MandateSections()
                     case .campaigns: CampaignsSection()
                     case .revenue: RevenueSection()
                     }
@@ -30,6 +30,7 @@ public struct MoneyScreen: View {
         }
         .fontDesign(.rounded)
         .navigationTitle("Money")
+        .toolbar { MoneyToolbar() }
         .refreshable { await money.load() }
         .task { await money.load() }
     }
@@ -157,10 +158,10 @@ private struct MoneyEmptyState: View {
         EmptyStateView(
             title: "No figures yet",
             description:
-                "Office allowances, salaries and campaign money show up here, each with its official source."
+                "Office allowances, what a mandate costs and campaign money show up here, each with its official source."
         ) {
             IconRow("Office allowance", symbol: "creditcard", color: .retroDenim)
-            IconRow("Salaries", symbol: "banknote", color: .retroPlum)
+            IconRow("What a mandate costs", symbol: "banknote", color: .retroPlum)
             IconRow("Campaigns", symbol: "building.columns", color: .retroTeal)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

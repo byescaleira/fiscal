@@ -3,59 +3,6 @@ import FiscalDesignSystem
 import FiscalDomain
 import SwiftUI
 
-struct SalariesSection: View {
-    @Environment(MoneyModel.self) private var money
-
-    var body: some View {
-        if !money.salaries.isEmpty {
-            Section {
-                SalaryLollipopChart(salaries: money.salaries)
-                    .padding(.vertical, .spaceXS)
-                ForEach(money.salaries) { SalaryRow(salary: $0) }
-            } header: {
-                Text("Salaries").sectionTitle()
-            } footer: {
-                VStack(alignment: .leading, spacing: .space2XS) {
-                    Text(
-                        "Gross monthly pay, before taxes. Each one is set by the law shown under the office."
-                    )
-                    Text(verbatim: money.sourceLine(for: .salaries))
-                }
-            }
-        }
-    }
-}
-
-private struct SalaryRow: View {
-    let salary: MoneyModel.Salary
-
-    var body: some View {
-        AdaptiveRow(spacing: .spaceM) {
-            HStack(spacing: .spaceM) {
-                SymbolBadge(salary.symbol, color: .companion, size: .badgeM)
-                    .accessibilityHidden(true)
-                VStack(alignment: .leading, spacing: .spaceHairline) {
-                    Text(verbatim: salary.title).font(.rowTitle)
-                    Label {
-                        Text(verbatim: salary.law)
-                    } icon: {
-                        Image(systemName: "text.book.closed")
-                    }
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                }
-            }
-            Spacer(minLength: .spaceS)
-            VStack(alignment: .trailing, spacing: .spaceHairline) {
-                Text(verbatim: salary.value).font(.amountRow).monospacedDigit().amountLine()
-                Text("per month").font(.caption).foregroundStyle(.secondary)
-            }
-        }
-        .padding(.vertical, .space2XS)
-        .accessibilityElement(children: .combine)
-    }
-}
-
 struct CampaignsSection: View {
     @Environment(MoneyModel.self) private var money
 

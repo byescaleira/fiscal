@@ -325,6 +325,7 @@ func (in *Ingest) full(ctx context.Context) (Report, error) {
 	}
 	ds.Salaries, ds.SalarySource = salaries()
 	srcs.add("legislacao", salaryLaw, salaryLawURL, ds.Salaries)
+	ds.Mandate, ds.MandateSources = in.loadMandate(ctx, &rep, srcs)
 	for _, p := range people {
 		applyCoverage(p)
 	}
