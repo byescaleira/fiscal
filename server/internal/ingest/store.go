@@ -116,6 +116,14 @@ type sourceIO struct {
 
 func (in *Ingest) withSource(ctx context.Context, rep *Report, srcs *sourceSet, s sourceIO) (bool, error) {
 	t := in.track(ctx, s.id)
+	if !in.cfg.refresh(s.id) && in.db != nil && s.restore != nil {
+		ok, rerr := s.restore()
+		if rerr == nil && ok {
+			srcs.keep(s.id, s.name, s.url)
+			t.done(ctx, datastore.StatusSkipped, nil, nil)
+			return false, nil
+		}
+	}
 	err := s.load()
 	if err == nil {
 		counts := map[string]int{}
@@ -401,6 +409,44 @@ func (in *Ingest) storeCities(ctx context.Context, rep *Report, srcs *sourceSet,
 		rep.CityPeople += len(c.Officials)
 	}
 	t.done(ctx, datastore.StatusFallback, nil, nil)
+	return stored
+}
+
+func (in *Ingest) storedCities(ctx context.Context, rep *Report, srcs *sourceSet) []publicdata.City {
+	if in.db == nil {
+		return nil
+	}
+	stored, err := in.db.Cities(ctx, publicdata.CitySource)
+	if err != nil || len(stored) == 0 {
+		return nil
+	}
+	srcs.keep(publicdata.CitySource, "Tribunal Superior Eleitoral", tse.SiteURL)
+	rep.Cities = len(stored)
+	for _, c := range stored {
+		rep.CityPeople += len(c.Officials)
+	}
+	in.track(ctx, "cidades").done(ctx, datastore.StatusSkipped, nil, nil)
+	return stored
+}
+
+func (in *Ingest) storedChecks(ctx context.Context, srcs *sourceSet) []publicdata.RawCheck {
+	if in.db == nil {
+		return nil
+	}
+	var stored []publicdata.RawCheck
+	err := in.db.Snapshots(ctx, "comprova", "check:", func(_ string, payload []byte) error {
+		var c publicdata.RawCheck
+		if err := json.Unmarshal(payload, &c); err != nil {
+			return err
+		}
+		stored = append(stored, c)
+		return nil
+	})
+	if err != nil || len(stored) == 0 {
+		return nil
+	}
+	srcs.keep("comprova", comprova.Name, comprova.SiteURL)
+	in.track(ctx, "comprova").done(ctx, datastore.StatusSkipped, nil, nil)
 	return stored
 }
 

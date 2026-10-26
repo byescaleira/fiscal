@@ -44,6 +44,9 @@ type Config struct {
 	Registrations Registrations
 	Highlights    Registrations
 	AdminToken    string
+	Attest        Attestor
+	AttestMode    string
+	Unattested    int
 	Limiter       *RateLimiter
 	Salt          []byte
 	Now           func() time.Time
@@ -55,6 +58,8 @@ type server struct {
 	regs       Registrations
 	highlights Registrations
 	adminToken string
+	attest     Attestor
+	attestMode string
 	limiter    *RateLimiter
 	salt       []byte
 	now        func() time.Time
@@ -71,18 +76,27 @@ func New(c Config) http.Handler {
 	if c.Limiter == nil {
 		c.Limiter = NewRateLimiter(c.Now, 120, 120)
 	}
+	if c.Unattested <= 0 {
+		c.Unattested = 10
+	}
+	c.Limiter.SetLimit(ClassUnattested, c.Unattested)
+	if c.AttestMode == "" {
+		c.AttestMode = AttestOptional
+	}
 	if len(c.Salt) == 0 {
 		c.Salt = make([]byte, 32)
 		rand.Read(c.Salt)
 	}
-	s := &server{races: c.Races, regs: c.Registrations, highlights: c.Highlights, adminToken: c.AdminToken, limiter: c.Limiter, salt: c.Salt, now: c.Now, logger: c.Logger}
+	s := &server{races: c.Races, regs: c.Registrations, highlights: c.Highlights, adminToken: c.AdminToken, attest: c.Attest, attestMode: c.AttestMode, limiter: c.Limiter, salt: c.Salt, now: c.Now, logger: c.Logger}
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/health", s.health)
 	mux.HandleFunc("GET /api/v1/races", s.limit(ClassRead, s.listRaces))
 	mux.HandleFunc("GET /api/v1/races/{id}", s.limit(ClassRead, s.getRace))
-	mux.HandleFunc("POST /api/v1/live-activities", s.limit(ClassWrite, s.register))
+	mux.HandleFunc("POST /api/v1/attest/challenge", s.limit(ClassWrite, s.challenge))
+	mux.HandleFunc("POST /api/v1/attest/keys", s.limit(ClassWrite, s.registerKey))
+	mux.HandleFunc("POST /api/v1/live-activities", s.limit(ClassWrite, s.attested(s.register)))
 	mux.HandleFunc("DELETE /api/v1/live-activities", s.limit(ClassWrite, s.unregister))
-	mux.HandleFunc("POST /api/v1/highlight-activities", s.limit(ClassWrite, s.registerHighlights))
+	mux.HandleFunc("POST /api/v1/highlight-activities", s.limit(ClassWrite, s.attested(s.registerHighlights)))
 	mux.HandleFunc("DELETE /api/v1/highlight-activities", s.limit(ClassWrite, s.unregisterHighlights))
 	mux.HandleFunc("POST /api/v1/admin/push-test", s.limit(ClassWrite, s.pushTest))
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {

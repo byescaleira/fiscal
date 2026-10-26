@@ -1,0 +1,11 @@
+[Unit]
+Description=Fiscal phase tse (weekly)
+
+[Timer]
+OnCalendar=Sun *-*-* 00:20:00 America/Sao_Paulo
+RandomizedDelaySec=5min
+Persistent=true
+Unit=fiscal-phase@tse.service
+
+[Install]
+WantedBy=timers.target

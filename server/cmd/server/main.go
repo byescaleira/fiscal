@@ -21,6 +21,7 @@ import (
 	"time"
 
 	"liveresults/internal/apns"
+	"liveresults/internal/appattest"
 	"liveresults/internal/highlightalert"
 	"liveresults/internal/httpapi"
 	"liveresults/internal/live"
@@ -39,6 +40,7 @@ const (
 	highlightTTL     = 30 * 24 * time.Hour
 	highlightRegFile = "highlight-registrations.json"
 	highlightCheck   = time.Minute
+	maxAttestKeys    = 500000
 )
 
 type config struct {
@@ -56,6 +58,9 @@ type config struct {
 	topic        string
 	adminToken   string
 	alerts       bool
+	attestMode   string
+	attestAppID  string
+	attestDev    bool
 }
 
 func loadConfig(getenv func(string) string) (config, error) {
@@ -134,6 +139,38 @@ func loadConfig(getenv func(string) string) (config, error) {
 		if !strings.HasSuffix(c.topic, topicSuffix) || len(c.topic) == len(topicSuffix) {
 			return c, fmt.Errorf("APNS_TOPIC must be the bundle id followed by %s", topicSuffix)
 		}
+	}
+	return attestConfig(getenv, c)
+}
+
+func attestConfig(getenv func(string) string, c config) (config, error) {
+	c.attestAppID = strings.TrimSpace(getenv("APPATTEST_APP_ID"))
+	if c.attestAppID == "" && c.teamID != "" && strings.HasSuffix(c.topic, topicSuffix) {
+		c.attestAppID = c.teamID + "." + strings.TrimSuffix(c.topic, topicSuffix)
+	}
+	c.attestMode = strings.TrimSpace(getenv("APPATTEST_MODE"))
+	switch c.attestMode {
+	case "":
+		c.attestMode = httpapi.AttestOptional
+		if c.attestAppID == "" {
+			c.attestMode = httpapi.AttestOff
+		}
+	case httpapi.AttestOff, httpapi.AttestOptional, httpapi.AttestRequired:
+	default:
+		return c, fmt.Errorf("APPATTEST_MODE %q is invalid (off, optional or required)", c.attestMode)
+	}
+	if c.attestMode != httpapi.AttestOff {
+		team, bundle, ok := strings.Cut(c.attestAppID, ".")
+		if !ok || team == "" || bundle == "" || strings.ContainsAny(c.attestAppID, " /") {
+			return c, errors.New("APPATTEST_APP_ID must be TEAMID.bundle.id (or set APNS_TEAM_ID and APNS_TOPIC), or APPATTEST_MODE=off")
+		}
+	}
+	switch v := strings.TrimSpace(getenv("APPATTEST_ALLOW_DEVELOPMENT")); v {
+	case "", "0":
+	case "1":
+		c.attestDev = true
+	default:
+		return c, fmt.Errorf("APPATTEST_ALLOW_DEVELOPMENT %q is invalid (use 1 or 0)", v)
 	}
 	return c, nil
 }
@@ -231,7 +268,7 @@ func main() {
 			log.Fatalf("highlight store: %v", err)
 		}
 		watcher = highlightalert.New(highlightalert.Options{
-			Path:     filepath.Join(cfg.publicDir, "v1", "highlights.json"),
+			Path:     filepath.Join(cfg.publicDir, "published", "highlights.json"),
 			SentPath: filepath.Join(cfg.dataDir, highlightalert.SentFile),
 			Sender:   sender,
 			Registry: highlightRegs,
@@ -240,7 +277,19 @@ func main() {
 			log.Fatalf("highlight alerts: %v", err)
 		}
 	}
-	apiConfig := httpapi.Config{Races: svc, Registrations: regs, AdminToken: cfg.adminToken}
+	apiConfig := httpapi.Config{Races: svc, Registrations: regs, AdminToken: cfg.adminToken, AttestMode: cfg.attestMode}
+	var attest *appattest.Service
+	if cfg.attestMode != httpapi.AttestOff {
+		verifier, err := appattest.NewVerifier(cfg.attestAppID, cfg.attestDev)
+		if err != nil {
+			log.Fatalf("app attest: %v", err)
+		}
+		attest, err = appattest.Open(cfg.dataDir, verifier, maxAttestKeys)
+		if err != nil {
+			log.Fatalf("app attest: %v", err)
+		}
+		apiConfig.Attest = attest
+	}
 	if highlightRegs != nil {
 		apiConfig.Highlights = highlightRegs
 	}
@@ -269,6 +318,13 @@ func main() {
 		defer workers.Done()
 		regs.Run(ctx, 2*time.Second)
 	}()
+	if attest != nil {
+		workers.Add(1)
+		go func() {
+			defer workers.Done()
+			attest.Run(ctx, 5*time.Second)
+		}()
+	}
 	if watcher != nil {
 		workers.Add(2)
 		go func() {
@@ -294,7 +350,7 @@ func main() {
 	if cfg.apnsDisabled {
 		apnsMode = "disabled"
 	}
-	log.Printf("listening on %s source=%s apns=%s poll=%s registrations=%d admin=%v publish=%v highlightAlerts=%v", address, mode, apnsMode, cfg.poll, regs.Count(), cfg.adminToken != "", cfg.publishDir() != "", cfg.alerts)
+	log.Printf("listening on %s source=%s apns=%s poll=%s registrations=%d admin=%v publish=%v highlightAlerts=%v appAttest=%s", address, mode, apnsMode, cfg.poll, regs.Count(), cfg.adminToken != "", cfg.publishDir() != "", cfg.alerts, cfg.attestMode)
 
 	<-ctx.Done()
 	log.Printf("shutting down")
@@ -310,6 +366,11 @@ func main() {
 	if highlightRegs != nil {
 		if err := highlightRegs.Flush(); err != nil {
 			log.Printf("highlight store flush: %v", err)
+		}
+	}
+	if attest != nil {
+		if err := attest.Flush(); err != nil {
+			log.Printf("attest store flush: %v", err)
 		}
 	}
 }

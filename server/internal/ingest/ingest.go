@@ -19,6 +19,7 @@ import (
 	"liveresults/internal/datastore"
 	"liveresults/internal/publicdata"
 	"liveresults/internal/publish"
+	"liveresults/internal/site"
 	"liveresults/internal/sources/fetch"
 	"liveresults/internal/sources/ibge"
 )
@@ -43,6 +44,8 @@ type Config struct {
 	ChecksMaxPages    int
 	CityYear          int
 	NewsBudget        int
+	Refresh           map[string]bool
+	ReleaseKind       string
 }
 
 func (c Config) Enabled(source string) bool {
@@ -91,6 +94,12 @@ type Ingest struct {
 
 	db  *datastore.Store
 	run *datastore.Run
+
+	site *site.Stager
+}
+
+func (in *Ingest) UseSite(s *site.Stager) {
+	in.site = s
 }
 
 func New(cfg Config, get Fetcher, now func() time.Time, logger *log.Logger) *Ingest {
@@ -206,6 +215,8 @@ type Report struct {
 	Gzip        int64
 	Duration    time.Duration
 	Warnings    []string
+	Release     string
+	Unchanged   bool
 }
 
 func (in *Ingest) warn(r *Report, format string, args ...any) {
@@ -333,11 +344,27 @@ func (in *Ingest) full(ctx context.Context) (Report, error) {
 		if len(ds.Municipalities) == 0 {
 			in.warn(&rep, "cities: skipped, the IBGE list of municipalities is not loaded")
 		} else {
-			ds.Cities = in.storeCities(ctx, &rep, srcs, in.loadCities(ctx, &rep, ds.Municipalities, srcs))
+			var stored []publicdata.City
+			if !in.cfg.refresh("cidades") {
+				stored = in.storedCities(ctx, &rep, srcs)
+			}
+			if stored != nil {
+				ds.Cities = stored
+			} else {
+				ds.Cities = in.storeCities(ctx, &rep, srcs, in.loadCities(ctx, &rep, ds.Municipalities, srcs))
+			}
 		}
 	}
 	if in.cfg.Enabled("comprova") {
-		ds.Checks = in.storeChecks(ctx, &rep, srcs, in.loadChecks(ctx, &rep, srcs))
+		var stored []publicdata.RawCheck
+		if !in.cfg.refresh("comprova") {
+			stored = in.storedChecks(ctx, srcs)
+		}
+		if stored != nil {
+			ds.Checks = stored
+		} else {
+			ds.Checks = in.storeChecks(ctx, &rep, srcs, in.loadChecks(ctx, &rep, srcs))
+		}
 	}
 	if in.cfg.Enabled("repercussao") {
 		ds.Signals = in.loadSignals(ctx, &rep, ds, srcs)
@@ -356,7 +383,11 @@ func (in *Ingest) full(ctx context.Context) (Report, error) {
 	ds.Agenda = in.storedAgenda(ctx, ds.Today)
 	in.refreshLive(ctx, ds, &rep)
 	in.storeLive(ctx, &rep, ds)
-	cities, slugs, err := in.publish(ds, &rep, nil)
+	kind := in.cfg.ReleaseKind
+	if kind == "" {
+		kind = "full"
+	}
+	cities, slugs, err := in.publish(ctx, kind, ds, &rep, nil)
 	if err != nil {
 		return rep, err
 	}
@@ -391,11 +422,11 @@ func (in *Ingest) live(ctx context.Context) (Report, error) {
 	ds.Today = in.today()
 	in.refreshLive(ctx, ds, &rep)
 	in.storeLive(ctx, &rep, ds)
-	_, _, err := in.publish(ds, &rep, cities)
+	_, _, err := in.publish(ctx, "live", ds, &rep, cities)
 	return rep, err
 }
 
-func (in *Ingest) publish(ds *publicdata.Dataset, rep *Report, retain []string) ([]string, map[*publicdata.Person]string, error) {
+func (in *Ingest) publish(ctx context.Context, kind string, ds *publicdata.Dataset, rep *Report, retain []string) ([]string, map[*publicdata.Person]string, error) {
 	slugs, err := publicdata.LoadSlugs(filepath.Join(in.cfg.DataDir, "slugs.json"))
 	if err != nil {
 		return nil, nil, err
@@ -422,6 +453,22 @@ func (in *Ingest) publish(ds *publicdata.Dataset, rep *Report, retain []string) 
 		return nil, nil, err
 	}
 	st := tree.Stats()
+	if in.site != nil {
+		cur, ok, err := in.site.Current()
+		if err != nil {
+			return nil, nil, fmt.Errorf("site: %w", err)
+		}
+		if ok && st.Written == 0 && st.Removed == 0 {
+			rep.Release, rep.Unchanged = cur.Release, true
+		} else {
+			rel, err := in.site.Stage(kind, tree.Seen())
+			if err != nil {
+				return nil, nil, fmt.Errorf("site: %w", err)
+			}
+			rep.Release = rel.Release
+		}
+	}
+	in.promote(rep)
 	rep.People = len(ds.People)
 	rep.Votes = len(ds.Votes)
 	rep.Files, rep.Written, rep.Removed, rep.Bytes, rep.Gzip = st.Files, st.Written, st.Removed, st.Bytes, st.GzipBytes

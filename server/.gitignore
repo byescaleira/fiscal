@@ -5,3 +5,5 @@ secrets/
 public/
 ingest-data/
 ingest-backups/
+pages-data/
+.dist/
