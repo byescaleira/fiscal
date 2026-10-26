@@ -4,11 +4,14 @@ import Testing
 
 struct LensTests {
     @Test func keepsThreeToFiveDistinctThemes() {
-        let lens = Lens(themes: [.health, .health, .taxes, .security, .education, .rights, .women])
+        let themes: [Theme] = [.health, .health, .taxes, .security, .education, .rights, .women]
+        let lens = Lens(themes: themes, prefersNotToSay: true)
         #expect(lens.themes == [.health, .taxes, .security, .education, .rights])
         #expect(lens.isComplete)
         #expect(!lens.canAddTheme)
-        #expect(!Lens(themes: [.health, .taxes]).isComplete)
+        #expect(!Lens(themes: [.health, .taxes], prefersNotToSay: true).isComplete)
+        #expect(!Lens(themes: themes).isComplete)
+        #expect(Lens(themes: themes, supported: ["lula"]).isComplete)
     }
 
     @Test func togglesWithinTheLimit() {

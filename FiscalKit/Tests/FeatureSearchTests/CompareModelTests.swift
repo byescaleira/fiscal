@@ -11,11 +11,11 @@ struct CompareModelTests {
     private let showcase = ShowcasePublicData(
         scenario: .normal, now: Date(timeIntervalSince1970: 1_792_917_720))
 
-    @Test func comparesOnlyTwoOrThreePeople() async {
+    @Test func comparesExactlyTwoPeople() async {
         #expect(CompareModel(slugs: []).isEmpty)
         #expect(CompareModel(slugs: ["tabata-amaral"]).phase == .loaded)
         let many = CompareModel(slugs: ["a", "b", "b", "c", "d"])
-        #expect(many.slugs == ["a", "b", "c"])
+        #expect(many.slugs == ["a", "b"])
         let model = CompareModel(slugs: ["tabata-amaral", "kim-kataguiri"], service: showcase)
         #expect(model.isEmpty)
         await model.load()
@@ -31,8 +31,8 @@ struct CompareModelTests {
         #expect(table.groups.map(\.id) == ["office", "money", "election", "themes"])
         #expect(
             Array(table.metricIDs.prefix(8)) == [
-                "attendance", "votes", "proposals", "laws", "quota", "assets", "campaign",
-                "electionVotes",
+                "attendance", "votes", "proposals", "speeches", "laws", "quota", "assets",
+                "campaign",
             ])
         #expect(
             table.groups.allSatisfy { group in
@@ -53,7 +53,7 @@ struct CompareModelTests {
         await model.load()
         let office = model.table.groups.first { $0.id == "office" }
         #expect(office?.metrics.isEmpty == true)
-        #expect(office?.missing.count == 4)
+        #expect(office?.missing.count == 5)
         let money = model.table.groups.first { $0.id == "money" }
         let quota = money?.metrics.first { $0.id == "quota" }
         #expect(quota == nil)
@@ -64,7 +64,8 @@ struct CompareModelTests {
         let model = CompareModel(
             slugs: ["lula", "humberto-costa", "fabiano-contarato"], service: showcase)
         await model.load()
-        #expect(model.table.columns.map(\.usesSecondaryColor) == [false, true, false])
+        #expect(model.slugs == ["lula", "humberto-costa"])
+        #expect(model.table.columns.map(\.usesSecondaryColor) == [false, true])
         #expect(model.table.columns.allSatisfy { $0.party == "PT" })
     }
 

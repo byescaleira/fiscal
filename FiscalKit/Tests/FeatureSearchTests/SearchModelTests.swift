@@ -179,10 +179,8 @@ struct SearchModelTests {
         let search = model()
         await search.load()
         let suggestions = search.suggestions
-        #expect(
-            suggestions.map(\.id) == ["federalDeputy-mg", "federalDeputy-sp", "stateDeputy-sp"])
-        #expect(
-            suggestions[1].slugs == ["erika-hilton", "kim-kataguiri", "tabata-amaral"])
+        #expect(suggestions.map(\.id) == ["federalDeputy-mg", "federalDeputy-sp"])
+        #expect(suggestions[1].slugs == ["erika-hilton", "kim-kataguiri"])
     }
 
     @Test func showsTheElectionTimeline() {
