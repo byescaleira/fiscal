@@ -353,6 +353,16 @@
         }
       }
     },
+    "%@: %@ actions" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: %@ ações"
+          }
+        }
+      }
+    },
     "%@: %@ votes, %@ approved" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -414,6 +424,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$lld de %2$lld escolhidas"
+          }
+        }
+      }
+    },
+    "%lld of %lld people chosen" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld de %lld pessoas escolhidas"
           }
         }
       }
@@ -704,6 +724,16 @@
         }
       }
     },
+    "Add a topic" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar um tema"
+          }
+        }
+      }
+    },
     "Add person" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -711,6 +741,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Adicionar"
+          }
+        }
+      }
+    },
+    "Adds this topic to your lens" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adiciona este tema à sua lente"
           }
         }
       }
@@ -744,6 +784,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "pauta de %@"
+          }
+        }
+      }
+    },
+    "Agribusiness, family farming and land" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agronegócio, agricultura familiar e terra"
           }
         }
       }
@@ -810,6 +860,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Todos os tipos"
+          }
+        }
+      }
+    },
+    "All of them voted %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos votaram %@"
           }
         }
       }
@@ -1462,6 +1522,16 @@
         }
       }
     },
+    "Bolsa Família, pensions and social aid" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bolsa Família, aposentadorias e assistência social"
+          }
+        }
+      }
+    },
     "Born" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1803,6 +1873,16 @@
         }
       }
     },
+    "Change Who You Support" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mudar Quem Você Apoia"
+          }
+        }
+      }
+    },
     "Change: %@" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1898,6 +1978,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Escolha dois políticos em Fiscalizar e o Fiscal põe os números lado a lado, sem nota nem ranking."
+          }
+        }
+      }
+    },
+    "Choose who you support, your topics and your look. It takes about a minute." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha quem você apoia, seus temas e seu visual. Leva cerca de um minuto."
           }
         }
       }
@@ -2143,6 +2233,16 @@
         }
       }
     },
+    "Consumer rights, banks and services" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Direitos do consumidor, bancos e serviços"
+          }
+        }
+      }
+    },
     "Consumers" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2369,6 +2469,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cultura e esporte"
+          }
+        }
+      }
+    },
+    "Culture, sports and leisure" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cultura, esporte e lazer"
           }
         }
       }
@@ -2907,6 +3017,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Eleições"
+          }
+        }
+      }
+    },
+    "Elections, parties and how Congress works" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eleições, partidos e como o Congresso funciona"
           }
         }
       }
@@ -3537,6 +3657,16 @@
         }
       }
     },
+    "Fiscal stays neutral: topics in the order the data comes." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Fiscal fica neutro: temas na ordem em que os dados chegam."
+          }
+        }
+      }
+    },
     "Fiscal tries again in a while." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3658,6 +3788,16 @@
         }
       }
     },
+    "For a moment, see what stands out in the neutral order or for those who support someone else. Nothing is saved and the numbers do not change." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por um momento, veja o que se destaca na ordem neutra ou para quem apoia outra pessoa. Nada é salvo e os números não mudam."
+          }
+        }
+      }
+    },
     "Forest" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3676,6 +3816,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mata e ouro"
+          }
+        }
+      }
+    },
+    "Forests, climate, water and animals" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Florestas, clima, água e animais"
           }
         }
       }
@@ -3977,6 +4127,16 @@
         }
       }
     },
+    "Honors, commemorative dates and names" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Homenagens, datas comemorativas e nomes"
+          }
+        }
+      }
+    },
     "House" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4010,6 +4170,16 @@
         }
       }
     },
+    "Housing, sanitation and urban life" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moradia, saneamento e vida na cidade"
+          }
+        }
+      }
+    },
     "How Did My Representatives Vote?" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4017,6 +4187,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Como votaram meus representantes?"
+          }
+        }
+      }
+    },
+    "How the people you support voted" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como quem você apoia votou"
           }
         }
       }
@@ -4048,6 +4228,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Como o peso põe em ordem o que acontece"
+          }
+        }
+      }
+    },
+    "Human rights, minorities and equality" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Direitos humanos, minorias e igualdade"
           }
         }
       }
@@ -4260,6 +4450,16 @@
         }
       }
     },
+    "In the order the data comes. Put first what matters to you, from 3 to 5 topics." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na ordem em que os dados chegam. Ponha primeiro o que importa para você, de 3 a 5 temas."
+          }
+        }
+      }
+    },
     "In Your Topics" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4311,6 +4511,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Internet e tecnologia"
+          }
+        }
+      }
+    },
+    "Internet, data, science and innovation" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Internet, dados, ciência e inovação"
           }
         }
       }
@@ -4377,6 +4587,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Onça-pintada"
+          }
+        }
+      }
+    },
+    "Jobs, income, prices and companies" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Emprego, renda, preços e empresas"
           }
         }
       }
@@ -4931,6 +5151,16 @@
         }
       }
     },
+    "Mirrored pairs side by side. Never taken from the color of a party." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pares espelhados lado a lado. Nunca vêm da cor de um partido."
+          }
+        }
+      }
+    },
     "Mirrored pairs. Any palette fits any side." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -5180,6 +5410,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nomes em ordem alfabética. Busque por nome, partido ou UF."
+          }
+        }
+      }
+    },
+    "Neutral order" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordem neutra"
+          }
+        }
+      }
+    },
+    "Neutral order for a moment. Nothing is saved." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordem neutra por um momento. Nada é salvo."
+          }
+        }
+      }
+    },
+    "Neutral, without supporting anyone" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neutro, sem apoiar ninguém"
+          }
+        }
+      }
+    },
+    "Neutral: topics in the order the data comes." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neutro: temas na ordem em que os dados chegam."
           }
         }
       }
@@ -5434,6 +5704,16 @@
         }
       }
     },
+    "No one with that name" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ninguém com esse nome"
+          }
+        }
+      }
+    },
     "No party guidance was published for this vote." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -5474,6 +5754,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nenhuma nota neste ano"
+          }
+        }
+      }
+    },
+    "No recent actions of the people you support yet. Choose from 3 to 5 topics." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ainda não há ações recentes de quem você apoia. Escolha de 3 a 5 temas."
           }
         }
       }
@@ -5738,6 +6028,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nada por aqui ainda"
+          }
+        }
+      }
+    },
+    "Nothing is hidden: the others stay one tap away." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nada fica escondido: os outros estão a um toque."
           }
         }
       }
@@ -6089,6 +6389,16 @@
         }
       }
     },
+    "Only who you support and who was on this roll call. Who you support stays on this iPhone." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Só quem você apoia e estava nesta votação. Quem você apoia fica neste iPhone."
+          }
+        }
+      }
+    },
     "Open Fiscal and choose your state in Mine." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -6280,6 +6590,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Em ordem de peso, de 0 a 100: repercussão mais impacto, com a mesma regra para todo político."
+          }
+        }
+      }
+    },
+    "Ordered by what the people you support do the most. Reorder or remove as you like." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na ordem do que quem você apoia mais faz. Reordene ou tire como quiser."
           }
         }
       }
@@ -6822,6 +7142,16 @@
         }
       }
     },
+    "Police, crime and prisons" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Polícia, crime e presídios"
+          }
+        }
+      }
+    },
     "Politician" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -7347,6 +7677,16 @@
         }
       }
     },
+    "Reading what they did" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lendo o que eles fizeram"
+          }
+        }
+      }
+    },
     "Receipt sizes" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -7501,6 +7841,26 @@
         }
       }
     },
+    "Remove" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remover"
+          }
+        }
+      }
+    },
+    "Remove a topic to add another. Up to 5." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tire um tema para adicionar outro. Até 5."
+          }
+        }
+      }
+    },
     "Remove the party filter %@" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -7519,6 +7879,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tira esta pessoa da comparação"
+          }
+        }
+      }
+    },
+    "Removes this person from who you support" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tira esta pessoa de quem você apoia"
           }
         }
       }
@@ -7695,6 +8065,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rio Grande do Sul"
+          }
+        }
+      }
+    },
+    "Roads, traffic and public transport" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estradas, trânsito e transporte público"
           }
         }
       }
@@ -7926,6 +8306,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Guardadas só neste aparelho."
+          }
+        }
+      }
+    },
+    "Schools, universities and teachers" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolas, universidades e professores"
           }
         }
       }
@@ -8905,6 +9295,16 @@
         }
       }
     },
+    "Suggested to start" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sugerida para começar"
+          }
+        }
+      }
+    },
     "Summary in plain words, written from the official text." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -8945,6 +9345,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tribunal Superior Eleitoral"
+          }
+        }
+      }
+    },
+    "Supporting is not following: in Mine you follow anyone. The people you support are also followed, and their topics and actions come first." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apoiar não é seguir: em Meus você segue qualquer pessoa. Quem você apoia também passa a ser seguido, e os temas e as ações dessas pessoas vêm primeiro."
+          }
+        }
+      }
+    },
+    "SUS, hospitals, medicines and vaccines" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SUS, hospitais, remédios e vacinas"
           }
         }
       }
@@ -9077,6 +9497,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Impostos arrecadados por estado"
+          }
+        }
+      }
+    },
+    "Taxes, the budget and how public money is spent" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impostos, orçamento e como o dinheiro público é gasto"
           }
         }
       }
@@ -9899,6 +10329,16 @@
         }
       }
     },
+    "These topics come first in Today, Votes and Money, in this order. Drag, or touch and hold to move or remove. Nothing is hidden." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estes temas vêm primeiro em Hoje, Votações e Dinheiro, nesta ordem. Arraste, ou toque e segure para mover ou tirar. Nada fica escondido."
+          }
+        }
+      }
+    },
     "These topics come first in Today, Votes and Money, in this order. Touch and hold to reorder. Nothing is hidden." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -9917,6 +10357,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Esses temas aparecem primeiro em Hoje, Votações e Dinheiro. Nada fica escondido."
+          }
+        }
+      }
+    },
+    "They did not all vote the same way" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nem todos votaram igual"
           }
         }
       }
@@ -10119,6 +10569,16 @@
         }
       }
     },
+    "Topics in the order the data comes, no one first." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temas na ordem em que os dados chegam, ninguém na frente."
+          }
+        }
+      }
+    },
     "Total" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -10305,6 +10765,16 @@
         }
       }
     },
+    "Up to 5 politicians, from city councilor to president. Fiscal puts first what they do. The facts are the same for everyone." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Até 5 políticos, do vereador ao presidente. O Fiscal mostra primeiro o que eles fazem. Os fatos são os mesmos para todo mundo."
+          }
+        }
+      }
+    },
     "Update" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -10487,6 +10957,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vice-presidente"
+          }
+        }
+      }
+    },
+    "Violence against women, work and care" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Violência contra a mulher, trabalho e cuidado"
           }
         }
       }
@@ -10907,6 +11387,16 @@
         }
       }
     },
+    "What stands out for those who support someone else. Nothing is saved." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que se destaca para quem apoia outra pessoa. Nada é salvo."
+          }
+        }
+      }
+    },
     "What the Sources Publish" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -11080,6 +11570,16 @@
         }
       }
     },
+    "Who do you support?" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem você apoia?"
+          }
+        }
+      }
+    },
     "Who makes it, credits and contact" : {
       "localizations" : {
         "pt-BR" : {
@@ -11134,6 +11634,16 @@
         }
       }
     },
+    "Who supports %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem apoia %@"
+          }
+        }
+      }
+    },
     "Who was elected appears in each profile's history, with the votes." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -11162,6 +11672,56 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quem você segue sincroniza só pela sua própria conta do iCloud."
+          }
+        }
+      }
+    },
+    "Who you support" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem você apoia"
+          }
+        }
+      }
+    },
+    "Who you support never goes to a server, a log or a share card." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem você apoia nunca vai para um servidor, um log ou um card de compartilhar."
+          }
+        }
+      }
+    },
+    "Who you support stays only on this iPhone. It does not go to any server, it is not in iCloud, backups, notifications or shared images, and Fiscal does not know who it is." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem você apoia fica só neste iPhone. Não vai para nenhum servidor, não entra no iCloud, em backup, em notificação nem em imagem compartilhada, e o Fiscal não sabe quem é."
+          }
+        }
+      }
+    },
+    "Who you support, your topics and your look leave this iPhone for good. Then Fiscal asks for them again." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem você apoia, seus temas e seu visual saem deste iPhone de vez. Depois o Fiscal pergunta de novo."
+          }
+        }
+      }
+    },
+    "Who you support, your topics and your look stay on this device, outside iCloud and backups." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem você apoia, seus temas e seu visual ficam neste aparelho, fora do iCloud e do backup."
           }
         }
       }
@@ -11352,6 +11912,26 @@
         }
       }
     },
+    "You support" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você apoia"
+          }
+        }
+      }
+    },
+    "You support: %@ of %lld" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você apoia: %@ de %lld"
+          }
+        }
+      }
+    },
     "Your choice stays only on this iPhone. It does not go to any server, it is not in iCloud or in backups, it is not shared and Fiscal does not know what it is." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -11424,6 +12004,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Seu iCloud, sua escolha"
+          }
+        }
+      }
+    },
+    "Your lens" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua lente"
           }
         }
       }
