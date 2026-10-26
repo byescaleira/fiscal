@@ -65,6 +65,15 @@ public struct WidgetFeed: Sendable {
         }
     }
 
+    public func highlights() async -> WidgetState<HighlightDeck> {
+        do {
+            return HighlightDeck(list: try await service.highlights()).map(WidgetState.ready)
+                ?? .empty
+        } catch {
+            return Self.failure(error)
+        }
+    }
+
     static func failure<Value>(_ error: any Error) -> WidgetState<Value> {
         .unavailable(offline: (error as? PublicDataError) == .offline)
     }
@@ -89,6 +98,10 @@ public enum WidgetSchedule {
 
     public static func nextRepresentativesRefresh(after now: Date) -> Date {
         now.addingTimeInterval(12 * 3_600)
+    }
+
+    public static func nextHighlightsRefresh(after now: Date) -> Date {
+        now.addingTimeInterval(30 * 60)
     }
 
     public static func retry(after now: Date) -> Date {

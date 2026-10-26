@@ -13,6 +13,7 @@ services:
       POLL_INTERVAL: ${POLL_INTERVAL:-20s}
       SIMULATE: ${SIMULATE:-}
       ADMIN_TOKEN: ${ADMIN_TOKEN:-}
+      HIGHLIGHT_ALERTS: ${HIGHLIGHT_ALERTS:-1}
       APNS_DISABLED: ${APNS_DISABLED:-}
       TSE_BASE_URL: ${TSE_BASE_URL:-https://resultados.tse.jus.br/oficial/ele2026}
     volumes:

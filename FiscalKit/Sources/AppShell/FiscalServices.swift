@@ -46,6 +46,13 @@ public final class FiscalServices {
         return LiveResultsClient.fromBundle()
     }
 
+    func highlightAlertService() -> (any HighlightAlertService)? {
+        #if DEBUG
+            if ShowcaseLiveResults.fromLaunchArguments() != nil { return nil }
+        #endif
+        return LiveResultsClient.fromBundle()
+    }
+
     func todayFollows(_ repository: any FollowRepository) -> any FollowRepository {
         #if DEBUG
             if let showcase = ShowcaseFollowRepository.fromLaunchArguments() { return showcase }

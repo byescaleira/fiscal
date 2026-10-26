@@ -14,6 +14,8 @@ const (
 	HighlightMoney     = "money"
 	HighlightIndicator = "indicator"
 	HighlightLimit     = 4
+	AlertMinWeight     = 85
+	AlertMaxAgeHours   = 24
 )
 
 type Highlight struct {
@@ -70,6 +72,11 @@ type MethodDecay struct {
 	Text         string `json:"text"`
 }
 
+type MethodAlert struct {
+	MinWeight   int `json:"minWeight"`
+	MaxAgeHours int `json:"maxAgeHours"`
+}
+
 type WeightMethod struct {
 	Version      int            `json:"version"`
 	Summary      string         `json:"summary"`
@@ -87,6 +94,7 @@ type WeightMethod struct {
 	Rules        []string       `json:"rules"`
 	Limits       []string       `json:"limits"`
 	Sources      []Source       `json:"sources"`
+	Alert        MethodAlert    `json:"alert"`
 }
 
 func Method(sources []Source) WeightMethod {
@@ -149,6 +157,7 @@ func Method(sources []Source) WeightMethod {
 			"O título é sempre o texto oficial (a ementa), sem resumo opinativo.",
 			"O peso ordena e destaca; ele não qualifica a medida nem o político.",
 			"Guardamos só contagens; nenhum texto de notícia ou post é copiado.",
+			fmt.Sprintf("Na tela de bloqueio (Live Activity) só entra destaque com peso %d ou mais, de um fato de até %d horas depois do fim do dia dele (horário de Brasília), uma vez por aparelho e por até 8 horas. Dá para desligar em Ajustes.", AlertMinWeight, AlertMaxAgeHours),
 		},
 		Limits: []string{
 			"A repercussão mede quanto se fala, não se o que se fala é verdade nem o tom.",
@@ -157,6 +166,7 @@ func Method(sources []Source) WeightMethod {
 			"Homônimos podem somar notícias de outra pessoa com o mesmo nome.",
 		},
 		Sources: sources,
+		Alert:   MethodAlert{MinWeight: AlertMinWeight, MaxAgeHours: AlertMaxAgeHours},
 	}
 }
 

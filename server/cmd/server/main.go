@@ -21,6 +21,7 @@ import (
 	"time"
 
 	"liveresults/internal/apns"
+	"liveresults/internal/highlightalert"
 	"liveresults/internal/httpapi"
 	"liveresults/internal/live"
 	"liveresults/internal/store"
@@ -33,6 +34,11 @@ const (
 	registrationTTL  = 12 * time.Hour
 	topicSuffix      = ".push-type.liveactivity"
 	simDuration      = 10 * time.Minute
+	maxHighlightRegs = 200000
+	maxHighlightIP   = 100
+	highlightTTL     = 30 * 24 * time.Hour
+	highlightRegFile = "highlight-registrations.json"
+	highlightCheck   = time.Minute
 )
 
 type config struct {
@@ -49,6 +55,7 @@ type config struct {
 	teamID       string
 	topic        string
 	adminToken   string
+	alerts       bool
 }
 
 func loadConfig(getenv func(string) string) (config, error) {
@@ -66,6 +73,14 @@ func loadConfig(getenv func(string) string) (config, error) {
 		topic:        strings.TrimSpace(getenv("APNS_TOPIC")),
 		adminToken:   getenv("ADMIN_TOKEN"),
 		poll:         20 * time.Second,
+		alerts:       true,
+	}
+	switch v := strings.TrimSpace(getenv("HIGHLIGHT_ALERTS")); v {
+	case "", "1":
+	case "0":
+		c.alerts = false
+	default:
+		return c, fmt.Errorf("HIGHLIGHT_ALERTS %q is invalid (use 1 or 0)", v)
 	}
 	if c.host == "" {
 		c.host = "127.0.0.1"
@@ -208,7 +223,28 @@ func main() {
 		log.Fatalf("publish: %v", err)
 	}
 
-	handler := httpapi.New(httpapi.Config{Races: svc, Registrations: regs, AdminToken: cfg.adminToken})
+	var highlightRegs *store.Store
+	var watcher *highlightalert.Watcher
+	if cfg.alerts {
+		highlightRegs, err = store.Open(cfg.dataDir, store.Options{FileName: highlightRegFile, Max: maxHighlightRegs, PerSource: maxHighlightIP, TTL: highlightTTL})
+		if err != nil {
+			log.Fatalf("highlight store: %v", err)
+		}
+		watcher = highlightalert.New(highlightalert.Options{
+			Path:     filepath.Join(cfg.publicDir, "v1", "highlights.json"),
+			SentPath: filepath.Join(cfg.dataDir, highlightalert.SentFile),
+			Sender:   sender,
+			Registry: highlightRegs,
+		})
+		if err := watcher.Load(); err != nil {
+			log.Fatalf("highlight alerts: %v", err)
+		}
+	}
+	apiConfig := httpapi.Config{Races: svc, Registrations: regs, AdminToken: cfg.adminToken}
+	if highlightRegs != nil {
+		apiConfig.Highlights = highlightRegs
+	}
+	handler := httpapi.New(apiConfig)
 	address := net.JoinHostPort(cfg.host, cfg.port)
 	httpServer := &http.Server{
 		Addr:              address,
@@ -233,6 +269,17 @@ func main() {
 		defer workers.Done()
 		regs.Run(ctx, 2*time.Second)
 	}()
+	if watcher != nil {
+		workers.Add(2)
+		go func() {
+			defer workers.Done()
+			highlightRegs.Run(ctx, 2*time.Second)
+		}()
+		go func() {
+			defer workers.Done()
+			watcher.Run(ctx, highlightCheck)
+		}()
+	}
 
 	go func() {
 		if err := httpServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
@@ -247,7 +294,7 @@ func main() {
 	if cfg.apnsDisabled {
 		apnsMode = "disabled"
 	}
-	log.Printf("listening on %s source=%s apns=%s poll=%s registrations=%d admin=%v publish=%v", address, mode, apnsMode, cfg.poll, regs.Count(), cfg.adminToken != "", cfg.publishDir() != "")
+	log.Printf("listening on %s source=%s apns=%s poll=%s registrations=%d admin=%v publish=%v highlightAlerts=%v", address, mode, apnsMode, cfg.poll, regs.Count(), cfg.adminToken != "", cfg.publishDir() != "", cfg.alerts)
 
 	<-ctx.Done()
 	log.Printf("shutting down")
@@ -259,6 +306,11 @@ func main() {
 	workers.Wait()
 	if err := regs.Flush(); err != nil {
 		log.Printf("store flush: %v", err)
+	}
+	if highlightRegs != nil {
+		if err := highlightRegs.Flush(); err != nil {
+			log.Printf("highlight store flush: %v", err)
+		}
 	}
 }
 

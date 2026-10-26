@@ -24,6 +24,7 @@ Go 1.26.10 com a biblioteca padrão; a única dependência externa é `modernc.o
 | `APNS_TOPIC` | vazio | Tópico completo, com o sufixo: `com.byescaleira.fiscal.push-type.liveactivity` |
 | `APNS_DISABLED` | vazio | `1` sobe sem APNs e só loga o resumo dos pushes (sem token) |
 | `ADMIN_TOKEN` | vazio | Liga `POST /api/v1/admin/push-test` (32+ caracteres); vazio, a rota responde 404. Gere na VPS com `openssl rand -hex 32` e guarde só no `.env` |
+| `HIGHLIGHT_ALERTS` | `1` | `0` desliga a Live Activity do destaque: sem as rotas `/api/v1/highlight-activities` (404) e sem ler `PUBLIC_DIR/v1/highlights.json` |
 
 Sem `APNS_KEY_FILE`, `APNS_KEY_ID`, `APNS_TEAM_ID` e `APNS_TOPIC` o servidor não sobe, a menos que `APNS_DISABLED=1`. A chave é carregada e um JWT é assinado no boot.
 
@@ -36,6 +37,8 @@ Sem `APNS_KEY_FILE`, `APNS_KEY_ID`, `APNS_TEAM_ID` e `APNS_TOPIC` o servidor nã
 | `GET /api/v1/races/{id}` | `Race`; `404 race_not_found`; `503 not_ready` |
 | `POST /api/v1/live-activities` | `{"raceId","pushToken","environment"}` → `204`; `422 invalid_request`, `413 body_too_large`, `409 token_bound_to_other_race`, `429 too_many_registrations`, `429 rate_limited`, `507 capacity_reached` |
 | `DELETE /api/v1/live-activities` | corpo `{"pushToken":"<hex>"}` (até 4 KiB) → `204` sempre que o corpo for válido, exista ou não o registro; `422 invalid_request`, `413 body_too_large`, `429 rate_limited` |
+| `POST /api/v1/highlight-activities` | `{"pushToken","environment"}` (token de push-to-start da `HighlightActivityAttributes`) → `204`; `422 invalid_request`, `413 body_too_large`, `409 token_bound_to_other_environment`, `429 too_many_registrations`, `429 rate_limited`, `507 capacity_reached` |
+| `DELETE /api/v1/highlight-activities` | corpo `{"pushToken":"<hex>"}` → `204` sempre que o corpo for válido; `422 invalid_request`, `413 body_too_large`, `429 rate_limited` |
 | `POST /api/v1/admin/push-test` | `Authorization: Bearer $ADMIN_TOKEN`, `{"raceId"}` → `{"registrations","sent","failed","removed","event"}` |
 
 O token vai no corpo do `DELETE`, nunca na URL: o log do Caddy grava a URI inteira. A rota antiga `DELETE /api/v1/live-activities/{pushToken}` não existe mais (responde `404 not_found`, e o log do Go continua cortando o token em 6 caracteres).
@@ -46,6 +49,10 @@ Registros:
 - Cada registro guarda `createdAt` e vale 12 h. Registrar de novo o mesmo token renova o prazo. Registros vencidos são ignorados no envio e removidos na varredura que roda junto do flush, a cada 2 s.
 - Um token já registrado não troca de `raceId` nem de `environment`: o pedido diferente recebe `409 token_bound_to_other_race` e o original fica.
 - No máximo 20 registros vivos por IP de origem (IPv6 agrupado por /64), `429 too_many_registrations` acima disso. O IP só é guardado como SHA-256 truncado com um sal aleatório gerado no boot, em memória; `registrations.json` não leva IP nem hash, e ao reiniciar o teto recomeça.
+
+Destaque na tela de bloqueio (regra em `docs/changes/app-1.0/weight.md`):
+- Os tokens de push-to-start ficam em `DATA_DIR/highlight-registrations.json` (sem IP), valem 30 dias e são renovados a cada abertura do app; até 200 000 registros e 100 por IP.
+- A cada minuto o servidor confere `PUBLIC_DIR/v1/highlights.json` (gravado pela carga) e só relê quando data ou tamanho mudam. O primeiro item com peso ≥ 85, de fato até 24 h depois do fim do dia dele (Brasília), e ainda não enviado vira um push-to-start (`event: start`, prioridade 10) para todos os tokens; o id vai para `DATA_DIR/highlight-alerts.json` (14 dias). Sem nenhum token registrado, nada é marcado como enviado.
 
 Rate limit por IP: 120 GET e 120 POST/DELETE por minuto (CGNAT), `429 rate_limited` acima. IPv6 conta por /64. `X-Forwarded-For` (último valor) só é aceito quando a conexão vem de loopback ou de rede privada (gateway do Docker, `10/8`, `172.16/12`, `192.168/16`, `fc00::/7`); de qualquer outro endereço vale o `RemoteAddr`. Quando o mapa de buckets lota (100 000), o mais antigo é descartado.
 

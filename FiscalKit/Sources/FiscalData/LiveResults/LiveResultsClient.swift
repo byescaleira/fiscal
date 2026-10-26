@@ -1,13 +1,18 @@
 import FiscalDomain
 import Foundation
 
-public struct LiveResultsClient: LiveResultsService {
+public struct LiveResultsClient: LiveResultsService, HighlightAlertService {
     private struct Removal: Encodable {
         let pushToken: String
     }
 
     private struct Registration: Encodable {
         let raceId: String
+        let pushToken: String
+        let environment: PushEnvironment
+    }
+
+    private struct HighlightRegistration: Encodable {
         let pushToken: String
         let environment: PushEnvironment
     }
@@ -54,11 +59,28 @@ public struct LiveResultsClient: LiveResultsService {
     }
 
     public func unfollow(pushToken: String) async throws {
-        var request = URLRequest(url: baseURL.appending(path: "v1/live-activities"))
-        request.httpMethod = "DELETE"
+        try await send("DELETE", path: "v1/live-activities", body: Removal(pushToken: pushToken))
+    }
+
+    public func registerHighlights(pushToken: String, environment: PushEnvironment)
+        async throws
+    {
+        try await send(
+            "POST", path: "v1/highlight-activities",
+            body: HighlightRegistration(pushToken: pushToken, environment: environment))
+    }
+
+    public func unregisterHighlights(pushToken: String) async throws {
+        try await send(
+            "DELETE", path: "v1/highlight-activities", body: Removal(pushToken: pushToken))
+    }
+
+    private func send(_ method: String, path: String, body: some Encodable) async throws {
+        var request = URLRequest(url: baseURL.appending(path: path))
+        request.httpMethod = method
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.timeoutInterval = 15
-        request.httpBody = try JSONEncoder().encode(Removal(pushToken: pushToken))
+        request.httpBody = try JSONEncoder().encode(body)
         let (_, response) = try await session.data(for: request)
         try Self.check(response)
     }

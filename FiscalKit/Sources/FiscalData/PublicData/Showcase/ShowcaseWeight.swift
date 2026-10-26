@@ -176,7 +176,7 @@
                     "O peso ordena e destaca; ele não qualifica a medida nem o político.",
                 ],
                 limits: ["Neste modo de teste, a repercussão não é medida."],
-                sources: sources)
+                sources: sources, alert: .standard)
         }
     }
 #endif
