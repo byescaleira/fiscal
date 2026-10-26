@@ -127,7 +127,7 @@ private struct MineHighlightCard: View {
             }
             VStack(alignment: .leading, spacing: .spaceXS) {
                 HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
-                    Text(verbatim: MineRelevance(weight: highlight.weight).title)
+                    Text(verbatim: Relevance(weight: highlight.weight).title)
                         .font(.subheadline.weight(.heavy))
                     Spacer(minLength: .spaceS)
                     Text("weight \(highlight.weight) of 100")

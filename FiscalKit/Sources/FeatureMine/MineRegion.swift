@@ -188,19 +188,3 @@ public struct MineActivity: Hashable, Sendable {
 
     public var isEmpty: Bool { highlights.isEmpty && votes.isEmpty }
 }
-
-public enum MineRelevance: Sendable {
-    case high, medium, low
-
-    public init(weight: Int) {
-        self = weight >= 70 ? .high : weight >= 40 ? .medium : .low
-    }
-
-    public var title: String {
-        switch self {
-        case .high: String(appLocalized: "High relevance")
-        case .medium: String(appLocalized: "Medium relevance")
-        case .low: String(appLocalized: "Low relevance")
-        }
-    }
-}

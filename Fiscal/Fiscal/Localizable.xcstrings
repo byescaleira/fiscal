@@ -254,6 +254,16 @@
         }
       }
     },
+    "%@ · repercussion + impact" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · repercussão + impacto"
+          }
+        }
+      }
+    },
     "%@ · until %@" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -293,6 +303,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@, %2$@, número %3$@, %4$@, %5$@"
+          }
+        }
+      }
+    },
+    "%@, %@. %@. %@. %@, weight %lld of 100." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %2$@. %3$@. %4$@. %5$@, peso %6$lld de 100."
           }
         }
       }
@@ -351,6 +371,16 @@
         }
       }
     },
+    "%@, weight %lld of 100." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, peso %2$lld de 100."
+          }
+        }
+      }
+    },
     "%@. %@. %@. Weight %lld of 100, repercussion %lld, impact %lld." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -369,6 +399,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@. %2$@. Peso %3$lld de 100, repercussão %4$lld, impacto %5$lld."
+          }
+        }
+      }
+    },
+    "%@/month" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@/mês"
           }
         }
       }
@@ -412,6 +452,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@: apuração encerrada"
+          }
+        }
+      }
+    },
+    "%lld elected, awaiting inauguration" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld eleitos, aguardando posse"
           }
         }
       }
@@ -460,6 +510,16 @@
         }
       }
     },
+    "%lld of %lld people" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld de %2$lld pessoas"
+          }
+        }
+      }
+    },
     "%lld of %lld people chosen" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -500,6 +560,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld outros votos"
+          }
+        }
+      }
+    },
+    "%lld people" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld pessoas"
           }
         }
       }
@@ -744,6 +814,16 @@
         }
       }
     },
+    "Above the third quartile (p75), between the first and third quartile, or below the first quartile (p25) of the house, with the direction of each number." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acima do terceiro quartil (p75), entre o primeiro e o terceiro quartil ou abaixo do primeiro quartil (p25) da casa, com a direção de cada número."
+          }
+        }
+      }
+    },
     "Absent" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -751,6 +831,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ausente"
+          }
+        }
+      }
+    },
+    "absent" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ausente"
+          }
+        }
+      }
+    },
+    "absent (plural)" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ausentes"
           }
         }
       }
@@ -777,6 +877,16 @@
         }
       }
     },
+    "abstention" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "abstenção"
+          }
+        }
+      }
+    },
     "Abstention and other" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -784,6 +894,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abstenção e outros"
+          }
+        }
+      }
+    },
+    "abstentions" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "abstenções"
           }
         }
       }
@@ -960,6 +1080,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Todos votaram %@"
+          }
+        }
+      }
+    },
+    "All Parties" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos os partidos"
           }
         }
       }
@@ -1194,6 +1324,16 @@
         }
       }
     },
+    "Around average" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na média"
+          }
+        }
+      }
+    },
     "Art" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1282,6 +1422,16 @@
         }
       }
     },
+    "Assembly median: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mediana da Assembleia: %@"
+          }
+        }
+      }
+    },
     "Attendance" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1300,6 +1450,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "A presença conta em quantas sessões com chamada a pessoa esteve, não como ela votou."
+          }
+        }
+      }
+    },
+    "Attendance doesn't measure committee work. Spending below average doesn't mean spending well. Bills and votes are never called good or bad: that is opinion." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presença não mede o trabalho em comissões. Gastar abaixo da média não quer dizer gastar bem. Projetos e votos nunca são chamados de bons ou ruins: isso é opinião."
           }
         }
       }
@@ -1355,6 +1515,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Média"
+          }
+        }
+      }
+    },
+    "Average band: %@ to %@, among %@ peers in %@." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faixa da média: de %1$@ a %2$@, entre %3$@ colegas em %4$@."
           }
         }
       }
@@ -1519,6 +1689,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ser aprovado aqui não quer dizer que já é lei: o texto ainda pode passar por outras votações ou pela sanção."
+          }
+        }
+      }
+    },
+    "Bench" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bancada"
+          }
+        }
+      }
+    },
+    "Better than average" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Melhor que a média"
           }
         }
       }
@@ -1952,6 +2142,16 @@
         }
       }
     },
+    "Chamber median: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mediana da Câmara: %@"
+          }
+        }
+      }
+    },
     "Chamber of Deputies" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2183,6 +2383,16 @@
         }
       }
     },
+    "City Council" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Câmara Municipal"
+          }
+        }
+      }
+    },
     "City Councilor" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2216,6 +2426,16 @@
         }
       }
     },
+    "City Hall" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prefeitura"
+          }
+        }
+      }
+    },
     "City in %@" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2234,6 +2454,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nome civil"
+          }
+        }
+      }
+    },
+    "Classification" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Classificação"
           }
         }
       }
@@ -2366,6 +2596,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Comparar"
+          }
+        }
+      }
+    },
+    "Composition by party" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Composição por partido"
           }
         }
       }
@@ -2585,6 +2825,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apurando"
+          }
+        }
+      }
+    },
+    "Counts only the representatives of this state. Who isn't in the roll call counts as absent." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conta só os representantes deste estado. Quem não aparece na lista de votação conta como ausente."
           }
         }
       }
@@ -2908,6 +3158,16 @@
         }
       }
     },
+    "Each badge compares the person with peers in the same office and house in the same year." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada selo compara a pessoa com os colegas do mesmo cargo e da mesma casa, no mesmo ano."
+          }
+        }
+      }
+    },
     "Each bar counts the latest votes that touched a topic, and one vote can count in more than one topic." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2996,6 +3256,16 @@
         }
       }
     },
+    "Each number of the term is compared with peers in the same office and house in the same year. The number and the house median always show next to it." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada número do mandato é comparado com o dos colegas do mesmo cargo e da mesma casa, no mesmo ano. O número e a mediana da casa aparecem sempre ao lado."
+          }
+        }
+      }
+    },
     "Each receipt opens the official document published by the house." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3058,6 +3328,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Economia e emprego"
+          }
+        }
+      }
+    },
+    "Edge" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Divisa"
           }
         }
       }
@@ -3458,6 +3738,16 @@
         }
       }
     },
+    "Explains how each number is compared with peers" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explica como cada número é comparado com o dos colegas"
+          }
+        }
+      }
+    },
     "Explains how repercussion and impact are calculated" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3645,6 +3935,16 @@
         }
       }
     },
+    "Federal Government" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Governo Federal"
+          }
+        }
+      }
+    },
     "Federal revenue" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3795,6 +4095,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Encontrar sua cidade"
+          }
+        }
+      }
+    },
+    "Find Your Place" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encontre seu lugar"
           }
         }
       }
@@ -4437,6 +4747,36 @@
         }
       }
     },
+    "High" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alta"
+          }
+        }
+      }
+    },
+    "High relevance" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alta relevância"
+          }
+        }
+      }
+    },
+    "Higher is better." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais alta é melhor."
+          }
+        }
+      }
+    },
     "Highest-weight highlights on the Lock Screen" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4621,6 +4961,26 @@
         }
       }
     },
+    "How your deputies voted" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como seus deputados votaram"
+          }
+        }
+      }
+    },
+    "How your senators voted" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como seus senadores votaram"
+          }
+        }
+      }
+    },
     "Human rights, minorities and equality" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4742,6 +5102,16 @@
         }
       }
     },
+    "In %@: %@ · %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em %1$@: %2$@ · %3$@"
+          }
+        }
+      }
+    },
     "In 12 months" : {
       "localizations" : {
         "pt-BR" : {
@@ -4770,6 +5140,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Em ordem alfabética."
+          }
+        }
+      }
+    },
+    "In alphabetical order. Nobody is ranked." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em ordem alfabética. Ninguém é ranqueado."
           }
         }
       }
@@ -4869,6 +5249,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Na ordem em que os dados chegam. Ponha primeiro o que importa para você, de 3 a 5 temas."
+          }
+        }
+      }
+    },
+    "In Your Region Now" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na sua região agora"
           }
         }
       }
@@ -5203,6 +5593,36 @@
         }
       }
     },
+    "Legislative Assembly" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assembleia Legislativa"
+          }
+        }
+      }
+    },
+    "Legislative Chamber" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Câmara Legislativa"
+          }
+        }
+      }
+    },
+    "Legislative Chamber median: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mediana da Câmara Legislativa: %@"
+          }
+        }
+      }
+    },
     "Lens" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -5232,6 +5652,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Menos"
+          }
+        }
+      }
+    },
+    "Less active than average" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menos ativo que a média"
           }
         }
       }
@@ -5390,6 +5820,36 @@
         }
       }
     },
+    "Low" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baixa"
+          }
+        }
+      }
+    },
+    "Low relevance" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baixa relevância"
+          }
+        }
+      }
+    },
+    "Lower is better, per month in office." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais baixa é melhor, por mês de mandato."
+          }
+        }
+      }
+    },
     "Made by one person in Brazil" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -5507,6 +5967,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mediana"
+          }
+        }
+      }
+    },
+    "Medium" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Média"
+          }
+        }
+      }
+    },
+    "Medium relevance" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Média relevância"
           }
         }
       }
@@ -5738,6 +6218,16 @@
         }
       }
     },
+    "More active than average" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais ativo que a média"
+          }
+        }
+      }
+    },
     "More in Mine: %lld" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -5844,6 +6334,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "MEUS REPRESENTANTES"
+          }
+        }
+      }
+    },
+    "Name" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nome"
           }
         }
       }
@@ -6024,6 +6524,16 @@
         }
       }
     },
+    "Next Term" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próximo mandato"
+          }
+        }
+      }
+    },
     "Next Year" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -6145,6 +6655,16 @@
         }
       }
     },
+    "No connection. Showing the last data received." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem conexão. Mostrando os últimos dados recebidos."
+          }
+        }
+      }
+    },
     "No connection. Showing the last numbers received." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -6163,6 +6683,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sem conexão. Mostrando o último resumo recebido."
+          }
+        }
+      }
+    },
+    "No direction: more proposals doesn't mean better proposals." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem direção: mais propostas não quer dizer propostas melhores."
+          }
+        }
+      }
+    },
+    "No direction: more speeches doesn't mean better work." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem direção: mais discursos não quer dizer atuação melhor."
           }
         }
       }
@@ -6207,6 +6747,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ainda sem lista para este lugar"
+          }
+        }
+      }
+    },
+    "No one matches these filters" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ninguém corresponde a esses filtros"
           }
         }
       }
@@ -6661,6 +7211,16 @@
         }
       }
     },
+    "Office allowance per month" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cota por mês"
+          }
+        }
+      }
+    },
     "Office allowance spending in %@" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -6874,6 +7434,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Licenciado(a)"
+          }
+        }
+      }
+    },
+    "On screen the weight shows as a level; the number stays in the detail. The level orders, it never says whether a measure is good or bad." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na tela, o peso aparece como faixa; o número fica no detalhe. A faixa ordena e nunca diz se a medida é boa ou ruim."
           }
         }
       }
@@ -7261,6 +7831,16 @@
         }
       }
     },
+    "other parties" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "outros partidos"
+          }
+        }
+      }
+    },
     "Other Races" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -7404,6 +7984,16 @@
         }
       }
     },
+    "Party" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partido"
+          }
+        }
+      }
+    },
     "Party %@" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -7477,6 +8067,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Salário"
+          }
+        }
+      }
+    },
+    "Peers without published data are left out of the count; a missing number never counts as zero. With fewer than 5 peers with data, the number gets no classification." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colegas sem dado publicado ficam fora da conta; número ausente nunca vira zero. Com menos de 5 colegas com dado, o número fica sem classificação."
           }
         }
       }
@@ -8470,6 +9070,26 @@
         }
       }
     },
+    "Relevance" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Relevância"
+          }
+        }
+      }
+    },
+    "Relevance orders what is happening; it never rates it." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A relevância ordena o que acontece; ela nunca avalia."
+          }
+        }
+      }
+    },
     "Remove" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -8998,6 +9618,16 @@
         }
       }
     },
+    "Seats" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cadeiras"
+          }
+        }
+      }
+    },
     "See Agenda" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -9016,6 +9646,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ver tudo"
+          }
+        }
+      }
+    },
+    "See all %lld people of %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver as %1$lld pessoas de %2$@"
+          }
+        }
+      }
+    },
+    "See All (%lld)" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver todos (%lld)"
+          }
+        }
+      }
+    },
+    "See All States and Cities" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver todos os estados e cidades"
           }
         }
       }
@@ -9081,6 +9741,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Senado"
+          }
+        }
+      }
+    },
+    "Senate median: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mediana do Senado: %@"
           }
         }
       }
@@ -9817,6 +10487,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Deputada estadual"
+          }
+        }
+      }
+    },
+    "State Government" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Governo do Estado"
           }
         }
       }
@@ -11383,6 +12063,16 @@
         }
       }
     },
+    "Touch the bar to see each party." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque na barra para ver cada partido."
+          }
+        }
+      }
+    },
     "Transport" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -12007,6 +12697,26 @@
         }
       }
     },
+    "weight %lld of 100" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "peso %lld de 100"
+          }
+        }
+      }
+    },
+    "Weight %lld of 100" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peso %lld de 100"
+          }
+        }
+      }
+    },
     "Weight %lld of 100 · repercussion + impact" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -12036,6 +12746,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Peso %1$lld de 100, repercussão %2$lld, impacto %3$lld."
+          }
+        }
+      }
+    },
+    "Weight %lld or more" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peso %lld ou mais"
+          }
+        }
+      }
+    },
+    "Weight %lld to %lld" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peso de %1$lld a %2$lld"
+          }
+        }
+      }
+    },
+    "Weight below %lld" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peso abaixo de %lld"
           }
         }
       }
@@ -12369,6 +13109,16 @@
         }
       }
     },
+    "Who Governs" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem governa"
+          }
+        }
+      }
+    },
     "Who makes it, credits and contact" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -12640,6 +13390,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Funciona como Imparcial. Nada mais é perguntado."
+          }
+        }
+      }
+    },
+    "Worse than average" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pior que a média"
           }
         }
       }

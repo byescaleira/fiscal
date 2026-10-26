@@ -127,7 +127,7 @@ extension MineModel {
 
     public func highlightAccessibility(_ highlight: Highlight) -> String {
         let person = highlight.person.map { "\($0.name), \($0.party)." }
-        let relevance = MineRelevance(weight: highlight.weight).title
+        let relevance = Relevance(weight: highlight.weight).title
         return [
             highlightKicker(highlight), person, highlight.title, highlight.subtitle,
             String(appLocalized: "\(relevance), weight \(highlight.weight) of 100."),

@@ -142,7 +142,7 @@ private struct MineSeatAction: View {
             HStack(spacing: .spaceXS) {
                 Image(systemName: "scalemass")
                     .accessibilityHidden(true)
-                Text(verbatim: MineRelevance(weight: item.weight).title)
+                Text(verbatim: Relevance(weight: item.weight).title)
                 if let estimate = item.coverage.uncertaintyShort {
                     Text(verbatim: "· \(estimate)")
                         .lineLimit(1)
