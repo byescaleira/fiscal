@@ -81,15 +81,7 @@ private struct OfflineDataHeader: View {
             Text("Up to \(offline.limitText)")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
-            Gauge(
-                value: Double(min(offline.summary.storedBytes, OfflinePackSummary.limitBytes)),
-                in: 0...Double(OfflinePackSummary.limitBytes)
-            ) {
-                EmptyView()
-            }
-            .gaugeStyle(.linearCapacity)
-            .tint(appTint)
-            .accessibilityHidden(true)
+            ProgressBar(value: offline.fillFraction, color: appTint)
             Group {
                 if let updated = offline.updatedText {
                     Text("Updated \(updated)")

@@ -71,7 +71,7 @@ struct OfflinePackTests {
         #expect(OfflinePackPlan.representatives(in: [place]) == ["governador", "senadora"])
     }
 
-    @Test func ordersPeopleBySupportThenFollowsThenRepresentativesWithALimit() {
+    @Test func ordersPeopleAlphabeticallyWithoutRevealingSupportThenRepresentativesWithALimit() {
         let request = OfflinePackRequest(
             followed: ["seguida", "apoiada", "../segredo", "Maiuscula"], supported: ["apoiada"])
         #expect(

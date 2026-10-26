@@ -35,7 +35,7 @@ enum OfflinePackPlan {
     }
 
     static func people(for request: OfflinePackRequest, representatives: [String]) -> [String] {
-        let ordered = request.supported + request.followed + representatives
+        let ordered = (request.followed + request.supported).sorted() + representatives
         return Array(unique(ordered.filter(isSlug)).prefix(peopleLimit))
     }
 

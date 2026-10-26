@@ -40,6 +40,12 @@ public final class OfflineDataModel {
 
     public var limitText: String { Self.bytes(OfflinePackSummary.limitBytes) }
 
+    public var fillFraction: Double {
+        let limit = Double(OfflinePackSummary.limitBytes)
+        guard limit > 0 else { return 0 }
+        return min(Double(summary.storedBytes), limit) / limit
+    }
+
     public var originalText: String { Self.bytes(summary.originalBytes) }
 
     public var updatedText: String? {

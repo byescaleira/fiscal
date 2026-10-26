@@ -49,14 +49,15 @@ public struct LiveResultsClient: LiveResultsService, HighlightAlertService {
 
     public func races() async throws -> [Race] {
         if let dataURL,
-            let races = try? await races(
-                at: dataURL.appending(path: PublicDataLayout.version).appending(path: "races.json"))
+            let list = try? await raceList(
+                at: dataURL.appending(path: PublicDataLayout.version).appending(path: "races.json")),
+            Self.isCurrent(list, now: Date())
         {
             if offline != nil { OfflineNotice.shared.markOnline() }
-            return races
+            return list.races
         }
         do {
-            return try await races(at: baseURL.appending(path: "v1/races"))
+            return try await raceList(at: baseURL.appending(path: "v1/races")).races
         } catch {
             guard let offline, let data = await offline.data(for: "races.json"),
                 let list = try? JSONDecoder().decode(RaceList.self, from: data)
@@ -66,13 +67,21 @@ public struct LiveResultsClient: LiveResultsService, HighlightAlertService {
         }
     }
 
-    private func races(at url: URL) async throws -> [Race] {
+    private func raceList(at url: URL) async throws -> RaceList {
         var request = URLRequest(url: url)
         request.cachePolicy = .reloadIgnoringLocalCacheData
         request.timeoutInterval = 15
         let (data, response) = try await session.data(for: request)
         try Self.check(response)
-        return try JSONDecoder().decode(RaceList.self, from: data).races
+        return try JSONDecoder().decode(RaceList.self, from: data)
+    }
+
+    static let liveFreshness: TimeInterval = 300
+
+    static func isCurrent(_ list: RaceList, now: Date) -> Bool {
+        guard list.races.contains(where: { !$0.final && $0.hasStarted }) else { return true }
+        guard let fetched = try? Date(list.fetchedAt, strategy: .iso8601) else { return false }
+        return now.timeIntervalSince(fetched) <= liveFreshness
     }
 
     public func follow(raceID: String, pushToken: String, environment: PushEnvironment)

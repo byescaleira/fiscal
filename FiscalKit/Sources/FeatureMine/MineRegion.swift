@@ -156,19 +156,16 @@ public struct MineVote: Identifiable, Hashable, Sendable {
         BallotChoice.allCases.compactMap { choice -> String? in
             let value = count(choice)
             guard value > 0 else { return nil }
-            return "\(PublicFormat.number(value)) \(Self.label(choice, count: value))"
+            return Self.label(choice, count: value)
         }
         .joined(separator: " · ")
     }
 
     static func label(_ choice: BallotChoice, count: Int) -> String {
         switch choice {
-        case .yes, .no: choice.title
-        case .abstain:
-            count == 1
-                ? String(appLocalized: "abstention") : String(appLocalized: "abstentions")
-        case .absent:
-            count == 1 ? String(appLocalized: "absent") : String(appLocalized: "absent (plural)")
+        case .yes, .no: "\(PublicFormat.number(count)) \(choice.title)"
+        case .abstain: String(appLocalized: "\(count) abstentions")
+        case .absent: String(appLocalized: "\(count) absent")
         }
     }
 }

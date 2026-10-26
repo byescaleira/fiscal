@@ -76,6 +76,30 @@ struct LiveResultsClientTests {
             json == ["raceId": "governador-df", "pushToken": "abc123", "environment": "production"])
     }
 
+    @Test func distrustsALiveCountThatStoppedUpdating() throws {
+        func list(final: Bool) throws -> RaceList {
+            let json = """
+                {"races":[{"id":"presidente-br","office":"president","uf":"br","round":2,
+                "sections":{"total":100,"counted":25,"percent":25.0},
+                "electorate":1000,"turnout":300,
+                "votes":{"valid":280,"blank":10,"null":10,"total":300},
+                "candidates":[
+                {"number":"22","name":"A","party":"PL","votes":150,"percent":53.5,"elected":false},
+                {"number":"13","name":"B","party":"PT","votes":130,"percent":46.5,"elected":false}],
+                "final":\(final),"sourceGeneratedAt":"2026-10-25T17:42:10-03:00"}],
+                "fetchedAt":"2026-10-25T20:42:15Z"}
+                """
+            return try JSONDecoder().decode(RaceList.self, from: Data(json.utf8))
+        }
+        let fetched = try Date("2026-10-25T20:42:15Z", strategy: .iso8601)
+        let live = try list(final: false)
+        #expect(LiveResultsClient.isCurrent(live, now: fetched.addingTimeInterval(60)))
+        #expect(!LiveResultsClient.isCurrent(live, now: fetched.addingTimeInterval(600)))
+        #expect(
+            LiveResultsClient.isCurrent(
+                try list(final: true), now: fetched.addingTimeInterval(86_400)))
+    }
+
     @Test func unregistersWithTheTokenInTheBody() async throws {
         let client = client()
         StubProtocol.status = 204

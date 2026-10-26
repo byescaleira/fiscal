@@ -676,6 +676,50 @@
         }
       }
     },
+    "%lld absent" : {
+      "localizations" : {
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ausente"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ausentes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld abstentions" : {
+      "localizations" : {
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld abstenção"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld abstenções"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld cards" : {
       "localizations" : {
         "pt-BR" : {
@@ -1175,26 +1219,6 @@
         }
       }
     },
-    "absent" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ausente"
-          }
-        }
-      }
-    },
-    "absent (plural)" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ausentes"
-          }
-        }
-      }
-    },
     "Abstained" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1227,16 +1251,6 @@
         }
       }
     },
-    "abstention" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "abstenção"
-          }
-        }
-      }
-    },
     "Abstention and other" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1244,16 +1258,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abstenção e outros"
-          }
-        }
-      }
-    },
-    "abstentions" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "abstenções"
           }
         }
       }
