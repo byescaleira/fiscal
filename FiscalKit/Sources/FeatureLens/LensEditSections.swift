@@ -3,50 +3,93 @@ import FiscalDesignSystem
 import FiscalDomain
 import SwiftUI
 
-struct LensStanceSection: View {
+struct LensSupportSection: View {
     @Environment(LensModel.self) private var lens
+    @Environment(\.appTint) private var tint
 
     var body: some View {
         Section {
-            LensEditRow(title: "Side", value: Text(verbatim: lens.stanceTitle)) {
-                lens.edit(.stance)
+            if lens.prefersNotToSay {
+                HStack(spacing: .spaceM) {
+                    SymbolBadge("hand.raised.fill", color: tint, size: .badgeL, style: .filled)
+                    VStack(alignment: .leading, spacing: .space2XS) {
+                        Text("Prefer not to say").font(.rowTitle)
+                        Text(verbatim: lens.supportSummary)
+                            .font(.rowDetail)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .accessibilityElement(children: .combine)
+            } else {
+                ForEach(lens.supportedCards) { card in
+                    RouteLink(.person(slug: card.slug)) {
+                        LensSupportedRow(card: card)
+                    }
+                }
             }
+            Button("Change Who You Support", systemImage: "person.2") { lens.edit(.support) }
         } header: {
-            Text("Your side").sectionTitle()
+            Text("Who you support").sectionTitle()
         } footer: {
-            Text("Changing the side keeps your topics and your look.")
+            Text(
+                "Supporting is not following: in Mine you follow anyone. The people you support are also followed, and their topics and actions come first."
+            )
         }
+    }
+}
+
+private struct LensSupportedRow: View {
+    let card: PersonCard
+
+    var body: some View {
+        HStack(spacing: .spaceM) {
+            PersonPortrait(slug: card.slug, name: card.name, party: card.party, size: .badgeL)
+            VStack(alignment: .leading, spacing: .spaceHairline) {
+                Text(verbatim: card.name).font(.rowTitle)
+                HStack(spacing: .spaceS) {
+                    PartyMark(card.party)
+                    Text(verbatim: card.officeTitle)
+                        .font(.rowDetail)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+            }
+        }
+        .accessibilityElement(children: .combine)
     }
 }
 
 struct LensOtherSection: View {
     @Environment(LensModel.self) private var lens
     @Environment(\.close) private var close
+    @Environment(\.appTint) private var tint
 
     var body: some View {
         Section {
-            LazyVGrid(
-                columns: [
-                    GridItem(.adaptive(minimum: .posterWidth / 2 + .badgeXL), spacing: .spaceS)
-                ],
-                spacing: .spaceS
-            ) {
-                ForEach(lens.otherStances) { other in
-                    Button {
-                        lens.preview(other)
-                        close()
-                    } label: {
-                        Label(
-                            other.title, systemImage: lens.isPreviewing(other) ? "eye.fill" : "eye"
-                        )
-                        .font(.subheadline.weight(.semibold))
-                        .frame(maxWidth: .infinity)
+            Button {
+                lens.previewNeutral()
+                close()
+            } label: {
+                HStack(spacing: .spaceM) {
+                    SymbolBadge("scale.3d", color: tint, size: .badgeL)
+                    VStack(alignment: .leading, spacing: .spaceHairline) {
+                        Text("Neutral order").font(.rowTitle).foregroundStyle(.primary)
+                        Text("Topics in the order the data comes, no one first.")
+                            .font(.rowDetail)
+                            .foregroundStyle(.secondary)
                     }
-                    .buttonStyle(.bordered)
-                    .accessibilityAddTraits(lens.isPreviewing(other) ? .isSelected : [])
+                    Spacer(minLength: .spaceS)
+                    Image(systemName: lens.isPreviewingNeutral ? "eye.fill" : "eye")
+                        .foregroundStyle(tint)
+                        .accessibilityHidden(true)
                 }
+                .contentShape(.rect)
             }
-            .padding(.vertical, .spaceXS)
+            .buttonStyle(.plain)
+            .accessibilityAddTraits(lens.isPreviewingNeutral ? .isSelected : [])
+            ForEach(lens.others) { card in
+                LensOtherRow(card: card)
+            }
             if lens.isPreviewing {
                 Button("Back to Mine", systemImage: "arrow.uturn.backward") { lens.endPreview() }
             }
@@ -55,6 +98,45 @@ struct LensOtherSection: View {
         } footer: {
             Text(verbatim: lens.otherLensFooter)
         }
+    }
+}
+
+private struct LensOtherRow: View {
+    @Environment(LensModel.self) private var lens
+    @Environment(\.close) private var close
+    @Environment(\.appTint) private var tint
+    let card: PersonCard
+
+    var body: some View {
+        Button {
+            Task {
+                await lens.preview(card)
+                close()
+            }
+        } label: {
+            HStack(spacing: .spaceM) {
+                PersonPortrait(slug: card.slug, name: card.name, party: card.party, size: .badgeL)
+                VStack(alignment: .leading, spacing: .spaceHairline) {
+                    Text("Who supports \(card.name)")
+                        .font(.rowTitle)
+                        .foregroundStyle(.primary)
+                    PartyMark(card.party)
+                }
+                Spacer(minLength: .spaceS)
+                if lens.loadingOther == card.slug {
+                    ProgressView()
+                } else {
+                    Image(systemName: lens.isPreviewing(card) ? "eye.fill" : "eye")
+                        .foregroundStyle(tint)
+                        .accessibilityHidden(true)
+                }
+            }
+            .contentShape(.rect)
+        }
+        .buttonStyle(.plain)
+        .disabled(lens.loadingOther != nil)
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(lens.isPreviewing(card) ? .isSelected : [])
     }
 }
 
@@ -72,28 +154,5 @@ struct LensPrivacySection: View {
                 "The lens is never sent in requests, logs, notifications, shared cards or Spotlight."
             )
         }
-    }
-}
-
-private struct LensEditRow: View {
-    @Environment(\.appTint) private var tint
-    let title: LocalizedStringKey
-    let value: Text
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: .spaceM) {
-                VStack(alignment: .leading, spacing: .space2XS) {
-                    Text(title).font(.subheadline).foregroundStyle(.secondary)
-                    value.font(.title2.weight(.bold)).foregroundStyle(.primary)
-                }
-                Spacer(minLength: .zero)
-                Text("Change").font(.subheadline.weight(.semibold)).foregroundStyle(tint)
-            }
-            .contentShape(.rect)
-        }
-        .buttonStyle(.plain)
-        .accessibilityElement(children: .combine)
     }
 }

@@ -14,11 +14,10 @@ struct LensLookStep: View {
                 message: Text(
                     "Colors and art for the app and your cards. Charts, scoreboards and politicians keep their own colors."
                 ))
-            LensLookPreview(
-                palette: setup.palette, theme: setup.draft.themes.first,
-                stance: setup.draft.stance)
+            LensLookPreview(palette: setup.palette, theme: setup.draft.themes.first)
             LensLookCard(
-                "Palette", detail: "Mirrored pairs side by side. Any palette fits any side."
+                "Palette",
+                detail: "Mirrored pairs side by side. Never taken from the color of a party."
             ) {
                 LensPaletteGrid(
                     swatches: setup.paletteGrid, selected: setup.palette,

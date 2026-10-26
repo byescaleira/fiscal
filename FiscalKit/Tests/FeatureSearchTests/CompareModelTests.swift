@@ -79,7 +79,7 @@ struct CompareModelTests {
         let last = try #require(plain.metrics.last?.id)
         let theme = String(last.dropFirst("theme-".count))
         try await repositories.lens.save(
-            Lens(themes: [try #require(Theme(rawValue: theme))], stance: .left))
+            Lens(themes: [try #require(Theme(rawValue: theme))], supported: ["lula"]))
         let adapted = CompareModel(
             slugs: ["tabata-amaral", "kim-kataguiri"], service: showcase,
             lens: repositories.lens)

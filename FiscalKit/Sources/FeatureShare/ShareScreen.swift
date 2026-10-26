@@ -94,8 +94,8 @@ private struct ShareArtPicker: View {
             HStack {
                 Text("Art").font(.title3.weight(.bold))
                 Spacer()
-                if let stance = model.badgeStance {
-                    LensBadge(stance)
+                if model.showsLensBadge {
+                    LensBadge()
                 }
             }
             HStack(spacing: .spaceS) {

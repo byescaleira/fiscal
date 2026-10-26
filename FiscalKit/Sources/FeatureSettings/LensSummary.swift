@@ -1,32 +1,32 @@
+import FeatureCore
 import FiscalDesignSystem
 import FiscalDomain
 import FiscalResource
 import Foundation
 
 struct LensSummary {
-    static let spectrum: [PoliticalStance] = [.left, .centerLeft, .center, .centerRight, .right]
-
-    let stance: PoliticalStance?
+    let isSet: Bool
+    let prefersNotToSay: Bool
+    let cards: [PersonCard]
     let palette: LensPaletteSwatch?
     let work: ArtWork?
     let themes: [Theme]
 
-    init(lens: Lens?, catalog: ArtCatalog?) {
-        stance = lens?.stance
+    init(lens: Lens?, catalog: ArtCatalog?, cards: [PersonCard] = []) {
+        isSet = lens?.hasChoice == true
+        prefersNotToSay = lens?.prefersNotToSay == true
+        self.cards = cards
         palette = LensPaletteSwatch.named(lens?.palette)
         themes = lens?.themes ?? []
         let collection = lens?.artCollection.flatMap { catalog?.collection(id: $0) }
         work = collection.flatMap { catalog?.leadWork(of: $0) }
     }
 
-    var isSet: Bool { stance != nil }
-
-    var stanceTitle: String {
-        stance?.effective.title ?? String(appLocalized: "No lens yet")
-    }
-
-    var isOnSpectrum: Bool {
-        stance.map { Self.spectrum.contains($0) } ?? false
+    var title: String {
+        if !cards.isEmpty { return SupportedPeople.names(cards) }
+        if prefersNotToSay { return String(appLocalized: "Prefer not to say") }
+        if isSet { return String(appLocalized: "Your lens") }
+        return String(appLocalized: "No lens yet")
     }
 
     var themesText: String? {

@@ -55,11 +55,9 @@ public final class SearchModel {
 
     public var isLensAdapted: Bool { !(lens?.themes.isEmpty ?? true) }
 
-    public var badgeStance: PoliticalStance? {
-        isLensAdapted ? lens?.stance ?? .preferNotToSay : nil
-    }
+    public var showsLensBadge: Bool { isLensAdapted }
 
-    public var comparesFirst: Bool { lens?.stance?.isImpartial ?? false }
+    public var comparesFirst: Bool { lens?.prefersNotToSay ?? false }
 
     public var themes: [Theme] {
         guard let lens, !lens.themes.isEmpty else { return Self.defaultThemes }

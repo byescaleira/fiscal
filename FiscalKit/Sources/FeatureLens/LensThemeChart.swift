@@ -149,7 +149,14 @@ struct LensThemeOrderRow: View {
                 .monospacedDigit()
                 .foregroundStyle(.secondary)
                 .frame(minWidth: .badgeS)
-            LensThemeChip(theme: theme)
+            SymbolBadge(theme.symbol, color: ChartPalette.color(at: index), style: .filled)
+            VStack(alignment: .leading, spacing: .space2XS) {
+                Text(verbatim: theme.title).font(.rowTitle)
+                Text(verbatim: theme.coverage)
+                    .font(.rowDetail)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
             Spacer(minLength: .zero)
             Image(systemName: "line.3.horizontal")
                 .foregroundStyle(.tertiary)
@@ -164,6 +171,9 @@ struct LensThemeOrderRow: View {
         .accessibilityAction(named: Text("Move Down")) {
             Task { await lens.moveTheme(theme, by: 1) }
         }
+        .accessibilityAction(named: Text("Remove")) {
+            Task { await lens.removeTheme(theme) }
+        }
         .contextMenu {
             Button("Move Up", systemImage: "arrow.up") {
                 Task { await lens.moveTheme(theme, by: -1) }
@@ -173,20 +183,10 @@ struct LensThemeOrderRow: View {
                 Task { await lens.moveTheme(theme, by: 1) }
             }
             .disabled(index == lens.themes.count - 1)
+            Button("Remove", systemImage: "minus.circle", role: .destructive) {
+                Task { await lens.removeTheme(theme) }
+            }
+            .disabled(lens.lens?.canRemoveTheme != true)
         }
-    }
-}
-
-struct LensThemeChip: View {
-    @Environment(\.appTint) private var tint
-    let theme: Theme
-
-    var body: some View {
-        Label(theme.title, systemImage: theme.symbol)
-            .font(.chipLabel)
-            .foregroundStyle(tint)
-            .padding(.horizontal, .spaceM)
-            .padding(.vertical, .spaceS)
-            .background(tint.opacity(.opacityTint), in: .capsule)
     }
 }

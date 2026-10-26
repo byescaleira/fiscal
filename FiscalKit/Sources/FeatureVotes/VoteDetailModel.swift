@@ -103,11 +103,24 @@ public final class VoteDetailModel {
         return lens?.ordered(vote.themes) ?? vote.themes
     }
 
-    public var lensStance: PoliticalStance? {
-        guard let lens, !lens.themes.isEmpty, themes.contains(where: lens.contains) else {
-            return nil
+    public var showsLensBadge: Bool {
+        guard let lens, !lens.themes.isEmpty else { return false }
+        return themes.contains(where: lens.contains)
+    }
+
+    public var supportedBallots: [VoteDetail.Ballot] {
+        guard let lens, !lens.supported.isEmpty else { return [] }
+        return (detail?.people ?? []).filter { lens.supports($0.slug) }
+            .sorted { lens.supportRank(of: $0.slug) < lens.supportRank(of: $1.slug) }
+    }
+
+    public var supportedHeadline: String? {
+        let choices = supportedBallots.map { BallotChoice(vote: $0.vote) }
+        guard choices.count > 1 else { return nil }
+        if let first = choices[0], choices.allSatisfy({ $0 == first }) {
+            return String(appLocalized: "All of them voted \(first.title)")
         }
-        return lens.stance ?? .preferNotToSay
+        return String(appLocalized: "They did not all vote the same way")
     }
 
     public func isLensTheme(_ theme: Theme) -> Bool { lens?.contains(theme) ?? false }

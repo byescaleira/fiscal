@@ -137,12 +137,14 @@ struct VoteDetailModelTests {
     }
 
     @Test func theLensOnlyMarksTheTopics() async {
-        let vote = await loaded(lens: Lens(themes: [.economy, .health, .security], stance: .left))
+        let vote = await loaded(
+            lens: Lens(themes: [.economy, .health, .security], supported: ["lula"]))
         #expect(vote.themes == [.economy, .taxes])
-        #expect(vote.lensStance == .left)
+        #expect(vote.showsLensBadge)
         #expect(vote.yesText == "412")
-        let other = await loaded(lens: Lens(themes: [.health, .security, .culture], stance: .left))
-        #expect(other.lensStance == nil)
+        let other = await loaded(
+            lens: Lens(themes: [.health, .security, .culture], supported: ["lula"]))
+        #expect(!other.showsLensBadge)
     }
 
     @Test func aBallotWithoutSlugAndAMissingTallyStayHonest() async {

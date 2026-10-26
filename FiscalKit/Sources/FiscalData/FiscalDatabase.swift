@@ -21,15 +21,15 @@ public struct FiscalDatabase: RepositoryProvider {
             inMemory || !cloudSync ? .none : .private(cloudContainer)
         let configurations = [
             configuration(
-                cloudStoreName, models: FiscalSchemaV1.cloudModels, inMemory: inMemory,
+                cloudStoreName, models: FiscalSchemaV2.cloudModels, inMemory: inMemory,
                 directory: directory, cloud: cloud),
             configuration(
-                deviceStoreName, models: FiscalSchemaV1.deviceModels, inMemory: inMemory,
+                deviceStoreName, models: FiscalSchemaV2.deviceModels, inMemory: inMemory,
                 directory: directory, cloud: .none),
         ]
         let container = try opening.withLock {
             try ModelContainer(
-                for: Schema(versionedSchema: FiscalSchemaV1.self),
+                for: Schema(versionedSchema: FiscalSchemaV2.self),
                 migrationPlan: FiscalMigrationPlan.self, configurations: configurations)
         }
         try excludeDeviceStoreFromBackup(container)

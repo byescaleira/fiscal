@@ -28,8 +28,8 @@ struct ThemesSection: View {
         } header: {
             VStack(alignment: .leading, spacing: .spaceXS) {
                 Text(search.isLensAdapted ? "Your topics" : "Topics").sectionTitle()
-                if let stance = search.badgeStance {
-                    LensBadge(stance)
+                if search.showsLensBadge {
+                    LensBadge()
                 }
             }
             .textCase(nil)

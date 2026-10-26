@@ -27,14 +27,11 @@ struct LensTests {
         #expect(ordered == [.security, .health, .environment, .culture])
     }
 
-    @Test func stanceIsOptionalAndCanBeWithheld() throws {
-        #expect(Lens().stance == nil)
-        #expect(PoliticalStance.choices.count == 6)
-        #expect(!PoliticalStance.choices.contains(.preferNotToSay))
-        #expect(PoliticalStance.preferNotToSay.effective == .impartial)
-        #expect(PoliticalStance.preferNotToSay.isImpartial)
-        #expect(!PoliticalStance.center.isImpartial)
-        let lens = Lens(themes: [.health, .taxes, .security], stance: .preferNotToSay)
+    @Test func supportIsOptionalAndCanBeWithheld() throws {
+        #expect(!Lens().hasChoice)
+        #expect(Lens(prefersNotToSay: true).hasChoice)
+        #expect(Lens(prefersNotToSay: true).isNeutral)
+        let lens = Lens(themes: [.health, .taxes, .security], prefersNotToSay: true)
         let data = try JSONEncoder().encode(lens)
         #expect(try JSONDecoder().decode(Lens.self, from: data) == lens)
     }
@@ -44,7 +41,7 @@ struct LensTests {
             #"{ "themes": ["saude", "saude", "impostos", "seguranca", "educacao", "direitos", "mulheres"], "palette": "sertao" }"#
         let lens = try JSONDecoder().decode(Lens.self, from: Data(json.utf8))
         #expect(lens.themes.count == Lens.themeRange.upperBound)
-        #expect(lens.stance == nil)
+        #expect(lens.supported.isEmpty)
         #expect(lens.palette == "sertao")
     }
 }

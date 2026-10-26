@@ -148,8 +148,8 @@ private struct SuggestionsSection: View {
             } header: {
                 VStack(alignment: .leading, spacing: .spaceXS) {
                     Text("Side by side").sectionTitle()
-                    if let stance = search.badgeStance, search.comparesFirst {
-                        LensBadge(stance)
+                    if search.showsLensBadge, search.comparesFirst {
+                        LensBadge()
                     }
                 }
                 .textCase(nil)

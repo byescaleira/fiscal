@@ -50,21 +50,16 @@ extension LensModel {
     }
 
     public func moveThemes(from source: IndexSet, to destination: Int) async {
-        var ordered = themes
-        ordered.move(fromOffsets: source, toOffset: destination)
-        await update { lens in
-            lens = Lens(
-                themes: ordered, stance: lens.stance, artCollection: lens.artCollection,
-                palette: lens.palette)
-        }
+        await update { $0.moveTheme(from: source, to: destination) }
     }
 
     public func moveTheme(_ theme: Theme, by offset: Int) async {
-        guard let index = themes.firstIndex(of: theme) else { return }
-        let target = index + offset
-        guard themes.indices.contains(target) else { return }
-        await moveThemes(
-            from: IndexSet(integer: index), to: offset > 0 ? target + 1 : target)
+        await update { $0.moveTheme(theme, by: offset) }
+    }
+
+    public func removeTheme(_ theme: Theme) async {
+        guard lens?.canRemoveTheme == true else { return }
+        await update { $0.toggle(theme) }
     }
 
     public var collections: [ArtCollection] { catalog?.collections ?? [] }
@@ -79,7 +74,7 @@ extension LensModel {
     public var paletteGrid: [LensPaletteSwatch] { LensPaletteSwatch.grid }
 
     public var suggestedPalette: LensPaletteSwatch? {
-        stance.flatMap { LensPaletteSwatch.named(LensPreset.suggested(for: $0).palette) }
+        LensPaletteSwatch.named(Lens.suggestedPalette)
     }
 
     public var supportsIcons: Bool { icons?.supportsAlternateIcons == true }

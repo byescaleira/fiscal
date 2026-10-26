@@ -33,7 +33,7 @@ struct LensThemesSection: View {
                     Task { await lens.moveThemes(from: source, to: destination) }
                 }
             }
-            Button("Change Topics", systemImage: "square.grid.2x2") { lens.edit(.themes) }
+            Button("Change Topics", systemImage: "list.number") { lens.edit(.themes) }
         } header: {
             Text("Your topics").sectionTitle()
         } footer: {
@@ -43,7 +43,7 @@ struct LensThemesSection: View {
                 )
             } else {
                 Text(
-                    "These topics come first in Today, Votes and Money, in this order. Touch and hold to reorder. Nothing is hidden."
+                    "These topics come first in Today, Votes and Money, in this order. Drag, or touch and hold to move or remove. Nothing is hidden."
                 )
             }
         }
@@ -55,7 +55,7 @@ struct LensLookSection: View {
 
     var body: some View {
         Section {
-            LensLookPreview(palette: lens.palette, theme: lens.themes.first, stance: lens.stance)
+            LensLookPreview(palette: lens.palette, theme: lens.themes.first)
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)
         } header: {
@@ -76,7 +76,7 @@ struct LensLookSection: View {
         } header: {
             Text("Palette").sectionTitle()
         } footer: {
-            Text("Mirrored pairs side by side. Any palette fits any side.")
+            Text("Mirrored pairs side by side. Never taken from the color of a party.")
         }
         LensArtSection()
         if lens.supportsIcons {

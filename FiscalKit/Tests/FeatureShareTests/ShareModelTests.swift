@@ -49,24 +49,28 @@ struct ShareModelTests {
         }
     }
 
-    @Test func theCardNeverCarriesTheStance() async throws {
+    @Test func theCardNeverCarriesWhoTheUserSupports() async throws {
         var contents: [ShareSubject: ShareCardContent] = [:]
-        for stance in PoliticalStance.allCases {
+        let choices = [
+            Lens(themes: [.health, .taxes, .security], supported: ["lula", "tabata-amaral"]),
+            Lens(themes: [.health, .taxes, .security], prefersNotToSay: true),
+        ]
+        for choice in choices {
+            var lens = choice
+            lens.artCollection = "brasil-agora"
             let repositories = try FiscalDatabase.open(inMemory: true).repositories
-            try await repositories.lens.save(
-                Lens(
-                    themes: [.health, .taxes, .security], stance: stance,
-                    artCollection: "brasil-agora"))
+            try await repositories.lens.save(lens)
             for subject in subjects {
                 let model = model(subject, lens: repositories.lens)
                 await model.load()
-                #expect(model.badgeStance == stance)
+                #expect(model.showsLensBadge)
                 let card = try #require(model.card)
                 let text = card.texts.joined(separator: "\n")
-                #expect(!text.contains(stance.badge))
                 #expect(!text.contains("Lens"))
-                #expect(!card.accessibilityLabel.contains(stance.badge))
-                #expect(!model.shareMessage.contains(stance.badge))
+                for slug in lens.supported {
+                    #expect(!card.accessibilityLabel.contains(slug))
+                    #expect(!model.shareMessage.contains(slug))
+                }
                 if let previous = contents[subject] {
                     #expect(previous == card.content)
                 }
@@ -79,7 +83,7 @@ struct ShareModelTests {
         let repositories = try FiscalDatabase.open(inMemory: true).repositories
         try await repositories.lens.save(
             Lens(
-                themes: [.health, .taxes, .security], stance: .left,
+                themes: [.health, .taxes, .security], supported: ["lula"],
                 artCollection: "acervo-historico"))
         let adapted = model(.person(slug: "lula"), lens: repositories.lens)
         await adapted.load()
@@ -89,7 +93,7 @@ struct ShareModelTests {
         #expect(adapted.artwork?.work.collection == "acervo-historico")
         #expect(adapted.collections.first?.id == "acervo-historico")
         #expect(plain.artwork?.work.collection == ShareModel.neutralCollection)
-        #expect(plain.badgeStance == nil)
+        #expect(!plain.showsLensBadge)
         #expect(adapted.isArtAdapted)
     }
 

@@ -62,8 +62,8 @@ private struct MoneyHeroSection: View {
                 }
             }
         } header: {
-            if let stance = money.stance {
-                MoneyLensHeader(stance: stance, note: money.lensNote)
+            if money.showsLensBadge {
+                MoneyLensHeader(note: money.lensNote)
             }
         } footer: {
             Text(verbatim: money.sourceLine(for: .quota))
@@ -74,7 +74,6 @@ private struct MoneyHeroSection: View {
 private struct MoneyLensHeader: View {
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
-    let stance: PoliticalStance
     let note: String?
 
     var body: some View {
@@ -82,7 +81,7 @@ private struct MoneyLensHeader: View {
             Button {
                 open(.lens, in: section)
             } label: {
-                LensBadge(stance)
+                LensBadge()
             }
             .buttonStyle(.plain)
             .accessibilityHint(Text("Opens what your lens changes"))

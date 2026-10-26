@@ -20,13 +20,27 @@ public final class MoneyModel {
             }
         }
 
-        public static func order(for stance: PoliticalStance?) -> [Section] {
-            switch stance?.effective {
-            case .right, .centerRight: [.quota, .salaries, .revenue, .campaigns]
-            case .center: [.revenue, .quota, .salaries, .campaigns]
-            case .centerLeft, .left: [.campaigns, .revenue, .quota, .salaries]
-            case .impartial, .preferNotToSay, nil: allCases
+        public var themes: [Theme] {
+            switch self {
+            case .quota, .salaries: [.taxes]
+            case .campaigns: [.politics]
+            case .revenue: [.economy, .taxes]
             }
+        }
+
+        func rank(in lens: Lens) -> Int {
+            themes.map(lens.rank(of:)).min() ?? lens.themes.count
+        }
+
+        public static func order(for lens: Lens?) -> [Section] {
+            guard let lens, !lens.themes.isEmpty else { return allCases }
+            return allCases.enumerated()
+                .sorted { lhs, rhs in
+                    (lhs.element.rank(in: lens), lhs.offset) < (
+                        rhs.element.rank(in: lens), rhs.offset
+                    )
+                }
+                .map(\.element)
         }
     }
 
@@ -52,7 +66,7 @@ public final class MoneyModel {
     }
 
     public private(set) var overview: MoneyOverview?
-    public private(set) var stance: PoliticalStance?
+    public private(set) var lens: Lens?
     public private(set) var phase: PublicDataPhase = .idle
     @ObservationIgnored private let service: (any PublicDataService)?
     @ObservationIgnored private let lensRepository: (any LensRepository)?
@@ -68,10 +82,12 @@ public final class MoneyModel {
             && (overview.campaigns?.revenueCents ?? 0) == 0 && overview.revenue == nil
     }
 
-    public var sections: [Section] { Section.order(for: stance) }
+    public var sections: [Section] { Section.order(for: lens) }
+
+    public var showsLensBadge: Bool { lens?.hasChoice == true }
 
     public var lensNote: String? {
-        guard stance != nil, let first = sections.first, sections != Section.allCases else {
+        guard showsLensBadge, let first = sections.first, sections != Section.allCases else {
             return nil
         }
         return String(appLocalized: "Your lens shows \(first.title) first.")
@@ -180,7 +196,7 @@ public final class MoneyModel {
     public func load() async {
         if overview == nil { phase = .loading }
         phase = await PublicDataPhase.settle(after: phase) {
-            stance = (try? await lensRepository?.lens())?.stance
+            lens = try? await lensRepository?.lens()
             guard let service else { throw PublicDataError.unavailable }
             overview = try await service.money()
         }

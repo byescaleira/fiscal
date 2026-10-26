@@ -50,9 +50,9 @@ struct TodayTextTests {
 
     @Test func theLensLineOnlyAppearsWhenSomethingChanges() {
         #expect(TodayText.lensLine(nil) == nil)
-        #expect(TodayText.lensLine(Lens(stance: .left)) == nil)
-        #expect(TodayText.lensLine(Lens(themes: [.health], stance: .left)) != nil)
-        #expect(TodayText.lensLine(Lens(stance: .impartial)) != nil)
+        #expect(TodayText.lensLine(Lens(supported: ["lula"])) == nil)
+        #expect(TodayText.lensLine(Lens(themes: [.health], supported: ["lula"])) != nil)
+        #expect(TodayText.lensLine(Lens(prefersNotToSay: true)) == nil)
     }
 
     @Test func everyKindHasATitleAndSymbol() {

@@ -22,11 +22,11 @@ struct LensContextTests {
         let repository = try FiscalDatabase.open(inMemory: true).repositories.lens
         let context = LensContext(repository: repository)
         await context.load()
-        let mine = LensPreset.suggested(for: .centerRight).lens(stance: .centerRight)
+        let mine = Lens.suggested(supported: ["lula"])
         #expect(await context.save(mine))
-        context.show(LensPreset.suggested(for: .centerLeft).lens(stance: .centerLeft))
+        context.show(Lens.suggested(supported: ["tabata-amaral"]))
         #expect(context.isPreviewing)
-        #expect(context.active?.stance == .centerLeft)
+        #expect(context.active?.supported == ["tabata-amaral"])
         #expect(try await repository.lens() == mine)
         #expect(await context.save(mine))
         #expect(!context.isPreviewing)
@@ -38,7 +38,7 @@ struct LensContextTests {
         let repository = try FiscalDatabase.open(inMemory: true).repositories.lens
         let context = LensContext(repository: repository)
         await context.load()
-        #expect(await context.save(LensPreset.suggested(for: .left).lens(stance: .left)))
+        #expect(await context.save(Lens.suggested(prefersNotToSay: true)))
         #expect(await context.erase())
         #expect(context.saved == nil)
         #expect(context.needsSetup)

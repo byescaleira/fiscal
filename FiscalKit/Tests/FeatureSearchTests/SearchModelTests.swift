@@ -162,14 +162,14 @@ struct SearchModelTests {
         #expect(!plain.isLensAdapted)
         #expect(!plain.comparesFirst)
         try await repositories.lens.save(
-            Lens(themes: [.environment, .health, .rights], stance: .impartial))
+            Lens(themes: [.environment, .health, .rights], prefersNotToSay: true))
         let impartial = model(lens: repositories.lens)
         await impartial.load()
         #expect(impartial.themes == [.environment, .health, .rights])
         #expect(impartial.isLensAdapted)
         #expect(impartial.comparesFirst)
         try await repositories.lens.save(
-            Lens(themes: [.taxes, .security, .economy], stance: .right))
+            Lens(themes: [.taxes, .security, .economy], supported: ["lula"]))
         let right = model(lens: repositories.lens)
         await right.load()
         #expect(!right.comparesFirst)

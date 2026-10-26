@@ -22,34 +22,6 @@ extension LensPaletteSwatch {
     }
 }
 
-extension PoliticalStance {
-    public static var spectrum: [PoliticalStance] {
-        [.left, .centerLeft, .center, .centerRight, .right]
-    }
-
-    public static var neutral: [PoliticalStance] { [.impartial, .preferNotToSay] }
-
-    public var isOnSpectrum: Bool { Self.spectrum.contains(self) }
-
-    public var choiceSymbol: String {
-        switch self {
-        case .impartial: "scale.3d"
-        case .preferNotToSay: "hand.raised"
-        default: "circle.fill"
-        }
-    }
-
-    public var choiceDetail: String {
-        switch self {
-        case .impartial:
-            String(appLocalized: "Both sides, balanced and side by side.")
-        case .preferNotToSay:
-            String(appLocalized: "Works like Impartial. Nothing else is asked.")
-        default: title
-        }
-    }
-}
-
 public enum LensText {
     public static func firstThemes(_ themes: [Theme]) -> String? {
         guard !themes.isEmpty else { return nil }
@@ -60,27 +32,10 @@ public enum LensText {
         return String(appLocalized: "First: \(names)")
     }
 
-    public static func effect(for stance: PoliticalStance) -> String {
-        if stance.isImpartial {
-            return String(
-                appLocalized:
-                    "Highlights take turns between both sides, comparisons sit side by side and Another lens stays open."
-            )
-        }
-        return String(
-            appLocalized:
-                "Today, Votes and Money open with these topics. Everything else stays one tap away."
-        )
-    }
-
     public static let sampleParties = ["MDB", "PL", "PT"]
 
     public static func sampleHeadline(_ theme: Theme) -> String {
         String(appLocalized: "Example: a floor vote on \(theme.title)")
-    }
-
-    public static func choiceTitle(for stance: PoliticalStance) -> String {
-        String(appLocalized: "With the \(stance.effective.title) lens")
     }
 }
 

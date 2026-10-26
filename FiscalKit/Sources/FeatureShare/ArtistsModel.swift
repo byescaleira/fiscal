@@ -39,9 +39,7 @@ public final class ArtistsModel {
         return catalog?.collection(id: id) != nil
     }
 
-    public var badgeStance: PoliticalStance? {
-        isAdapted ? (lens?.stance ?? .preferNotToSay) : nil
-    }
+    public var showsLensBadge: Bool { isAdapted }
 
     public var collections: [ArtCollection] {
         guard let catalog else { return [] }

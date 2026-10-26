@@ -54,9 +54,7 @@ public final class ShareModel {
         return catalog?.collection(id: id) != nil
     }
 
-    public var badgeStance: PoliticalStance? {
-        isArtAdapted ? (lens?.stance ?? .preferNotToSay) : nil
-    }
+    public var showsLensBadge: Bool { isArtAdapted }
 
     public var collections: [ArtCollection] {
         guard let catalog else { return [] }

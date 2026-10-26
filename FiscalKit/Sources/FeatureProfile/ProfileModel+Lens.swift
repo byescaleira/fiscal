@@ -18,12 +18,9 @@ extension ProfileModel {
         public var id: String { ballot.title }
     }
 
-    public var lensStance: PoliticalStance? { lens?.stance }
+    public var showsLensBadge: Bool { !lensThemes.isEmpty }
 
-    public var lensThemes: [Theme] {
-        guard let lens, lens.stance?.isImpartial != true else { return [] }
-        return lens.themes
-    }
+    public var lensThemes: [Theme] { lens?.themes ?? [] }
 
     public var isLensAdapted: Bool {
         guard let profile else { return false }

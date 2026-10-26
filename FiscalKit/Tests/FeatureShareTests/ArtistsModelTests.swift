@@ -27,15 +27,15 @@ struct ArtistsModelTests {
         let repositories = try FiscalDatabase.open(inMemory: true).repositories
         try await repositories.lens.save(
             Lens(
-                themes: [.health, .taxes, .security], stance: .right,
+                themes: [.health, .taxes, .security], supported: ["lula"],
                 artCollection: "acervo-historico"))
         let adapted = ArtistsModel(lens: repositories.lens)
         await adapted.load()
         let plain = ArtistsModel()
         await plain.load()
         #expect(adapted.collections.first?.id == "acervo-historico")
-        #expect(adapted.badgeStance == .right)
-        #expect(plain.badgeStance == nil)
+        #expect(adapted.showsLensBadge)
+        #expect(!plain.showsLensBadge)
         #expect(Set(adapted.collections) == Set(plain.collections))
         #expect(adapted.workCount == plain.workCount)
     }

@@ -35,6 +35,7 @@ public struct LensSetupScreen: View {
         .animation(reduceMotion ? nil : .smooth(duration: 0.45), value: setup.step)
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.6), value: setup.backdrop)
         .sensoryFeedback(.selection, trigger: setup.draft)
+        .task { await setup.loadPeople() }
         .onChange(of: setup.isFinished) { if setup.isFinished && setup.isEditing { dismiss() } }
     }
 
@@ -54,7 +55,7 @@ private struct LensSetupStepView: View {
     var body: some View {
         switch step {
         case .welcome: LensWelcomeStep()
-        case .stance: LensStanceStep()
+        case .support: LensSupportStep()
         case .themes: LensThemesStep()
         case .look: LensLookStep()
         }

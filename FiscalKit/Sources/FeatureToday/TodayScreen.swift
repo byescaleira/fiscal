@@ -76,11 +76,11 @@ private struct TodayMasthead: View {
                 .font(.subheadline.weight(.heavy))
                 .foregroundStyle(tint)
                 .accessibilityLabel(Text(verbatim: today.dateLine))
-            if let stance = today.stance {
+            if today.showsLensBadge {
                 Button {
                     open(.lens, in: section)
                 } label: {
-                    LensBadge(stance)
+                    LensBadge()
                 }
                 .buttonStyle(.plain)
                 .accessibilityHint(Text("Shows what the lens changes and lets you switch it"))

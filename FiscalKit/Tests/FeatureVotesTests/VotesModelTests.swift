@@ -75,7 +75,7 @@ struct VotesModelTests {
     }
 
     @Test func theTopicMenuSplitsLensTopicsFromTheRest() async {
-        let lens = Lens(themes: [.security, .health, .environment], stance: .right)
+        let lens = Lens(themes: [.security, .health, .environment], supported: ["lula"])
         let votes = model(lens: lens)
         await votes.load()
         #expect(votes.lensThemeChoices.allSatisfy(lens.contains))
@@ -88,12 +88,12 @@ struct VotesModelTests {
     }
 
     @Test func theLensPutsItsTopicsFirstWithoutHidingAnything() async {
-        let lens = Lens(themes: [.security, .health, .environment], stance: .right)
+        let lens = Lens(themes: [.security, .health, .environment], supported: ["lula"])
         let votes = model(lens: lens)
         await votes.load()
         #expect(Array(votes.themeChoices.prefix(3)) == [.security, .health, .environment])
         #expect(Set(votes.themeChoices).count == votes.themeChoices.count)
-        #expect(votes.lensStance == .right)
+        #expect(votes.showsLensBadge)
         #expect(votes.highlights.count == VotesModel.highlightLimit)
         #expect(votes.highlights.allSatisfy { $0.themes.contains(where: lens.contains) })
         #expect(votes.filtered.count == 6)
@@ -104,15 +104,15 @@ struct VotesModelTests {
     @Test func withoutALensNothingIsAdapted() async {
         let votes = model()
         await votes.load()
-        #expect(votes.lensStance == nil)
+        #expect(!votes.showsLensBadge)
         #expect(votes.highlights.isEmpty)
         #expect(votes.themeChoices == Theme.allCases.filter { votes.themeChoices.contains($0) })
     }
 
-    @Test func aLensWithoutASideReadsAsImpartial() async {
-        let votes = model(lens: Lens(themes: [.health, .education, .taxes]))
+    @Test func aNeutralLensStillPutsItsTopicsFirst() async {
+        let votes = model(lens: Lens(themes: [.health, .education, .taxes], prefersNotToSay: true))
         await votes.load()
-        #expect(votes.lensStance?.effective == .impartial)
+        #expect(votes.showsLensBadge)
     }
 
     @Test func theAgendaShowsTheHousesWithItems() async throws {

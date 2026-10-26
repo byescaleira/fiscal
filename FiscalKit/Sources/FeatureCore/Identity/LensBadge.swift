@@ -4,14 +4,11 @@ import SwiftUI
 
 public struct LensBadge: View {
     @Environment(\.appTint) private var tint
-    private let stance: PoliticalStance
 
-    public init(_ stance: PoliticalStance) {
-        self.stance = stance
-    }
+    public init() {}
 
     public var body: some View {
-        Label(stance.badge, systemImage: "eyeglasses")
+        Label("By your lens", systemImage: "eyeglasses")
             .font(.chipLabel)
             .foregroundStyle(tint)
             .padding(.horizontal, .spaceM)

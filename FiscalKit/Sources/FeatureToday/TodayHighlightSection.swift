@@ -44,6 +44,7 @@ private struct TodayHighlightLead: View {
                     .font(.caption2.weight(.heavy))
                     .foregroundStyle(.secondary)
                     .accessibilityHidden(true)
+                if today.isSupportPick(highlight) { LensPickMark() }
                 Spacer(minLength: .spaceS)
                 Text(verbatim: "\(highlight.weight)")
                     .font(.scoreboardNumber)
