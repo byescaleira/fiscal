@@ -1,13 +1,13 @@
 import FeatureCore
-import FeatureLiveResults
 import SwiftUI
 
-struct TodayRaceHero: View {
+struct TodayRaceHero<Content: View>: View {
     @Environment(PortraitStore.self) private var portraits: PortraitStore?
     let board: TodayRaceBoard
+    @ViewBuilder let content: () -> Content
 
     var body: some View {
-        RaceHeroCard(race: board.race, opensDetail: true)
+        content()
             .task(id: board.race.id) {
                 for side in board.sides {
                     portraits?.shelve(slug: side.slug, party: side.candidate.party)

@@ -1,4 +1,5 @@
 import FeatureCore
+import FeatureLiveResults
 import FeatureMine
 import FeatureMoney
 import FeatureSearch
@@ -22,7 +23,9 @@ struct SectionScreen: View {
                     races: services.liveResultsService(),
                     follows: services.todayFollows(session.repositories.follows))
             ) {
-                ModelHost(services.liveResults()) { TodayScreen() }
+                ModelHost(services.liveResults()) {
+                    TodayScreen { race in RaceHeroCard(race: race, opensDetail: true) }
+                }
             }
         case .mine:
             ModelHost(MineModel(service: data, follows: session.repositories.follows)) {

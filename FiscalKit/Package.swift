@@ -40,9 +40,7 @@ let package = Package(
             dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
         .target(
             name: "FeatureToday",
-            dependencies: [
-                "FiscalDomain", "FiscalDesignSystem", "FeatureCore", "FeatureLiveResults",
-            ]),
+            dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
         .target(
             name: "FeatureMine",
             dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
@@ -112,6 +110,9 @@ let package = Package(
         .testTarget(
             name: "FeatureSearchTests",
             dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureSearch"]),
+        .testTarget(
+            name: "FeatureMemoryTests",
+            dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureMemory"]),
         .testTarget(
             name: "FeatureLensTests",
             dependencies: [
