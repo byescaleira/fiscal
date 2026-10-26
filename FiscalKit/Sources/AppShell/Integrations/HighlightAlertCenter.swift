@@ -120,8 +120,9 @@ final class HighlightAlertCenter {
             guard UserDefaults.standard.bool(forKey: Self.showcaseKey) else { return false }
             guard !didForceShowcase else { return true }
             didForceShowcase = true
-            let showcase = ShowcasePublicData(scenario: .normal)
-            guard let lead = try? await showcase.highlights()?.items.first else { return true }
+            let source: any PublicDataService =
+                publicData() ?? ShowcasePublicData(scenario: .normal)
+            guard let lead = try? await source.highlights()?.items.first else { return true }
             try? await activities.start(lead, now: .now)
             return true
         }
