@@ -407,6 +407,9 @@ func (c *Config) deploy(ctx context.Context, dir, release string) error {
 		}
 		output, err := run(ctx, c.Wrangler, args, env)
 		if err == nil && strings.Contains(string(output), deployedMarker) {
+			if summary := uploadSummary(redact(string(output), c.Token)); summary != "" {
+				c.logf("wrangler: %s", summary)
+			}
 			return nil
 		}
 		if err == nil {
@@ -415,6 +418,15 @@ func (c *Config) deploy(ctx context.Context, dir, release string) error {
 		last = fmt.Errorf("wrangler pages deploy: %w: %s", err, tail(redact(string(output), c.Token), 2000))
 	}
 	return last
+}
+
+func uploadSummary(output string) string {
+	for line := range strings.Lines(output) {
+		if i := strings.Index(line, "Uploaded "); i >= 0 {
+			return strings.TrimSpace(line[i:])
+		}
+	}
+	return ""
 }
 
 func execRunner(ctx context.Context, name string, args, env []string) ([]byte, error) {

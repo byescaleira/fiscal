@@ -294,3 +294,13 @@ func TestHighlightsArePublishedOnlyAfterTheDeployIsConfirmed(t *testing.T) {
 		t.Fatalf("nothing changed must restore the deployed highlights: %+v published=%q", out, h.published())
 	}
 }
+
+func TestUploadSummaryKeepsOnlyWhatWranglerSent(t *testing.T) {
+	out := "Uploading... (9253/9256)\n✨ Success! Uploaded 3 files (9253 already uploaded) (1.23 sec)\n\n✨ Deployment complete! Take a peek over at https://x.pages.dev\n"
+	if got := uploadSummary(out); got != "Uploaded 3 files (9253 already uploaded) (1.23 sec)" {
+		t.Fatalf("summary = %q", got)
+	}
+	if got := uploadSummary("✨ Deployment complete!\n"); got != "" {
+		t.Fatalf("summary without an upload line = %q", got)
+	}
+}
