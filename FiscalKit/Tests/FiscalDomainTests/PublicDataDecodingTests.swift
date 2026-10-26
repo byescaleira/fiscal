@@ -7,6 +7,16 @@ struct PublicDataDecodingTests {
         try PublicDataCoding.decoder().decode(type, from: Data(json.utf8))
     }
 
+    @Test func readsAVoteWithoutAProposition() throws {
+        let vote = try decode(
+            VoteSummary.self,
+            #"{ "id": "camara-2576389-4", "house": "camara", "date": "2025-10-29", "time": "12:05", "proposition": null, "kind": null, "summary": "Aprovado, por unanimidade, o Requerimento.", "plainSummary": null, "themes": [], "result": "Aprovada", "approved": true, "nominal": true, "yes": 388, "no": 22, "others": 11 }"#
+        )
+        #expect(vote.proposition.isEmpty)
+        #expect(vote.approved == true)
+        #expect(vote.tally.yes == 388)
+    }
+
     @Test func readsASourceWithAnOffsetDate() throws {
         let source = try decode(
             Source.self,

@@ -235,7 +235,7 @@ func (b *builder) person(p *Person) {
 		votesByYear[y] = append(votesByYear[y], PersonVote{
 			VoteID:        pb.vote.ID,
 			Date:          pb.vote.Date,
-			Proposition:   strPtr(pb.vote.Proposition),
+			Proposition:   strPtr(VoteLabel(pb.vote)),
 			Summary:       pb.vote.Description,
 			Vote:          pb.ballot.Vote,
 			PartyGuidance: guidanceFor(pb.vote, pb.ballot.Party),
@@ -663,13 +663,24 @@ func (b *builder) placeFiles(people []*Person) {
 	}
 }
 
+func VoteLabel(v *HouseVote) string {
+	switch {
+	case strings.TrimSpace(v.Proposition) != "":
+		return v.Proposition
+	case strings.Contains(Fold(v.Description), "requerimento"):
+		return "Requerimento"
+	default:
+		return "Votação em Plenário"
+	}
+}
+
 func (b *builder) summary(v *HouseVote) VoteSummary {
 	s := VoteSummary{
 		ID:          v.ID,
 		House:       v.House,
 		Date:        v.Date,
 		Time:        strPtr(v.Time),
-		Proposition: strPtr(v.Proposition),
+		Proposition: strPtr(VoteLabel(v)),
 		Kind:        strPtr(v.Kind),
 		Summary:     v.Description,
 		Themes:      voteThemes(v),

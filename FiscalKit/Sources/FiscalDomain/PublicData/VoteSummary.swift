@@ -79,6 +79,28 @@ public struct VoteSummary: Codable, Hashable, Identifiable, Sendable {
         self.relatedCount = relatedCount ?? (related.isEmpty ? nil : related.count)
     }
 
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(String.self, forKey: .id)
+        house = try c.decode(House.self, forKey: .house)
+        date = try c.decode(CalendarDay.self, forKey: .date)
+        time = try c.decodeIfPresent(String.self, forKey: .time)
+        proposition = try c.decodeIfPresent(String.self, forKey: .proposition) ?? ""
+        kind = try c.decodeIfPresent(String.self, forKey: .kind)
+        summary = try c.decode(String.self, forKey: .summary)
+        plainSummary = try c.decodeIfPresent(String.self, forKey: .plainSummary)
+        themes = try c.decode([Theme].self, forKey: .themes)
+        result = try c.decodeIfPresent(String.self, forKey: .result)
+        approved = try c.decodeIfPresent(Bool.self, forKey: .approved)
+        nominal = try c.decode(Bool.self, forKey: .nominal)
+        yes = try c.decodeIfPresent(Int.self, forKey: .yes)
+        no = try c.decodeIfPresent(Int.self, forKey: .no)
+        others = try c.decodeIfPresent(Int.self, forKey: .others)
+        group = try c.decodeIfPresent(String.self, forKey: .group)
+        relatedCount = try c.decodeIfPresent(Int.self, forKey: .relatedCount)
+        related = try c.decodeIfPresent([Related].self, forKey: .related)
+    }
+
     public var tally: Tally { Tally(yes: yes, no: no, others: others) }
 
     public var sameDayVotes: [Related] { related ?? [] }

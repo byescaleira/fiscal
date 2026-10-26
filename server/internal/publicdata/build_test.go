@@ -362,3 +362,16 @@ func TestPublishWritesTreeAndPrunesStaleProfiles(t *testing.T) {
 		t.Fatalf("unchanged data rewrote %d files", st.Written)
 	}
 }
+
+func TestAVoteWithoutAPropositionStillHasALabel(t *testing.T) {
+	cases := map[string]*HouseVote{
+		"PL 1123/2025":        {Proposition: "PL 1123/2025", Description: "Aprovado o requerimento"},
+		"Requerimento":        {Description: "Aprovado, por unanimidade, o Requerimento."},
+		"Votação em Plenário": {Description: "Votos: Sra. Fulana: Sim: 388; Não: 22."},
+	}
+	for want, v := range cases {
+		if got := VoteLabel(v); got != want {
+			t.Fatalf("VoteLabel(%q) = %q, want %q", v.Description, got, want)
+		}
+	}
+}
