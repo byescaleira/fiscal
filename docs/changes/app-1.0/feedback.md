@@ -49,6 +49,7 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Live Activity igual ao card: foto, tag, % apurado, barra de força, fundo do sistema em vidro | no iPhone | RaceLiveActivity |
 | Live Activity cabendo na tela de bloqueio, percentual em destaque | no iPhone | RaceLiveActivity |
 | Card do Hoje igual ao destaque da apuração; Live Activity no mesmo desenho | no iPhone | RaceHeroCard, TodayRaceHero |
+| Live Activity menos apertada: candidatos em linhas | no iPhone | RaceLiveActivity |
 | Resumo do dia sem carregar (dado real ainda não publicado) | na fila: deploy | VPS |
 | Apuração mostrando 87% (era o cenário de teste) | no iPhone, só dado real | launch sem cenário |
 | Tela de apuração menos repetitiva, com brancos, nulos, abstenção e fotos | no iPhone | LiveResultsScreen, RaceDetailScreen |
@@ -72,12 +73,12 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 
 | Pedido | Estado | Onde |
 | --- | --- | --- |
-| Destaque do momento sempre na aba Hoje | em andamento | frente weight |
-| Peso de cada ação (repercussão + impacto, regra única) | em andamento | frente weight |
-| Preços com série histórica (gasolina e bens de consumo) | em andamento | frente prices |
-| Antes × durante o mandato para todos | em andamento | frente prices |
+| Destaque do momento sempre na aba Hoje | no iPhone (aparece com dados reais) | TodayHighlightSection |
+| Peso de cada ação (repercussão + impacto, regra única) | no iPhone; repercussão só pela Wikipédia (GDELT limitou, Bluesky exige login) | weight.go, ProfileActionsSection |
+| Preços com série histórica (gasolina e bens de consumo) | no iPhone (ANP desde 2001, IPCA) | indicators |
+| Antes × durante o mandato para todos | no iPhone (aparece com dados reais) | ProfileContextSection |
 | Explicar em linguagem simples o sentido dos dados, com Foundation Models e selo de interpretação imparcial | no iPhone (votação, perfil, Temas; aparece com dados reais) | FeatureCore/Explain |
-| Selo: "Apple Intelligence" em vez de "Siri" | decisão | ExplainerBadge |
+| Selo: "Apple Intelligence" em vez de "Siri" | decidido: Apple Intelligence | ExplainerBadge |
 | Repercussão no X, Instagram ou TikTok | decisão (custo) | — |
 
 ## Backend e dados reais
@@ -85,8 +86,8 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Pedido | Estado | Onde |
 | --- | --- | --- |
 | Só dados reais no iPhone | no iPhone (apuração real; o resto depende do deploy) | sem -FiscalDataScenario |
-| Backend que guarda tudo e sincroniza sozinho (SQLite, decisão do usuário) | em andamento | frente store |
-| Deploy da carga na VPS (aprovado pelo usuário) | na fila: depois da carga nacional completa | frente data + coordenador |
+| Backend que guarda tudo e sincroniza sozinho (SQLite, decisão do usuário) | pronto no código; entra no próximo deploy | datastore, ADR 0006 |
+| Deploy da carga na VPS (aprovado pelo usuário) | no ar; primeira carga completa rodando | fiscal-ingest, Caddy /api/v1 |
 
 ## Ícone
 
