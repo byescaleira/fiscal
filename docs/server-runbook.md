@@ -29,7 +29,7 @@ O projeto `fiscal-dados` e o domínio `dados.fiscal.byescaleira.com` já existem
    - **Nome:** `fiscal-pages-deploy`.
    - **Permissão:** Account · **Cloudflare Pages** · **Edit**. A Cloudflare não restringe essa permissão a um projeto: ela vale para os projetos Pages da conta.
    - **Account Resources:** Include · só a sua conta.
-   - **Client IP Address Filtering:** Is in · `179.198.114.91` (só a VPS usa o token).
+   - **Client IP Address Filtering:** Allow · `179.198.114.91` e `2a02:4780:6e:6fea::/64` (só a VPS usa o token). A VPS sai para a internet pelo IPv6; só com o IPv4 a API do Pages responde `Authentication error` (10000), embora `/user/tokens/verify` diga que o token está ativo.
    - **TTL:** sem data, ou um ano com lembrete.
    - **O token aparece uma vez só.** Não cole no chat nem no repositório.
 4. **Painel do projeto Pages:**
@@ -39,7 +39,13 @@ O projeto `fiscal-dados` e o domínio `dados.fiscal.byescaleira.com` já existem
 
 ## 2. O que o usuário faz na VPS (uma vez, com o ok dele)
 
-Guardar o token sem passar pelo chat (cole quando o terminal pedir):
+Guardar o token sem passar pelo chat. O jeito que funcionou: deixar o comando abaixo digitado no terminal do Mac, clicar no botão de copiar do token na Cloudflare e só então apertar Enter (copiar o próprio comando troca o conteúdo da área de transferência):
+
+```sh
+pbpaste | tr -d ' \r\n' | ssh root@179.198.114.91 'cat > /opt/fiscal-api/secrets/cloudflare-pages-token && chmod 600 /opt/fiscal-api/secrets/cloudflare-pages-token && wc -c < /opt/fiscal-api/secrets/cloudflare-pages-token'
+```
+
+Alternativa dentro da VPS (o `read -rs` pode não receber colagem em alguns terminais):
 
 ```sh
 ssh root@179.198.114.91
