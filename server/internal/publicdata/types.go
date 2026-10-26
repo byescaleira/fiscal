@@ -31,6 +31,7 @@ type PersonCard struct {
 	Party  string  `json:"party"`
 	Photo  *string `json:"photo"`
 	Status string  `json:"status"`
+	Gender *string `json:"gender"`
 }
 
 type RepresentativeGroup struct {
@@ -166,6 +167,7 @@ type Profile struct {
 	Party      string          `json:"party"`
 	Photo      *string         `json:"photo"`
 	Status     string          `json:"status"`
+	Gender     *string         `json:"gender"`
 	Mandate    Mandate         `json:"mandate"`
 	BirthDate  *string         `json:"birthDate"`
 	BirthPlace *string         `json:"birthPlace"`

@@ -29,6 +29,7 @@ type Candidacy struct {
 	BallotName   string
 	BirthDate    string
 	BirthUF      string
+	Gender       string
 	Education    string
 	Votes        *int64
 	Place        string
@@ -70,6 +71,7 @@ type Person struct {
 	Keys        []string
 	Name        string
 	CivilName   string
+	Gender      string
 	Roles       []Role
 	Photo       string
 	BirthDate   string

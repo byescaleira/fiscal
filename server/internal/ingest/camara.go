@@ -249,6 +249,7 @@ func deputyPerson(cd *camaraDeputy) *publicdata.Person {
 		Name:      strings.TrimSpace(name),
 		CivilName: publicdata.TitleName(d.CivilName),
 		CPF:       digits(d.CPF),
+		Gender:    publicdata.GenderCode(d.Sex),
 		Roles:     []publicdata.Role{{Office: publicdata.OfficeFederalDeputy, UF: strings.ToLower(d.UF), Status: status, Party: d.Party, MandateStart: start, MandateEnd: "2027-01-31"}},
 		Photo:     d.Photo,
 		BirthDate: d.BirthDate,

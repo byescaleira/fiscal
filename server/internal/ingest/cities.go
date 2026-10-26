@@ -198,7 +198,7 @@ func hasOffice(c publicdata.City, office string) bool {
 func cityPerson(o tse.Official, year int, city string, assetsOK bool, assets map[string][]publicdata.AssetItem, votes map[string]int64) *publicdata.Person {
 	office := cityOffice[o.Office]
 	uf := strings.ToLower(o.UF)
-	p := &publicdata.Person{Name: publicdata.TitleName(o.BallotName), CivilName: publicdata.TitleName(o.Name), BirthDate: o.BirthDate}
+	p := &publicdata.Person{Name: publicdata.TitleName(o.BallotName), CivilName: publicdata.TitleName(o.Name), BirthDate: o.BirthDate, Gender: publicdata.GenderCode(o.Gender)}
 	if p.Name == "" {
 		p.Name = p.CivilName
 	}
@@ -218,7 +218,7 @@ func cityPerson(o tse.Official, year int, city string, assetsOK bool, assets map
 	if n := ibge.StateName(strings.ToUpper(o.BirthUF)); n != "" {
 		p.BirthPlace = n
 	}
-	c := publicdata.Candidacy{Year: year, Office: office, UF: uf, Party: o.Party, Result: o.Result, Elected: true, SQ: o.SQ, Name: o.Name, BallotName: o.BallotName, BirthDate: o.BirthDate, BirthUF: o.BirthUF, Education: o.Education, Place: city + " (" + strings.ToUpper(uf) + ")"}
+	c := publicdata.Candidacy{Year: year, Office: office, UF: uf, Party: o.Party, Result: o.Result, Elected: true, SQ: o.SQ, Name: o.Name, BallotName: o.BallotName, BirthDate: o.BirthDate, BirthUF: o.BirthUF, Gender: o.Gender, Education: o.Education, Place: city + " (" + strings.ToUpper(uf) + ")"}
 	if assetsOK {
 		c.Assets, c.AssetsLoaded = assets[o.SQ], true
 	}

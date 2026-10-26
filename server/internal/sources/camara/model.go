@@ -56,6 +56,7 @@ type Detail struct {
 	BirthCity     string
 	BirthUF       string
 	Education     string
+	Sex           string
 	Situation     string
 	Condition     string
 	Building      string

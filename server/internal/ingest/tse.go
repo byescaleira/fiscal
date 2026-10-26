@@ -121,7 +121,7 @@ func (in *Ingest) loadTSE(ctx context.Context, rep *Report) (tseResult, error) {
 			}
 			pc := publicdata.Candidacy{
 				Year: c.Year, Office: office, UF: strings.ToLower(c.UF), Party: c.Party, Result: c.Result, Elected: tse.Elected(c.Result),
-				SQ: c.SQ, CPF: c.CPF, Name: c.Name, BallotName: c.BallotName, BirthDate: c.BirthDate, BirthUF: c.BirthUF, Education: c.Education,
+				SQ: c.SQ, CPF: c.CPF, Name: c.Name, BallotName: c.BallotName, BirthDate: c.BirthDate, BirthUF: c.BirthUF, Gender: c.Gender, Education: c.Education,
 			}
 			if assetsOK {
 				pc.Assets, pc.AssetsLoaded = assets[c.SQ], true
