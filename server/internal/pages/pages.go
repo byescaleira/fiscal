@@ -319,7 +319,7 @@ func (c *Config) deploy(ctx context.Context, dir, release string) error {
 		"HOME=" + home,
 		"XDG_CONFIG_HOME=" + home,
 		"PATH=/usr/local/bin:/usr/bin:/bin",
-		"NODE_OPTIONS=--max-old-space-size=768",
+		"NODE_OPTIONS=--max-old-space-size=2048",
 	}
 	run := c.Run
 	if run == nil {
