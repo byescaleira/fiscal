@@ -25,6 +25,10 @@ func TestBuildHotMatchesTheFullBuildForTheHotFiles(t *testing.T) {
 	for i := range RecentVotes + 5 {
 		ds.Votes = append(ds.Votes, &HouseVote{ID: fmt.Sprintf("camara-old-%d", i), House: HouseCamara, Date: fmt.Sprintf("2026-09-%02d", 1+i%28), Time: fmt.Sprintf("%02d:00", i%24), Description: "Votação antiga sobre saúde.", Nominal: true, Yes: iptr(i), No: iptr(1)})
 	}
+	for i := range RecentVotes * 3 {
+		day := 1 + (i/3)%20
+		ds.Votes = append(ds.Votes, &HouseVote{ID: fmt.Sprintf("camara-bill-%d", i), House: HouseCamara, Date: fmt.Sprintf("2026-10-%02d", day), Time: fmt.Sprintf("%02d:%02d", 10+i%3, i%60), Proposition: fmt.Sprintf("PL %d/2026", i/3), Kind: "PL", Description: []string{"Aprovado o requerimento de urgência.", "Aprovada a emenda.", "Aprovado o texto principal."}[i%3], Nominal: true, Yes: iptr(i), No: iptr(1)})
+	}
 	baseOut := Build(ds, &Slugs{byKey: map[string]string{}})
 	today := &HouseVote{
 		ID: "camara-9-1", House: HouseCamara, Date: ds.Today, Time: "21:10", Proposition: "PEC 9/2026", Kind: "PEC",
@@ -50,8 +54,8 @@ func TestBuildHotMatchesTheFullBuildForTheHotFiles(t *testing.T) {
 	if !strings.Contains(hot["votes/camara-9-1.json"], `"slug":"acacio-favacho`) {
 		t.Fatalf("the hot vote must link the voter's slug: %s", hot["votes/camara-9-1.json"])
 	}
-	if len(baseOut.Hot.Recent) != RecentVotes || baseOut.Hot.Recent[0].Ballots != nil {
-		t.Fatalf("the hot base keeps the %d most recent votes without ballots", RecentVotes)
+	if len(baseOut.Hot.Recent) < RecentVotes || baseOut.Hot.Recent[0].Ballots != nil {
+		t.Fatalf("the hot base keeps every vote of the %d most recent groups without ballots, got %d", RecentVotes, len(baseOut.Hot.Recent))
 	}
 }
 

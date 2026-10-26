@@ -178,8 +178,9 @@ Regras:
   - `release.json` traz `base` (a release anterior) e `rebuilt` (pacotes refeitos);
   - `ingest-data/v1-manifest.json` › `pending` lista o que ainda não foi publicado;
   - `ingest-data/sync-state.json` guarda, por trabalho, a última execução, a impressão digital da sonda e o resultado.
-- **Alerta de consistência** (`ALERT consistency` no log, `fiscal-sync.service` em falha com código 3):
-  - **Na hora:** nada a fazer, porque a release completa já está pronta e sai no próximo tique.
+- **Alerta de consistência** (`ALERT consistency` no log; o `fiscal-ingest` sai com código 3, e o `fiscal-sync.service` segue para o `fiscal-pages` mesmo assim):
+  - **Na hora:** a release incremental continua publicada (`consistency: kept … published`). O preparo e o manifesto ficam com a saída completa, e os caminhos divergentes só entram numa release quando mudarem de novo.
+  - **Para publicar a reconstrução completa** depois de conferir que ela está certa: `docker compose --profile jobs run --rm --no-deps -T fiscal-ingest -site rollback -to <release completa>` (o nome está em `consistency.json` › `full`), e o próximo tique publica.
   - **Depois:** abrir `ingest-data/consistency.json` (`sample` lista os primeiros arquivos que divergiram), achar a causa no caminho incremental e corrigir.
 - **Pausar tudo:** `systemctl stop fiscal-sync.timer`. Para voltar, use `start`.
 - **Voltar os dados publicados:**

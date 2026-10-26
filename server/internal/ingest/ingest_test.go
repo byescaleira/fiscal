@@ -448,3 +448,25 @@ func TestAClosedAssemblyYearComesFromARecentCache(t *testing.T) {
 		t.Fatal("the current year always reads the SAPL")
 	}
 }
+
+func TestANewYearKeepsTheAssemblyMembersUntilTheSAPLIsRead(t *testing.T) {
+	now := time.Date(2027, 1, 1, 12, 10, 0, 0, time.UTC)
+	in := testIngest(t, Config{Refresh: map[string]bool{"senado": true}}, &fixtureFetcher{t: t, routes: map[string]string{}}, now)
+	h := assembleias.Houses[0]
+	last := assembleias.Data{House: h, Members: []assembleias.Member{{ID: 1, Name: "Ana"}}, Matters: []assembleias.Matter{{ID: 9}}}
+	raw, _ := json.Marshal(last)
+	path := in.assemblyCache(h, 2026)
+	if err := os.MkdirAll(filepath.Dir(path), 0o700); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(path, raw, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	d, note, err := in.assembly(context.Background(), h, 2027)
+	if err != nil || note == "" || len(d.Members) != 1 || len(d.Matters) != 0 {
+		t.Fatalf("the new year borrows last year's members without its matters: %v %q %+v", err, note, d)
+	}
+	if _, _, err := in.assembly(context.Background(), h, 2025); err == nil {
+		t.Fatal("only the current year borrows from the year before")
+	}
+}

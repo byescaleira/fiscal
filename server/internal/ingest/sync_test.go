@@ -190,6 +190,25 @@ func TestYesterdaysLiveVotesStayUntilAPhaseReadsThemFromTheStore(t *testing.T) {
 	}
 }
 
+func TestYesterdaysLiveVotesSurviveTheNightBeforeTheFirstHotTick(t *testing.T) {
+	vote := func(id, date string) *publicdata.HouseVote {
+		return &publicdata.HouseVote{ID: id, Date: date, House: publicdata.HouseCamara}
+	}
+	st := HotState{Date: "2026-10-27", Votes: []*publicdata.HouseVote{vote("late", "2026-10-27")}, Agenda: []publicdata.RawAgendaHouse{{House: "camara"}}, Carry: []*publicdata.HouseVote{vote("a", "2026-10-23")}}
+	ds := &publicdata.Dataset{Today: "2026-10-28"}
+	st.merge(ds)
+	if len(ds.Votes) != 2 || len(ds.Agenda) != 0 {
+		t.Fatalf("after midnight the last day's votes stay and its agenda goes: %d votes, %d agenda houses", len(ds.Votes), len(ds.Agenda))
+	}
+	stale := &publicdata.Dataset{Today: "2026-11-10"}
+	st.merge(stale)
+	for _, v := range stale.Votes {
+		if v.ID == "late" {
+			t.Fatal("a hot state older than the carry window must not come back")
+		}
+	}
+}
+
 func TestSourceSetKeepThenAddMovesTheTimestamp(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "sources.json")
 	first := newSourceSet("2026-10-25T10:00:00-03:00")

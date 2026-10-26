@@ -49,15 +49,15 @@ Peça compartilhada pelas frentes paralelas da mudança [`app-1.0`](proposal.md)
 | `people/{slug}/proposals-{year}.json` | `{ items: [Proposal], total }` | quando muda |
 | `people/{slug}/speeches-{year}.json` | `{ items: [Speech], total }` | quando muda |
 | `people/{slug}/expenses-{year}.json` | `{ items: [Expense], totalCents, byMonth: [{ month, cents }], byCategory: [{ category, cents, count }] }` | quando muda |
-| `votes/recent.json` | os 60 últimos grupos de votação do Plenário (Câmara e Senado), um item por grupo: `[VoteSummary]` com a votação principal do grupo, `relatedCount` e `related` (regra abaixo) | diária e a cada 10 min em dia de sessão |
+| `votes/recent.json` | os 60 últimos grupos de votação do Plenário (Câmara e Senado), um item por grupo: `[VoteSummary]` com a votação principal do grupo, `relatedCount` e `related` (regra abaixo) | diária e a cada 5 min em dia de sessão (lido primeiro na origem, com cache de 30 s) |
 | `votes/{id}.json` | `VoteDetail`, um para cada votação, inclusive as que não são a principal do grupo; traz `group` e as outras votações do grupo em `related` | quando muda |
-| `agenda/today.json` | `{ date, houses: [{ house, inSession, nextSession, items: [AgendaItem] }] }` | a cada 10 min |
+| `agenda/today.json` | `{ date, houses: [{ house, inSession, nextSession, items: [AgendaItem] }] }` | a cada 5 min em dia de sessão, de hora em hora fora dela |
 | `money/overview.json` | `MoneyOverview` | diária |
 | `money/mandate-cost.json` | `MandateCost`: quanto custa um mandato por mês, item a item, com o ato oficial de cada valor; 404 quer dizer que a carga ainda não publicou, e o app esconde a seção | diária |
-| `today.json` | `TodayDigest` (o que aconteceu, para a aba Hoje) | a cada 10 min |
+| `today.json` | `TodayDigest` (o que aconteceu, para a aba Hoje) | a cada 5 min em dia de sessão, de hora em hora fora dela |
 | `people/{slug}/checks.json` | `{ items: [FactCheck], sources }`: checagens do Projeto Comprova que citam a pessoa pelo nome completo exato; só existe quando há ao menos uma | diária |
 | `people/{slug}/actions.json` | `{ items: [Action], sources }`: o que a pessoa fez nos dois últimos anos, ordenado pelo peso ([weight.md](weight.md)); cada ação traz `measured`, `missing` e `confidence` (`full` \| `partial` \| `impactOnly`), e `repercussion` é `null` sem sinal medido; só existe quando há ação | diária |
-| `highlights.json` | `{ generatedAt, items: [Highlight], method, sources }`: o Destaque do momento, nunca vazio quando há dado; cada item traz `measured`, `missing`, `confidence`, `themes`, `stage`, `house` e, em votação, `tally { yes, no, others }` | a cada 10 min |
+| `highlights.json` | `{ generatedAt, items: [Highlight], method, sources }`: o Destaque do momento, nunca vazio quando há dado; cada item traz `measured`, `missing`, `confidence`, `themes`, `stage`, `house` e, em votação, `tally { yes, no, others }` | no máximo a cada 20 min, quando entra votação nova |
 | `method/weight.json` | `WeightMethod` (versão 2): a regra do peso, para o "Como medimos", com `renormalization` (sinal ausente sai da conta, nunca vira zero), `confidence` e `alert { minWeight, maxAgeHours, text }`, `levels: [{ key ∈ high \| medium \| low, label, min, max }]` e `levelsText` (as faixas de relevância) | diária |
 | `index/benchmarks.json` | `{ generatedAt, items: [Benchmark], sources }`: a referência dos colegas por cargo e casa (deputados federais, senadores e deputados estaduais por UF), com p25, mediana, p75 e `n` de presença, cota por mês de mandato, propostas e discursos no ano | a cada carga |
 | `method/benchmarks.json` | `BenchmarkMethod` (versão 1): a regra da classificação em texto, para o "Como medimos" | a cada carga |

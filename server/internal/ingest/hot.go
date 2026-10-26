@@ -39,10 +39,21 @@ const carryDays = 7
 
 func (st HotState) merge(ds *publicdata.Dataset) {
 	ds.Votes = upsertVotes(ds.Votes, st.Carry)
-	if st.Date == ds.Today {
+	switch {
+	case st.Date == ds.Today:
 		ds.Agenda = st.Agenda
 		ds.Votes = upsertVotes(ds.Votes, st.Votes)
+	case st.Date != "" && st.Date < ds.Today && st.Date >= carrySince(ds.Today):
+		ds.Votes = upsertVotes(ds.Votes, st.Votes)
 	}
+}
+
+func carrySince(today string) string {
+	t, err := time.Parse("2006-01-02", today)
+	if err != nil {
+		return today
+	}
+	return t.AddDate(0, 0, -carryDays).Format("2006-01-02")
 }
 
 func (in *Ingest) carry(prev HotState, today string) []*publicdata.HouseVote {

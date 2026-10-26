@@ -26,11 +26,15 @@ type HotInput struct {
 }
 
 func (b *builder) hotBase() HotBase {
-	all := append([]*HouseVote(nil), b.ds.Votes...)
-	sortVotes(all)
-	if len(all) > RecentVotes {
-		all = all[:RecentVotes]
+	b.groups()
+	var all []*HouseVote
+	for i, g := range b.voteGroups {
+		if i == RecentVotes {
+			break
+		}
+		all = append(all, g.Votes...)
 	}
+	sortVotes(all)
 	recent := make([]*HouseVote, 0, len(all))
 	for _, v := range all {
 		c := *v

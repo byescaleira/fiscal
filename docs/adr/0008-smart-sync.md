@@ -1,6 +1,6 @@
 # 0008. Sincronização por cadência, detecção de mudança e reconstrução incremental
 
-- **Estado:** Proposto
+- **Estado:** Aceito (em produção desde 2026-10-26)
 - **Data:** 2026-10-26
 - **Mudança:** [`app-1.0`](../changes/app-1.0/proposal.md)
 
@@ -37,7 +37,7 @@ O que foi medido em 26/10, na VPS (4 vCPU, 16 GB) e no Mac com os dados reais co
    - **Manifesto de hashes** (`DATA_DIR/v1-manifest.json`). Guarda o caminho e o hash de cada arquivo do preparo, sem o `generatedAt`. Só o que mudou é gravado (com o `.gz`), e a lista do que mudou alimenta o stager. As mudanças ainda não publicadas sobrevivem a uma queda.
    - **Release por delta** (`site.StageDelta`). Os pacotes que não mudaram viram links físicos da release anterior, e só os pacotes afetados são remontados: pessoa, município, índice de cidade, pacote de votações e arquivo avulso. A validação relê só o que foi reescrito; as checagens estruturais (índice ⇄ perfis, `meta.counts`, teto de arquivos, trava de queda) continuam completas.
    - **Classificação de temas** com índice por prefixo e memória por texto. O `Build` caiu de 146 s para 13 s, com resultado idêntico em 431.881 textos reais.
-   - **Verificação semanal** (`memoria`, quarta 00:20). Roda primeiro o caminho incremental e depois a reconstrução completa do banco, com montagem completa da release. Compara o preparo e as duas releases arquivo por arquivo, sem `meta.json` e `history/*`, e grava `DATA_DIR/consistency.json`. Qualquer divergência registra `ALERT consistency` no log e sai com código 3 (unidade em falha). A release completa vira a publicada.
+   - **Verificação semanal** (`memoria`, quarta 00:20). Roda primeiro o caminho incremental e depois a reconstrução completa do banco, com montagem completa da release. Compara o preparo e as duas releases arquivo por arquivo, sem `meta.json` e `history/*`, e grava `DATA_DIR/consistency.json`. Qualquer divergência registra `ALERT consistency` no log e sai com código 3. A release incremental continua publicada até alguém conferir a completa e publicá-la com `-site rollback -to`; o `fiscal-pages` roda mesmo com o código 3.
 4. **Publicação no Pages dentro de um orçamento mensal.**
    - **Teto.** `PAGES_MAX_DEPLOYS_PER_MONTH` (padrão 450, abaixo dos 500 do Free, com folga para rollback).
    - **Espaçamento.** As releases de rotina esperam `tempo até o fim do mês ÷ deploys restantes` (cerca de 96 min no começo do mês). As quentes esperam também `PAGES_DATA_INTERVAL`. `full`, `memoria`, rollback, `-force` e mudança na apuração saem na hora.
