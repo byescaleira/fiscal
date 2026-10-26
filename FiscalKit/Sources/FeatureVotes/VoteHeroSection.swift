@@ -84,15 +84,18 @@ private struct VoteScoreboard: View {
                 }
             }
             if let tally = vote.vote?.tally, (tally.total ?? 0) > 0 {
-                TallyBar(
+                TallyChart(
                     segments: [
-                        TallyBar.Segment(
-                            id: "yes", value: Double(tally.yes ?? 0), color: BoardStyle.primary),
-                        TallyBar.Segment(
-                            id: "no", value: Double(tally.no ?? 0), color: BoardStyle.dimmed),
-                        TallyBar.Segment(
-                            id: "others", value: Double(tally.others ?? 0),
-                            color: BoardStyle.track, dashed: true),
+                        TallyChart.Segment(
+                            id: "yes", title: BallotChoice.yes.title,
+                            value: Double(tally.yes ?? 0), color: BoardStyle.primary),
+                        TallyChart.Segment(
+                            id: "no", title: BallotChoice.no.title, value: Double(tally.no ?? 0),
+                            color: BoardStyle.dimmed),
+                        TallyChart.Segment(
+                            id: "others", title: String(appLocalized: "Others"),
+                            value: Double(tally.others ?? 0), color: BoardStyle.track,
+                            dashed: true),
                     ], height: .spaceS)
             }
             HeroLastLine()

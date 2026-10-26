@@ -67,7 +67,7 @@ private struct RecentVoteRow: View {
                     Spacer(minLength: .spaceS)
                     if let approved = vote.approved { ResultChip(approved: approved) }
                 }
-                TallyBar(tally: vote.tally)
+                VoteTallyChart(tally: vote.tally)
             }
             .padding(.spaceL)
         }

@@ -283,21 +283,13 @@ private struct WeightPartCard<Extra: View>: View {
             Text(verbatim: text)
                 .font(.subheadline)
                 .fixedSize(horizontal: false, vertical: true)
-            VStack(alignment: .leading, spacing: .spaceS) {
-                ForEach(parts) { part in
-                    HStack(spacing: .spaceM) {
-                        Text(verbatim: part.label)
-                            .font(.footnote)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        ProgressBar(value: part.share, color: color)
-                            .frame(maxWidth: .infinity)
-                        Text(verbatim: PublicFormat.percent(part.share))
-                            .font(.footnote.weight(.semibold))
-                            .monospacedDigit()
-                    }
-                    .accessibilityElement(children: .combine)
-                }
-            }
+            RankedBarChart(
+                String(appLocalized: "Weight"),
+                bars: parts.map { part in
+                    RankedBar(
+                        id: part.id, title: part.label, value: part.share,
+                        valueText: PublicFormat.percent(part.share), color: color)
+                })
             extra
         }
     }

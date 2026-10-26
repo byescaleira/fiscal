@@ -42,14 +42,17 @@ public enum VoteOutcome: Equatable, Sendable {
 }
 
 public enum VoteTally {
-    public static func segments(_ tally: VoteSummary.Tally) -> [TallyBar.Segment] {
+    public static func segments(_ tally: VoteSummary.Tally) -> [TallyChart.Segment] {
         [
-            TallyBar.Segment(
-                id: BallotChoice.yes.id, value: Double(tally.yes ?? 0), color: .voteYes),
-            TallyBar.Segment(id: BallotChoice.no.id, value: Double(tally.no ?? 0), color: .voteNo),
-            TallyBar.Segment(
-                id: BallotChoice.abstain.id, value: Double(tally.others ?? 0),
-                color: .voteAbstain),
+            TallyChart.Segment(
+                id: BallotChoice.yes.id, title: BallotChoice.yes.title,
+                value: Double(tally.yes ?? 0), color: .voteYes),
+            TallyChart.Segment(
+                id: BallotChoice.no.id, title: BallotChoice.no.title,
+                value: Double(tally.no ?? 0), color: .voteNo),
+            TallyChart.Segment(
+                id: BallotChoice.abstain.id, title: String(appLocalized: "Others"),
+                value: Double(tally.others ?? 0), color: .voteAbstain),
         ]
     }
 

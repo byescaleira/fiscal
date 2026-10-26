@@ -56,8 +56,6 @@ private struct CompareHeroColumn: View {
 
 struct CompareMetricRow: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var isShown = false
     let metric: CompareTable.Metric
     let columns: [CompareTable.Column]
 
@@ -92,7 +90,7 @@ struct CompareMetricRow: View {
                         index, pair in
                         CompareCell(
                             value: pair.1, color: pair.0.color,
-                            alignment: alignment(at: index), isShown: isShown)
+                            alignment: alignment(at: index))
                     }
                 }
             }
@@ -101,8 +99,6 @@ struct CompareMetricRow: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: metric.title))
         .accessibilityValue(Text(verbatim: metric.spoken(by: columns)))
-        .animation(reduceMotion ? nil : .smooth, value: isShown)
-        .onAppear { isShown = true }
     }
 
     private func alignment(at index: Int) -> HorizontalAlignment {
@@ -115,7 +111,6 @@ private struct CompareCell: View {
     let value: CompareTable.Value
     let color: Color
     let alignment: HorizontalAlignment
-    let isShown: Bool
 
     var body: some View {
         VStack(alignment: alignment, spacing: .space2XS) {
@@ -140,9 +135,7 @@ private struct CompareCell: View {
                     .multilineTextAlignment(alignment == .leading ? .leading : .trailing)
             }
             if let fraction = value.fraction {
-                ProgressBar(value: isShown ? fraction : 0, color: color)
-                    .environment(
-                        \.layoutDirection, alignment == .leading ? .rightToLeft : .leftToRight)
+                ShareBarChart(value: fraction, color: color, mirrored: alignment == .leading)
             } else {
                 Capsule()
                     .strokeBorder(

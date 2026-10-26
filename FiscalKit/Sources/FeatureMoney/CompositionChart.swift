@@ -17,7 +17,7 @@ struct CompositionChart: View {
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceM) {
             if let focused {
-                ChartCallout(title: focused.title, value: focused.value) {
+                ChartCallout(title: focused.title, value: focused.value, stacked: true) {
                     Text(verbatim: focused.percent)
                         .font(.caption.weight(.semibold))
                         .monospacedDigit()

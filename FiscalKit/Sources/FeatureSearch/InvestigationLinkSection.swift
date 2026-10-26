@@ -142,20 +142,18 @@ private struct BallotVisual: View {
 }
 
 private struct DelegationVisual: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var isShown = false
     let counts: [BallotChoice: Int]
     let diverged: [VoteDetail.Ballot]
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceM) {
-            TallyBar(
+            TallyChart(
                 segments: BallotChoice.allCases.map { choice in
-                    TallyBar.Segment(
-                        id: choice.rawValue, value: Double(counts[choice] ?? 0),
-                        color: choice.color,
+                    TallyChart.Segment(
+                        id: choice.rawValue, title: choice.title,
+                        value: Double(counts[choice] ?? 0), color: choice.color,
                         dashed: choice == .absent)
-                }, fill: isShown ? 1 : 0)
+                })
             FlowLayout(spacing: .spaceM) {
                 ForEach(BallotChoice.allCases) { choice in
                     if let count = counts[choice], count > 0 {
@@ -171,9 +169,6 @@ private struct DelegationVisual: View {
             if !diverged.isEmpty {
                 DivergedPile(ballots: diverged)
             }
-        }
-        .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { isShown = true }
         }
     }
 }
@@ -220,8 +215,6 @@ private struct DivergedPile: View {
 }
 
 private struct GuidanceVisual: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var isShown = false
     let guidance: PersonFacts.Guidance
 
     var body: some View {
@@ -234,17 +227,18 @@ private struct GuidanceVisual: View {
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.secondary)
             }
-            TallyBar(
+            TallyChart(
                 segments: [
-                    TallyBar.Segment(
-                        id: "followed", value: Double(guidance.followed),
-                        color: ChartPalette.color(at: 0)),
-                    TallyBar.Segment(
-                        id: "against", value: Double(guidance.against),
-                        color: ChartPalette.color(at: 1)),
-                    TallyBar.Segment(
-                        id: "other", value: Double(guidance.other), color: .secondary, dashed: true),
-                ], fill: isShown ? 1 : 0)
+                    TallyChart.Segment(
+                        id: "followed", title: String(appLocalized: "Like the party"),
+                        value: Double(guidance.followed), color: ChartPalette.color(at: 0)),
+                    TallyChart.Segment(
+                        id: "against", title: String(appLocalized: "Against the party"),
+                        value: Double(guidance.against), color: ChartPalette.color(at: 1)),
+                    TallyChart.Segment(
+                        id: "other", title: String(appLocalized: "Abstained or other"),
+                        value: Double(guidance.other), color: .secondary, dashed: true),
+                ])
             FlowLayout(spacing: .spaceM) {
                 GuidanceKey(
                     title: String(appLocalized: "Like the party"), count: guidance.followed,
@@ -256,9 +250,6 @@ private struct GuidanceVisual: View {
                     title: String(appLocalized: "Abstained or other"), count: guidance.other,
                     symbol: "minus", color: .secondary)
             }
-        }
-        .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { isShown = true }
         }
     }
 }
