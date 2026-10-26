@@ -90,7 +90,7 @@
                         .joined(separator: " · "),
                     weight: weight(impact: impact), repercussion: nil, impact: impact,
                     route: vote.id, person: nil, proposition: vote.proposition, date: vote.date,
-                    url: nil, signals: testSignals)
+                    url: nil, signals: testSignals, plainSummary: vote.plainSummary)
             }
             .sorted { ($0.weight, $0.date) > ($1.weight, $1.date) }
             return HighlightList(
