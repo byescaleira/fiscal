@@ -70,7 +70,8 @@ extension ProfileModel {
     }
 
     public var lensFootnote: String {
-        lensThemes.isEmpty
+        let order =
+            lensThemes.isEmpty
             ? String(
                 appLocalized:
                     "Themes from the proposals and speeches, in the order the data comes. The numbers are the same for everyone."
@@ -79,5 +80,10 @@ extension ProfileModel {
                 appLocalized:
                     "Your lens puts your themes first. The numbers are the same for everyone."
             )
+        let estimate = String(
+            appLocalized:
+                "Estimated: each one's topic comes from keywords in its official summary and can miss."
+        )
+        return "\(order) \(estimate)"
     }
 }

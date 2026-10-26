@@ -132,4 +132,5 @@ public struct ShareHighlight: Hashable, Sendable {
     public let place: String
     public let tally: ShareTally?
     public let weight: String
+    public let uncertainty: String?
 }

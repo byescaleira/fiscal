@@ -14,15 +14,20 @@ Parte da mudança [`app-1.0`](proposal.md), pedida em 2026-10-25 (brief, "Destaq
 
 ```text
 peso = round(0,5 × repercussão + 0,5 × impacto)                     0 a 100
+peso = round(impacto)                    quando nenhum sinal de repercussão foi medido
 
-repercussão = 100 × (0,40 × L(notícias da proposição, 200)
-                   + 0,20 × L(notícias com o nome do político, 2.000)
-                   + 0,25 × L(visitas ao artigo do político, 300.000)
-                   + 0,15 × L(visitas ao artigo do tema, 100.000))
-L(x, teto)  = min(1, log10(1 + x) / log10(1 + teto)); sinal não medido = 0
+sinais e pesos: notícias da proposição 0,40 (teto 200) · notícias com o nome do político 0,20 (2.000)
+                visitas ao artigo do político 0,25 (300.000) · visitas ao artigo do tema 0,15 (100.000)
+repercussão = 100 × Σ(peso_i × L(x_i, teto_i)) / Σ peso_i      só sobre os sinais MEDIDOS nesta carga
+L(x, teto)  = min(1, log10(1 + x) / log10(1 + teto))
 
 impacto = 100 × (0,35 × tipo + 0,20 × abrangência + 0,25 × estágio + 0,20 × alcance do tema)
 ```
+
+- **Sinal ausente não conta como zero** (regra "Credibilidade: só fatos" do brief): um sinal é medido quando a carga trouxe a contagem (mesmo que 0); `null` é não medido e sai da conta. Os pesos dos sinais medidos são divididos pela soma deles; com só as duas visitas à Wikipédia (0,25 e 0,15), cada uma passa a valer 0,25/0,40 e 0,15/0,40.
+- **Votação de plenário** não tem um autor: os sinais do político (`newsPerson`, `wiki`) não valem para ela e não entram em `missing`.
+- **Confiança:** `full` quando todos os sinais que valem para o fato foram medidos; `partial` quando parte faltou; `impactOnly` quando nenhum foi medido (aí `repercussion` é `null` e o peso é o impacto). O Bluesky não tem peso na fórmula e aparece sempre em `missing` enquanto não for medido; ele não muda a confiança.
+- **O app** mostra ao lado de todo peso com `confidence != full` uma linha montada só desses campos, por exemplo "Estimado: repercussão medida só com Wikipédia; faltaram notícias e Bluesky nesta carga." (Hoje, widget, perfil, card de compartilhar e Live Activity).
 
 - **Tipo:** PEC 1,0; PLP 0,85; MPV 0,8; PL, PLS, PLC, PLN e PLV 0,7; PDL, PDS e PDC 0,45; PRC, PRS e PR 0,3; requerimento e indicação 0,1; discurso 0,1; outros 0,2.
 - **Abrangência:** nacional 1,0 (Câmara, Senado, Presidência); estadual 0,5 (assembleias, governos); municipal 0,2.
@@ -52,7 +57,7 @@ Regra fixa e pública, a mesma para todos (publicada em `method/weight.json › 
 - **Uma vez por aparelho:** o app guarda os ids já mostrados no App Group (`fiscal.highlightAlerts.shown`, últimos 60) e o servidor guarda os ids já enviados em `DATA_DIR/highlight-alerts.json` (14 dias). Só o primeiro destaque da lista que passa da regra entra; um novo tira o anterior da tela.
 - **Duração:** 8 h (`endsAt` e `stale-date`); o app encerra na abertura seguinte o que passou do prazo, e o sistema encerra sozinho em 8 h.
 - **Início:** local, quando o app abre ou volta para a frente e lê `highlights.json`; ou por push-to-start (iOS 17.2+), quando o servidor da apuração lê um `PUBLIC_DIR/v1/highlights.json` novo (confere a cada minuto, só relê quando o arquivo muda).
-- **Desligável** em Ajustes › Seus dados e privacidade › "Destaques importantes na tela de bloqueio" (ligado por padrão). Desligado, o app não inicia, encerra o que estiver na tela e apaga o registro do token no servidor.
+- **Desligável** em Ajustes › Seus dados e privacidade › "Destaques de maior peso na tela de bloqueio" (ligado por padrão). Desligado, o app não inicia, encerra o que estiver na tela e apaga o registro do token no servidor.
 - **Privacidade:** o registro leva só o token de push-to-start da Apple e o ambiente, no corpo (nunca na URL), vale 30 dias e é renovado a cada abertura; nenhum dado da pessoa vai junto.
 
 ```text
@@ -82,20 +87,25 @@ X, Instagram, TikTok e YouTube não têm busca aberta e gratuita usada aqui; ent
 
 ```text
 Action { id, kind ∈ proposal | vote | speech, title, proposition, date, url, ref (id da votação), ballot,
-         scope, stage, themes, weight, repercussion, impact,
-         signals { news, newsPerson, wiki, wikiTheme, bluesky, test } }
+         scope, stage, themes, weight, repercussion (null quando impactOnly), impact,
+         signals { news, newsPerson, wiki, wikiTheme, bluesky, test },
+         measured: [signal], missing: [signal], confidence ∈ full | partial | impactOnly }
 Highlight { id, kind ∈ action | vote | money | indicator, title, subtitle, weight, repercussion, impact,
-            route (slug, id da votação ou do indicador), person (PersonCard ou null), proposition, date, url, signals }
-WeightMethod { version, summary, formula, repercussion, impact, parts, signals, impactParts,
-               kinds, scopes, stages, themes, decay { halfLifeDays, windowDays, text }, rules, limits, sources,
-               alert { minWeight, maxAgeHours } }
+            route (slug, id da votação ou do indicador), person (PersonCard ou null), proposition, date, url, signals,
+            themes, stage, house (camara | senado | null), tally { yes, no, others } (só votação) | null,
+            measured, missing, confidence }
+WeightMethod { version (2), summary, formula, repercussion, renormalization, confidence: [{ key, label, text }],
+               impact, parts, signals, impactParts, kinds, scopes, stages, themes,
+               decay { halfLifeDays, windowDays, text }, rules, limits, sources,
+               alert { minWeight, maxAgeHours, text } }
+signal ∈ news | newsPerson | wiki | wikiTheme | bluesky
 ```
 
-`signals.*` é `null` quando o sinal não foi medido; `signals.test` é `true` só no showcase do app.
+`signals.*` é `null` quando o sinal não foi medido; `signals.test` é `true` só no showcase do app. O push-to-start da Live Activity leva `confidence`, `measured` e `missing` nos `attributes` para a linha de incerteza.
 
 ## Limites conhecidos
 
 - A repercussão mede quanto se fala, não o tom nem se é verdade.
 - O nome de urna pode ter homônimos no GDELT e na Wikipédia.
 - O estágio "aprovado em comissão" não é medido: os arquivos abertos usados não trazem o parecer.
-- O GDELT mede uma parte por carga; o resto fica sem notícia (zero) até a próxima.
+- O GDELT mede uma parte por carga; o resto fica sem notícia até a próxima. Sem notícia medida, a repercussão sai só da Wikipédia (`partial`) ou o peso sai só do impacto (`impactOnly`), e o app avisa.

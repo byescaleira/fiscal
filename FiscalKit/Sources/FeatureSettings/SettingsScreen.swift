@@ -164,7 +164,7 @@ private struct HighlightAlertsToggle: View {
         @Bindable var settings = settings
         Toggle(isOn: $settings.highlightAlerts) {
             SettingsLabel(
-                "Important highlights on the Lock Screen",
+                "Highest-weight highlights on the Lock Screen",
                 detail:
                     "Only weight 85 or more, from the last day. Fiscal sends only an anonymous Apple token.",
                 symbol: "bell.badge", color: .retroRust)

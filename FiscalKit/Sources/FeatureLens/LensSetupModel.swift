@@ -306,7 +306,23 @@ extension LensSetupModel {
         }
         return String(
             appLocalized:
-                "Ordered by what the people you support do the most. Reorder or remove as you like."
+                "Ordered by what the people you support do the most. Reorder or remove as you like. \(themesBasis)"
+        )
+    }
+
+    public var themesBasis: String {
+        let counted = activity.filter { !$0.counts.isEmpty }
+        let names = counted.map(\.name).formatted(.list(type: .and).locale(.app))
+        if counted.allSatisfy(\.usesActions) {
+            let total = PublicFormat.number(counted.reduce(0) { $0 + $1.actionCount })
+            return String(
+                appLocalized:
+                    "Calculated from \(total) recent actions of \(names). Estimated: each action's topic comes from keywords in its official summary and can miss."
+            )
+        }
+        return String(
+            appLocalized:
+                "Calculated from the proposals and speeches of \(names). Estimated: each one's topic comes from keywords in its official summary and can miss."
         )
     }
 

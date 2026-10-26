@@ -4,16 +4,20 @@ public struct SupportActivity: Hashable, Sendable {
     public let slug: String
     public let name: String
     public let counts: [Theme: Int]
+    public let actionCount: Int
 
-    public init(slug: String, name: String, counts: [Theme: Int]) {
+    public init(slug: String, name: String, counts: [Theme: Int], actionCount: Int = 0) {
         self.slug = slug
         self.name = name
         self.counts = counts.filter { $0.value > 0 }
+        self.actionCount = actionCount
     }
 
     public init(slug: String, name: String, actions: ActionList?, profile: Profile?) {
         var counts: [Theme: Int] = [:]
+        var actionCount = 0
         if let actions, !actions.items.isEmpty {
+            actionCount = actions.items.count
             for item in actions.items {
                 for theme in item.themes { counts[theme, default: 0] += 1 }
             }
@@ -22,8 +26,10 @@ public struct SupportActivity: Hashable, Sendable {
                 counts[line.key, default: 0] += line.proposals + line.speeches
             }
         }
-        self.init(slug: slug, name: name, counts: counts)
+        self.init(slug: slug, name: name, counts: counts, actionCount: actionCount)
     }
+
+    public var usesActions: Bool { actionCount > 0 }
 
     public var total: Int { counts.values.reduce(0, +) }
 }

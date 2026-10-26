@@ -87,7 +87,7 @@ private struct ProfileActionRow: View {
             }
             WeightChips(
                 repercussion: item.repercussion, impact: item.impact,
-                isTest: item.signals.isTest)
+                isTest: item.signals.isTest, coverage: item.coverage)
         }
         .padding(.vertical, .space2XS)
     }

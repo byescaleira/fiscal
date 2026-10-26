@@ -10,112 +10,17 @@ struct TodayHighlightSection: View {
         if let lead = today.highlightLead {
             TodaySection("Highlight of the Moment", source: today.highlightSource) {
                 VStack(alignment: .leading, spacing: .spaceM) {
-                    TodayHighlightLead(highlight: lead)
+                    TodayHighlightHero(highlight: lead)
                     if !today.highlightOthers.isEmpty {
                         TodayHighlightList(items: today.highlightOthers)
                     }
-                    HStack {
-                        Text("Weight orders what is happening; it never rates it.")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
-                        Spacer(minLength: .spaceS)
-                        WeightMethodButton(method: today.highlightMethod)
-                    }
-                    .padding(.horizontal, .spaceXS)
-                }
-            }
-        }
-    }
-}
-
-private struct TodayHighlightLead: View {
-    @Environment(TodayModel.self) private var today
-    @Environment(\.open) private var open
-    @Environment(\.navigationSection) private var section
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var filled = false
-    let highlight: Highlight
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: .spaceM) {
-            HStack(alignment: .center, spacing: .spaceS) {
-                Text(verbatim: today.highlightKicker(highlight).uppercased())
-                    .font(.caption2.weight(.heavy))
-                    .foregroundStyle(.secondary)
-                    .accessibilityHidden(true)
-                if today.isSupportPick(highlight) { LensPickMark() }
-                Spacer(minLength: .spaceS)
-                Text(verbatim: "\(highlight.weight)")
-                    .font(.scoreboardNumber)
-                    .monospacedDigit()
-                    .contentTransition(.numericText(value: Double(highlight.weight)))
-                    .accessibilityHidden(true)
-                Button("Share", systemImage: "square.and.arrow.up") {
-                    open(.share(today.shareSubject(for: highlight)), in: section)
-                }
-                .labelStyle(.iconOnly)
-                .buttonStyle(.borderless)
-                .font(.body.weight(.semibold))
-            }
-            Button {
-                if let route = today.route(for: highlight) { open(route, in: section) }
-            } label: {
-                VStack(alignment: .leading, spacing: .spaceM) {
-                    Text(verbatim: highlight.title)
-                        .font(.titleMedium)
-                        .lineLimit(6)
-                        .fixedSize(horizontal: false, vertical: true)
-                    ProgressBar(
-                        value: filled ? Double(highlight.weight) / 100 : 0, color: .retroTeal
-                    )
-                    .animation(reduceMotion ? nil : .smooth(duration: 1), value: filled)
-                    .onAppear { filled = true }
-                    TodayHighlightWho(highlight: highlight)
-                    WeightChips(
-                        repercussion: highlight.repercussion, impact: highlight.impact,
-                        isTest: highlight.signals.isTest)
-                }
-                .contentShape(.rect)
-            }
-            .buttonStyle(.plain)
-            .disabled(today.route(for: highlight) == nil)
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel(Text(verbatim: today.highlightAccessibility(highlight)))
-            .accessibilityAddTraits(.isButton)
-        }
-        .padding(.spaceInset)
-        .todayCard()
-        .contextMenu {
-            Button("Share", systemImage: "square.and.arrow.up") {
-                open(.share(today.shareSubject(for: highlight)), in: section)
-            }
-        }
-    }
-}
-
-private struct TodayHighlightWho: View {
-    let highlight: Highlight
-
-    var body: some View {
-        if let person = highlight.person {
-            HStack(spacing: .spaceM) {
-                PersonPortrait(
-                    slug: person.slug, name: person.name, party: person.party, size: .badgeM)
-                VStack(alignment: .leading, spacing: .spaceHairline) {
-                    Text(verbatim: person.name).font(.rowTitle)
-                    Text(verbatim: highlight.subtitle)
-                        .font(.footnote)
+                    Text("Weight orders what is happening; it never rates it.")
+                        .font(.caption)
                         .foregroundStyle(.secondary)
-                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.horizontal, .spaceXS)
                 }
-                Spacer(minLength: .spaceS)
-                PartyMark(person.party)
             }
-        } else {
-            Text(verbatim: highlight.subtitle)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
         }
     }
 }
@@ -156,6 +61,11 @@ private struct TodayHighlightRow: View {
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                         .lineLimit(2)
+                    if let short = highlight.coverage.uncertaintyShort {
+                        Text(verbatim: short)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 Text(verbatim: "\(highlight.weight)")

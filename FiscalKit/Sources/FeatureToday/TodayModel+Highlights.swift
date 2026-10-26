@@ -57,9 +57,40 @@ extension TodayModel {
     }
 
     public func highlightAccessibility(_ highlight: Highlight) -> String {
-        String(
-            appLocalized:
-                "\(highlightKicker(highlight)). \(highlight.title). \(highlight.subtitle). Weight \(highlight.weight) of 100, repercussion \(highlight.repercussion), impact \(highlight.impact)."
-        )
+        let weight = highlight.coverage.spoken(
+            weight: highlight.weight, repercussion: highlight.repercussion,
+            impact: highlight.impact)
+        let tally = highlight.tally.map {
+            String(appLocalized: "\($0.yes) yes, \($0.no) no.")
+        }
+        return [
+            "\(highlightKicker(highlight)). \(highlight.title). \(highlight.subtitle).", tally,
+            weight,
+        ]
+        .compactMap(\.self).joined(separator: " ")
+    }
+
+    public func highlightStage(_ highlight: Highlight) -> String? {
+        guard let key = highlight.stage else { return nil }
+        return highlightMethod?.stages.first { $0.key == key }?.label
+    }
+
+    public func highlightPlace(_ highlight: Highlight) -> String? {
+        let house: String? =
+            switch highlight.house {
+            case .senado: String(appLocalized: "Senate")
+            case .camara: String(appLocalized: "Chamber")
+            case nil: nil
+            }
+        let parts = [house, highlight.proposition, highlightStage(highlight)].compactMap(\.self)
+            .filter { !$0.isEmpty }
+        return parts.isEmpty ? nil : parts.joined(separator: " · ")
+    }
+
+    public func highlightThemeSlot(_ highlight: Highlight) -> Int? {
+        guard let theme = highlight.themes?.first,
+            let index = Theme.allCases.firstIndex(of: theme)
+        else { return nil }
+        return index
     }
 }

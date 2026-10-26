@@ -90,6 +90,16 @@ private struct CompareGroupSection: View {
                 if group.isLensOrdered {
                     Text("Your topics come first. The numbers are the same for everyone.")
                 }
+                if group.id == "themes" {
+                    Text(
+                        "Estimated: each proposal's topic comes from keywords in its official summary and can miss."
+                    )
+                }
+                if group.id == "office" {
+                    Text(
+                        "Each number covers that person's own term and house, without adjusting for terms of different length."
+                    )
+                }
                 if !group.missing.isEmpty {
                     Text(
                         "Not published for these offices: \(group.missing.formatted(.list(type: .and).locale(.app)))"

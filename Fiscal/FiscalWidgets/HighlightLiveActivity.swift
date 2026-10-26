@@ -28,6 +28,7 @@ struct HighlightLiveActivity: Widget {
                             .font(.subheadline.weight(.semibold))
                             .lineLimit(2)
                             .frame(maxWidth: .infinity, alignment: .leading)
+                        HighlightUncertainty(board: board, isShort: true)
                         HighlightWho(board: board, showsPortrait: false)
                     }
                     .padding(.horizontal, .space2XS)
@@ -79,6 +80,7 @@ private struct HighlightLockScreen: View {
                 .lineLimit(3)
                 .minimumScaleFactor(0.85)
                 .frame(maxWidth: .infinity, alignment: .leading)
+            HighlightUncertainty(board: board)
             HighlightWho(board: board)
         }
         .padding(.horizontal, .spaceXL)

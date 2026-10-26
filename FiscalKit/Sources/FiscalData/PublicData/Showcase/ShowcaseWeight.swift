@@ -41,7 +41,7 @@
             return Int((value * 100).rounded())
         }
 
-        private static func weight(impact: Int) -> Int { Int((Double(impact) * 0.5).rounded()) }
+        private static func weight(impact: Int) -> Int { impact }
 
         static func actions(
             for card: PersonCard, now: Date, longText: Bool, calendar: Calendar
@@ -56,7 +56,7 @@
                         id: "vote-\(vote.voteId)", kind: .vote, title: vote.summary,
                         proposition: vote.proposition, date: vote.date, url: nil,
                         ref: vote.voteId, ballot: vote.vote, stage: stage, themes: vote.themes,
-                        weight: weight(impact: impact), repercussion: 0, impact: impact,
+                        weight: weight(impact: impact), repercussion: nil, impact: impact,
                         signals: testSignals)
                 }
             let proposals = ShowcaseVotes.proposals(for: card, year: year).items.enumerated()
@@ -70,7 +70,7 @@
                         date: CalendarDay(now.addingTimeInterval(-Double(index * 9 + 4) * 86_400)),
                         url: proposal.url, ref: nil, ballot: nil, stage: "presented",
                         themes: proposal.themes, weight: weight(impact: impact),
-                        repercussion: 0, impact: impact, signals: testSignals)
+                        repercussion: nil, impact: impact, signals: testSignals)
                 }
             let items = (votes + proposals).sorted {
                 ($0.weight, $0.date) > ($1.weight, $1.date)
@@ -88,7 +88,7 @@
                     id: "vote-\(vote.id)", kind: .vote, title: vote.summary,
                     subtitle: [house, vote.proposition, vote.result].compactMap(\.self)
                         .joined(separator: " · "),
-                    weight: weight(impact: impact), repercussion: 0, impact: impact,
+                    weight: weight(impact: impact), repercussion: nil, impact: impact,
                     route: vote.id, person: nil, proposition: vote.proposition, date: vote.date,
                     url: nil, signals: testSignals)
             }
@@ -103,9 +103,10 @@
                 version: 1,
                 summary:
                     "O peso ordena o que cada político faz, de 0 a 100. Ele soma quanto se fala do assunto (repercussão) e o alcance da medida (impacto). A mesma regra vale para todos os políticos e temas, e o peso nunca diz se a medida é boa ou ruim.",
-                formula: "Peso = 50% repercussão + 50% impacto",
+                formula:
+                    "Peso = 50% repercussão + 50% impacto; sem nenhum sinal de repercussão medido, peso = impacto",
                 repercussion:
-                    "Contagens dos últimos 30 dias em fontes abertas, em escala logarítmica até um teto. Sinal não medido conta como zero.",
+                    "Contagens dos últimos 30 dias em fontes abertas, em escala logarítmica até um teto.",
                 impact:
                     "Regra fixa: tipo da proposição, abrangência, estágio e o alcance do tema em pessoas atingidas.",
                 parts: [
@@ -176,7 +177,10 @@
                     "O peso ordena e destaca; ele não qualifica a medida nem o político.",
                 ],
                 limits: ["Neste modo de teste, a repercussão não é medida."],
-                sources: sources, alert: .standard)
+                sources: sources, alert: .standard,
+                renormalization:
+                    "Sinal ausente não conta como zero. A repercussão é a média ponderada só dos sinais medidos nesta carga; sem nenhum sinal medido, o peso é só o impacto, e o app avisa."
+            )
         }
     }
 #endif

@@ -18,7 +18,7 @@ extension ProfileModel {
     public var actionsRuleText: String {
         String(
             appLocalized:
-                "Ordered by weight, from 0 to 100: repercussion plus impact, with the same rule for every politician."
+                "Ordered by weight, from 0 to 100: repercussion plus impact, with the same rule for every politician. A source that wasn't measured is left out of the count, never counted as zero."
         )
     }
 
@@ -47,9 +47,8 @@ extension ProfileModel {
     }
 
     public func actionAccessibility(_ item: ActionItem) -> String {
-        String(
-            appLocalized:
-                "\(actionKicker(item)). \(item.title). Weight \(item.weight) of 100, repercussion \(item.repercussion), impact \(item.impact)."
-        )
+        let weight = item.coverage.spoken(
+            weight: item.weight, repercussion: item.repercussion, impact: item.impact)
+        return "\(actionKicker(item)). \(item.title). \(weight)"
     }
 }
