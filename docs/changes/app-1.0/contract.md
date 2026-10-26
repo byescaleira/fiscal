@@ -53,6 +53,7 @@ Peça compartilhada pelas frentes paralelas da mudança [`app-1.0`](proposal.md)
 | `votes/{id}.json` | `VoteDetail` | quando muda |
 | `agenda/today.json` | `{ date, houses: [{ house, inSession, nextSession, items: [AgendaItem] }] }` | a cada 10 min |
 | `money/overview.json` | `MoneyOverview` | diária |
+| `money/mandate-cost.json` | `MandateCost`: quanto custa um mandato por mês, item a item, com o ato oficial de cada valor; 404 quer dizer que a carga ainda não publicou, e o app esconde a seção | diária |
 | `today.json` | `TodayDigest` (o que aconteceu, para a aba Hoje) | a cada 10 min |
 | `people/{slug}/checks.json` | `{ items: [FactCheck], sources }`: checagens do Projeto Comprova que citam a pessoa pelo nome completo exato; só existe quando há ao menos uma | diária |
 | `people/{slug}/actions.json` | `{ items: [Action], sources }`: o que a pessoa fez nos dois últimos anos, ordenado pelo peso ([weight.md](weight.md)); só existe quando há ação | diária |
@@ -118,6 +119,23 @@ MoneyOverview {
   sources
 }
 
+MandateCost {
+  checkedAt (AAAA-MM-DD em que os valores fixos foram conferidos na fonte),
+  roles: [{
+    role ∈ federalDeputy | senator | president | vicePresident | minister,
+    items: [{
+      kind ∈ salary | quota | staff | housing,
+      monthlyCents (null quando o valor muda por UF),
+      byState: [{ uf, monthlyCents }] | null (só a cota, as 27 UFs),
+      act: { name, url, since (AAAA-MM-DD de vigência ou null) }
+    }],
+    unpublished: [kind] (itens sem tabela oficial atual publicada; o app diz que faltam, nunca soma zero)
+  }],
+  minimumWage: { monthlyCents, period: null, act } | null,
+  laborIncome: { monthlyCents, period ("2º trimestre 2026", como o IBGE publica), act } | null,
+  sources
+}
+
 TodayDigest {
   date, events: [{ kind ∈ vote | session | race | law, title, summary, themes, ref }],
   sources
@@ -130,6 +148,10 @@ TodayDigest {
   - `numbers.proposals`, `laws`, `speeches` e `votes`, `campaigns` em `money/overview.json` e `mandate.start`/`end` de deputado estadual são `null` quando a casa não publica ou o cargo não tem o dado;
   - `Expense.document` é o CNPJ do fornecedor; fornecedor pessoa física sai `null`;
   - `revenue` usa o último ano completo da Receita.
+- **Custo do mandato (2026-10-25, frente `mandate-cost`):**
+  - valores fixos no servidor, conferidos em 25/10/2026: subsídio de R$ 46.366,19 desde 01/02/2025 (Decreto Legislativo nº 172/2022, o mesmo ato para deputados, senadores, presidente, vice e ministros); cota da Câmara por UF (Guia para jornalistas da Câmara, valores em vigor do Ato da Mesa nº 43/2009, de R$ 41.612,55 no DF a R$ 58.474,70 em RR); verba de gabinete de R$ 165.806,07 (Ato da Mesa nº 243/2026); auxílio-moradia de R$ 4.253,00, pago só a quem não ocupa imóvel funcional (Ato da Mesa nº 3/2015); salário mínimo de R$ 1.621,00 desde 01/01/2026 (Decreto nº 12.797/2025);
+  - a renda média vem da API do SIDRA a cada carga (tabela 5436, variável 5933, rendimento médio mensal real habitual de todos os trabalhos, Brasil, sexo total, último trimestre); falhou, fica o último trimestre salvo; sem nenhum, `laborIncome` é `null`;
+  - o Senado não publica a tabela atual da CEAPS por UF, nem verba de gabinete e auxílio-moradia em valor único: o senador sai só com o subsídio e `unpublished` lista o resto; governadores ficam fora (cada estado fixa o subsídio por lei própria, sem fonte única conferida).
 - **Municípios (2026-10-25, frente `city`):**
   - `index/people.json`, `meta.json › counts` e `places/{uf}.json` continuam só com o escopo federal e estadual; prefeitos, vices e vereadores (por volta de 69 mil pessoas) só aparecem em `places/city/{ibge}.json` e no próprio perfil, para o índice de busca não crescer 40 vezes e para versões do app que não conhecem os cargos novos continuarem lendo o índice;
   - o app abre `places/city/{ibge}.json` primeiro e mostra depois os grupos do estado e de Brasília; um 404 quer dizer que a carga de municípios ainda não rodou, e o app segue só com o estado;

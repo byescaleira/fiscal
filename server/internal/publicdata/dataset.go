@@ -258,6 +258,8 @@ type Dataset struct {
 	Revenue        *RevenueBlock
 	Salaries       []OfficeSalary
 	SalarySource   map[string]string
+	Mandate        *MandateCost
+	MandateSources []string
 	Checks         []RawCheck
 	Cities         []City
 	Signals        *Signals
