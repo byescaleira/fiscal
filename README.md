@@ -1,14 +1,11 @@
-<p align="center">
+<h1 align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset=".github/readme/icon-dark.png">
-    <img src=".github/readme/icon.png" width="128" alt="Ícone do Fiscal: o mapa do Brasil sobre a mata, com o sol e um rio">
+    <source media="(prefers-color-scheme: dark)" srcset=".github/readme/header-dark.png">
+    <img src=".github/readme/header-light.png" width="600" alt="Fiscal: política transparente, com dado oficial">
   </picture>
-</p>
-
-<h1 align="center">Fiscal</h1>
+</h1>
 
 <p align="center">
-  <strong>Política transparente, com dado oficial.</strong><br>
   Votos, gastos e eleições de quem governa e legisla, do vereador ao presidente.
 </p>
 
