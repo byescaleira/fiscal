@@ -1,6 +1,7 @@
 import CoreGraphics
 import FeatureCore
 import FiscalData
+import FiscalDesignSystem
 import FiscalDomain
 import FiscalResource
 import Foundation
@@ -34,6 +35,7 @@ struct ShareCardSnapshotTests {
 
     @Test(.enabled(if: ShareSnapshotFolder.path != nil)) func rendersEveryCardToDisk() async throws
     {
+        EmphasisFont.register()
         let folder = URL(fileURLWithPath: try #require(ShareSnapshotFolder.path), isDirectory: true)
         try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
         for (name, subject) in subjects {

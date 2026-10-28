@@ -32,6 +32,6 @@ extension Double {
 
 extension Font {
     public static let caseQuestion = Font.emphasis(.title2, weight: .bold)
-    public static let caseNumber = Font.largeTitle.weight(.heavy).width(.condensed)
+    public static let caseNumber = Font.emphasis(.largeTitle, weight: .heavy)
     public static let caseKicker = Font.caption2.weight(.heavy)
 }

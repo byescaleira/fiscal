@@ -73,7 +73,6 @@ struct HighlightWidgetView: View {
 
     var body: some View {
         content
-            .fontDesign(.rounded)
             .partyMarksStill()
             .redacted(reason: entry.isSample ? .placeholder : [])
     }

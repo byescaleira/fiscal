@@ -13,7 +13,7 @@ public struct ScoreboardFigure: View {
 
     public var body: some View {
         Text(verbatim: value)
-            .font(.system(size: size, weight: .heavy).width(.condensed))
+            .font(.emphasis(fixed: size, weight: .heavy))
             .monospacedDigit()
             .lineLimit(1)
             .minimumScaleFactor(0.4)

@@ -85,7 +85,6 @@ struct RepresentativesWidgetView: View {
 
     var body: some View {
         content
-            .fontDesign(.rounded)
             .redacted(reason: entry.isSample ? .placeholder : [])
     }
 

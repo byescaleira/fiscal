@@ -38,4 +38,8 @@ extension Font {
         .custom(EmphasisFont.family, size: EmphasisFont.size(style), relativeTo: style)
             .weight(weight)
     }
+
+    public static func emphasis(fixed size: CGFloat, weight: Font.Weight = .bold) -> Font {
+        .custom(EmphasisFont.family, fixedSize: size).weight(weight)
+    }
 }

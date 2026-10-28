@@ -118,7 +118,7 @@ private struct MineBenchLeaders: View {
             ForEach(bench.leading) { share in
                 VStack(alignment: .leading, spacing: .space2XS) {
                     Text(verbatim: PublicFormat.number(share.count))
-                        .font(.amountRow.width(.condensed))
+                        .font(.amountRow)
                         .monospacedDigit()
                     PartyMark(share.party)
                 }
@@ -129,7 +129,7 @@ private struct MineBenchLeaders: View {
             if bench.parties.count > MineBench.leadingLimit {
                 VStack(alignment: .leading, spacing: .space2XS) {
                     Text(verbatim: "+\(bench.parties.count - MineBench.leadingLimit)")
-                        .font(.amountRow.width(.condensed))
+                        .font(.amountRow)
                         .monospacedDigit()
                         .foregroundStyle(.secondary)
                     Text("other parties")
