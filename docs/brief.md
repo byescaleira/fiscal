@@ -78,7 +78,7 @@ O Brasil está polarizado, e o Fiscal assume isso de frente: **o app se adapta a
   - nunca aparecem num card de compartilhar nem em metadados de imagem exportada;
   - trocar de iPhone ou reinstalar o app pede a escolha de novo, e o app avisa disso no setup;
   - o selo "Lente: …" e o aviso do cadeado repetem a regra em Ajustes › Lente, com um botão "Apagar minha escolha";
-  - na App Store, o rótulo de privacidade continua "Dados não coletados". Nunca vão para o servidor, nunca entram em telemetria e nunca saem no backup do servidor. Opinião política é dado pessoal sensível na LGPD (art. 5º, II, e art. 11).
+  - na App Store, o rótulo de privacidade é o do [ADR 0017](adr/0017-app-store-privacy-label.md), sem dado sobre a Lente. Nunca vão para o servidor, nunca entram em telemetria e nunca saem no backup do servidor. Opinião política é dado pessoal sensível na LGPD (art. 5º, II, e art. 11).
   - Notificações não são personalizadas (decisão do usuário em 2026-10-25): são por feature, iguais para todo mundo, por canal de broadcast do APNs, e só quando há necessidade ou variação significativa dos dados. A Lente nunca vira alerta, então nada da Lente sai do aparelho.
 
 ## Aparência pela Lente

@@ -24,7 +24,7 @@ private struct QuietBounce<Value: Equatable>: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .quietBounce(value: value)
+            .symbolEffect(.bounce, value: value)
             .symbolEffectsRemoved(reduceMotion || MotionBudget.isConstrained)
     }
 }
