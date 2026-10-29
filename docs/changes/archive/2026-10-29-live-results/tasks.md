@@ -19,3 +19,9 @@
 - Remover o exemplo `Item` do template (`FeatureHome`, repositório, rotas e intent), que continua no código, mas fora da aba.
 - Push-to-start, para a atividade começar sozinha quando a apuração começar.
 - Revisões de design, acessibilidade e código sobre o diff da fase.
+
+## Arquivamento (2026-10-29)
+
+- A apuração, o servidor e a Live Activity estão em produção; a verdade atual está em [live-results.md](../../../specs/live-results.md).
+- As etapas abertas que dependem do usuário ou do aparelho (chave APNs, conta no Xcode, teste ponta a ponta e Live Activity no iPhone físico) viraram um item do [backlog](../../../backlog.md); a volta ao TSE real antes das 17h de 25/10 não se aplica mais.
+- Do "Fica para depois": o exemplo `Item` saiu na `app-1.0`; o push-to-start da apuração está no roadmap, depois da 1.0; as revisões entram na rodada única da `align-workspace`.

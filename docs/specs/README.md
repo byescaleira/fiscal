@@ -14,6 +14,13 @@ As specs vivas do Fiscal: um arquivo por capacidade, com a verdade **atual** do 
 
 | Capacidade | Spec |
 | --- | --- |
+| Apuração ao vivo e Atividade ao Vivo da disputa | [live-results.md](live-results.md) |
+| Dados públicos: arquivos, CDN, cache, erros, pacote offline e carga | [public-data-api.md](public-data-api.md) |
+| Lente: quem você apoia, temas e visual, só no aparelho | [lens.md](lens.md) |
+| Credibilidade: fonte, "—", comparação com colegas, peso, "Estimado" e explicações | [credibility.md](credibility.md) |
+| Cartazes de compartilhar, acervo de arte e créditos | [share-cards-and-art.md](share-cards-and-art.md) |
+| Checagens do Projeto Comprova | [fact-checks.md](fact-checks.md) |
+| Alertas: destaque do momento e resultado da disputa | [notifications.md](notifications.md) |
 | Atualização obrigatória ou recomendada | [../force-update.md](../force-update.md) |
 | Site público e Fiscal na Web | [../web.md](../web.md) |
 | Admin, flags remotas e versões | [../admin.md](../admin.md) |

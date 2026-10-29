@@ -4,7 +4,7 @@ Peça compartilhada pelas frentes paralelas da mudança [`app-1.0`](proposal.md)
 
 ## 1. Regras de dados (valem para servidor e app)
 
-- **Estático primeiro ([ADR 0002](../../adr/0002-static-first-server.md)):**
+- **Estático primeiro ([ADR 0002](../../../adr/0002-static-first-server.md)):**
   - todo dado é um arquivo JSON pronto, com o `.gz` ao lado, publicado em `PUBLIC_DIR/v1/` e servido pelo Caddy em `https://fiscal.byescaleira.com/api/v1/<caminho>.json`;
   - nenhuma rota calcula nada por acesso;
   - a busca roda no aparelho, sobre o índice.
@@ -246,5 +246,5 @@ TodayDigest {
     - teste que garante que o store da Lente não usa CloudKit e está fora do backup;
   - os seguidos ficam no aparelho; o iCloud privado é opcional e nunca leva a Lente.
 - **Aparência:** `PartyPalette` para candidatos; paletas da Lente em pares espelhados; arte via `art-credits.json` no `FiscalResource`.
-- **Só português ([ADR 0003](../../adr/0003-portuguese-only.md)):** o catálogo fica só com `pt-BR` (chaves em inglês) e sai a escolha de idioma dos Ajustes.
+- **Só português ([ADR 0003](../../../adr/0003-portuguese-only.md)):** o catálogo fica só com `pt-BR` (chaves em inglês) e sai a escolha de idioma dos Ajustes.
 - **Gratuito** (decisão do usuário em 2026-10-25): sem assinatura, Pro, paywall nem StoreKit. Saem do template o `Fiscal.storekit`, `FiscalStoreTests`, os textos e as telas de compra, e o que mais depender disso.

@@ -2,7 +2,7 @@
 
 - **Data:** 2026-10-25
 - **Estado:** proposta para aprovação do usuário
-- **Base:** [pesquisa do Politicômetro](research/pesquisa-politicometro.md) e [API mapeada](research/api-politicometro.md)
+- **Base:** [pesquisa do Politicômetro](research/2026-10-25-pesquisa-politicometro.md) e [API mapeada](research/2026-10-25-api-politicometro.md)
 
 ## Em uma frase
 
@@ -88,7 +88,7 @@ O app tem a cara da pessoa; os dados continuam com a cara dos fatos.
 - **Paletas:** cada uma tem cor de destaque, fundo dos cards e um par de cores para o compartilhamento. Há paletas inspiradas no imaginário de cada público, sempre em pares espelhados, paletas neutras e paletas tiradas das obras dos artistas parceiros, com crédito. Nenhuma paleta se apresenta como "a neutra", e o verde-amarelo não fica sem contraparte, porque os dois campos disputam essas cores. O posicionamento sugere uma paleta, mas qualquer pessoa pode escolher qualquer uma.
 - **Bandeira e brasões:** nunca recoloridos, com inscrição ou usados como produto (Lei 5.700/1971; Lei 9.279/1996, art. 191).
 - **Símbolos:** um conjunto de SF Symbols por tema e por estilo, usado nos chips da Lente e nos cards. Sem logotipo oficial de partido, que é marca registrada; os ícones de partido usam símbolos genéricos desenhados pelo Fiscal (ver "Ícone do app").
-- **Ícone do app** (pedido do usuário em 2026-10-25: "design do ícone seguindo a identidade do projeto"; escolhido por ele no iPhone no mesmo dia, depois de sete rodadas em `docs/changes/app-1.0/icon/`):
+- **Ícone do app** (pedido do usuário em 2026-10-25: "design do ícone seguindo a identidade do projeto"; escolhido por ele no iPhone no mesmo dia, depois de sete rodadas em `docs/changes/archive/2026-10-29-app-1.0/icon/`):
   - **Principal:** a Amazônia ao amanhecer com o mapa do Brasil em vidro por cima. A estrela do template saiu.
   - **Alternativos, em Ajustes › Aparência › Ícone do app:**
     - Amazônia de dia e Amazônia com rio;

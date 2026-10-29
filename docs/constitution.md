@@ -16,6 +16,8 @@ As regras inegociáveis do repositório. Valem para toda mudança, de qualquer p
 10. **Paralelismo.** Frentes independentes = um subagente por frente em worktree, com `FISCAL_BUILD_ROOT` próprio, sem simulador; o coordenador integra uma por vez e roda a verificação pesada.
 11. **Fiscalização.** O hook do plugin roda a auditoria (`.byescaleira-sdd.json`) ao encerrar e bloqueia com violações; commit ou merge de interface exige a aprovação do revisor de design. Exceções legítimas só em `.byescaleira-sdd.json › allow`, com o motivo num ADR.
 12. **CI.** Xcode Cloud com os scripts de `ci_scripts/`; o repositório não usa GitHub Actions.
+13. **Versão.** Decisão do usuário de 2026-10-28 para todo o workspace ([ADR 0012](adr/0012-constitution-version-and-facts.md)): mínimo de sistema 26 em todas as plataformas, compilando com o SDK mais novo; tudo do 27 atrás de `#available` com alternativa no 26. `MARKETING_VERSION` em SemVer (`1.0.0`), igual em todos os alvos; `CHANGELOG.md` com `Unreleased` atualizado em todo PR; tag `vX.Y.Z` em cada versão da loja, com ok. Regra completa: skill `sdd`, `versioning.md`.
+14. **Fato, não opinião; incerteza explicada.** Exceção do Fiscal ([ADR 0012](adr/0012-constitution-version-and-facts.md), [brief](brief.md)): o app mostra números e textos oficiais como vieram, com fonte e data, sem adjetivo de valor, causa atribuída, nota ou ranking de pessoas; dado ausente é "—", nunca 0; tudo que é estimado (peso, repercussão, temas, explicação gerada) diz ao lado, em uma linha, por que é estimado e o que ficou sem medir; a mesma regra vale para todos os políticos, partidos e lados.
 
 ## Onde cada coisa fica
 

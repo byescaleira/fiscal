@@ -2,7 +2,7 @@
 
 - **Estado:** Proposto
 - **Data:** 2026-10-25
-- **Mudança:** [`app-1.0`](../changes/app-1.0/proposal.md)
+- **Mudança:** [`app-1.0`](../changes/archive/2026-10-29-app-1.0/proposal.md)
 
 ## Contexto
 

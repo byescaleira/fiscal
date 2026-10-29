@@ -2,13 +2,13 @@
 
 Proposta da mudança `setup-lens-art`.
 
-- **Estado:** rascunho
+- **Estado:** substituída (arquivada em 2026-10-29): o setup da Lente, a aparência e a arte entraram pela [`app-1.0`](../2026-10-29-app-1.0/proposal.md), com o modelo "quem você apoia" no lugar de "como você se vê"; a verdade atual está em [lens.md](../../../specs/lens.md) e [share-cards-and-art.md](../../../specs/share-cards-and-art.md)
 - **Data:** 2026-10-25
 - **Branch:** `feature/setup-lens-art`
 
 ## Por quê
 
-O usuário pediu em 2026-10-25: "está faltando imagens, animações, tema. Precisamos adequar o app a cada usuário [...] um setup inicial onde ele escolhe o que ele gosta e o que ele quer ver de forma simples. As imagens de artistas são prioridade!". Hoje o app abre direto na apuração, sem arte, sem tema próprio e sem saber o que importa para a pessoa. É a [Lente do brief](../../brief.md) e a fase 4 do [roadmap](../../roadmap.md), adiantada para logo depois da apuração.
+O usuário pediu em 2026-10-25: "está faltando imagens, animações, tema. Precisamos adequar o app a cada usuário [...] um setup inicial onde ele escolhe o que ele gosta e o que ele quer ver de forma simples. As imagens de artistas são prioridade!". Hoje o app abre direto na apuração, sem arte, sem tema próprio e sem saber o que importa para a pessoa. É a [Lente do brief](../../../brief.md) e a fase 4 do [roadmap](../../../roadmap.md), adiantada para logo depois da apuração.
 
 ## O que muda
 
@@ -21,7 +21,7 @@ O usuário pediu em 2026-10-25: "está faltando imagens, animações, tema. Prec
   - fundo dos cards de compartilhar;
   - capas dos temas;
   - galeria "Artistas", com autor, obra, ano, acervo e licença.
-- **Tema** com paletas em pares espelhados, sem cor de partido, aplicado à estrutura (destaque, fundos de card, ícone). Os dados mantêm a cor fixa de dado ([ADR 0002 não muda isso](../../adr/0002-static-first-server.md); a regra está no brief).
+- **Tema** com paletas em pares espelhados, sem cor de partido, aplicado à estrutura (destaque, fundos de card, ícone). Os dados mantêm a cor fixa de dado ([ADR 0002 não muda isso](../../../adr/0002-static-first-server.md); a regra está no brief).
 - **Animações:**
   - Lottie no setup, gerada por `scripts/animations.py`;
   - entrada em cascata das seções;
@@ -31,7 +31,7 @@ O usuário pediu em 2026-10-25: "está faltando imagens, animações, tema. Prec
   Tudo respeita Reduzir movimento.
 - **Privacidade:** a Lente, o posicionamento e as escolhas visuais ficam só no aparelho (SwiftData), sem ir ao servidor.
 
-## Acervo da primeira versão (da [pesquisa de artistas](../../research/2026-10-25-art-and-licensing.md))
+## Acervo da primeira versão (da [pesquisa de artistas](../../../research/2026-10-25-art-and-licensing.md))
 
 - **Domínio público:** Pedro Américo, J. Carlos, Angelo Agostini, Belmonte, Almeida Júnior, Benedito Calixto, Debret e Victor Brecheret (livre desde 2026).
   - Cada arquivo entra com a página do Commons ou do acervo, a data de morte do autor e os termos do acervo de origem. A Brasiliana Digital e a Biblioteca Nacional têm condições próprias mesmo para obra em domínio público.

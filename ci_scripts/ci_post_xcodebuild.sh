@@ -12,8 +12,8 @@ mkdir -p TestFlight
 {
   echo "Build ${CI_BUILD_NUMBER:-?} · ${CI_BRANCH:-${CI_TAG:-detached}} · ${CI_COMMIT:0:7}"
   echo
-  echo "Changes:"
+  echo "Mudanças:"
   git log --no-merges -n 12 --pretty=format:'• %s' -- Fiscal FiscalKit | awk '{ if (length($0) > 220) print substr($0, 1, 217) "..."; else print }'
-} | head -c 3800 > TestFlight/WhatToTest.en-US.txt
+} | head -c 3800 > TestFlight/WhatToTest.pt-BR.txt
 
-cat TestFlight/WhatToTest.en-US.txt
+cat TestFlight/WhatToTest.pt-BR.txt

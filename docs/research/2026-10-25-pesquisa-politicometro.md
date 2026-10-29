@@ -66,7 +66,7 @@ Para presidente ou governador, o perfil é mais curto (sem presença, votos nem 
 | Assembleias e câmaras municipais (SAPL do Interlegis) | presença, votos e matérias, só onde publicam | API SAPL, cobertura irregular |
 | STF | composição e pauta | sem API pública; páginas |
 
-O site tem uma API interna, que não é pública nem documentada. O contrato dela está mapeado em [api-politicometro.md](api-politicometro.md) para servir de modelo ao nosso servidor. O app não deve chamar essa API nem copiar textos ou visual (o rodapé diz "todos os direitos reservados"); o nosso servidor carrega direto das fontes oficiais acima.
+O site tem uma API interna, que não é pública nem documentada. O contrato dela está mapeado em [api-politicometro.md](2026-10-25-api-politicometro.md) para servir de modelo ao nosso servidor. O app não deve chamar essa API nem copiar textos ou visual (o rodapé diz "todos os direitos reservados"); o nosso servidor carrega direto das fontes oficiais acima.
 
 ## Visual e UX
 
