@@ -69,6 +69,13 @@ afterEach(async () => {
   await Promise.all(servers.map((server) => server.close()));
 });
 
+test('health answers without a session and reports the package version', async () => {
+  const response = await client(base).call('GET', '/admin/health');
+  const { version } = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+  assert.equal(response.status, 200);
+  assert.deepEqual(response.body, { ok: true, version });
+});
+
 test('setup code is printed once and works only once', async () => {
   const printed = logs.filter((line) => line.includes('setup code'));
   assert.equal(printed.length, 1);

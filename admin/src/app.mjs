@@ -14,6 +14,8 @@ import { FLAGS, FLAG_NAMES, parseFlagForm } from './flags.mjs';
 import { PLATFORMS, PLATFORM_NAMES, parseReleaseForm } from './versions.mjs';
 import { auditPage, bridgePage, flagsPage, loginPage, notFoundPage, overviewPage, setupPage, versionsPage } from './views.mjs';
 
+export const VERSION = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version;
+
 const ASSETS = {
   '/admin/assets/admin.css': ['text/css; charset=utf-8', readFileSync(new URL('../public/admin.css', import.meta.url))],
   '/admin/assets/admin.js': ['text/javascript; charset=utf-8', readFileSync(new URL('../public/admin.js', import.meta.url))],
@@ -325,7 +327,7 @@ export function createApp({ secretsDir, dataDir, origin, rpID, cloudkit, bridge,
     const method = request.method;
     const ip = clientIP(request);
 
-    if (path === '/admin/health') return json(response, 200, { ok: true });
+    if (path === '/admin/health') return json(response, 200, { ok: true, version: VERSION });
     if (ASSETS[path] && method === 'GET') return send(response, 200, ASSETS[path][1], { 'Content-Type': ASSETS[path][0], 'Cache-Control': 'no-cache' });
     if (!path.startsWith('/admin')) return html(response, 404, notFoundPage());
 

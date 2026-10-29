@@ -2,7 +2,7 @@ import { test, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { readFileSync } from 'node:fs';
-import { handle, handleInternal, store, rateBuckets, config, configure, resetConfig, resetStats, stats } from './server.mjs';
+import { handle, handleInternal, store, rateBuckets, config, configure, resetConfig, resetStats, stats, VERSION } from './server.mjs';
 
 const ID = 'ABEiM0RVZneImaq7zN3u_w';
 const OWNER = 'o'.repeat(43);
@@ -37,7 +37,8 @@ beforeEach(() => {
 test('health', async () => {
   const response = await request('GET', '/bridge/health');
   assert.equal(response.status, 200);
-  assert.deepEqual(response.json, { ok: true });
+  assert.deepEqual(response.json, { ok: true, version: VERSION });
+  assert.match(VERSION, /^\d+\.\d+\.\d+$/);
 });
 
 test('create, read with etag and not modified', async () => {
@@ -121,7 +122,7 @@ test('pause answers 503 on reads and writes while health stays up', async () => 
   }
   const health = await request('GET', '/bridge/health');
   assert.equal(health.status, 200);
-  assert.deepEqual(health.json, { ok: true, paused: true });
+  assert.deepEqual(health.json, { ok: true, version: VERSION, paused: true });
   configure({ enabled: true }, { persist: false });
   assert.equal((await request('GET', `/bridge/v1/snapshots/${ID}`)).status, 200);
 });

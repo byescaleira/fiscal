@@ -19,6 +19,8 @@ import (
 	"liveresults/internal/pages"
 )
 
+var version = "dev"
+
 var (
 	projectName = regexp.MustCompile(`^[a-z0-9][a-z0-9-]{0,57}$`)
 	accountID   = regexp.MustCompile(`^[0-9a-f]{32}$`)
@@ -102,7 +104,7 @@ func main() {
 		log.Fatalf("config: %v", err)
 	}
 	if *configCheck {
-		log.Printf("config ok: project=%s branch=%s", cfg.Project, cfg.Branch)
+		log.Printf("config ok: version=%s project=%s branch=%s", version, cfg.Project, cfg.Branch)
 		return
 	}
 	cfg.Force = *force

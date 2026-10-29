@@ -37,7 +37,7 @@ Sem `APNS_KEY_FILE`, `APNS_KEY_ID`, `APNS_TEAM_ID` e `APNS_TOPIC` o servidor nã
 
 | Rota | Resposta |
 | --- | --- |
-| `GET /api/health` | `{"ok":true}` |
+| `GET /api/health` | `{"ok":true,"version":"1.0.0+<sha>"}`: a versão vem do binário (`-ldflags "-X main.version=…"`, que o `scripts/server-deploy.sh` preenche com a tag `vX.Y.Z` do commit ou com o `MARKETING_VERSION` do app e o sha); `dev` num build local |
 | `GET /api/v1/races` | `{"races":[Race],"fetchedAt":"…"}`; `503 not_ready` antes do primeiro dado |
 | `GET /api/v1/races/{id}` | `Race`; `404 race_not_found`; `503 not_ready` |
 | `POST /api/v1/live-activities` | `{"raceId","pushToken","environment"}` → `204`; `422 invalid_request`, `413 body_too_large`, `409 token_bound_to_other_race`, `429 too_many_registrations`, `429 rate_limited`, `507 capacity_reached` |
