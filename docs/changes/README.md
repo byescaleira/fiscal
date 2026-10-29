@@ -4,17 +4,20 @@ Toda mudança de comportamento do Fiscal (feature nova, tela refeita, regra alte
 
 ## Ciclo
 
-1. **Proposta.** Copie `_template/` para `docs/changes/<id>/`, com `<id>` em inglês, kebab-case e começando por verbo (`add-reminders`, `redesign-home`, `migrate-items-v2`). Preencha `proposal.md`: por quê, o que muda, o que fica de fora, specs afetadas e o que é do usuário. Decisões genuínas são perguntadas antes de seguir, com a opção recomendada primeiro.
+1. **Proposta.** Copie `_template/` para `docs/changes/<id>/`, com `<id>` em inglês, kebab-case e começando por verbo (`add-reminders`, `redesign-home`, `migrate-items-v2`). Preencha `proposal.md`: por quê, o que muda, o que fica de fora, specs afetadas, critérios de aceite em EARS e o que é do usuário. Decisões genuínas são perguntadas antes de seguir, com a opção recomendada primeiro.
 2. **Desenho.** `design.md` com o contexto, as decisões técnicas e as alternativas descartadas, os targets e tipos, os dados e a migração, os riscos e como testar. Tela existente começa pela crítica honesta. Decisão que vale além desta mudança vira um [ADR](../adr/README.md).
 3. **Etapas.** `tasks.md` com as fases na ordem, cada etapa verificável e com a verificação escrita. "Em etapas" = parar e esperar o ok depois de cada uma.
 4. **Implementação.** Uma etapa por vez, marcando `[x]` no mesmo commit da etapa, em `feature/<assunto>`.
-5. **Arquivamento.** Com tudo entregue e verificado: aplique as mudanças de spec em `docs/specs/`, atualize `backlog.md` e `roadmap.md`, e mova a pasta para `archive/<AAAA-MM-DD>-<id>/` (a data é a do arquivamento). A pasta arquivada não muda mais.
+5. **Arquivamento.** Com tudo entregue, verificado e conferido pelo `byescaleira-workspace:spec-reviewer`, e com o `CHANGELOG.md` em dia: aplique as mudanças de spec em `docs/specs/`, atualize `backlog.md` e `roadmap.md`, e mova a pasta para `archive/<AAAA-MM-DD>-<id>/` (a data é a do arquivamento). A pasta arquivada não muda mais.
 
 ## Em andamento
 
 | Mudança | Estado |
 | --- | --- |
-| _nenhuma_ | |
+| [`kit-adoption`](kit-adoption/proposal.md) | Entregue na `feature/kit-adoption`; espera o merge do PR na `development` para arquivar |
+| [`align-workspace`](align-workspace/proposal.md) | Em andamento: frentes paralelas da fase 2 |
+
+Arquivadas em [archive/](archive/): `live-results`, `app-1.0` e `setup-lens-art` (substituída pela `app-1.0`).
 
 ## Modelos
 

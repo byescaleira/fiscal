@@ -2,11 +2,11 @@
 
 - **Estado:** Proposto
 - **Data:** 2026-10-25
-- **Mudança:** [`app-1.0`](../changes/app-1.0/proposal.md)
+- **Mudança:** [`app-1.0`](../changes/archive/2026-10-29-app-1.0/proposal.md)
 
 ## Contexto
 
-A 1.0 publica perfis, votações, gastos, pauta e o resumo do dia como arquivos estáticos ([ADR 0002](0002-static-first-server.md), [contrato](../changes/app-1.0/contract.md)). Os dados vêm de seis fontes oficiais com formatos, limites e horários diferentes, e o mesmo político aparece em várias delas sem uma chave comum publicada. A apuração ao vivo já roda no container `fiscal-api` e não pode parar por causa da carga.
+A 1.0 publica perfis, votações, gastos, pauta e o resumo do dia como arquivos estáticos ([ADR 0002](0002-static-first-server.md), [contrato](../changes/archive/2026-10-29-app-1.0/contract.md)). Os dados vêm de seis fontes oficiais com formatos, limites e horários diferentes, e o mesmo político aparece em várias delas sem uma chave comum publicada. A apuração ao vivo já roda no container `fiscal-api` e não pode parar por causa da carga.
 
 ## Decisão
 

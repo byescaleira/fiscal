@@ -2,13 +2,13 @@
 
 Proposta da mudança `live-results`.
 
-- **Estado:** em andamento
+- **Estado:** entregue (arquivada em 2026-10-29; o que ficou aberto foi para o [backlog](../../../backlog.md))
 - **Data:** 2026-10-25
 - **Branch:** `feature/live-results`
 
 ## Por quê
 
-O 2º turno de 2026 é hoje, 25/10, e a apuração começa às 17h (Brasília). A pessoa quer acompanhar presidente e governador sem abrir o app: o placar fica na tela de bloqueio e na Dynamic Island, atualizado pelo servidor com os números oficiais do TSE. Esta é a fase 1 do [roadmap](../../roadmap.md), com prioridade total.
+O 2º turno de 2026 é hoje, 25/10, e a apuração começa às 17h (Brasília). A pessoa quer acompanhar presidente e governador sem abrir o app: o placar fica na tela de bloqueio e na Dynamic Island, atualizado pelo servidor com os números oficiais do TSE. Esta é a fase 1 do [roadmap](../../../roadmap.md), com prioridade total.
 
 ## O que muda
 
@@ -25,7 +25,7 @@ O 2º turno de 2026 é hoje, 25/10, e a apuração começa às 17h (Brasília). 
 
 ## Fora do escopo
 
-- Deputados, senadores, perfis e o restante da [pesquisa](../../research/2026-10-25-pesquisa-politicometro.md).
+- Deputados, senadores, perfis e o restante da [pesquisa](../../../research/2026-10-25-pesquisa-politicometro.md).
 - Apuração por cidade ou mapa.
 - Iniciar a Live Activity por push (push-to-start) às 17h.
 - Widgets da tela de início.

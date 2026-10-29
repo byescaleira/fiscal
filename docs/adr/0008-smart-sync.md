@@ -2,7 +2,7 @@
 
 - **Estado:** Aceito (em produção desde 2026-10-26)
 - **Data:** 2026-10-26
-- **Mudança:** [`app-1.0`](../changes/app-1.0/proposal.md)
+- **Mudança:** [`app-1.0`](../changes/archive/2026-10-29-app-1.0/proposal.md)
 
 ## Contexto
 
