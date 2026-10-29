@@ -43,6 +43,7 @@ let package = Package(
             dependencies: [
                 "FiscalDomain", "FiscalDesignSystem", "FiscalResource",
                 .product(name: "ByescaleiraUI", package: "byescaleira-kit"),
+                .product(name: "ByescaleiraAnimation", package: "byescaleira-kit"),
                 .product(name: "Lottie", package: "lottie-spm"),
             ]),
         .target(
