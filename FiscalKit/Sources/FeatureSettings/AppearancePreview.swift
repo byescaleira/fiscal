@@ -15,6 +15,7 @@ struct AppearancePreviewSection: View {
 
 struct AppearancePreview: View {
     @Environment(SettingsModel.self) private var settings
+    @Environment(\.settingsReducesMotion) private var reduceMotion
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceM) {
@@ -30,8 +31,11 @@ struct AppearancePreview: View {
                     .lineLimit(1)
                     .contentTransition(.opacity)
             }
-            PreviewTodayCard()
-            PreviewControls()
+            VStack(alignment: .leading, spacing: .spaceM) {
+                PreviewTodayCard()
+                PreviewControls()
+            }
+            .dynamicTypeSize(...DynamicTypeSize.xLarge)
         }
         .padding(.spaceL)
         .background(.plainBackground, in: .rect(cornerRadius: .radiusGroup))
@@ -40,8 +44,7 @@ struct AppearancePreview: View {
                 .strokeBorder(.separator, lineWidth: .spaceHairline / 2)
         }
         .partyMarksStill()
-        .dynamicTypeSize(...DynamicTypeSize.xLarge)
-        .animation(.smooth, value: settings.tint)
+        .animation(reduceMotion ? nil : .smooth, value: settings.tint)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("Preview of the look"))
         .accessibilityValue(Text(verbatim: "\(settings.appearance.title), \(settings.tintName)"))

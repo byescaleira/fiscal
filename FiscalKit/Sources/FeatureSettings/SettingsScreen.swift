@@ -18,7 +18,9 @@ public struct SettingsScreen<LensDestination: View, ArtistsDestination: View>: V
 
     public var body: some View {
         ModelHost(SourcesModel(service: service)) {
-            SettingsContent(service: service, destinations: destinations)
+            ModelHost(SettingsLensModel(service: service)) {
+                SettingsContent(destinations: destinations)
+            }
         }
     }
 }
@@ -36,8 +38,9 @@ struct SettingsDestinations<Lens: View, Artists: View> {
 }
 
 private struct SettingsContent<Lens: View, Artists: View>: View {
+    @Environment(SettingsModel.self) private var settings
     @Environment(SourcesModel.self) private var sources
-    let service: (any PublicDataService)?
+    @Environment(\.featureFlags) private var flags
     let destinations: SettingsDestinations<Lens, Artists>?
 
     var body: some View {
@@ -49,19 +52,20 @@ private struct SettingsContent<Lens: View, Artists: View>: View {
             #endif
         }
         .emphasisTitle("Settings")
+        .onAppear { settings.use(flags) }
         .task { await sources.load() }
     }
 
     @ViewBuilder private var sections: some View {
         if let destinations {
-            SettingsYourFiscalSection(service: service, destinations: destinations)
+            SettingsYourFiscalSection(destinations: destinations)
         }
-        SettingsAppearanceSection()
-        SettingsPrivacySection()
+        SettingsGeneralSection()
+        SettingsDataSection()
         if sources.isAvailable {
             SettingsSourcesSection()
         }
-        SettingsAboutSection()
+        SettingsHelpSection()
         DevelopmentRow()
     }
 }
@@ -69,9 +73,7 @@ private struct SettingsContent<Lens: View, Artists: View>: View {
 private struct SettingsYourFiscalSection<Lens: View, Artists: View>: View {
     @Environment(LensContext.self) private var lens: LensContext?
     @Environment(SessionModel.self) private var session: SessionModel?
-    @State private var catalog: ArtCatalog?
-    @State private var faces: [PersonCard] = []
-    let service: (any PublicDataService)?
+    @Environment(SettingsLensModel.self) private var lensModel
     let destinations: SettingsDestinations<Lens, Artists>
 
     var body: some View {
@@ -80,8 +82,7 @@ private struct SettingsYourFiscalSection<Lens: View, Artists: View>: View {
                 DisclosureLink {
                     destinations.lens
                 } label: {
-                    SettingsLensCard(
-                        summary: LensSummary(lens: lens?.saved, catalog: catalog, cards: faces))
+                    SettingsLensCard(summary: lensModel.summary(for: lens?.saved))
                 }
             }
             SettingsRow(
@@ -95,19 +96,15 @@ private struct SettingsYourFiscalSection<Lens: View, Artists: View>: View {
                 "Who you support, your topics and your look stay on this device, outside iCloud and backups."
             )
         }
-        .task {
-            await lens?.load()
-            if catalog == nil { catalog = try? ArtCatalog.bundled() }
-        }
+        .task { await lensModel.load(lens) }
         .task(id: lens?.saved?.supported) {
-            faces = await SupportedPeople.cards(
-                for: lens?.saved?.supported ?? [], service: service,
-                follows: session?.repositories.follows)
+            await lensModel.loadFaces(
+                for: lens?.saved?.supported ?? [], follows: session?.repositories.follows)
         }
     }
 }
 
-private struct SettingsAppearanceSection: View {
+private struct SettingsGeneralSection: View {
     @Environment(SettingsModel.self) private var settings
 
     var body: some View {
@@ -118,29 +115,46 @@ private struct SettingsAppearanceSection: View {
             ) {
                 AppearanceScreen()
             }
+            #if os(iOS)
+                SettingsRow(
+                    "Notifications", symbol: "bell", color: RetroColor.cherry.color,
+                    value: settings.highlightAlertsValue
+                ) {
+                    SettingsPage("Notifications") { HighlightAlertsSection() }
+                }
+            #endif
+            SettingsRow("Privacy", symbol: "lock", color: RetroColor.plum.color) {
+                SettingsPage("Privacy") { PrivacySection() }
+            }
         } header: {
-            Text("Appearance").sectionTitle()
+            Text("General").sectionTitle()
         }
     }
 }
 
-private struct SettingsPrivacySection: View {
+private struct HighlightAlertsSection: View {
     @Environment(SettingsModel.self) private var settings
-    @Environment(OfflineDataModel.self) private var offline: OfflineDataModel?
+
+    var body: some View {
+        @Bindable var settings = settings
+        Section {
+            Toggle(isOn: $settings.highlightAlerts) {
+                SettingsLabel(
+                    "Highest-weight highlights on the Lock Screen",
+                    detail:
+                        "Only weight 85 or more, from the last day. Fiscal sends only an anonymous Apple token.",
+                    symbol: "bell.badge", color: .retroRust)
+            }
+            .tint(.positive)
+        }
+    }
+}
+
+private struct PrivacySection: View {
+    @Environment(SettingsModel.self) private var settings
 
     var body: some View {
         Section {
-            if let offline {
-                SettingsRow(
-                    "Offline Data",
-                    detail: "Today, your region and your people, ready without a connection",
-                    symbol: "arrow.down.circle", color: .retroMustard,
-                    value: offline.summary.isEmpty ? nil : offline.sizeText
-                ) {
-                    OfflineDataScreen().environment(offline)
-                }
-                .task { await offline.load() }
-            }
             SettingsLabel(
                 "No account and no ads",
                 detail: "Fiscal doesn't ask who you are and doesn't measure what you do.",
@@ -158,59 +172,86 @@ private struct SettingsPrivacySection: View {
                 "The Lens stays here",
                 detail: "Who you support never goes to a server, a log or a share card.",
                 symbol: "lock", color: .retroDenim)
-            #if os(iOS)
-                HighlightAlertsToggle()
-            #endif
-            if let url = settings.info.privacyURL {
+        }
+        if let url = settings.info.privacyURL {
+            Section {
                 Link(destination: url) {
                     SettingsExternalLabel(
                         "Privacy Policy", symbol: "doc.text", color: RetroColor.slate.color)
                 }
             }
-        } header: {
-            Text("Your Data and Privacy").sectionTitle()
         }
     }
 }
 
-private struct HighlightAlertsToggle: View {
+private struct SettingsDataSection: View {
+    @Environment(SettingsModel.self) private var settings
+    @Environment(OfflineDataModel.self) private var offline: OfflineDataModel?
+
+    var body: some View {
+        Section {
+            SettingsRow(
+                "iCloud", symbol: "icloud", color: RetroColor.sky.color,
+                value: settings.cloudSyncValue
+            ) {
+                SettingsPage("iCloud") { CloudSection() }
+            }
+            if let offline {
+                SettingsRow(
+                    "Offline Data",
+                    detail: "Today, your region and your people, ready without a connection",
+                    symbol: "arrow.down.circle", color: .retroMustard,
+                    value: offline.summary.isEmpty ? nil : offline.sizeText
+                ) {
+                    OfflineDataScreen().environment(offline)
+                }
+                .task { await offline.load() }
+            }
+        } header: {
+            Text("Data").sectionTitle()
+        }
+    }
+}
+
+private struct CloudSection: View {
     @Environment(SettingsModel.self) private var settings
 
     var body: some View {
         @Bindable var settings = settings
-        Toggle(isOn: $settings.highlightAlerts) {
-            SettingsLabel(
-                "Highest-weight highlights on the Lock Screen",
-                detail:
-                    "Only weight 85 or more, from the last day. Fiscal sends only an anonymous Apple token.",
-                symbol: "bell.badge", color: .retroRust)
+        Section {
+            Toggle(isOn: $settings.cloudSync) {
+                SettingsLabel("Sync with iCloud", symbol: "icloud", color: RetroColor.sky.color)
+            }
+            .tint(.positive)
+            .disabled(!settings.isCloudSyncAvailable)
+        } footer: {
+            Text(verbatim: settings.cloudFooter)
         }
     }
 }
 
 private struct SettingsSourcesSection: View {
     @Environment(SourcesModel.self) private var sources
-    @State private var isShowingMethod = false
 
     var body: some View {
+        @Bindable var sources = sources
         Section {
             if let method = sources.method {
                 Button {
-                    isShowingMethod = true
+                    sources.showMethod()
                 } label: {
                     SettingsLabel(
                         "How We Measure", detail: "How weight puts what happens in order",
                         symbol: "scalemass", color: .retroMustard)
                 }
                 .buttonStyle(.plain)
-                .sheet(isPresented: $isShowingMethod) {
+                .sheet(isPresented: $sources.isShowingMethod) {
                     WeightMethodSheet(method: method)
                 }
             }
             SettingsRow(
                 "Official Sources", detail: "Where every number comes from",
-                symbol: "building.columns", color: .retroDenim,
-                value: sources.sources.isEmpty ? nil : PublicFormat.number(sources.sources.count)
+                symbol: "building.columns", color: .retroDenim, value: sources.countText
             ) {
                 SourcesScreen().environment(sources)
             }
@@ -224,14 +265,13 @@ private struct SettingsSourcesSection: View {
     }
 }
 
-private struct SettingsAboutSection: View {
+private struct SettingsHelpSection: View {
     @Environment(SettingsModel.self) private var settings
     @Environment(\.showGuide) private var showGuide
-    @Environment(\.featureFlags) private var flags
 
     var body: some View {
         Section {
-            if showGuide != nil, flags?.isOn(.guides) != false {
+            if showGuide != nil, settings.showsGuides {
                 SettingsRow(
                     "Guides", detail: "Short guides for each part of the app", symbol: "book",
                     color: RetroColor.avocado.color
@@ -240,31 +280,26 @@ private struct SettingsAboutSection: View {
                 }
             }
             SettingsRow(
-                "What's New", symbol: "sparkles", color: .companion, value: settings.info.number
-            ) {
-                WhatsNewScreen()
-            }
-            SettingsRow(
-                "About Fiscal", detail: "Who makes it, credits and contact",
-                symbol: "info.circle", color: RetroColor.indigo.color
+                "About Fiscal", detail: "Who makes it, what's new, credits and contact",
+                symbol: "info.circle", color: RetroColor.indigo.color, value: settings.info.version
             ) {
                 AboutScreen()
             }
         } header: {
-            Text("About").sectionTitle()
+            Text("Help").sectionTitle()
         }
     }
 }
 
 private struct DevelopmentRow: View {
-    @Environment(\.featureFlags) private var flags
+    @Environment(SettingsModel.self) private var settings
 
     var body: some View {
         #if DEBUG
-            if flags != nil {
+            if settings.showsDeveloper {
                 Section {
                     SettingsRow("Developer", symbol: "hammer", color: RetroColor.coffee.color) {
-                        SettingsPage("Developer") { FlagsSection() }
+                        DeveloperScreen()
                     }
                 }
             }

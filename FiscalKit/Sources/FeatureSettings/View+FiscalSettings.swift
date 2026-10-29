@@ -20,3 +20,7 @@ private struct AppearanceModifier: ViewModifier {
             }
     }
 }
+
+extension EnvironmentValues {
+    var settingsReducesMotion: Bool { accessibilityReduceMotion || liteMode.reducesMotion }
+}
