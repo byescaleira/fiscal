@@ -35,6 +35,7 @@ public final class InvestigationModel {
     @ObservationIgnored let now: @Sendable () -> Date
     @ObservationIgnored let homeUF: String?
     @ObservationIgnored let planner: InvestigationPlanner
+    @ObservationIgnored private let requests = PublicDataRequests()
     private var revision = 0
 
     public init(
@@ -178,9 +179,11 @@ public final class InvestigationModel {
         let engine = InvestigationEngine(service: service)
         let pieces = investigation.pieces
         let recent = recent
-        phase = await PublicDataPhase.settle(after: phase) {
+        phase = await PublicDataPhase.settle(after: phase, in: requests) {
             let evidence = try await engine.evidence(for: pieces, recent: recent)
-            board = InvestigationLinks(pieces: pieces, evidence: evidence).board()
+            return InvestigationLinks(pieces: pieces, evidence: evidence).board()
+        } apply: { loaded in
+            board = loaded
             writing = nil
         }
         guard phase == .loaded, let conclusion = board.conclusion,

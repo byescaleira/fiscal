@@ -26,6 +26,7 @@ public final class ShareModel {
     @ObservationIgnored private let lensRepository: (any LensRepository)?
     @ObservationIgnored private let catalog: ArtCatalog?
     @ObservationIgnored private let builder: ShareCardBuilder
+    @ObservationIgnored private let requests = PublicDataRequests()
 
     public init(
         subject: ShareSubject, service: (any PublicDataService)?,
@@ -128,10 +129,13 @@ public final class ShareModel {
 
     public func load() async {
         if content == nil { phase = .loading }
-        phase = await PublicDataPhase.settle(after: phase) {
-            lens = try? await lensRepository?.lens()
-            content = try await fetch()
-            code = content.flatMap { ShareCode.image(for: $0.link) }
+        phase = await PublicDataPhase.settle(after: phase, in: requests) {
+            let lens = try? await lensRepository?.lens()
+            return (lens: lens, content: try await fetch())
+        } apply: { loaded in
+            lens = loaded.lens
+            content = loaded.content
+            code = ShareCode.image(for: loaded.content.link)
         }
     }
 

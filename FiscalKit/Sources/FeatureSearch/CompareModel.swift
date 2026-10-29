@@ -17,6 +17,7 @@ public final class CompareModel {
     @ObservationIgnored private var index = SearchIndex()
     @ObservationIgnored private let service: (any PublicDataService)?
     @ObservationIgnored private let lensRepository: (any LensRepository)?
+    @ObservationIgnored private let requests = PublicDataRequests()
 
     public init(
         slugs: [String], service: (any PublicDataService)? = nil,
@@ -108,11 +109,13 @@ public final class CompareModel {
         let wanted = Set(slugs)
         guard Set(profiles.map(\.slug)) != wanted else { return }
         phase = .loading
-        phase = await PublicDataPhase.settle(after: phase) {
+        phase = await PublicDataPhase.settle(after: phase, in: requests) {
             guard let service else { throw PublicDataError.unavailable }
             var loaded: [Profile] = []
             for slug in slugs { loaded.append(try await service.profile(slug: slug)) }
-            profiles = SearchIndex.alphabetical(loaded, by: \.name)
+            return SearchIndex.alphabetical(loaded, by: \.name)
+        } apply: { loaded in
+            profiles = loaded
         }
     }
 
