@@ -1,21 +1,25 @@
 # Fiscal
 
-> Fiscal is a private app for iPhone and iPad that keeps what matters in one calm place, ready the moment you open it. No account, no ads, no tracking: data stays on the person's devices and in their own iCloud.
+> O Fiscal é um app gratuito para iPhone e iPad que mostra o que os representantes brasileiros fazem com o voto de quem os elegeu: presença, votações, projetos, gastos e campanhas de quem governa e legisla, do vereador ao presidente, com a fonte oficial e a data ao lado de cada número. Fato, não opinião: não toma partido, não dá nota a ninguém e explica quando algo é estimado.
 
-- Platforms: iPhone and iPad today; Mac and Apple Vision Pro are coming soon.
-- Languages: English, Portuguese, Spanish, German, French, Italian, Japanese, Korean, Chinese and Russian.
-- Price: free to download, with unlimited items, iCloud sync, themes, accent colors and guides. Fiscal Pro (monthly or yearly, 7 days free) adds Fiscal on the Web, exclusive app icons and every Pro feature as it arrives.
-- Privacy: no sign-up, no analytics or crash-reporting SDKs, no tracking. Sync uses the person's private iCloud database. Fiscal on the Web is optional and end-to-end encrypted; the bridge keeps the encrypted summary for at most 24 hours and cannot read it.
-- Made by Rafael Escaleira (byescaleira). Support: support@byescaleira.com.
+- Abas: Hoje (destaque do momento, resumo do dia no Congresso, votações recentes e a apuração ao vivo nas eleições), Região (quem governa a cidade, o estado e o país, nos 5.570 municípios), Votações (o que foi decidido, com o placar por partido), Dinheiro (quanto custa um mandato, a cota parlamentar e quem financia as campanhas) e Fiscalizar (busca, investigações sugeridas e a Memória com eleições passadas).
+- Apuração: números do TSE em tempo real, com Atividade ao Vivo, Dynamic Island e widget; porcentagens sobre os votos válidos.
+- Quem você apoia (a Lente): de 1 a 5 políticos de qualquer cargo, ou "Prefiro não dizer", muda a ordem do que aparece primeiro, nunca os números. Fica só no aparelho, fora do iCloud, do backup e das notificações.
+- Compartilhar: cartazes para Stories, feed ou mensagem, com obras de arte brasileiras em domínio público e a fonte do dado.
+- Fontes: Câmara dos Deputados, Senado Federal, TSE, IBGE, Receita Federal, ANP, Ipeadata, Planalto, assembleias legislativas e Projeto Comprova.
+- Preço: grátis, sem assinatura, sem compras no app e sem anúncio.
+- Privacidade: sem conta, sem cadastro e sem rastreamento; rótulo da App Store "Dados não coletados". O app baixa arquivos públicos iguais para todo mundo e só envia o código de notificação da Atividade ao Vivo da apuração e dos destaques, com App Attest.
+- Plataformas: iPhone e iPad com iOS 26 ou iPadOS 26 ou mais novo. Só em português do Brasil.
+- Independência: não é ligado a nenhum governo, partido ou candidato. Feito por Rafael Escaleira (byescaleira). Suporte: support@byescaleira.com.
 
-## Pages
+## Páginas
 
-- [Home](https://fiscal.byescaleira.com/): what Fiscal does, devices, tips, Free and Pro, and frequently asked questions
-- [Support](https://fiscal.byescaleira.com/support): contact, iCloud sync and subscriptions
-- [Privacy Policy](https://fiscal.byescaleira.com/privacy): what the app stores, where, and every network request it makes
-- [Terms of Use](https://fiscal.byescaleira.com/terms): terms, subscriptions and in-app purchases
-- [Fiscal on the Web](https://fiscal.byescaleira.com/app): read-only dashboard on a computer, paired with the iPhone by QR code
+- [Início](https://fiscal.byescaleira.com/): o que o Fiscal faz, apuração, quem você apoia, princípios, fontes e perguntas frequentes
+- [Suporte](https://fiscal.byescaleira.com/support): de onde vêm os dados, atrasos, apuração, quem você apoia, alertas e contato
+- [Política de Privacidade](https://fiscal.byescaleira.com/privacy): o que fica no aparelho, no iCloud e cada pedido que o app faz pela rede
+- [Termos de Uso](https://fiscal.byescaleira.com/terms): licença da Apple, dados oficiais, independência e cartazes
 
-## Optional
+## Opcional
 
-- [App Store](https://apps.apple.com/app/id0): download Fiscal
+- [App Store](https://apps.apple.com/app/id6826982117): baixar o Fiscal
+- [Dados publicados](https://dados.fiscal.byescaleira.com/v2/release.json): a versão atual dos dados públicos que o app lê

@@ -4,136 +4,122 @@ import sys
 from html.parser import HTMLParser
 from pathlib import Path
 
-VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr", "path", "rect", "circle"}
 PAGES = ["index.html", "privacy.html", "terms.html", "support.html"]
-LANGS = ["en", "pt-BR", "es", "de", "fr", "it", "ja", "ko", "zh-Hans", "ru"]
+LANGUAGE = "pt-BR"
+APP_STORE_ID = "6826982117"
+SKIPPED = {"script", "style", "svg"}
+LEFTOVERS = [
+    "Fiscal Pro",
+    "assinatura mensal",
+    "free trial",
+    "First idea",
+    "Weekend plan",
+    "Reading list",
+    "Fiscal on the Web",
+    "Fiscal na Web",
+    "Download on the App Store",
+]
 
 
-class Node:
-    def __init__(self, tag, attrs, parent):
-        self.tag = tag
-        self.attrs = dict(attrs)
-        self.parent = parent
-        self.children = []
-
-
-class Builder(HTMLParser):
+class Page(HTMLParser):
     def __init__(self):
         super().__init__(convert_charrefs=True)
-        self.root = Node("#root", [], None)
-        self.current = self.root
+        self.lang = None
+        self.attributes = []
+        self.links = []
+        self.texts = []
+        self.skipping = 0
 
     def handle_starttag(self, tag, attrs):
-        node = Node(tag, attrs, self.current)
-        self.current.children.append(node)
-        if tag not in VOID:
-            self.current = node
-
-    def handle_startendtag(self, tag, attrs):
-        self.current.children.append(Node(tag, attrs, self.current))
+        attrs = dict(attrs)
+        if tag == "html":
+            self.lang = attrs.get("lang")
+        if tag in SKIPPED:
+            self.skipping += 1
+        self.attributes.extend(name for name in attrs if name.startswith("data-i18n") or name == "data-locale")
+        for name in ("href", "src"):
+            if attrs.get(name):
+                self.links.append(attrs[name])
+        for name in ("alt", "aria-label", "title"):
+            value = (attrs.get(name) or "").strip()
+            if value:
+                self.texts.append(value)
+        described = attrs.get("name") == "description" or attrs.get("property") in ("og:title", "og:description")
+        if tag == "meta" and described and attrs.get("content"):
+            self.texts.append(attrs["content"].strip())
 
     def handle_endtag(self, tag):
-        if tag in VOID:
-            return
-        node = self.current
-        while node is not None and node.tag != tag:
-            node = node.parent
-        if node is not None and node.parent is not None:
-            self.current = node.parent
+        if tag in SKIPPED and self.skipping:
+            self.skipping -= 1
 
     def handle_data(self, data):
-        self.current.children.append(data)
+        text = re.sub(r"\s+", " ", data).strip()
+        if text and not self.skipping:
+            self.texts.append(text)
 
 
-def walk(node):
-    for child in node.children:
-        if isinstance(child, Node):
-            yield child
-            yield from walk(child)
-
-
-def text_value(node):
-    parts = []
-    for child in node.children:
-        if isinstance(child, str):
-            parts.append(child)
-        elif "data-slot" in child.attrs:
-            parts.append("{" + child.attrs["data-slot"] + "}")
-    return re.sub(r"\s+", " ", "".join(parts)).strip()
+def read(site, page):
+    parser = Page()
+    parser.feed((site / page).read_text())
+    return parser
 
 
 def extract(site):
-    strings = {}
-
-    def put(key, value, where):
-        if key in strings and strings[key] != value:
-            sys.exit(f"conflict for {key} in {where}: {strings[key]!r} vs {value!r}")
-        strings[key] = value
-
-    for page in PAGES:
-        source = (site / page).read_text()
-        builder = Builder()
-        builder.feed(source)
-        for node in walk(builder.root):
-            if "data-i18n" in node.attrs:
-                put(node.attrs["data-i18n"], text_value(node), page)
-            for attr in ("content", "aria-label", "alt"):
-                key = node.attrs.get("data-i18n-" + attr)
-                if key:
-                    put(key, node.attrs[attr], page)
-        for match in re.finditer(r'<(\w+)[^>]*\sdata-i18n-html="([^"]+)"[^>]*>(.*?)</\1>', source, re.S):
-            put(match.group(2), match.group(3).strip(), page)
-    return dict(sorted(strings.items()))
+    return {page: read(site, page).texts for page in PAGES}
 
 
-def tags(value):
-    return sorted(re.findall(r"<(/?\w+)", value))
+def problems_in(site, page, parsed):
+    problems = []
+    if parsed.lang != LANGUAGE:
+        problems.append(f"{page}: <html lang> is {parsed.lang!r}, expected {LANGUAGE!r}")
+    for name in sorted(set(parsed.attributes)):
+        problems.append(f"{page}: translation attribute {name} left over")
+    for link in parsed.links:
+        if "locale=" in link or link.endswith("i18n.js") or "/i18n/" in link:
+            problems.append(f"{page}: language link {link}")
+        if link == "/app" or link.startswith("/app#") or link.startswith("/app?"):
+            problems.append(f"{page}: links to Fiscal na Web, which waits until after 1.0")
+        match = re.match(r"https://apps\.apple\.com/app/id(\d+)", link)
+        if match and match.group(1) != APP_STORE_ID:
+            problems.append(f"{page}: App Store link id{match.group(1)}, expected id{APP_STORE_ID}")
+        if link.startswith("/") and not link.startswith("//"):
+            path = link.split("#")[0].split("?")[0]
+            if path not in ("", "/") and not any((site / candidate).exists() for candidate in (path.lstrip("/"), path.lstrip("/") + ".html")):
+                problems.append(f"{page}: broken local link {link}")
+    text = " ".join(parsed.texts)
+    for word in LEFTOVERS:
+        if word.lower() in text.lower():
+            problems.append(f"{page}: template or postponed text {word!r}")
+    return problems
 
 
 def check(site):
-    en = json.loads((site / "i18n" / "en.json").read_text())
-    extracted = extract(site)
-    problems = 0
-    if extracted != en:
-        missing = set(extracted) - set(en)
-        extra = set(en) - set(extracted)
-        changed = [k for k in extracted if k in en and extracted[k] != en[k]]
-        print("en.json out of date with HTML", missing, extra, changed)
-        problems += 1
-    for lang in LANGS[1:]:
-        data = json.loads((site / "i18n" / f"{lang}.json").read_text())
-        missing = sorted(set(en) - set(data))
-        extra = sorted(set(data) - set(en))
-        if missing or extra:
-            print(lang, "missing:", missing, "extra:", extra)
-            problems += 1
-        same = []
-        for key, value in en.items():
-            if key not in data:
-                continue
-            other = data[key]
-            if not other.strip():
-                print(lang, key, "empty")
-                problems += 1
-            if sorted(re.findall(r"\{\w+\}", value)) != sorted(re.findall(r"\{\w+\}", other)):
-                print(lang, key, "placeholders differ:", other)
-                problems += 1
-            if tags(value) != tags(other):
-                print(lang, key, "markup differs:", other)
-                problems += 1
-            if other == value:
-                same.append(key)
-        print(lang, len(data), "keys, identical to English:", same)
-    print("problems:", problems)
-    return problems
+    problems = []
+    if (site / "i18n").exists():
+        problems.append("site/i18n/ exists; the site is pt-BR only (ADR 0003)")
+    if (site / "i18n.js").exists():
+        problems.append("site/i18n.js exists; the site is pt-BR only (ADR 0003)")
+    for page in PAGES:
+        problems.extend(problems_in(site, page, read(site, page)))
+    llms = (site / "llms.txt").read_text()
+    for found in re.findall(r"apps\.apple\.com/app/id(\d+)", llms):
+        if found != APP_STORE_ID:
+            problems.append(f"llms.txt: App Store link id{found}, expected id{APP_STORE_ID}")
+    for word in LEFTOVERS:
+        if word.lower() in llms.lower():
+            problems.append(f"llms.txt: template or postponed text {word!r}")
+    for problem in problems:
+        print(problem)
+    print(f"{len(PAGES)} pages in {LANGUAGE}, problems: {len(problems)}")
+    return len(problems)
 
 
 if __name__ == "__main__":
     command = sys.argv[1] if len(sys.argv) > 1 else "check"
     site = Path(sys.argv[2]) if len(sys.argv) > 2 else Path(__file__).resolve().parent.parent / "site"
     if command == "extract":
-        (site / "i18n").mkdir(exist_ok=True)
-        (site / "i18n" / "en.json").write_text(json.dumps(extract(site), ensure_ascii=False, indent=2) + "\n")
-        print(len(extract(site)), "keys")
+        print(json.dumps(extract(site), ensure_ascii=False, indent=2))
     elif command == "check":
         sys.exit(1 if check(site) else 0)
+    else:
+        sys.exit(f"unknown command {command!r}: use extract or check")
