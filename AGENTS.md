@@ -49,7 +49,7 @@ App SwiftUI para iOS, iPadOS, macOS e visionOS a partir do 26, com os recursos d
 | `node scripts/site-server.mjs` | Site e ponte em `http://127.0.0.1:4173` |
 | `cd server && go vet ./... && go test ./...` | Servidor Go (carga, API da apuração e publicação no Pages); o `verify.sh` usa a versão do Go do `server/go.mod` |
 | `scripts/server-deploy.sh [--apply]` | Plano (padrão) ou deploy do servidor na VPS, um serviço por vez, com o ok do usuário ([runbook](docs/server-runbook.md)) |
-| `python3 scripts/site-i18n.py extract\|check` | Textos do site nos 10 idiomas |
+| `python3 scripts/site-i18n.py extract\|check` | Textos do site, só em pt-BR ([ADR 0003](docs/adr/0003-portuguese-only.md)) |
 | `node --test bridge/server.test.mjs site/web-crypto.test.mjs` | Testes da ponte e da cifra |
 | `cd admin && npm ci --ignore-scripts && node --test test/*.test.mjs` | Testes do admin |
 

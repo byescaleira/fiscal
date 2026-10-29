@@ -2,25 +2,9 @@
 set -euo pipefail
 project_root="$(cd "$(dirname "$0")/.." && pwd)"
 source "$project_root/scripts/kit-access.sh"
+source "$project_root/scripts/sim-destination.sh"
 build_root="${FISCAL_BUILD_ROOT:-$HOME/Library/Developer/FiscalBuild}"
-default_destination() {
-  xcrun simctl list devices available -j | python3 -I -c '
-import json, sys
-runtimes = json.load(sys.stdin)["devices"]
-phones = []
-for runtime, devices in runtimes.items():
-    if ".SimRuntime.iOS-" not in runtime:
-        continue
-    version = tuple(int(part) for part in runtime.rsplit("iOS-", 1)[1].split("-"))
-    for device in devices:
-        if "iPhone" in device.get("deviceTypeIdentifier", ""):
-            phones.append((device["state"] == "Booted", version, device["udid"]))
-if not phones:
-    sys.exit("No available iPhone simulator; set FISCAL_TEST_DESTINATION.")
-print("platform=iOS Simulator,id=" + max(phones)[2])
-'
-}
-destination="${FISCAL_TEST_DESTINATION:-$(default_destination)}"
+destination="${FISCAL_TEST_DESTINATION:-$(default_destination iPhone)}"
 echo "Destination: $destination"
 targets=()
 if [[ "${1:-}" == "--affected" ]]; then
