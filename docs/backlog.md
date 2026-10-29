@@ -12,7 +12,7 @@ O que falta, por prioridade. Itens concluídos saem daqui; o motivo das decisõe
 - **[P1] Lente e pacote offline.** O pacote offline baixa os perfis das pessoas apoiadas junto com as seguidas e os representantes; decidir se isso fica (a CDN vê só o IP e os caminhos) ou se as apoiadas saem do pacote, e alinhar o rodapé "nunca em requisições" e o "Seu lugar ... nunca o envia", já que a cidade de casa também entra no pacote ([ADR 0015](adr/0015-background-fetch-offline-pack.md)).
 - **[P1] Testes do destaque na tela de bloqueio.** `HighlightAlertRule` e `HighlightAlertCenter` não têm testes (peso mínimo, janela de 24 h, ids já mostrados, desligar remove o token); a constituição pede Swift Testing para toda lógica.
 - **[P1] Capabilities no portal da Apple.** Conferir no App ID `com.byescaleira.fiscal`: App Attest, Push Notifications, iCloud (`iCloud.fiscal`), App Group `group.com.byescaleira` e Background Modes, e o App Group na extensão dos widgets.
-- **[P1] Capturas da loja pelo pipeline.** Gerar as capturas de [app-store/media/](app-store/media/README.md) com `launch.sh` e `compose.py` depois do texto final do site, conferidas no iPhone físico.
+- **[P1] Capturas da loja pelo pipeline.** Gerar as capturas de [app-store/media/](app-store/media/README.md) com `launch.sh` e `compose.py` depois do texto final do site, trocando a SF Pro Rounded do `style.css` pela Bricolage nos títulos ([ADR 0009](adr/0009-bricolage-emphasis-font.md)), conferidas no iPhone físico.
 - **[P1] ADRs à espera do usuário.** Aceitar ou recusar 0004, 0005 e 0007 (já rodam em produção), 0015 e 0017.
 
 ## Depois da 1.0 ou sem data
