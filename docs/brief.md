@@ -2,7 +2,7 @@
 
 - **Data:** 2026-10-25
 - **Estado:** proposta para aprovação do usuário
-- **Base:** [pesquisa do Politicômetro](research/pesquisa-politicometro.md) e [API mapeada](research/api-politicometro.md)
+- **Base:** [pesquisa do Politicômetro](research/2026-10-25-pesquisa-politicometro.md) e [API mapeada](research/2026-10-25-api-politicometro.md)
 
 ## Em uma frase
 

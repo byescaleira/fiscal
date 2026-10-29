@@ -25,7 +25,7 @@ O 2º turno de 2026 é hoje, 25/10, e a apuração começa às 17h (Brasília). 
 
 ## Fora do escopo
 
-- Deputados, senadores, perfis e o restante da [pesquisa](../../research/pesquisa-politicometro.md).
+- Deputados, senadores, perfis e o restante da [pesquisa](../../research/2026-10-25-pesquisa-politicometro.md).
 - Apuração por cidade ou mapa.
 - Iniciar a Live Activity por push (push-to-start) às 17h.
 - Widgets da tela de início.

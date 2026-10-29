@@ -136,7 +136,7 @@ Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando
 | Classificar os números (favorável/na média/desfavorável; relevância alta/média/baixa) | no iPhone (servidor só no próximo deploy do ingest) | PeerClassification, benchmarks.go |
 | Área histórica (apurações passadas, história política, estudo) | no iPhone (dados reais só após deploy do ingest e regra do Caddy) | FeatureMemory, server/internal/history |
 | Refactor da aba Região (hierarquia, bancadas, quem governa) | no iPhone | FeatureMine |
-| O que falta do Politicômetro | respondido; dado novo só depois do catálogo de leituras | docs/research/api-politicometro.md |
+| O que falta do Politicômetro | respondido; dado novo só depois do catálogo de leituras | docs/research/2026-10-25-api-politicometro.md |
 | Objetivo claro por tela, fluxo e seção; só leituras (sem dado bruto); backend pré-processa tudo; sincronização inteligente | proposta enviada, aguardando decisões | — |
 | Documentar os padrões de tela aprovados | cartão proposto | docs/design-system.md |
 | Fiscalizar como investigação: busca contextual com IA local, quadro de peças, conclusão e pôster; Eleições sai da tela | no iPhone (fidelidade ao partido só após deploy do ingest) | FeatureSearch, index/facts.json |
