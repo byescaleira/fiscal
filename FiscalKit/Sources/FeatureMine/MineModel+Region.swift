@@ -204,3 +204,7 @@ extension MineModel {
             elected: sitting.isEmpty ? [] : elected)
     }
 }
+
+extension Highlight {
+    var weightShare: Double { Double(weight) / 100 }
+}

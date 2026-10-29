@@ -28,6 +28,12 @@ extension PastRoundBreakdown.Tile {
 }
 
 extension PastRoundBreakdown {
+    var leaderNames: String {
+        let elected = winners.filter(\.elected)
+        guard elected.count > 1 else { return leader?.displayName ?? "" }
+        return elected.map(\.displayName).formatted(.list(type: .and).locale(.app))
+    }
+
     func accessibilityValue(_ tile: Tile) -> String {
         guard let winner = candidate(number: tile.winner) else { return PublicFormat.missing }
         return "\(winner.displayName), \(tile.shortShareText)"

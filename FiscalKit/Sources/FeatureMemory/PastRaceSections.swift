@@ -78,13 +78,10 @@ private struct PastHeroSection: View {
 }
 
 private struct PastHeroCard: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var appeared = false
     let breakdown: PastRoundBreakdown
     let leader: PastCandidate
 
     var body: some View {
-        let palette = PartyPalette.of(party: leader.party, fallback: 0)
         VStack(spacing: .spaceL) {
             HStack {
                 Text(verbatim: breakdown.title.uppercased(with: .app))
@@ -94,52 +91,11 @@ private struct PastHeroCard: View {
                     .font(.caption.weight(.semibold))
                     .opacity(.opacityStrong)
             }
-            VStack(spacing: .spaceS) {
-                PersonPortrait(
-                    slug: leader.portraitSlug,
-                    name: leader.displayName,
-                    party: leader.party, size: .medallion
-                )
-                .overlay { Circle().strokeBorder(.white, lineWidth: .space2XS) }
-                .scaleEffect(appeared ? 1 : .heroPortraitEntryScale)
-                .opacity(appeared ? 1 : 0)
-                Chip(breakdown.outcome, color: .white, shape: .capsule)
-                    .environment(\.colorScheme, .dark)
-                Text(verbatim: names)
-                    .font(.emphasis(.title, weight: .heavy))
-                    .multilineTextAlignment(.center)
-                    .lineLimit(3)
-                    .minimumScaleFactor(0.7)
-                HStack(spacing: .spaceS) {
-                    PartyMark(leader.party)
-                    Text(verbatim: leader.shareText)
-                        .font(.scoreboardTitle)
-                        .monospacedDigit()
-                }
-                Text(verbatim: leader.votesText)
-                    .font(.subheadline.weight(.semibold))
-                    .opacity(.opacityStrong)
-            }
-            .frame(maxWidth: .infinity)
+            PastHeroLeader(breakdown: breakdown, leader: leader)
             ForEach(breakdown.others) { other in
-                HStack(spacing: .spaceS) {
-                    PersonPortrait(
-                        slug: other.portraitSlug,
-                        name: other.displayName,
-                        party: other.party, size: .badgeM)
-                    Text(verbatim: other.displayName)
-                        .font(.subheadline.weight(.semibold))
-                        .lineLimit(1)
-                    Text(verbatim: other.party)
-                        .font(.caption.weight(.bold))
-                    Spacer(minLength: .spaceS)
-                    Text(verbatim: other.shareText)
-                        .font(.headline.weight(.bold))
-                        .monospacedDigit()
-                }
-                .padding(.spaceS)
-                .background(.white.opacity(.opacityTint), in: .rect(cornerRadius: .radiusM))
-                .opacity(.opacityStrong)
+                PastOtherRow(
+                    name: other.displayName, party: other.party, share: other.shareText,
+                    portraitSlug: other.portraitSlug)
             }
             if let turnout = breakdown.turnoutHero {
                 Text("Turnout: \(turnout) of the electorate")
@@ -150,27 +106,50 @@ private struct PastHeroCard: View {
         }
         .padding(.spaceInset)
         .foregroundStyle(.white)
-        .background {
-            ZStack {
-                LinearGradient(
-                    colors: [palette.primary, palette.secondary], startPoint: .topLeading,
-                    endPoint: .bottomTrailing)
-                Color.scoreboard.opacity(.opacitySoft)
-            }
-        }
+        .background { PartyCardBackground(party: leader.party) }
         .clipShape(.rect(cornerRadius: .radiusGroup))
         .accessibilityElement(children: .combine)
+    }
+}
+
+private struct PastHeroLeader: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var appeared = false
+    let breakdown: PastRoundBreakdown
+    let leader: PastCandidate
+
+    var body: some View {
+        VStack(spacing: .spaceS) {
+            PersonPortrait(
+                slug: leader.portraitSlug, name: leader.displayName, party: leader.party,
+                size: .medallion
+            )
+            .overlay { Circle().strokeBorder(.white, lineWidth: .space2XS) }
+            .scaleEffect(appeared ? 1 : .heroPortraitEntryScale)
+            .opacity(appeared ? 1 : 0)
+            Chip(breakdown.outcome, color: .white, shape: .capsule)
+                .environment(\.colorScheme, .dark)
+            Text(verbatim: breakdown.leaderNames)
+                .font(.emphasis(.title, weight: .heavy))
+                .multilineTextAlignment(.center)
+                .lineLimit(3)
+                .minimumScaleFactor(0.7)
+            HStack(spacing: .spaceS) {
+                PartyMark(leader.party)
+                Text(verbatim: leader.shareText)
+                    .font(.scoreboardTitle)
+                    .monospacedDigit()
+            }
+            Text(verbatim: leader.votesText)
+                .font(.subheadline.weight(.semibold))
+                .opacity(.opacityStrong)
+        }
+        .frame(maxWidth: .infinity)
         .onAppear {
             withAnimation(reduceMotion ? nil : .spring(duration: 0.8, bounce: 0.4)) {
                 appeared = true
             }
         }
-    }
-
-    private var names: String {
-        let elected = breakdown.winners.filter(\.elected)
-        guard elected.count > 1 else { return leader.displayName }
-        return elected.map { $0.displayName }.joined(separator: " e ")
     }
 }
 

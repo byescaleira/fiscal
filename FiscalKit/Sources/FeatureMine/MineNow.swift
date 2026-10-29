@@ -135,7 +135,7 @@ private struct MineHighlightCard: View {
                         .monospacedDigit()
                         .opacity(.opacityStrong)
                 }
-                ProgressBar(value: appeared ? Double(highlight.weight) / 100 : 0, color: .white)
+                ProgressBar(value: appeared ? highlight.weightShare : 0, color: .white)
                 if let text = highlight.coverage.uncertaintyShort {
                     Label(text, systemImage: "info.circle")
                         .font(.caption.weight(.medium))
