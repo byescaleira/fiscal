@@ -33,13 +33,8 @@ public struct AppReleaseStore: Sendable {
         #endif
     }
 
-    public static let appGroup = "group.com.byescaleira"
-
     public static var shared: AppReleaseStore {
-        let group = FileManager.default.containerURL(
-            forSecurityApplicationGroupIdentifier: appGroup)
-        return AppReleaseStore(
-            directory: group?.appending(path: "fiscal") ?? .applicationSupportDirectory)
+        AppReleaseStore(directory: AppGroup.directory() ?? .applicationSupportDirectory)
     }
 
     private let fileURL: URL

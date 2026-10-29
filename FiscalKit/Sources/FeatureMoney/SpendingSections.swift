@@ -27,13 +27,11 @@ struct SpendingSection: View {
         Section {
             if !money.spenderPreview.isEmpty {
                 if money.spenders.count > money.spenderPreview.count {
-                    NavigationLink {
-                        MoneySpendersScreen(
+                    RouteLink(
+                        .spenders(
                             title: money.scopeName, spenders: money.spenders,
-                            year: money.spendYear
-                        )
-                        .environment(money)
-                    } label: {
+                            year: money.spendYear)
+                    ) {
                         Text("See All (\(money.spenders.count))")
                             .font(.subheadline.weight(.semibold))
                     }
@@ -175,7 +173,7 @@ private struct SpenderCard: View {
     }
 }
 
-struct MoneySpendersScreen: View {
+public struct MoneySpendersScreen: View {
     @Environment(MoneyModel.self) private var money
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
@@ -183,7 +181,13 @@ struct MoneySpendersScreen: View {
     let spenders: [MoneyPlaces.Spender]
     let year: Int?
 
-    var body: some View {
+    public init(title: String, spenders: [MoneyPlaces.Spender], year: Int?) {
+        self.title = title
+        self.spenders = spenders
+        self.year = year
+    }
+
+    public var body: some View {
         AdaptiveList {
             Section {
                 ForEach(spenders) { spender in

@@ -94,6 +94,7 @@ public struct PeerMethodButton: View {
 
 public struct PeerMethodSheet: View {
     @Environment(\.dismiss) private var dismiss
+    @State private var index = 0
     private let items: [PeerMethodItem]
 
     public init(items: [PeerMethodItem]) {
@@ -101,80 +102,103 @@ public struct PeerMethodSheet: View {
     }
 
     public var body: some View {
-        NavigationStack {
-            List {
-                Group {
-                    Section {
-                        Text(
-                            "Each number of the term is compared with peers in the same office and house in the same year. The number and the house median always show next to it."
-                        )
-                        Text(
-                            "Above the third quartile (p75), between the first and third quartile, or below the first quartile (p25) of the house, with the direction of each number."
-                        )
-                        .font(.headline)
-                    } header: {
-                        Text("Classification").sectionTitle()
-                    }
-                    ForEach(items) { person in
-                        PeerMethodPersonSections(item: person)
-                    }
-                    Section {
-                        Text(
-                            "Peers without published data are left out of the count; a missing number never counts as zero. With fewer than 5 peers with data, the number gets no classification."
-                        )
-                        Text(
-                            "Attendance doesn't measure committee work. Spending below average doesn't mean spending well. Bills and votes are never called good or bad: that is opinion."
-                        )
-                    } header: {
-                        Text("Limits").sectionTitle()
-                    }
-                }
-                .surfaceRows()
+        let count = items.count + 2
+        let isLast = index == count - 1
+        GuideSheet(
+            index: index, count: count, back: index > 0 ? { index -= 1 } : nil,
+            primary: GuideAction(isLast ? "Done" : "Continue") {
+                if isLast { dismiss() } else { index += 1 }
             }
-            .listSurface()
-            .navigationTitle("How We Measure")
-            #if os(iOS)
-                .navigationBarTitleDisplayMode(.inline)
-            #endif
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }
-                        .tint(Color.primary)
+        ) {
+            page
+        }
+    }
+
+    @ViewBuilder private var page: some View {
+        if index == 0 {
+            GuidePage(
+                title: "How We Measure",
+                message:
+                    "Each number is compared with peers in the same office and house in the same year, next to the house median."
+            ) {
+                EmptyView()
+            } content: {
+                GuideValueList(PeerClassification.Band.guideRows)
+            }
+        } else if items.indices.contains(index - 1) {
+            PeerMethodPersonPage(item: items[index - 1])
+        } else {
+            GuidePage(
+                title: "Limits",
+                message:
+                    "Peers without published data are left out. A missing number never counts as zero."
+            ) {
+                EmptyView()
+            } content: {
+                GuideFeatureList {
+                    GuideFeature(
+                        title: String(appLocalized: "Fewer than 5 peers with data"),
+                        detail: String(appLocalized: "The number gets no classification."))
+                    GuideFeature(
+                        title: String(appLocalized: "Attendance"),
+                        detail: String(appLocalized: "It doesn't measure committee work."))
+                    GuideFeature(
+                        title: String(appLocalized: "Spending below average"),
+                        detail: String(appLocalized: "It doesn't mean spending well."))
+                    GuideFeature(
+                        title: String(appLocalized: "Bills and votes"),
+                        detail: String(appLocalized: "Never called good or bad: that is opinion."))
                 }
             }
         }
-        .foregroundStyle(Color.primary)
-        .presentationDetents([.medium, .large])
     }
 }
 
-private struct PeerMethodPersonSections: View {
+private struct PeerMethodPersonPage: View {
     let item: PeerMethodItem
 
     var body: some View {
         let classification = item.classification
-        ForEach(classification.entries, id: \.metric) { entry in
-            Section {
-                HStack {
-                    PeerBadge(band: entry.entry.band)
-                    Spacer(minLength: .spaceS)
+        GuidePage(
+            verbatim: item.name ?? String(appLocalized: "Numbers of the Term"),
+            message: String(appLocalized: "Where each number falls among peers.")
+        ) {
+            EmptyView()
+        } content: {
+            ScrollView {
+                GuideFeatureList {
+                    ForEach(classification.entries, id: \.metric) { entry in
+                        GuideFeature(
+                            title: "\(entry.metric.title): \(entry.entry.band.title)",
+                            detail: [
+                                classification.detailText(entry.metric),
+                                classification.rangeText(entry.metric), entry.metric.direction,
+                            ]
+                            .compactMap(\.self).joined(separator: "\n"),
+                            color: entry.entry.band.color)
+                    }
                 }
-                if let detail = classification.detailText(entry.metric) {
-                    Text(verbatim: detail)
-                }
-                if let range = classification.rangeText(entry.metric) {
-                    Text(verbatim: range)
-                        .foregroundStyle(.secondary)
-                }
-                Text(verbatim: entry.metric.direction)
-                    .foregroundStyle(.secondary)
-            } header: {
-                Text(
-                    verbatim: [item.name, entry.metric.title].compactMap(\.self).joined(
-                        separator: " · ")
-                )
-                .sectionTitle()
             }
+            .scrollBounceBehavior(.basedOnSize)
+            .frame(maxHeight: .guideScrollMax)
+        }
+    }
+}
+
+extension PeerClassification.Band {
+    @MainActor static var guideRows: [GuideValue] {
+        [Self.better, .average, .worse, .more, .less].map {
+            GuideValue($0.title, value: $0.position, color: $0.color)
+        }
+    }
+
+    var position: String {
+        switch self {
+        case .better: String(appLocalized: "Past p25 or p75, on the good side")
+        case .average: String(appLocalized: "Between p25 and p75")
+        case .worse: String(appLocalized: "Past p25 or p75, on the other side")
+        case .more: String(appLocalized: "Above p75, no direction")
+        case .less: String(appLocalized: "Below p25, no direction")
         }
     }
 }

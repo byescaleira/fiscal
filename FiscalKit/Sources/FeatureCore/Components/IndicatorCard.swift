@@ -4,7 +4,9 @@ import FiscalDomain
 import SwiftUI
 
 public struct IndicatorCard: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    @Environment(\.liteMode) private var liteMode
+    private var reduceMotion: Bool { systemReduceMotion || liteMode.reducesMotion }
     @ScaledMetric(relativeTo: .caption) private var height: CGFloat = .chartCompactHeight
     @State private var revealed = false
     @State private var scrubbed: Date?

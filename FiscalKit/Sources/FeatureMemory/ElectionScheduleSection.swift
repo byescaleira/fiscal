@@ -110,9 +110,7 @@ private struct CurrentElectionDetail: View {
             .onAppear { isShown = true }
         }
         if !memory.awaiting.isEmpty {
-            NavigationLink {
-                AwaitingScreen().environment(memory)
-            } label: {
+            RouteLink(.awaiting) {
                 Label(
                     "Elected in 2026, awaiting inauguration: \(memory.awaiting.count)",
                     systemImage: "person.crop.circle.badge.clock"
@@ -141,10 +139,12 @@ extension ScheduledRound {
     }
 }
 
-private struct AwaitingScreen: View {
+public struct AwaitingScreen: View {
     @Environment(MemoryModel.self) private var memory
 
-    var body: some View {
+    public init() {}
+
+    public var body: some View {
         List {
             Group {
                 Section {

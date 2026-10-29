@@ -26,11 +26,7 @@ public struct RaceHeroCard: View {
         VStack(alignment: .leading, spacing: .spaceL) {
             RaceHeroHeader(summary: summary)
             if opensDetail {
-                NavigationLink {
-                    if let results {
-                        RaceDetailScreen(raceID: race.id).environment(results)
-                    }
-                } label: {
+                RouteLink(.race(id: race.id), showsChevron: false) {
                     RaceHeroBody(summary: summary, showsChevron: true)
                         .contentShape(.rect)
                 }

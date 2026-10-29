@@ -14,6 +14,7 @@ struct FiscalApp: App {
 
     init() {
         FiscalLanguage.install()
+        HomePlace.migrateLegacyKeys(in: .standard)
         #if DEBUG && !targetEnvironment(simulator)
             if CommandLine.arguments.contains("-FiscalInitializeCloudSchema") {
                 FiscalDatabase.initializeCloudSchema()
@@ -73,6 +74,7 @@ private final class FiscalBootstrap {
             update = AppUpdateModel(source: CloudKitAppReleaseSource())
         #endif
         hold = UpdateHoldModel(update: update)
+        FiscalServices.shared.flags = flags
     }
 
     func prepare() async {
@@ -89,7 +91,8 @@ private final class FiscalBootstrap {
             self.database = database
             export = DataExportModel(repositories: database.repositories)
             Task { await flags.refresh() }
-            await hold.attach([])
+            try? AppGroup.publish(.current())
+            await hold.attach(FiscalServices.shared.holdConnections())
         } catch {
             self.error = error.localizedDescription
         }
@@ -127,15 +130,16 @@ private struct FiscalRootView: View {
             } else if let window {
                 MainScreen().fiscalWindow(window).environment(launch)
             } else if let error = bootstrap.error {
-                ContentUnavailableView {
-                    Label(
-                        "Couldn't open Fiscal",
-                        systemImage: "externaldrive.badge.exclamationmark")
-                } description: {
-                    Text(error)
-                } actions: {
-                    Button("Try Again") { attempt += 1 }
+                EmptyStateView(
+                    title: "Couldn't open Fiscal", description: LocalizedStringKey(error),
+                    actionTitle: "Try Again", action: { attempt += 1 }
+                ) {
+                    IconRow(
+                        "Your data is safe", symbol: "lock.shield",
+                        color: .retroDenim)
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(.plainBackground)
             } else {
                 SplashScreen(progress: launch.fraction, status: launch.status)
             }
