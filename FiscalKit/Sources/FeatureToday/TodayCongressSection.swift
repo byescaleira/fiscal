@@ -38,20 +38,20 @@ struct TodayCongressSection: View {
 }
 
 private struct HouseCard: View {
+    @Environment(TodayModel.self) private var today
     let house: TodayModel.HouseAgenda
 
     var body: some View {
-        let shown = house.items.prefix(TodayModel.agendaLimit)
         VStack(alignment: .leading, spacing: 0) {
             HouseHeader(day: house.day)
                 .padding(.spaceL)
-            ForEach(shown) { item in
+            ForEach(today.shownItems(house)) { item in
                 Divider().padding(.leading, .spaceL)
                 AgendaRow(item: item)
             }
-            if house.items.count > shown.count {
+            if let more = today.moreOnAgendaText(house) {
                 Divider().padding(.leading, .spaceL)
-                Text(verbatim: TodayText.moreOnAgenda(house.items.count - shown.count))
+                Text(verbatim: more)
                     .font(.footnote.weight(.semibold))
                     .foregroundStyle(.secondary)
                     .padding(.spaceL)
@@ -62,7 +62,7 @@ private struct HouseCard: View {
 }
 
 private struct HouseHeader: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(TodayModel.self) private var today
     let day: Agenda.HouseDay
 
     var body: some View {
@@ -75,32 +75,45 @@ private struct HouseHeader: View {
                 }
                 .font(.headline)
                 Spacer(minLength: 0)
-                if day.inSession {
-                    Label("In session", systemImage: "dot.radiowaves.left.and.right")
-                        .symbolEffect(
-                            .pulse, isActive: !reduceMotion && !MotionBudget.isConstrained
-                        )
-                        .font(.chipLabel)
-                        .foregroundStyle(Color.positive)
-                        .padding(.horizontal, .spaceS)
-                        .padding(.vertical, .space2XS)
-                        .background(Color.positive.opacity(.opacityTint), in: .capsule)
-                } else {
-                    Label("No session now", systemImage: "moon.zzz")
-                        .font(.chipLabel)
-                        .foregroundStyle(.secondary)
-                        .padding(.horizontal, .spaceS)
-                        .padding(.vertical, .space2XS)
-                        .background(.subtleFill, in: .capsule)
-                }
+                SessionStatus(inSession: day.inSession)
             }
             if !day.inSession {
-                Text(verbatim: TodayText.nextSession(day.nextSession))
+                Text(verbatim: today.nextSessionText(day))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
         }
         .accessibilityElement(children: .combine)
+    }
+}
+
+private struct SessionStatus: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    let inSession: Bool
+
+    var body: some View {
+        HStack(spacing: .spaceXS) {
+            if inSession {
+                StatusCircle(
+                    String(appLocalized: "In session"), symbol: "dot.radiowaves.left.and.right",
+                    color: .positive
+                )
+                .symbolEffect(.pulse, isActive: !reduceMotion && !MotionBudget.isConstrained)
+                .accessibilityHidden(true)
+                Text("In session")
+                    .font(.chipLabel)
+                    .foregroundStyle(Color.positive)
+            } else {
+                StatusCircle(
+                    String(appLocalized: "No session now"), symbol: "moon.zzz", color: .secondary,
+                    isDashed: true
+                )
+                .accessibilityHidden(true)
+                Text("No session now")
+                    .font(.chipLabel)
+                    .foregroundStyle(.secondary)
+            }
+        }
     }
 }
 

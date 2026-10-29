@@ -83,7 +83,7 @@ private struct LeadContent: View {
                             if let approved = vote.approved { ResultChip(approved: approved) }
                         }
                         VoteTallyChart(tally: vote.tally)
-                        Text(verbatim: TodayText.voteLine(vote))
+                        Text(verbatim: today.voteLine(vote))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -96,10 +96,10 @@ private struct LeadContent: View {
                         HStack(spacing: .space2XS) {
                             Text("See details")
                             Image(systemName: "chevron.forward")
+                                .accessibilityHidden(true)
                         }
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.tint)
-                        .accessibilityHidden(true)
                     }
                 }
             }
@@ -108,16 +108,17 @@ private struct LeadContent: View {
 }
 
 private struct EventKicker: View {
+    @Environment(TodayModel.self) private var today
     let event: TodayDigest.Event
 
     var body: some View {
         AdaptiveStack(alignment: .center, spacing: .spaceS) {
             Label {
-                Text(verbatim: TodayText.kind(event.kind).uppercased())
+                Text(verbatim: today.kindKicker(event.kind))
             } icon: {
-                Image(systemName: TodayText.symbol(event.kind))
+                Image(systemName: today.kindSymbol(event.kind))
             }
-            .font(.caption2.weight(.heavy))
+            .font(.chipLabel)
             .foregroundStyle(.secondary)
             if let theme = event.themes.first {
                 ThemeTag(theme: theme)
@@ -138,7 +139,7 @@ private struct TodayEventRow: View {
         let route = today.route(for: event)
         RouteButton(route: route) {
             HStack(alignment: .top, spacing: .spaceM) {
-                ThemeTile(symbol: event.themes.first?.symbol ?? TodayText.symbol(event.kind))
+                ThemeTile(symbol: today.eventSymbol(event))
                 VStack(alignment: .leading, spacing: .space2XS) {
                     EventKicker(event: event)
                     Text(verbatim: event.title)

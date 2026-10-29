@@ -232,6 +232,55 @@ struct LiveResultsModelTests {
         #expect(await service.unfollowed == ["abc123"])
     }
 
+    @Test func namesTheScopeForTheSubtitle() {
+        let model = LiveResultsModel(
+            service: nil, activities: FakeActivities(), environment: .development)
+        #expect(model.scopeText == "All Regions · All Races")
+        model.region = .north
+        model.status = .decided
+        #expect(model.scopeText == "North · Decided")
+    }
+
+    @Test func loadsTheDetailBeforeCallingItUnavailable() async {
+        let service = FakeService(.success([race()]))
+        let model = LiveResultsModel(
+            service: service, activities: FakeActivities(), environment: .development)
+        guard case .loading = model.detailPhase(for: "governador-ac") else {
+            Issue.record("Expected loading")
+            return
+        }
+        await model.loadDetail(id: "governador-ac")
+        guard case .unavailable = model.detailPhase(for: "governador-ac") else {
+            Issue.record("Expected unavailable")
+            return
+        }
+        guard case .ready(let summary) = model.detailPhase(for: "presidente-br") else {
+            Issue.record("Expected ready")
+            return
+        }
+        #expect(summary.race.id == "presidente-br")
+        #expect(model.detailTitle(for: "presidente-br") == "President · Brazil")
+        #expect(model.detailTitle(for: "governador-ac").isEmpty)
+    }
+
+    @Test func writesTheRaceTextsInTheSummary() {
+        let live = RaceSummary(race: race())
+        #expect(live.centerText == live.countedText)
+        #expect(live.stackedCountText == "\(live.countedText) counted")
+        #expect(live.isCounting)
+        #expect(live.statusKicker == live.statusText.uppercased())
+        #expect(live.monogram == "BR")
+        #expect(live.officeLine == "\(live.office) · \(live.roundText)")
+        #expect(live.ballotFooter != nil)
+        #expect(live.cardAccessibility.hasPrefix(live.accessibilityLabel))
+        let final = RaceSummary(race: race(final: true))
+        #expect(final.centerText == "Final")
+        #expect(final.stackedCountText == final.statusText)
+        #expect(!final.isCounting)
+        #expect(final.winnerAccessibility.contains("Ana"))
+        #expect(RaceSummary(race: race(counted: 0)).ballotFooter == nil)
+    }
+
     @Test func showsTheUnavailableStateWithoutAServer() async {
         let model = LiveResultsModel(
             service: nil, activities: FakeActivities(), environment: .development)

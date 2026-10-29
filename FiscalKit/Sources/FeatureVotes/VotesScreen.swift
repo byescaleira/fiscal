@@ -5,6 +5,7 @@ import SwiftUI
 
 public struct VotesScreen: View {
     @Environment(VotesModel.self) private var votes
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     public init() {}
 
@@ -22,7 +23,7 @@ public struct VotesScreen: View {
                     VotesDaySection(day: day)
                 }
             }
-            .animation(.smooth, value: votes.days)
+            .animation(reduceMotion ? nil : .smooth, value: votes.days)
         } empty: {
             VotesEmptyState()
         }

@@ -102,22 +102,18 @@ struct RaceHeroHeader: View {
 
     var body: some View {
         HStack(alignment: .center, spacing: .spaceS) {
-            Label {
-                Text(verbatim: summary.statusText.uppercased())
-            } icon: {
-                Image(
-                    systemName: summary.isDecided
-                        ? "checkmark.seal" : "dot.radiowaves.left.and.right"
-                )
-                .symbolEffect(
-                    .pulse,
-                    isActive: !reduceMotion && !MotionBudget.isConstrained && summary.hasStarted
-                        && !summary.isDecided)
+            HStack(spacing: .spaceXS) {
+                StatusCircle(summary.statusText, symbol: summary.statusSymbol, color: .white)
+                    .symbolEffect(
+                        .pulse,
+                        isActive: !reduceMotion && !MotionBudget.isConstrained
+                            && summary.isCounting
+                    )
+                    .accessibilityHidden(true)
+                Text(verbatim: summary.statusKicker)
+                    .font(.chipLabel)
+                    .accessibilityLabel(Text(verbatim: summary.statusText))
             }
-            .font(.caption.weight(.heavy))
-            .padding(.horizontal, .spaceS)
-            .padding(.vertical, .space2XS)
-            .background(.white.opacity(.opacityTint), in: .capsule)
             VStack(alignment: .leading, spacing: 0) {
                 Text(verbatim: summary.title)
                     .font(.subheadline.weight(.bold))
@@ -204,8 +200,8 @@ private struct RaceHeroSide: View {
                 )
                 .lineLimit(1)
                 .minimumScaleFactor(0.5)
-            Text(verbatim: contender.candidate.name.uppercased())
-                .font(.caption2.weight(.heavy))
+            Text(verbatim: contender.nameKicker)
+                .font(.chipLabel)
                 .opacity(.opacityStrong)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
@@ -242,7 +238,7 @@ private struct RaceHeroCenter: View {
 
     var body: some View {
         VStack(spacing: .space2XS) {
-            Text(verbatim: summary.race.final ? String(appLocalized: "Final") : summary.countedText)
+            Text(verbatim: summary.centerText)
                 .font(.emphasis(.title3, weight: .heavy))
                 .monospacedDigit()
                 .contentTransition(
@@ -253,7 +249,7 @@ private struct RaceHeroCenter: View {
             Text(summary.race.final ? "TSE" : "counted")
                 .font(.caption2.weight(.semibold))
                 .opacity(.opacityStrong)
-            ProgressBar(value: summary.countedFraction, color: .white)
+            RaceCountBar(value: summary.countedFraction, color: .white)
                 .frame(width: .badgeXL)
         }
         .frame(minWidth: .badgeXL + .spaceL)
@@ -279,12 +275,8 @@ private struct RaceHeroStacked: View {
                 }
                 .opacity(contender.dimmed ? .opacitySoft + .opacityTint : 1)
             }
-            Text(
-                verbatim: summary.race.final
-                    ? summary.statusText
-                    : String(appLocalized: "\(summary.countedText) counted")
-            )
-            .font(.headline)
+            Text(verbatim: summary.stackedCountText)
+                .font(.headline)
         }
     }
 }
@@ -295,16 +287,16 @@ private struct RaceHeroSplit: View {
 
     var body: some View {
         let share = summary.splitShare
-        GeometryReader { proxy in
-            HStack(spacing: .spaceHairline) {
-                Capsule()
-                    .fill(.white)
-                    .frame(width: max(.spaceS, (proxy.size.width - .spaceHairline) * share))
-                Capsule()
-                    .fill(.white.opacity(.opacitySoft))
-            }
-        }
-        .frame(height: .spaceS)
+        TallyChart(
+            segments: [
+                TallyChart.Segment(
+                    id: "first", title: summary.sides.first?.candidate.name ?? "", value: share,
+                    color: .white),
+                TallyChart.Segment(
+                    id: "second", title: summary.sides.last?.candidate.name ?? "",
+                    value: 1 - share, color: .white.opacity(.opacitySoft)),
+            ], height: .spaceS, track: .white.opacity(.opacityTint)
+        )
         .animation(reduceMotion ? nil : .smooth(duration: 1), value: share)
         .accessibilityHidden(true)
     }
@@ -317,12 +309,12 @@ struct RaceHeroBallots: View {
         let ballots = summary.ballots
         if !ballots.isEmpty {
             VStack(alignment: .leading, spacing: .spaceXS) {
-                TallyBar(
+                TallyChart(
                     segments: ballots.map { ballot in
-                        TallyBar.Segment(
-                            id: ballot.id, value: Double(ballot.count),
+                        TallyChart.Segment(
+                            id: ballot.id, title: ballot.title, value: Double(ballot.count),
                             color: .white.opacity(Self.opacity(ballot.kind)))
-                    }, height: .space2XS)
+                    }, height: .space2XS, track: .white.opacity(.opacityTint))
                 ViewThatFits(in: .horizontal) {
                     HStack(spacing: .spaceM) { items(ballots) }
                     Grid(

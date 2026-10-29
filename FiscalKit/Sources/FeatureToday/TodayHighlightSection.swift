@@ -51,8 +51,8 @@ private struct TodayHighlightRow: View {
         } label: {
             HStack(alignment: .top, spacing: .spaceM) {
                 VStack(alignment: .leading, spacing: .space2XS) {
-                    Text(verbatim: today.highlightKicker(highlight).uppercased())
-                        .font(.caption2.weight(.heavy))
+                    Text(verbatim: today.highlightOverline(highlight))
+                        .font(.chipLabel)
                         .foregroundStyle(.secondary)
                     Text(verbatim: highlight.title)
                         .font(.headline)

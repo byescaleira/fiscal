@@ -4,7 +4,7 @@ import Testing
 
 @testable import FeatureToday
 
-struct TodayTextTests {
+struct TodayModelTextTests {
     private let updated = Date(timeIntervalSince1970: 1_792_917_720)
 
     @Test func theSourceLineNamesEverySourceOnceWithTheLatestUpdate() throws {
@@ -15,21 +15,21 @@ struct TodayTextTests {
                 updatedAt: updated.addingTimeInterval(-60)),
             Source(id: "senado", name: "Senado Federal", url: nil, updatedAt: nil),
         ]
-        let line = try #require(TodayText.sourceLine(sources))
+        let line = try #require(TodayModel.sourceLine(sources))
         #expect(line.contains("Câmara dos Deputados"))
         #expect(line.contains("Senado Federal"))
         #expect(line.components(separatedBy: "Câmara dos Deputados").count == 2)
-        #expect(line.contains(TodayText.stamp(updated)))
+        #expect(line.contains(TodayModel.stamp(updated)))
     }
 
     @Test func noSourceNoLine() {
-        #expect(TodayText.sourceLine([]) == nil)
-        #expect(TodayText.houseSourceLine([], suffix: "x") == nil)
+        #expect(TodayModel.sourceLine([]) == nil)
+        #expect(TodayModel.houseSourceLine([], suffix: "x") == nil)
     }
 
     @Test func aSourceWithoutDateStillShowsItsName() throws {
         let line = try #require(
-            TodayText.sourceLine([Source(id: "tse", name: "TSE", url: nil, updatedAt: nil)]))
+            TodayModel.sourceLine([Source(id: "tse", name: "TSE", url: nil, updatedAt: nil)]))
         #expect(line.contains("TSE"))
     }
 
@@ -49,15 +49,15 @@ struct TodayTextTests {
     }
 
     @Test func theLensLineOnlyAppearsWhenSomethingChanges() {
-        #expect(TodayText.lensLine(nil) == nil)
-        #expect(TodayText.lensLine(Lens(supported: ["lula"])) == nil)
-        #expect(TodayText.lensLine(Lens(themes: [.health], supported: ["lula"])) != nil)
-        #expect(TodayText.lensLine(Lens(prefersNotToSay: true)) == nil)
+        #expect(TodayModel.lensLine(nil) == nil)
+        #expect(TodayModel.lensLine(Lens(supported: ["lula"])) == nil)
+        #expect(TodayModel.lensLine(Lens(themes: [.health], supported: ["lula"])) != nil)
+        #expect(TodayModel.lensLine(Lens(prefersNotToSay: true)) == nil)
     }
 
     @Test func everyKindHasATitleAndSymbol() {
         let kinds: [TodayDigest.Event.Kind] = [.vote, .session, .race, .law]
-        #expect(Set(kinds.map(TodayText.symbol)).count == kinds.count)
-        #expect(kinds.allSatisfy { !TodayText.kind($0).isEmpty })
+        #expect(Set(kinds.map(TodayModel.symbol)).count == kinds.count)
+        #expect(kinds.allSatisfy { !TodayModel.kindTitle($0).isEmpty })
     }
 }

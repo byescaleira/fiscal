@@ -25,7 +25,7 @@ struct WinnerLockScreen: View {
                     .font(.caption2)
                     .foregroundStyle(RaceStyle.secondary)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.8)
+                    .minimumScaleFactor(.widgetLabelShrink)
             }
             HStack(spacing: .spaceM) {
                 CandidatePhoto(row: winner, side: .badgeXL)
@@ -34,7 +34,7 @@ struct WinnerLockScreen: View {
                         .font(.emphasis(.headline, weight: .heavy))
                         .foregroundStyle(RaceStyle.primary)
                         .lineLimit(1)
-                        .minimumScaleFactor(0.7)
+                        .minimumScaleFactor(.widgetNameShrink)
                     PartyMark(winner.party)
                 }
                 Spacer(minLength: .spaceS)
@@ -43,7 +43,7 @@ struct WinnerLockScreen: View {
                     .monospacedDigit()
                     .foregroundStyle(RaceStyle.primary)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.6)
+                    .minimumScaleFactor(.widgetScoreShrink)
             }
             ForEach(board.rows.filter { $0.number != winner.number }.prefix(1)) { other in
                 HStack(spacing: .spaceS) {
