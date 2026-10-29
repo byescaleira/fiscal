@@ -42,13 +42,11 @@ private struct PublicDataFailure: View {
     let retry: @MainActor () async -> Void
 
     var body: some View {
-        ContentUnavailableView {
-            Label(error.title, systemImage: error.symbol)
-        } description: {
-            Text(verbatim: error.message)
-        } actions: {
-            Button("Try Again") { Task { await retry() } }
-                .primaryButton()
+        EmptyStateView(
+            title: error.titleKey, description: error.messageKey, actionTitle: "Try Again",
+            action: { Task { await retry() } }
+        ) {
+            IconRow("Official sources", symbol: error.symbol, color: .retroDenim)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.plainBackground)
@@ -56,6 +54,23 @@ private struct PublicDataFailure: View {
 }
 
 extension PublicDataError {
+    var titleKey: LocalizedStringKey {
+        switch self {
+        case .offline: "Available with a connection"
+        default: "Couldn't load the data"
+        }
+    }
+
+    var messageKey: LocalizedStringKey {
+        switch self {
+        case .notFound: "This data isn't published yet."
+        case .rejected, .unavailable:
+            "Couldn't reach the public data server. Try again in a moment."
+        case .offline: "This isn't saved for offline use. Connect to the internet to see it."
+        case .invalidData: "The public data came in a format Fiscal can't read."
+        }
+    }
+
     public var symbol: String {
         switch self {
         case .offline: "wifi.slash"

@@ -84,6 +84,7 @@ public struct WeightUncertaintyLine: View {
 
 public struct WeightMethodSheet: View {
     @Environment(\.dismiss) private var dismiss
+    @State private var index = 0
     private let method: WeightMethod
 
     public init(method: WeightMethod) {
@@ -91,43 +92,82 @@ public struct WeightMethodSheet: View {
     }
 
     public var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: .spaceL) {
-                    WeightFormulaCard(method: method)
-                    WeightLevelsCard()
-                    WeightPartCard(
-                        title: "Repercussion", symbol: "megaphone.fill", color: .retroDenim,
-                        text: method.repercussion, parts: method.parts
-                    ) {
-                        WeightSignalsList(signals: method.signals)
-                    }
-                    WeightPartCard(
-                        title: "Impact", symbol: "person.3.fill", color: .retroTeal,
-                        text: method.impact, parts: method.impactParts
-                    ) {
-                        EmptyView()
-                    }
-                    WeightNotesCard(method: method)
-                    WeightDetailsCard(method: method)
-                }
-                .padding(.horizontal, .spaceL)
-                .padding(.bottom, .space2XL)
+        let count = 6
+        let isLast = index == count - 1
+        GuideSheet(
+            index: index, count: count, back: index > 0 ? { index -= 1 } : nil,
+            primary: GuideAction(isLast ? "Done" : "Continue") {
+                if isLast { dismiss() } else { index += 1 }
             }
-            .background(.sheetBackground)
-            .navigationTitle("How We Measure")
-            #if os(iOS)
-                .navigationBarTitleDisplayMode(.inline)
-            #endif
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }
+        ) {
+            page
+        }
+    }
+
+    @ViewBuilder private var page: some View {
+        switch index {
+        case 0:
+            GuidePage(
+                title: "How We Measure",
+                message: "Repercussion and impact add up to a weight from 0 to 100."
+            ) {
+                EmptyView()
+            } content: {
+                WeightFormulaCard(method: method)
+            }
+        case 1:
+            GuidePage(
+                title: "Relevance",
+                message: "On screen the weight shows as a level; the number stays in the detail."
+            ) {
+                EmptyView()
+            } content: {
+                GuideValueList(
+                    Relevance.allCases.reversed().map {
+                        GuideValue($0.shortTitle, value: $0.range, color: .retroTeal)
+                    })
+                Text("The level orders, it never says whether a measure is good or bad.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+        case 2:
+            GuidePage(verbatim: String(appLocalized: "Repercussion"), message: method.repercussion)
+            {
+                EmptyView()
+            } content: {
+                WeightScroll {
+                    WeightPartChart(color: .retroDenim, parts: method.parts)
+                    WeightSignalsList(signals: method.signals)
                 }
+            }
+        case 3:
+            GuidePage(verbatim: String(appLocalized: "Impact"), message: method.impact) {
+                EmptyView()
+            } content: {
+                WeightScroll {
+                    WeightPartChart(color: .retroTeal, parts: method.impactParts)
+                }
+            }
+        case 4:
+            GuidePage(
+                title: "Good to Know",
+                message:
+                    "What happens when a signal is missing, and how highlights and alerts work."
+            ) {
+                EmptyView()
+            } content: {
+                WeightScroll { WeightNotesCard(method: method) }
+            }
+        default:
+            GuidePage(
+                title: "Technical Details",
+                message: "The shares, rules and limits behind each weight, as published."
+            ) {
+                EmptyView()
+            } content: {
+                WeightScroll { WeightDetailsCard(method: method) }
             }
         }
-        .foregroundStyle(Color.primary)
-        .tint(Color.primary)
-        .presentationDetents([.medium, .large])
     }
 }
 
@@ -144,7 +184,26 @@ struct WeightCard<Content: View>: View {
         }
         .padding(.spaceL)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
+        .background(.sheetCard, in: .rect(cornerRadius: .radiusM))
+    }
+}
+
+private struct WeightScroll<Content: View>: View {
+    let content: Content
+
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: .spaceL) {
+                content
+            }
+            .multilineTextAlignment(.leading)
+        }
+        .scrollBounceBehavior(.basedOnSize)
+        .frame(maxHeight: .guideScrollMax)
     }
 }
 
@@ -154,11 +213,12 @@ private struct WeightFormulaCard: View {
     var body: some View {
         WeightCard {
             Text("What comes first")
-                .font(.titleMedium)
+                .font(.rowTitle)
                 .accessibilityAddTraits(.isHeader)
             Text(verbatim: method.summary)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
+                .multilineTextAlignment(.leading)
                 .fixedSize(horizontal: false, vertical: true)
             ViewThatFits(in: .horizontal) {
                 HStack(spacing: .spaceS) { terms }
@@ -214,74 +274,12 @@ private struct WeightTerm: View {
     }
 }
 
-private struct WeightLevelsCard: View {
-    var body: some View {
-        WeightCard {
-            Label("Relevance", systemImage: "chart.bar.fill")
-                .font(.rowTitle)
-            HStack(spacing: .spaceHairline) {
-                ForEach(Relevance.allCases.reversed(), id: \.self) { level in
-                    VStack(alignment: .leading, spacing: .spaceXS) {
-                        Capsule()
-                            .fill(Color.retroTeal.opacity(opacity(level)))
-                            .frame(height: .spaceS)
-                        Text(verbatim: level.shortTitle)
-                            .font(.subheadline.weight(.bold))
-                        Text(verbatim: level.range)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .accessibilityElement(children: .combine)
-                }
-            }
-            Text(
-                "On screen the weight shows as a level; the number stays in the detail. The level orders, it never says whether a measure is good or bad."
-            )
-            .font(.footnote)
-            .foregroundStyle(.secondary)
-            .fixedSize(horizontal: false, vertical: true)
-        }
-    }
-
-    private func opacity(_ level: Relevance) -> Double {
-        switch level {
-        case .low: .opacitySoft
-        case .medium: .opacityStrong - .opacityTint
-        case .high: 1
-        }
-    }
-}
-
-private struct WeightPartCard<Extra: View>: View {
-    let title: LocalizedStringKey
-    let symbol: String
+private struct WeightPartChart: View {
     let color: Color
-    let text: String
     let parts: [WeightMethod.Part]
-    let extra: Extra
-
-    init(
-        title: LocalizedStringKey, symbol: String, color: Color, text: String,
-        parts: [WeightMethod.Part], @ViewBuilder extra: () -> Extra
-    ) {
-        self.title = title
-        self.symbol = symbol
-        self.color = color
-        self.text = text
-        self.parts = parts
-        self.extra = extra()
-    }
 
     var body: some View {
         WeightCard {
-            Label(title, systemImage: symbol)
-                .font(.rowTitle)
-                .foregroundStyle(color)
-            Text(verbatim: text)
-                .font(.subheadline)
-                .fixedSize(horizontal: false, vertical: true)
             RankedBarChart(
                 String(appLocalized: "Weight"),
                 bars: parts.map { part in
@@ -289,7 +287,6 @@ private struct WeightPartCard<Extra: View>: View {
                         id: part.id, title: part.label, value: part.share,
                         valueText: PublicFormat.percent(part.share), color: color)
                 })
-            extra
         }
     }
 }
@@ -299,8 +296,7 @@ private struct WeightSignalsList: View {
 
     var body: some View {
         if !signals.isEmpty {
-            Divider()
-            VStack(alignment: .leading, spacing: .spaceS) {
+            WeightCard {
                 Text("Sources")
                     .font(.caption.weight(.heavy))
                     .textCase(.uppercase)

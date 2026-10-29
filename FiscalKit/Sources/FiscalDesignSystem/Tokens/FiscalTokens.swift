@@ -8,6 +8,7 @@ extension Font {
 extension CGFloat {
     public static let portraitAnimated: CGFloat = 72
     public static let railTitleMargin: CGFloat = .spaceL * 2
+    public static let guideScrollMax: CGFloat = 340
 }
 
 extension Color {
