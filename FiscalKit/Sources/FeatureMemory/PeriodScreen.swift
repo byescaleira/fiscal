@@ -53,7 +53,7 @@ private struct PeriodHeroSection: View {
                     period.era.uppercased(with: .app), color: PeriodPalette.color(for: period.era),
                     shape: .capsule)
                 Text(verbatim: model.years)
-                    .font(.amountHero.width(.condensed))
+                    .font(.amountHero)
                     .monospacedDigit()
                     .foregroundStyle(.primary)
                 Text(verbatim: period.summary)
@@ -82,7 +82,7 @@ private struct PresidentsSection: View {
                     VStack(alignment: .leading, spacing: .spaceHairline) {
                         Text(verbatim: president.name).font(.rowTitle)
                         Text(verbatim: model.term(president))
-                            .font(.subheadline.weight(.semibold).width(.condensed))
+                            .font(.subheadline.weight(.semibold))
                             .monospacedDigit()
                             .foregroundStyle(.secondary)
                         Text(verbatim: president.how)

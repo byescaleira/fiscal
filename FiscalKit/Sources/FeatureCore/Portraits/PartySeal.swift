@@ -34,11 +34,7 @@ public struct PartySeal: View {
                     PartyStripes(palette: PartyPalette.of(party: party)).clipShape(.capsule)
                 }
                 Text(party.uppercased())
-                    .font(
-                        .system(
-                            size: proxy.size.height * Self.letterScale, weight: .heavy,
-                            design: .rounded)
-                    )
+                    .font(.emphasis(fixed: proxy.size.height * Self.letterScale, weight: .heavy))
                     .foregroundStyle(.white)
                     .lineLimit(1)
                     .minimumScaleFactor(Self.minimumScale)

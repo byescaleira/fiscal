@@ -64,7 +64,7 @@ private struct RecentVoteRow: View {
                     .lineLimit(3)
                 SameDayVotesMark(vote: vote)
                 HStack(alignment: .bottom) {
-                    TallyLine(tally: vote.tally, font: .amountRow.width(.condensed))
+                    TallyLine(tally: vote.tally, font: .amountRow)
                     Spacer(minLength: .spaceS)
                     if let approved = vote.approved { ResultChip(approved: approved) }
                 }

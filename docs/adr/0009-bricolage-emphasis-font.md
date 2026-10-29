@@ -16,11 +16,12 @@ A constituição pedia `.fontDesign(.rounded)` na raiz de cada tela, então quas
   - botões principais, com `primaryButton()`;
   - nomes e números em destaque, com os tokens `titleLarge`, `titleMedium`, `amount*` e `caseQuestion`, ou `Font.emphasis(_:weight:)`.
 - Use **SF Pro** (fonte do sistema) em todo o resto. Nunca `.fontDesign(.rounded)` na raiz de tela.
+- **Um tipo só para números e títulos de destaque** (decisão de 2026-10-28): placar, herói, cartazes, widgets e Live Activities usam a Bricolage, por `Font.emphasis(_:weight:)`, pelos tokens ou por `Font.emphasis(fixed:weight:)` quando o tamanho segue a área e não o texto. Nada de SF condensada, arredondada, mono, nem SF heavy ou black em tamanho fixo, nem dentro do design system. Algarismos alinhados usam `.monospacedDigit()`. A extensão de widgets registra a fonte no `init()` do `WidgetBundle`, porque o registro vale por processo.
 - A fonte é a variável `BricolageGrotesque.ttf` (eixos opsz, wdth e wght), em `FiscalDesignSystem/Fonts/` com o `OFL.txt`. Ela é registrada uma vez, no início do app, por `FiscalAppearance.install()`, que chama `EmphasisFont.register()`. `Font.emphasis` usa `relativeTo:`, então acompanha o Dynamic Type.
 - Exceções:
   - telas com `.searchable` e telas de título inline mantêm `navigationTitle`, porque o título personalizado espreme o campo de busca no iOS 27 e não se aplica ao modo inline;
   - o título pequeno, depois de rolar, fica na fonte do sistema;
-  - widgets, cartazes de compartilhamento e retratos seguem arredondados até a migração deles.
+  - o texto pequeno dos cartazes (fonte, crédito, rótulos, endereço) fica em SF Pro de tamanho fixo, sem design arredondado.
 
 ## Consequências
 

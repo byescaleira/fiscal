@@ -20,6 +20,7 @@ O `FiscalDesignSystem` é o único lugar com valores visuais. As features usam s
 - **Títulos grandes:** `emphasisTitle(_:)` no lugar de `navigationTitle`. Telas com `.searchable` ou de título inline continuam com `navigationTitle`.
 - **Seções e botões:** `sectionTitle()` e `primaryButton()` já usam a fonte de ênfase.
 - **Destaques:** nomes e números em destaque usam os tokens acima ou `.font(.emphasis(.title3, weight: .bold))`. Corpo, linhas e legendas ficam nas fontes do sistema, sem `.fontDesign(.rounded)` na raiz da tela.
+- **Um tipo só nos números:** placar, herói, cartazes, widgets e Live Activities usam a Bricolage; quando o tamanho segue a área, `Font.emphasis(fixed:weight:)` (tokens `scoreboard*`, `poster*`, `candidatePercent*`, `ballotNumber(_:)`). Nada de SF condensada, arredondada ou mono, nem SF heavy/black em tamanho fixo; algarismos alinhados com `.monospacedDigit()`. Os algarismos da Bricolage ExtraBold avançam ~0,57 do tamanho (a SF condensada, ~0,49), e `posterFigureAdvance` (0,6) já conta com isso.
 - **A fonte:** é a `Fonts/BricolageGrotesque.ttf` variável, com o `OFL.txt` ao lado. É registrada uma vez por `FiscalAppearance.install()` e acompanha o Dynamic Type (`relativeTo:`).
 
 ## Movimento e energia

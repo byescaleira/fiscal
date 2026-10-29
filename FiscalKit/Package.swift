@@ -122,7 +122,8 @@ let package = Package(
         .testTarget(
             name: "FeatureShareTests",
             dependencies: [
-                "FiscalDomain", "FiscalData", "FiscalResource", "FeatureCore", "FeatureShare",
+                "FiscalDomain", "FiscalData", "FiscalResource", "FiscalDesignSystem", "FeatureCore",
+                "FeatureShare",
             ]),
         .testTarget(
             name: "FeatureSettingsTests",

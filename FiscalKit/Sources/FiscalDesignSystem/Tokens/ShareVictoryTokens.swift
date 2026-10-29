@@ -29,14 +29,13 @@ extension CGFloat {
 
 extension Font {
     public static func posterPartyTag(_ size: CGFloat) -> Font {
-        .system(size: size, weight: .heavy, design: .rounded)
+        .emphasis(fixed: size, weight: .heavy)
     }
 
     public static func posterSeal(_ size: CGFloat) -> Font {
         .system(size: size, weight: .bold)
     }
 
-    public static let posterVictoryChip = Font.system(size: 12, weight: .heavy, design: .rounded)
-    public static let posterVictoryChipCompact = Font.system(
-        size: 10, weight: .heavy, design: .rounded)
+    public static let posterVictoryChip = Font.emphasis(fixed: 12, weight: .heavy)
+    public static let posterVictoryChipCompact = Font.emphasis(fixed: 10, weight: .heavy)
 }

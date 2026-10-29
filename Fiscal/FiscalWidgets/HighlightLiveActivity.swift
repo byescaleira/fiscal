@@ -32,7 +32,6 @@ struct HighlightLiveActivity: Widget {
                         HighlightWho(board: board, showsPortrait: false)
                     }
                     .padding(.horizontal, .space2XS)
-                    .fontDesign(.rounded)
                     .partyMarksStill()
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel(Text(verbatim: board.accessibilityText))
@@ -85,7 +84,6 @@ private struct HighlightLockScreen: View {
         .padding(.horizontal, .spaceXL)
         .padding(.vertical, .spaceL)
         .frame(maxWidth: .infinity)
-        .fontDesign(.rounded)
         .partyMarksStill()
         .opacity(isStale ? .opacityStrong : 1)
         .accessibilityElement(children: .ignore)

@@ -60,7 +60,9 @@ private struct RaceCompactHeader: View {
     var body: some View {
         HStack(alignment: .center, spacing: .spaceM) {
             Text(verbatim: summary.race.uf.uppercased())
-                .font(.subheadline.weight(.heavy).width(.condensed))
+                .font(.emphasis(.subheadline, weight: .heavy))
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
                 .foregroundStyle(.secondary)
                 .frame(width: .badgeM, height: .badgeM)
                 .background(.subtleFill, in: .rect(cornerRadius: .radiusS))
@@ -141,7 +143,7 @@ private struct RaceDuelSide: View {
             if !trailing { portrait }
             VStack(alignment: trailing ? .trailing : .leading, spacing: .spaceHairline) {
                 Text(verbatim: contender.percent)
-                    .font(.amountTitle.width(.condensed))
+                    .font(.amountTitle)
                     .monospacedDigit()
                     .contentTransition(
                         reduceMotion ? .identity : .numericText(value: contender.candidate.percent)

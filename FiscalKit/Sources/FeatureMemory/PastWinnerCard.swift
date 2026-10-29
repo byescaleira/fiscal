@@ -45,7 +45,7 @@ struct PastWinnerCard: View {
                     HStack(spacing: .spaceS) {
                         PartyMark(winner.party)
                         Text(verbatim: MemoryText.percent(winner.share))
-                            .font(.headline.weight(.bold).width(.condensed))
+                            .font(.emphasis(.headline, weight: .bold))
                             .monospacedDigit()
                     }
                 }

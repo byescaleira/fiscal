@@ -105,8 +105,7 @@ struct WinnerTileMap: View {
                 .clipShape(.rect(cornerRadius: .radiusS))
                 .annotation(position: .overlay) {
                     Text(verbatim: tile.code)
-                        .font(.caption2.weight(.bold))
-                        .monospaced()
+                        .font(.emphasis(.caption2, weight: .bold))
                         .foregroundStyle(tile.winner == nil ? Color.secondary : Color.white)
                 }
                 .accessibilityLabel(tile.name)

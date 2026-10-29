@@ -43,7 +43,7 @@ private struct RaceStandingRow: View {
                     PartyMark(contender.candidate.party)
                     Spacer(minLength: .spaceXS)
                     Text(verbatim: contender.percent)
-                        .font(.headline.width(.condensed))
+                        .font(.emphasis(.headline, weight: .bold))
                         .monospacedDigit()
                         .contentTransition(
                             reduceMotion
@@ -196,7 +196,7 @@ private struct RaceBallotLegend: View {
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.secondary)
                     Text(verbatim: ballot.percentText)
-                        .font(.amountRow.width(.condensed))
+                        .font(.amountRow)
                         .monospacedDigit()
                         .contentTransition(.numericText(value: ballot.share))
                     Text(verbatim: ballot.countText)

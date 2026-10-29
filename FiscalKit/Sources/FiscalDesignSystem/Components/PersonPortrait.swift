@@ -75,7 +75,7 @@ struct GenericPortrait: View {
                 .frame(width: size * Self.shouldersWidth, height: size * Self.shouldersHeight)
                 .offset(y: size * Self.shouldersDrop)
             Text(initials)
-                .font(.system(size: size * Self.initialsScale, weight: .bold, design: .rounded))
+                .font(.emphasis(fixed: size * Self.initialsScale, weight: .bold))
                 .foregroundStyle(.secondary)
                 .minimumScaleFactor(Self.minimumScale)
                 .offset(y: -size * Self.initialsLift)
