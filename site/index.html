@@ -1,424 +1,381 @@
 <!doctype html>
-<html lang="en-US">
+<html lang="pt-BR">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title data-i18n="home.meta.title">Fiscal · What matters, at a glance</title>
-<meta name="description" data-i18n-content="home.meta.description" content="Fiscal is a private app for iPhone and iPad that keeps what matters at a glance. No account, no ads, no tracking.">
+<title>Fiscal · O que os seus representantes fazem com o seu voto</title>
+<meta name="description" content="Votos, gastos e eleições de quem governa e legisla, do vereador ao presidente, com a fonte oficial ao lado de cada número. Grátis, sem cadastro e sem anúncio.">
 <meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
-<meta property="og:title" data-i18n-content="home.meta.title" content="Fiscal · What matters, at a glance">
-<meta property="og:description" data-i18n-content="home.meta.ogDescription" content="What matters, at a glance, with your data in your own iCloud. No account, no ads, no tracking.">
+<meta property="og:title" content="Fiscal · O que os seus representantes fazem com o seu voto">
+<meta property="og:description" content="Apuração ao vivo, o que cada político fez depois da posse e quanto custa um mandato. Dados oficiais, a mesma régua para todos.">
 <meta property="og:image" content="https://fiscal.byescaleira.com/assets/icon.png">
+<meta property="og:locale" content="pt_BR">
 <link rel="icon" href="/assets/favicon.png">
 <link rel="apple-touch-icon" href="/assets/icon.png">
-<script src="/i18n.js"></script>
+<link rel="preload" href="/fonts/BricolageGrotesque.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-<nav class="nav">
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+<nav class="nav" aria-label="Principal">
 <div class="page">
 <a class="brand" href="/"><img class="icon-light" src="/assets/icon.png" alt=""><img class="icon-dark" src="/assets/icon-dark.png" alt="">Fiscal</a>
 <div class="nav-links">
-<a class="optional" href="#features" data-i18n="common.nav.features">Features</a>
-<a class="optional" href="#devices" data-i18n="common.nav.devices">Devices</a>
-<a class="optional" href="#tips" data-i18n="common.nav.tips">Tips</a>
-<a class="optional" href="#pricing" data-i18n="common.nav.pricing">Pricing</a>
-<a class="nav-web" href="/app"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg><span data-i18n="home.web.nav">Fiscal on the Web</span></a>
-<a class="button small" href="https://apps.apple.com/app/id0" data-i18n="common.nav.get">Get Fiscal</a>
+<a class="optional" href="#recursos">Recursos</a>
+<a class="optional" href="#apuracao">Apuração</a>
+<a class="optional" href="#privacidade">Privacidade</a>
+<a class="optional" href="#perguntas">Perguntas</a>
+<a class="button small" href="https://apps.apple.com/app/id6826982117">Baixar o Fiscal</a>
 </div>
 </div>
 </nav>
 
-<main class="page">
+<main class="page" id="conteudo">
 <header class="hero">
 <div>
-<img class="hero-icon icon-light" src="/assets/icon.png" alt="Fiscal app icon" data-i18n-alt="home.hero.iconAlt">
-<img class="hero-icon icon-dark" src="/assets/icon-dark.png" alt="Fiscal app icon" data-i18n-alt="home.hero.iconAlt">
-<h1 data-i18n-html="home.hero.title">What matters, <span>at a glance.</span></h1>
-<p class="lead" data-i18n="home.hero.lead">Fiscal keeps what matters in one calm place on your iPhone and iPad, ready the moment you open it. Private by design: no account, no ads, no tracking.</p>
+<img class="hero-icon icon-light" src="/assets/icon.png" alt="Ícone do Fiscal">
+<img class="hero-icon icon-dark" src="/assets/icon-dark.png" alt="Ícone do Fiscal">
+<h1>O que os seus representantes fazem <span>com o seu voto.</span></h1>
+<p class="lead">Presença, votações, projetos, gastos e campanhas de quem governa e legisla, do vereador ao presidente, com a fonte oficial ao lado de cada número.</p>
 <div class="actions">
-<a class="button" href="https://apps.apple.com/app/id0" data-i18n="home.download">Download on the App Store</a>
-<a class="button quiet" href="#features" data-i18n="home.hero.howItWorks">See how it works</a>
+<a class="button" href="https://apps.apple.com/app/id6826982117">Baixar na App Store</a>
+<a class="button quiet" href="#recursos">Ver o que tem no app</a>
 </div>
-<p class="footnote" data-i18n="home.hero.footnote">Free to download. Fiscal Pro starts with 7 days free.</p>
-<a class="hero-web" href="/app"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg><span data-i18n="home.web.heroLink">On a computer? Open Fiscal on the Web</span><span aria-hidden="true">→</span></a>
+<p class="footnote">Grátis, sem cadastro, sem anúncio e sem compras no app.</p>
 <div class="platforms">
 <span class="chip capsule" style="--chip: var(--denim)">iPhone</span>
 <span class="chip capsule" style="--chip: var(--teal)">iPad</span>
-<span class="chip capsule" style="--chip: var(--secondary)" data-i18n="home.comingSoon">Mac and Vision Pro coming soon</span>
 </div>
 </div>
 
-<div class="iphone" role="img" aria-label="Fiscal on iPhone showing the Home tab" data-i18n-aria-label="home.hero.iphoneLabel">
+<div class="iphone" role="img" aria-label="O Fiscal no iPhone, na aba Votações, com três projetos aprovados nos temas da pessoa">
 <span class="side action"></span><span class="side volume-up"></span><span class="side volume-down"></span><span class="side power"></span><span class="side camera"></span>
 <div class="bezel">
-<div class="screen">
-<div class="status" aria-hidden="true"><span data-date="2026-10-17T09:41" data-format="clock">9:41</span><span class="status-icons"><svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 16 12"><path d="M8 11.5 5.6 9a3.4 3.4 0 0 1 4.8 0zM3.5 6.9a6.4 6.4 0 0 1 9 0l-1.4 1.4a4.4 4.4 0 0 0-6.2 0zM1.3 4.7a9.5 9.5 0 0 1 13.4 0l-1.4 1.4a7.5 7.5 0 0 0-10.6 0z"/></svg><span class="battery"><i></i></span></span></div>
-<span class="island" aria-hidden="true"></span>
-<p class="screen-title" data-i18n="mock.home">Home</p>
-<div class="month-header">
-<div class="subheadline" data-i18n="mock.yourItems">Your Items</div>
-<div class="amount-hero" data-number="12">12</div>
-<div class="subheadline" data-i18n="mock.lastAdded">Last added on <data data-slot="date" data-date="2026-10-17" data-format="long">October 17, 2026</data></div>
-</div>
-<p class="d-caption" data-i18n="mock.latest">Latest</p>
+<div class="screen" aria-hidden="true">
+<div class="status"><span>9:41</span><span class="status-icons"><svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 16 12"><path d="M8 11.5 5.6 9a3.4 3.4 0 0 1 4.8 0zM3.5 6.9a6.4 6.4 0 0 1 9 0l-1.4 1.4a4.4 4.4 0 0 0-6.2 0zM1.3 4.7a9.5 9.5 0 0 1 13.4 0l-1.4 1.4a7.5 7.5 0 0 0-10.6 0z"/></svg><span class="battery"><i></i></span></span></div>
+<span class="island"></span>
+<p class="screen-title">Votações</p>
+<p class="screen-subtitle">Câmara e Senado · Todos os temas</p>
+<div class="screen-head"><span>Nos seus temas</span><span class="chip capsule" style="--chip: var(--secondary)">Por quem você apoia</span></div>
 <div class="group">
-<div class="row budget">
-<span class="badge" style="--badge: var(--mustard)"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg></span>
-<div><div class="budget-top"><span data-i18n="mock.firstIdea">First idea</span><span data-i18n="mock.today">Today</span></div></div>
+<div class="row vote">
+<strong>PL 1123/2025</strong>
+<span class="vote-text">Muda uma lei para determinar a aceitação, pelas unidades do Sistema…</span>
+<span class="vote-status">Aprovada</span>
 </div>
-<div class="row budget">
-<span class="badge" style="--badge: var(--teal)"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></span>
-<div><div class="budget-top"><span data-i18n="mock.weekendPlan">Weekend plan</span><span data-i18n="mock.yesterday">Yesterday</span></div></div>
+<div class="row vote">
+<strong>PL 1435/2023</strong>
+<span class="vote-text">Trata da obrigatoriedade da afixação de cartazes ilustrativos sobre o méto…</span>
+<span class="vote-status">Aprovada</span>
 </div>
-<div class="row budget">
-<span class="badge" style="--badge: var(--denim)"><svg viewBox="0 0 24 24"><path d="M5 4h9a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h9"/></svg></span>
-<div><div class="budget-top"><span data-i18n="mock.readingList">Reading list</span><span data-date="2026-10-15" data-format="long">October 15, 2026</span></div></div>
+<div class="row vote">
+<strong>MPV 1370/2026</strong>
+<span class="vote-text">Muda leis para dispor sobre o Exame Nacional de Avaliação da Formação…</span>
+<span class="vote-status">Aprovada</span>
 </div>
 </div>
-<p class="footnote" data-i18n="mock.tapToEdit">Tap an item to edit or delete it.</p>
-<div class="tabbar" aria-hidden="true">
+<p class="screen-note">Sua lente escolhe quais votações aparecem primeiro. Os números são os mesmos para todo mundo.</p>
+<div class="tabbar">
 <div class="tabbar-pill">
-<span class="selected" data-i18n="mock.home"><svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v9h-5v-6H9v6H4z"/></svg>Home</span>
-<span data-i18n="mock.settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>Settings</span>
+<span><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4M9 15l2 2 4-4"/></svg>Hoje</span>
+<span><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M12 11v7M6 18c0 1.7 2.7 3 6 3s6-1.3 6-3"/></svg>Região</span>
+<span class="selected"><svg viewBox="0 0 24 24"><path d="M4 6l1.5 1.5L8 5M11 6h9M4 13l1.5 1.5L8 12M11 13h9M11 20h9"/></svg>Votações</span>
+<span><svg viewBox="0 0 24 24"><path d="M3 9l9-5 9 5M5 9v9M9.5 9v9M14.5 9v9M19 9v9M3 21h18"/></svg>Dinheiro</span>
 </div>
+<span class="tabbar-solo"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg></span>
 </div>
-<span class="home-indicator" aria-hidden="true"></span>
+<span class="home-indicator"></span>
 </div>
 </div>
 </div>
 </header>
 
-<section class="values" aria-label="Fiscal at a glance" data-i18n-aria-label="home.values.label">
-<div class="value" style="--accent: var(--denim)"><strong data-i18n="home.values.accountsValue">0 accounts</strong><span data-i18n="home.values.accountsText">nothing to sign up for</span></div>
-<div class="value" style="--accent: var(--olive)"><strong data-i18n="home.values.icloudValue">Your iCloud</strong><span data-i18n="home.values.icloudText">the only place your data syncs</span></div>
-<div class="value" style="--accent: var(--plum)"><strong>iPhone + iPad</strong><span data-i18n="home.comingSoon">Mac and Vision Pro coming soon</span></div>
-<div class="value" style="--accent: var(--mustard)"><strong data-i18n="home.values.languagesValue">10 languages</strong><span data-i18n="home.values.languagesText">on every screen</span></div>
+<section class="values" aria-label="O Fiscal em números">
+<div class="value" style="--accent: var(--denim)"><strong>5.570</strong><span>municípios, do vereador ao presidente</span></div>
+<div class="value" style="--accent: var(--olive)"><strong>Fonte e data</strong><span>ao lado de cada número</span></div>
+<div class="value" style="--accent: var(--plum)"><strong>0 contas</strong><span>nada para cadastrar</span></div>
+<div class="value" style="--accent: var(--rust)"><strong>R$ 0</strong><span>sem assinatura e sem anúncio</span></div>
 </section>
 
-<section class="everywhere" id="devices">
+<section class="explore" id="recursos">
 <div class="section-head">
-<span class="eyebrow" style="--accent: var(--plum)" data-i18n="home.devices.eyebrow">Every screen</span>
-<h2 data-i18n="home.devices.title">Made for iPhone and iPad. Mac and Vision Pro are next.</h2>
-<p class="lead" data-i18n="home.devices.lead">Your items follow you through your own iCloud. On iPad, details open beside the list instead of covering it, and the Mac app works the same way when it arrives.</p>
-</div>
-<div class="devices">
-<div class="macbook" role="img" aria-label="Fiscal for Mac, coming soon, with an item open in the inspector" data-i18n-aria-label="home.devices.macLabel">
-<div class="mac-lid">
-<div class="mac-display">
-<div class="menubar" aria-hidden="true"><span><b>Fiscal</b><span data-i18n="mock.menu.file">File</span><span data-i18n="mock.menu.edit">Edit</span><span data-i18n="mock.menu.view">View</span><span data-i18n="mock.menu.window">Window</span><span data-i18n="mock.menu.help">Help</span></span><span data-date="2026-10-17T09:41" data-format="menubar">Sat Oct 17  9:41 AM</span></div>
-<span class="notch" aria-hidden="true"></span>
-<div class="window">
-<aside class="mac-sidebar">
-<div class="lights"><i></i><i></i><i></i></div>
-<span class="side-item selected" data-i18n="mock.home"><svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v9h-5v-6H9v6H4z"/></svg>Home</span>
-<span class="side-item" data-i18n="mock.settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>Settings</span>
-</aside>
-<div class="mac-content">
-<p class="d-title" data-i18n="mock.home">Home</p>
-<div class="d-hero">
-<span class="chip capsule" data-i18n="mock.yourItems">Your Items</span>
-<strong data-number="12">12</strong>
-<span data-i18n="mock.lastAdded">Last added on <data data-slot="date" data-date="2026-10-17" data-format="long">October 17, 2026</data></span>
-</div>
-<div class="d-group">
-<p class="d-caption" data-i18n="mock.latest">Latest</p>
-<div class="d-row"><span class="d-badge" style="--badge: var(--mustard)"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg></span><div class="d-grow"><div class="d-line"><span data-i18n="mock.firstIdea">First idea</span><b data-i18n="mock.today">Today</b></div></div></div>
-<div class="d-row"><span class="d-badge" style="--badge: var(--teal)"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></span><div class="d-grow"><div class="d-line"><span data-i18n="mock.weekendPlan">Weekend plan</span><b data-i18n="mock.yesterday">Yesterday</b></div></div></div>
-<div class="d-row"><span class="d-badge" style="--badge: var(--denim)"><svg viewBox="0 0 24 24"><path d="M5 4h9a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h9"/></svg></span><div class="d-grow"><div class="d-line"><span data-i18n="mock.readingList">Reading list</span><b data-date="2026-10-15" data-format="long">October 15, 2026</b></div></div></div>
-</div>
-</div>
-<aside class="mac-inspector">
-<p class="d-caption" data-i18n="mock.editItem">Edit Item</p>
-<div class="d-hero small">
-<span class="d-badge" style="--badge: var(--mustard)"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg></span>
-<span data-i18n="mock.firstIdea">First idea</span>
-</div>
-<div class="d-group">
-<div class="d-line d-plain"><span data-i18n="mock.title">Title</span><b data-i18n="mock.firstIdea">First idea</b></div>
-<div class="d-line d-plain"><span data-i18n="mock.color">Color</span><b style="color: var(--mustard)">●</b></div>
-</div>
-<div class="chips"><span class="chip" style="--chip: var(--mustard)" data-i18n="mock.today">Today</span></div>
-</aside>
-</div>
-</div>
-</div>
-<div class="mac-base" aria-hidden="true"></div>
+<span class="eyebrow">Recursos</span>
+<h2>Cinco abas para acompanhar quem você elegeu.</h2>
+<p class="lead">Toque em cada aba. As telas abaixo usam os mesmos textos e dados do app.</p>
 </div>
 
-<div class="ipad" role="img" aria-label="Fiscal on iPad showing the list and an item side by side" data-i18n-aria-label="home.devices.ipadLabel">
-<div class="ipad-display">
-<span class="ipad-camera" aria-hidden="true"></span>
-<div class="ipad-status" aria-hidden="true"><span data-date="2026-10-17T09:41" data-format="statusbar">9:41  Sat Oct 17</span><span class="status-icons"><svg viewBox="0 0 16 12"><path d="M8 11.5 5.6 9a3.4 3.4 0 0 1 4.8 0zM3.5 6.9a6.4 6.4 0 0 1 9 0l-1.4 1.4a4.4 4.4 0 0 0-6.2 0zM1.3 4.7a9.5 9.5 0 0 1 13.4 0l-1.4 1.4a7.5 7.5 0 0 0-10.6 0z"/></svg><span class="battery"><i></i></span></span></div>
-<div class="ipad-tabs" aria-hidden="true"><span class="selected" data-i18n="mock.home">Home</span><span data-i18n="mock.settings">Settings</span></div>
-<div class="ipad-columns">
+<div class="tabs" role="tablist" aria-label="Abas do Fiscal">
+<button role="tab" id="tab-hoje" aria-controls="panel-hoje" aria-selected="true" style="--accent: var(--tint)">Hoje</button>
+<button role="tab" id="tab-regiao" aria-controls="panel-regiao" aria-selected="false" tabindex="-1" style="--accent: var(--denim)">Região</button>
+<button role="tab" id="tab-votacoes" aria-controls="panel-votacoes" aria-selected="false" tabindex="-1" style="--accent: var(--olive)">Votações</button>
+<button role="tab" id="tab-dinheiro" aria-controls="panel-dinheiro" aria-selected="false" tabindex="-1" style="--accent: var(--teal)">Dinheiro</button>
+<button role="tab" id="tab-fiscalizar" aria-controls="panel-fiscalizar" aria-selected="false" tabindex="-1" style="--accent: var(--plum)">Fiscalizar</button>
+</div>
+
+<div class="panel" role="tabpanel" id="panel-hoje" aria-labelledby="tab-hoje" style="--accent: var(--tint)">
 <div>
-<p class="d-title" data-i18n="mock.home">Home</p>
-<p class="d-caption" data-i18n="mock.latest">Latest</p>
-<div class="d-group">
-<div class="d-row"><span class="d-badge" style="--badge: var(--mustard)"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg></span><div class="d-grow"><div class="d-line"><span data-i18n="mock.firstIdea">First idea</span><b data-i18n="mock.today">Today</b></div></div></div>
-<div class="d-row"><span class="d-badge" style="--badge: var(--teal)"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></span><div class="d-grow"><div class="d-line"><span data-i18n="mock.weekendPlan">Weekend plan</span><b data-i18n="mock.yesterday">Yesterday</b></div></div></div>
-<div class="d-row"><span class="d-badge" style="--badge: var(--denim)"><svg viewBox="0 0 24 24"><path d="M5 4h9a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h9"/></svg></span><div class="d-grow"><div class="d-line"><span data-i18n="mock.readingList">Reading list</span><b data-date="2026-10-15" data-format="long">October 15, 2026</b></div></div></div>
+<h3>O que importa hoje, na primeira tela.</h3>
+<p class="lead">O destaque do momento, o resumo do dia no Congresso e as votações que acabaram de acontecer. Nas eleições, a apuração ao vivo.</p>
+<ul class="points">
+<li>Destaque escolhido pela mesma regra para todos os políticos e temas</li>
+<li>Resumo do dia no Congresso, em linguagem simples</li>
+<li>Widget e Atividade ao Vivo durante a apuração</li>
+</ul>
+</div>
+<div class="feature-media">
+<p class="media-caption">Segunda-feira, 26 de outubro</p>
+<div class="group">
+<div class="row item"><span class="badge" style="--badge: var(--tint)"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.4 5.9.9-4.3 4.1 1 5.9L12 16.5 6.8 19.3l1-5.9-4.3-4.1 5.9-.9z"/></svg></span><div><strong>Destaque do momento</strong><span>O que mais repercute e mais atinge a vida das pessoas</span></div></div>
+<div class="row item"><span class="badge" style="--badge: var(--denim)"><svg viewBox="0 0 24 24"><path d="M3 9l9-5 9 5M5 9v9M9.5 9v9M14.5 9v9M19 9v9M3 21h18"/></svg></span><div><strong>Resumo do dia</strong><span>A pauta e as decisões da Câmara e do Senado</span></div></div>
+<div class="row item"><span class="badge" style="--badge: var(--olive)"><svg viewBox="0 0 24 24"><path d="M4 6l1.5 1.5L8 5M11 6h9M4 13l1.5 1.5L8 12M11 13h9M11 20h9"/></svg></span><div><strong>Votações de hoje</strong><span>Com o placar por partido</span></div></div>
 </div>
 </div>
+</div>
+
+<div class="panel" role="tabpanel" id="panel-regiao" aria-labelledby="tab-regiao" style="--accent: var(--denim)">
 <div>
-<p class="d-title" data-i18n="mock.editItem">Edit Item</p>
-<div class="d-group">
-<div class="d-line d-plain"><span data-i18n="mock.title">Title</span><b data-i18n="mock.weekendPlan">Weekend plan</b></div>
-<div class="d-line d-plain"><span data-i18n="mock.color">Color</span><b style="color: var(--teal)">●</b></div>
+<h3>Quem governa a sua cidade, o seu estado e o país.</h3>
+<p class="lead">Escolha a cidade e veja quem está no poder, do vereador ao presidente, e como os seus deputados e senadores votaram.</p>
+<ul class="points">
+<li>Todos os 5.570 municípios do Brasil</li>
+<li>Câmara Municipal, Assembleia e Câmara dos Deputados, partido por partido</li>
+<li>Cada pessoa com presença, propostas, discursos e gastos comparados com os colegas do mesmo cargo</li>
+</ul>
 </div>
-<div class="d-group">
-<div class="bar" style="--bar: var(--mustard); --value: 45%"><i></i></div>
-<div class="bar" style="--bar: var(--teal); --value: 70%"><i></i></div>
-<div class="bar" style="--bar: var(--denim); --value: 30%"><i></i></div>
+<div class="feature-media">
+<div class="place">
+<span class="media-caption">Sua cidade</span>
+<p class="place-name">Campo Grande <span class="uf">MS</span></p>
+<span class="place-detail">Mato Grosso do Sul · do vereador ao presidente</span>
+<p class="place-count"><strong>83</strong> representantes</p>
 </div>
 </div>
 </div>
-<span class="home-indicator ipad-indicator" aria-hidden="true"></span>
+
+<div class="panel" role="tabpanel" id="panel-votacoes" aria-labelledby="tab-votacoes" style="--accent: var(--olive)">
+<div>
+<h3>O que foi decidido e o que muda na prática.</h3>
+<p class="lead">Cada votação do Congresso com o resumo em português simples, o texto oficial ao lado e o placar por partido.</p>
+<ul class="points">
+<li>Votações do mesmo projeto no mesmo dia aparecem juntas</li>
+<li>Como quem você apoia votou, quando você escolhe alguém</li>
+<li>Sim é a favor do texto, Não é contra; abstenção e obstrução aparecem à parte</li>
+</ul>
+</div>
+<div class="feature-media">
+<div class="group">
+<div class="row vote">
+<strong>PL 1123/2025</strong>
+<span class="vote-text">Muda uma lei para determinar a aceitação, pelas unidades do Sistema…</span>
+<span class="vote-status">Aprovada</span>
+</div>
+<div class="row vote">
+<strong>MPV 1370/2026</strong>
+<span class="vote-text">Muda leis para dispor sobre o Exame Nacional de Avaliação da Formação…</span>
+<span class="vote-status">Aprovada</span>
+</div>
+</div>
+<p class="media-note">Sua lente escolhe quais votações aparecem primeiro. Os números são os mesmos para todo mundo.</p>
+</div>
+</div>
+
+<div class="panel" role="tabpanel" id="panel-dinheiro" aria-labelledby="tab-dinheiro" style="--accent: var(--teal)">
+<div>
+<h3>Quanto custa um mandato, estado por estado.</h3>
+<p class="lead">O máximo que a lei permite, comparado com o salário mínimo, para onde vai a cota parlamentar e quem financia as campanhas.</p>
+<ul class="points">
+<li>Salário, cota, verba de gabinete e auxílio-moradia pelo valor cheio</li>
+<li>O que foi de fato gasto, ano a ano</li>
+<li>Doações de campanha com os dados do TSE</li>
+</ul>
+</div>
+<div class="feature-media">
+<div class="money">
+<span class="media-caption">Congresso · Mato Grosso do Sul</span>
+<p class="money-value"><strong>R$&nbsp;2,3&nbsp;mi</strong> por mês</p>
+<p class="money-detail">O máximo que a lei permite por mês para os 8 deputados federais e 3 senadores de Mato Grosso do Sul.</p>
+<div class="money-line">Equivale a 1.414 salários mínimos por mês</div>
+<div class="money-line">Cota de fato gasta em 2026: R$&nbsp;3,8&nbsp;mi</div>
+</div>
+<p class="media-note">Fonte: Câmara dos Deputados, Senado Federal, Planalto e IBGE · atualizado 26/10, 12:51</p>
+</div>
+</div>
+
+<div class="panel" role="tabpanel" id="panel-fiscalizar" aria-labelledby="tab-fiscalizar" style="--accent: var(--plum)">
+<div>
+<h3>Pergunte, cruze os dados e guarde a investigação.</h3>
+<p class="lead">Busque qualquer pessoa, votação, tema ou cidade. Investigações sugeridas cruzam dados oficiais, e a Memória guarda as eleições passadas e as fases da política brasileira.</p>
+<ul class="points">
+<li>A Apple Intelligence lê a pergunta no próprio aparelho, nos modelos compatíveis</li>
+<li>Os números vêm sempre dos dados oficiais</li>
+<li>Guias de estudo e checagens do Projeto Comprova</li>
+</ul>
+</div>
+<div class="feature-media">
+<div class="ask">O que você quer investigar?</div>
+<p class="media-note">A Apple Intelligence lê a pergunta neste aparelho. Os números vêm sempre dos dados oficiais.</p>
+<div class="memory">
+<strong>Memória</strong>
+<span>Eleições passadas, as fases da política brasileira e guias para estudar</span>
 </div>
 </div>
 </div>
 </section>
 
-<section class="explore" id="features">
+<section class="feature" id="apuracao" style="--accent: var(--rust)">
+<div>
+<span class="eyebrow">Apuração</span>
+<h2>A apuração ao vivo, na tela de bloqueio.</h2>
+<p class="lead">Nas eleições, o Fiscal acompanha os números do TSE em tempo real e anuncia o resultado assim que ele sai. Escolha uma disputa e veja tudo pela Atividade ao Vivo e pela Dynamic Island.</p>
+<ul class="points">
+<li>Porcentagens sobre os votos válidos, como o TSE divulga</li>
+<li>Brancos, nulos e abstenção explicados, sem decidir a disputa</li>
+<li>Widget e alerta na tela de bloqueio, os mesmos para todo mundo</li>
+</ul>
+</div>
+<div class="feature-media">
+<div class="race" role="img" aria-label="Cartão da apuração para presidente, segundo turno, com o resultado final e a participação">
+<div class="race-head" aria-hidden="true"><span class="chip capsule" style="--chip: var(--on-race)">Resultado final</span><span><strong>Presidente · Brasil</strong>2º turno</span></div>
+<div class="race-bar" aria-hidden="true"><i style="--value: 78.2%"></i><i style="--value: 0.9%"></i><i style="--value: 1.7%"></i></div>
+<dl class="race-figures" aria-hidden="true">
+<div><dt>Válidos</dt><dd>78,2%</dd></div>
+<div><dt>Brancos</dt><dd>0,9%</dd></div>
+<div><dt>Nulos</dt><dd>1,7%</dd></div>
+<div><dt>Abstenção</dt><dd>19,2%</dd></div>
+</dl>
+<p class="race-source" aria-hidden="true">Arquivo do TSE das 22:27</p>
+</div>
+<p class="media-note">Brancos e nulos não entram nos votos válidos, que decidem a disputa.</p>
+</div>
+</section>
+
+<section class="feature flip" id="lente" style="--accent: var(--denim)">
+<div>
+<span class="eyebrow">Quem você apoia</span>
+<h2>A sua lente muda a ordem. Nunca os fatos.</h2>
+<p class="lead">Escolha de 1 a 5 políticos de qualquer cargo, ou "Prefiro não dizer". O Fiscal mostra primeiro os temas e as votações que têm a ver com eles.</p>
+<ul class="points">
+<li>Nunca muda: os números, os votos, os gastos e as fontes</li>
+<li>A Outra lente mostra o que se destaca para quem apoia outras pessoas</li>
+<li>Apoiar e seguir são coisas separadas: você segue quem quiser</li>
+</ul>
+</div>
+<div class="feature-media">
+<div class="group">
+<div class="row item"><span class="badge" style="--badge: var(--denim)"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></span><div><strong>Pela sua lente</strong><span>O que vem primeiro em Hoje, Votações e Dinheiro</span></div></div>
+<div class="row item"><span class="badge" style="--badge: var(--teal)"><svg viewBox="0 0 24 24"><circle cx="9" cy="12" r="5"/><circle cx="15" cy="12" r="5"/></svg></span><div><strong>Outra lente</strong><span>Outra lente por um momento. Nada é salvo.</span></div></div>
+<div class="row item"><span class="badge" style="--badge: var(--olive)"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span><div><strong>Fica só neste iPhone</strong><span>Fora do iCloud, do backup e das notificações</span></div></div>
+</div>
+</div>
+</section>
+
+<section class="feature" id="compartilhar" style="--accent: var(--mustard)">
+<div>
+<span class="eyebrow">Compartilhar</span>
+<h2>O que você descobriu, num cartaz pronto.</h2>
+<p class="lead">Transforme um número, uma votação ou uma investigação num cartaz para os Stories, o feed ou uma mensagem, com obras de arte brasileiras em domínio público.</p>
+<ul class="points">
+<li>A fonte oficial impressa no próprio cartaz</li>
+<li>Retratos desenhados pelo Fiscal, marcados como ilustração</li>
+<li>Quem você apoia nunca aparece num cartaz</li>
+</ul>
+</div>
+<div class="feature-media">
+<div class="poster" role="img" aria-label="Cartaz do Fiscal com quanto custa por mês o Congresso de Mato Grosso do Sul">
+<span class="poster-kicker" aria-hidden="true">Congresso · Mato Grosso do Sul</span>
+<strong aria-hidden="true">R$&nbsp;2,3&nbsp;mi</strong>
+<span class="poster-unit" aria-hidden="true">por mês, o máximo que a lei permite</span>
+<span class="poster-source" aria-hidden="true">Fonte: Câmara dos Deputados e Senado Federal · Fiscal</span>
+</div>
+</div>
+</section>
+
+<section class="principles" id="principios">
 <div class="section-head">
-<span class="eyebrow" data-i18n="home.features.eyebrow">Features</span>
-<h2 data-i18n="home.features.title">Built around your day, not the other way around.</h2>
-<p class="lead" data-i18n="home.features.lead">Tap through what Fiscal does. Every preview uses the same pieces you will see in the app.</p>
+<span class="eyebrow" style="--accent: var(--olive)">Princípios</span>
+<h2>Fato, não opinião.</h2>
+<p class="lead">O Fiscal não toma partido, não dá nota a ninguém e não é ligado a nenhum governo, partido ou candidato.</p>
 </div>
-
-<div class="tabs" role="tablist" aria-label="Features" data-i18n-aria-label="home.features.eyebrow">
-<button role="tab" id="tab-capture" aria-controls="panel-capture" aria-selected="true" style="--accent: var(--denim)" data-i18n="home.tabs.capture">Capture</button>
-<button role="tab" id="tab-glance" aria-controls="panel-glance" aria-selected="false" tabindex="-1" style="--accent: var(--olive)" data-i18n="home.tabs.glance">Glance</button>
-<button role="tab" id="tab-sync" aria-controls="panel-sync" aria-selected="false" tabindex="-1" style="--accent: var(--teal)" data-i18n="home.tabs.sync">Sync</button>
-<button role="tab" id="tab-privacy" aria-controls="panel-privacy" aria-selected="false" tabindex="-1" style="--accent: var(--rust)" data-i18n="home.privacy">Privacy</button>
+<div class="card-grid">
+<article class="card" style="--accent: var(--olive)"><h3>A mesma régua para todos</h3><p>Comparações sempre com colegas do mesmo cargo e da mesma casa, com o método publicado no app, em "Como medimos".</p></article>
+<article class="card" style="--accent: var(--denim)"><h3>Fonte e data em cada número</h3><p>Todo número mostra de onde veio e quando foi atualizado. O texto oficial fica ao lado do resumo.</p></article>
+<article class="card" style="--accent: var(--mustard)"><h3>Incerteza explicada</h3><p>Quando algo é estimado, o app diz por quê e o que falta para ter certeza. O traço quer dizer que a fonte não publica esse número.</p></article>
+<article class="card" style="--accent: var(--plum)"><h3>Contexto, não causa</h3><p>Preços e indicadores de antes e de depois da posse aparecem como contexto, nunca como culpa ou mérito de alguém.</p></article>
 </div>
+</section>
 
-<div class="panel" role="tabpanel" id="panel-capture" aria-labelledby="tab-capture" style="--accent: var(--denim)">
-<div>
-<h3 data-i18n="home.capture.title">Add it before you forget it.</h3>
-<p class="lead" data-i18n="home.capture.lead">A new item takes a title and a tap. Everything else can wait.</p>
-<ul class="points">
-<li data-i18n="home.capture.point1">Short titles you recognize in the list</li>
-<li data-i18n="home.capture.point2">Edit or delete with a single tap</li>
-<li data-i18n="home.capture.point3">Newest first, always</li>
+<section class="sources" id="fontes">
+<div class="section-head">
+<span class="eyebrow" style="--accent: var(--teal)">Fontes</span>
+<h2>Só dado oficial e público.</h2>
+<p class="lead">Cada fonte é lida no seu ritmo, de 5 em 5 minutos para a pauta e as votações do dia até uma vez por mês para as eleições passadas, e só quando muda.</p>
+</div>
+<ul class="source-list">
+<li>Câmara dos Deputados</li>
+<li>Senado Federal</li>
+<li>Tribunal Superior Eleitoral</li>
+<li>IBGE</li>
+<li>Receita Federal</li>
+<li>ANP</li>
+<li>Ipeadata</li>
+<li>Planalto</li>
+<li>Assembleias legislativas</li>
+<li>Projeto Comprova</li>
 </ul>
+</section>
+
+<section class="feature flip" id="privacidade" style="--accent: var(--olive)">
+<div>
+<span class="eyebrow">Privacidade</span>
+<h2>O Fiscal não pergunta quem você é.</h2>
+<p class="lead">Sem conta, sem anúncio e sem rastreamento. Quem você apoia nunca sai deste iPhone, e o rótulo da App Store é "Dados não coletados".</p>
+<div class="actions"><a class="button quiet" href="/privacy">Ler a Política de Privacidade</a></div>
 </div>
 <div class="feature-media">
-<div class="lottie" data-animation="editor" aria-hidden="true"></div>
-</div>
-</div>
-
-<div class="panel" role="tabpanel" id="panel-glance" aria-labelledby="tab-glance" style="--accent: var(--olive)" hidden>
-<div>
-<h3 data-i18n="home.glance.title">The answer on the first screen.</h3>
-<p class="lead" data-i18n="home.glance.lead">Home shows what matters right now, so you rarely need to dig.</p>
-<ul class="points">
-<li data-i18n="home.glance.point1">A clear summary at the top of Home</li>
-<li data-i18n="home.glance.point2">Light and dark themes with your accent color</li>
-<li data-i18n="home.glance.point3">Guides that explain each screen</li>
-</ul>
-</div>
-<div class="feature-media">
-<div class="lottie" data-animation="widgets" aria-hidden="true"></div>
-</div>
-</div>
-
-<div class="panel" role="tabpanel" id="panel-sync" aria-labelledby="tab-sync" style="--accent: var(--teal)" hidden>
-<div>
-<h3 data-i18n="home.sync.title">On every device you own.</h3>
-<p class="lead" data-i18n="home.sync.lead">Every device signed in to your Apple Account shows the same data.</p>
-<ul class="points">
-<li data-i18n="home.sync.point1">Sync goes only through your own iCloud account</li>
-<li data-i18n="home.sync.point2">Works offline and catches up later</li>
-<li data-i18n="home.sync.point3">The same screens on iPhone and iPad</li>
-</ul>
-</div>
-<div class="feature-media">
-<div class="lottie" data-animation="backup" aria-hidden="true"></div>
-</div>
-</div>
-
-<div class="panel" role="tabpanel" id="panel-privacy" aria-labelledby="tab-privacy" style="--accent: var(--rust)" hidden>
-<div>
-<h3 data-i18n="home.data.title">Your data stays yours.</h3>
-<p class="lead" data-i18n="home.data.lead">Everything lives on your device and in your iCloud. No account, no servers, no third parties.</p>
-<ul class="points">
-<li data-i18n="home.data.point1">Nothing about you is sold, shared or measured</li>
-<li data-i18n="home.data.point2">No servers of its own and no account to create</li>
-<li data-i18n="home.data.point3">No ads and no tracking, ever</li>
-</ul>
-</div>
-<div class="feature-media">
-<div class="lottie" data-animation="privacy" aria-hidden="true"></div>
 <div class="chips">
-<span class="chip" style="--chip: var(--rust)" data-i18n="home.data.noAccount">No account</span>
-<span class="chip" style="--chip: var(--rust)" data-i18n="home.data.noAds">No ads</span>
-<span class="chip" style="--chip: var(--rust)" data-i18n="home.data.noTracking">No tracking</span>
-<span class="chip" style="--chip: var(--denim)" data-i18n="home.data.icloudSync">iCloud sync</span>
+<span class="chip" style="--chip: var(--olive)">Sem conta</span>
+<span class="chip" style="--chip: var(--olive)">Sem anúncio</span>
+<span class="chip" style="--chip: var(--olive)">Sem rastreamento</span>
+<span class="chip" style="--chip: var(--denim)">Lente só no aparelho</span>
 </div>
-</div>
-</div>
-</section>
-
-<section class="feature web-feature" id="web" style="--accent: var(--denim)">
-<div>
-<div class="eyebrow-row"><span class="eyebrow" data-i18n="home.web.nav">Fiscal on the Web</span><span class="chip capsule" style="--chip: var(--mustard)">Fiscal Pro</span></div>
-<h2 data-i18n="home.web.title">Fiscal on the big screen.</h2>
-<p class="lead" data-i18n="home.web.lead">See your summary, your list and your progress on any computer. Nothing to install, no password to type.</p>
-<ol class="steps">
-<li><b>1</b><span data-i18n="home.web.step1">On your computer, open fiscal.byescaleira.com/app.</span></li>
-<li><b>2</b><span data-i18n="home.web.step2">Scan the QR code with the iPhone Camera, or in Fiscal › Settings › Fiscal on the Web.</span></li>
-<li><b>3</b><span data-i18n="home.web.step3">Your data appears in seconds and stays up to date for 24 hours.</span></li>
-</ol>
-<div class="actions">
-<a class="button" href="/app" data-i18n="home.web.open">Open Fiscal on the Web</a>
-</div>
-<p class="footnote" data-i18n="home.web.privacy">Encrypted end to end: only that browser holds the key. Our bridge can't read your data.</p>
-</div>
-<div class="feature-media">
-<div class="browser" role="img" aria-label="Fiscal on the Web in a browser, showing the overview" data-i18n-aria-label="home.web.label">
-<div class="browser-bar" aria-hidden="true"><i></i><i></i><i></i><span>fiscal.byescaleira.com/app</span></div>
-<div class="browser-body" aria-hidden="true">
-<div class="browser-side"><span class="on"></span><span></span><span></span></div>
-<div class="browser-main">
-<span class="chip capsule" data-date="2026-10-01" data-format="monthUpper">OCTOBER 2026</span>
-<div class="browser-kpis">
-<div><span data-i18n="mock.yourItems">Your Items</span><strong data-number="12">12</strong></div>
-<div><span data-i18n="mock.thisWeek">This week</span><strong data-number="3">3</strong></div>
-<div><span data-i18n="mock.done">Done</span><strong style="color: var(--positive)" data-percent="0.58">58%</strong></div>
-</div>
-<div class="browser-panels">
-<div class="browser-chart"><i style="--h: 46%"></i><i style="--h: 70%"></i><i style="--h: 30%"></i><i style="--h: 88%"></i><i style="--h: 52%"></i><i style="--h: 64%"></i><i style="--h: 38%"></i><i style="--h: 58%"></i><i style="--h: 24%"></i><i style="--h: 76%"></i></div>
-<div class="browser-budgets">
-<div><span data-i18n="mock.firstIdea">First idea</span><div class="bar" style="--bar: var(--mustard); --value: 45%"><i></i></div></div>
-<div><span data-i18n="mock.weekendPlan">Weekend plan</span><div class="bar" style="--bar: var(--teal); --value: 70%"><i></i></div></div>
-<div><span data-i18n="mock.readingList">Reading list</span><div class="bar" style="--bar: var(--denim); --value: 30%"><i></i></div></div>
-</div>
-</div>
-</div>
-</div>
-</div>
+<p class="privacy-quote">Nada sobre você é vendido, compartilhado ou medido.</p>
 </div>
 </section>
 
-<section class="versus">
+<section class="faq" id="perguntas">
 <div class="section-head">
-<span class="eyebrow" style="--accent: var(--teal)" data-i18n="home.versus.eyebrow">Why Fiscal</span>
-<h2 data-i18n="home.versus.title">The speed of an app, the privacy of a notebook.</h2>
-</div>
-<div class="table wide">
-<div class="line head"><span></span><span data-i18n="home.versus.notes">Notes app</span><span data-i18n="home.versus.others">Other apps</span><span class="brandcol">Fiscal</span></div>
-<div class="line"><span data-i18n="home.versus.row1">Ready the moment you open it</span><span class="no">—</span><span class="yes">✓</span><span class="yes">✓</span></div>
-<div class="line"><span data-i18n="home.versus.row2">No account required</span><span class="yes">✓</span><span class="no">—</span><span class="yes">✓</span></div>
-<div class="line"><span data-i18n="home.versus.row3">Data only in your own iCloud</span><span class="yes">✓</span><span class="no">—</span><span class="yes">✓</span></div>
-<div class="line"><span data-i18n="home.versus.row4">Made for this one job</span><span class="no">—</span><span class="yes">✓</span><span class="yes">✓</span></div>
-</div>
-</section>
-
-<section class="tips" id="tips">
-<div class="section-head">
-<span class="eyebrow" style="--accent: var(--mustard)" data-i18n="common.nav.tips">Tips</span>
-<h2 data-i18n="home.tips.title">Get more out of Fiscal.</h2>
-<p class="lead" data-i18n="home.tips.lead">Small tricks from the guides inside the app.</p>
-</div>
-
-<div class="filters" role="group" aria-label="Filter tips" data-i18n-aria-label="home.tips.filterLabel">
-<button type="button" aria-pressed="true" data-filter="all" data-i18n="home.tips.all">All</button>
-<button type="button" aria-pressed="false" data-filter="start" style="--accent: var(--denim)" data-i18n="home.tips.start">Getting started</button>
-<button type="button" aria-pressed="false" data-filter="personalize" style="--accent: var(--olive)" data-i18n="home.tips.personalize">Personalize</button>
-<button type="button" aria-pressed="false" data-filter="privacy" style="--accent: var(--rust)" data-i18n="home.privacy">Privacy</button>
-</div>
-
-<div class="tip-grid">
-<article class="tip" data-topic="start" style="--accent: var(--denim)">
-<span class="chip" data-i18n="home.tips.start">Getting started</span>
-<h3 data-i18n="home.tips.tabs.title">Two tabs</h3>
-<p data-i18n="home.tips.tabs.text">Everything starts on the Home tab. Settings keeps the choices that are yours.</p>
-<span class="where" data-i18n="mock.home">Home</span>
-</article>
-<article class="tip" data-topic="start" style="--accent: var(--denim)">
-<span class="chip" data-i18n="home.tips.start">Getting started</span>
-<h3 data-i18n="home.tips.place.title">Each tab keeps its place</h3>
-<p data-i18n="home.tips.place.text">Each tab keeps its own place, so you can switch without losing your way.</p>
-</article>
-<article class="tip" data-topic="personalize" style="--accent: var(--olive)">
-<span class="chip" data-i18n="home.tips.personalize">Personalize</span>
-<h3 data-i18n="home.tips.theme.title">Make it yours</h3>
-<p data-i18n="home.tips.theme.text">In Settings › Appearance, pick the theme and the accent color. The language is in Settings › Language.</p>
-<span class="where" data-i18n="home.tips.theme.where">Settings › Appearance</span>
-</article>
-<article class="tip" data-topic="personalize" style="--accent: var(--olive)">
-<span class="chip" data-i18n="home.tips.personalize">Personalize</span>
-<h3 data-i18n="home.tips.accent.title">Pick an accent color</h3>
-<p data-i18n="home.tips.accent.text">The accent color appears on buttons, tabs, selections and charts.</p>
-<div class="mini-bars">
-<div class="bar" style="--bar: var(--orange); --value: 45%"><i></i></div>
-<div class="bar" style="--bar: var(--teal); --value: 70%"><i></i></div>
-<div class="bar" style="--bar: var(--plum); --value: 90%"><i></i></div>
-</div>
-</article>
-<article class="tip" data-topic="privacy" style="--accent: var(--rust)">
-<span class="chip" data-i18n="home.privacy">Privacy</span>
-<h3 data-i18n="home.tips.icloud.title">Your iCloud, your call</h3>
-<p data-i18n="home.tips.icloud.text">Sync goes only through your own iCloud account. Turn iCloud off for Fiscal and your data stays on this device.</p>
-</article>
-</div>
-</section>
-
-<section class="pricing" id="pricing">
-<div class="section-head">
-<span class="eyebrow" style="--accent: var(--mustard)" data-i18n="common.nav.pricing">Pricing</span>
-<h2 data-i18n="home.pricing.title">Free to start. Pro to go further.</h2>
-<p class="lead" data-i18n="home.pricing.lead">Everything you need every day is free forever. Fiscal Pro adds the extras.</p>
-</div>
-<div class="plans">
-<div class="plan">
-<span class="chip" style="--chip: var(--olive)" data-i18n="home.pricing.free">Free</span>
-<h3>Fiscal</h3>
-<ul class="points" style="--accent: var(--olive)">
-<li data-i18n="home.pricing.free1">Unlimited items</li>
-<li data-i18n="home.pricing.free2">iCloud sync on all your devices</li>
-<li data-i18n="home.pricing.free3">Themes, accent colors and guides</li>
-</ul>
-<a class="button quiet" href="https://apps.apple.com/app/id0" data-i18n="home.pricing.downloadFree">Download free</a>
-</div>
-<div class="plan featured">
-<span class="chip" style="--chip: var(--mustard)" data-i18n="home.pricing.trial">7 days free</span>
-<h3>Fiscal Pro</h3>
-<ul class="points" style="--accent: var(--mustard)">
-<li data-i18n="home.pricing.pro1">Fiscal on the Web, on any computer</li>
-<li data-i18n="home.pricing.pro2">Exclusive app icons</li>
-<li data-i18n="home.pricing.pro3">Every Pro feature as it arrives</li>
-</ul>
-<p class="footnote" data-i18n="home.pricing.footnote">Monthly or yearly. Cancel anytime in your Apple Account.</p>
-<a class="button" href="https://apps.apple.com/app/id0" data-i18n="home.pricing.startTrial">Start the free trial</a>
-</div>
-</div>
-</section>
-
-<section class="faq">
-<div class="section-head">
-<span class="eyebrow" style="--accent: var(--denim)" data-i18n="home.faq.eyebrow">Questions</span>
-<h2 data-i18n="home.faq.title">Before you download.</h2>
+<span class="eyebrow" style="--accent: var(--denim)">Perguntas</span>
+<h2>Antes de baixar.</h2>
 </div>
 <div class="faq-list">
 <details>
-<summary data-i18n="home.faq.account.q">Do I need an account?</summary>
-<p data-i18n="home.faq.account.a">No. Fiscal works without signing up. Your data stays on your devices and in your own iCloud.</p>
+<summary>O Fiscal é de algum partido?</summary>
+<p>Não. O Fiscal não é ligado a nenhum governo, partido ou candidato. Ele não dá nota nem ranking a ninguém, usa a mesma régua para todos e mostra a cor de cada partido só nas etiquetas de partido.</p>
 </details>
 <details>
-<summary data-i18n="home.faq.storage.q">Where is my data stored?</summary>
-<p data-i18n-html="home.faq.storage.a">On your devices and, with iCloud on, in your own private iCloud. There is no Fiscal account or server. Read the <a href="/privacy">Privacy Policy</a>.</p>
+<summary>De onde vêm os números?</summary>
+<p>De fontes oficiais: Câmara dos Deputados, Senado Federal, TSE, IBGE, Receita Federal, ANP, Ipeadata, Planalto e assembleias legislativas, além das checagens do Projeto Comprova. Cada número mostra a fonte e a data da última atualização.</p>
 </details>
 <details>
-<summary data-i18n="home.faq.cancel.q">What happens if I cancel Pro?</summary>
-<p data-i18n="home.faq.cancel.a">Everything you recorded stays readable and editable. Only the Pro features stop.</p>
+<summary>Os dados chegam na hora?</summary>
+<p>Chegam depois que a fonte oficial publica. A pauta e as votações do dia são lidas de 5 em 5 minutos; as outras fontes, no ritmo em que mudam. Quando uma fonte atrasa, o app mostra a data do último dado. Na eleição, a apuração acompanha o TSE em tempo real.</p>
 </details>
 <details>
-<summary data-i18n="home.faq.devices.q">Which devices and languages?</summary>
-<p data-i18n="home.faq.devices.a">iPhone and iPad today, with Mac and Apple Vision Pro coming soon. In English, Portuguese, Spanish, German, French, Italian, Japanese, Korean, Chinese and Russian.</p>
+<summary>Quanto custa?</summary>
+<p>Nada. O Fiscal é gratuito, sem assinatura, sem compras no app e sem anúncio.</p>
+</details>
+<details>
+<summary>Preciso criar conta?</summary>
+<p>Não. O Fiscal funciona sem cadastro. Quem você apoia fica só neste iPhone; as pessoas que você segue e as investigações que você salva podem sincronizar pelo seu iCloud, se ele estiver ligado. Leia a <a href="/privacy">Política de Privacidade</a>.</p>
+</details>
+<details>
+<summary>Funciona sem internet?</summary>
+<p>Sim, com um pacote offline com o mínimo para consultas recentes. A apuração ao vivo e os dados novos precisam de conexão.</p>
+</details>
+<details>
+<summary>Em quais aparelhos?</summary>
+<p>iPhone e iPad com iOS 26 ou iPadOS 26 ou mais novo. As explicações escritas no aparelho usam a Apple Intelligence nos modelos compatíveis; nos outros, aparece um texto fixo.</p>
 </details>
 </div>
 </section>
@@ -426,38 +383,20 @@
 <section class="closing">
 <img class="icon-light" src="/assets/icon.png" alt="">
 <img class="icon-dark" src="/assets/icon-dark.png" alt="">
-<h2 data-i18n="home.closing.title">Make it part of your day.</h2>
-<p class="lead" data-i18n="home.closing.lead">Free on the App Store for iPhone and iPad.</p>
+<h2>Fiscalize quem você elegeu.</h2>
+<p class="lead">Grátis na App Store, para iPhone e iPad.</p>
 <div class="actions">
-<a class="button" href="https://apps.apple.com/app/id0" data-i18n="home.download">Download on the App Store</a>
+<a class="button" href="https://apps.apple.com/app/id6826982117">Baixar na App Store</a>
 </div>
 </section>
 </main>
 
 <footer class="site">
 <div class="page">
-<span>© Rafael Escaleira</span>
-<div class="footer-end">
-<span><a href="/support" data-i18n="common.footer.support">Support</a><a href="/privacy" data-i18n="common.footer.privacy">Privacy</a><a href="/terms" data-i18n="common.footer.terms">Terms</a></span>
-<details class="locale-picker">
-<summary><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9M12 3c-2.5 2.6-3.8 5.6-3.8 9s1.3 6.4 3.8 9"/></svg><span class="label" data-i18n="common.language">Language</span><span data-locale-name>English</span></summary>
-<ul>
-<li><a href="?locale=en-US" data-locale="en-US" hreflang="en-US" lang="en-US">English</a></li>
-<li><a href="?locale=pt-BR" data-locale="pt-BR" hreflang="pt-BR" lang="pt-BR">Português (Brasil)</a></li>
-<li><a href="?locale=es-ES" data-locale="es-ES" hreflang="es-ES" lang="es-ES">Español</a></li>
-<li><a href="?locale=de-DE" data-locale="de-DE" hreflang="de-DE" lang="de-DE">Deutsch</a></li>
-<li><a href="?locale=fr-FR" data-locale="fr-FR" hreflang="fr-FR" lang="fr-FR">Français</a></li>
-<li><a href="?locale=it-IT" data-locale="it-IT" hreflang="it-IT" lang="it-IT">Italiano</a></li>
-<li><a href="?locale=ja-JP" data-locale="ja-JP" hreflang="ja-JP" lang="ja-JP">日本語</a></li>
-<li><a href="?locale=ko-KR" data-locale="ko-KR" hreflang="ko-KR" lang="ko-KR">한국어</a></li>
-<li><a href="?locale=zh-CN" data-locale="zh-CN" hreflang="zh-CN" lang="zh-CN">简体中文</a></li>
-<li><a href="?locale=ru-RU" data-locale="ru-RU" hreflang="ru-RU" lang="ru-RU">Русский</a></li>
-</ul>
-</details>
-</div>
+<span>© 2026 Rafael Escaleira</span>
+<span class="footer-links"><a href="/support">Suporte</a><a href="/privacy">Privacidade</a><a href="/terms">Termos</a></span>
 </div>
 </footer>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie_light.min.js"></script>
 <script src="/app.js"></script>
 </body>
 </html>
