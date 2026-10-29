@@ -213,7 +213,7 @@ enum MemoryFixture {
 
     static func day(
         _ year: Int, _ month: Int, _ day: Int, hour: Int = 12, minute: Int = 0,
-        calendar: Calendar = FiscalCalendar.current
+        calendar: Calendar = GregorianCalendar.current
     ) throws -> Date {
         try #require(
             calendar.date(

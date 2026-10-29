@@ -18,7 +18,9 @@ struct SettingsModelTests {
     }
 
     @Test func alwaysSpeaksBrazilianPortuguese() throws {
-        let settings = SettingsModel(defaults: try defaults(), languageSetting: LanguageSetting())
+        let language = LanguageSetting()
+        FiscalLanguage.install(on: language)
+        let settings = SettingsModel(defaults: try defaults(), languageSetting: language)
         #expect(settings.locale.language.languageCode == "pt")
     }
 

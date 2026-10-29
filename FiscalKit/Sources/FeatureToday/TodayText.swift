@@ -2,7 +2,7 @@ import FiscalDomain
 import Foundation
 
 public enum TodayText {
-    public static func dateLine(_ day: CalendarDay, calendar: Calendar = FiscalCalendar.current)
+    public static func dateLine(_ day: CalendarDay, calendar: Calendar = GregorianCalendar.current)
         -> String
     {
         day.date(in: calendar).formatted(

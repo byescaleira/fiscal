@@ -28,7 +28,7 @@ public struct MonthBar: Identifiable, Equatable, Sendable {
 
 public enum MoneyText {
     public static func sourceLine(
-        _ sources: [Source], calendar: Calendar = FiscalCalendar.current
+        _ sources: [Source], calendar: Calendar = GregorianCalendar.current
     ) -> String {
         guard !sources.isEmpty else {
             return String(appLocalized: "Source: \(PublicFormat.missing)")
@@ -41,7 +41,7 @@ public enum MoneyText {
         return String(appLocalized: "Source: \(names) · updated \(when)")
     }
 
-    public static func updatedText(_ date: Date, calendar: Calendar = FiscalCalendar.current)
+    public static func updatedText(_ date: Date, calendar: Calendar = GregorianCalendar.current)
         -> String
     {
         PublicFormat.updated(date, calendar: calendar)
@@ -52,13 +52,13 @@ public enum MoneyText {
         return matching.isEmpty ? all : matching
     }
 
-    public static func monthNames(calendar: Calendar = FiscalCalendar.current) -> [String] {
+    public static func monthNames(calendar: Calendar = GregorianCalendar.current) -> [String] {
         var calendar = calendar
         calendar.locale = .app
         return calendar.standaloneMonthSymbols.map { $0.capitalized(with: .app) }
     }
 
-    public static func monthLabels(calendar: Calendar = FiscalCalendar.current) -> [String] {
+    public static func monthLabels(calendar: Calendar = GregorianCalendar.current) -> [String] {
         var calendar = calendar
         calendar.locale = .app
         return calendar.shortStandaloneMonthSymbols.map {

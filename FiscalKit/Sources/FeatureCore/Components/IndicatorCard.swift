@@ -14,7 +14,7 @@ public struct IndicatorCard: View {
 
     public init(
         indicator: Indicator, scope: String = Indicator.brazil,
-        calendar: Calendar = FiscalCalendar.current
+        calendar: Calendar = GregorianCalendar.current
     ) {
         self.indicator = indicator
         area = indicator.area(closestTo: scope)

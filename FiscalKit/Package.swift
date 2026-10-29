@@ -13,12 +13,24 @@ let package = Package(
             targets: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureSettings", "AppShell"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/airbnb/lottie-spm.git", from: "4.5.0")
+        .package(
+            url: "https://github.com/byescaleira/byescaleira-kit.git",
+            revision: "7150777dbdbc68d0ec0fea3e60af969477d006cc"),
+        .package(url: "https://github.com/airbnb/lottie-spm.git", from: "4.5.0"),
     ],
     targets: [
-        .target(name: "FiscalDomain"),
+        .target(
+            name: "FiscalDomain",
+            dependencies: [.product(name: "ByescaleiraFoundation", package: "byescaleira-kit")]),
         .target(name: "FiscalData", dependencies: ["FiscalDomain"]),
-        .target(name: "FiscalDesignSystem", resources: [.copy("Fonts")]),
+        .target(
+            name: "FiscalDesignSystem",
+            dependencies: [
+                .product(name: "ByescaleiraAccessibility", package: "byescaleira-kit"),
+                .product(name: "ByescaleiraPlatform", package: "byescaleira-kit"),
+                .product(name: "ByescaleiraDesign", package: "byescaleira-kit"),
+                .product(name: "ByescaleiraCharts", package: "byescaleira-kit"),
+            ]),
         .target(
             name: "FiscalResource",
             resources: [
@@ -30,6 +42,7 @@ let package = Package(
             name: "FeatureCore",
             dependencies: [
                 "FiscalDomain", "FiscalDesignSystem", "FiscalResource",
+                .product(name: "ByescaleiraUI", package: "byescaleira-kit"),
                 .product(name: "Lottie", package: "lottie-spm"),
             ]),
         .target(

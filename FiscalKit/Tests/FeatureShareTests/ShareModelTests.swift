@@ -35,7 +35,7 @@ struct ShareModelTests {
             await model.load()
             #expect(model.phase == .loaded, "\(subject)")
             let work = try #require(model.artwork?.work)
-            for format in ShareFormat.allCases {
+            for format in FeatureShare.ShareFormat.allCases {
                 model.format = format
                 let card = try #require(model.card)
                 #expect(card.texts.contains(ShareCardBuilder.host))

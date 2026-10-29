@@ -47,7 +47,7 @@ public struct ThemeActivity: Equatable, Sendable {
     private let calendar: Calendar
 
     public init(
-        votes: [VoteSummary], themes: [Theme], calendar: Calendar = FiscalCalendar.current
+        votes: [VoteSummary], themes: [Theme], calendar: Calendar = GregorianCalendar.current
     ) {
         self.calendar = calendar
         total = votes.count

@@ -2,6 +2,7 @@ import AppShell
 import FeatureCore
 import FeatureSettings
 import FiscalData
+import FiscalDomain
 import Observation
 import SwiftUI
 
@@ -11,6 +12,7 @@ struct FiscalApp: App {
     @State private var bootstrap: FiscalBootstrap
 
     init() {
+        FiscalLanguage.install()
         #if DEBUG && !targetEnvironment(simulator)
             if CommandLine.arguments.contains("-FiscalInitializeCloudSchema") {
                 FiscalDatabase.initializeCloudSchema()

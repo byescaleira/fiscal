@@ -28,7 +28,7 @@ public final class ShareModel {
         subject: ShareSubject, service: (any PublicDataService)?,
         races: (any LiveResultsService)? = nil, lens: (any LensRepository)? = nil,
         catalog: ArtCatalog? = try? ArtCatalog.bundled(),
-        calendar: Calendar = FiscalCalendar.current
+        calendar: Calendar = GregorianCalendar.current
     ) {
         self.subject = subject
         self.service = service

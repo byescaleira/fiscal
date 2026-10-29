@@ -30,7 +30,7 @@ public final class ProfileModel {
     public init(
         slug: String, service: (any PublicDataService)?, follows: (any FollowRepository)? = nil,
         lens: (any LensRepository)? = nil, now: @escaping @Sendable () -> Date = { .now },
-        calendar: Calendar = FiscalCalendar.current
+        calendar: Calendar = GregorianCalendar.current
     ) {
         self.slug = slug
         self.service = service

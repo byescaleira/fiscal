@@ -48,7 +48,7 @@ enum ElectionSchedule {
         (2_018, [(10, 7), (10, 28)]),
     ]
 
-    static func elections(now: Date, calendar: Calendar = FiscalCalendar.current)
+    static func elections(now: Date, calendar: Calendar = GregorianCalendar.current)
         -> [ScheduledElection]
     {
         let today = CalendarDay(now, calendar: calendar)

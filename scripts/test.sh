@@ -1,6 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 project_root="$(cd "$(dirname "$0")/.." && pwd)"
+source "$project_root/scripts/kit-access.sh"
 build_root="${FISCAL_BUILD_ROOT:-$HOME/Library/Developer/FiscalBuild}"
 destination="${FISCAL_TEST_DESTINATION:-platform=iOS Simulator,name=iPhone 17,OS=27.0}"
 targets=()
@@ -17,7 +18,7 @@ else
 fi
 only=()
 for target in ${targets[@]+"${targets[@]}"}; do only+=("-only-testing:$target"); done
-xcodebuild -workspace "$project_root/Fiscal.xcworkspace" -scheme FiscalKitTests \
+xcodebuild "${kit_scm[@]}" -workspace "$project_root/Fiscal.xcworkspace" -scheme FiscalKitTests \
   -destination "$destination" -derivedDataPath "$build_root/Test" \
   -skipPackageUpdates -disableAutomaticPackageResolution -parallel-testing-enabled NO \
   -collect-test-diagnostics never \

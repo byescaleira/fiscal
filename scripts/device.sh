@@ -1,9 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 project_root="$(cd "$(dirname "$0")/.." && pwd)"
+source "$project_root/scripts/kit-access.sh"
 build_root="${FISCAL_BUILD_ROOT:-$HOME/Library/Developer/FiscalBuild}"
 device="${FISCAL_DEVICE:?Set FISCAL_DEVICE to the iPhone UDID (xcrun devicectl list devices)}"
-xcodebuild -workspace "$project_root/Fiscal.xcworkspace" -scheme Production -configuration Debug \
+xcodebuild "${kit_scm[@]}" -workspace "$project_root/Fiscal.xcworkspace" -scheme Production -configuration Debug \
   -destination "platform=iOS,id=$device" -derivedDataPath "$build_root/Device" \
   -allowProvisioningUpdates -skipPackageUpdates -disableAutomaticPackageResolution \
   COMPILER_INDEX_STORE_ENABLE=NO build

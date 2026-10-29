@@ -41,7 +41,7 @@ struct ShareCardSnapshotTests {
                 subject: subject, service: ShowcasePublicData(scenario: .normal, now: now),
                 races: ShowcaseLiveResults(scenario: .finished))
             await model.load()
-            for format in ShareFormat.allCases {
+            for format in FeatureShare.ShareFormat.allCases {
                 model.format = format
                 try write(
                     model,
@@ -52,7 +52,7 @@ struct ShareCardSnapshotTests {
                 let historical = try #require(
                     model.works.first { $0.collection == "acervo-historico" })
                 model.select(historical)
-                for format in ShareFormat.allCases {
+                for format in FeatureShare.ShareFormat.allCases {
                     model.format = format
                     try write(
                         model,

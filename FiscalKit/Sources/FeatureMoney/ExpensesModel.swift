@@ -44,7 +44,7 @@ public final class ExpensesModel {
 
     public init(
         slug: String, year: Int, service: (any PublicDataService)?,
-        calendar: Calendar = FiscalCalendar.current
+        calendar: Calendar = GregorianCalendar.current
     ) {
         self.slug = slug
         self.year = year
