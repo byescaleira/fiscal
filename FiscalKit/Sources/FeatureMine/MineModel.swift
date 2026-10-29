@@ -33,6 +33,7 @@ public final class MineModel {
     public private(set) var activityPhase: PublicDataPhase = .idle
     public var query = ""
     public var isChoosingPlace = false
+    public var startsSearching = false
     public var error: FiscalError?
     @ObservationIgnored private let service: (any PublicDataService)?
     @ObservationIgnored private let follows: (any FollowRepository)?
@@ -223,6 +224,11 @@ public final class MineModel {
         isChoosingPlace = false
         query = ""
         await loadPlace()
+    }
+
+    public func choosePlace(searching: Bool) {
+        startsSearching = searching
+        isChoosingPlace = true
     }
 
     public func forgetPlace() {
