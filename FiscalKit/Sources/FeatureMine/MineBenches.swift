@@ -72,7 +72,7 @@ private struct MineBenchChart: View {
                 )
                 if share.end < bench.total {
                     RuleMark(x: .value("Edge", revealed ? share.end : 0))
-                        .foregroundStyle(Color.groupedRow)
+                        .foregroundStyle(Color.plainRow)
                         .lineStyle(StrokeStyle(lineWidth: .spaceHairline))
                         .accessibilityHidden(true)
                 }
@@ -155,7 +155,7 @@ private struct MineFacePile: View {
                             slug: card.slug, name: card.name, party: card.party, size: .badgeM
                         )
                         .overlay {
-                            Circle().strokeBorder(Color.groupedRow, lineWidth: .spaceHairline)
+                            Circle().strokeBorder(Color.plainRow, lineWidth: .spaceHairline)
                         }
                     }
                 }

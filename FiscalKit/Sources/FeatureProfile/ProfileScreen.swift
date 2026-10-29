@@ -113,7 +113,7 @@ private struct NumberTileView: View {
         }
         .padding(.spaceM)
         .frame(maxWidth: .infinity, minHeight: .ring + .spaceXL, alignment: .topLeading)
-        .background(.groupedRow, in: .rect(cornerRadius: .radiusM))
+        .background(.plainRow, in: .rect(cornerRadius: .radiusM))
         .accessibilityElement(children: .combine)
     }
 }
@@ -202,6 +202,6 @@ private struct ProfileEmptyState: View {
             IconRow("Expenses", symbol: "brazilianrealsign", color: .retroOlive)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.groupedBackground)
+        .background(.plainBackground)
     }
 }

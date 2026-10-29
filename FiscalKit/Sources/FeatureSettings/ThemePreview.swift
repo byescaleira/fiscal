@@ -50,7 +50,7 @@ private struct ThemeCanvas: View {
             .padding(.spaceL)
             .foregroundStyle(.primary)
             .frame(width: .themeCanvasWidth, height: .themeCanvasHeight, alignment: .topLeading)
-            .background(.groupedBackground)
+            .background(.plainBackground)
             .scaleEffect(proxy.size.width / .themeCanvasWidth, anchor: .topLeading)
         }
     }
@@ -72,7 +72,7 @@ private struct ThemeCanvasLive: View {
             ])
         }
         .padding(.spaceM)
-        .background(.groupedRow, in: .rect(cornerRadius: .radiusM))
+        .background(.plainRow, in: .rect(cornerRadius: .radiusM))
     }
 }
 
@@ -94,7 +94,7 @@ private struct ThemeCanvasHighlight: View {
             ProgressBar(value: 0.7, color: .companion)
         }
         .padding(.spaceM)
-        .background(.groupedRow, in: .rect(cornerRadius: .radiusM))
+        .background(.plainRow, in: .rect(cornerRadius: .radiusM))
     }
 }
 
@@ -110,7 +110,7 @@ private struct ThemeCanvasTabBar: View {
                 }
             }
             .padding(.spaceM)
-            .background(.groupedRow, in: .capsule)
+            .background(.plainRow, in: .capsule)
             Spacer(minLength: .zero)
         }
         .font(.icon(.s))

@@ -155,29 +155,36 @@ private struct AwaitingScreen: View {
 
     var body: some View {
         List {
-            Section {
-                ForEach(memory.awaiting, id: \.slug) { person in
-                    RouteLink(.person(slug: person.slug)) {
-                        HStack(spacing: .spaceM) {
-                            PersonPortrait(
-                                slug: person.slug, name: person.name, party: person.party,
-                                size: .badgeL)
-                            VStack(alignment: .leading, spacing: .spaceHairline) {
-                                Text(verbatim: person.name).font(.rowTitle)
-                                Text(verbatim: "\(person.office.title) · \(person.uf.uppercased())")
+            Group {
+                Section {
+                    ForEach(memory.awaiting, id: \.slug) { person in
+                        RouteLink(.person(slug: person.slug)) {
+                            HStack(spacing: .spaceM) {
+                                PersonPortrait(
+                                    slug: person.slug, name: person.name, party: person.party,
+                                    size: .badgeL)
+                                VStack(alignment: .leading, spacing: .spaceHairline) {
+                                    Text(verbatim: person.name).font(.rowTitle)
+                                    Text(
+                                        verbatim:
+                                            "\(person.office.title) · \(person.uf.uppercased())"
+                                    )
                                     .font(.rowDetail)
                                     .foregroundStyle(.secondary)
+                                }
+                                Spacer(minLength: .spaceS)
+                                PartyMark(person.party)
                             }
-                            Spacer(minLength: .spaceS)
-                            PartyMark(person.party)
+                            .accessibilityElement(children: .combine)
                         }
-                        .accessibilityElement(children: .combine)
                     }
+                } footer: {
+                    Text("Alphabetical order. Source: TSE, candidates elected in 2026.")
                 }
-            } footer: {
-                Text("Alphabetical order. Source: TSE, candidates elected in 2026.")
             }
+            .surfaceRows()
         }
+        .listSurface()
         .emphasisTitle("Awaiting inauguration")
     }
 }

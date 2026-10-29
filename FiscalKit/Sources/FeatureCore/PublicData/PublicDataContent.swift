@@ -51,7 +51,7 @@ private struct PublicDataFailure: View {
                 .primaryButton()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.groupedBackground)
+        .background(.plainBackground)
     }
 }
 

@@ -14,7 +14,7 @@ struct MoneyCard<Content: View>: View {
             .foregroundStyle(.primary)
             .padding(.spaceInset)
             .frame(maxWidth: .infinity)
-            .background(.groupedRow, in: .rect(cornerRadius: .radiusGroup))
+            .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
             .listRowInsets(EdgeInsets())
             .listRowBackground(Color.clear)
     }

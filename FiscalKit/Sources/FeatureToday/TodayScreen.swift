@@ -27,7 +27,7 @@ public struct TodayScreen<RaceHero: View>: View {
             .frame(maxWidth: .readableColumn * 2)
             .frame(maxWidth: .infinity)
         }
-        .background(.groupedBackground)
+        .background(.plainBackground)
         .emphasisTitle("Today")
         .toolbar { TodayToolbar() }
         .refreshable { await today.load() }

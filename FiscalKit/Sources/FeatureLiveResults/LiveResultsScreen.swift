@@ -20,7 +20,7 @@ public struct LiveResultsScreen: View {
                 LiveResultsBoard()
             }
         }
-        .background(.groupedBackground)
+        .background(.plainBackground)
         .emphasisTitle("Live Results")
         .toolbar { LiveResultsToolbar() }
         .refreshable { await results.refresh() }
@@ -122,7 +122,7 @@ private struct LiveResultsNoMatch: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.spaceXL)
-        .background(.groupedRow, in: .rect(cornerRadius: .radiusGroup))
+        .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
     }
 }
 
@@ -157,7 +157,7 @@ private struct LiveResultsNotice: View {
             }
             .padding(.spaceL)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.groupedRow, in: .rect(cornerRadius: .radiusGroup))
+            .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
         }
     }
 }

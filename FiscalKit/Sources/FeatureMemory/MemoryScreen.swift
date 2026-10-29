@@ -237,7 +237,7 @@ private struct StudyTile: View {
         }
         .frame(maxWidth: .infinity, minHeight: .medallion, alignment: .topLeading)
         .padding(.spaceL)
-        .background(.groupedRow, in: .rect(cornerRadius: .radiusL))
+        .background(.plainRow, in: .rect(cornerRadius: .radiusL))
         .contentShape(.rect(cornerRadius: .radiusL))
         .accessibilityElement(children: .combine)
     }

@@ -135,7 +135,7 @@ struct WinnerTileMap: View {
                     .font(.caption)
                     .padding(.horizontal, .spaceS)
                     .padding(.vertical, .space2XS)
-                    .background(.groupedBackground, in: .capsule)
+                    .background(.plainBackground, in: .capsule)
                     .accessibilityElement(children: .combine)
                 }
             }

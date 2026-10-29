@@ -99,7 +99,7 @@ public struct IndicatorCard: View {
         }
         .padding(.spaceM)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.groupedRow, in: .rect(cornerRadius: .radiusM))
+        .background(.plainRow, in: .rect(cornerRadius: .radiusM))
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Text(verbatim: summary))
     }

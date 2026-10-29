@@ -143,6 +143,6 @@ private struct VotesEmptyState: View {
                 "Absent", symbol: BallotChoice.absent.symbol, color: BallotChoice.absent.color)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.groupedBackground)
+        .background(.plainBackground)
     }
 }

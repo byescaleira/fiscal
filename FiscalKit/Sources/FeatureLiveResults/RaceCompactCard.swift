@@ -30,7 +30,7 @@ struct RaceCompactCard: View {
             }
             .padding(.spaceL)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.groupedRow, in: .rect(cornerRadius: .radiusGroup))
+            .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
             .contentShape(.rect(cornerRadius: .radiusGroup))
         }
         .buttonStyle(.plain)

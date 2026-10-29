@@ -58,25 +58,27 @@ struct PiecePicker: View {
         NavigationStack {
             let choices = board.choices(for: kind)
             List {
-                if choices.isEmpty {
-                    if board.hasData {
-                        ContentUnavailableView.search(text: board.pickerQuery)
-                    } else {
-                        ProgressView("Loading")
-                            .frame(maxWidth: .infinity)
-                    }
-                } else {
-                    Section {
-                        ForEach(choices) { piece in
-                            PickerRow(piece: piece)
+                Group {
+                    if choices.isEmpty {
+                        if board.hasData {
+                            ContentUnavailableView.search(text: board.pickerQuery)
+                        } else {
+                            ProgressView("Loading")
+                                .frame(maxWidth: .infinity)
                         }
-                    } footer: {
-                        Text(kind.pickerFooter)
+                    } else {
+                        Section {
+                            ForEach(choices) { piece in
+                                PickerRow(piece: piece)
+                            }
+                        } footer: {
+                            Text(kind.pickerFooter)
+                        }
                     }
                 }
+                .surfaceRows()
             }
-            .scrollContentBackground(.hidden)
-            .background(.sheetBackground)
+            .listSurface()
             .searchable(text: $board.pickerQuery, prompt: Text(kind.pickerPrompt))
             .navigationTitle(kind.doorTitle)
             #if os(iOS)

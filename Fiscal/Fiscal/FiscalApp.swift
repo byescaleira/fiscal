@@ -2,6 +2,7 @@ import AppShell
 import FeatureCore
 import FeatureSettings
 import FiscalData
+import FiscalDesignSystem
 import FiscalDomain
 import Observation
 import SwiftUI
@@ -32,6 +33,7 @@ struct FiscalApp: App {
                 .environment(bootstrap.update)
                 .featureFlags(bootstrap.flags)
                 .fiscalSettings(settings)
+                .groupedSurface(.plain)
         }
         #if os(iOS) || os(visionOS)
             .backgroundTask(.appRefresh(OfflineDataCenter.refreshIdentifier)) {
@@ -45,6 +47,7 @@ struct FiscalApp: App {
                     .environment(bootstrap.export)
                     .featureFlags(bootstrap.flags)
                     .fiscalSettings(settings)
+                    .groupedSurface(.plain)
             }
         #endif
     }

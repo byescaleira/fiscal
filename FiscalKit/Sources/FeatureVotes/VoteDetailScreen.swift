@@ -140,6 +140,6 @@ private struct VoteDetailEmptyState: View {
             IconRow("No", symbol: BallotChoice.no.symbol, color: BallotChoice.no.color)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.groupedBackground)
+        .background(.plainBackground)
     }
 }

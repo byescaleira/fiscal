@@ -34,7 +34,7 @@ struct AppearancePreview: View {
             PreviewControls()
         }
         .padding(.spaceL)
-        .background(.groupedBackground, in: .rect(cornerRadius: .radiusGroup))
+        .background(.plainBackground, in: .rect(cornerRadius: .radiusGroup))
         .overlay {
             RoundedRectangle(cornerRadius: .radiusGroup, style: .continuous)
                 .strokeBorder(.separator, lineWidth: .spaceHairline / 2)
@@ -98,7 +98,7 @@ private struct PreviewTodayCard: View {
             }
         }
         .padding(.spaceL)
-        .background(.groupedRow, in: .rect(cornerRadius: .radiusL))
+        .background(.plainRow, in: .rect(cornerRadius: .radiusL))
     }
 }
 
@@ -144,7 +144,7 @@ private struct PreviewControls: View {
             .font(.icon(.s))
             .padding(.horizontal, .spaceM)
             .padding(.vertical, .spaceS)
-            .background(.groupedRow, in: .capsule)
+            .background(.plainRow, in: .capsule)
         }
     }
 }

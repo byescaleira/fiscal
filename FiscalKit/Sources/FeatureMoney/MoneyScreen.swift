@@ -107,7 +107,7 @@ private struct MoneyAnswerCard: View {
         .foregroundStyle(.primary)
         .padding(.spaceInset)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.groupedRow, in: .rect(cornerRadius: .radiusGroup))
+        .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isHeader)
     }
@@ -188,6 +188,6 @@ private struct MoneyEmptyState: View {
             IconRow("Campaigns", symbol: "building.columns", color: .retroTeal)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.groupedBackground)
+        .background(.plainBackground)
     }
 }

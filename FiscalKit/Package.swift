@@ -15,7 +15,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/byescaleira/byescaleira-kit.git",
-            revision: "7150777dbdbc68d0ec0fea3e60af969477d006cc"),
+            revision: "0329207aa3c631e113fcfa7e87debdfc90fdc46b"),
         .package(url: "https://github.com/airbnb/lottie-spm.git", from: "4.5.0"),
     ],
     targets: [

@@ -103,33 +103,35 @@ public struct PeerMethodSheet: View {
     public var body: some View {
         NavigationStack {
             List {
-                Section {
-                    Text(
-                        "Each number of the term is compared with peers in the same office and house in the same year. The number and the house median always show next to it."
-                    )
-                    Text(
-                        "Above the third quartile (p75), between the first and third quartile, or below the first quartile (p25) of the house, with the direction of each number."
-                    )
-                    .font(.headline)
-                } header: {
-                    Text("Classification").sectionTitle()
+                Group {
+                    Section {
+                        Text(
+                            "Each number of the term is compared with peers in the same office and house in the same year. The number and the house median always show next to it."
+                        )
+                        Text(
+                            "Above the third quartile (p75), between the first and third quartile, or below the first quartile (p25) of the house, with the direction of each number."
+                        )
+                        .font(.headline)
+                    } header: {
+                        Text("Classification").sectionTitle()
+                    }
+                    ForEach(items) { person in
+                        PeerMethodPersonSections(item: person)
+                    }
+                    Section {
+                        Text(
+                            "Peers without published data are left out of the count; a missing number never counts as zero. With fewer than 5 peers with data, the number gets no classification."
+                        )
+                        Text(
+                            "Attendance doesn't measure committee work. Spending below average doesn't mean spending well. Bills and votes are never called good or bad: that is opinion."
+                        )
+                    } header: {
+                        Text("Limits").sectionTitle()
+                    }
                 }
-                ForEach(items) { person in
-                    PeerMethodPersonSections(item: person)
-                }
-                Section {
-                    Text(
-                        "Peers without published data are left out of the count; a missing number never counts as zero. With fewer than 5 peers with data, the number gets no classification."
-                    )
-                    Text(
-                        "Attendance doesn't measure committee work. Spending below average doesn't mean spending well. Bills and votes are never called good or bad: that is opinion."
-                    )
-                } header: {
-                    Text("Limits").sectionTitle()
-                }
+                .surfaceRows()
             }
-            .scrollContentBackground(.hidden)
-            .background(.sheetBackground)
+            .listSurface()
             .navigationTitle("How We Measure")
             #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)

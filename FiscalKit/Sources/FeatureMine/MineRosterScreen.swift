@@ -11,32 +11,36 @@ struct MineRosterScreen: View {
     var body: some View {
         let people = roster.filtered(query: query, party: party)
         List {
-            Section {
-                if people.isEmpty {
-                    VStack(spacing: .spaceM) {
-                        Image(systemName: "line.3.horizontal.decrease")
-                            .font(.icon(.l))
-                            .foregroundStyle(.secondary)
-                            .accessibilityHidden(true)
-                        Text("No one matches these filters")
-                            .font(.headline)
-                        Button("Clear Filters") {
-                            query = ""
-                            party = nil
+            Group {
+                Section {
+                    if people.isEmpty {
+                        VStack(spacing: .spaceM) {
+                            Image(systemName: "line.3.horizontal.decrease")
+                                .font(.icon(.l))
+                                .foregroundStyle(.secondary)
+                                .accessibilityHidden(true)
+                            Text("No one matches these filters")
+                                .font(.headline)
+                            Button("Clear Filters") {
+                                query = ""
+                                party = nil
+                            }
+                            .buttonStyle(.borderless)
                         }
-                        .buttonStyle(.borderless)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, .spaceXL)
+                    } else {
+                        ForEach(people) { MineRosterRow(card: $0) }
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, .spaceXL)
-                } else {
-                    ForEach(people) { MineRosterRow(card: $0) }
+                } header: {
+                    Text(verbatim: header(shown: people.count))
+                } footer: {
+                    Text("In alphabetical order. Nobody is ranked.")
                 }
-            } header: {
-                Text(verbatim: header(shown: people.count))
-            } footer: {
-                Text("In alphabetical order. Nobody is ranked.")
             }
+            .surfaceRows()
         }
+        .listSurface()
         .searchable(text: $query, prompt: Text("Name"))
         .navigationTitle(Text(verbatim: roster.title))
         .toolbar {

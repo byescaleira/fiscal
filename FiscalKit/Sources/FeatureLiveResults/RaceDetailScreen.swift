@@ -20,7 +20,7 @@ struct RaceDetailScreen: View {
                     description: Text("This race isn't in the latest TSE file."))
             }
         }
-        .background(.groupedBackground)
+        .background(.plainBackground)
         .navigationTitle(Text(verbatim: results.race(id: raceID).map(results.title) ?? ""))
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
@@ -117,7 +117,7 @@ struct RaceDetailSection<Content: View>: View {
             content
                 .padding(.spaceL)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(.groupedRow, in: .rect(cornerRadius: .radiusGroup))
+                .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
             if let footer {
                 Text(verbatim: footer)
                     .font(.caption)

@@ -12,24 +12,29 @@ struct MinePlacePicker: View {
         @Bindable var mine = mine
         NavigationStack {
             List {
-                if mine.isSearchingPlaces || mine.places.isEmpty {
-                    MinePlaceResults()
-                } else {
-                    MineCitySection { isSearching = true }
-                    MineStateSection()
-                }
-                if mine.hasPlace {
-                    Section {
-                        Button("Forget This Place", role: .destructive) {
-                            mine.forgetPlace()
-                            dismiss()
+                Group {
+                    if mine.isSearchingPlaces || mine.places.isEmpty {
+                        MinePlaceResults()
+                    } else {
+                        MineCitySection { isSearching = true }
+                        MineStateSection()
+                    }
+                    if mine.hasPlace {
+                        Section {
+                            Button("Forget This Place", role: .destructive) {
+                                mine.forgetPlace()
+                                dismiss()
+                            }
+                        } footer: {
+                            Text(
+                                "Your place stays only on this device. Fiscal never sends it anywhere."
+                            )
                         }
-                    } footer: {
-                        Text(
-                            "Your place stays only on this device. Fiscal never sends it anywhere.")
                     }
                 }
+                .surfaceRows()
             }
+            .listSurface()
             .searchable(text: $mine.query, prompt: Text("State or city"))
             .searchFocused($isSearching)
             .navigationTitle("Your Place")

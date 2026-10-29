@@ -47,7 +47,7 @@ private struct ShareEditor: View {
             .readableWidth()
             .frame(maxWidth: .infinity)
         }
-        .background(.groupedBackground)
+        .background(.plainBackground)
         .task(id: model.card) {
             guard let card = model.card else { return }
             rendered = ShareRenderer.render(

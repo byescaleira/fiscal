@@ -43,7 +43,7 @@ private struct SettingsContent<Lens: View, Artists: View>: View {
     var body: some View {
         Group {
             #if os(macOS)
-                Form { sections }.formStyle(.grouped)
+                Form { sections.surfaceRows() }.formStyle(.grouped).listSurface()
             #else
                 AdaptiveList { sections }
             #endif

@@ -240,25 +240,29 @@ private struct GlossaryContent: View {
     var body: some View {
         @Bindable var model = model
         List {
-            Section {
-                ForEach(model.terms) { term in
-                    VStack(alignment: .leading, spacing: .space2XS) {
-                        Text(verbatim: term.term).font(.rowTitle)
-                        Text(verbatim: term.definition)
-                            .font(.subheadline)
-                            .fixedSize(horizontal: false, vertical: true)
-                        SourceLinks(refs: term.sources)
+            Group {
+                Section {
+                    ForEach(model.terms) { term in
+                        VStack(alignment: .leading, spacing: .space2XS) {
+                            Text(verbatim: term.term).font(.rowTitle)
+                            Text(verbatim: term.definition)
+                                .font(.subheadline)
+                                .fixedSize(horizontal: false, vertical: true)
+                            SourceLinks(refs: term.sources)
+                        }
+                        .padding(.vertical, .space2XS)
                     }
-                    .padding(.vertical, .space2XS)
+                } header: {
+                    Text(verbatim: guide.summary)
+                        .font(.subheadline)
+                        .textCase(nil)
+                } footer: {
+                    Text("Alphabetical order. Each definition follows the official source cited.")
                 }
-            } header: {
-                Text(verbatim: guide.summary)
-                    .font(.subheadline)
-                    .textCase(nil)
-            } footer: {
-                Text("Alphabetical order. Each definition follows the official source cited.")
             }
+            .surfaceRows()
         }
+        .listSurface()
         .searchable(text: $model.query, prompt: Text("Search a term"))
         .overlay {
             if model.terms.isEmpty {

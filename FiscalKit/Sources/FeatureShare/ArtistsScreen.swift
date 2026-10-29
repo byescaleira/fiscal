@@ -50,7 +50,7 @@ private struct ArtistsGallery: View {
             .readableWidth()
             .frame(maxWidth: .infinity)
         }
-        .background(.groupedBackground)
+        .background(.plainBackground)
     }
 }
 
@@ -233,6 +233,6 @@ private struct ArtistsEmptyState: View {
             IconRow("Open license", symbol: "doc.badge.ellipsis", color: .retroMustard)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.groupedBackground)
+        .background(.plainBackground)
     }
 }

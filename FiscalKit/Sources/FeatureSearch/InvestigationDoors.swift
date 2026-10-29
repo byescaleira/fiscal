@@ -74,7 +74,7 @@ private struct DoorTile: View {
         }
         .frame(maxWidth: .infinity, minHeight: .caseDoor, alignment: .topLeading)
         .padding(.spaceM)
-        .background(.groupedRow, in: .rect(cornerRadius: .radiusM))
+        .background(.plainRow, in: .rect(cornerRadius: .radiusM))
         .contentShape(.rect(cornerRadius: .radiusM))
         .accessibilityElement(children: .combine)
     }

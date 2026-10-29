@@ -61,7 +61,7 @@ struct SourceFooter: View {
 extension View {
     func todayCard() -> some View {
         frame(maxWidth: .infinity, alignment: .leading)
-            .background(.groupedRow, in: .rect(cornerRadius: .radiusGroup))
+            .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
     }
 }
 

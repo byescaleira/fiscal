@@ -240,6 +240,6 @@ private struct ExpensesEmptyState: View {
                 color: .retroOrange)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.groupedBackground)
+        .background(.plainBackground)
     }
 }

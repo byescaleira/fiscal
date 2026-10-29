@@ -126,7 +126,7 @@ private struct SpenderCard: View {
         }
         .padding(.spaceL)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(.groupedRow, in: .rect(cornerRadius: .radiusGroup))
+        .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
     }
 
     private var identity: some View {

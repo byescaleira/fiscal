@@ -1,12 +1,12 @@
 {
-  "originHash" : "84f285f4ecfabf541bc5060bf8c5d880c2e601f629ca8960767ada29e2c5018e",
+  "originHash" : "a1064b1e1adb3686d5d70575784eeb3ffd26525b689b2818762f7e76ac569280",
   "pins" : [
     {
       "identity" : "byescaleira-kit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/byescaleira/byescaleira-kit.git",
       "state" : {
-        "revision" : "7150777dbdbc68d0ec0fea3e60af969477d006cc"
+        "revision" : "0329207aa3c631e113fcfa7e87debdfc90fdc46b"
       }
     },
     {

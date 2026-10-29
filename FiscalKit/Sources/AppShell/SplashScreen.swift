@@ -76,7 +76,7 @@ public struct SplashScreen<Footer: View>: View {
             footer
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.groupedBackground)
+        .background(.plainBackground)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Opening Fiscal")
     }

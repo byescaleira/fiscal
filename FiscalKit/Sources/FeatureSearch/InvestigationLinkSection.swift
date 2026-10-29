@@ -191,7 +191,7 @@ private struct DivergedPile: View {
                             size: .badgeM
                         )
                         .overlay {
-                            Circle().strokeBorder(Color.groupedRow, lineWidth: .spaceHairline)
+                            Circle().strokeBorder(Color.plainRow, lineWidth: .spaceHairline)
                         }
                     }
                 }

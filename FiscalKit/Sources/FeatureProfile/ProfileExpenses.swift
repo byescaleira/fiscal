@@ -90,20 +90,24 @@ struct ProfileExpensesScreen: View {
 
     var body: some View {
         List {
-            Section {
-                ForEach(profile.expenseItems) { expense in
-                    ProfileExpenseRow(expense: expense)
+            Group {
+                Section {
+                    ForEach(profile.expenseItems) { expense in
+                        ProfileExpenseRow(expense: expense)
+                    }
+                } header: {
+                    Text(verbatim: profile.expensesTotal)
+                        .font(.amountTitle)
+                        .monospacedDigit()
+                        .foregroundStyle(.primary)
+                        .textCase(nil)
+                } footer: {
+                    ProfileFooter(lines: [profile.sourceText(for: ["expenses"])])
                 }
-            } header: {
-                Text(verbatim: profile.expensesTotal)
-                    .font(.amountTitle)
-                    .monospacedDigit()
-                    .foregroundStyle(.primary)
-                    .textCase(nil)
-            } footer: {
-                ProfileFooter(lines: [profile.sourceText(for: ["expenses"])])
             }
+            .surfaceRows()
         }
+        .listSurface()
         .navigationTitle("Expenses in \(String(profile.year))")
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)

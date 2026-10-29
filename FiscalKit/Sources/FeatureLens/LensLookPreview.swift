@@ -22,7 +22,7 @@ struct LensLookPreview: View {
             LensPreviewControls()
         }
         .padding(.spaceL)
-        .background(.groupedBackground, in: .rect(cornerRadius: .radiusGroup))
+        .background(.plainBackground, in: .rect(cornerRadius: .radiusGroup))
         .appTint(palette?.accent ?? inheritedTint)
         .partyMarksStill()
         .dynamicTypeSize(...DynamicTypeSize.xLarge)
@@ -86,7 +86,7 @@ private struct LensPreviewVoteCard: View {
             }
         }
         .padding(.spaceL)
-        .background(.groupedRow, in: .rect(cornerRadius: .radiusL))
+        .background(.plainRow, in: .rect(cornerRadius: .radiusL))
     }
 }
 
@@ -132,7 +132,7 @@ private struct LensPreviewControls: View {
             .font(.icon(.s))
             .padding(.horizontal, .spaceM)
             .padding(.vertical, .spaceS)
-            .background(.groupedRow, in: .capsule)
+            .background(.plainRow, in: .capsule)
         }
     }
 }
