@@ -36,12 +36,12 @@ struct SettingsModelTests {
 
     @Test func syncsWithICloudUntilTurnedOff() throws {
         let defaults = try defaults()
-        #expect(SettingsModel.cloudSync(in: defaults))
+        #expect(CloudSyncPreference.isOn(in: defaults))
         let settings = SettingsModel(defaults: defaults, languageSetting: LanguageSetting())
         #expect(settings.cloudSync)
         settings.cloudSync = false
-        #expect(defaults.bool(forKey: SettingsModel.cloudSyncKey) == false)
-        #expect(!SettingsModel.cloudSync(in: defaults))
+        #expect(defaults.bool(forKey: CloudSyncPreference.key) == false)
+        #expect(!CloudSyncPreference.isOn(in: defaults))
         let reopened = SettingsModel(defaults: defaults, languageSetting: LanguageSetting())
         #expect(!reopened.cloudSync)
         #expect(reopened.cloudSyncValue == String(appLocalized: "Off"))

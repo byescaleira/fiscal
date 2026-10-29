@@ -5,9 +5,6 @@ import Observation
 
 @MainActor @Observable
 public final class SettingsModel {
-    public nonisolated static let cloudSyncKey = "fiscal.settings.cloudSync"
-    public static var onHighlightAlertsChange: (@MainActor (Bool) -> Void)?
-
     public var appearance: Appearance {
         didSet { defaults.set(appearance.rawValue, forKey: Key.appearance) }
     }
@@ -22,7 +19,7 @@ public final class SettingsModel {
         }
     }
     public var cloudSync: Bool {
-        didSet { defaults.set(cloudSync, forKey: Self.cloudSyncKey) }
+        didSet { CloudSyncPreference.set(cloudSync, in: defaults) }
     }
     public var flags: FeatureFlags?
     public private(set) var appIcon: AppIcon
@@ -39,9 +36,7 @@ public final class SettingsModel {
         iconSwitcher: any AppIconSwitching = SystemAppIconSwitcher(),
         alertLedger: HighlightAlertLedger = HighlightAlertLedger(),
         flags: FeatureFlags? = nil,
-        highlightAlertsChanged: @escaping @MainActor (Bool) -> Void = {
-            SettingsModel.onHighlightAlertsChange?($0)
-        }
+        highlightAlertsChanged: @escaping @MainActor (Bool) -> Void = { _ in }
     ) {
         self.defaults = defaults
         self.alertLedger = alertLedger
@@ -55,11 +50,7 @@ public final class SettingsModel {
         appearance =
             defaults.string(forKey: Key.appearance).flatMap(Appearance.init(rawValue:)) ?? .system
         tint = defaults.string(forKey: Key.tint) ?? RetroColor.default.hex
-        cloudSync = Self.cloudSync(in: defaults)
-    }
-
-    public nonisolated static func cloudSync(in defaults: UserDefaults = .standard) -> Bool {
-        defaults.object(forKey: cloudSyncKey) as? Bool ?? true
+        cloudSync = CloudSyncPreference.isOn(in: defaults)
     }
 
     public var locale: Locale { languageSetting.locale }

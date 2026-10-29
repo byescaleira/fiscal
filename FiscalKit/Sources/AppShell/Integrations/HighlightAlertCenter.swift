@@ -46,9 +46,6 @@ final class HighlightAlertCenter {
     }
 
     func activate() async {
-        SettingsModel.onHighlightAlertsChange = { isOn in
-            Task { await HighlightAlertCenter.shared.setEnabled(isOn) }
-        }
         wantsActivation = true
         guard !isHeld else { return }
         if !isObserving {
@@ -151,4 +148,12 @@ final class HighlightAlertCenter {
             return true
         }
     #endif
+}
+
+extension SettingsModel {
+    public static func fiscal() -> SettingsModel {
+        SettingsModel { isOn in
+            Task { await HighlightAlertCenter.shared.setEnabled(isOn) }
+        }
+    }
 }
