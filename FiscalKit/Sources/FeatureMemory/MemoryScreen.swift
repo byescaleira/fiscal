@@ -116,6 +116,7 @@ private struct OtherYearsSection: View {
                         Text(verbatim: String(year))
                             .font(.scoreboardTitle)
                             .monospacedDigit()
+                            .amountLine()
                         VStack(alignment: .leading, spacing: .spaceHairline) {
                             Text("Governors and Senate").font(.rowTitle)
                             Text("No presidential election this year")

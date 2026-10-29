@@ -34,6 +34,7 @@ private struct MineBenchHeader: View {
             Text(verbatim: PublicFormat.number(bench.total))
                 .font(.scoreboardTitle)
                 .monospacedDigit()
+                .amountLine()
                 .contentTransition(
                     reduceMotion ? .identity : .numericText(value: Double(bench.total)))
             Text(verbatim: bench.subtitle)

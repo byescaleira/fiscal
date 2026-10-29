@@ -15,7 +15,7 @@ struct LensThemesStep: View {
             LensStepHeader("Your topics", message: Text(verbatim: setup.themesMessage))
             HStack(spacing: .spaceS) {
                 Chip(setup.themeCountText, color: tint, shape: .capsule)
-                    .contentTransition(.numericText())
+                    .contentTransition(reduceMotion ? .identity : .numericText())
                 if setup.isLoadingActivity {
                     ProgressView().controlSize(.small)
                     Text("Reading what they did")
@@ -44,10 +44,11 @@ private struct LensThemeCard: View {
 
     var body: some View {
         let color = ChartPalette.color(at: index)
-        HStack(alignment: .top, spacing: .spaceM) {
+        AdaptiveRow(spacing: .spaceM) {
             Text(verbatim: setup.rankText(index))
                 .font(.scoreboardTitle)
                 .monospacedDigit()
+                .amountLine()
                 .foregroundStyle(.secondary)
                 .frame(minWidth: .badgeS)
             SymbolBadge(theme.symbol, color: color, size: .badgeL, style: .filled)

@@ -80,7 +80,7 @@ public struct IndicatorCard: View {
                 Text(verbatim: IndicatorFormat.value(latest?.value, kind: indicator.kind))
                     .font(.scoreboardTitle)
                     .monospacedDigit()
-                    .contentTransition(.numericText())
+                    .contentTransition(reduceMotion ? .identity : .numericText())
                     .amountLine()
                 Text(verbatim: IndicatorFormat.month(latest?.date, calendar: calendar))
                     .font(.subheadline)

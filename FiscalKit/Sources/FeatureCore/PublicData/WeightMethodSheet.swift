@@ -191,6 +191,7 @@ struct WeightCard<Content: View>: View {
 }
 
 private struct WeightScroll<Content: View>: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let content: Content
 
     init(@ViewBuilder content: () -> Content) {
@@ -205,7 +206,7 @@ private struct WeightScroll<Content: View>: View {
             .multilineTextAlignment(.leading)
         }
         .scrollBounceBehavior(.basedOnSize)
-        .frame(maxHeight: .guideScrollMax)
+        .frame(maxHeight: dynamicTypeSize.isAccessibilitySize ? nil : .guideScrollMax)
     }
 }
 

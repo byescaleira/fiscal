@@ -155,6 +155,7 @@ public struct PeerMethodSheet: View {
 }
 
 private struct PeerMethodPersonPage: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let item: PeerMethodItem
 
     var body: some View {
@@ -180,7 +181,7 @@ private struct PeerMethodPersonPage: View {
                 }
             }
             .scrollBounceBehavior(.basedOnSize)
-            .frame(maxHeight: .guideScrollMax)
+            .frame(maxHeight: dynamicTypeSize.isAccessibilitySize ? nil : .guideScrollMax)
         }
     }
 }

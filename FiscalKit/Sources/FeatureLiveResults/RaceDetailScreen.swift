@@ -42,7 +42,7 @@ private struct RaceDetailUnavailable: View {
             actionTitle: "Try Again", action: { Task { await results.loadDetail(id: raceID) } }
         ) {
             IconRow(
-                "President · Brazil", detail: "TSE", symbol: "checkmark.seal", color: .retroTeal)
+                "Official count", detail: "TSE", symbol: "checkmark.seal", color: .retroTeal)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -161,6 +161,7 @@ private struct RaceCountFacts: View {
                     Text(verbatim: summary.countedText)
                         .font(.scoreboardTitle)
                         .monospacedDigit()
+                        .amountLine()
                         .contentTransition(
                             reduceMotion
                                 ? .identity : .numericText(value: summary.race.sections.percent))

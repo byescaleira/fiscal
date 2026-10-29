@@ -44,7 +44,12 @@ public struct MainScreen: View {
                 InspectorScreen(inspector: inspector)
             }
         }
-        .onChange(of: navigation.inspector) { AccessibilityNotification.ScreenChanged(nil).post() }
+        .onChange(of: navigation.inspector) { _, inspector in
+            if inspector != nil { AccessibilityNotification.ScreenChanged(nil).post() }
+        }
+        .onChange(of: navigation.inspectorPath) { _, path in
+            if !path.isEmpty { AccessibilityNotification.ScreenChanged(nil).post() }
+        }
         .modifier(RoutesBeside())
         .readsLayoutContext()
         .environment(

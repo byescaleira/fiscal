@@ -15601,6 +15601,26 @@
           }
         }
       }
+    },
+    "Preview of your look" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prévia do seu visual"
+          }
+        }
+      }
+    },
+    "Official count" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contagem oficial"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

@@ -52,8 +52,8 @@ private struct ExpensesFilterMenu: View {
                 .labelStyle(.iconOnly)
                 .foregroundStyle(Color.primary)
                 .quietBounce(value: expenses.hasFilter)
-                .accessibilityValue(Text(verbatim: expenses.scopeTitle))
         }
+        .accessibilityValue(Text(verbatim: expenses.scopeTitle))
         .menuStyle(.button)
         .buttonStyle(.plain)
         .tint(Color.primary)

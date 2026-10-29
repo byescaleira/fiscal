@@ -46,7 +46,7 @@ private struct PublicDataFailure: View {
             title: error.titleKey, description: error.messageKey, actionTitle: "Try Again",
             action: { Task { await retry() } }
         ) {
-            IconRow("Official sources", symbol: error.symbol, color: .retroDenim)
+            IconRow("Official sources", symbol: "building.columns", color: .retroDenim)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.plainBackground)

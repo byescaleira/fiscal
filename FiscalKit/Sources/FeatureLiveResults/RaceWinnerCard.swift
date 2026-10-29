@@ -72,6 +72,7 @@ struct RaceWinnerCard: View {
                     Text(verbatim: winner.percent)
                         .font(.scoreboardTitle)
                         .monospacedDigit()
+                        .amountLine()
                 }
                 if let text = summary.winnerText {
                     Text(verbatim: text)

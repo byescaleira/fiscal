@@ -28,7 +28,8 @@ struct LensLookPreview: View {
         .appTint(palette?.accent ?? inheritedTint)
         .partyMarksStill()
         .animation(systemReduceMotion || liteMode.reducesMotion ? nil : .smooth, value: palette)
-        .accessibilityElement(children: .combine)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text("Preview of your look"))
         .accessibilityValue(Text(verbatim: palette?.title ?? ""))
     }
 }

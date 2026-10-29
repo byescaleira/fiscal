@@ -78,8 +78,8 @@ private struct MineRosterFilter: View {
                 .labelStyle(.iconOnly)
                 .foregroundStyle(Color.primary)
                 .quietBounce(value: party)
-                .accessibilityValue(Text(verbatim: roster.scopeTitle(party: party)))
         }
+        .accessibilityValue(Text(verbatim: roster.scopeTitle(party: party)))
         .menuStyle(.button)
         .buttonStyle(.plain)
         .tint(Color.primary)

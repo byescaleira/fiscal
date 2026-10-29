@@ -16,6 +16,7 @@ struct PastWinnerCard: View {
                 Text(verbatim: String(year))
                     .font(.scoreboardTitle)
                     .monospacedDigit()
+                    .amountLine()
                 Spacer(minLength: .spaceS)
                 StatusCircle(
                     String(appLocalized: "Elected"), symbol: "checkmark.seal.fill", color: .white)
