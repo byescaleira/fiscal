@@ -7,9 +7,7 @@
   ],
   "exclude": [
     "/FiscalResource/FiscalResourceAnimation\\.swift$",
-    "Package\\.swift$",
-    "/FiscalMock/",
-    "/FiscalPreview/"
+    "Package\\.swift$"
   ],
   "catalogs": [
     "Fiscal/Fiscal/Localizable.xcstrings",
