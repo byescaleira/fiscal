@@ -9,7 +9,7 @@ extension CGFloat {
     public static let posterTitleStories: CGFloat = 60
     public static let posterTitleFeed: CGFloat = 40
     public static let posterTitleMessage: CGFloat = 32
-    public static let posterScoreStories: CGFloat = 84
+    public static let posterScoreStories: CGFloat = 72
     public static let posterScoreFeed: CGFloat = 64
     public static let posterScoreMessage: CGFloat = 50
     public static let posterFactStories: CGFloat = 30
@@ -27,7 +27,7 @@ extension CGFloat {
     public static let posterPlateMessage: CGFloat = 112
     public static let posterTracking: CGFloat = 1.4
     public static let posterShrink: CGFloat = 0.45
-    public static let posterFigureAdvance: CGFloat = 0.52
+    public static let posterFigureAdvance: CGFloat = 0.6
 }
 
 extension Double {

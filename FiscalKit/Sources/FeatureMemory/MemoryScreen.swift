@@ -169,7 +169,7 @@ private struct PeriodRow: View {
                     .foregroundStyle(PeriodPalette.color(for: period.era))
                 Text(verbatim: period.name).font(.rowTitle)
                 Text(verbatim: MemoryText.years(start: period.startDay, end: period.endDay))
-                    .font(.emphasis(.subheadline, weight: .semibold))
+                    .font(.subheadline.weight(.semibold))
                     .monospacedDigit()
                     .foregroundStyle(.secondary)
                 Text(verbatim: period.summary)

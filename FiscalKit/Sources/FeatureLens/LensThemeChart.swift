@@ -145,7 +145,7 @@ struct LensThemeOrderRow: View {
     var body: some View {
         HStack(spacing: .spaceM) {
             Text(verbatim: lens.rankText(index))
-                .font(.emphasis(.headline, weight: .semibold))
+                .font(.emphasis(.headline, weight: .bold))
                 .monospacedDigit()
                 .foregroundStyle(.secondary)
                 .frame(minWidth: .badgeS)

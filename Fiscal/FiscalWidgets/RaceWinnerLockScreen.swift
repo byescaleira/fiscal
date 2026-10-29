@@ -31,7 +31,7 @@ struct WinnerLockScreen: View {
                 CandidatePhoto(row: winner, side: .badgeXL)
                 VStack(alignment: .leading, spacing: .space2XS) {
                     Text(verbatim: winner.name)
-                        .font(.headline.weight(.heavy))
+                        .font(.emphasis(.headline, weight: .heavy))
                         .foregroundStyle(RaceStyle.primary)
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)

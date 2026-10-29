@@ -54,8 +54,7 @@ struct StateTileMap: View {
             .clipShape(.rect(cornerRadius: .radiusS))
             .annotation(position: .overlay) {
                 Text(verbatim: tile.code)
-                    .font(.caption2.weight(.bold))
-                    .monospacedDigit()
+                    .font(.emphasis(.caption2, weight: .bold))
                     .foregroundStyle(labelStyle(for: tile))
             }
             .accessibilityLabel(tile.title)

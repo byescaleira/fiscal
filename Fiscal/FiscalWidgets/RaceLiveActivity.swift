@@ -101,7 +101,7 @@ private struct RaceLockScreen: View {
                 Spacer(minLength: 0)
                 VStack(spacing: .space2XS) {
                     Text(verbatim: board.centerValue)
-                        .font(.subheadline.weight(.heavy))
+                        .font(.emphasis(.subheadline, weight: .heavy))
                         .foregroundStyle(RaceStyle.primary)
                         .monospacedDigit()
                         .contentTransition(.numericText(value: board.state.sectionsPercent))
@@ -211,7 +211,7 @@ private struct CandidateSide: View {
             if alignment == .leading { badge }
             VStack(alignment: alignment, spacing: 0) {
                 Text(verbatim: row.percent)
-                    .font(.emphasis(fixed: size == .lockScreen ? 40 : 26, weight: .heavy))
+                    .font(size == .lockScreen ? .candidatePercentLarge : .candidatePercentCompact)
                     .monospacedDigit()
                     .contentTransition(.numericText(value: row.value))
                     .foregroundStyle(RaceStyle.primary)
@@ -252,7 +252,7 @@ private struct NumberBadge: View {
             .frame(width: side, height: side)
             .overlay {
                 Text(verbatim: number)
-                    .font(.emphasis(fixed: side * 0.42, weight: .heavy))
+                    .font(.ballotNumber(side))
                     .foregroundStyle(.white)
                     .minimumScaleFactor(0.6)
             }

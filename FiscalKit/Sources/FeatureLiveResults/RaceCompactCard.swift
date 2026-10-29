@@ -61,6 +61,8 @@ private struct RaceCompactHeader: View {
         HStack(alignment: .center, spacing: .spaceM) {
             Text(verbatim: summary.race.uf.uppercased())
                 .font(.emphasis(.subheadline, weight: .heavy))
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
                 .foregroundStyle(.secondary)
                 .frame(width: .badgeM, height: .badgeM)
                 .background(.subtleFill, in: .rect(cornerRadius: .radiusS))

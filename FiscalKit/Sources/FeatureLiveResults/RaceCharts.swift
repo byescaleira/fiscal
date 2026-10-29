@@ -43,7 +43,7 @@ private struct RaceStandingRow: View {
                     PartyMark(contender.candidate.party)
                     Spacer(minLength: .spaceXS)
                     Text(verbatim: contender.percent)
-                        .font(.emphasis(.headline, weight: .semibold))
+                        .font(.emphasis(.headline, weight: .bold))
                         .monospacedDigit()
                         .contentTransition(
                             reduceMotion

@@ -237,7 +237,7 @@ struct VoteCircular: View {
                     .font(.caption2.weight(.bold))
                     .widgetAccentable()
                 Text(verbatim: board.yesText)
-                    .font(.emphasis(.headline, weight: .semibold))
+                    .font(.emphasis(.headline, weight: .bold))
                 Text(verbatim: board.noText)
                     .font(.emphasis(.caption2, weight: .semibold))
                     .foregroundStyle(.secondary)

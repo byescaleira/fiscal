@@ -82,7 +82,7 @@ private struct PresidentsSection: View {
                     VStack(alignment: .leading, spacing: .spaceHairline) {
                         Text(verbatim: president.name).font(.rowTitle)
                         Text(verbatim: model.term(president))
-                            .font(.emphasis(.subheadline, weight: .semibold))
+                            .font(.subheadline.weight(.semibold))
                             .monospacedDigit()
                             .foregroundStyle(.secondary)
                         Text(verbatim: president.how)

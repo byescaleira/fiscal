@@ -211,6 +211,8 @@ struct PastRaceRow: View {
         HStack(spacing: .spaceM) {
             Text(verbatim: race.scope.uppercased(with: .app))
                 .font(.emphasis(.subheadline, weight: .heavy))
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
                 .foregroundStyle(.secondary)
                 .frame(width: .badgeM, height: .badgeM)
                 .background(.subtleFill, in: .rect(cornerRadius: .radiusS))
