@@ -78,6 +78,10 @@ public struct LensThemeTally: Equatable, Sendable {
 
     public var maxCount: Int { slices.map(\.count).max() ?? 0 }
 
+    public func share(of slice: Slice) -> Double {
+        maxCount > 0 ? Double(slice.count) / Double(maxCount) : 0
+    }
+
     public func slice(of theme: Theme) -> Slice? { slices.first { $0.theme == theme } }
 
     public var headline: String {

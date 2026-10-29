@@ -18,6 +18,17 @@ struct LensModelTests {
         return (context, repository)
     }
 
+    @Test func barSharesAreRelativeToTheBusiestTopic() {
+        let vote = VoteSummary(
+            id: "a", house: .camara, date: CalendarDay(Date.now), time: nil, proposition: "a",
+            kind: nil, summary: "a", plainSummary: nil, themes: [.health], result: nil,
+            approved: true, nominal: true, tally: VoteSummary.Tally(yes: 1, no: 0, others: 0))
+        let tally = LensThemeTally(votes: [vote], themes: [.health, .taxes])
+        #expect(tally.slices.map(tally.share(of:)) == [1, 0])
+        let empty = LensThemeTally(votes: [], themes: [.health])
+        #expect(empty.slices.map(empty.share(of:)) == [0])
+    }
+
     @Test func showsTheSavedLens() async throws {
         let saved = Lens.suggested(supported: ["lula"])
         let (context, _) = try await context(saved: saved)

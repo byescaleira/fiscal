@@ -1,4 +1,3 @@
-import Charts
 import FeatureCore
 import FiscalDesignSystem
 import FiscalDomain
@@ -7,9 +6,11 @@ import SwiftUI
 struct LensThemesStep: View {
     @Environment(LensSetupModel.self) private var setup
     @Environment(\.appTint) private var tint
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    @Environment(\.liteMode) private var liteMode
 
     var body: some View {
+        let reduceMotion = systemReduceMotion || liteMode.reducesMotion
         VStack(alignment: .leading, spacing: .spaceXL) {
             LensStepHeader("Your topics", message: Text(verbatim: setup.themesMessage))
             HStack(spacing: .spaceS) {
@@ -26,7 +27,8 @@ struct LensThemesStep: View {
             VStack(spacing: .spaceM) {
                 ForEach(Array(setup.draft.themes.enumerated()), id: \.element) { index, theme in
                     LensThemeCard(theme: theme, index: index)
-                        .transition(.scale(scale: 0.96).combined(with: .opacity))
+                        .transition(
+                            reduceMotion ? .opacity : .scale(scale: 0.96).combined(with: .opacity))
                 }
             }
             .animation(reduceMotion ? nil : .smooth, value: setup.draft.themes)
@@ -48,7 +50,6 @@ private struct LensThemeCard: View {
                 .monospacedDigit()
                 .foregroundStyle(.secondary)
                 .frame(minWidth: .badgeS)
-                .accessibilityHidden(true)
             SymbolBadge(theme.symbol, color: color, size: .badgeL, style: .filled)
             VStack(alignment: .leading, spacing: .spaceXS) {
                 Text(verbatim: theme.title)
@@ -59,9 +60,7 @@ private struct LensThemeCard: View {
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
                 if let entry = setup.entry(for: theme) {
-                    LensSupportBar(
-                        count: entry.count, maxCount: setup.maxEntryCount, color: color,
-                        index: index)
+                    ShareBarChart(value: setup.share(of: entry), color: color, height: .barHeight)
                     Text(verbatim: setup.actionsText(for: entry))
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.secondary)
@@ -81,10 +80,17 @@ private struct LensThemeCard: View {
             return true
         }
         .accessibilityElement(children: .combine)
-        .accessibilityValue(Text(verbatim: setup.rankText(index)))
-        .accessibilityAction(named: Text("Move Up")) { setup.move(theme, by: -1) }
-        .accessibilityAction(named: Text("Move Down")) { setup.move(theme, by: 1) }
-        .accessibilityAction(named: Text("Remove")) { setup.remove(theme) }
+        .accessibilityActions {
+            if !setup.isFirst(theme) {
+                Button("Move Up") { setup.move(theme, by: -1) }
+            }
+            if !setup.isLast(theme) {
+                Button("Move Down") { setup.move(theme, by: 1) }
+            }
+            if setup.draft.canRemoveTheme {
+                Button("Remove") { setup.remove(theme) }
+            }
+        }
     }
 }
 
@@ -101,41 +107,7 @@ private struct LensThemeControls: View {
             Button("Remove", systemImage: "minus") { setup.remove(theme) }
                 .disabled(!setup.draft.canRemoveTheme)
         }
-        .labelStyle(.iconOnly)
-        .font(.footnote.weight(.bold))
         .lensRoundButton()
-        .controlSize(.small)
-        .accessibilityHidden(true)
-    }
-}
-
-private struct LensSupportBar: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var revealed = false
-    let count: Int
-    let maxCount: Int
-    let color: Color
-    let index: Int
-
-    var body: some View {
-        Chart {
-            BarMark(
-                xStart: .value("Start", 0),
-                xEnd: .value("Actions", revealed ? count : 0),
-                y: .value("Topic", "topic"),
-                height: .fixed(.barHeight)
-            )
-            .foregroundStyle(color.gradient)
-            .clipShape(.capsule)
-        }
-        .chartXScale(domain: 0...max(maxCount, 1), range: .plotDimension(endPadding: 0))
-        .chartXAxis(.hidden)
-        .chartYAxis(.hidden)
-        .chartLegend(.hidden)
-        .frame(height: .barHeight)
-        .background(Color.secondary.opacity(.opacityFill), in: .capsule)
-        .animation(reduceMotion ? nil : .chartReveal(index), value: revealed)
-        .onAppear { revealed = true }
         .accessibilityHidden(true)
     }
 }
@@ -146,7 +118,7 @@ private struct LensMoreThemes: View {
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceM) {
             VStack(alignment: .leading, spacing: .space2XS) {
-                Text("Add a topic").font(.emphasis(.title3, weight: .bold))
+                Text("Add a topic").sectionTitle().accessibilityAddTraits(.isHeader)
                 Text(
                     setup.draft.canAddTheme
                         ? LocalizedStringKey("Nothing is hidden: the others stay one tap away.")

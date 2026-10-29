@@ -13,19 +13,23 @@ extension View {
 private struct LensExperience: ViewModifier {
     @Environment(LensContext.self) private var context
     @Environment(SessionModel.self) private var session
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    @Environment(\.liteMode) private var liteMode
     @Environment(\.appTint) private var inheritedTint
     let isReady: Bool
     let service: (any PublicDataService)?
 
     func body(content: Content) -> some View {
+        let reduceMotion = systemReduceMotion || liteMode.reducesMotion
         content
             .safeAreaInset(edge: .top, spacing: .zero) {
                 if let preview = context.preview {
                     LensPreviewBanner(lens: preview)
-                        .transition(.move(edge: .top).combined(with: .opacity))
+                        .transition(
+                            reduceMotion ? .opacity : .move(edge: .top).combined(with: .opacity))
                 }
             }
-            .animation(.smooth, value: context.isPreviewing)
+            .animation(reduceMotion ? nil : .smooth, value: context.isPreviewing)
             .appTint(LensPaletteSwatch.named(context.active?.palette)?.accent ?? inheritedTint)
             .task { await context.load() }
             .onChange(of: context.saved) { session.reload() }
@@ -109,6 +113,7 @@ private struct LensPreviewBanner: View {
             Spacer(minLength: .zero)
             Button("Back to Mine", systemImage: "arrow.uturn.backward") { context.endPreview() }
                 .prominentButton()
+                .controlSize(.large)
         }
         .padding(.horizontal, .spaceL)
         .padding(.vertical, .spaceS)
