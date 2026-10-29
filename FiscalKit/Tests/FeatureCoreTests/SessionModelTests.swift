@@ -31,24 +31,31 @@ struct SessionModelTests {
     private func session(_ feed: ManualFeed) throws -> SessionModel {
         SessionModel(
             repositories: try FiscalDatabase.open(inMemory: true).repositories, changes: feed,
-            coalescing: .milliseconds(40))
+            coalescing: .milliseconds(100))
     }
 
     @Test func aBurstOfChangesReloadsOnce() async throws {
         let feed = ManualFeed()
         let session = try session(feed)
         let listening = Task { await session.start() }
-        await Task.yield()
         feed.send(.remote)
         feed.send(.local)
         feed.send(.remote)
-        try await Task.sleep(for: .milliseconds(200))
+        await waitUntil { session.generation >= 1 }
+        try await Task.sleep(for: .milliseconds(250))
         #expect(session.generation == 1)
         feed.send(.local)
-        try await Task.sleep(for: .milliseconds(200))
+        await waitUntil { session.generation >= 2 }
         #expect(session.generation == 2)
         listening.cancel()
         feed.finish()
+    }
+
+    private func waitUntil(_ condition: () -> Bool) async {
+        let deadline = ContinuousClock.now + .seconds(5)
+        while !condition(), ContinuousClock.now < deadline {
+            try? await Task.sleep(for: .milliseconds(10))
+        }
     }
 
     @Test func reloadBumpsTheGeneration() throws {
