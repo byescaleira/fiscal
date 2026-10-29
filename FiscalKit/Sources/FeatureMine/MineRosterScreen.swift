@@ -15,7 +15,9 @@ struct MineRosterScreen: View {
                 Section {
                     if people.isEmpty {
                         ContentUnavailableView {
-                            Label("No one matches these filters", systemImage: "line.3.horizontal.decrease")
+                            Label(
+                                "No one matches these filters",
+                                systemImage: "line.3.horizontal.decrease")
                         } actions: {
                             Button("Clear Filters") {
                                 query = ""

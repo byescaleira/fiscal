@@ -89,6 +89,22 @@ extension ProfileModel {
         return "\(during) \(before)"
     }
 
+    public func contextBeforeChip(_ item: PersonContext.Item) -> String {
+        String(appLocalized: "Before · \(IndicatorFormat.change(item.changeBefore))")
+    }
+
+    public func contextDuringChip(_ item: PersonContext.Item) -> String {
+        String(appLocalized: "During the term · \(IndicatorFormat.change(item.changeDuring))")
+    }
+
+    public func contextDuringChange(_ item: PersonContext.Item) -> String {
+        IndicatorFormat.change(item.changeDuring)
+    }
+
+    public func contextBeforeLine(_ item: PersonContext.Item) -> String {
+        String(appLocalized: "before \(IndicatorFormat.change(item.changeBefore))")
+    }
+
     public func contextAreaLine(_ item: PersonContext.Item) -> String {
         let until = IndicatorFormat.month(item.latestDate, calendar: calendar)
         return String(appLocalized: "\(item.area) · until \(until)")

@@ -36,7 +36,8 @@ public struct PeriodScreen: View {
                 description: "The timeline isn't published by Fiscal yet."
             ) {
                 IconRow("Milestones", symbol: "flag", color: .retroDenim)
-                IconRow("Official indicators", symbol: "chart.line.uptrend.xyaxis", color: .retroTeal)
+                IconRow(
+                    "Official indicators", symbol: "chart.line.uptrend.xyaxis", color: .retroTeal)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.plainBackground)
@@ -131,9 +132,9 @@ private struct MilestoneRow: View {
         } content: {
             VStack(alignment: .leading, spacing: .space2XS) {
                 Text(verbatim: milestone.dateLine)
-                .font(.caption.weight(.semibold))
-                .monospacedDigit()
-                .foregroundStyle(.secondary)
+                    .font(.caption.weight(.semibold))
+                    .monospacedDigit()
+                    .foregroundStyle(.secondary)
                 Text(verbatim: milestone.title).font(.rowTitle)
                 Text(verbatim: milestone.text)
                     .font(.subheadline)

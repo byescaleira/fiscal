@@ -87,14 +87,8 @@ private struct ProfileContextSummary: View {
                 .font(.headline)
                 .fixedSize(horizontal: false, vertical: true)
             FlowLayout(spacing: .spaceXS) {
-                Chip(
-                    String(appLocalized: "Before · \(IndicatorFormat.change(item.changeBefore))"),
-                    color: .secondary)
-                Chip(
-                    String(
-                        appLocalized:
-                            "During the term · \(IndicatorFormat.change(item.changeDuring))"),
-                    color: ChartPalette.color(at: 0))
+                Chip(profile.contextBeforeChip(item), color: .secondary)
+                Chip(profile.contextDuringChip(item), color: ChartPalette.color(at: 0))
             }
             .textCase(.uppercase)
             Text(verbatim: profile.contextAreaLine(item))
@@ -277,17 +271,14 @@ private struct ProfileContextRow: View {
                 }
                 Spacer(minLength: .spaceS)
                 VStack(alignment: .trailing, spacing: .spaceHairline) {
-                    Text(verbatim: IndicatorFormat.change(item.changeDuring))
+                    Text(verbatim: profile.contextDuringChange(item))
                         .font(.body.weight(.semibold))
                         .monospacedDigit()
                         .foregroundStyle(.primary)
-                    Text(
-                        verbatim: String(
-                            appLocalized: "before \(IndicatorFormat.change(item.changeBefore))")
-                    )
-                    .font(.caption)
-                    .monospacedDigit()
-                    .foregroundStyle(.secondary)
+                    Text(verbatim: profile.contextBeforeLine(item))
+                        .font(.caption)
+                        .monospacedDigit()
+                        .foregroundStyle(.secondary)
                 }
             }
             .contentShape(.rect)

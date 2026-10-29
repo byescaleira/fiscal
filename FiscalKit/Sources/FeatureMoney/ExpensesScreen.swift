@@ -95,7 +95,9 @@ private struct ExpensesMonthsSection: View {
                         Text(verbatim: month.value)
                             .font(.amountTitle)
                             .monospacedDigit()
-                            .contentTransition(reduceMotion ? .identity : .numericText(value: month.reais))
+                            .contentTransition(
+                                reduceMotion ? .identity : .numericText(value: month.reais)
+                            )
                             .amountLine()
                     }
                     .accessibilityElement(children: .combine)

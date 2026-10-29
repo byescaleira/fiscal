@@ -23,6 +23,10 @@ extension ProfileModel {
         public let count: Int
 
         public var id: String { category }
+        public var shareText: String { PublicFormat.percent(fraction) }
+        public var receiptsText: String {
+            String(appLocalized: "Receipts: \(PublicFormat.number(count))")
+        }
     }
 
     public var recentVotes: [PersonVote] {

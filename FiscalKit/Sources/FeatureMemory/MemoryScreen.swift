@@ -48,7 +48,8 @@ private struct MemoryHeroSection: View {
                     .font(.amountHero)
                     .monospacedDigit()
                     .contentTransition(
-                        reduceMotion ? .identity : .numericText(value: Double(memory.republicYears)))
+                        reduceMotion ? .identity : .numericText(value: Double(memory.republicYears))
+                    )
                     .foregroundStyle(.primary)
                 Text(
                     "Past elections, the phases of Brazilian politics and guides to study, with a source on every fact."

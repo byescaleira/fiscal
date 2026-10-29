@@ -101,7 +101,8 @@ private struct ProfileMonthChart: View {
     }
 
     private func style(for bar: ProfileModel.MonthBar) -> Color {
-        bar.month == profile.highlightedMonth ? Color.primary : Color.secondary.opacity(.opacitySoft)
+        bar.month == profile.highlightedMonth
+            ? Color.primary : Color.secondary.opacity(.opacitySoft)
     }
 }
 
@@ -127,10 +128,7 @@ extension ProfileModel.CategoryLine {
     fileprivate func ranked(slot: Int) -> RankedBar {
         RankedBar(
             id: id, title: category, value: fraction, valueText: value,
-            details: [
-                PublicFormat.percent(fraction),
-                String(appLocalized: "Receipts: \(PublicFormat.number(count))"),
-            ], color: ChartPalette.color(at: slot))
+            details: [shareText, receiptsText], color: ChartPalette.color(at: slot))
     }
 }
 
