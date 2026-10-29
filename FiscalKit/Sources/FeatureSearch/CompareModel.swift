@@ -50,14 +50,20 @@ public final class CompareModel {
 
     public var canAdd: Bool { slugs.count < Self.range.upperBound }
 
+    public func missingText(for group: CompareTable.Group) -> String? {
+        guard !group.missing.isEmpty else { return nil }
+        let list = group.missing.formatted(.list(type: .and).locale(.app))
+        return String(appLocalized: "Not published for these offices: \(list)")
+    }
+
     public var choiceText: String {
         String(appLocalized: "\(slugs.count) of \(Self.range.upperBound) chosen")
     }
 
     public var pickerResults: [PersonCard] {
-        let terms = SearchText.words(pickerQuery)
+        let terms = pickerQuery.searchWords
         guard !terms.isEmpty else { return people }
-        return index.people.filter { SearchText.matches(terms, in: $0.words) }.map(\.value)
+        return index.people.filter { $0.words.matchesSearch(terms) }.map(\.value)
     }
 
     public var chosen: [PersonCard] {

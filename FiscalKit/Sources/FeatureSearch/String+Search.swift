@@ -1,9 +1,9 @@
 import FiscalDomain
 import Foundation
 
-enum SearchText {
-    static func fold(_ text: String) -> String {
-        let folded = text.folding(
+extension String {
+    var searchFolded: String {
+        let folded = folding(
             options: [.caseInsensitive, .diacriticInsensitive, .widthInsensitive],
             locale: Locale(identifier: "pt_BR"))
         let scalars = folded.unicodeScalars.map { scalar in
@@ -12,16 +12,20 @@ enum SearchText {
         return String(scalars)
     }
 
-    static func words(_ text: String) -> [String] {
-        fold(text).split(whereSeparator: \.isWhitespace).map(String.init)
+    var searchWords: [String] {
+        searchFolded.split(whereSeparator: \.isWhitespace).map(String.init)
     }
+}
 
-    static func matches(_ terms: [String], in words: [String]) -> Bool {
-        terms.allSatisfy { term in words.contains { $0.hasPrefix(term) } }
+extension [String] {
+    func matchesSearch(_ terms: [String]) -> Bool {
+        terms.allSatisfy { term in contains { $0.hasPrefix(term) } }
     }
+}
 
-    static func aliases(for office: Office) -> String {
-        switch office {
+extension Office {
+    var searchAliases: String {
+        switch self {
         case .president: "presidente presidenta"
         case .vicePresident: "vice presidente presidenta"
         case .senator: "senador senadora senado"
@@ -34,9 +38,11 @@ enum SearchText {
         case .cityCouncilor: "vereador vereadora camara municipal"
         }
     }
+}
 
-    static func aliases(for status: PersonStatus) -> String {
-        switch status {
+extension PersonStatus {
+    var searchAliases: String {
+        switch self {
         case .inOffice: "em exercicio"
         case .electedAwaiting: "eleito eleita 2026 posse"
         case .onLeave: "licenca licenciado licenciada"

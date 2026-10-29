@@ -58,7 +58,7 @@ public struct CompareTable: Equatable, Sendable {
     public init(profiles: [Profile], lens: Lens? = nil) {
         var seen: [String: Int] = [:]
         columns = profiles.map { profile in
-            let key = SearchText.fold(profile.party)
+            let key = profile.party.searchFolded
             let repeats = seen[key, default: 0]
             seen[key] = repeats + 1
             let place = profile.uf == "br" ? "" : " · \(profile.uf.uppercased())"

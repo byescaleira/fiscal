@@ -41,6 +41,7 @@ struct ThemeActivityTests {
         #expect(economy.rejected == 1)
         #expect(activity.maxCount == 2)
         #expect(activity.leader?.theme == .economy)
+        #expect(activity.slices.map(activity.share(of:)) == [1, 0.5, 0.5, 0])
     }
 
     @Test func colorSlotsFollowTheTopicNotItsRank() {

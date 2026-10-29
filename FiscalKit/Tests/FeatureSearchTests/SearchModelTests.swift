@@ -145,6 +145,18 @@ struct SearchModelTests {
         #expect(search.recents.isEmpty)
     }
 
+    @Test func theRecentSearchesMoveToTheFiscalKey() throws {
+        let suite = "recent-\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: suite))
+        defaults.set(["Kim"], forKey: DeviceRecentSearches.legacyKey)
+        let store = DeviceRecentSearches(suiteName: suite)
+        #expect(store.load() == ["Kim"])
+        #expect(defaults.stringArray(forKey: DeviceRecentSearches.key) == ["Kim"])
+        #expect(defaults.object(forKey: DeviceRecentSearches.legacyKey) == nil)
+        store.save([])
+        #expect(store.load().isEmpty)
+    }
+
     @Test func recentSearchesStayShortAndUnique() {
         var searches: [String] = []
         for name in ["a", "Lula", "lula", "PT", "PL", "SP", "MG", "BA", "RJ"] {

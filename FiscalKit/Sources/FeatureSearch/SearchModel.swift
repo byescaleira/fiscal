@@ -33,7 +33,7 @@ public final class SearchModel {
         self.board = board ?? InvestigationModel(service: service, legacy: nil, usesModel: false)
     }
 
-    public var isSearching: Bool { !SearchText.words(query).isEmpty || !tokens.isEmpty }
+    public var isSearching: Bool { !query.searchWords.isEmpty || !tokens.isEmpty }
 
     public var results: SearchResults {
         _ = revision
@@ -100,7 +100,7 @@ public final class SearchModel {
     }
 
     public func record() {
-        guard !SearchText.words(query).isEmpty else { return }
+        guard !query.searchWords.isEmpty else { return }
         recents = RecentSearches.adding(query, to: recents)
         recentStore?.save(recents)
     }

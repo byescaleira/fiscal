@@ -57,7 +57,6 @@ private struct ChosenStrip: View {
             Text("vs")
                 .font(.emphasis(.title3, weight: .heavy))
                 .foregroundStyle(.secondary)
-                .accessibilityHidden(true)
             slot(1, chosen: chosen)
         }
         .padding(.vertical, .spaceL)
@@ -95,7 +94,7 @@ private struct ChosenSlot: View {
                         .accessibilityHidden(true)
                 }
                 Text(verbatim: card.name)
-                    .font(.headline)
+                    .font(.titleMedium)
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
                     .foregroundStyle(Color.primary)
