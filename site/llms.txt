@@ -5,10 +5,10 @@
 - Abas: Hoje (destaque do momento, resumo do dia no Congresso, votações recentes e a apuração ao vivo nas eleições), Região (quem governa a cidade, o estado e o país, nos 5.570 municípios), Votações (o que foi decidido, com o placar por partido), Dinheiro (quanto custa um mandato, a cota parlamentar e quem financia as campanhas) e Fiscalizar (busca, investigações sugeridas e a Memória com eleições passadas).
 - Apuração: números do TSE em tempo real, com Atividade ao Vivo, Dynamic Island e widget; porcentagens sobre os votos válidos.
 - Quem você apoia (a Lente): de 1 a 5 políticos de qualquer cargo, ou "Prefiro não dizer", muda a ordem do que aparece primeiro, nunca os números. Fica só no aparelho, fora do iCloud, do backup e das notificações.
-- Compartilhar: cartazes para Stories, feed ou mensagem, com obras de arte brasileiras em domínio público e a fonte do dado.
+- Compartilhar: cartazes para Stories, feed ou mensagem, com obras de arte brasileiras em domínio público ou sob licença livre e a fonte do dado.
 - Fontes: Câmara dos Deputados, Senado Federal, TSE, IBGE, Receita Federal, ANP, Ipeadata, Planalto, assembleias legislativas e Projeto Comprova.
 - Preço: grátis, sem assinatura, sem compras no app e sem anúncio.
-- Privacidade: sem conta, sem cadastro e sem rastreamento; rótulo da App Store "Dados não coletados". O app baixa arquivos públicos iguais para todo mundo e só envia o código de notificação da Atividade ao Vivo da apuração e dos destaques, com App Attest.
+- Privacidade: sem conta, sem cadastro e sem rastreamento; rótulo da App Store "Identificadores › ID do dispositivo, não vinculado a você, para a funcionalidade do app". O app baixa arquivos públicos iguais para todo mundo e só envia o código de notificação da Atividade ao Vivo da apuração e dos destaques, com App Attest.
 - Plataformas: iPhone e iPad com iOS 26 ou iPadOS 26 ou mais novo. Só em português do Brasil.
 - Independência: não é ligado a nenhum governo, partido ou candidato. Feito por Rafael Escaleira (byescaleira). Suporte: support@byescaleira.com.
 

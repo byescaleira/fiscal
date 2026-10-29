@@ -69,7 +69,7 @@ A Lente é a escolha de quem a pessoa apoia (até 5 políticos, ou "Prefiro não
 - `LensEntity` vive na configuração `Device`, sem CloudKit, e o arquivo do banco, o `-wal` e o `-shm` são marcados fora do backup. Os seguidos e as investigações ficam na configuração `Fiscal`, com o iCloud privado quando a sincronização está ligada.
 - A Lente não sincroniza entre aparelhos; a única saída é a exportação feita pela própria pessoa (`DataArchive`).
 - O rodapé da Lente diz que ela nunca vai em requisições, registros, notificações, cards compartilhados nem no Spotlight.
-- **Limite conhecido:** o pacote offline baixa da CDN os perfis públicos das pessoas apoiadas junto com os das seguidas e dos representantes ([ADR 0015](../adr/0015-background-fetch-offline-pack.md)); o pedido não leva identificador, mas a CDN vê o IP e os caminhos. A decisão está no [backlog](../backlog.md).
+- **Pacote offline:** baixa da CDN só os perfis das pessoas seguidas e dos representantes, nunca os das apoiadas ([ADR 0015](../adr/0015-background-fetch-offline-pack.md)). Abrir o perfil de alguém continua sendo um pedido público como outro qualquer.
 
 ### Apagar
 

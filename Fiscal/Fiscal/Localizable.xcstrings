@@ -15182,16 +15182,6 @@
         }
       }
     },
-    "Your place stays only on this device. Fiscal never sends it anywhere." : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seu lugar fica só neste aparelho. O Fiscal nunca o envia para lugar nenhum."
-          }
-        }
-      }
-    },
     "Your topics" : {
       "localizations" : {
         "pt-BR" : {
@@ -15618,6 +15608,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Contagem oficial"
+          }
+        }
+      }
+    },
+    "Your place stays only on this device. Fiscal only downloads the public data of your region." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu lugar fica só neste aparelho. O Fiscal só baixa os dados públicos da sua região."
           }
         }
       }

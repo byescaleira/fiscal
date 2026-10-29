@@ -27,7 +27,7 @@ struct MinePlacePicker: View {
                             }
                         } footer: {
                             Text(
-                                "Your place stays only on this device. Fiscal never sends it anywhere."
+                                "Your place stays only on this device. Fiscal only downloads the public data of your region."
                             )
                         }
                     }

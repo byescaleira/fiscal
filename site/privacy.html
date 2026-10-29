@@ -31,11 +31,11 @@
 <p class="lead">O Fiscal é um app de Rafael Escaleira (byescaleira) que mostra dados públicos e oficiais sobre política. Ele não pergunta quem você é: não tem conta, não tem cadastro, não tem anúncio e não rastreia você.</p>
 
 <h2>Dados que coletamos</h2>
-<p>Nenhum. O Fiscal não tem cadastro, não usa SDK de análise, de anúncio ou de relatório de falhas e não rastreia você em outros apps e sites. Na App Store, o rótulo de privacidade é "Dados não coletados".</p>
+<p>Só identificadores do aparelho, não vinculados a você e usados só para o app funcionar: o código de notificação da apuração e o dos destaques na tela de bloqueio, e a chave pública do App Attest (detalhes abaixo). O Fiscal não tem cadastro, não usa SDK de análise, de anúncio ou de relatório de falhas e não rastreia você em outros apps e sites. Na App Store, o rótulo de privacidade é "Identificadores › ID do dispositivo, não vinculado a você, para a funcionalidade do app".</p>
 
 <h2>O que fica só no seu aparelho</h2>
 <ul>
-<li><strong>Quem você apoia (a Lente).</strong> Os políticos que você apoia, os temas que escolheu e o visual do app ficam num banco local separado, fora do iCloud e fora do backup. Eles nunca vão em pedidos ao servidor, em registros, em notificações, em cartazes compartilhados nem no Spotlight. Apoio político é dado pessoal sensível pela LGPD (art. 5º, II), e o Fiscal não sabe qual é o seu. Trocar de iPhone ou reinstalar o app pede a escolha de novo.</li>
+<li><strong>Quem você apoia (a Lente).</strong> Os políticos que você apoia, os temas que escolheu e o visual do app ficam num banco local separado, fora do iCloud e fora do backup. Eles nunca vão em pedidos ao servidor, nem no pacote para ler sem conexão, em registros, em notificações, em cartazes compartilhados ou no Spotlight. Apoio político é dado pessoal sensível pela LGPD (art. 5º, II), e o Fiscal não sabe qual é o seu. Trocar de iPhone ou reinstalar o app pede a escolha de novo.</li>
 <li><strong>Perguntas e explicações.</strong> Em Fiscalizar, a Apple Intelligence lê a sua pergunta no próprio aparelho, nos modelos compatíveis. As explicações em português simples também são escritas no aparelho, só a partir dos fatos oficiais. Nada disso é enviado para nós.</li>
 </ul>
 
@@ -44,11 +44,11 @@
 
 <h2>O que o app pede pela rede</h2>
 <ul>
-<li><strong>Dados públicos.</strong> O app baixa arquivos com dados oficiais de <code>dados.fiscal.byescaleira.com</code> (servido pela Cloudflare) e de <code>fiscal.byescaleira.com/api</code>. São os mesmos arquivos para todo mundo: o pedido não leva o que você procura, quem você segue nem quem você apoia.</li>
+<li><strong>Dados públicos.</strong> O app baixa arquivos com dados oficiais de <code>dados.fiscal.byescaleira.com</code> (servido pela Cloudflare) e de <code>fiscal.byescaleira.com/api</code>. São os mesmos arquivos para todo mundo e o pedido não identifica você. Cada arquivo é um dado público, então o caminho pedido diz qual dado foi aberto: para ler sem conexão, o app baixa o perfil de quem você segue, dos seus representantes e da sua região, nunca de quem você apoia.</li>
 <li><strong>Ajustes do app.</strong> O Fiscal lê, no banco público do iCloud, quais recursos estão ligados e se há uma versão nova que precisa ser instalada. Nada sobre você é enviado.</li>
 <li><strong>Apuração na tela de bloqueio (opcional).</strong> Quando você escolhe acompanhar uma disputa na tela de bloqueio, o app envia ao nosso servidor, em <code>fiscal.byescaleira.com</code>, o código da disputa, o código de notificação daquela Atividade ao Vivo (o token de push da Apple) e se o app é de teste ou da App Store. O código serve só para atualizar a Atividade e sai do servidor quando você para de acompanhar ou em até 12 horas.</li>
 <li><strong>Destaques na tela de bloqueio.</strong> Enquanto o alerta na tela de bloqueio estiver ligado (ele vem ligado quando as Atividades ao Vivo do Fiscal estão permitidas, e você o desliga nos Ajustes do Fiscal), o app envia ao mesmo servidor o código de notificação dessa função e se o app é de teste ou da App Store. O alerta é o mesmo para todo mundo, e a sua lente nunca entra nele. O código sai do servidor quando você desliga a função ou depois de 30 dias.</li>
-<li><strong>App Attest.</strong> Antes desses dois envios, o app prova ao nosso servidor, pelo App Attest da Apple, que é o Fiscal original rodando num aparelho Apple. O servidor guarda só a chave pública desse atestado, que não identifica você.</li>
+<li><strong>App Attest.</strong> Antes desses dois envios, o app prova ao nosso servidor, pelo App Attest da Apple, que é o Fiscal original rodando num aparelho Apple. O servidor guarda só a chave pública desse atestado, que não identifica você, e a apaga depois de 400 dias sem uso.</li>
 <li><strong>Notificações da Apple.</strong> As atualizações da apuração e os destaques chegam pelo serviço de notificações da Apple (APNs), que entrega a mensagem ao aparelho dono do código.</li>
 <li><strong>Links das fontes.</strong> Ao tocar numa fonte, o link abre no navegador, no site oficial (Câmara, Senado, TSE e outros), com a política de privacidade de cada um.</li>
 </ul>
@@ -61,7 +61,7 @@
 <p>Você apaga quem você apoia no próprio app, a qualquer momento, e tudo o que é local sai quando você remove o app. As pessoas seguidas e as investigações saem do iCloud nos ajustes de iCloud do aparelho. Os códigos de notificação saem do servidor quando você para de acompanhar ou desliga os destaques, e expiram sozinhos.</p>
 
 <h2>Crianças</h2>
-<p>O Fiscal não é dirigido a menores de 13 anos e não coleta dados de ninguém.</p>
+<p>O Fiscal não é dirigido a menores de 13 anos e não coleta dados pessoais de ninguém.</p>
 
 <h2>Mudanças</h2>
 <p>Se esta política mudar, esta página e a data acima mudam junto.</p>

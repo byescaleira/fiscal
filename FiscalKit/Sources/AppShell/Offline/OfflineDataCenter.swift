@@ -71,8 +71,6 @@ public final class OfflineDataCenter {
         else { return OfflinePackRequest(placeCode: place) }
         let repositories = database.repositories
         let followed = (try? await repositories.follows.followed()) ?? []
-        let supported = (try? await repositories.lens.lens())?.supported ?? []
-        return OfflinePackRequest(
-            followed: followed.map(\.card.slug), supported: supported, placeCode: place)
+        return OfflinePackRequest(followed: followed.map(\.card.slug), placeCode: place)
     }
 }
