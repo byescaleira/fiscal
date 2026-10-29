@@ -78,7 +78,7 @@ private struct LeadContent: View {
                 if let vote = today.leadVote(for: event) {
                     VStack(alignment: .leading, spacing: .spaceS) {
                         HStack(alignment: .bottom) {
-                            TallyLine(tally: vote.tally, font: .scoreboardNumber)
+                            TallyLine(tally: vote.tally, font: .scoreboardTitle)
                             Spacer(minLength: .spaceS)
                             if let approved = vote.approved { ResultChip(approved: approved) }
                         }

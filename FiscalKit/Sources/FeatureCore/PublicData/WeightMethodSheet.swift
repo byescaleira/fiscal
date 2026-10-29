@@ -199,7 +199,7 @@ private struct WeightTerm: View {
                 .font(.icon(.s, weight: .semibold))
                 .foregroundStyle(color)
             Text(verbatim: value)
-                .font(.scoreboardNumber)
+                .font(.scoreboardTitle)
                 .monospacedDigit()
                 .lineLimit(1)
                 .minimumScaleFactor(.shareTextShrink)

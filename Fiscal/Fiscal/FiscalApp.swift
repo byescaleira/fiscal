@@ -34,6 +34,7 @@ struct FiscalApp: App {
                 .featureFlags(bootstrap.flags)
                 .fiscalSettings(settings)
                 .groupedSurface(.plain)
+                .readsLiteMode()
         }
         #if os(iOS) || os(visionOS)
             .backgroundTask(.appRefresh(OfflineDataCenter.refreshIdentifier)) {
@@ -48,6 +49,7 @@ struct FiscalApp: App {
                     .featureFlags(bootstrap.flags)
                     .fiscalSettings(settings)
                     .groupedSurface(.plain)
+                    .readsLiteMode()
             }
         #endif
     }

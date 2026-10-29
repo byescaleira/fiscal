@@ -21,7 +21,7 @@ public enum AppSection: String, CaseIterable, Identifiable, Sendable {
         case .today: "calendar.badge.checkmark"
         case .mine: "mappin.and.ellipse"
         case .votes: "checklist"
-        case .money: "building.columns.fill"
+        case .money: "building.columns"
         case .search: "magnifyingglass"
         }
     }

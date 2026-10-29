@@ -43,7 +43,9 @@ private struct AgendaHouseRow: View {
             )
             .font(.chipLabel)
             .foregroundStyle(day.inSession ? Color.retroTeal : Color.secondary)
-            .symbolEffect(.variableColor, isActive: day.inSession && !reduceMotion)
+            .symbolEffect(
+                .variableColor,
+                isActive: day.inSession && !reduceMotion && !MotionBudget.isConstrained)
         }
         .accessibilityElement(children: .combine)
     }

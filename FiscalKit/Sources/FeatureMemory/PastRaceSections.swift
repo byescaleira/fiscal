@@ -116,7 +116,7 @@ private struct PastHeroCard: View {
                 HStack(spacing: .spaceS) {
                     PartyMark(leader.party)
                     Text(verbatim: MemoryText.percent(leader.share))
-                        .font(.scoreboardNumber)
+                        .font(.scoreboardTitle)
                         .monospacedDigit()
                 }
                 Text(verbatim: MemoryText.votes(leader.votes))

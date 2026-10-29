@@ -77,7 +77,7 @@ private struct ReleaseCardHeader: View {
                 }
                 .textCase(.uppercase)
                 Text(verbatim: release.version)
-                    .font(.scoreboardNumber)
+                    .font(.scoreboardTitle)
                     .monospacedDigit()
                     .padding(.top, .space2XS)
                 Text(verbatim: release.headline)

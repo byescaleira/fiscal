@@ -115,7 +115,7 @@ private struct PreviewCount: View {
                 .textCase(.uppercase)
                 .foregroundStyle(color)
             Text(verbatim: PublicFormat.number(value))
-                .font(.scoreboardNumber)
+                .font(.scoreboardTitle)
                 .monospacedDigit()
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)

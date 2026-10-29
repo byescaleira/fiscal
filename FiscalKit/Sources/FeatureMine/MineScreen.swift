@@ -66,7 +66,7 @@ private struct MineHeroCard: View {
             if mine.hasPlace, mine.phase == .loaded, mine.representativeCount > 0 {
                 HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
                     Text(verbatim: mine.countText)
-                        .font(.scoreboardNumber)
+                        .font(.scoreboardTitle)
                         .monospacedDigit()
                         .contentTransition(
                             reduceMotion

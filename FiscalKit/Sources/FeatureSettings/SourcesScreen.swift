@@ -134,7 +134,7 @@ private struct SourcesCount: View {
                 .textCase(.uppercase)
                 .foregroundStyle(.secondary)
             Text(verbatim: PublicFormat.number(value))
-                .font(.scoreboardNumber)
+                .font(.scoreboardTitle)
                 .monospacedDigit()
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)

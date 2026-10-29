@@ -239,7 +239,7 @@ private struct TodayHighlightScore: View {
     private func side(_ title: LocalizedStringKey, _ value: Int) -> some View {
         VStack(spacing: 0) {
             Text(verbatim: "\(value)")
-                .font(large ? .scoreboardHero : .scoreboardNumber)
+                .font(large ? .amountHero : .scoreboardTitle)
                 .monospacedDigit()
             Text(title)
                 .font(.caption.weight(.heavy))

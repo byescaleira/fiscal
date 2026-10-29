@@ -77,7 +77,9 @@ private struct HouseHeader: View {
                 Spacer(minLength: 0)
                 if day.inSession {
                     Label("In session", systemImage: "dot.radiowaves.left.and.right")
-                        .symbolEffect(.pulse, isActive: !reduceMotion)
+                        .symbolEffect(
+                            .pulse, isActive: !reduceMotion && !MotionBudget.isConstrained
+                        )
                         .font(.chipLabel)
                         .foregroundStyle(Color.positive)
                         .padding(.horizontal, .spaceS)

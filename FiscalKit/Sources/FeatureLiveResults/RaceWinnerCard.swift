@@ -75,7 +75,7 @@ struct RaceWinnerCard: View {
                 HStack(spacing: .spaceS) {
                     PartyMark(winner.candidate.party)
                     Text(verbatim: winner.percent)
-                        .font(.scoreboardNumber)
+                        .font(.scoreboardTitle)
                         .monospacedDigit()
                 }
                 if let text = summary.winnerText {

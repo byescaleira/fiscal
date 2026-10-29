@@ -76,7 +76,7 @@ public struct IndicatorCard: View {
             }
             HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
                 Text(verbatim: IndicatorFormat.value(latest?.value, kind: indicator.kind))
-                    .font(.scoreboardNumber)
+                    .font(.scoreboardTitle)
                     .monospacedDigit()
                     .contentTransition(.numericText())
                     .amountLine()

@@ -2,6 +2,7 @@ import SwiftUI
 
 extension Font {
     public static let scoreboardNumber = Font.emphasis(fixed: 34, weight: .bold)
+    public static let scoreboardTitle = Font.emphasis(.largeTitle, weight: .bold)
 }
 
 extension CGFloat {

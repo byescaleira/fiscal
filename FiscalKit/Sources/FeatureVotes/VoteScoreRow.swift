@@ -84,7 +84,7 @@ private struct ScoreSide: View {
                 .foregroundStyle(choice.color)
                 .labelStyle(SideLabelStyle(isLeading: isLeading))
             Text(verbatim: value)
-                .font(.scoreboardNumber)
+                .font(.scoreboardTitle)
                 .monospacedDigit()
                 .foregroundStyle(isDimmed ? .secondary : .primary)
                 .lineLimit(1)

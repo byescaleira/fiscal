@@ -152,7 +152,7 @@ private struct SpenderCard: View {
             }
             VStack(alignment: .leading, spacing: .spaceHairline) {
                 Text(verbatim: money.monthlyText(spender.monthlyCents))
-                    .font(.scoreboardNumber)
+                    .font(.scoreboardTitle)
                     .monospacedDigit()
                     .amountLine()
                 Text(verbatim: money.medianText(spender))

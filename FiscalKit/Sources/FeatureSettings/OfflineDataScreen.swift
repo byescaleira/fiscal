@@ -75,7 +75,7 @@ private struct OfflineDataHeader: View {
             Chip("On This Device", color: appTint, shape: .capsule)
                 .textCase(.uppercase)
             Text(verbatim: offline.sizeText)
-                .font(.scoreboardNumber)
+                .font(.scoreboardTitle)
                 .monospacedDigit()
                 .contentTransition(.numericText())
             Text("Up to \(offline.limitText)")

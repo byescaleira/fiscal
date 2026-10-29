@@ -110,7 +110,9 @@ struct RaceHeroHeader: View {
                         ? "checkmark.seal" : "dot.radiowaves.left.and.right"
                 )
                 .symbolEffect(
-                    .pulse, isActive: !reduceMotion && summary.hasStarted && !summary.isDecided)
+                    .pulse,
+                    isActive: !reduceMotion && !MotionBudget.isConstrained && summary.hasStarted
+                        && !summary.isDecided)
             }
             .font(.caption.weight(.heavy))
             .padding(.horizontal, .spaceS)
@@ -195,7 +197,7 @@ private struct RaceHeroSide: View {
         VStack(alignment: alignment, spacing: .spaceXS) {
             RaceHeroPortrait(contender: contender)
             Text(verbatim: contender.percent)
-                .font(.scoreboardNumber)
+                .font(.scoreboardTitle)
                 .monospacedDigit()
                 .contentTransition(
                     reduceMotion ? .identity : .numericText(value: contender.candidate.percent)

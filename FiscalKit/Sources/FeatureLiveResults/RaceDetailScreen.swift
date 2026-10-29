@@ -139,7 +139,7 @@ private struct RaceCountFacts: View {
             VStack(alignment: .leading, spacing: .spaceS) {
                 HStack(alignment: .firstTextBaseline) {
                     Text(verbatim: summary.countedText)
-                        .font(.scoreboardNumber)
+                        .font(.scoreboardTitle)
                         .monospacedDigit()
                         .contentTransition(
                             reduceMotion

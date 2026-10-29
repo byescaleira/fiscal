@@ -61,9 +61,9 @@ private struct ThemeCanvasLive: View {
         VStack(alignment: .leading, spacing: .spaceS) {
             Chip("Live", color: .negative, shape: .capsule).textCase(.uppercase)
             HStack(alignment: .lastTextBaseline) {
-                Text(verbatim: "312").font(.scoreboardNumber).foregroundStyle(Color.voteYes)
+                Text(verbatim: "312").font(.scoreboardTitle).foregroundStyle(Color.voteYes)
                 Spacer(minLength: .zero)
-                Text(verbatim: "141").font(.scoreboardNumber).foregroundStyle(Color.voteNo)
+                Text(verbatim: "141").font(.scoreboardTitle).foregroundStyle(Color.voteNo)
             }
             .monospacedDigit()
             TallyBar(segments: [

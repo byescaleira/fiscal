@@ -29,7 +29,7 @@ private struct ScheduleRow: View {
         HStack(alignment: .top, spacing: .spaceL) {
             VStack(spacing: .spaceXS) {
                 Text(verbatim: String(election.year))
-                    .font(.scoreboardNumber)
+                    .font(.scoreboardTitle)
                     .foregroundStyle(election.isCurrent ? tint : Color.primary)
                     .monospacedDigit()
                 if !isLast {

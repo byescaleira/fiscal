@@ -15,7 +15,7 @@ struct PastWinnerCard: View {
         VStack(alignment: .leading, spacing: .spaceM) {
             HStack(alignment: .firstTextBaseline) {
                 Text(verbatim: String(year))
-                    .font(.scoreboardNumber)
+                    .font(.scoreboardTitle)
                     .monospacedDigit()
                 Spacer(minLength: .spaceS)
                 Text("ELECTED")

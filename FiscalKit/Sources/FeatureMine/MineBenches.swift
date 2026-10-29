@@ -34,7 +34,7 @@ private struct MineBenchHeader: View {
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
             Text(verbatim: PublicFormat.number(bench.total))
-                .font(.scoreboardNumber)
+                .font(.scoreboardTitle)
                 .monospacedDigit()
                 .contentTransition(
                     reduceMotion ? .identity : .numericText(value: Double(bench.total)))

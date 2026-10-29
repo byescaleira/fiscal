@@ -44,7 +44,7 @@ private struct LensThemeCard: View {
         let color = ChartPalette.color(at: index)
         HStack(alignment: .top, spacing: .spaceM) {
             Text(verbatim: setup.rankText(index))
-                .font(.scoreboardNumber)
+                .font(.scoreboardTitle)
                 .monospacedDigit()
                 .foregroundStyle(.secondary)
                 .frame(minWidth: .badgeS)

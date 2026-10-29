@@ -109,7 +109,7 @@ private struct OtherYearsSection: View {
                 RouteLink(.pastElection(year: year)) {
                     HStack(spacing: .spaceM) {
                         Text(verbatim: String(year))
-                            .font(.scoreboardNumber)
+                            .font(.scoreboardTitle)
                             .monospacedDigit()
                         VStack(alignment: .leading, spacing: .spaceHairline) {
                             Text("Governors and Senate").font(.rowTitle)

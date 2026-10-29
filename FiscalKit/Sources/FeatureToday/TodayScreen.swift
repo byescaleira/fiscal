@@ -143,8 +143,8 @@ private struct TodayPlaceholder: View {
                 Text(verbatim: "A short summary in plain language comes right below the title.")
                     .font(.body)
                 HStack(spacing: .spaceL) {
-                    Text(verbatim: "412").font(.scoreboardNumber)
-                    Text(verbatim: "61").font(.scoreboardNumber)
+                    Text(verbatim: "412").font(.scoreboardTitle)
+                    Text(verbatim: "61").font(.scoreboardTitle)
                 }
             }
             .padding(.spaceInset)
