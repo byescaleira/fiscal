@@ -7,9 +7,12 @@ import SwiftUI
 struct PeerStripVisual: View {
     static let padding = 0.15
 
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    @Environment(\.liteMode) private var liteMode
     @State private var isShown = false
     let strip: InvestigationLink.PeerStrip
+
+    private var reduceMotion: Bool { systemReduceMotion || liteMode.reducesMotion }
 
     var body: some View {
         let entry = strip.entry
@@ -192,12 +195,9 @@ struct HighlightVisual: View {
                     .fixedSize(horizontal: false, vertical: true)
                 HStack(spacing: .spaceS) {
                     RelevanceBadge(weight: ref.weight)
-                    Text(
-                        verbatim: ref.date.date().formatted(
-                            .dateTime.day().month(.abbreviated).locale(.app))
-                    )
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    Text(verbatim: ref.dayText)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
             }
         }
@@ -223,11 +223,9 @@ struct ChangeVisual: View {
 
     private func column(title: String, value: Double?) -> some View {
         VStack(alignment: .leading, spacing: .zero) {
-            Text(
-                verbatim: String(appLocalized: "\(title) · \(months) months").uppercased(with: .app)
-            )
-            .font(.caseKicker)
-            .foregroundStyle(.secondary)
+            Text(verbatim: InvestigationLink.Visual.changeColumn(title, months: months))
+                .font(.caseKicker)
+                .foregroundStyle(.secondary)
             Text(verbatim: PublicFormat.percent(value))
                 .font(.caseNumber)
                 .monospacedDigit()

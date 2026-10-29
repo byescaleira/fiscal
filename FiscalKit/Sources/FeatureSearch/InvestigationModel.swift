@@ -21,6 +21,9 @@ public final class InvestigationModel {
     public private(set) var highlights: [Highlight] = []
     public private(set) var followed: [PersonCard] = []
     public private(set) var lens: Lens?
+    public internal(set) var renaming: Investigation?
+    public var renameText = ""
+    var titleEdit: TitleEdit?
     @ObservationIgnored var index = SearchIndex()
     @ObservationIgnored var recent: [VoteSummary] = []
     @ObservationIgnored private let service: (any PublicDataService)?

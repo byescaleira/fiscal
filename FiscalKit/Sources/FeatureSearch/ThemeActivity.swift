@@ -65,6 +65,10 @@ public struct ThemeActivity: Equatable, Sendable {
 
     public var maxCount: Int { slices.map(\.count).max() ?? 0 }
 
+    public func share(of slice: Slice) -> Double {
+        maxCount > 0 ? Double(slice.count) / Double(maxCount) : 0
+    }
+
     public var leader: Slice? {
         guard let first = slices.first, first.count > 0 else { return nil }
         let second = slices.dropFirst().first?.count ?? 0

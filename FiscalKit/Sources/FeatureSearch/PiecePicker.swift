@@ -7,9 +7,9 @@ extension InvestigationModel {
     static let pickerLimit = 60
 
     func choices(for kind: InvestigationPiece.Kind) -> [InvestigationPiece] {
-        let terms = SearchText.words(pickerQuery)
+        let terms = pickerQuery.searchWords
         let matches: ([String]) -> Bool = { words in
-            terms.isEmpty || SearchText.matches(terms, in: words)
+            terms.isEmpty || words.matchesSearch(terms)
         }
         let list: [InvestigationPiece]
         switch kind {
@@ -35,13 +35,13 @@ extension InvestigationModel {
             let places = index.places.filter { matches($0.words) }.map(\.value)
             list = (places.filter(\.isState) + places.filter { !$0.isState }).map { .place($0) }
         case .theme:
-            list = Theme.neutralOrder.filter { matches(SearchText.words($0.title)) }.map {
+            list = Theme.neutralOrder.filter { matches($0.title.searchWords) }.map {
                 .theme($0)
             }
         case .party:
             list = index.parties.filter { matches($0.words) }.map { .party($0.value.party) }
         case .highlight:
-            list = highlights.filter { matches(SearchText.words($0.title)) }
+            list = highlights.filter { matches($0.title.searchWords) }
                 .map { .highlight(HighlightRef($0)) }
         }
         return Array(list.prefix(Self.pickerLimit))

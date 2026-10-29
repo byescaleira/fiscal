@@ -69,9 +69,12 @@ struct LensBackdrop: View {
 }
 
 struct PosterCarousel: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    @Environment(\.liteMode) private var liteMode
     private let works: [ArtWork]
     private let lap: Double = 20
+
+    private var reduceMotion: Bool { systemReduceMotion || liteMode.reducesMotion }
 
     init(works: [ArtWork]) {
         self.works = works
