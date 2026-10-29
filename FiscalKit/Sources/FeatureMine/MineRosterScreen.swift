@@ -3,12 +3,16 @@ import FiscalDesignSystem
 import FiscalDomain
 import SwiftUI
 
-struct MineRosterScreen: View {
+public struct MineRosterScreen: View {
     @State private var query = ""
     @State private var party: String?
     let roster: MineRoster
 
-    var body: some View {
+    public init(roster: MineRoster) {
+        self.roster = roster
+    }
+
+    public var body: some View {
         let people = roster.filtered(query: query, party: party)
         List {
             Group {

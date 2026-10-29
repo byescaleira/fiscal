@@ -9,9 +9,7 @@ struct RaceCompactCard: View {
 
     var body: some View {
         let summary = RaceSummary(race: race)
-        NavigationLink {
-            RaceDetailScreen(raceID: race.id).environment(results)
-        } label: {
+        RouteLink(.race(id: race.id), showsChevron: false) {
             VStack(alignment: .leading, spacing: .spaceM) {
                 RaceCompactHeader(summary: summary)
                 if summary.isDuel {

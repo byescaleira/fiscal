@@ -15,9 +15,7 @@ struct MineBenchSection: View {
                 MineBenchLeaders(bench: bench)
             }
             .padding(.vertical, .spaceXS)
-            NavigationLink {
-                MineRosterScreen(roster: MineRoster(title: bench.title, people: bench.members))
-            } label: {
+            RouteLink(.roster(title: bench.title, people: bench.members)) {
                 MineFacePile(bench: bench)
             }
             MineNextTermLink(bench: bench)
@@ -178,11 +176,9 @@ private struct MineNextTermLink: View {
 
     var body: some View {
         if !bench.elected.isEmpty {
-            NavigationLink {
-                MineRosterScreen(
-                    roster: MineRoster(
-                        title: String(appLocalized: "Next Term"), people: bench.elected))
-            } label: {
+            RouteLink(
+                .roster(title: String(appLocalized: "Next Term"), people: bench.elected)
+            ) {
                 HStack(spacing: .spaceM) {
                     Label("Next Term", systemImage: "calendar.badge.clock")
                         .font(.subheadline.weight(.semibold))

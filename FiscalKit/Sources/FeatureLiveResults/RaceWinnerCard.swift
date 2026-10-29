@@ -15,10 +15,8 @@ struct RaceWinnerCard: View {
         let palette = PartyPalette.of(party: winner.candidate.party, fallback: 0)
         VStack(alignment: .leading, spacing: .spaceL) {
             RaceHeroHeader(summary: summary)
-            if opensDetail, let results {
-                NavigationLink {
-                    RaceDetailScreen(raceID: summary.race.id).environment(results)
-                } label: {
+            if opensDetail, results != nil {
+                RouteLink(.race(id: summary.race.id), showsChevron: false) {
                     content.contentShape(.rect)
                 }
                 .buttonStyle(.plain)

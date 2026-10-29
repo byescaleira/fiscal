@@ -2,6 +2,7 @@ import FeatureCore
 import FeatureLens
 import FeatureLiveResults
 import FeatureMemory
+import FeatureMine
 import FeatureMoney
 import FeatureProfile
 import FeatureSearch
@@ -39,7 +40,20 @@ struct RouteScreen: View {
             ModelHost(ExpensesModel(slug: slug, year: year, service: data)) { ExpensesScreen() }
         case .compare(let slugs):
             ModelHost(CompareModel(slugs: slugs, service: data)) { CompareScreen() }
-        case .races: ModelHost(FiscalServices.shared.liveResults()) { LiveResultsScreen() }
+        case .races: LiveResultsScreen()
+        case .race(let id): RaceDetailScreen(raceID: id)
+        case .roster(let title, let people):
+            MineRosterScreen(roster: MineRoster(title: title, people: people))
+        case .spenders(let title, let spenders, let year):
+            ModelHost(MoneyModel(service: data, lens: session.repositories.lens)) {
+                MoneySpendersDestination(title: title, spenders: spenders, year: year)
+            }
+        case .awaiting:
+            ModelHost(
+                MemoryModel(service: data, races: FiscalServices.shared.liveResultsService())
+            ) {
+                AwaitingDestination()
+            }
         case .memory:
             ModelHost(
                 MemoryModel(service: data, races: FiscalServices.shared.liveResultsService())
@@ -86,6 +100,27 @@ private struct LensDestination: View {
         ) {
             LensScreen()
         }
+    }
+}
+
+private struct MoneySpendersDestination: View {
+    @Environment(MoneyModel.self) private var money
+    let title: String
+    let spenders: [MoneyPlaces.Spender]
+    let year: Int?
+
+    var body: some View {
+        MoneySpendersScreen(title: title, spenders: spenders, year: year)
+            .task { await money.load() }
+    }
+}
+
+private struct AwaitingDestination: View {
+    @Environment(MemoryModel.self) private var memory
+
+    var body: some View {
+        AwaitingScreen()
+            .task { await memory.load() }
     }
 }
 

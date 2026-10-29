@@ -3,12 +3,16 @@ import FiscalDesignSystem
 import FiscalDomain
 import SwiftUI
 
-struct RaceDetailScreen: View {
+public struct RaceDetailScreen: View {
     @Environment(LiveResultsModel.self) private var results
     @State private var isLoading = true
     let raceID: String
 
-    var body: some View {
+    public init(raceID: String) {
+        self.raceID = raceID
+    }
+
+    public var body: some View {
         Group {
             if let race = results.race(id: raceID) {
                 RaceDetailContent(race: race)
