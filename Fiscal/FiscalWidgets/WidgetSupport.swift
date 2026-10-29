@@ -37,25 +37,14 @@ struct TallyStrip: View {
     let board: VoteBoard
 
     var body: some View {
-        GeometryReader { proxy in
-            HStack(spacing: .spaceHairline) {
-                segment(board.yesShare, WidgetStyle.primary, width: proxy.size.width)
-                segment(board.noShare, WidgetStyle.secondary, width: proxy.size.width)
-                segment(board.othersShare, WidgetStyle.track, width: proxy.size.width)
-            }
-        }
-        .frame(height: .tallyStrip)
-        .background(WidgetStyle.track, in: .capsule)
-        .clipShape(.capsule)
+        TallyBar(
+            segments: [
+                .init(id: "yes", value: board.yesShare, color: WidgetStyle.primary),
+                .init(id: "no", value: board.noShare, color: WidgetStyle.secondary),
+                .init(id: "others", value: board.othersShare, color: WidgetStyle.track),
+            ], height: .tallyStrip
+        )
         .widgetAccentable()
-        .accessibilityHidden(true)
-    }
-
-    @ViewBuilder
-    private func segment(_ share: Double, _ color: Color, width: CGFloat) -> some View {
-        if share > 0 {
-            Rectangle().fill(color).frame(width: width * share)
-        }
     }
 }
 
@@ -75,12 +64,12 @@ struct LastPlayLine: View {
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(WidgetStyle.primary)
                     .lineLimit(lines)
-                    .minimumScaleFactor(0.85)
+                    .minimumScaleFactor(.widgetTextShrink)
                 Text(verbatim: source)
                     .font(.caption2.weight(.medium))
                     .foregroundStyle(WidgetStyle.secondary)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.85)
+                    .minimumScaleFactor(.widgetTextShrink)
             }
             Spacer(minLength: 0)
         }

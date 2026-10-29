@@ -6,20 +6,17 @@ import SwiftUI
 
 struct ThemeBarsChart: View {
     @Environment(SearchModel.self) private var search
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var revealed = false
     @State private var opened: Theme?
     let activity: ThemeActivity
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceM) {
-            ForEach(Array(activity.slices.enumerated()), id: \.element.id) { index, slice in
+            ForEach(activity.slices) { slice in
                 Button {
                     opened = slice.theme
                     search.apply(.theme(slice.theme))
                 } label: {
-                    ThemeBarRow(slice: slice, maxCount: activity.maxCount, revealed: revealed)
-                        .animation(reduceMotion ? nil : .chartReveal(index), value: revealed)
+                    ThemeBarRow(slice: slice, share: activity.share(of: slice))
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(slice.theme.title)
@@ -28,34 +25,18 @@ struct ThemeBarsChart: View {
             }
         }
         .sensoryFeedback(.selection, trigger: opened)
-        .onAppear { revealed = true }
     }
 }
 
 private struct ThemeBarRow: View {
     let slice: ThemeActivity.Slice
-    let maxCount: Int
-    let revealed: Bool
+    let share: Double
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceXS) {
             ThemeBarLabel(slice: slice)
-            Chart {
-                BarMark(
-                    xStart: .value("Start", 0),
-                    xEnd: .value("Votes", revealed ? slice.count : 0),
-                    y: .value("Topic", slice.id),
-                    height: .fixed(.barHeight)
-                )
-                .foregroundStyle(ChartPalette.color(at: slice.slot).gradient)
-                .clipShape(.capsule)
-            }
-            .chartXScale(domain: 0...max(maxCount, 1), range: .plotDimension(endPadding: 0))
-            .chartXAxis(.hidden)
-            .chartYAxis(.hidden)
-            .chartLegend(.hidden)
-            .frame(height: .barHeight)
-            .accessibilityHidden(true)
+            ShareBarChart(
+                value: share, color: ChartPalette.color(at: slice.slot), height: .barHeight)
         }
         .contentShape(.rect)
     }
@@ -94,12 +75,15 @@ private struct ThemeBarLabel: View {
 
 struct ThemeCadenceChart: View {
     @Environment(SearchModel.self) private var search
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    @Environment(\.liteMode) private var liteMode
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @ScaledMetric(relativeTo: .caption) private var height: CGFloat = .chartCompactHeight
     @State private var revealed = false
     @State private var scrubbed: Date?
     let activity: ThemeActivity
+
+    private var reduceMotion: Bool { systemReduceMotion || liteMode.reducesMotion }
 
     private var selected: ThemeActivity.Period? { scrubbed.flatMap(activity.period(at:)) }
 
@@ -159,7 +143,7 @@ struct ThemeCadenceChart: View {
         }
         .frame(height: height)
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) { revealed = true }
         }
     }
 

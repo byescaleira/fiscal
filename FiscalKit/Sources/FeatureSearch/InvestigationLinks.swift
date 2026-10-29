@@ -63,11 +63,11 @@ struct InvestigationLinks {
     }
 
     static func guidance(in detail: VoteDetail, party: String) -> String? {
-        let target = SearchText.fold(party).trimmingCharacters(in: .whitespaces)
+        let target = party.searchFolded.trimmingCharacters(in: .whitespaces)
         guard !target.isEmpty else { return nil }
         return detail.guidance.first { item in
-            SearchText.words(item.party).contains(target)
-                || SearchText.fold(item.party).trimmingCharacters(in: .whitespaces) == target
+            item.party.searchWords.contains(target)
+                || item.party.searchFolded.trimmingCharacters(in: .whitespaces) == target
         }?.guidance
     }
 
@@ -95,7 +95,7 @@ extension InvestigationLinks {
         }
         for party in pieces.parties {
             let group = detail.people.filter {
-                SearchText.fold($0.party) == SearchText.fold(party)
+                $0.party.searchFolded == party.searchFolded
             }
             links.append(
                 delegation(

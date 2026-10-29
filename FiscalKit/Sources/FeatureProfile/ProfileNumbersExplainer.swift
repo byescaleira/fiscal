@@ -17,7 +17,7 @@ struct ProfileNumbersExplainer: View {
         if let explanation = profile.numbersExplanation {
             ExplainerCard(explanation)
                 .padding(.spaceM)
-                .background(.groupedRow, in: .rect(cornerRadius: .radiusM))
+                .background(.plainRow, in: .rect(cornerRadius: .radiusM))
                 .padding(.top, .spaceS)
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)

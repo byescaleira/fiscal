@@ -106,7 +106,7 @@ public enum InvestigationPiece: Codable, Hashable, Identifiable, Sendable {
         case .vote(let vote): "vote-\(vote.id)"
         case .theme(let theme): "theme-\(theme.rawValue)"
         case .place(let place): "place-\(place.code)"
-        case .party(let party): "party-\(SearchText.fold(party))"
+        case .party(let party): "party-\(party.searchFolded)"
         case .spending(let card): "spending-\(card.slug)"
         case .checks(let card): "checks-\(card.slug)"
         case .context(let card): "context-\(card.slug)"

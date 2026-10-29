@@ -4,7 +4,9 @@ import FiscalDomain
 import SwiftUI
 
 public struct IndicatorCard: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    @Environment(\.liteMode) private var liteMode
+    private var reduceMotion: Bool { systemReduceMotion || liteMode.reducesMotion }
     @ScaledMetric(relativeTo: .caption) private var height: CGFloat = .chartCompactHeight
     @State private var revealed = false
     @State private var scrubbed: Date?
@@ -76,9 +78,9 @@ public struct IndicatorCard: View {
             }
             HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
                 Text(verbatim: IndicatorFormat.value(latest?.value, kind: indicator.kind))
-                    .font(.scoreboardNumber)
+                    .font(.scoreboardTitle)
                     .monospacedDigit()
-                    .contentTransition(.numericText())
+                    .contentTransition(reduceMotion ? .identity : .numericText())
                     .amountLine()
                 Text(verbatim: IndicatorFormat.month(latest?.date, calendar: calendar))
                     .font(.subheadline)
@@ -99,7 +101,7 @@ public struct IndicatorCard: View {
         }
         .padding(.spaceM)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.groupedRow, in: .rect(cornerRadius: .radiusM))
+        .background(.plainRow, in: .rect(cornerRadius: .radiusM))
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Text(verbatim: summary))
     }
@@ -155,7 +157,7 @@ public struct IndicatorCard: View {
         .frame(height: height)
         .accessibilityHidden(true)
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) { revealed = true }
         }
     }
 }

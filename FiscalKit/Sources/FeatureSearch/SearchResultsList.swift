@@ -163,9 +163,15 @@ private struct SearchNoResults: View {
             ProgressView("Loading")
                 .frame(maxWidth: .infinity)
         } else if search.query.isEmpty {
-            ContentUnavailableView(
-                "Nothing here yet", systemImage: "magnifyingglass",
-                description: Text("Fiscal has no data for this filter in the latest update."))
+            EmptyStateView(
+                title: "Nothing here yet",
+                description: "Fiscal has no data for this filter in the latest update."
+            ) {
+                Image(systemName: "line.3.horizontal.decrease")
+                    .font(.icon(.l))
+                    .foregroundStyle(.secondary)
+                    .accessibilityHidden(true)
+            }
         } else {
             ContentUnavailableView.search(text: search.query)
         }

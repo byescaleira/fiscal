@@ -85,7 +85,7 @@ public struct SettingsPage<Content: View>: View {
     public var body: some View {
         Group {
             #if os(macOS)
-                Form { content }.formStyle(.grouped)
+                Form { content.surfaceRows() }.formStyle(.grouped).listSurface()
             #else
                 AdaptiveList { content }
             #endif

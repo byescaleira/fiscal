@@ -36,21 +36,21 @@ private struct ArtistsGallery: View {
                         title: "Open license",
                         footer:
                             "Recent photos under an open license, credited and marked as adapted.",
-                        sections: artists.openLicense)
+                        shelf: .openLicense)
                 }
                 if !artists.historical.isEmpty {
                     GalleryGroup(
                         title: "Historical collection",
                         footer:
                             "Public domain works: the author died more than 70 years ago (Law 9,610, art. 41). Each image comes from a public archive.",
-                        sections: artists.historical)
+                        shelf: .historical)
                 }
             }
             .padding(.spaceL)
             .readableWidth()
             .frame(maxWidth: .infinity)
         }
-        .background(.groupedBackground)
+        .background(.plainBackground)
     }
 }
 
@@ -81,31 +81,37 @@ private struct ArtistsHero: View {
 }
 
 private struct GalleryGroup: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var collectionID: ArtCollection.ID?
+    @Environment(ArtistsModel.self) private var artists
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    @Environment(\.liteMode) private var liteMode
     let title: LocalizedStringKey
     let footer: LocalizedStringKey
-    let sections: [GallerySection]
+    let shelf: GalleryKind
 
     var body: some View {
-        let current = sections.first { $0.id == collectionID } ?? sections.first
+        let current = artists.current(on: shelf)
         VStack(alignment: .leading, spacing: .spaceL) {
             VStack(alignment: .leading, spacing: .space2XS) {
                 Text(title)
-                    .font(.emphasis(.title3, weight: .bold))
+                    .sectionTitle()
                     .accessibilityAddTraits(.isHeader)
                 Text(footer)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            GalleryChips(sections: sections, current: current?.id) { collectionID = $0 }
+            GalleryChips(sections: artists.sections(on: shelf), current: current?.id) {
+                artists.show($0, on: shelf)
+            }
             if let current {
                 GalleryShelf(section: current).id(current.id)
             }
         }
-        .animation(reduceMotion ? nil : .smooth, value: collectionID)
-        .sensoryFeedback(.selection, trigger: collectionID)
+        .animation(
+            systemReduceMotion || liteMode.reducesMotion ? nil : .smooth,
+            value: artists.shownCollections[shelf]
+        )
+        .sensoryFeedback(.selection, trigger: artists.shownCollections[shelf])
     }
 }
 
@@ -169,7 +175,8 @@ private struct ArtworkCard: View {
                 .overlay(alignment: .bottomLeading) { ArtworkCaption(work: work) }
                 .clipShape(.rect(cornerRadius: .radiusL, style: .continuous))
                 .shadow(color: .black.opacity(.opacityTint), radius: .spaceS, y: .space2XS)
-                .accessibilityLabel(Text(verbatim: "\(work.title), \(work.artist)"))
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(Text(verbatim: work.imageLabel))
                 .accessibilityAddTraits(.isImage)
             VStack(alignment: .leading, spacing: .space2XS) {
                 Text(verbatim: work.title)
@@ -218,7 +225,6 @@ private struct ArtworkCaption: View {
                 colors: [.clear, .black.opacity(.opacityStrong)], startPoint: .top,
                 endPoint: .bottom)
         )
-        .accessibilityHidden(true)
     }
 }
 
@@ -233,6 +239,6 @@ private struct ArtistsEmptyState: View {
             IconRow("Open license", symbol: "doc.badge.ellipsis", color: .retroMustard)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.groupedBackground)
+        .background(.plainBackground)
     }
 }

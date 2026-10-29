@@ -2,8 +2,10 @@
 set -euo pipefail
 project_root="$(cd "$(dirname "$0")/.." && pwd)"
 source "$project_root/scripts/kit-access.sh"
+source "$project_root/scripts/sim-destination.sh"
 build_root="${FISCAL_BUILD_ROOT:-$HOME/Library/Developer/FiscalBuild}"
-destination="${FISCAL_TEST_DESTINATION:-platform=iOS Simulator,name=iPhone 17,OS=27.0}"
+destination="${FISCAL_TEST_DESTINATION:-$(default_destination iPhone)}"
+echo "Destination: $destination"
 targets=()
 if [[ "${1:-}" == "--affected" ]]; then
   while IFS= read -r target; do [[ -n "$target" ]] && targets+=("$target"); done \

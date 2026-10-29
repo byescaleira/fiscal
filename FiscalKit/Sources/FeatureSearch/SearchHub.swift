@@ -52,11 +52,8 @@ private struct DoorTile: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceS) {
-            Text(chip)
-                .font(.chipLabel)
-                .padding(.horizontal, .spaceS)
-                .padding(.vertical, .space2XS)
-                .background(.white.opacity(.opacityTint), in: .capsule)
+            Chip(chip, color: .white, shape: .capsule)
+                .environment(\.colorScheme, .dark)
             Spacer(minLength: .spaceL)
             Text(title)
                 .font(.titleMedium)

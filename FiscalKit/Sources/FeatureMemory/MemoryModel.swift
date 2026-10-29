@@ -16,6 +16,7 @@ public final class MemoryModel {
     @ObservationIgnored private let service: (any PublicDataService)?
     @ObservationIgnored private let races: (any LiveResultsService)?
     @ObservationIgnored private let now: @Sendable () -> Date
+    @ObservationIgnored private let requests = PublicDataRequests()
 
     public init(
         service: (any PublicDataService)?, races: (any LiveResultsService)? = nil,
@@ -67,19 +68,24 @@ public final class MemoryModel {
             return
         }
         if isEmpty { phase = .loading }
-        phase = await PublicDataPhase.settle(after: phase) {
+        phase = await PublicDataPhase.settle(after: phase, in: requests) {
             async let elections = try? service.electionHistory()
             async let periods = try? service.politicalTimeline()
             async let guides = try? service.studyCatalog()
             async let people = try? service.people()
             let loaded = await (elections, periods, guides, people)
-            history = loaded.0 ?? nil
-            timeline = loaded.1 ?? nil
-            study = loaded.2 ?? nil
-            awaiting = (loaded.3 ?? [])
-                .filter { $0.status == .electedAwaiting }
-                .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
-            if isEmpty { throw PublicDataError.notFound }
+            let shelf = MemoryShelf(
+                history: loaded.0 ?? nil, timeline: loaded.1 ?? nil, study: loaded.2 ?? nil,
+                awaiting: (loaded.3 ?? [])
+                    .filter { $0.status == .electedAwaiting }
+                    .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending })
+            if shelf.isEmpty { throw PublicDataError.notFound }
+            return shelf
+        } apply: { shelf in
+            history = shelf.history
+            timeline = shelf.timeline
+            study = shelf.study
+            awaiting = shelf.awaiting
         }
         await loadLiveCount()
     }
@@ -102,6 +108,10 @@ public final class MemoryModel {
         return round.leaders.first { $0 != won }
     }
 
+    var liveCountedText: String? {
+        liveCounted.map { String(appLocalized: "Polls counted: \(PublicFormat.percent($0))") }
+    }
+
     func roundLine(_ race: PastRaceSummary) -> String {
         guard let round = race.finalRound else { return PublicFormat.missing }
         let label = MemoryText.round(round.round, total: race.rounds.count)
@@ -120,4 +130,13 @@ public final class MemoryModel {
                 "\(String(race.year)), \(MemoryText.name(won.ballotName)), \(won.party), \(MemoryText.percent(won.share))"
         )
     }
+}
+
+private struct MemoryShelf {
+    let history: ElectionHistory?
+    let timeline: PoliticalTimeline?
+    let study: StudyCatalog?
+    let awaiting: [PersonCard]
+
+    var isEmpty: Bool { history == nil && timeline == nil && study == nil }
 }

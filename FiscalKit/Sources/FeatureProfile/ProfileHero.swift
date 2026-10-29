@@ -38,7 +38,7 @@ private struct ProfileHero: View {
             .overlay(Circle().strokeBorder(.white, lineWidth: .space2XS))
             VStack(spacing: .spaceXS) {
                 Text(verbatim: person.name)
-                    .font(.amountHero)
+                    .font(.titleLarge)
                     .minimumScaleFactor(0.7)
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityAddTraits(.isHeader)

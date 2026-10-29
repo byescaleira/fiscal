@@ -14,7 +14,7 @@ struct MoneyCard<Content: View>: View {
             .foregroundStyle(.primary)
             .padding(.spaceInset)
             .frame(maxWidth: .infinity)
-            .background(.groupedRow, in: .rect(cornerRadius: .radiusGroup))
+            .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
             .listRowInsets(EdgeInsets())
             .listRowBackground(Color.clear)
     }
@@ -22,7 +22,7 @@ struct MoneyCard<Content: View>: View {
 
 struct MoneyHeroValue: View {
     @Environment(\.appTint) private var tint
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     let chip: String
     let value: String
     let cents: Int
@@ -30,9 +30,7 @@ struct MoneyHeroValue: View {
 
     var body: some View {
         VStack(spacing: .spaceS) {
-            Text(verbatim: chip)
-                .font(.caption.weight(.heavy))
-                .foregroundStyle(tint)
+            Chip(chip, color: tint, shape: .capsule)
             Text(verbatim: value)
                 .font(.amountHero)
                 .monospacedDigit()

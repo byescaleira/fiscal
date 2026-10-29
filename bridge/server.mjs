@@ -12,6 +12,7 @@ const ORIGIN = process.env.ALLOWED_ORIGIN ?? 'https://fiscal.byescaleira.com';
 const PREFIX = '/bridge';
 const MINUTE = 60_000;
 const STARTED = Date.now();
+export const VERSION = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')).version;
 
 export const DEFAULTS = Object.freeze({
   enabled: true,
@@ -177,7 +178,7 @@ export function handle(request, response, now = Date.now()) {
     return send(response, status, body, headers);
   };
 
-  if (path === '/health') return send(response, 200, config.enabled ? { ok: true } : { ok: true, paused: true });
+  if (path === '/health') return send(response, 200, config.enabled ? { ok: true, version: VERSION } : { ok: true, version: VERSION, paused: true });
   if (request.method === 'OPTIONS') return send(response, 204);
 
   const match = path.match(/^\/v1\/snapshots\/([^/]+)$/);

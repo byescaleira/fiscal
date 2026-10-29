@@ -31,12 +31,15 @@ struct LensPaletteGrid: View {
 }
 
 private struct LensPaletteTile: View {
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    @Environment(\.liteMode) private var liteMode
     let swatch: LensPaletteSwatch
     let isSelected: Bool
     let isSuggested: Bool
     let action: () -> Void
 
     var body: some View {
+        let reduceMotion = systemReduceMotion || liteMode.reducesMotion
         Button(action: action) {
             VStack(alignment: .leading, spacing: .zero) {
                 swatch.gradient
@@ -48,7 +51,8 @@ private struct LensPaletteTile: View {
                                 .symbolRenderingMode(.palette)
                                 .foregroundStyle(swatch.accent, .white)
                                 .padding(.spaceS)
-                                .transition(.scale.combined(with: .opacity))
+                                .transition(
+                                    reduceMotion ? .opacity : .scale.combined(with: .opacity))
                         }
                     }
                 VStack(alignment: .leading, spacing: .space2XS) {
@@ -78,7 +82,7 @@ private struct LensPaletteTile: View {
             .contentShape(.rect(cornerRadius: .radiusL))
         }
         .buttonStyle(.plain)
-        .animation(.smooth, value: isSelected)
+        .animation(reduceMotion ? nil : .smooth, value: isSelected)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: swatch.title))
         .accessibilityValue(Text(verbatim: swatch.pairText))

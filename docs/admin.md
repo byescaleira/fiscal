@@ -37,7 +37,10 @@ Painel em `https://fiscal.byescaleira.com/admin` para controlar o app sem public
 | Flag | Título | Padrão |
 | --- | --- | --- |
 | `guides` | Guias | ligada |
-| `web` | Fiscal na Web | ligada |
+| `partyIcons` | Ícones de partido | desligada |
+| `liveResults` | Apuração ao vivo | ligada |
+| `highlightAlerts` | Alertas do destaque | ligada |
+| `intelligence` | Explicações no aparelho | ligada |
 
 ## Esquema no CloudKit Console (banco Public)
 

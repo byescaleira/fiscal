@@ -11,6 +11,7 @@ public final class StudyGuideModel {
     public private(set) var answers: [Int: Int] = [:]
     public var query = ""
     @ObservationIgnored private let service: (any PublicDataService)?
+    @ObservationIgnored private let requests = PublicDataRequests()
 
     public init(id: String, service: (any PublicDataService)?) {
         self.id = id
@@ -49,7 +50,7 @@ public final class StudyGuideModel {
 
     var heroChip: String {
         guard let guide else { return "" }
-        return StudySymbols.count(guide).uppercased(with: .app)
+        return guide.countText.uppercased(with: .app)
     }
 
     public func load() async {
@@ -58,8 +59,10 @@ public final class StudyGuideModel {
             return
         }
         if catalog == nil { phase = .loading }
-        phase = await PublicDataPhase.settle(after: phase) {
-            catalog = try await service.studyCatalog()
+        phase = await PublicDataPhase.settle(after: phase, in: requests) {
+            try await service.studyCatalog()
+        } apply: { loaded in
+            catalog = loaded
         }
     }
 

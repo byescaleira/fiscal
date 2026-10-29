@@ -40,6 +40,17 @@ struct ArtistsModelTests {
         #expect(adapted.workCount == plain.workCount)
     }
 
+    @Test func eachShelfRemembersItsCollection() async throws {
+        let model = ArtistsModel()
+        await model.load()
+        let sections = model.sections(on: .historical)
+        #expect(model.current(on: .historical) == sections.first)
+        let last = try #require(sections.last)
+        model.show(last.id, on: .historical)
+        #expect(model.current(on: .historical) == last)
+        #expect(model.current(on: .openLicense) == model.openLicense.first)
+    }
+
     @Test func aMissingManifestIsAnHonestEmptyState() async {
         let model = ArtistsModel { throw ArtCatalogError.missingManifest }
         await model.load()

@@ -1,7 +1,6 @@
 export const strings = {
   en: {
     pageTitle: 'Fiscal on the Web',
-    proChip: 'Fiscal Pro',
     pairTitle: 'See Fiscal on this computer',
     pairLead: 'Scan the code with your iPhone. Your data travels encrypted end to end, straight from Fiscal to this browser.',
     step1: 'Open the Camera on your iPhone, or Fiscal › Settings › Fiscal on the Web › Scan QR Code.',
@@ -53,7 +52,6 @@ export const strings = {
   },
   'pt-BR': {
     pageTitle: 'Fiscal na Web',
-    proChip: 'Fiscal Pro',
     pairTitle: 'Veja o Fiscal neste computador',
     pairLead: 'Leia o código com o iPhone. Seus dados viajam cifrados de ponta a ponta, direto do Fiscal para este navegador.',
     step1: 'Abra a Câmera do iPhone, ou Fiscal › Ajustes › Fiscal na Web › Ler QR code.',
@@ -105,7 +103,6 @@ export const strings = {
   },
   es: {
     pageTitle: 'Fiscal en la web',
-    proChip: 'Fiscal Pro',
     pairTitle: 'Ve Fiscal en este ordenador',
     pairLead: 'Escanea el código con tu iPhone. Tus datos viajan cifrados de extremo a extremo, directo de Fiscal a este navegador.',
     step1: 'Abre la Cámara del iPhone, o Fiscal › Ajustes › Fiscal en la web › Escanear código QR.',
@@ -157,7 +154,6 @@ export const strings = {
   },
   de: {
     pageTitle: 'Fiscal im Web',
-    proChip: 'Fiscal Pro',
     pairTitle: 'Sieh Fiscal auf diesem Computer',
     pairLead: 'Scanne den Code mit deinem iPhone. Deine Daten werden Ende-zu-Ende-verschlüsselt direkt von Fiscal an diesen Browser gesendet.',
     step1: 'Öffne die Kamera auf deinem iPhone oder Fiscal › Einstellungen › Fiscal im Web › QR-Code scannen.',
@@ -209,7 +205,6 @@ export const strings = {
   },
   fr: {
     pageTitle: 'Fiscal sur le Web',
-    proChip: 'Fiscal Pro',
     pairTitle: 'Fiscal sur cet ordinateur',
     pairLead: 'Scannez le code avec votre iPhone. Vos données voyagent chiffrées de bout en bout, directement de Fiscal vers ce navigateur.',
     step1: "Ouvrez l'appareil photo de l'iPhone, ou Fiscal › Réglages › Fiscal sur le Web › Scanner le code QR.",
@@ -261,7 +256,6 @@ export const strings = {
   },
   it: {
     pageTitle: 'Fiscal sul Web',
-    proChip: 'Fiscal Pro',
     pairTitle: 'Fiscal su questo computer',
     pairLead: 'Inquadra il codice con iPhone. I tuoi dati viaggiano cifrati end-to-end, direttamente da Fiscal a questo browser.',
     step1: 'Apri la Fotocamera di iPhone, oppure Fiscal › Impostazioni › Fiscal sul Web › Scansiona codice QR.',
@@ -313,7 +307,6 @@ export const strings = {
   },
   ja: {
     pageTitle: 'Fiscal Web',
-    proChip: 'Fiscal Pro',
     pairTitle: 'Fiscalをこのコンピュータで',
     pairLead: 'iPhoneでコードを読み取ってください。データはエンドツーエンドで暗号化され、Fiscalからこのブラウザへ直接届きます。',
     step1: 'iPhoneのカメラを開くか、Fiscal › 設定 › Fiscal Web › QRコードを読み取る を選びます。',
@@ -365,7 +358,6 @@ export const strings = {
   },
   ko: {
     pageTitle: 'Fiscal 웹',
-    proChip: 'Fiscal Pro',
     pairTitle: '이 컴퓨터에서 Fiscal 보기',
     pairLead: 'iPhone으로 코드를 스캔하세요. 데이터가 종단 간 암호화되어 Fiscal에서 이 브라우저로 바로 전달됩니다.',
     step1: 'iPhone의 카메라를 열거나 Fiscal › 설정 › Fiscal 웹 › QR 코드 스캔을 선택하세요.',
@@ -417,7 +409,6 @@ export const strings = {
   },
   'zh-Hans': {
     pageTitle: 'Fiscal 网页版',
-    proChip: 'Fiscal Pro',
     pairTitle: '在这台电脑上查看 Fiscal',
     pairLead: '用 iPhone 扫描二维码。你的数据经端到端加密，直接从 Fiscal 发送到这个浏览器。',
     step1: '打开 iPhone 的相机，或前往 Fiscal › 设置 › Fiscal 网页版 › 扫描二维码。',
@@ -469,7 +460,6 @@ export const strings = {
   },
   ru: {
     pageTitle: 'Fiscal в браузере',
-    proChip: 'Fiscal Pro',
     pairTitle: 'Fiscal на этом компьютере',
     pairLead: 'Отсканируйте код iPhone. Ваши данные передаются со сквозным шифрованием прямо из Fiscal в этот браузер.',
     step1: 'Откройте Камеру на iPhone или Fiscal › Настройки › Fiscal в браузере › Сканировать QR-код.',

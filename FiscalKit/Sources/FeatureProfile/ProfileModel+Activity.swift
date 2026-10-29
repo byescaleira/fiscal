@@ -8,10 +8,12 @@ extension ProfileModel {
     public struct MonthBar: Identifiable, Equatable {
         public let month: Int
         public let label: String
+        public let name: String
         public let cents: Int
         public let value: String
 
         public var id: Int { month }
+        public var reais: Double { Double(cents) / 100 }
     }
 
     public struct CategoryLine: Identifiable, Equatable {
@@ -21,6 +23,10 @@ extension ProfileModel {
         public let count: Int
 
         public var id: String { category }
+        public var shareText: String { PublicFormat.percent(fraction) }
+        public var receiptsText: String {
+            String(appLocalized: "Receipts: \(PublicFormat.number(count))")
+        }
     }
 
     public var recentVotes: [PersonVote] {
@@ -103,24 +109,43 @@ extension ProfileModel {
     public var expensesTotal: String { PublicFormat.money(cents: expenses?.totalCents) }
 
     public var monthBars: [MonthBar] {
+        guard let expenses, !expenses.byMonth.isEmpty else { return [] }
+        let byMonth = Dictionary(
+            expenses.byMonth.map { ($0.month, $0.cents) }, uniquingKeysWith: +)
         let symbols = monthSymbols
-        return (expenses?.byMonth ?? []).sorted { $0.month < $1.month }.map { total in
+        let names = fullMonthSymbols
+        return (1...12).map { month in
             MonthBar(
-                month: total.month,
-                label: symbols.indices.contains(total.month - 1)
-                    ? symbols[total.month - 1] : String(total.month),
-                cents: total.cents, value: PublicFormat.money(cents: total.cents))
+                month: month,
+                label: symbols.indices.contains(month - 1) ? symbols[month - 1] : String(month),
+                name: names.indices.contains(month - 1) ? names[month - 1] : String(month),
+                cents: byMonth[month] ?? 0, value: PublicFormat.money(cents: byMonth[month]))
         }
     }
 
-    public var highlightedMonth: Int? { monthBars.max(by: { $0.cents < $1.cents })?.month }
+    public var highlightedMonth: Int? {
+        monthBars.filter { $0.cents > 0 }.max(by: { $0.cents < $1.cents })?.month
+    }
+
+    public var monthAverageReais: Double? {
+        let values = (expenses?.byMonth ?? []).map(\.cents)
+        guard !values.isEmpty else { return nil }
+        return Double(values.reduce(0, +)) / Double(values.count) / 100
+    }
+
+    public var yearText: String { String(year) }
+
+    public var expensesSectionTitle: String {
+        String(appLocalized: "Office Allowance in \(yearText)")
+    }
+
+    public var expensesScreenTitle: String { String(appLocalized: "Expenses in \(yearText)") }
 
     public var expenseHeadline: String? {
-        guard let top = monthBars.max(by: { $0.cents < $1.cents }) else { return nil }
-        let name =
-            fullMonthSymbols.indices.contains(top.month - 1)
-            ? fullMonthSymbols[top.month - 1] : top.label
-        return String(appLocalized: "Biggest month in \(String(year)): \(name), \(top.value)")
+        guard let top = monthBars.first(where: { $0.month == highlightedMonth }) else {
+            return nil
+        }
+        return String(appLocalized: "Biggest month in \(yearText): \(top.name), \(top.value)")
     }
 
     public var categoryLines: [CategoryLine] {

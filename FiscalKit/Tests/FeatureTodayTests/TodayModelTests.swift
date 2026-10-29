@@ -134,6 +134,7 @@ struct TodayModelTests {
         let people = model.representatives
         #expect(people.count == TodayModel.representativesLimit)
         #expect(model.moreFollowed == 1)
+        #expect(model.moreFollowedText == "More in Mine: 1")
         #expect(people.map(\.card.name) == people.map(\.card.name).sorted())
         let senator = try #require(people.first { $0.card.office == .senator })
         #expect(senator.vote?.house == .senado)
@@ -176,6 +177,23 @@ struct TodayModelTests {
         let missing = TodayModel(service: nil)
         await missing.load()
         #expect(missing.phase.error == .unavailable)
+    }
+
+    @Test func writesTheDayTextsInTheModel() async throws {
+        let model = model()
+        await model.load()
+        #expect(model.dateKicker == model.dateLine.uppercased())
+        #expect(model.moreFollowedText == nil)
+        let house = try #require(model.houses.first)
+        #expect(model.shownItems(house).count == min(house.items.count, TodayModel.agendaLimit))
+        #expect(
+            (model.moreOnAgendaText(house) != nil) == (house.items.count > TodayModel.agendaLimit))
+        #expect(!model.nextSessionText(house.day).isEmpty)
+        let vote = try #require(model.recent.first)
+        #expect(model.voteLine(vote).hasPrefix(vote.house.title))
+        #expect(model.failureTitle(.offline) == PublicDataError.offline.title)
+        #expect(model.failureTitle(.unavailable) == "Couldn't load the summary of the day")
+        #expect(model.kindKicker(.vote) == "VOTE")
     }
 
     @Test func longNamesStillLoad() async {

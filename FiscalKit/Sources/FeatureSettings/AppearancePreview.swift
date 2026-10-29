@@ -15,6 +15,7 @@ struct AppearancePreviewSection: View {
 
 struct AppearancePreview: View {
     @Environment(SettingsModel.self) private var settings
+    @Environment(\.settingsReducesMotion) private var reduceMotion
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceM) {
@@ -30,18 +31,20 @@ struct AppearancePreview: View {
                     .lineLimit(1)
                     .contentTransition(.opacity)
             }
-            PreviewTodayCard()
-            PreviewControls()
+            VStack(alignment: .leading, spacing: .spaceM) {
+                PreviewTodayCard()
+                PreviewControls()
+            }
+            .dynamicTypeSize(...DynamicTypeSize.xLarge)
         }
         .padding(.spaceL)
-        .background(.groupedBackground, in: .rect(cornerRadius: .radiusGroup))
+        .background(.plainBackground, in: .rect(cornerRadius: .radiusGroup))
         .overlay {
             RoundedRectangle(cornerRadius: .radiusGroup, style: .continuous)
                 .strokeBorder(.separator, lineWidth: .spaceHairline / 2)
         }
         .partyMarksStill()
-        .dynamicTypeSize(...DynamicTypeSize.xLarge)
-        .animation(.smooth, value: settings.tint)
+        .animation(reduceMotion ? nil : .smooth, value: settings.tint)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("Preview of the look"))
         .accessibilityValue(Text(verbatim: "\(settings.appearance.title), \(settings.tintName)"))
@@ -98,7 +101,7 @@ private struct PreviewTodayCard: View {
             }
         }
         .padding(.spaceL)
-        .background(.groupedRow, in: .rect(cornerRadius: .radiusL))
+        .background(.plainRow, in: .rect(cornerRadius: .radiusL))
     }
 }
 
@@ -115,7 +118,7 @@ private struct PreviewCount: View {
                 .textCase(.uppercase)
                 .foregroundStyle(color)
             Text(verbatim: PublicFormat.number(value))
-                .font(.scoreboardNumber)
+                .font(.scoreboardTitle)
                 .monospacedDigit()
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)
@@ -144,7 +147,7 @@ private struct PreviewControls: View {
             .font(.icon(.s))
             .padding(.horizontal, .spaceM)
             .padding(.vertical, .spaceS)
-            .background(.groupedRow, in: .capsule)
+            .background(.plainRow, in: .capsule)
         }
     }
 }

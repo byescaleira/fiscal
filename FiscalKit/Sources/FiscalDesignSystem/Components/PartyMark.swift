@@ -1,7 +1,9 @@
+import ByescaleiraAccessibility
 import SwiftUI
 
 public struct PartyMark: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    @Environment(\.liteMode) private var liteMode
     @Environment(\.partyMarksAreStill) private var partyMarksAreStill
     @State private var appearances = 0
     private let party: String
@@ -28,7 +30,8 @@ public struct PartyMark: View {
     }
 
     var isStill: Bool {
-        reduceMotion || partyMarksAreStill || MotionBudget.isConstrained
+        systemReduceMotion || liteMode.reducesMotion || partyMarksAreStill
+            || MotionBudget.isConstrained
     }
 }
 

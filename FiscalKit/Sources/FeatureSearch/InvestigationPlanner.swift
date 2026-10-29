@@ -128,7 +128,7 @@ struct InvestigationPlanner: Sendable {
                 HomePlace.states.contains($0) ? $0 : nil
             }
             plan.city = city
-            plan.theme = topic.flatMap { Theme(rawValue: SearchText.words($0).joined()) }
+            plan.theme = topic.flatMap { Theme(rawValue: $0.searchWords.joined()) }
             plan.vote = vote
             plan.metrics = metrics.map(\.metric)
             plan.comparesPeers = comparesPeers
@@ -167,8 +167,8 @@ struct InvestigationPlanner: Sendable {
         }
 
         func call(arguments: Arguments) async throws -> String {
-            let terms = SearchText.words(arguments.name)
-            let found = index.people.filter { SearchText.matches(terms, in: $0.words) }.prefix(5)
+            let terms = arguments.name.searchWords
+            let found = index.people.filter { $0.words.matchesSearch(terms) }.prefix(5)
             guard !found.isEmpty else { return "No politician found." }
             return found.map { entry in
                 let card = entry.value
@@ -192,8 +192,8 @@ struct InvestigationPlanner: Sendable {
         }
 
         func call(arguments: Arguments) async throws -> String {
-            let terms = SearchText.words(arguments.text)
-            let found = index.votes.filter { SearchText.matches(terms, in: $0.words) }.prefix(5)
+            let terms = arguments.text.searchWords
+            let found = index.votes.filter { $0.words.matchesSearch(terms) }.prefix(5)
             guard !found.isEmpty else { return "No vote found." }
             return found.map { "\($0.value.proposition) · \($0.value.summary)" }
                 .joined(separator: "\n")

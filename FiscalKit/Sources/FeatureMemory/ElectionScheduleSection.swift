@@ -26,20 +26,12 @@ private struct ScheduleRow: View {
     let isLast: Bool
 
     var body: some View {
-        HStack(alignment: .top, spacing: .spaceL) {
-            VStack(spacing: .spaceXS) {
-                Text(verbatim: String(election.year))
-                    .font(.scoreboardNumber)
-                    .foregroundStyle(election.isCurrent ? tint : Color.primary)
-                    .monospacedDigit()
-                if !isLast {
-                    Capsule()
-                        .fill(.tertiary)
-                        .frame(width: .spaceHairline)
-                        .frame(maxHeight: .infinity)
-                        .accessibilityHidden(true)
-                }
-            }
+        TimelineRow(isLast: isLast, spacing: .spaceL) {
+            Text(verbatim: election.yearText)
+                .font(.scoreboardTitle)
+                .foregroundStyle(election.isCurrent ? tint : Color.primary)
+                .monospacedDigit()
+        } content: {
             VStack(alignment: .leading, spacing: .spaceS) {
                 Text(verbatim: election.title).font(.rowTitle)
                 Text("President, governors, Senate and deputies")
@@ -66,14 +58,13 @@ private struct ScheduleRoundLine: View {
             StatusCircle(round.statusText, symbol: round.symbol, color: round.color)
             Text(verbatim: round.title)
                 .font(.subheadline.weight(.semibold))
-            Text(verbatim: round.status == .today ? round.statusText : round.shortDate)
+            Text(verbatim: round.dateOrStatus)
                 .font(.subheadline)
                 .foregroundStyle(round.status == .today ? round.color : .secondary)
                 .monospacedDigit()
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(
-            Text(verbatim: "\(round.title), \(round.shortDate), \(round.statusText)"))
+        .accessibilityLabel(Text(verbatim: round.accessibilityLabel))
     }
 }
 
@@ -94,18 +85,18 @@ private struct ScheduleResultLink: View {
 
 private struct CurrentElectionDetail: View {
     @Environment(MemoryModel.self) private var memory
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
     @State private var isShown = false
 
     var body: some View {
-        if let counted = memory.liveCounted {
+        if let counted = memory.liveCounted, let countedText = memory.liveCountedText {
             Button {
                 open(.races, in: section)
             } label: {
                 VStack(alignment: .leading, spacing: .space2XS) {
-                    Text("Polls counted: \(PublicFormat.percent(counted))")
+                    Text(verbatim: countedText)
                         .font(.footnote.weight(.semibold))
                         .monospacedDigit()
                     ProgressBar(value: isShown ? counted : 0, color: .scoreboardAccent)
@@ -115,13 +106,11 @@ private struct CurrentElectionDetail: View {
             .buttonStyle(.plain)
             .accessibilityElement(children: .combine)
             .accessibilityHint(Text("Opens the live count"))
-            .animation(reduceMotion ? nil : .smooth(duration: 1), value: isShown)
+            .animation(reduceMotion ? nil : .chartReveal(0), value: isShown)
             .onAppear { isShown = true }
         }
         if !memory.awaiting.isEmpty {
-            NavigationLink {
-                AwaitingScreen().environment(memory)
-            } label: {
+            RouteLink(.awaiting) {
                 Label(
                     "Elected in 2026, awaiting inauguration: \(memory.awaiting.count)",
                     systemImage: "person.crop.circle.badge.clock"
@@ -150,34 +139,43 @@ extension ScheduledRound {
     }
 }
 
-private struct AwaitingScreen: View {
+public struct AwaitingScreen: View {
     @Environment(MemoryModel.self) private var memory
 
-    var body: some View {
+    public init() {}
+
+    public var body: some View {
         List {
-            Section {
-                ForEach(memory.awaiting, id: \.slug) { person in
-                    RouteLink(.person(slug: person.slug)) {
-                        HStack(spacing: .spaceM) {
-                            PersonPortrait(
-                                slug: person.slug, name: person.name, party: person.party,
-                                size: .badgeL)
-                            VStack(alignment: .leading, spacing: .spaceHairline) {
-                                Text(verbatim: person.name).font(.rowTitle)
-                                Text(verbatim: "\(person.office.title) · \(person.uf.uppercased())")
+            Group {
+                Section {
+                    ForEach(memory.awaiting, id: \.slug) { person in
+                        RouteLink(.person(slug: person.slug)) {
+                            HStack(spacing: .spaceM) {
+                                PersonPortrait(
+                                    slug: person.slug, name: person.name, party: person.party,
+                                    size: .badgeL)
+                                VStack(alignment: .leading, spacing: .spaceHairline) {
+                                    Text(verbatim: person.name).font(.rowTitle)
+                                    Text(
+                                        verbatim:
+                                            "\(person.office.title) · \(person.uf.uppercased())"
+                                    )
                                     .font(.rowDetail)
                                     .foregroundStyle(.secondary)
+                                }
+                                Spacer(minLength: .spaceS)
+                                PartyMark(person.party)
                             }
-                            Spacer(minLength: .spaceS)
-                            PartyMark(person.party)
+                            .accessibilityElement(children: .combine)
                         }
-                        .accessibilityElement(children: .combine)
                     }
+                } footer: {
+                    Text("Alphabetical order. Source: TSE, candidates elected in 2026.")
                 }
-            } footer: {
-                Text("Alphabetical order. Source: TSE, candidates elected in 2026.")
             }
+            .surfaceRows()
         }
+        .listSurface()
         .emphasisTitle("Awaiting inauguration")
     }
 }

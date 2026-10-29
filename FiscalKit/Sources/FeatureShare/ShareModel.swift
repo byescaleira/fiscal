@@ -1,5 +1,6 @@
 import CoreGraphics
 import FeatureCore
+import FiscalDesignSystem
 import FiscalDomain
 import FiscalResource
 import Foundation
@@ -15,14 +16,17 @@ public final class ShareModel {
     public private(set) var content: ShareCardContent?
     public private(set) var lens: Lens?
     public private(set) var code: CGImage?
+    public private(set) var rendered: RenderedCard?
     public var format: ShareFormat = .stories
     public var selectedWorkID: ArtWork.ID?
+    public private(set) var collectionID: ArtCollection.ID?
 
     @ObservationIgnored private let service: (any PublicDataService)?
     @ObservationIgnored private let races: (any LiveResultsService)?
     @ObservationIgnored private let lensRepository: (any LensRepository)?
     @ObservationIgnored private let catalog: ArtCatalog?
     @ObservationIgnored private let builder: ShareCardBuilder
+    @ObservationIgnored private let requests = PublicDataRequests()
 
     public init(
         subject: ShareSubject, service: (any PublicDataService)?,
@@ -91,6 +95,19 @@ public final class ShareModel {
             ?? catalog.works.first
     }
 
+    public var currentCollectionID: ArtCollection.ID? {
+        collectionID ?? selectedWork?.collection ?? collections.first?.id
+    }
+
+    public var currentWorks: [ArtWork] {
+        let current = currentCollectionID
+        return works.filter { $0.collection == current }
+    }
+
+    public var selectedCredit: String? {
+        selectedWork.map { "\($0.artist) · \($0.title), \($0.year) · \($0.licenseLabel)" }
+    }
+
     public func isSelected(_ work: ArtWork) -> Bool {
         selectedWork?.id == work.id
     }
@@ -99,12 +116,26 @@ public final class ShareModel {
         selectedWorkID = work.id
     }
 
+    public func show(_ collection: ArtCollection.ID) {
+        collectionID = collection
+    }
+
+    public func render(scale: CGFloat, portraits: PortraitArtwork?) {
+        rendered = card.flatMap { card in
+            ShareRenderer.render(card, code: code, scale: scale, portraits: portraits)
+                .flatMap { RenderedCard(file: $0, scale: scale) }
+        }
+    }
+
     public func load() async {
         if content == nil { phase = .loading }
-        phase = await PublicDataPhase.settle(after: phase) {
-            lens = try? await lensRepository?.lens()
-            content = try await fetch()
-            code = content.flatMap { ShareCode.image(for: $0.link) }
+        phase = await PublicDataPhase.settle(after: phase, in: requests) {
+            let lens = try? await lensRepository?.lens()
+            return (lens: lens, content: try await fetch())
+        } apply: { loaded in
+            lens = loaded.lens
+            content = loaded.content
+            code = ShareCode.image(for: loaded.content.link)
         }
     }
 

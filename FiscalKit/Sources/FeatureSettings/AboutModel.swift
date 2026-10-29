@@ -3,8 +3,10 @@ import Foundation
 import Observation
 
 @MainActor @Observable
-final class AboutModel {
-    let lottieURL = URL(string: "https://github.com/airbnb/lottie-ios")
+public final class AboutModel {
+    public let lottieURL = URL(string: "https://github.com/airbnb/lottie-ios")
 
-    var shareMessage: String { String(appLocalized: "I'm using Fiscal. Take a look.") }
+    public init() {}
+
+    public var shareMessage: String { String(appLocalized: "I'm using Fiscal. Take a look.") }
 }

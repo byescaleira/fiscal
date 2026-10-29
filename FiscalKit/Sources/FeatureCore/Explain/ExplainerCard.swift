@@ -16,7 +16,7 @@ public struct ExplainerCard: View {
     }
 
     @Environment(\.explainer) private var explainer
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @Environment(\.redactionReasons) private var redactionReasons
     @State private var shown: Shown?
     private let explanation: Explanation

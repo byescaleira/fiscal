@@ -5,7 +5,7 @@ import FiscalDomain
 import SwiftUI
 
 struct MandateStackChart: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @ScaledMetric(relativeTo: .caption) private var rowHeight: CGFloat = .badgeL
     @ScaledMetric(relativeTo: .caption) private var labelRoom: CGFloat = .chartLabelRoom
     @State private var revealed = false
@@ -31,7 +31,7 @@ struct MandateStackChart: View {
         }
         .animation(reduceMotion ? nil : .smooth, value: scrubbed)
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) { revealed = true }
         }
     }
 
@@ -85,7 +85,7 @@ struct MandateStackChart: View {
 
 struct QuotaStatesChart: View {
     @Environment(MoneyModel.self) private var money
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @ScaledMetric(relativeTo: .caption) private var height: CGFloat = .chartHeight
     @State private var revealed = false
@@ -109,7 +109,7 @@ struct QuotaStatesChart: View {
         }
         .animation(reduceMotion ? nil : .smooth, value: focused)
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) { revealed = true }
         }
     }
 

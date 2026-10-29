@@ -55,9 +55,12 @@ struct ConclusionSection: View {
 
 private struct ReadingPanel: View {
     @Environment(InvestigationModel.self) private var board
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    @Environment(\.liteMode) private var liteMode
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let conclusion: InvestigationConclusion
+
+    private var reduceMotion: Bool { systemReduceMotion || liteMode.reducesMotion }
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceL) {

@@ -2,7 +2,7 @@
 
 - **Estado:** Aceito
 - **Data:** 2026-10-25
-- **Mudança:** [`live-results`](../changes/live-results/proposal.md)
+- **Mudança:** [`live-results`](../changes/archive/2026-10-29-live-results/proposal.md)
 
 ## Contexto
 

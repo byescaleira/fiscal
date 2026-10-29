@@ -19,7 +19,7 @@ struct ProfileModelTests {
             slug: slug, service: showcase, follows: follows, lens: lens, now: { Self.instant })
     }
 
-    @Test func loadsTheProfileWithItsNumbersAndActivity() async {
+    @Test func loadsTheProfileWithItsNumbersAndActivity() async throws {
         let model = makeModel("tabata-amaral")
         #expect(model.isEmpty)
         await model.load()
@@ -43,8 +43,13 @@ struct ProfileModelTests {
         #expect(model.hasExpenses)
         let share = model.categoryLines.map(\.fraction).reduce(0, +)
         #expect(abs(share - 1) < 0.0001)
-        #expect(model.monthBars.map(\.month) == model.monthBars.map(\.month).sorted())
+        #expect(model.monthBars.map(\.month) == Array(1...12))
         #expect(model.expenseHeadline != nil)
+        let peak = try #require(model.monthBars.first { $0.month == model.highlightedMonth })
+        #expect(model.monthBars.allSatisfy { $0.cents <= peak.cents })
+        let average = try #require(model.monthAverageReais)
+        #expect(average > 0 && average <= peak.reais)
+        #expect(model.expensesSectionTitle.contains(model.yearText))
         #expect(model.shareRoute == .share(.person(slug: "tabata-amaral")))
         #expect(model.sourceText(for: ["votes"])?.contains("Câmara dos Deputados") == true)
         #expect(model.sourceText(for: ["assets"])?.contains("Tribunal Superior Eleitoral") == true)
