@@ -10,7 +10,7 @@ O `FiscalDesignSystem` e parte do `FeatureCore` eram cópias do template do byes
 
 ## Decisão
 
-- O `FiscalKit` depende do kit por versão: `ByescaleiraDesign`, `ByescaleiraCharts`, `ByescaleiraAccessibility` e `ByescaleiraPlatform` reexportados pelo `FiscalDesignSystem`; `ByescaleiraUI` pelo `FeatureCore`; `ByescaleiraFoundation` pelo `FiscalDomain`.
+- O `FiscalKit` depende do kit por versão (até sair a `v0.5.1`, pelo commit do [PR #11](https://github.com/byescaleira/byescaleira-kit/pull/11), que não vai à `main` nem ao TestFlight): `ByescaleiraDesign`, `ByescaleiraCharts`, `ByescaleiraAccessibility` e `ByescaleiraPlatform` reexportados pelo `FiscalDesignSystem`; `ByescaleiraUI` pelo `FeatureCore`; `ByescaleiraFoundation` pelo `FiscalDomain`.
 - No Fiscal fica só o que é do Fiscal: partidos, placar, retratos, Lente, cartões de compartilhar e os tokens deles. Peça genérica nova ou correção numa peça do kit vai para o kit, num PR de lá, e não numa cópia aqui.
 - O idioma é fixado em pt-BR por `FiscalLanguage.install()` no início do app e dos widgets ([ADR 0003](0003-portuguese-only.md)), porque o `AppLanguage.system` do kit segue o idioma do aparelho.
 - O kit continua privado (decisão do usuário em 2026-10-29). Os scripts carregam `scripts/kit-access.sh`, que passa a conta `byescaleira` do `gh` só no ambiente do comando e usa `-scmProvider system` no `xcodebuild`.

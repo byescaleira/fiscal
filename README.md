@@ -70,7 +70,7 @@ flowchart LR
 
 ## Desenvolvimento
 
-App em SwiftUI para iOS 27 (com iPadOS, macOS e visionOS no mesmo projeto), SwiftData com sincronização CloudKit, Swift Charts, Lottie e Foundation Models; servidor em Go só com a biblioteca padrão e SQLite. Abra `Fiscal.xcworkspace` no Xcode 27: o scheme `Production` roda o app, `FiscalKitTests` a suíte do pacote e `FiscalUITests` a interface.
+App em SwiftUI para iOS a partir do 26, com os recursos do 27 (e iPadOS, macOS e visionOS no mesmo projeto), SwiftData com sincronização CloudKit, Swift Charts, Lottie e Foundation Models; servidor em Go só com a biblioteca padrão e SQLite. Abra `Fiscal.xcworkspace` no Xcode 27: o scheme `Production` roda o app, `FiscalKitTests` a suíte do pacote e `FiscalUITests` a interface.
 
 ```sh
 scripts/verify.sh --quick

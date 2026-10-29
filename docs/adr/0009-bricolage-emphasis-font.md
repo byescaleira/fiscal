@@ -16,7 +16,7 @@ A constituição pedia `.fontDesign(.rounded)` na raiz de cada tela, então quas
   - botões principais, com `primaryButton()`;
   - nomes e números em destaque, com os tokens `titleLarge`, `titleMedium`, `amount*` e `caseQuestion`, ou `Font.emphasis(_:weight:)`.
 - Use **SF Pro** (fonte do sistema) em todo o resto. Nunca `.fontDesign(.rounded)` na raiz de tela.
-- A fonte é a variável `BricolageGrotesque.ttf` (eixos opsz, wdth e wght), em `FiscalDesignSystem/Fonts/` com o `OFL.txt`. Ela é registrada uma vez, no início do app, por `FiscalAppearance.install()`, que chama `EmphasisFont.register()`. `Font.emphasis` usa `relativeTo:`, então acompanha o Dynamic Type.
+- A fonte é a variável `BricolageGrotesque.ttf` (eixos opsz, wdth e wght), no `ByescaleiraDesign` do byescaleira-kit com o `OFL.txt` (desde o [ADR 0010](0010-byescaleira-kit.md); antes ficava em `FiscalDesignSystem/Fonts/`). Ela é registrada uma vez, no início do app, por `FiscalAppearance.install()`, que chama `EmphasisFont.register()`. `Font.emphasis` usa `relativeTo:`, então acompanha o Dynamic Type.
 - Exceções:
   - telas com `.searchable` e telas de título inline mantêm `navigationTitle`, porque o título personalizado espreme o campo de busca no iOS 27 e não se aplica ao modo inline;
   - o título pequeno, depois de rolar, fica na fonte do sistema;

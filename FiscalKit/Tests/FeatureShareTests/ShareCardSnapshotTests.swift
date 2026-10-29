@@ -36,7 +36,9 @@ struct ShareCardSnapshotTests {
     @Test(.enabled(if: ShareSnapshotFolder.path != nil)) func rendersEveryCardToDisk() async throws
     {
         EmphasisFont.register()
+        let previousLanguage = LanguageSetting.shared.language
         FiscalLanguage.install()
+        defer { LanguageSetting.shared.language = previousLanguage }
         let folder = URL(fileURLWithPath: try #require(ShareSnapshotFolder.path), isDirectory: true)
         try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
         for (name, subject) in subjects {

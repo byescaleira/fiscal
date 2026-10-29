@@ -14,8 +14,5 @@ Primeira versão, a 1.0.0.
 - Cartões de compartilhar com arte brasileira de licença livre, retratos desenhados e o que circulou sobre cada político segundo o Projeto Comprova.
 - Widgets, atalhos da Siri e busca no Spotlight.
 - Ícone da Amazônia ao amanhecer, com ícones alternativos de temas, fauna e partidos.
-
-### Changed
-
-- O app roda a partir do iOS, iPadOS, macOS e visionOS 26, com o que é do 27 quando o aparelho tem.
-- Design, gráficos e componentes vêm do `byescaleira-kit`: cores com contraste de texto conferido, botões e superfícies opacos com Reduzir transparência e barras de progresso lidas pelo VoiceOver.
+- Roda a partir do iOS, iPadOS, macOS e visionOS 26, com o que é do 27 quando o aparelho tem.
+- Cores com contraste de texto conferido, botões e superfícies opacos com Reduzir transparência e barras de progresso lidas pelo VoiceOver.

@@ -92,7 +92,6 @@ private struct MineStatePlate: View {
     var body: some View {
         Text(verbatim: uf)
             .font(.titleMedium)
-            .fontWidth(.condensed)
             .padding(.horizontal, .spaceS)
             .overlay(
                 RoundedRectangle(cornerRadius: .radiusS)

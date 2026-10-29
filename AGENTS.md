@@ -2,7 +2,7 @@
 
 Guia para qualquer agente de código (Claude Code, Codex, Cursor e afins) e para quem chega ao repositório. É a fonte compartilhada das regras, dos comandos e da estrutura; o `CLAUDE.md` importa este arquivo e acrescenta só o que é do Claude Code.
 
-App SwiftUI para iOS, iPadOS, macOS e visionOS 27, com SwiftData local e sincronização CloudKit (`iCloud.fiscal`) em aparelhos assinados, site público em `fiscal.byescaleira.com` e o Fiscal na Web em `/app`.
+App SwiftUI para iOS, iPadOS, macOS e visionOS a partir do 26, com os recursos do 27 quando o aparelho tem, com SwiftData local e sincronização CloudKit (`iCloud.fiscal`) em aparelhos assinados, site público em `fiscal.byescaleira.com` e o Fiscal na Web em `/app`.
 
 ## Regras
 
