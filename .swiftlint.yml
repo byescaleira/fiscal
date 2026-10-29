@@ -77,6 +77,12 @@ custom_rules:
     regex: '\.system\(size: [0-9]'
     included: '.*/(Sources/(Feature|AppShell|FiscalPreview)|Fiscal/(Fiscal|Shared|FiscalWidgets)/).*\.swift$'
     severity: error
+  emphasis_font:
+    name: Emphasis font
+    message: 'Número e título de destaque só na Bricolage Grotesque (.emphasis, tokens .amount*); nada de SF arredondada, condensada, mono ou black/heavy em tamanho fixo.'
+    regex: '(\.fontDesign\(\s*\.(rounded|monospaced|serif)\s*\)|design:\s*\.(rounded|monospaced|serif)\b|\.width\(\s*\.(condensed|compressed|expanded)\s*\)|\.monospaced\(\)|\.system\(size:[^)]*weight:\s*\.(heavy|black))'
+    included: '.*/(Sources/(Feature|AppShell|FiscalPreview)|Fiscal/(Fiscal|Shared|FiscalWidgets)/).*\.swift$'
+    severity: error
 
 file_length:
   warning: 400

@@ -29,7 +29,7 @@ struct VotesAgendaSection: View {
 
 private struct AgendaHouseRow: View {
     @Environment(VotesModel.self) private var votes
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     let day: Agenda.HouseDay
 
     var body: some View {
@@ -43,7 +43,9 @@ private struct AgendaHouseRow: View {
             )
             .font(.chipLabel)
             .foregroundStyle(day.inSession ? Color.retroTeal : Color.secondary)
-            .symbolEffect(.variableColor, isActive: day.inSession && !reduceMotion)
+            .symbolEffect(
+                .variableColor,
+                isActive: day.inSession && !reduceMotion && !MotionBudget.isConstrained)
         }
         .accessibilityElement(children: .combine)
     }

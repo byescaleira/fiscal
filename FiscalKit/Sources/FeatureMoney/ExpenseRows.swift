@@ -3,31 +3,9 @@ import FiscalDesignSystem
 import FiscalDomain
 import SwiftUI
 
-struct ExpensesFilterSection: View {
-    @Environment(ExpensesModel.self) private var expenses
-
-    var body: some View {
-        @Bindable var expenses = expenses
-        Section {
-            Picker(selection: $expenses.categoryFilter) {
-                Text("All kinds").tag(String?.none)
-                ForEach(expenses.categoryNames, id: \.self) { name in
-                    Text(verbatim: name).tag(String?.some(name))
-                }
-            } label: {
-                Label("Show", systemImage: "line.3.horizontal.decrease")
-            }
-            .pickerStyle(.menu)
-        } header: {
-            Text("Receipts").sectionTitle()
-        } footer: {
-            Text("Each receipt opens the official document published by the house.")
-        }
-    }
-}
-
 struct ExpensesMonthSection: View {
     let group: ExpensesModel.MonthGroup
+    let isLast: Bool
 
     var body: some View {
         Section {
@@ -41,6 +19,10 @@ struct ExpensesMonthSection: View {
             .font(.subheadline.weight(.semibold))
             .textCase(nil)
             .accessibilityElement(children: .combine)
+        } footer: {
+            if isLast {
+                Text("Each receipt opens the official document published by the house.")
+            }
         }
     }
 }

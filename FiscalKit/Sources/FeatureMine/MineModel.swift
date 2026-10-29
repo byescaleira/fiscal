@@ -33,10 +33,13 @@ public final class MineModel {
     public private(set) var activityPhase: PublicDataPhase = .idle
     public var query = ""
     public var isChoosingPlace = false
+    public var startsSearching = false
     public var error: FiscalError?
     @ObservationIgnored private let service: (any PublicDataService)?
     @ObservationIgnored private let follows: (any FollowRepository)?
     @ObservationIgnored private let memory: MinePlaceMemory
+    @ObservationIgnored private let placeRequests = PublicDataRequests()
+    @ObservationIgnored private let placesRequests = PublicDataRequests()
     @ObservationIgnored var searchNames: [String: String] = [:]
 
     public init(
@@ -187,16 +190,18 @@ public final class MineModel {
             return
         }
         if representatives == nil { phase = .loading }
-        phase = await PublicDataPhase.settle(after: phase) {
+        phase = await PublicDataPhase.settle(after: phase, in: placeRequests) {
             guard let service else { throw PublicDataError.unavailable }
             let resolved = try await resolve(code, service: service)
             async let state = service.representatives(uf: resolved.uf)
             async let city: PlaceRepresentatives? =
                 resolved.isState ? nil : service.cityRepresentatives(code: resolved.code)
             let (stateList, cityList) = try await (state, city)
-            representatives = stateList
-            cityRepresentatives = cityList
-            place = resolved
+            return (place: resolved, state: stateList, city: cityList)
+        } apply: { loaded in
+            representatives = loaded.state
+            cityRepresentatives = loaded.city
+            place = loaded.place
         }
         if phase == .loaded { await loadActivity() }
     }
@@ -225,6 +230,11 @@ public final class MineModel {
         await loadPlace()
     }
 
+    public func choosePlace(searching: Bool) {
+        startsSearching = searching
+        isChoosingPlace = true
+    }
+
     public func forgetPlace() {
         memory.code = nil
         place = nil
@@ -238,9 +248,11 @@ public final class MineModel {
     public func loadPlaces() async {
         guard places.isEmpty else { return }
         placesPhase = .loading
-        placesPhase = await PublicDataPhase.settle(after: placesPhase) {
+        placesPhase = await PublicDataPhase.settle(after: placesPhase, in: placesRequests) {
             guard let service else { throw PublicDataError.unavailable }
-            setPlaces(try await service.places())
+            return try await service.places()
+        } apply: { loaded in
+            setPlaces(loaded)
         }
     }
 

@@ -3,7 +3,7 @@ import Foundation
 
 public enum SourceFootnote {
     public static func text(
-        _ sources: [Source], calendar: Calendar = FiscalCalendar.current
+        _ sources: [Source], calendar: Calendar = GregorianCalendar.current
     ) -> String? {
         var names: [String] = []
         for source in sources where !names.contains(source.name) { names.append(source.name) }
@@ -16,7 +16,8 @@ public enum SourceFootnote {
             appLocalized: "Source: \(list) · updated \(stamp(updated, calendar: calendar))")
     }
 
-    public static func stamp(_ date: Date, calendar: Calendar = FiscalCalendar.current) -> String {
+    public static func stamp(_ date: Date, calendar: Calendar = GregorianCalendar.current) -> String
+    {
         let parts = calendar.dateComponents([.day, .month, .hour, .minute], from: date)
         return String(
             format: "%02d/%02d, %02d:%02d", parts.day ?? 0, parts.month ?? 0, parts.hour ?? 0,

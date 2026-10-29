@@ -3,7 +3,7 @@ import FiscalDesignSystem
 import SwiftUI
 
 struct CompositionChart: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @ScaledMetric(relativeTo: .body) private var stripHeight: CGFloat = .chartStripHeight
     @State private var revealed = false
     @State private var scrubbed: Double?
@@ -59,7 +59,7 @@ struct CompositionChart: View {
             }
         }
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) { revealed = true }
         }
     }
 

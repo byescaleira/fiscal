@@ -78,7 +78,6 @@ struct ProfileTimelineSection: View {
                     HStack(alignment: .top, spacing: .spaceM) {
                         Text(verbatim: String(career.year))
                             .font(.titleMedium)
-                            .fontWidth(.condensed)
                             .monospacedDigit()
                             .frame(width: .badgeXL, alignment: .leading)
                         VStack(alignment: .leading, spacing: .space2XS) {
@@ -209,7 +208,6 @@ private struct ProfileYearLine: View {
         HStack(alignment: .firstTextBaseline, spacing: .spaceM) {
             Text(verbatim: String(year))
                 .font(.amountRow)
-                .fontWidth(.condensed)
                 .monospacedDigit()
             if let title {
                 Text(verbatim: title).font(.subheadline).foregroundStyle(.secondary)

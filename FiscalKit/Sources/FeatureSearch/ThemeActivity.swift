@@ -47,7 +47,7 @@ public struct ThemeActivity: Equatable, Sendable {
     private let calendar: Calendar
 
     public init(
-        votes: [VoteSummary], themes: [Theme], calendar: Calendar = FiscalCalendar.current
+        votes: [VoteSummary], themes: [Theme], calendar: Calendar = GregorianCalendar.current
     ) {
         self.calendar = calendar
         total = votes.count
@@ -64,6 +64,10 @@ public struct ThemeActivity: Equatable, Sendable {
     public var touchesThemes: Bool { slices.contains { $0.count > 0 } }
 
     public var maxCount: Int { slices.map(\.count).max() ?? 0 }
+
+    public func share(of slice: Slice) -> Double {
+        maxCount > 0 ? Double(slice.count) / Double(maxCount) : 0
+    }
 
     public var leader: Slice? {
         guard let first = slices.first, first.count > 0 else { return nil }

@@ -20,6 +20,7 @@ public final class SearchModel {
     @ObservationIgnored private let lensRepository: (any LensRepository)?
     @ObservationIgnored private let recentStore: (any RecentSearchStore)?
     @ObservationIgnored public let board: InvestigationModel
+    @ObservationIgnored private let requests = PublicDataRequests()
     private var revision = 0
 
     public init(
@@ -33,7 +34,7 @@ public final class SearchModel {
         self.board = board ?? InvestigationModel(service: service, legacy: nil, usesModel: false)
     }
 
-    public var isSearching: Bool { !SearchText.words(query).isEmpty || !tokens.isEmpty }
+    public var isSearching: Bool { !query.searchWords.isEmpty || !tokens.isEmpty }
 
     public var results: SearchResults {
         _ = revision
@@ -100,7 +101,7 @@ public final class SearchModel {
     }
 
     public func record() {
-        guard !SearchText.words(query).isEmpty else { return }
+        guard !query.searchWords.isEmpty else { return }
         recents = RecentSearches.adding(query, to: recents)
         recentStore?.save(recents)
     }
@@ -115,7 +116,7 @@ public final class SearchModel {
         recents = recentStore?.load() ?? []
         guard index.isEmpty else { return }
         phase = .loading
-        phase = await PublicDataPhase.settle(after: phase) {
+        phase = await PublicDataPhase.settle(after: phase, in: requests) {
             guard let service else { throw PublicDataError.unavailable }
             async let people = service.people()
             async let places = try? service.places()
@@ -123,15 +124,17 @@ public final class SearchModel {
             async let meta = try? service.meta()
             let voteList = await votes
             let loaded = (try await people, await places ?? [], voteList ?? [])
-            index = await Task.detached {
+            let built = await Task.detached {
                 SearchIndex(people: loaded.0, places: loaded.1, votes: loaded.2)
             }.value
-            let info = await meta
-            sources = info?.sources ?? []
-            recentVotes = voteList
-            updatedAt = info?.generatedAt
+            return SearchCatalog(index: built, votes: voteList, meta: await meta)
+        } apply: { catalog in
+            index = catalog.index
+            sources = catalog.meta?.sources ?? []
+            recentVotes = catalog.votes
+            updatedAt = catalog.meta?.generatedAt
             revision += 1
-            board.prepare(index: index, recent: voteList ?? [])
+            board.prepare(index: index, recent: catalog.votes ?? [])
         }
         await board.load()
     }
@@ -142,4 +145,10 @@ extension SearchToken {
         if case .place(let place) = self { return place }
         return nil
     }
+}
+
+private struct SearchCatalog {
+    let index: SearchIndex
+    let votes: [VoteSummary]?
+    let meta: PublicMeta?
 }

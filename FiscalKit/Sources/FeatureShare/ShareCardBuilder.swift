@@ -6,7 +6,7 @@ public struct ShareCardBuilder: Sendable {
 
     let calendar: Calendar
 
-    public init(calendar: Calendar = FiscalCalendar.current) {
+    public init(calendar: Calendar = GregorianCalendar.current) {
         self.calendar = calendar
     }
 

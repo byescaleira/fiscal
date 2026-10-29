@@ -1,7 +1,7 @@
 import SwiftUI
 
 public struct ScoreboardFigure: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @ScaledMetric(relativeTo: .largeTitle) private var size: CGFloat = 72
     private let value: String
     private let numeric: Double

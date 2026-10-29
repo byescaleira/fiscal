@@ -16,7 +16,7 @@ struct PlaceMonogram: View {
                 .font(.caption2.weight(.heavy))
                 .foregroundStyle(WidgetStyle.secondary)
                 .lineLimit(1)
-                .minimumScaleFactor(0.7)
+                .minimumScaleFactor(.widgetNameShrink)
         }
         .privacySensitive()
         .accessibilityElement(children: .combine)
@@ -53,7 +53,7 @@ struct RepresentativesSmall: View {
                 .font(.caption2)
                 .foregroundStyle(WidgetStyle.secondary)
                 .lineLimit(2)
-                .minimumScaleFactor(0.9)
+                .minimumScaleFactor(.widgetNoteShrink)
         }
     }
 
@@ -84,7 +84,7 @@ struct RepresentativesMedium: View {
                     .font(.caption2)
                     .foregroundStyle(WidgetStyle.secondary)
                     .lineLimit(2)
-                    .minimumScaleFactor(0.85)
+                    .minimumScaleFactor(.widgetTextShrink)
             }
             .containerRelativeFrame(
                 .horizontal, count: 5, span: 2, spacing: .spaceL, alignment: .leading)
@@ -120,7 +120,7 @@ private struct RepresentativeRow: View {
                     .foregroundStyle(WidgetStyle.secondary)
             }
             .lineLimit(1)
-            .minimumScaleFactor(0.85)
+            .minimumScaleFactor(.widgetTextShrink)
             Spacer(minLength: 0)
         }
         .privacySensitive()

@@ -57,11 +57,10 @@ private struct VoteScoreboard: View {
         let outcome = vote.outcome ?? .pending
         VStack(spacing: .spaceM) {
             VStack(spacing: .space2XS) {
-                Text(verbatim: vote.heroCaption)
-                    .font(.caption2.weight(.heavy))
-                    .foregroundStyle(BoardStyle.secondary)
+                Chip(vote.heroCaption, color: BoardStyle.primary, shape: .capsule)
+                    .environment(\.colorScheme, .dark)
                 Text(verbatim: vote.title)
-                    .font(.headline)
+                    .font(.titleMedium)
                     .foregroundStyle(BoardStyle.primary)
             }
             .multilineTextAlignment(.center)
@@ -117,8 +116,9 @@ private struct HeroSide: View {
         VStack(spacing: .space2XS) {
             ScoreboardFigure(value, numeric: numeric)
                 .foregroundStyle(isDimmed ? BoardStyle.secondary : BoardStyle.primary)
-            Label(choice.title.uppercased(with: .app), systemImage: choice.symbol)
-                .font(.caption.weight(.heavy))
+            Label(choice.title, systemImage: choice.symbol)
+                .font(.chipLabel)
+                .textCase(.uppercase)
                 .foregroundStyle(BoardStyle.primary)
                 .padding(.horizontal, .spaceS)
                 .padding(.vertical, .space2XS)
@@ -130,7 +130,7 @@ private struct HeroSide: View {
 
 private struct HeroCenter: View {
     @Environment(VoteDetailModel.self) private var vote
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @State private var hasAppeared = false
     let outcome: VoteOutcome
 
@@ -138,9 +138,10 @@ private struct HeroCenter: View {
         VStack(spacing: .space2XS) {
             Image(systemName: outcome.symbol)
                 .font(.icon(.l, weight: .semibold))
-                .symbolEffect(.bounce, value: hasAppeared)
-            Text(verbatim: outcome.title.uppercased(with: .app))
-                .font(.caption.weight(.heavy))
+                .quietBounce(value: hasAppeared)
+            Text(verbatim: outcome.title)
+                .font(.chipLabel)
+                .textCase(.uppercase)
             Text(verbatim: vote.quorumText)
                 .font(.caption2.weight(.semibold))
                 .foregroundStyle(BoardStyle.secondary)

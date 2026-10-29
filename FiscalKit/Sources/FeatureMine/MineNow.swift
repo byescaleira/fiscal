@@ -53,18 +53,18 @@ private struct MineHighlightCard: View {
     @Environment(MineModel.self) private var mine
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @State private var appeared = false
     let highlight: Highlight
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceL) {
             HStack(spacing: .spaceS) {
-                Text(verbatim: mine.highlightKicker(highlight).uppercased(with: .app))
-                    .font(.caption.weight(.heavy))
-                    .padding(.horizontal, .spaceM)
-                    .padding(.vertical, .space2XS)
-                    .background(.white.opacity(.opacityTint), in: .capsule)
+                Chip(
+                    mine.highlightKicker(highlight).uppercased(with: .app), color: .white,
+                    shape: .capsule
+                )
+                .environment(\.colorScheme, .dark)
                 Spacer(minLength: .spaceS)
                 Label(mine.highlightScope, systemImage: "mappin")
                     .font(.caption.weight(.semibold))
@@ -89,7 +89,7 @@ private struct MineHighlightCard: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.scoreboard, in: .rect(cornerRadius: .radiusGroup))
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { appeared = true }
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) { appeared = true }
         }
     }
 
@@ -104,7 +104,7 @@ private struct MineHighlightCard: View {
                     .overlay { Circle().strokeBorder(.white, lineWidth: .spaceHairline) }
                     VStack(alignment: .leading, spacing: .space2XS) {
                         Text(verbatim: person.name)
-                            .font(.headline.weight(.heavy))
+                            .font(.emphasis(.headline, weight: .bold))
                             .lineLimit(2)
                         HStack(spacing: .spaceXS) {
                             PartyMark(person.party)
@@ -128,14 +128,14 @@ private struct MineHighlightCard: View {
             VStack(alignment: .leading, spacing: .spaceXS) {
                 HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
                     Text(verbatim: Relevance(weight: highlight.weight).title)
-                        .font(.subheadline.weight(.heavy))
+                        .font(.emphasis(.subheadline, weight: .bold))
                     Spacer(minLength: .spaceS)
                     Text("weight \(highlight.weight) of 100")
                         .font(.caption.weight(.semibold))
                         .monospacedDigit()
                         .opacity(.opacityStrong)
                 }
-                ProgressBar(value: appeared ? Double(highlight.weight) / 100 : 0, color: .white)
+                ProgressBar(value: appeared ? highlight.weightShare : 0, color: .white)
                 if let text = highlight.coverage.uncertaintyShort {
                     Label(text, systemImage: "info.circle")
                         .font(.caption.weight(.medium))
@@ -160,7 +160,7 @@ private struct MineVoteRow: View {
             VStack(alignment: .leading, spacing: .spaceS) {
                 HStack(spacing: .spaceS) {
                     Text(verbatim: board.eyebrow)
-                        .font(.caption2.weight(.heavy))
+                        .font(.chipLabel)
                         .foregroundStyle(.secondary)
                     Spacer(minLength: .spaceS)
                     Label(board.outcomeTitle, systemImage: board.outcomeSymbol)

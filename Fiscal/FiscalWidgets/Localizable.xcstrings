@@ -70,6 +70,12 @@
                   "state" : "translated",
                   "value" : "%lld deputados federais"
                 }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Nenhum deputado federal"
+                }
               }
             }
           }
@@ -91,6 +97,12 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld deputados estaduais"
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Nenhum deputado estadual"
                 }
               }
             }

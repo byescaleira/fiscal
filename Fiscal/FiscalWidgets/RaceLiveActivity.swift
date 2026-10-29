@@ -10,7 +10,7 @@ struct RaceLiveActivity: Widget {
         ActivityConfiguration(for: RaceActivityAttributes.self) { context in
             RaceLockScreen(context: context)
                 .activityBackgroundTint(nil)
-                .widgetURL(URL(string: "fiscal://home"))
+                .widgetURL(IntegrationLink.races)
         } dynamicIsland: { context in
             let board = RaceBoard(context: context)
             return DynamicIsland {
@@ -51,7 +51,7 @@ struct RaceLiveActivity: Widget {
                     .accessibilityLabel(Text(verbatim: board.countText))
             }
             .keylineTint(RaceStyle.accent)
-            .widgetURL(URL(string: "fiscal://home"))
+            .widgetURL(IntegrationLink.races)
         }
     }
 }
@@ -92,7 +92,7 @@ private struct RaceLockScreen: View {
                     .font(.caption2)
                     .foregroundStyle(RaceStyle.secondary)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.8)
+                    .minimumScaleFactor(.widgetLabelShrink)
             }
             HStack(alignment: .center, spacing: .spaceS) {
                 if let first = board.first {
@@ -108,16 +108,8 @@ private struct RaceLockScreen: View {
                     Text(verbatim: board.centerCaption)
                         .font(.caption2.weight(.medium))
                         .foregroundStyle(RaceStyle.secondary)
-                    Capsule()
-                        .fill(RaceStyle.track)
-                        .frame(width: .badgeL, height: .space2XS)
-                        .overlay(alignment: .leading) {
-                            Capsule()
-                                .fill(RaceStyle.primary)
-                                .frame(
-                                    width: .badgeL
-                                        * min(max(board.state.sectionsPercent / 100, 0), 1))
-                        }
+                    ProgressBar(value: board.countedFraction, color: RaceStyle.primary)
+                        .frame(width: .badgeL)
                 }
                 .lineLimit(1)
                 Spacer(minLength: 0)
@@ -150,7 +142,7 @@ private struct SideColumn: View {
                     .contentTransition(.numericText(value: score.value))
                     .foregroundStyle(RaceStyle.primary)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.6)
+                    .minimumScaleFactor(.widgetScoreShrink)
                 if alignment == .trailing { CandidatePhoto(row: row, side: .badgeM) }
             }
             HStack(spacing: .space2XS) {
@@ -159,7 +151,7 @@ private struct SideColumn: View {
                     .font(.caption2.weight(.heavy))
                     .foregroundStyle(RaceStyle.secondary)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.6)
+                    .minimumScaleFactor(.widgetScoreShrink)
                 if alignment == .leading { PartyMark(row.party) }
             }
         }
@@ -190,7 +182,7 @@ struct CandidatePhoto: View {
         .overlay(alignment: .topTrailing) {
             if row.elected {
                 Image(systemName: "checkmark.seal.fill")
-                    .font(.system(size: side * 0.32))
+                    .font(.electedSeal(side))
                     .symbolRenderingMode(.palette)
                     .foregroundStyle(.white, RaceStyle.accent)
             }
@@ -215,7 +207,7 @@ private struct CandidateSide: View {
                     .monospacedDigit()
                     .contentTransition(.numericText(value: row.value))
                     .foregroundStyle(RaceStyle.primary)
-                    .minimumScaleFactor(0.6)
+                    .minimumScaleFactor(.widgetScoreShrink)
                     .lineLimit(1)
                 Text(verbatim: row.name)
                     .font(
@@ -224,11 +216,11 @@ private struct CandidateSide: View {
                     )
                     .foregroundStyle(RaceStyle.secondary)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.7)
+                    .minimumScaleFactor(.widgetNameShrink)
             }
             if alignment == .trailing { badge }
         }
-        .opacity(row.dimmed ? 0.5 : 1)
+        .opacity(row.dimmed ? .widgetDimmed : 1)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: row.accessibility))
     }
@@ -248,21 +240,22 @@ private struct NumberBadge: View {
 
     var body: some View {
         PartyStripes(palette: palette)
-            .clipShape(.rect(cornerRadius: side * 0.28, style: .continuous))
+            .clipShape(.rect(cornerRadius: side * .ballotCornerScale, style: .continuous))
             .frame(width: side, height: side)
             .overlay {
                 Text(verbatim: number)
                     .font(.ballotNumber(side))
                     .foregroundStyle(.white)
-                    .minimumScaleFactor(0.6)
+                    .minimumScaleFactor(.widgetScoreShrink)
             }
             .overlay(alignment: .topTrailing) {
                 if elected {
                     Image(systemName: "checkmark.seal.fill")
-                        .font(.system(size: side * 0.36))
+                        .font(.ballotSeal(side))
                         .symbolRenderingMode(.palette)
                         .foregroundStyle(.white, RaceStyle.accent)
-                        .offset(x: side * 0.16, y: -side * 0.16)
+                        .offset(
+                            x: side * .ballotSealOffsetScale, y: -side * .ballotSealOffsetScale)
                 }
             }
     }
@@ -273,21 +266,14 @@ private struct ShareBar: View {
     let height: CGFloat
 
     var body: some View {
-        GeometryReader { proxy in
-            let first = board.first?.percent ?? 0
-            let second = board.second?.percent ?? 0
-            let total = first + second
-            let share = total > 0 ? first / total : 0.5
-            HStack(spacing: .spaceHairline) {
-                Capsule()
-                    .fill(RaceStyle.primary)
-                    .frame(width: max(height, (proxy.size.width - .spaceHairline) * share))
-                Capsule()
-                    .fill(RaceStyle.secondary.opacity(.opacitySoft))
-            }
-        }
-        .frame(height: height)
-        .accessibilityHidden(true)
+        let shares = board.splitShares
+        TallyBar(
+            segments: [
+                .init(id: "first", value: shares.first, color: RaceStyle.primary),
+                .init(
+                    id: "second", value: shares.second,
+                    color: RaceStyle.secondary.opacity(.opacitySoft)),
+            ], height: height)
     }
 }
 
@@ -297,7 +283,7 @@ private struct BoardFooter: View {
     var body: some View {
         HStack(alignment: .firstTextBaseline) {
             Text(verbatim: board.countText)
-                .font(.caption.weight(.semibold))
+                .font(.boardCount)
                 .foregroundStyle(RaceStyle.primary)
                 .monospacedDigit()
             Spacer(minLength: .spaceS)
@@ -310,9 +296,41 @@ private struct BoardFooter: View {
     }
 }
 
-private struct CompactLeading: View {
+private struct IslandWidthReader<Content: View>: View {
+    @ViewBuilder let content: (Bool) -> Content
+
+    var body: some View {
+        if #available(iOS 27, *) {
+            LimitedIslandWidth(content: content)
+        } else {
+            content(false)
+        }
+    }
+}
+
+@available(iOS 27, *)
+private struct LimitedIslandWidth<Content: View>: View {
     @Environment(\.isDynamicIslandLimitedInWidth) private var limited
+    let content: (Bool) -> Content
+
+    var body: some View {
+        content(limited)
+    }
+}
+
+private struct CompactLeading: View {
     let board: RaceBoard
+
+    var body: some View {
+        IslandWidthReader { limited in
+            CompactLeadingContent(board: board, limited: limited)
+        }
+    }
+}
+
+private struct CompactLeadingContent: View {
+    let board: RaceBoard
+    let limited: Bool
 
     var body: some View {
         if limited {
@@ -326,13 +344,14 @@ private struct CompactLeading: View {
 }
 
 private struct CompactTrailing: View {
-    @Environment(\.isDynamicIslandLimitedInWidth) private var limited
     let board: RaceBoard
 
     var body: some View {
-        if !limited, let second = board.second {
-            CompactStanding(score: board.score(second))
-                .accessibilityLabel(Text(verbatim: board.score(second).accessibility))
+        IslandWidthReader { limited in
+            if !limited, let second = board.second {
+                CompactStanding(score: board.score(second))
+                    .accessibilityLabel(Text(verbatim: board.score(second).accessibility))
+            }
         }
     }
 }
@@ -342,14 +361,15 @@ private struct CompactStanding: View {
 
     var body: some View {
         HStack(spacing: .space2XS) {
-            NumberBadge(number: score.number, palette: score.palette, elected: false, side: 20)
+            NumberBadge(
+                number: score.number, palette: score.palette, elected: false, side: .islandBadge)
             Text(verbatim: score.shortPercent)
-                .font(.caption.weight(.heavy))
+                .font(.islandScore)
                 .foregroundStyle(RaceStyle.primary)
                 .contentTransition(.numericText())
         }
         .monospacedDigit()
         .lineLimit(1)
-        .minimumScaleFactor(0.7)
+        .minimumScaleFactor(.widgetNameShrink)
     }
 }

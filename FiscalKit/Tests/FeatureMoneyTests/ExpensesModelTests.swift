@@ -87,6 +87,22 @@ struct ExpensesModelTests {
         #expect(model.groups.flatMap(\.lines).count == model.list?.items.count)
     }
 
+    @Test func theFilterCountsTheKindAndNamesTheScope() async throws {
+        let model = await loaded()
+        #expect(model.canFilter)
+        #expect(model.activeFilterCount == 0)
+        #expect(model.scopeTitle == "2026 · \(String(appLocalized: "All kinds"))")
+        let kind = try #require(model.categoryNames.first)
+        model.categoryFilter = kind
+        #expect(model.hasFilter)
+        #expect(model.activeFilterCount == 1)
+        #expect(model.scopeTitle == "2026 · \(kind)")
+        model.clearFilters()
+        #expect(model.categoryFilter == nil)
+        #expect(model.averageReais == model.averageCents.map { Double($0) / 100 })
+        #expect(model.medianReais == model.medianCents.map { Double($0) / 100 })
+    }
+
     @Test func switchingTheYearReloadsAndClearsTheSelection() async throws {
         let model = await loaded()
         #expect(model.years == [2_023, 2_024, 2_025, 2_026])

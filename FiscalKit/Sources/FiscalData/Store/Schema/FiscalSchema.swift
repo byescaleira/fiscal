@@ -1,32 +1,6 @@
 import Foundation
 import SwiftData
 
-public enum FiscalSchemaV1: VersionedSchema {
-    public static var versionIdentifier: Schema.Version { .init(1, 0, 0) }
-    public static var models: [any PersistentModel.Type] {
-        cloudModels + deviceModels
-    }
-    public static var cloudModels: [any PersistentModel.Type] {
-        [FollowEntity.self]
-    }
-    public static var deviceModels: [any PersistentModel.Type] {
-        [LensEntity.self]
-    }
-}
-
-public enum FiscalSchemaV2: VersionedSchema {
-    public static var versionIdentifier: Schema.Version { .init(2, 0, 0) }
-    public static var models: [any PersistentModel.Type] {
-        cloudModels + deviceModels
-    }
-    public static var cloudModels: [any PersistentModel.Type] {
-        [FollowEntity.self]
-    }
-    public static var deviceModels: [any PersistentModel.Type] {
-        [LensEntity.self]
-    }
-}
-
 public enum FiscalSchemaV3: VersionedSchema {
     public static var versionIdentifier: Schema.Version { .init(3, 0, 0) }
     public static var models: [any PersistentModel.Type] {
@@ -39,8 +13,6 @@ public enum FiscalSchemaV3: VersionedSchema {
         [LensEntity.self]
     }
 }
-
-public typealias LensEntity = FiscalSchemaV2.LensEntity
 
 public enum FiscalMigrationPlan: SchemaMigrationPlan {
     public static var schemas: [any VersionedSchema.Type] {

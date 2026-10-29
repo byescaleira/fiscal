@@ -14,7 +14,7 @@ public struct GuidesHubScreen: View {
             .padding(.vertical, .spaceL)
         }
         .readableWidth()
-        .background(.groupedBackground)
+        .background(.plainBackground)
         .navigationTitle("Guides")
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
@@ -74,6 +74,6 @@ private struct GuideCard: View {
             .contentShape(.rect)
         }
         .buttonStyle(.plain)
-        .background(.groupedRow, in: .rect(cornerRadius: .radiusL, style: .continuous))
+        .background(.plainRow, in: .rect(cornerRadius: .radiusL, style: .continuous))
     }
 }

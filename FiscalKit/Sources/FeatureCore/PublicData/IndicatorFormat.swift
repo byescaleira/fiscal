@@ -22,7 +22,7 @@ public enum IndicatorFormat {
                 .locale(locale))
     }
 
-    public static func month(_ day: CalendarDay?, calendar: Calendar = FiscalCalendar.current)
+    public static func month(_ day: CalendarDay?, calendar: Calendar = GregorianCalendar.current)
         -> String
     {
         guard let day else { return PublicFormat.missing }

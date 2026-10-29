@@ -27,6 +27,7 @@ public struct RepresentativesVoteIntent: AppIntent {
 
     @MainActor
     public func perform() async throws -> some IntentResult & ProvidesDialog {
+        try IntentWorkspace.ensureOpen()
         guard let uf = state?.rawValue ?? HomePlace.chosenUF(in: .standard) else {
             throw $state.needsValueError("Which state?")
         }
@@ -64,6 +65,7 @@ public struct OpenPersonIntent: OpenIntent {
 
     @MainActor
     public func perform() async throws -> some IntentResult {
+        try IntentWorkspace.ensureOpen()
         FiscalServices.shared.pendingURL = IntegrationLink.person(target.id)
         return .result()
     }
@@ -80,6 +82,7 @@ public struct ShowRacesIntent: AppIntent {
 
     @MainActor
     public func perform() async throws -> some IntentResult {
+        try IntentWorkspace.ensureOpen()
         FiscalServices.shared.pendingURL = IntegrationLink.races
         return .result()
     }

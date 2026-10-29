@@ -241,3 +241,70 @@ Rode `caddy validate` antes de recarregar. Se a carga do Caddy pesar em pico, `H
 - **Desafios.** Cada desafio vale 2 min e serve uma vez. Cada cliente (IPv4, ou o /64 do IPv6) tem no máximo 8 desafios abertos; o nono responde `429 rate_limited` com `Retry-After: 120`, e um desafio usado ou vencido libera a vaga. O teto global continua em 100 mil.
 - **No servidor.** As chaves ficam em `DATA_DIR/attest-keys.json`, sem IP. Uma chave sem uso por 400 dias sai. A resposta `attest_unknown_key` faz o app atestar de novo.
 - **Pendência.** Falta o entitlement `com.apple.developer.devicecheck.appattest-environment = production` nos builds de distribuição (TestFlight e App Store já usam produção); builds do Xcode usam `development`.
+
+## 9. Site no mesmo bloco (proposta, com o ok do usuário)
+
+Hoje o bloco `fiscal.byescaleira.com` termina em `handle { respond 404 }` ([server/README.md](../server/README.md#caddy-no-ar-desde-2026-10-25)): a API está no ar, o site ainda não. Para publicar o site (`site/` do repositório, arquivos estáticos em `/opt/fiscal-site/public`), o bloco fica como abaixo. É o que o repositório pede (skill `byescaleira-sdd`, `launch-site-and-support.md` e `vps-operations.md`), não o que está na VPS: confira o bloco real antes de editar e siga os quatro passos (backup `.bak.<epoch>`, edição só deste bloco, `caddy validate`, `systemctl reload caddy`).
+
+```
+fiscal.byescaleira.com {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		?Cache-Control "public, max-age=300"
+		-Server
+	}
+
+	@hot { … }
+	handle @hot { … }
+
+	@races path /api/v1/races /api/v1/races/*
+	handle @races { … }
+
+	@data { … }
+	handle @data { … }
+
+	handle /api/v1/admin/* {
+		respond 404
+	}
+
+	handle /api/* {
+		reverse_proxy 127.0.0.1:3130
+	}
+
+	handle /admin* {
+		reverse_proxy 127.0.0.1:3120
+	}
+
+	handle /bridge/* {
+		reverse_proxy 127.0.0.1:3110
+	}
+
+	@aasa path /.well-known/apple-app-site-association
+	header @aasa Content-Type "application/json"
+
+	handle {
+		root * /opt/fiscal-site/public
+		try_files {path} {path}.html
+		file_server
+	}
+
+	log {
+		output file /var/log/fiscal-access.log {
+			roll_size 100mb
+			roll_keep 10
+		}
+		format json
+	}
+}
+```
+
+- **`@hot`, `@races` e `@data`** continuam iguais aos da seção 7 e do `server/README.md`; os `…` só encurtam o exemplo.
+- **`?Cache-Control`** só entra quando a resposta não trouxe o seu: o `no-store` da API, da ponte e do admin e o cache curto do `@hot`, `@races` e `@data` ficam como estão; o site ganha `public, max-age=300`.
+- **`try_files {path} {path}.html`** serve `/privacy`, `/terms`, `/support` e `/link` sem `.html`, como o `scripts/site-server.mjs` faz em `127.0.0.1:4173`.
+- **`handle /admin*`** é o painel de flags e versões (`admin/README.md`). **`handle /bridge/*`** só faz sentido com a ponte no ar, junto com o Fiscal na Web, depois da 1.0; até lá, pode ficar de fora.
+- **`/.well-known/apple-app-site-association`** precisa responder `200` com JSON, sem redirecionamento, enquanto houver versão na loja com `applinks:`.
+- **Saúde depois do reload:** `curl -s https://fiscal.byescaleira.com/api/health` (`{"ok":true,"version":"…"}`), `curl -s https://fiscal.byescaleira.com/admin/health` e, com a ponte no ar, `/bridge/health`, todos com a versão; depois as rotas do site com a receita de [docs/web.md](web.md#publicar).

@@ -103,12 +103,17 @@ extension Investigation {
     }
 }
 
-public struct DeviceInvestigations: @unchecked Sendable {
-    public static let key = "search.investigations"
-    private let defaults: UserDefaults
+public struct DeviceInvestigations: Sendable {
+    public static let key = "fiscal.search.investigations"
+    public static let legacyKey = "search.investigations"
+    private let suiteName: String?
 
-    public init(defaults: UserDefaults = .standard) {
-        self.defaults = defaults
+    public init(suiteName: String? = nil) {
+        self.suiteName = suiteName
+    }
+
+    private var defaults: UserDefaults {
+        DeviceDefaults.migrated(suiteName, from: Self.legacyKey, to: Self.key)
     }
 
     public func load() -> [Investigation] {

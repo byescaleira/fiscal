@@ -1,6 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 project_root="$(cd "$(dirname "$0")/.." && pwd)"
+source "$project_root/scripts/kit-access.sh"
 if ! grep -q '"FiscalAudit"' "$project_root/FiscalKit/Package.swift"; then
   echo "Skipping the data audit: FiscalKit has no FiscalAudit target yet (recipe in the byescaleira-sdd tooling-and-ci.md)."
   exit 0

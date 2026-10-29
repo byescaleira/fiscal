@@ -1,13 +1,10 @@
-import CoreGraphics
 import FeatureCore
 import FiscalData
 import FiscalDesignSystem
 import FiscalDomain
 import FiscalResource
 import Foundation
-import ImageIO
 import Testing
-import UniformTypeIdentifiers
 
 @testable import FeatureShare
 
@@ -36,6 +33,9 @@ struct ShareCardSnapshotTests {
     @Test(.enabled(if: ShareSnapshotFolder.path != nil)) func rendersEveryCardToDisk() async throws
     {
         EmphasisFont.register()
+        let previousLanguage = LanguageSetting.shared.language
+        FiscalLanguage.install()
+        defer { LanguageSetting.shared.language = previousLanguage }
         let folder = URL(fileURLWithPath: try #require(ShareSnapshotFolder.path), isDirectory: true)
         try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
         for (name, subject) in subjects {
@@ -43,7 +43,7 @@ struct ShareCardSnapshotTests {
                 subject: subject, service: ShowcasePublicData(scenario: .normal, now: now),
                 races: ShowcaseLiveResults(scenario: .finished))
             await model.load()
-            for format in ShareFormat.allCases {
+            for format in FeatureShare.ShareFormat.allCases {
                 model.format = format
                 try write(
                     model,
@@ -54,7 +54,7 @@ struct ShareCardSnapshotTests {
                 let historical = try #require(
                     model.works.first { $0.collection == "acervo-historico" })
                 model.select(historical)
-                for format in ShareFormat.allCases {
+                for format in FeatureShare.ShareFormat.allCases {
                     model.format = format
                     try write(
                         model,
@@ -69,10 +69,6 @@ struct ShareCardSnapshotTests {
     private func write(_ model: ShareModel, to url: URL) throws {
         let card = try #require(model.card)
         let image = try #require(ShareRenderer.render(card, code: model.code, scale: 3))
-        let destination = try #require(
-            CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil)
-        )
-        CGImageDestinationAddImage(destination, image, nil)
-        #expect(CGImageDestinationFinalize(destination))
+        try image.png.write(to: url)
     }
 }

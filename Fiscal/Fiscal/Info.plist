@@ -26,17 +26,17 @@
 	<key>FiscalDataURL</key>
 	<string>https://dados.fiscal.byescaleira.com</string>
 	<key>FiscalHelpURL</key>
-	<string></string>
+	<string>https://fiscal.byescaleira.com/support</string>
 	<key>FiscalPrivacyURL</key>
-	<string></string>
+	<string>https://fiscal.byescaleira.com/privacy</string>
 	<key>FiscalSupportEmail</key>
-	<string></string>
+	<string>support@byescaleira.com</string>
 	<key>FiscalTermsURL</key>
-	<string></string>
+	<string>https://fiscal.byescaleira.com/terms</string>
 	<key>FiscalWebBridgeURL</key>
 	<string></string>
 	<key>FiscalWebsiteURL</key>
-	<string></string>
+	<string>https://fiscal.byescaleira.com</string>
 	<key>NSUbiquitousContainers</key>
 	<dict>
 		<key>iCloud.fiscal</key>

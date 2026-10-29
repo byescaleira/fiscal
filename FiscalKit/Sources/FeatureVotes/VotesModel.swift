@@ -42,6 +42,7 @@ public final class VotesModel {
     public var theme: Theme?
     @ObservationIgnored private let service: (any PublicDataService)?
     @ObservationIgnored private let lensRepository: (any LensRepository)?
+    @ObservationIgnored private let requests = PublicDataRequests()
     @ObservationIgnored let now: @Sendable () -> Date
 
     public init(
@@ -120,11 +121,21 @@ public final class VotesModel {
 
     public func load() async {
         if votes.isEmpty { phase = .loading }
-        phase = await PublicDataPhase.settle(after: phase) {
-            lens = try? await lensRepository?.lens()
+        phase = await PublicDataPhase.settle(after: phase, in: requests) {
+            let lens = try? await lensRepository?.lens()
             guard let service else { throw PublicDataError.unavailable }
-            votes = try await service.recentVotes()
-            agenda = try? await service.agenda()
+            let votes = try await service.recentVotes()
+            return VotesPage(lens: lens, votes: votes, agenda: try? await service.agenda())
+        } apply: { page in
+            lens = page.lens
+            votes = page.votes
+            agenda = page.agenda
         }
     }
+}
+
+private struct VotesPage {
+    let lens: Lens?
+    let votes: [VoteSummary]
+    let agenda: Agenda?
 }

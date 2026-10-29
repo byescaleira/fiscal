@@ -1,6 +1,15 @@
 {
-  "originHash" : "97763783c405faac1a1af73af2eea0807bd30daa8c9a301d38219422bc78ff0d",
+  "originHash" : "bf48cb94155d23600e9e3c541ab80144a4fc7186196cbbaad02d509a83bf1b3b",
   "pins" : [
+    {
+      "identity" : "byescaleira-kit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/byescaleira/byescaleira-kit.git",
+      "state" : {
+        "revision" : "3b0b472f964c31ae173c0379347b5c0bdf8c0303",
+        "version" : "0.5.1"
+      }
+    },
     {
       "identity" : "lottie-spm",
       "kind" : "remoteSourceControl",

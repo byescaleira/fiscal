@@ -5,6 +5,7 @@ import SwiftUI
 
 public struct TodayScreen<RaceHero: View>: View {
     @Environment(TodayModel.self) private var today
+    @Environment(SessionModel.self) private var session
     private let raceHero: (Race) -> RaceHero
 
     public init(@ViewBuilder raceHero: @escaping (Race) -> RaceHero) {
@@ -27,7 +28,7 @@ public struct TodayScreen<RaceHero: View>: View {
             .frame(maxWidth: .readableColumn * 2)
             .frame(maxWidth: .infinity)
         }
-        .background(.groupedBackground)
+        .background(.plainBackground)
         .emphasisTitle("Today")
         .toolbar { TodayToolbar() }
         .refreshable { await today.load() }
@@ -35,6 +36,7 @@ public struct TodayScreen<RaceHero: View>: View {
             await today.load()
             await today.watchRaces()
         }
+        .onChange(of: session.generation) { Task { await today.load() } }
     }
 }
 
@@ -47,13 +49,7 @@ private struct TodayBody: View {
                 TodayNotice(text: notice.text, symbol: notice.symbol)
             }
             TodayBriefingSection()
-            LazyVGrid(
-                columns: [
-                    GridItem(
-                        .adaptive(minimum: .cardColumn), spacing: .spaceXL, alignment: .top)
-                ],
-                alignment: .leading, spacing: .spaceXL
-            ) {
+            CardGrid(minimumWidth: .cardColumn, spacing: .spaceXL) {
                 TodayCongressSection()
                 TodayRepresentativesSection()
                 TodayRecentVotesSection()
@@ -71,13 +67,9 @@ private struct TodayMasthead: View {
     @Environment(\.appTint) private var tint
 
     var body: some View {
-        VStack(alignment: .leading, spacing: .spaceS) {
-            Text(verbatim: today.dateLine.uppercased())
-                .font(.subheadline.weight(.heavy))
-                .foregroundStyle(tint)
-                .accessibilityLabel(Text(verbatim: today.dateLine))
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        Chip(today.dateKicker, color: tint, shape: .capsule)
+            .accessibilityLabel(Text(verbatim: today.dateLine))
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -90,6 +82,7 @@ private struct TodayToolbar: ToolbarContent {
             Button("Who You Support", systemImage: "heart") { open(.lens, in: section) }
                 .tint(Color.primary)
         }
+        FixedToolbarSpacer(placement: .primaryAction)
         ToolbarItem(placement: .primaryAction) {
             #if os(macOS)
                 SettingsLink {
@@ -108,27 +101,20 @@ private struct TodayFailure: View {
     let error: PublicDataError
 
     var body: some View {
-        VStack(spacing: .spaceL) {
+        VStack(spacing: .spaceM) {
             SymbolBadge(error.symbol, color: .secondary, size: .badgeXL)
-            VStack(spacing: .spaceXS) {
-                Group {
-                    if error == .offline {
-                        Text(verbatim: error.title)
-                    } else {
-                        Text("Couldn't load the summary of the day")
-                    }
-                }
-                .font(.headline)
-                Text(verbatim: error.message)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
-            .multilineTextAlignment(.center)
+            Text(verbatim: today.failureTitle(error))
+                .font(.titleMedium)
+            Text(verbatim: error.message)
+                .font(.body)
+                .foregroundStyle(.secondary)
             Button("Try Again") { Task { await today.load() } }
                 .primaryButton()
+                .padding(.top, .spaceS)
         }
-        .padding(.spaceXL)
-        .todayCard()
+        .multilineTextAlignment(.center)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, .spaceM)
     }
 }
 
@@ -137,14 +123,14 @@ private struct TodayPlaceholder: View {
         VStack(alignment: .leading, spacing: .spaceXL) {
             VStack(alignment: .leading, spacing: .spaceM) {
                 Text(verbatim: "Vote · Taxes and public spending")
-                    .font(.caption2.weight(.heavy))
+                    .font(.chipLabel)
                 Text(verbatim: "The Chamber voted a bill about the income tax table today")
                     .font(.titleMedium)
                 Text(verbatim: "A short summary in plain language comes right below the title.")
                     .font(.body)
                 HStack(spacing: .spaceL) {
-                    Text(verbatim: "412").font(.scoreboardNumber)
-                    Text(verbatim: "61").font(.scoreboardNumber)
+                    Text(verbatim: "412").font(.scoreboardTitle)
+                    Text(verbatim: "61").font(.scoreboardTitle)
                 }
             }
             .padding(.spaceInset)

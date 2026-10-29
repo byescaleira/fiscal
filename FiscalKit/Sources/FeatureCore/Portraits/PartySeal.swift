@@ -10,7 +10,7 @@ public struct PartySeal: View {
     private static let minimumScale: CGFloat = 0.5
 
     @Environment(PortraitStore.self) private var store
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @Environment(\.partyMarksAreStill) private var partyMarksAreStill
     @Environment(\.self) private var environment
     private let party: String

@@ -21,15 +21,14 @@ public enum AppSection: String, CaseIterable, Identifiable, Sendable {
         case .today: "calendar.badge.checkmark"
         case .mine: "mappin.and.ellipse"
         case .votes: "checklist"
-        case .money: "building.columns.fill"
+        case .money: "building.columns"
         case .search: "magnifyingglass"
         }
     }
 
     public var role: TabRole? {
-        switch self {
-        case .search: .prominent
-        default: nil
-        }
+        guard self == .search else { return nil }
+        if #available(iOS 27, macOS 27, visionOS 27, *) { return .prominent }
+        return .search
     }
 }

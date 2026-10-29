@@ -5,6 +5,7 @@ import SwiftUI
 
 public struct ProfileScreen: View {
     @Environment(ProfileModel.self) private var profile
+    @Environment(SessionModel.self) private var session
 
     public init() {}
 
@@ -39,7 +40,7 @@ public struct ProfileScreen: View {
             .navigationBarTitleDisplayMode(.inline)
         #endif
         .refreshable { await profile.load() }
-        .task { await profile.load() }
+        .task(id: session.generation) { await profile.load() }
         .errorAlert($profile.error)
     }
 }
@@ -76,7 +77,7 @@ struct ProfileNumbersSection: View {
 }
 
 private struct NumberTileView: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @State private var filled = false
     let tile: ProfileModel.NumberTile
 
@@ -93,7 +94,7 @@ private struct NumberTileView: View {
                 .amountLine()
             if let fraction = tile.fraction {
                 ProgressBar(value: filled ? fraction : 0, color: .retroTeal)
-                    .animation(reduceMotion ? nil : .smooth(duration: 1), value: filled)
+                    .animation(reduceMotion ? nil : .chartReveal(0), value: filled)
                     .onAppear { filled = true }
             }
             if let caption = tile.caption {
@@ -112,8 +113,8 @@ private struct NumberTileView: View {
             }
         }
         .padding(.spaceM)
-        .frame(maxWidth: .infinity, minHeight: .ring + .spaceXL, alignment: .topLeading)
-        .background(.groupedRow, in: .rect(cornerRadius: .radiusM))
+        .frame(maxWidth: .infinity, minHeight: .profileTileMinHeight, alignment: .topLeading)
+        .background(.plainRow, in: .rect(cornerRadius: .radiusM))
         .accessibilityElement(children: .combine)
     }
 }
@@ -202,6 +203,6 @@ private struct ProfileEmptyState: View {
             IconRow("Expenses", symbol: "brazilianrealsign", color: .retroOlive)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.groupedBackground)
+        .background(.plainBackground)
     }
 }

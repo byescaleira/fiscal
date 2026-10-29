@@ -5,7 +5,7 @@ import FiscalDomain
 import SwiftUI
 
 struct RaceStandings: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @State private var revealed = false
     let contenders: [RaceSummary.Contender]
     let cut: Double?
@@ -26,7 +26,7 @@ struct RaceStandings: View {
 }
 
 private struct RaceStandingRow: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     let contender: RaceSummary.Contender
     let cut: Double?
     let showsVotes: Bool
@@ -106,7 +106,7 @@ private struct RaceShareChart: View {
 }
 
 struct RaceBallotChart: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @State private var revealed = false
     @State private var selected: RaceSummary.Ballot.Kind?
     let summary: RaceSummary
@@ -148,7 +148,7 @@ struct RaceBallotChart: View {
         }
         .sensoryFeedback(.selection, trigger: selected)
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) { revealed = true }
         }
     }
 

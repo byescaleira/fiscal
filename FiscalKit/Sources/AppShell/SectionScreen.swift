@@ -23,9 +23,7 @@ struct SectionScreen: View {
                     races: services.liveResultsService(),
                     follows: services.todayFollows(session.repositories.follows))
             ) {
-                ModelHost(services.liveResults()) {
-                    TodayScreen { race in RaceHeroCard(race: race, opensDetail: true) }
-                }
+                TodayScreen { race in RaceHeroCard(race: race, opensDetail: true) }
             }
         case .mine:
             ModelHost(MineModel(service: data, follows: session.repositories.follows)) {
@@ -45,7 +43,8 @@ struct SectionScreen: View {
                         service: data, lens: session.repositories.lens,
                         follows: session.repositories.follows,
                         repository: session.repositories.investigations,
-                        homeUF: HomePlace.chosenUF(in: .standard)))
+                        homeUF: HomePlace.chosenUF(in: .standard),
+                        usesModel: FiscalServices.shared.usesIntelligence))
             ) {
                 SearchScreen()
             }

@@ -11,7 +11,7 @@ while IFS= read -r -d '' file; do
   strings+=("$file")
 done < <(find "$objects" -path '*Debug-iphonesimulator*' -name '*.stringsdata' \
   -not -path '*/FiscalAudit*' -not -path '*/FiscalMock*' -not -path '*/FiscalPreview*' \
-  -not -path '*/FiscalMCP-t.build/*' -not -path '*/FiscalWidgets.build/*' -not -path '*Tests*' -print0)
+  -not -path '*/byescaleira.build/*' -not -path '*/FiscalMCP-t.build/*' -not -path '*/FiscalWidgets.build/*' -not -path '*Tests*' -print0)
 
 if [[ ${#strings[@]} -eq 0 ]]; then
   echo "No extracted strings in $objects. Run scripts/build.sh Debug first." >&2

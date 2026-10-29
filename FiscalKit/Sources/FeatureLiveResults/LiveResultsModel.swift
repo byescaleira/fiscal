@@ -3,6 +3,11 @@ import FiscalDomain
 import Foundation
 import Observation
 
+enum RaceDetailPhase {
+    case loading, unavailable
+    case ready(RaceSummary)
+}
+
 @MainActor @Observable
 public final class LiveResultsModel {
     public private(set) var races: [Race] = []
@@ -11,6 +16,7 @@ public final class LiveResultsModel {
     public private(set) var following: Set<String> = []
     public private(set) var changing: Set<String> = []
     public private(set) var announcement: String?
+    public private(set) var checkedRaceIDs: Set<String> = []
     public var error: FiscalError?
     @ObservationIgnored private let service: (any LiveResultsService)?
     @ObservationIgnored private let activities: any RaceActivityTracking
@@ -84,7 +90,26 @@ public final class LiveResultsModel {
         status = .all
     }
 
+    public var scopeText: String {
+        [region?.title ?? String(appLocalized: "All Regions"), status.title].joined(
+            separator: " · ")
+    }
+
     public func race(id: String) -> Race? { races.first { $0.id == id } }
+
+    func detailPhase(for id: String) -> RaceDetailPhase {
+        if let race = race(id: id) { return .ready(RaceSummary(race: race)) }
+        return checkedRaceIDs.contains(id) ? .unavailable : .loading
+    }
+
+    public func detailTitle(for id: String) -> String {
+        race(id: id).map(title) ?? ""
+    }
+
+    public func loadDetail(id: String) async {
+        if race(id: id) == nil { await refresh() }
+        checkedRaceIDs.insert(id)
+    }
 
     public func groupHeader(_ group: RaceGroup) -> String {
         "\(group.title) · \(group.races.count)"

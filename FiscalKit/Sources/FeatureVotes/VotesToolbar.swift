@@ -42,7 +42,7 @@ private struct VotesFilterMenu: View {
             Label("Filters", systemImage: "line.3.horizontal.decrease")
                 .labelStyle(.iconOnly)
                 .foregroundStyle(Color.primary)
-                .symbolEffect(.bounce, value: votes.hasFilter)
+                .quietBounce(value: votes.hasFilter)
                 .accessibilityValue(Text(verbatim: votes.filterSummary))
         }
         .menuStyle(.button)

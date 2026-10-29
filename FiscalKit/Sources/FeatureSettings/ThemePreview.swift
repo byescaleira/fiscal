@@ -50,7 +50,7 @@ private struct ThemeCanvas: View {
             .padding(.spaceL)
             .foregroundStyle(.primary)
             .frame(width: .themeCanvasWidth, height: .themeCanvasHeight, alignment: .topLeading)
-            .background(.groupedBackground)
+            .background(.plainBackground)
             .scaleEffect(proxy.size.width / .themeCanvasWidth, anchor: .topLeading)
         }
     }
@@ -61,9 +61,9 @@ private struct ThemeCanvasLive: View {
         VStack(alignment: .leading, spacing: .spaceS) {
             Chip("Live", color: .negative, shape: .capsule).textCase(.uppercase)
             HStack(alignment: .lastTextBaseline) {
-                Text(verbatim: "312").font(.scoreboardNumber).foregroundStyle(Color.voteYes)
+                Text(verbatim: "312").font(.scoreboardTitle).foregroundStyle(Color.voteYes)
                 Spacer(minLength: .zero)
-                Text(verbatim: "141").font(.scoreboardNumber).foregroundStyle(Color.voteNo)
+                Text(verbatim: "141").font(.scoreboardTitle).foregroundStyle(Color.voteNo)
             }
             .monospacedDigit()
             TallyBar(segments: [
@@ -72,7 +72,7 @@ private struct ThemeCanvasLive: View {
             ])
         }
         .padding(.spaceM)
-        .background(.groupedRow, in: .rect(cornerRadius: .radiusM))
+        .background(.plainRow, in: .rect(cornerRadius: .radiusM))
     }
 }
 
@@ -94,7 +94,7 @@ private struct ThemeCanvasHighlight: View {
             ProgressBar(value: 0.7, color: .companion)
         }
         .padding(.spaceM)
-        .background(.groupedRow, in: .rect(cornerRadius: .radiusM))
+        .background(.plainRow, in: .rect(cornerRadius: .radiusM))
     }
 }
 
@@ -110,7 +110,7 @@ private struct ThemeCanvasTabBar: View {
                 }
             }
             .padding(.spaceM)
-            .background(.groupedRow, in: .capsule)
+            .background(.plainRow, in: .capsule)
             Spacer(minLength: .zero)
         }
         .font(.icon(.s))

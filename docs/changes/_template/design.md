@@ -31,7 +31,7 @@ _O estado atual do código e das specs que a mudança toca, com os tipos e arqui
 
 ## Interface
 
-_Telas e estados (vazio, carregando, erro, sem permissão, sem assinatura), componentes do design system usados, animações, layout por plataforma (iPhone retrato e paisagem, iPad, Mac, visionOS) e acessibilidade._
+_Telas e estados (vazio, carregando, erro, sem rede, sem permissão), componentes do design system usados, animações, layout por plataforma (iPhone retrato e paisagem, iPad, Mac, visionOS) e acessibilidade._
 
 ## Dados e migração
 

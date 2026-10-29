@@ -28,6 +28,9 @@ public struct MoneyScreen: View {
             MoneyEmptyState()
         }
         .emphasisTitle("Money")
+        #if !os(visionOS)
+            .navigationSubtitle(money.scopeName)
+        #endif
         .toolbar { MoneyToolbar() }
         .refreshable { await money.load() }
         .task { await money.load() }
@@ -56,14 +59,14 @@ private struct MoneyAnswerSection: View {
 
 private struct MoneyAnswerCard: View {
     @Environment(\.appTint) private var tint
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     let answer: MoneyModel.Answer
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceL) {
             VStack(alignment: .leading, spacing: .space2XS) {
                 Text(verbatim: answer.kicker)
-                    .font(.caption.weight(.heavy))
+                    .font(.chipLabel)
                     .foregroundStyle(tint)
                     .contentTransition(.opacity)
                 HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
@@ -107,7 +110,7 @@ private struct MoneyAnswerCard: View {
         .foregroundStyle(.primary)
         .padding(.spaceInset)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.groupedRow, in: .rect(cornerRadius: .radiusGroup))
+        .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isHeader)
     }
@@ -188,6 +191,6 @@ private struct MoneyEmptyState: View {
             IconRow("Campaigns", symbol: "building.columns", color: .retroTeal)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.groupedBackground)
+        .background(.plainBackground)
     }
 }

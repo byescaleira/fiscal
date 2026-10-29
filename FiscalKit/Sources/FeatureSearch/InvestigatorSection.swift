@@ -65,7 +65,7 @@ private struct InvestigatorField: View {
                 .accessibilityLabel(Text("Investigate"))
             }
             .padding(.spaceL)
-            .background(.groupedRow, in: .rect(cornerRadius: .radiusL))
+            .background(.plainRow, in: .rect(cornerRadius: .radiusL))
             InvestigatorMode()
         }
     }
@@ -162,7 +162,7 @@ private struct SuggestionCard: View {
             }
             .frame(maxWidth: .infinity, minHeight: .casePiece, alignment: .topLeading)
             .padding(.spaceL)
-            .background(.groupedRow, in: .rect(cornerRadius: .radiusL))
+            .background(.plainRow, in: .rect(cornerRadius: .radiusL))
             .contentShape(.rect(cornerRadius: .radiusL))
         }
         .buttonStyle(.plain)
@@ -181,7 +181,7 @@ struct PieceStrip: View {
                     PersonPortrait(
                         slug: card.slug, name: card.name, party: card.party, size: .badgeS
                     )
-                    .overlay { Circle().strokeBorder(Color.groupedRow, lineWidth: .spaceHairline) }
+                    .overlay { Circle().strokeBorder(Color.plainRow, lineWidth: .spaceHairline) }
                 } else {
                     StatusCircle(piece.kind.title, symbol: piece.symbol, color: piece.kind.color)
                 }
@@ -201,7 +201,7 @@ private struct InvestigatorPlaceholder: View {
         HStack(spacing: .spaceM) {
             ForEach(0..<2, id: \.self) { _ in
                 RoundedRectangle(cornerRadius: .radiusL)
-                    .fill(Color.groupedRow)
+                    .fill(Color.plainRow)
                     .frame(height: .casePiece)
             }
         }

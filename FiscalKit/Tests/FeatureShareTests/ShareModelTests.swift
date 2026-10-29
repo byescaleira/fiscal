@@ -35,7 +35,7 @@ struct ShareModelTests {
             await model.load()
             #expect(model.phase == .loaded, "\(subject)")
             let work = try #require(model.artwork?.work)
-            for format in ShareFormat.allCases {
+            for format in FeatureShare.ShareFormat.allCases {
                 model.format = format
                 let card = try #require(model.card)
                 #expect(card.texts.contains(ShareCardBuilder.host))
@@ -139,6 +139,22 @@ struct ShareModelTests {
         let unknownRace = model(.race(id: "nowhere"))
         await unknownRace.load()
         #expect(unknownRace.phase == .failed(.notFound))
+    }
+
+    @Test func theModelRendersTheCardAndPicksTheArtShelf() async throws {
+        let model = model(.vote(id: "camara-18732026"))
+        await model.load()
+        #expect(model.rendered == nil)
+        model.render(scale: 1, portraits: nil)
+        let rendered = try #require(model.rendered)
+        #expect(!rendered.file.png.isEmpty)
+        #expect(rendered.file.fileName == ShareRenderer.fileName)
+        let other = try #require(
+            model.collections.first { $0.id != model.currentCollectionID })
+        model.show(other.id)
+        #expect(model.currentCollectionID == other.id)
+        #expect(model.currentWorks.allSatisfy { $0.collection == other.id })
+        #expect(model.selectedCredit?.contains(model.selectedWork?.artist ?? "-") == true)
     }
 
     @Test func longNamesStillLoad() async {

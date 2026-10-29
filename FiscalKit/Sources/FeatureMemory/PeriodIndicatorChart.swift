@@ -5,7 +5,7 @@ import FiscalDomain
 import SwiftUI
 
 struct PeriodIndicatorChart: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @ScaledMetric(relativeTo: .caption) private var height: CGFloat = .chartCompactHeight
     @State private var revealed = false
     @State private var scrubbed: Int?
@@ -21,7 +21,7 @@ struct PeriodIndicatorChart: View {
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceS) {
             if let selected {
-                ChartCallout(title: String(selected.year), value: formatted(selected.value)) {
+                ChartCallout(title: selected.yearText, value: indicator.valueText(selected.value)) {
                     EmptyView()
                 }
             }
@@ -31,7 +31,7 @@ struct PeriodIndicatorChart: View {
                 .sensoryFeedback(.selection, trigger: selected)
         }
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) { revealed = true }
         }
     }
 
@@ -43,9 +43,9 @@ struct PeriodIndicatorChart: View {
                     .interpolationMethod(.monotone)
                 PointMark(x: .value("Year", point.year), y: .value("Value", point.value))
                     .foregroundStyle(point == selected ? Color.primary : color)
-                    .symbolSize(point == selected ? .badgeL * 2 : .badgeS)
-                    .accessibilityLabel(String(point.year))
-                    .accessibilityValue(formatted(point.value))
+                    .symbolSize(point == selected ? .chartPointFocusSize : .chartPointSize)
+                    .accessibilityLabel(point.yearText)
+                    .accessibilityValue(indicator.valueText(point.value))
             }
             .chartYScale(type: .log)
             .chartXAxis { yearAxis }
@@ -59,8 +59,8 @@ struct PeriodIndicatorChart: View {
                         width: .ratio(.chartBarWidth)
                     )
                     .foregroundStyle(point == selected ? Color.primary : color)
-                    .accessibilityLabel(String(point.year))
-                    .accessibilityValue(formatted(point.value))
+                    .accessibilityLabel(point.yearText)
+                    .accessibilityValue(indicator.valueText(point.value))
                 }
                 RuleMark(y: .value("Zero", 0))
                     .foregroundStyle(.secondary)
@@ -81,14 +81,9 @@ struct PeriodIndicatorChart: View {
         AxisMarks(values: .automatic(desiredCount: 5)) { value in
             AxisValueLabel {
                 if let year = value.as(Int.self) {
-                    Text(verbatim: String(year))
+                    Text(verbatim: HistoryPoint.yearText(year))
                 }
             }
         }
-    }
-
-    private func formatted(_ value: Double) -> String {
-        let number = value.formatted(.number.precision(.fractionLength(0...2)).locale(.app))
-        return indicator.unit.hasPrefix("%") ? "\(number)%" : number
     }
 }

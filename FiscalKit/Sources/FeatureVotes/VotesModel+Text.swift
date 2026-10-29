@@ -8,7 +8,7 @@ extension VotesModel {
     }
 
     public func dayTitle(_ day: Day) -> String {
-        let calendar = FiscalCalendar.current
+        let calendar = GregorianCalendar.current
         let date = day.id.date(in: calendar)
         let today = CalendarDay(now(), calendar: calendar)
         if day.id == today { return String(appLocalized: "Today") }
