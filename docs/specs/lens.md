@@ -1,4 +1,6 @@
-# Lente
+# Lente (histórico)
+
+Congelada em 2026-10-29; a verdade atual está em [`spdd/prompt/FSC-003-202610291700-[Codify]-lens.md`](../../spdd/prompt/FSC-003-202610291700-[Codify]-lens.md).
 
 A Lente é a escolha de quem a pessoa apoia (até 5 políticos, ou "Prefiro não dizer") e dos temas que importam para ela (de 3 a 5), mais o visual (paleta, ícone e coleção de arte). Ela ordena o que o app mostra; nunca filtra nem reescreve os fatos. Aparece no setup da primeira abertura, no botão "Quem você apoia" da toolbar de Hoje e no cartão "Seu Fiscal" dos Ajustes. As decisões estão em [ADR 0004](../adr/0004-lens-on-device-store.md); o que falta fazer está em [backlog.md](../backlog.md).
 

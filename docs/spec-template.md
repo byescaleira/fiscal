@@ -1,4 +1,6 @@
-# Modelo de spec viva
+# Modelo de spec viva (histórico)
+
+Congelado em 2026-10-29: specs novas não são mais escritas. A verdade de cada capacidade fica no REASONS Canvas em [spdd/prompt/](../spdd/README.md) ([ADR 0019](adr/0019-spdd-process.md)).
 
 Copie este arquivo para `docs/specs/<capacidade>.md` (ex.: `docs/specs/reminders.md`) ao arquivar a primeira mudança de uma capacidade do Fiscal, e acrescente a linha no [índice das specs](specs/README.md). A spec guarda só a verdade atual; a proposta, o desenho e as etapas de cada mudança ficam em `docs/changes/<id>/`, a partir de [changes/_template/](changes/README.md), e as decisões vão em [adr/](adr/README.md). O que fica fora da capacidade vai em [backlog.md](backlog.md). Apague as instruções em itálico ao preencher. Quando a spec nova substituir uma antiga, apague a antiga.
 

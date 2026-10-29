@@ -1,6 +1,10 @@
-# Mudanças
+# Mudanças (histórico)
 
-Toda mudança de comportamento do Fiscal (feature nova, tela refeita, regra alterada, integração, migração de dados) passa por uma pasta aqui antes de virar código. A pasta junta o porquê, o como e as etapas; ao terminar, ela atualiza as [specs](../specs/README.md) e vai para o arquivo. Correção pequena sem mudança de comportamento (bug, texto, lint) não precisa de pasta.
+Congelado em 2026-10-29. Desde então, as mudanças do Fiscal seguem o SPDD: análise e canvas em [spdd/](../../spdd/README.md), com o ID `FSC-<NNN>` ([ADR 0019](../adr/0019-spdd-process.md)). Esta pasta guarda as mudanças de antes do SPDD, todas arquivadas em [archive/](archive/), e não recebe pasta nova.
+
+Arquivadas: `live-results`, `app-1.0`, `setup-lens-art` (substituída pela `app-1.0`), `kit-adoption` e `align-workspace`. As duas últimas foram entregues nas branches `feature/kit-adoption` e `feature/workspace-alignment` e arquivadas em 2026-10-29, antes da migração para o SPDD.
+
+O ciclo abaixo é o que valia até a migração.
 
 ## Ciclo
 
@@ -9,14 +13,6 @@ Toda mudança de comportamento do Fiscal (feature nova, tela refeita, regra alte
 3. **Etapas.** `tasks.md` com as fases na ordem, cada etapa verificável e com a verificação escrita. "Em etapas" = parar e esperar o ok depois de cada uma.
 4. **Implementação.** Uma etapa por vez, marcando `[x]` no mesmo commit da etapa, em `feature/<assunto>`.
 5. **Arquivamento.** Com tudo entregue, verificado e conferido pelo `byescaleira-workspace:spec-reviewer`, e com o `CHANGELOG.md` em dia: aplique as mudanças de spec em `docs/specs/`, atualize `backlog.md` e `roadmap.md`, e mova a pasta para `archive/<AAAA-MM-DD>-<id>/` (a data é a do arquivamento). A pasta arquivada não muda mais.
-
-## Em andamento
-
-| Mudança | Estado |
-| --- | --- |
-| _nenhuma_ | |
-
-Arquivadas em [archive/](archive/): `live-results`, `app-1.0`, `setup-lens-art` (substituída pela `app-1.0`), `kit-adoption` e `align-workspace`.
 
 ## Modelos
 

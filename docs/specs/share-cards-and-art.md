@@ -1,4 +1,6 @@
-# Cartazes e arte
+# Cartazes e arte (histórico)
+
+Congelada em 2026-10-29; a verdade atual está em [`spdd/prompt/FSC-005-202610291700-[Codify]-share-cards-and-art.md`](../../spdd/prompt/FSC-005-202610291700-[Codify]-share-cards-and-art.md).
 
 Os cartazes prontos para Stories, feed e mensagem que a pessoa gera a partir de um perfil, uma votação, gastos, uma disputa, uma comparação, uma bancada, um destaque ou uma investigação, e o acervo de obras que veste esses cartazes, com a galeria Artistas (Ajustes › Seu Fiscal e `fiscal://artists`). O que falta fazer está em [backlog.md](../backlog.md).
 

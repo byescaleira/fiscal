@@ -31,3 +31,4 @@ Primeira versão, a 1.0.0.
 - Com a atualização obrigatória, atalhos, alertas de destaque, registro da Live Activity e a atualização em segundo plano também param.
 - A Live Activity da apuração abre a Apuração, não a tela inicial.
 - Contagens no plural certo, inclusive no zero.
+- O desenvolvimento passa a seguir o SPDD (open-spdd): análises e canvases em `spdd/`, um canvas `[Codify]` por capacidade e as specs e mudanças antigas congeladas como histórico ([ADR 0019](docs/adr/0019-spdd-process.md)).

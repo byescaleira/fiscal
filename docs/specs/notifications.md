@@ -1,4 +1,6 @@
-# Alertas
+# Alertas (histórico)
+
+Congelada em 2026-10-29; a verdade atual está em [`spdd/prompt/FSC-007-202610291700-[Codify]-notifications.md`](../../spdd/prompt/FSC-007-202610291700-[Codify]-notifications.md).
 
 O Fiscal avisa a pessoa só por Atividades ao Vivo: o resultado de uma disputa que ela segue e o destaque do momento de maior peso. Não há notificação comum nem pedido de permissão de notificações. Os alertas são raros e iguais para todo mundo: o servidor não sabe quem é a pessoa nem o que ela apoia. O que falta fazer está em [backlog.md](../backlog.md).
 

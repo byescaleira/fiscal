@@ -1,4 +1,6 @@
-# Specs
+# Specs (histórico)
+
+Congeladas em 2026-10-29. A verdade atual de cada capacidade está no canvas `[Codify]` dela em [spdd/prompt/](../../spdd/README.md) ([ADR 0019](../adr/0019-spdd-process.md)). Estas specs não recebem mudança nova.
 
 As specs vivas do Fiscal: um arquivo por capacidade, com a verdade **atual** do app. Quem quer saber como algo funciona hoje lê aqui; o caminho até chegar lá está nas mudanças arquivadas ([changes/archive/](../changes/README.md)) e o porquê está nos [ADRs](../adr/README.md).
 

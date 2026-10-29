@@ -1,4 +1,6 @@
-# Apuração ao vivo
+# Apuração ao vivo (histórico)
+
+Congelada em 2026-10-29; a verdade atual está em [`spdd/prompt/FSC-001-202610291700-[Codify]-live-results.md`](../../spdd/prompt/FSC-001-202610291700-[Codify]-live-results.md).
 
 A apuração das eleições com os números oficiais do TSE: a tela Apuração (em Fiscalizar › Eleições e no card de Hoje) e a Atividade ao Vivo de cada disputa na tela de bloqueio e na Dynamic Island, atualizada pelo servidor por push. As decisões estão em [adr/](../adr/README.md); o que falta fazer está em [backlog.md](../backlog.md).
 
