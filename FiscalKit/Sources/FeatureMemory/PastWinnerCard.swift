@@ -18,33 +18,24 @@ struct PastWinnerCard: View {
                     .font(.scoreboardTitle)
                     .monospacedDigit()
                 Spacer(minLength: .spaceS)
-                Text("ELECTED")
-                    .font(.caption.weight(.heavy))
-                    .padding(.horizontal, .spaceS)
-                    .padding(.vertical, .space2XS)
-                    .background(.white.opacity(.opacityTint), in: .capsule)
+                StatusCircle(
+                    String(appLocalized: "Elected"), symbol: "checkmark.seal.fill", color: .white)
             }
             HStack(spacing: .spaceM) {
                 PersonPortrait(
-                    slug: MemoryText.slug(winner.ballotName),
-                    name: MemoryText.name(winner.ballotName),
+                    slug: winner.portraitSlug,
+                    name: winner.displayName,
                     party: winner.party, size: .badgeXL
                 )
                 .overlay { Circle().strokeBorder(.white, lineWidth: .spaceHairline) }
-                .overlay(alignment: .topTrailing) {
-                    Image(systemName: "checkmark.seal.fill")
-                        .font(.icon(.s, weight: .bold))
-                        .symbolRenderingMode(.palette)
-                        .foregroundStyle(.white, Color.scoreboardAccent)
-                }
                 VStack(alignment: .leading, spacing: .space2XS) {
-                    Text(verbatim: MemoryText.name(winner.ballotName))
+                    Text(verbatim: winner.displayName)
                         .font(.emphasis(.title3, weight: .heavy))
                         .lineLimit(2)
                         .minimumScaleFactor(0.7)
                     HStack(spacing: .spaceS) {
                         PartyMark(winner.party)
-                        Text(verbatim: MemoryText.percent(winner.share))
+                        Text(verbatim: winner.shareText)
                             .font(.emphasis(.headline, weight: .bold))
                             .monospacedDigit()
                     }
@@ -52,14 +43,14 @@ struct PastWinnerCard: View {
             }
             if let runnerUp {
                 HStack(spacing: .spaceS) {
-                    Text(verbatim: MemoryText.name(runnerUp.ballotName))
+                    Text(verbatim: runnerUp.displayName)
                         .font(.subheadline.weight(.semibold))
                         .lineLimit(1)
                     Text(verbatim: runnerUp.party)
                         .font(.caption.weight(.bold))
                         .opacity(.opacityStrong)
                     Spacer(minLength: .spaceS)
-                    Text(verbatim: MemoryText.percent(runnerUp.share))
+                    Text(verbatim: runnerUp.shareText)
                         .font(.subheadline.weight(.bold))
                         .monospacedDigit()
                 }

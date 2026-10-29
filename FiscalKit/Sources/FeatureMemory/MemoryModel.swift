@@ -102,6 +102,10 @@ public final class MemoryModel {
         return round.leaders.first { $0 != won }
     }
 
+    var liveCountedText: String? {
+        liveCounted.map { String(appLocalized: "Polls counted: \(PublicFormat.percent($0))") }
+    }
+
     func roundLine(_ race: PastRaceSummary) -> String {
         guard let round = race.finalRound else { return PublicFormat.missing }
         let label = MemoryText.round(round.round, total: race.rounds.count)

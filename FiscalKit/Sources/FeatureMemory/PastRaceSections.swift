@@ -88,7 +88,7 @@ private struct PastHeroCard: View {
         VStack(spacing: .spaceL) {
             HStack {
                 Text(verbatim: breakdown.title.uppercased(with: .app))
-                    .font(.caption.weight(.heavy))
+                    .font(.chipLabel)
                 Spacer(minLength: .spaceS)
                 Text(verbatim: breakdown.roundLine)
                     .font(.caption.weight(.semibold))
@@ -96,18 +96,15 @@ private struct PastHeroCard: View {
             }
             VStack(spacing: .spaceS) {
                 PersonPortrait(
-                    slug: MemoryText.slug(leader.ballotName),
-                    name: MemoryText.name(leader.ballotName),
-                    party: leader.party, size: .badgeXL * 2
+                    slug: leader.portraitSlug,
+                    name: leader.displayName,
+                    party: leader.party, size: .medallion
                 )
                 .overlay { Circle().strokeBorder(.white, lineWidth: .space2XS) }
-                .scaleEffect(appeared ? 1 : 0.6)
+                .scaleEffect(appeared ? 1 : .heroPortraitEntryScale)
                 .opacity(appeared ? 1 : 0)
-                Text(verbatim: breakdown.outcome)
-                    .font(.caption.weight(.heavy))
-                    .padding(.horizontal, .spaceM)
-                    .padding(.vertical, .space2XS)
-                    .background(.white.opacity(.opacityTint), in: .capsule)
+                Chip(breakdown.outcome, color: .white, shape: .capsule)
+                    .environment(\.colorScheme, .dark)
                 Text(verbatim: names)
                     .font(.emphasis(.title, weight: .heavy))
                     .multilineTextAlignment(.center)
@@ -115,11 +112,11 @@ private struct PastHeroCard: View {
                     .minimumScaleFactor(0.7)
                 HStack(spacing: .spaceS) {
                     PartyMark(leader.party)
-                    Text(verbatim: MemoryText.percent(leader.share))
+                    Text(verbatim: leader.shareText)
                         .font(.scoreboardTitle)
                         .monospacedDigit()
                 }
-                Text(verbatim: MemoryText.votes(leader.votes))
+                Text(verbatim: leader.votesText)
                     .font(.subheadline.weight(.semibold))
                     .opacity(.opacityStrong)
             }
@@ -127,16 +124,16 @@ private struct PastHeroCard: View {
             ForEach(breakdown.others) { other in
                 HStack(spacing: .spaceS) {
                     PersonPortrait(
-                        slug: MemoryText.slug(other.ballotName),
-                        name: MemoryText.name(other.ballotName),
+                        slug: other.portraitSlug,
+                        name: other.displayName,
                         party: other.party, size: .badgeM)
-                    Text(verbatim: MemoryText.name(other.ballotName))
+                    Text(verbatim: other.displayName)
                         .font(.subheadline.weight(.semibold))
                         .lineLimit(1)
                     Text(verbatim: other.party)
                         .font(.caption.weight(.bold))
                     Spacer(minLength: .spaceS)
-                    Text(verbatim: MemoryText.percent(other.share))
+                    Text(verbatim: other.shareText)
                         .font(.headline.weight(.bold))
                         .monospacedDigit()
                 }
@@ -172,8 +169,8 @@ private struct PastHeroCard: View {
 
     private var names: String {
         let elected = breakdown.winners.filter(\.elected)
-        guard elected.count > 1 else { return MemoryText.name(leader.ballotName) }
-        return elected.map { MemoryText.name($0.ballotName) }.joined(separator: " e ")
+        guard elected.count > 1 else { return leader.displayName }
+        return elected.map { $0.displayName }.joined(separator: " e ")
     }
 }
 
@@ -219,7 +216,7 @@ struct PastRaceRow: View {
             VStack(alignment: .leading, spacing: .spaceHairline) {
                 ForEach(winners) { winner in
                     HStack(spacing: .spaceS) {
-                        Text(verbatim: MemoryText.name(winner.ballotName))
+                        Text(verbatim: winner.displayName)
                             .font(.rowTitle)
                             .lineLimit(1)
                         PartyMark(winner.party)
@@ -230,8 +227,8 @@ struct PastRaceRow: View {
                     .foregroundStyle(.secondary)
             }
             Spacer(minLength: .spaceS)
-            if let share = winners.first?.share {
-                Text(verbatim: MemoryText.shortPercent(share))
+            if let share = winners.first?.shortShareText {
+                Text(verbatim: share)
                     .font(.emphasis(.headline, weight: .bold))
                     .monospacedDigit()
             }

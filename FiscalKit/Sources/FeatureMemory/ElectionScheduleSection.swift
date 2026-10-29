@@ -26,20 +26,12 @@ private struct ScheduleRow: View {
     let isLast: Bool
 
     var body: some View {
-        HStack(alignment: .top, spacing: .spaceL) {
-            VStack(spacing: .spaceXS) {
-                Text(verbatim: String(election.year))
-                    .font(.scoreboardTitle)
-                    .foregroundStyle(election.isCurrent ? tint : Color.primary)
-                    .monospacedDigit()
-                if !isLast {
-                    Capsule()
-                        .fill(.tertiary)
-                        .frame(width: .spaceHairline)
-                        .frame(maxHeight: .infinity)
-                        .accessibilityHidden(true)
-                }
-            }
+        TimelineRow(isLast: isLast, spacing: .spaceL) {
+            Text(verbatim: election.yearText)
+                .font(.scoreboardTitle)
+                .foregroundStyle(election.isCurrent ? tint : Color.primary)
+                .monospacedDigit()
+        } content: {
             VStack(alignment: .leading, spacing: .spaceS) {
                 Text(verbatim: election.title).font(.rowTitle)
                 Text("President, governors, Senate and deputies")
@@ -66,14 +58,13 @@ private struct ScheduleRoundLine: View {
             StatusCircle(round.statusText, symbol: round.symbol, color: round.color)
             Text(verbatim: round.title)
                 .font(.subheadline.weight(.semibold))
-            Text(verbatim: round.status == .today ? round.statusText : round.shortDate)
+            Text(verbatim: round.dateOrStatus)
                 .font(.subheadline)
                 .foregroundStyle(round.status == .today ? round.color : .secondary)
                 .monospacedDigit()
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(
-            Text(verbatim: "\(round.title), \(round.shortDate), \(round.statusText)"))
+        .accessibilityLabel(Text(verbatim: round.accessibilityLabel))
     }
 }
 
@@ -100,12 +91,12 @@ private struct CurrentElectionDetail: View {
     @State private var isShown = false
 
     var body: some View {
-        if let counted = memory.liveCounted {
+        if let counted = memory.liveCounted, let countedText = memory.liveCountedText {
             Button {
                 open(.races, in: section)
             } label: {
                 VStack(alignment: .leading, spacing: .space2XS) {
-                    Text("Polls counted: \(PublicFormat.percent(counted))")
+                    Text(verbatim: countedText)
                         .font(.footnote.weight(.semibold))
                         .monospacedDigit()
                     ProgressBar(value: isShown ? counted : 0, color: .scoreboardAccent)

@@ -25,9 +25,15 @@ public struct ElectionYearScreen: View {
                 YearNotesSection()
             }
         } empty: {
-            ContentUnavailableView(
-                "No results for this year", systemImage: "archivebox",
-                description: Text("The TSE results for this year aren't published by Fiscal yet."))
+            EmptyStateView(
+                title: "No results for this year",
+                description: "The TSE results for this year aren't published by Fiscal yet."
+            ) {
+                IconRow("Governors", symbol: "building.columns", color: .retroDenim)
+                IconRow("Senate", symbol: "person.3", color: .retroOlive)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.plainBackground)
         }
         .emphasisTitle(Text(verbatim: model.title))
         #if !os(visionOS)

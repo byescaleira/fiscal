@@ -25,6 +25,10 @@ struct ScheduledRound: Hashable, Identifiable, Sendable {
         case .upcoming: String(appLocalized: "Upcoming")
         }
     }
+
+    var dateOrStatus: String { status == .today ? statusText : shortDate }
+
+    var accessibilityLabel: String { "\(title), \(shortDate), \(statusText)" }
 }
 
 struct ScheduledElection: Hashable, Identifiable, Sendable {
@@ -33,6 +37,8 @@ struct ScheduledElection: Hashable, Identifiable, Sendable {
     let isCurrent: Bool
 
     var id: Int { year }
+
+    var yearText: String { String(year) }
 
     var title: String { String(appLocalized: "General election \(String(year))") }
 

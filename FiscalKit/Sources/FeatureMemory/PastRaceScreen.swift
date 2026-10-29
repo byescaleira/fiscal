@@ -29,9 +29,15 @@ public struct PastRaceScreen: View {
                 }
             }
         } empty: {
-            ContentUnavailableView(
-                "No result", systemImage: "archivebox",
-                description: Text("This race isn't published by Fiscal yet."))
+            EmptyStateView(
+                title: "No result",
+                description: "This race isn't published by Fiscal yet."
+            ) {
+                IconRow("Votes by candidate", symbol: "chart.bar.xaxis", color: .retroDenim)
+                IconRow("Who won in each state", symbol: "map", color: .retroTeal)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.plainBackground)
         }
         .emphasisTitle(Text(verbatim: model.title))
         #if !os(visionOS)
