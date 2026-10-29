@@ -35,9 +35,7 @@ struct RaceCompactCard: View {
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(
-            Text(verbatim: "\(summary.accessibilityLabel), \(summary.ballotAccessibility)")
-        )
+        .accessibilityLabel(Text(verbatim: summary.cardAccessibility))
         .accessibilityHint(Text("Shows every candidate and the blank and null votes"))
         .contextMenu {
             if results.showsFollow(race) {
@@ -59,7 +57,7 @@ private struct RaceCompactHeader: View {
 
     var body: some View {
         HStack(alignment: .center, spacing: .spaceM) {
-            Text(verbatim: summary.race.uf.uppercased())
+            Text(verbatim: summary.monogram)
                 .font(.emphasis(.subheadline, weight: .heavy))
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)
@@ -70,7 +68,7 @@ private struct RaceCompactHeader: View {
                 Text(verbatim: summary.scope)
                     .font(.headline)
                     .lineLimit(1)
-                Text(verbatim: "\(summary.office) · \(summary.roundText)")
+                Text(verbatim: summary.officeLine)
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -92,7 +90,7 @@ struct RaceStatusBadge: View {
     var body: some View {
         if summary.race.final {
             Label("Final", systemImage: "checkmark.seal.fill")
-                .font(.caption.weight(.bold))
+                .font(.chipLabel)
                 .foregroundStyle(Color.retroTeal)
                 .labelStyle(.titleAndIcon)
         } else if summary.hasStarted {
@@ -103,7 +101,7 @@ struct RaceStatusBadge: View {
                     .contentTransition(
                         reduceMotion
                             ? .identity : .numericText(value: summary.race.sections.percent))
-                ProgressBar(value: summary.countedFraction, color: .retroTeal)
+                ShareBarChart(value: summary.countedFraction, color: .retroTeal)
                     .frame(width: .badgeL)
             }
         } else {
@@ -201,19 +199,17 @@ private struct RaceDuelSplit: View {
         let share = summary.splitShare
         let first = PartyPalette.of(party: summary.sides.first?.candidate.party ?? "", fallback: 0)
         let second = PartyPalette.of(party: summary.sides.last?.candidate.party ?? "", fallback: 1)
-        GeometryReader { proxy in
-            HStack(spacing: .spaceHairline) {
-                Capsule()
-                    .fill(
-                        summary.hasStarted ? first.primary : Color.secondary.opacity(.opacityFill)
-                    )
-                    .frame(width: max(.spaceS, (proxy.size.width - .spaceHairline) * share))
-                Capsule()
-                    .fill(
-                        summary.hasStarted ? second.primary : Color.secondary.opacity(.opacityFill))
-            }
-        }
-        .frame(height: .spaceXS)
+        TallyChart(
+            segments: [
+                TallyChart.Segment(
+                    id: "first", title: summary.sides.first?.candidate.name ?? "", value: share,
+                    color: summary.hasStarted ? first.primary : .secondary.opacity(.opacityFill)),
+                TallyChart.Segment(
+                    id: "second", title: summary.sides.last?.candidate.name ?? "",
+                    value: 1 - share,
+                    color: summary.hasStarted ? second.primary : .secondary.opacity(.opacityFill)),
+            ], height: .spaceXS
+        )
         .animation(reduceMotion ? nil : .smooth(duration: 1), value: share)
         .accessibilityHidden(true)
     }

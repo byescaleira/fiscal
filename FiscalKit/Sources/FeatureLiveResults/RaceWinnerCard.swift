@@ -62,11 +62,8 @@ struct RaceWinnerCard: View {
                 }
                 .scaleEffect(appeared ? 1 : 0.6)
                 .opacity(appeared ? 1 : 0)
-                Text("ELECTED")
-                    .font(.caption.weight(.heavy))
-                    .padding(.horizontal, .spaceM)
-                    .padding(.vertical, .space2XS)
-                    .background(.white.opacity(.opacityTint), in: .capsule)
+                Chip("ELECTED", color: .white, shape: .capsule)
+                    .environment(\.colorScheme, .dark)
                 Text(verbatim: winner.candidate.name)
                     .font(.emphasis(.title, weight: .heavy))
                     .multilineTextAlignment(.center)
@@ -111,9 +108,6 @@ struct RaceWinnerCard: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(
-            Text(
-                verbatim: "\(summary.title), \(winner.candidate.name), \(summary.winnerText ?? "")")
-        )
+        .accessibilityLabel(Text(verbatim: summary.winnerAccessibility))
     }
 }
