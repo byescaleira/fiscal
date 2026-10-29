@@ -79,10 +79,10 @@ Etapas da mudança `align-workspace`. A fase 1 roda na branch principal da frent
 ## 3. Integração e fechamento
 
 - [x] 3.1 Integrar as frentes uma por vez; `scripts/strings.sh` e plurais (`zero`, contagens) no catálogo; chaves antigas removidas.
-- [ ] 3.2 Arrumar as branches locais já integradas e os worktrees.
-- [ ] 3.3 `scripts/verify.sh --full`, telas no simulador em claro, escuro e AX.
-- [ ] 3.4 Revisão única de design, acessibilidade e código sobre o diff; correções na mesma fase.
-- [ ] 3.5 `CHANGELOG.md` Unreleased, specs e backlog em dia, PR aberto para a `development`.
+- [x] 3.2 Arrumar as branches locais já integradas e os worktrees.
+- [x] 3.3 `scripts/verify.sh --full`, telas no simulador em claro, escuro e AX.
+- [x] 3.4 Revisão única de design, acessibilidade e código sobre o diff; correções na mesma fase.
+- [x] 3.5 `CHANGELOG.md` Unreleased, specs e backlog em dia, PR aberto para a `development`.
 
 ## Notas da entrega
 
