@@ -5,7 +5,7 @@ import SwiftUI
 
 struct RaceWinnerCard: View {
     @Environment(LiveResultsModel.self) private var results: LiveResultsModel?
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @State private var appeared = false
     let summary: RaceSummary
     let winner: RaceSummary.Contender
@@ -56,7 +56,7 @@ struct RaceWinnerCard: View {
                         .font(.icon(.l, weight: .bold))
                         .symbolRenderingMode(.palette)
                         .foregroundStyle(.white, Color.scoreboardAccent)
-                        .symbolEffect(.bounce, value: appeared)
+                        .quietBounce(value: appeared)
                 }
                 .scaleEffect(appeared ? 1 : 0.6)
                 .opacity(appeared ? 1 : 0)

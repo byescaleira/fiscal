@@ -85,7 +85,7 @@ private struct ScheduleResultLink: View {
 
 private struct CurrentElectionDetail: View {
     @Environment(MemoryModel.self) private var memory
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
     @State private var isShown = false

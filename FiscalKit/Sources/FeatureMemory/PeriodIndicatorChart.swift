@@ -5,7 +5,7 @@ import FiscalDomain
 import SwiftUI
 
 struct PeriodIndicatorChart: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @ScaledMetric(relativeTo: .caption) private var height: CGFloat = .chartCompactHeight
     @State private var revealed = false
     @State private var scrubbed: Int?

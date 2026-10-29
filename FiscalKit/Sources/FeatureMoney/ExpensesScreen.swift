@@ -82,7 +82,7 @@ private struct ExpensesIdentity: View {
 
 private struct ExpensesMonthsSection: View {
     @Environment(ExpensesModel.self) private var expenses
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
 
     var body: some View {
         @Bindable var expenses = expenses

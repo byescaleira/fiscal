@@ -88,7 +88,7 @@ private struct HouseHeader: View {
 }
 
 private struct SessionStatus: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     let inSession: Bool
 
     var body: some View {

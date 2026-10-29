@@ -5,7 +5,7 @@ import FiscalDomain
 import SwiftUI
 
 struct CandidateBarsChart: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @ScaledMetric(relativeTo: .body) private var rowHeight: CGFloat = .badgeL
     @State private var revealed = false
     @State private var scrubbed: String?
@@ -68,7 +68,7 @@ struct CandidateBarsChart: View {
 }
 
 struct WinnerTileMap: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @State private var revealed = false
     @State private var scrubbedColumn: Double?
     @State private var scrubbedRow: Double?
@@ -170,7 +170,7 @@ private struct TileBox {
 }
 
 struct TurnoutChart: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @State private var revealed = false
     let slices: [PastRoundBreakdown.Slice]
 

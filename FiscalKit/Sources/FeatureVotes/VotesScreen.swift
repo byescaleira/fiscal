@@ -5,7 +5,7 @@ import SwiftUI
 
 public struct VotesScreen: View {
     @Environment(VotesModel.self) private var votes
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
 
     public init() {}
 

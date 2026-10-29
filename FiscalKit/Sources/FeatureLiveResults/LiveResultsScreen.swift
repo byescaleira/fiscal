@@ -37,7 +37,7 @@ public struct LiveResultsScreen: View {
 
 private struct LiveResultsBoard: View {
     @Environment(LiveResultsModel.self) private var results
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
 
     var body: some View {
         ScrollView {
@@ -202,7 +202,7 @@ private struct LiveResultsFilterMenu: View {
             Label("Filters", systemImage: "line.3.horizontal.decrease")
                 .labelStyle(.iconOnly)
                 .foregroundStyle(Color.primary)
-                .symbolEffect(.bounce, value: results.hasFilter)
+                .quietBounce(value: results.hasFilter)
                 .accessibilityValue(Text(verbatim: results.filterSummary))
         }
         .menuStyle(.button)

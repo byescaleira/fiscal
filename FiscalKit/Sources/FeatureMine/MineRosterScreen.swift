@@ -77,7 +77,7 @@ private struct MineRosterFilter: View {
             Label("Filters", systemImage: "line.3.horizontal.decrease")
                 .labelStyle(.iconOnly)
                 .foregroundStyle(Color.primary)
-                .symbolEffect(.bounce, value: party)
+                .quietBounce(value: party)
                 .accessibilityValue(Text(verbatim: roster.scopeTitle(party: party)))
         }
         .menuStyle(.button)

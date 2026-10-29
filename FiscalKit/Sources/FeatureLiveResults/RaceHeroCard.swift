@@ -91,7 +91,7 @@ private struct RaceHeroBackground: View {
 
 struct RaceHeroHeader: View {
     @Environment(LiveResultsModel.self) private var results: LiveResultsModel?
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
     let summary: RaceSummary
@@ -181,7 +181,7 @@ private struct RaceHeroScoreboard: View {
 }
 
 private struct RaceHeroSide: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     let contender: RaceSummary.Contender
     let alignment: HorizontalAlignment
 
@@ -222,14 +222,14 @@ private struct RaceHeroPortrait: View {
                     .font(.icon(.s, weight: .bold))
                     .symbolRenderingMode(.palette)
                     .foregroundStyle(.white, Color.scoreboardAccent)
-                    .symbolEffect(.bounce, value: contender.candidate.elected)
+                    .quietBounce(value: contender.candidate.elected)
             }
         }
     }
 }
 
 private struct RaceHeroCenter: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     let summary: RaceSummary
 
     var body: some View {
@@ -278,7 +278,7 @@ private struct RaceHeroStacked: View {
 }
 
 private struct RaceHeroSplit: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     let summary: RaceSummary
 
     var body: some View {

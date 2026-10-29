@@ -113,7 +113,7 @@ private struct PastHeroCard: View {
 }
 
 private struct PastHeroLeader: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @State private var appeared = false
     let breakdown: PastRoundBreakdown
     let leader: PastCandidate

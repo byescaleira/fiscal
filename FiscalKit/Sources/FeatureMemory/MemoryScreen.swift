@@ -37,7 +37,7 @@ public struct MemoryScreen: View {
 private struct MemoryHeroSection: View {
     @Environment(MemoryModel.self) private var memory
     @Environment(\.appTint) private var tint
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
 
     var body: some View {
         Section {

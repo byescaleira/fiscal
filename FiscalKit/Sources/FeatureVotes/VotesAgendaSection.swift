@@ -29,7 +29,7 @@ struct VotesAgendaSection: View {
 
 private struct AgendaHouseRow: View {
     @Environment(VotesModel.self) private var votes
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     let day: Agenda.HouseDay
 
     var body: some View {

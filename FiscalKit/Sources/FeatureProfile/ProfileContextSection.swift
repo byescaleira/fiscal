@@ -102,7 +102,7 @@ private struct ProfileContextSummary: View {
 
 private struct ProfileContextChart: View {
     @Environment(ProfileModel.self) private var profile
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @ScaledMetric(relativeTo: .caption) private var height: CGFloat = .chartHeight
     @State private var revealed = false
     @State private var scrubbed: Date?

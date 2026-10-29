@@ -57,7 +57,7 @@ private struct ProfileExpensesSummary: View {
 
 private struct ProfileMonthChart: View {
     @Environment(ProfileModel.self) private var profile
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @ScaledMetric(relativeTo: .caption) private var height: CGFloat = .chartCompactHeight
     @State private var revealed = false
     @State private var scrubbed: String?

@@ -76,7 +76,7 @@ struct ProfileNumbersSection: View {
 }
 
 private struct NumberTileView: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @State private var filled = false
     let tile: ProfileModel.NumberTile
 

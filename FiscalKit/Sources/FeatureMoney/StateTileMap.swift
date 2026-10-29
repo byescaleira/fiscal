@@ -3,7 +3,7 @@ import FiscalDesignSystem
 import SwiftUI
 
 struct StateTileMap: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @State private var revealed = false
     @State private var scrubbedColumn: Double?
     @State private var scrubbedRow: Double?

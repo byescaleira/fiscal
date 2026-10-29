@@ -26,7 +26,7 @@ struct MineBenchSection: View {
 }
 
 private struct MineBenchHeader: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     let bench: MineBench
 
     var body: some View {
@@ -46,7 +46,7 @@ private struct MineBenchHeader: View {
 }
 
 private struct MineBenchChart: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @State private var revealed = false
     @State private var position: Int?
     let bench: MineBench

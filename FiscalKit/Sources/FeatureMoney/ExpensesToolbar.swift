@@ -51,7 +51,7 @@ private struct ExpensesFilterMenu: View {
             Label("Filters", systemImage: "line.3.horizontal.decrease")
                 .labelStyle(.iconOnly)
                 .foregroundStyle(Color.primary)
-                .symbolEffect(.bounce, value: expenses.hasFilter)
+                .quietBounce(value: expenses.hasFilter)
                 .accessibilityValue(Text(verbatim: expenses.scopeTitle))
         }
         .menuStyle(.button)

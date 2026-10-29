@@ -3,7 +3,7 @@ import SwiftUI
 public struct PersonPortrait: View {
     @Environment(\.portraitArtwork) private var artwork
     @Environment(\.portraitsAreStill) private var portraitsAreStill
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     private let slug: String
     private let name: String
     private let party: String

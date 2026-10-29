@@ -59,7 +59,7 @@ private struct MoneyAnswerSection: View {
 
 private struct MoneyAnswerCard: View {
     @Environment(\.appTint) private var tint
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     let answer: MoneyModel.Answer
 
     var body: some View {

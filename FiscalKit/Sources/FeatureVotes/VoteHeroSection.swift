@@ -130,7 +130,7 @@ private struct HeroSide: View {
 
 private struct HeroCenter: View {
     @Environment(VoteDetailModel.self) private var vote
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @State private var hasAppeared = false
     let outcome: VoteOutcome
 
@@ -138,7 +138,7 @@ private struct HeroCenter: View {
         VStack(spacing: .space2XS) {
             Image(systemName: outcome.symbol)
                 .font(.icon(.l, weight: .semibold))
-                .symbolEffect(.bounce, value: hasAppeared)
+                .quietBounce(value: hasAppeared)
             Text(verbatim: outcome.title)
                 .font(.chipLabel)
                 .textCase(.uppercase)

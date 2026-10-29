@@ -151,7 +151,7 @@ private struct RaceDetailSection<Content: View>: View {
 }
 
 private struct RaceCountFacts: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     let summary: RaceSummary
 
     var body: some View {

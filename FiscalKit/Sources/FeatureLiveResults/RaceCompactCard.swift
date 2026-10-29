@@ -82,7 +82,7 @@ private struct RaceCompactHeader: View {
 }
 
 struct RaceStatusBadge: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     let summary: RaceSummary
 
     var body: some View {
@@ -130,7 +130,7 @@ private struct RaceDuel: View {
 }
 
 private struct RaceDuelSide: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     let contender: RaceSummary.Contender
     let trailing: Bool
 
@@ -183,14 +183,14 @@ struct RaceCandidatePortrait: View {
                     .font(.icon(.xs, weight: .bold))
                     .symbolRenderingMode(.palette)
                     .foregroundStyle(.white, Color.retroTeal)
-                    .symbolEffect(.bounce, value: contender.candidate.elected)
+                    .quietBounce(value: contender.candidate.elected)
             }
         }
     }
 }
 
 private struct RaceDuelSplit: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     let summary: RaceSummary
 
     var body: some View {

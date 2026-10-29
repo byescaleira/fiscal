@@ -43,7 +43,7 @@ private struct MineSeatCard: View {
     @Environment(MineModel.self) private var mine
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @State private var appeared = false
     let seat: MineSeat
 

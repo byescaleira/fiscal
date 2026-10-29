@@ -43,7 +43,7 @@ private struct MineHeroSection: View {
 
 private struct MineHeroCard: View {
     @Environment(MineModel.self) private var mine
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceL) {

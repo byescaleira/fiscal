@@ -128,7 +128,7 @@ extension View {
 }
 
 private struct ReleaseCascade: ViewModifier {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @State private var isShown = false
     let index: Int
 

@@ -22,7 +22,7 @@ struct MoneyCard<Content: View>: View {
 
 struct MoneyHeroValue: View {
     @Environment(\.appTint) private var tint
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     let chip: String
     let value: String
     let cents: Int

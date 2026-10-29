@@ -4,7 +4,7 @@ import FiscalDomain
 import SwiftUI
 
 struct OriginColumnsChart: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @ScaledMetric(relativeTo: .caption) private var height: CGFloat = .chartHeight
     @State private var revealed = false
     @State private var scrubbed: String?

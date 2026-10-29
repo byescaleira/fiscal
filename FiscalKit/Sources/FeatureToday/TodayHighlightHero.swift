@@ -7,7 +7,7 @@ struct TodayHighlightHero: View {
     @Environment(TodayModel.self) private var today
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var appeared = false
     let highlight: Highlight
