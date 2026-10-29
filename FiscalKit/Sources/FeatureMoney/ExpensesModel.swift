@@ -102,6 +102,8 @@ public final class ExpensesModel {
         return values.reduce(0, +) / values.count
     }
 
+    public var averageReais: Double? { averageCents.map { Double($0) / 100 } }
+
     public var averageText: String {
         String(appLocalized: "Monthly average: \(PublicFormat.money(cents: averageCents))")
     }
@@ -160,6 +162,8 @@ public final class ExpensesModel {
         return values.count.isMultiple(of: 2)
             ? (values[middle - 1] + values[middle]) / 2 : values[middle]
     }
+
+    public var medianReais: Double? { medianCents.map { Double($0) / 100 } }
 
     public var receiptsHeadline: String? {
         guard let medianCents else { return nil }

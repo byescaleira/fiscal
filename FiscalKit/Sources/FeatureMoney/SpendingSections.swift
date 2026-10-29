@@ -117,10 +117,11 @@ private struct SpenderCard: View {
                     open(.expenses(slug: spender.person.slug, year: year), in: section)
                 } label: {
                     Label("See Receipts", systemImage: "doc.text.magnifyingglass")
-                        .font(.subheadline.weight(.semibold))
+                        .font(.buttonLabel)
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.bordered)
+                .controlSize(.large)
                 .tint(Color.primary)
             }
         }
@@ -133,7 +134,8 @@ private struct SpenderCard: View {
         let card = spender.person
         return VStack(alignment: .leading, spacing: .spaceM) {
             HStack(alignment: .top) {
-                PersonPortrait(slug: card.slug, name: card.name, party: card.party, size: .ring)
+                PersonPortrait(
+                    slug: card.slug, name: card.name, party: card.party, size: .portraitAnimated)
                 Spacer(minLength: .spaceS)
                 PeerBadge(band: spender.band)
             }

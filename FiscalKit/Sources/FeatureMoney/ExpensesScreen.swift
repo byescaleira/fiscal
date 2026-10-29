@@ -82,6 +82,7 @@ private struct ExpensesIdentity: View {
 
 private struct ExpensesMonthsSection: View {
     @Environment(ExpensesModel.self) private var expenses
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         @Bindable var expenses = expenses
@@ -94,14 +95,14 @@ private struct ExpensesMonthsSection: View {
                         Text(verbatim: month.value)
                             .font(.amountTitle)
                             .monospacedDigit()
-                            .contentTransition(.numericText(value: month.reais))
+                            .contentTransition(reduceMotion ? .identity : .numericText(value: month.reais))
                             .amountLine()
                     }
                     .accessibilityElement(children: .combine)
                 }
                 MonthlyBarsChart(
                     months: expenses.months, highlighted: expenses.highlightedMonth?.month,
-                    averageReais: expenses.averageCents.map { Double($0) / 100 },
+                    averageReais: expenses.averageReais,
                     selection: $expenses.selectedMonth)
             }
             .padding(.vertical, .spaceXS)
@@ -174,7 +175,7 @@ private struct ExpensesSpreadSection: View {
                     }
                     ReceiptStripChart(
                         receipts: expenses.receipts,
-                        medianReais: expenses.medianCents.map { Double($0) / 100 },
+                        medianReais: expenses.medianReais,
                         category: expenses.categoryFilter)
                 }
                 .padding(.vertical, .spaceXS)

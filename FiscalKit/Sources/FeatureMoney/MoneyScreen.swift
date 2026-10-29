@@ -66,7 +66,7 @@ private struct MoneyAnswerCard: View {
         VStack(alignment: .leading, spacing: .spaceL) {
             VStack(alignment: .leading, spacing: .space2XS) {
                 Text(verbatim: answer.kicker)
-                    .font(.caption.weight(.heavy))
+                    .font(.chipLabel)
                     .foregroundStyle(tint)
                     .contentTransition(.opacity)
                 HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
