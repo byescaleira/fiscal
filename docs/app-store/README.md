@@ -51,19 +51,24 @@ if len(data['review']['notes']) > 4000:
 
 Em inglês, curtas, respondendo o que o revisor precisa para testar sem perguntar:
 
-- Se o app pede conta (o padrão é não pedir) e onde ficam os dados.
-- O app é gratuito: sem assinatura, compra no app ou paywall.
-- Por que o app pede cada permissão (câmera, rede local, notificações, Face ID).
-- Quais serviços externos recebem o quê, coerente com o rótulo de privacidade.
-- Como ver dados de exemplo rapidamente.
+- O app não pede conta, cadastro nem login; a Lente fica só no aparelho.
+- O app é gratuito: sem assinatura, compra no app, anúncio ou paywall.
+- O que sai do aparelho e por quanto tempo: token da Atividade ao Vivo da apuração, token de push-to-start do destaque e a chave do App Attest ([ADR 0017](../adr/0017-app-store-privacy-label.md)), coerente com o rótulo de privacidade.
+- Por que o app roda em segundo plano: `fetch` para o pacote offline ([ADR 0015](../adr/0015-background-fetch-offline-pack.md)) e `remote-notification` para a sincronização do iCloud. Não há pedido de permissão de notificações: os alertas são Atividades ao Vivo.
+- De onde vêm os dados (CDN `dados.fiscal.byescaleira.com` e `fiscal.byescaleira.com/api`) e as explicações no aparelho (Foundation Models, com texto fixo de reserva).
+- Neutralidade: nenhum partido em destaque; ícones de partido desligados por padrão ([ADR 0013](../adr/0013-party-symbol-icons.md)).
 
 ## Ordem de preenchimento
 
 1. **Contratos:** o contrato de apps gratuitos já vale; o Fiscal não vende nada.
 2. **Registro do app:** feito em 26/10/2026. Apple ID `6826982117`, bundle id e SKU `com.byescaleira.fiscal`, idioma principal Portuguese (Brazil), só iOS por enquanto, acesso de todos os usuários. O id já está em `FiscalAppStoreID` no `Info.plist`.
-3. **Preço:** gratuito, sem compras no app nem assinatura.
-4. **Textos da versão** a partir deste `metadata.json`, idioma por idioma: nome, subtítulo, texto promocional, descrição, palavras-chave, URLs e "What's New" quando houver. Recarregue a página e confira cada idioma: alguns campos ignoram valor colado por script.
-5. **Mídia** de [media/README.md](media/README.md), na ordem de envio.
-6. **Privacidade:** rótulo ("Dados não coletados" enquanto for verdade) publicado pelo usuário, URL de privacidade em cada idioma, Content Rights.
-7. **Disponibilidade** (todos os países exceto a China continental, que exige registro ICP) e **lançamento manual**.
-8. **App Review Information** com `review.notes` e `review.contact`; build do Xcode Cloud; "Add for Review" na versão.
+3. **Categorias:** principal **Notícias**, secundária **Referência** (o usuário confirma; nenhuma das duas pede documento extra).
+4. **Classificação etária:** questionário em App Information › Age Rating, respondendo "não" a todo conteúdo sensível e "sim" só para acesso irrestrito à web se algum link abrir o navegador dentro do app; o resultado esperado é 4+.
+5. **Preço:** gratuito, sem compras no app nem assinatura ([ADR 0011](../adr/0011-free-app-noncommercial-license.md)).
+6. **Textos da versão** a partir deste `metadata.json`: nome, subtítulo, texto promocional, descrição, palavras-chave, URLs e "What's New" quando houver. Recarregue a página e confira: alguns campos ignoram valor colado por script.
+7. **Mídia** de [media/README.md](media/README.md), na ordem de envio.
+8. **Privacidade:** rótulo do [ADR 0017](../adr/0017-app-store-privacy-label.md) ("Identificadores › ID do dispositivo, não vinculado, funcionalidade do app", depois do ok do usuário), URL de privacidade e Content Rights (o app mostra conteúdo de terceiros: dados públicos, checagens CC BY-ND 4.0 e obras com licença conferida).
+9. **Disponibilidade** (todos os países exceto a China continental, que exige registro ICP) e **lançamento manual**.
+10. **App Review Information:** `review.notes`, o e-mail `review.contact` e um **telefone de contato** que o usuário informa na hora (não fica no repositório); "Sign-in required" desmarcado.
+11. **TestFlight › Test Information:** e-mail de feedback (`support@byescaleira.com`), URL de marketing e de privacidade, descrição do beta em pt-BR e as mesmas notas de revisão; o "What to Test" de cada build sai do `ci_scripts/ci_post_xcodebuild.sh` (`TestFlight/WhatToTest.pt-BR.txt`).
+12. **Envio:** build do Xcode Cloud, "Add for Review" na versão, com o ok do usuário.
