@@ -5,7 +5,7 @@ import { handle } from '../bridge/server.mjs';
 
 const root = new URL('../site/', import.meta.url).pathname;
 const port = Number(process.env.PORT ?? 4173);
-const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.txt': 'text/plain; charset=utf-8', '.png': 'image/png', '.svg': 'image/svg+xml' };
+const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.txt': 'text/plain; charset=utf-8', '.png': 'image/png', '.svg': 'image/svg+xml', '.woff2': 'font/woff2' };
 
 createServer(async (request, response) => {
   const path = decodeURIComponent(new URL(request.url, 'http://site').pathname);
