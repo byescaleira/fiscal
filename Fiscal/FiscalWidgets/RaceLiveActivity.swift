@@ -130,7 +130,6 @@ private struct RaceLockScreen: View {
         .padding(.horizontal, .spaceXL)
         .padding(.vertical, .spaceL)
         .frame(maxWidth: .infinity)
-        .fontDesign(.rounded)
         .partyMarksStill()
         .opacity(board.isStale ? .opacityStrong : 1)
     }
@@ -212,10 +211,7 @@ private struct CandidateSide: View {
             if alignment == .leading { badge }
             VStack(alignment: alignment, spacing: 0) {
                 Text(verbatim: row.percent)
-                    .font(
-                        .system(
-                            size: size == .lockScreen ? 40 : 26, weight: .heavy, design: .rounded)
-                    )
+                    .font(.emphasis(fixed: size == .lockScreen ? 40 : 26, weight: .heavy))
                     .monospacedDigit()
                     .contentTransition(.numericText(value: row.value))
                     .foregroundStyle(RaceStyle.primary)
@@ -256,7 +252,7 @@ private struct NumberBadge: View {
             .frame(width: side, height: side)
             .overlay {
                 Text(verbatim: number)
-                    .font(.system(size: side * 0.42, weight: .heavy, design: .rounded))
+                    .font(.emphasis(fixed: side * 0.42, weight: .heavy))
                     .foregroundStyle(.white)
                     .minimumScaleFactor(0.6)
             }
@@ -314,9 +310,41 @@ private struct BoardFooter: View {
     }
 }
 
-private struct CompactLeading: View {
+private struct IslandWidthReader<Content: View>: View {
+    @ViewBuilder let content: (Bool) -> Content
+
+    var body: some View {
+        if #available(iOS 27, *) {
+            LimitedIslandWidth(content: content)
+        } else {
+            content(false)
+        }
+    }
+}
+
+@available(iOS 27, *)
+private struct LimitedIslandWidth<Content: View>: View {
     @Environment(\.isDynamicIslandLimitedInWidth) private var limited
+    let content: (Bool) -> Content
+
+    var body: some View {
+        content(limited)
+    }
+}
+
+private struct CompactLeading: View {
     let board: RaceBoard
+
+    var body: some View {
+        IslandWidthReader { limited in
+            CompactLeadingContent(board: board, limited: limited)
+        }
+    }
+}
+
+private struct CompactLeadingContent: View {
+    let board: RaceBoard
+    let limited: Bool
 
     var body: some View {
         if limited {
@@ -330,13 +358,14 @@ private struct CompactLeading: View {
 }
 
 private struct CompactTrailing: View {
-    @Environment(\.isDynamicIslandLimitedInWidth) private var limited
     let board: RaceBoard
 
     var body: some View {
-        if !limited, let second = board.second {
-            CompactStanding(score: board.score(second))
-                .accessibilityLabel(Text(verbatim: board.score(second).accessibility))
+        IslandWidthReader { limited in
+            if !limited, let second = board.second {
+                CompactStanding(score: board.score(second))
+                    .accessibilityLabel(Text(verbatim: board.score(second).accessibility))
+            }
         }
     }
 }

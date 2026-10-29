@@ -210,7 +210,7 @@ struct PastRaceRow: View {
     var body: some View {
         HStack(spacing: .spaceM) {
             Text(verbatim: race.scope.uppercased(with: .app))
-                .font(.subheadline.weight(.heavy).width(.condensed))
+                .font(.emphasis(.subheadline, weight: .heavy))
                 .foregroundStyle(.secondary)
                 .frame(width: .badgeM, height: .badgeM)
                 .background(.subtleFill, in: .rect(cornerRadius: .radiusS))
@@ -230,7 +230,7 @@ struct PastRaceRow: View {
             Spacer(minLength: .spaceS)
             if let share = winners.first?.share {
                 Text(verbatim: MemoryText.shortPercent(share))
-                    .font(.headline.weight(.bold).width(.condensed))
+                    .font(.emphasis(.headline, weight: .bold))
                     .monospacedDigit()
             }
         }

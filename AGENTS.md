@@ -12,6 +12,7 @@ App SwiftUI para iOS, iPadOS, macOS e visionOS 27, com SwiftData local e sincron
 - **Aprovação humana:** push para `main` ou `development`, merge na `main`, envio para a App Store ou o TestFlight, publicação do site e deploy na VPS só com o ok explícito do usuário, pedido a cada vez.
 - **CI:** Xcode Cloud (`ci_scripts/`). O repositório não usa GitHub Actions.
 - **Simulador:** só pelo sim-monitor ou por `scripts/simulator.sh acquire/release <udid>`, no máximo dois ligados na máquina; verificação visual no iPhone físico quando houver.
+- **byescaleira-kit:** design, gráficos, componentes genéricos e idioma vêm do pacote privado `byescaleira-kit` ([ADR 0010](docs/adr/0010-byescaleira-kit.md)); peça genérica nova ou correção numa peça do kit vai para o kit, num PR de lá. Os scripts acham o repositório privado por `scripts/kit-access.sh` (conta `byescaleira` do `gh`).
 - **Cache de build:** `~/Library/Developer/FiscalBuild`, ou `FISCAL_BUILD_ROOT` próprio por agente em paralelo; um build pesado por vez.
 
 ## Fluxo de trabalho (spec-driven)

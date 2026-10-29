@@ -27,9 +27,8 @@ public enum AppSection: String, CaseIterable, Identifiable, Sendable {
     }
 
     public var role: TabRole? {
-        switch self {
-        case .search: .prominent
-        default: nil
-        }
+        guard self == .search else { return nil }
+        if #available(iOS 27, macOS 27, visionOS 27, *) { return .prominent }
+        return .search
     }
 }

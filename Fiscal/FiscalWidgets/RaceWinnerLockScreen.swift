@@ -60,7 +60,6 @@ struct WinnerLockScreen: View {
         .padding(.horizontal, .spaceXL)
         .padding(.vertical, .spaceL)
         .frame(maxWidth: .infinity)
-        .fontDesign(.rounded)
         .partyMarksStill()
         .accessibilityElement(children: .combine)
     }

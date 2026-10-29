@@ -325,9 +325,9 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Q7QLR2PH2X;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
-				MACOSX_DEPLOYMENT_TARGET = 27.0;
-				MARKETING_VERSION = 1.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.byescaleira.fiscal.uitests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -340,7 +340,7 @@
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_TARGET_NAME = Fiscal;
-				XROS_DEPLOYMENT_TARGET = 27.0;
+				XROS_DEPLOYMENT_TARGET = 26.0;
 			};
 			name = Debug;
 		};
@@ -351,9 +351,9 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Q7QLR2PH2X;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
-				MACOSX_DEPLOYMENT_TARGET = 27.0;
-				MARKETING_VERSION = 1.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.byescaleira.fiscal.uitests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -366,7 +366,7 @@
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_TARGET_NAME = Fiscal;
-				XROS_DEPLOYMENT_TARGET = 27.0;
+				XROS_DEPLOYMENT_TARGET = 26.0;
 			};
 			name = Release;
 		};
@@ -493,7 +493,8 @@
 		A1000000000000000000C003 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "FiscalIconAmazonDay FiscalIconAmazonRiver FiscalIconThemeForest FiscalIconThemeAnnatto FiscalIconThemeIndigo FiscalIconThemeIpe FiscalIconThemeSavanna FiscalIconThemeSea FiscalIconThemeGraphite FiscalIconThemeSand FiscalIconFaunaJaguar FiscalIconFaunaMacaw FiscalIconFaunaToucan FiscalIconFaunaTamarin FiscalIconFaunaDolphin FiscalIconFaunaAnteater FiscalIconPartyAgir FiscalIconPartyAvante FiscalIconPartyCidadania FiscalIconPartyDc FiscalIconPartyDemocrata FiscalIconPartyMdb FiscalIconPartyMissao FiscalIconPartyMobiliza FiscalIconPartyNovo FiscalIconPartyPcb FiscalIconPartyPcdob FiscalIconPartyPco FiscalIconPartyPdt FiscalIconPartyPl FiscalIconPartyPodemos FiscalIconPartyPp FiscalIconPartyPrd FiscalIconPartyPrtb FiscalIconPartyPsb FiscalIconPartyPsd FiscalIconPartyPsdb FiscalIconPartyPsol FiscalIconPartyPstu FiscalIconPartyPt FiscalIconPartyPv FiscalIconPartyRede FiscalIconPartyRepublicanos FiscalIconPartySolidariedade FiscalIconPartyUniao FiscalIconPartyUp";
+				"ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES[sdk=iphoneos*]" = "FiscalIconAmazonDay FiscalIconAmazonRiver FiscalIconThemeForest FiscalIconThemeAnnatto FiscalIconThemeIndigo FiscalIconThemeIpe FiscalIconThemeSavanna FiscalIconThemeSea FiscalIconThemeGraphite FiscalIconThemeSand FiscalIconFaunaJaguar FiscalIconFaunaMacaw FiscalIconFaunaToucan FiscalIconFaunaTamarin FiscalIconFaunaDolphin FiscalIconFaunaAnteater FiscalIconPartyAgir FiscalIconPartyAvante FiscalIconPartyCidadania FiscalIconPartyDc FiscalIconPartyDemocrata FiscalIconPartyMdb FiscalIconPartyMissao FiscalIconPartyMobiliza FiscalIconPartyNovo FiscalIconPartyPcb FiscalIconPartyPcdob FiscalIconPartyPco FiscalIconPartyPdt FiscalIconPartyPl FiscalIconPartyPodemos FiscalIconPartyPp FiscalIconPartyPrd FiscalIconPartyPrtb FiscalIconPartyPsb FiscalIconPartyPsd FiscalIconPartyPsdb FiscalIconPartyPsol FiscalIconPartyPstu FiscalIconPartyPt FiscalIconPartyPv FiscalIconPartyRede FiscalIconPartyRepublicanos FiscalIconPartySolidariedade FiscalIconPartyUniao FiscalIconPartyUp";
+				"ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES[sdk=iphonesimulator*]" = "FiscalIconAmazonDay FiscalIconAmazonRiver FiscalIconThemeForest FiscalIconThemeAnnatto FiscalIconThemeIndigo FiscalIconThemeIpe FiscalIconThemeSavanna FiscalIconThemeSea FiscalIconThemeGraphite FiscalIconThemeSand FiscalIconFaunaJaguar FiscalIconFaunaMacaw FiscalIconFaunaToucan FiscalIconFaunaTamarin FiscalIconFaunaDolphin FiscalIconFaunaAnteater FiscalIconPartyAgir FiscalIconPartyAvante FiscalIconPartyCidadania FiscalIconPartyDc FiscalIconPartyDemocrata FiscalIconPartyMdb FiscalIconPartyMissao FiscalIconPartyMobiliza FiscalIconPartyNovo FiscalIconPartyPcb FiscalIconPartyPcdob FiscalIconPartyPco FiscalIconPartyPdt FiscalIconPartyPl FiscalIconPartyPodemos FiscalIconPartyPp FiscalIconPartyPrd FiscalIconPartyPrtb FiscalIconPartyPsb FiscalIconPartyPsd FiscalIconPartyPsdb FiscalIconPartyPsol FiscalIconPartyPstu FiscalIconPartyPt FiscalIconPartyPv FiscalIconPartyRede FiscalIconPartyRepublicanos FiscalIconPartySolidariedade FiscalIconPartyUniao FiscalIconPartyUp";
 				ASSETCATALOG_COMPILER_APPICON_NAME = FiscalIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
@@ -522,11 +523,11 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 27.0;
-				MARKETING_VERSION = 1.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.byescaleira.fiscal;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -539,14 +540,15 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				XROS_DEPLOYMENT_TARGET = 27.0;
+				XROS_DEPLOYMENT_TARGET = 26.0;
 			};
 			name = Debug;
 		};
 		A1000000000000000000C004 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "FiscalIconAmazonDay FiscalIconAmazonRiver FiscalIconThemeForest FiscalIconThemeAnnatto FiscalIconThemeIndigo FiscalIconThemeIpe FiscalIconThemeSavanna FiscalIconThemeSea FiscalIconThemeGraphite FiscalIconThemeSand FiscalIconFaunaJaguar FiscalIconFaunaMacaw FiscalIconFaunaToucan FiscalIconFaunaTamarin FiscalIconFaunaDolphin FiscalIconFaunaAnteater FiscalIconPartyAgir FiscalIconPartyAvante FiscalIconPartyCidadania FiscalIconPartyDc FiscalIconPartyDemocrata FiscalIconPartyMdb FiscalIconPartyMissao FiscalIconPartyMobiliza FiscalIconPartyNovo FiscalIconPartyPcb FiscalIconPartyPcdob FiscalIconPartyPco FiscalIconPartyPdt FiscalIconPartyPl FiscalIconPartyPodemos FiscalIconPartyPp FiscalIconPartyPrd FiscalIconPartyPrtb FiscalIconPartyPsb FiscalIconPartyPsd FiscalIconPartyPsdb FiscalIconPartyPsol FiscalIconPartyPstu FiscalIconPartyPt FiscalIconPartyPv FiscalIconPartyRede FiscalIconPartyRepublicanos FiscalIconPartySolidariedade FiscalIconPartyUniao FiscalIconPartyUp";
+				"ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES[sdk=iphoneos*]" = "FiscalIconAmazonDay FiscalIconAmazonRiver FiscalIconThemeForest FiscalIconThemeAnnatto FiscalIconThemeIndigo FiscalIconThemeIpe FiscalIconThemeSavanna FiscalIconThemeSea FiscalIconThemeGraphite FiscalIconThemeSand FiscalIconFaunaJaguar FiscalIconFaunaMacaw FiscalIconFaunaToucan FiscalIconFaunaTamarin FiscalIconFaunaDolphin FiscalIconFaunaAnteater FiscalIconPartyAgir FiscalIconPartyAvante FiscalIconPartyCidadania FiscalIconPartyDc FiscalIconPartyDemocrata FiscalIconPartyMdb FiscalIconPartyMissao FiscalIconPartyMobiliza FiscalIconPartyNovo FiscalIconPartyPcb FiscalIconPartyPcdob FiscalIconPartyPco FiscalIconPartyPdt FiscalIconPartyPl FiscalIconPartyPodemos FiscalIconPartyPp FiscalIconPartyPrd FiscalIconPartyPrtb FiscalIconPartyPsb FiscalIconPartyPsd FiscalIconPartyPsdb FiscalIconPartyPsol FiscalIconPartyPstu FiscalIconPartyPt FiscalIconPartyPv FiscalIconPartyRede FiscalIconPartyRepublicanos FiscalIconPartySolidariedade FiscalIconPartyUniao FiscalIconPartyUp";
+				"ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES[sdk=iphonesimulator*]" = "FiscalIconAmazonDay FiscalIconAmazonRiver FiscalIconThemeForest FiscalIconThemeAnnatto FiscalIconThemeIndigo FiscalIconThemeIpe FiscalIconThemeSavanna FiscalIconThemeSea FiscalIconThemeGraphite FiscalIconThemeSand FiscalIconFaunaJaguar FiscalIconFaunaMacaw FiscalIconFaunaToucan FiscalIconFaunaTamarin FiscalIconFaunaDolphin FiscalIconFaunaAnteater FiscalIconPartyAgir FiscalIconPartyAvante FiscalIconPartyCidadania FiscalIconPartyDc FiscalIconPartyDemocrata FiscalIconPartyMdb FiscalIconPartyMissao FiscalIconPartyMobiliza FiscalIconPartyNovo FiscalIconPartyPcb FiscalIconPartyPcdob FiscalIconPartyPco FiscalIconPartyPdt FiscalIconPartyPl FiscalIconPartyPodemos FiscalIconPartyPp FiscalIconPartyPrd FiscalIconPartyPrtb FiscalIconPartyPsb FiscalIconPartyPsd FiscalIconPartyPsdb FiscalIconPartyPsol FiscalIconPartyPstu FiscalIconPartyPt FiscalIconPartyPv FiscalIconPartyRede FiscalIconPartyRepublicanos FiscalIconPartySolidariedade FiscalIconPartyUniao FiscalIconPartyUp";
 				ASSETCATALOG_COMPILER_APPICON_NAME = FiscalIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
@@ -575,11 +577,11 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 27.0;
-				MARKETING_VERSION = 1.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.byescaleira.fiscal;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -592,7 +594,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				XROS_DEPLOYMENT_TARGET = 27.0;
+				XROS_DEPLOYMENT_TARGET = 26.0;
 			};
 			name = Release;
 		};
@@ -607,13 +609,13 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FiscalWidgets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Fiscal;
-				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.byescaleira.fiscal.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -641,13 +643,13 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FiscalWidgets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Fiscal;
-				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.byescaleira.fiscal.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;

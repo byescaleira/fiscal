@@ -106,7 +106,7 @@ struct WinnerTileMap: View {
                 .annotation(position: .overlay) {
                     Text(verbatim: tile.code)
                         .font(.caption2.weight(.bold))
-                        .monospaced()
+                        .monospacedDigit()
                         .foregroundStyle(tile.winner == nil ? Color.secondary : Color.white)
                 }
                 .accessibilityLabel(tile.name)

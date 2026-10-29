@@ -28,13 +28,13 @@ extension Double {
 }
 
 extension Font {
-    public static let shareHero = Font.system(size: 46, weight: .heavy).width(.condensed)
-    public static let shareNumber = Font.system(size: 28, weight: .heavy).width(.condensed)
-    public static let shareTitle = Font.system(size: 19, weight: .bold, design: .rounded)
-    public static let shareName = Font.system(size: 16, weight: .bold, design: .rounded)
-    public static let shareBody = Font.system(size: 11, weight: .medium, design: .rounded)
-    public static let shareLabel = Font.system(size: 9, weight: .bold, design: .rounded)
-    public static let shareCredit = Font.system(size: 8, weight: .semibold, design: .rounded)
-    public static let shareStamp = Font.system(size: 7.5, weight: .medium, design: .monospaced)
-    public static let shareBrand = Font.system(size: 15, weight: .black, design: .rounded)
+    public static let shareHero = Font.emphasis(fixed: 46, weight: .heavy)
+    public static let shareNumber = Font.emphasis(fixed: 28, weight: .heavy)
+    public static let shareTitle = Font.emphasis(fixed: 19, weight: .bold)
+    public static let shareName = Font.emphasis(fixed: 16, weight: .bold)
+    public static let shareBody = Font.system(size: 11, weight: .medium)
+    public static let shareLabel = Font.system(size: 9, weight: .bold)
+    public static let shareCredit = Font.system(size: 8, weight: .semibold)
+    public static let shareStamp = Font.system(size: 7.5, weight: .medium).monospacedDigit()
+    public static let shareBrand = Font.emphasis(fixed: 15, weight: .black)
 }

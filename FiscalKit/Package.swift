@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "FiscalKit",
     defaultLocalization: "pt-BR",
-    platforms: [.iOS("27.0"), .macOS("27.0"), .visionOS("27.0")],
+    platforms: [.iOS("26.0"), .macOS("26.0"), .visionOS("26.0")],
     products: [
         .library(
             name: "FiscalWidgetKit", targets: ["FiscalDomain", "FiscalData", "FiscalDesignSystem"]),
@@ -135,7 +135,8 @@ let package = Package(
         .testTarget(
             name: "FeatureShareTests",
             dependencies: [
-                "FiscalDomain", "FiscalData", "FiscalResource", "FeatureCore", "FeatureShare",
+                "FiscalDomain", "FiscalData", "FiscalDesignSystem", "FiscalResource", "FeatureCore",
+                "FeatureShare",
             ]),
         .testTarget(
             name: "FeatureSettingsTests",

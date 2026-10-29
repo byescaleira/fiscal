@@ -35,9 +35,7 @@ public struct PartySeal: View {
                 }
                 Text(party.uppercased())
                     .font(
-                        .system(
-                            size: proxy.size.height * Self.letterScale, weight: .heavy,
-                            design: .rounded)
+                        .emphasis(fixed: proxy.size.height * Self.letterScale, weight: .heavy)
                     )
                     .foregroundStyle(.white)
                     .lineLimit(1)

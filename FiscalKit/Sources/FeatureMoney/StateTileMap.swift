@@ -55,7 +55,7 @@ struct StateTileMap: View {
             .annotation(position: .overlay) {
                 Text(verbatim: tile.code)
                     .font(.caption2.weight(.bold))
-                    .monospaced()
+                    .monospacedDigit()
                     .foregroundStyle(labelStyle(for: tile))
             }
             .accessibilityLabel(tile.title)

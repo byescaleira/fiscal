@@ -13,12 +13,13 @@
 
 ## 3. Sistema 26 e versão
 
-- [ ] 3.1 Mínimo 26 no projeto e no pacote; o que é do 27 atrás de `#available` com alternativa.
-- [ ] 3.2 `MARKETING_VERSION = 1.0.0` e `CHANGELOG.md`.
+- [x] 3.1 Mínimo 26 no projeto e no pacote; o que é do 27 atrás de `#available` com alternativa (aba Fiscalizar `.prominent` no 27 e `.search` no 26; largura da Ilha Dinâmica só no 27). Ícones alternativos só no iOS (`[sdk=iphone*]`), sem aviso no visionOS.
+- [x] 3.2 `MARKETING_VERSION = 1.0.0` e `CHANGELOG.md`.
+- [x] 3.3 Regra `display-font` do workspace no repositório inteiro: números e títulos de destaque na Bricolage (placar, widgets, Live Activity, cartões de compartilhar), corpo em SF Pro, nada de SF condensada ou arredondada; a extensão dos widgets registra a fonte. Cartões conferidos antes e depois pelo `ShareCardSnapshotTests`.
 
 ## 4. Fechamento
 
-- [ ] 4.1 `scripts/verify.sh --full`.
+- [x] 4.1 `scripts/verify.sh --full` (lint, 3 plataformas, 503 testes, web e auditoria; testes do admin pulados por falta do `node_modules`).
 - [ ] 4.2 Revisões de design e de código.
-- [ ] 4.3 ADR da adoção do kit; `docs/design-system.md` apontando para o kit.
+- [x] 4.3 [ADR 0010](../../adr/0010-byescaleira-kit.md); `docs/design-system.md` e `AGENTS.md` apontando para o kit.
 - [ ] 4.4 Pasta arquivada em `docs/changes/archive/`.

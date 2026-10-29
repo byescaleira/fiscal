@@ -237,9 +237,9 @@ struct VoteCircular: View {
                     .font(.caption2.weight(.bold))
                     .widgetAccentable()
                 Text(verbatim: board.yesText)
-                    .font(.headline.width(.condensed))
+                    .font(.emphasis(.headline, weight: .semibold))
                 Text(verbatim: board.noText)
-                    .font(.caption2.weight(.semibold).width(.condensed))
+                    .font(.emphasis(.caption2, weight: .semibold))
                     .foregroundStyle(.secondary)
             }
             .monospacedDigit()

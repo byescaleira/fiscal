@@ -1,3 +1,4 @@
+import FiscalDesignSystem
 import FiscalDomain
 import SwiftUI
 import WidgetKit
@@ -6,6 +7,7 @@ import WidgetKit
 struct FiscalWidgetsBundle: WidgetBundle {
     init() {
         FiscalLanguage.install()
+        EmphasisFont.register()
     }
 
     var body: some Widget {
