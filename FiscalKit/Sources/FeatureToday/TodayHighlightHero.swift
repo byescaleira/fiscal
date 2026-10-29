@@ -57,8 +57,8 @@ struct TodayHighlightHero: View {
 
     private var header: some View {
         HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
-            Text(verbatim: today.highlightHeroKicker(highlight).uppercased(with: .app))
-                .font(.caption.weight(.heavy))
+            Text(verbatim: today.highlightHeroOverline(highlight))
+                .font(.chipLabel)
                 .tracking(.spaceHairline / 4)
                 .opacity(.opacityStrong)
                 .fixedSize(horizontal: false, vertical: true)
@@ -153,7 +153,7 @@ private struct TodayHighlightAuthor: View {
                             .white.opacity(.opacitySoft), lineWidth: .spaceHairline / 2)
                     }
             }
-            Text(verbatim: "\(person.officeTitle) · \(person.uf.uppercased())")
+            Text(verbatim: today.authorLine(person))
                 .font(.footnote)
                 .opacity(.opacityStrong)
                 .fixedSize(horizontal: false, vertical: true)
@@ -170,6 +170,7 @@ private struct TodayHighlightRelevance: View {
         let relevance = Relevance(weight: weight)
         HStack(spacing: .spaceXS) {
             StatusCircle(relevance.title, symbol: relevance.symbol, color: .white)
+                .accessibilityHidden(true)
             Text(verbatim: relevance.title)
                 .font(.caption.weight(.semibold))
                 .lineLimit(1)
@@ -185,8 +186,9 @@ private struct TodayHighlightRelevance: View {
                         .frame(width: .spaceM, height: .space2XS)
                 }
             }
+            .accessibilityHidden(true)
         }
-        .accessibilityHidden(true)
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -209,7 +211,11 @@ private struct TodayHighlightScore: View {
             HStack(alignment: .firstTextBaseline, spacing: .spaceM) {
                 side("YES", tally.yes)
                 Text(verbatim: "×")
-                    .font(large ? .title.weight(.heavy) : .headline.weight(.heavy))
+                    .font(
+                        large
+                            ? .emphasis(.title, weight: .heavy)
+                            : .emphasis(.headline, weight: .heavy)
+                    )
                     .opacity(.opacityStrong)
                 side("NO", tally.no)
             }
@@ -242,7 +248,7 @@ private struct TodayHighlightScore: View {
                 .font(large ? .amountHero : .scoreboardTitle)
                 .monospacedDigit()
             Text(title)
-                .font(.caption.weight(.heavy))
+                .font(.chipLabel)
                 .opacity(.opacityStrong)
         }
     }

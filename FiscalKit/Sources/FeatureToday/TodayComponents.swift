@@ -24,7 +24,7 @@ struct TodaySection<Content: View>: View {
         VStack(alignment: .leading, spacing: .spaceM) {
             HStack(alignment: .firstTextBaseline) {
                 Text(title)
-                    .font(.titleMedium)
+                    .sectionTitle()
                     .accessibilityAddTraits(.isHeader)
                 Spacer(minLength: .spaceS)
                 if let action {
@@ -70,7 +70,7 @@ struct LensPickMark: View {
 
     var body: some View {
         Label("For who you support", systemImage: "heart")
-            .font(.caption2.weight(.bold))
+            .font(.chipLabel)
             .foregroundStyle(tint)
             .labelStyle(.titleAndIcon)
     }
@@ -82,11 +82,12 @@ struct ThemeTag: View {
 
     var body: some View {
         Label {
-            Text(verbatim: theme.title.uppercased())
+            Text(verbatim: theme.title)
         } icon: {
             Image(systemName: theme.symbol)
         }
-        .font(.caption2.weight(.heavy))
+        .font(.chipLabel)
+        .textCase(.uppercase)
         .foregroundStyle(tint)
         .lineLimit(1)
     }
@@ -174,7 +175,7 @@ struct TallyLine: View {
     ) -> some View {
         VStack(alignment: .leading, spacing: .spaceHairline) {
             Label(label, systemImage: symbol)
-                .font(.caption2.weight(.heavy))
+                .font(.chipLabel)
                 .textCase(.uppercase)
                 .foregroundStyle(color)
             Text(verbatim: PublicFormat.number(value))

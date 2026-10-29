@@ -53,7 +53,7 @@ extension TodayModel {
             case .money: String(appLocalized: "Money")
             case .indicator: String(appLocalized: "Indicator")
             }
-        return "\(kind) · \(TodayText.shortDate(highlight.date.date()))"
+        return "\(kind) · \(Self.shortDate(highlight.date.date()))"
     }
 
     public func highlightAccessibility(_ highlight: Highlight) -> String {

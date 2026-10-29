@@ -41,7 +41,7 @@ public final class TodayModel {
     @ObservationIgnored private let raceService: (any LiveResultsService)?
     @ObservationIgnored private let follows: (any FollowRepository)?
     @ObservationIgnored private let raceInterval: Duration
-    @ObservationIgnored private let now: @Sendable () -> Date
+    @ObservationIgnored let now: @Sendable () -> Date
 
     public init(
         service: (any PublicDataService)?, lens: (any LensRepository)? = nil,
@@ -60,12 +60,6 @@ public final class TodayModel {
 
     public var showsLensBadge: Bool { lens?.hasChoice == true }
 
-    public var lensLine: String? { TodayText.lensLine(lens) }
-
-    public var dateLine: String {
-        TodayText.dateLine(digest?.date ?? agenda?.date ?? CalendarDay(now()))
-    }
-
     public var events: [TodayDigest.Event] { ordered(digest?.events ?? []).map(\.value) }
 
     public var briefing: [LensOrdered<TodayDigest.Event>] {
@@ -82,8 +76,6 @@ public final class TodayModel {
     public var hasLoadedDigest: Bool { digest != nil }
 
     public var sources: [Source] { digest?.sources ?? [] }
-
-    public var digestSource: String? { TodayText.sourceLine(sources) }
 
     public var liveBoard: TodayRaceBoard? {
         guard let race = TodayRaceBoard.featured(in: races, now: now()) else { return nil }
@@ -119,23 +111,9 @@ public final class TodayModel {
         }
     }
 
-    public var agendaSource: String? {
-        guard let agenda, !agenda.houses.isEmpty else { return nil }
-        let date = TodayText.shortDate(agenda.date.date())
-        return TodayText.houseSourceLine(
-            agenda.houses.map(\.house), suffix: String(appLocalized: "agenda of \(date)"))
-    }
-
     public var recent: [VoteSummary] {
         let featured = lead.flatMap { leadVote(for: $0.value) }?.id
         return Array(recentVotes.filter { $0.id != featured }.prefix(Self.recentLimit))
-    }
-
-    public var recentSource: String? {
-        guard let latest = recentVotes.map(\.date).max() else { return nil }
-        let date = TodayText.shortDate(latest.date())
-        return TodayText.houseSourceLine(
-            recentVotes.map(\.house), suffix: String(appLocalized: "votes up to \(date)"))
     }
 
     public var representatives: [Representative] {
@@ -153,10 +131,6 @@ public final class TodayModel {
     }
 
     public var moreFollowed: Int { max(followed.count - Self.representativesLimit, 0) }
-
-    public func detail(for card: PersonCard) -> String {
-        card.uf == "br" ? card.officeTitle : "\(card.officeTitle) · \(card.uf.uppercased())"
-    }
 
     public var notice: (text: String, symbol: String)? {
         guard hasLoadedDigest, let error = phase.error else { return nil }

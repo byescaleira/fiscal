@@ -24,9 +24,9 @@ struct TodayRepresentativesSection: View {
                             Divider().padding(.leading, .badgeL + .spaceL + .spaceM)
                         }
                     }
-                    if today.moreFollowed > 0 {
+                    if let more = today.moreFollowedText {
                         Divider().padding(.leading, .spaceL)
-                        Button(TodayText.moreFollowed(today.moreFollowed)) {
+                        Button(more) {
                             navigation?.selectedSection = .mine
                         }
                         .font(.footnote.weight(.semibold))
@@ -102,7 +102,8 @@ private struct FollowInvite: View {
             .accessibilityElement(children: .combine)
             Button("Open Mine", systemImage: "person.2", action: openMine)
                 .buttonStyle(.bordered)
-                .font(.subheadline.weight(.semibold))
+                .controlSize(.large)
+                .font(.buttonLabel)
         }
         .padding(.spaceL)
         .todayCard()
