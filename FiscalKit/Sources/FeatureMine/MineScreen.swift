@@ -49,7 +49,7 @@ private struct MineHeroCard: View {
         VStack(alignment: .leading, spacing: .spaceL) {
             VStack(alignment: .leading, spacing: .space2XS) {
                 Text(verbatim: mine.placeKicker)
-                    .font(.caption.weight(.heavy))
+                    .font(.chipLabel)
                     .foregroundStyle(.secondary)
                 HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
                     Text(verbatim: mine.placeTitle)
@@ -101,55 +101,29 @@ private struct MineStatePlate: View {
 
 private struct MineInviteSection: View {
     @Environment(MineModel.self) private var mine
-    @FocusState private var isSearching: Bool
 
     var body: some View {
-        @Bindable var mine = mine
         Section {
-            HStack(spacing: .spaceS) {
-                Image(systemName: "magnifyingglass")
-                    .foregroundStyle(.secondary)
-                    .accessibilityHidden(true)
-                TextField("State or city", text: $mine.query)
-                    .focused($isSearching)
-                    .autocorrectionDisabled()
-                    .submitLabel(.search)
-                if !mine.query.isEmpty {
-                    Button("Clear", systemImage: "xmark.circle.fill") { mine.query = "" }
-                        .labelStyle(.iconOnly)
-                        .buttonStyle(.borderless)
-                        .foregroundStyle(.secondary)
-                }
+            Button {
+                mine.choosePlace(searching: true)
+            } label: {
+                IconRow("State or city", symbol: "magnifyingglass", color: .secondary)
             }
-            if mine.isSearchingPlaces {
-                if mine.placeResults.isEmpty {
-                    Text(
-                        mine.places.isEmpty
-                            ? LocalizedStringKey("Loading") : "No place with that name."
-                    )
-                    .foregroundStyle(.secondary)
-                } else {
-                    ForEach(mine.placeResults.prefix(MineModel.inviteLimit)) { place in
-                        MinePlaceRow(place: place)
-                    }
-                }
-            } else {
-                Button {
-                    mine.isChoosingPlace = true
-                } label: {
-                    IconRow(
-                        "See All States and Cities",
-                        detail: "State capitals first. Search finds any other city.",
-                        symbol: "map", color: .info)
-                }
-                .buttonStyle(.plain)
+            .buttonStyle(.plain)
+            Button {
+                mine.choosePlace(searching: false)
+            } label: {
+                IconRow(
+                    "See All States and Cities",
+                    detail: "State capitals first. Search finds any other city.",
+                    symbol: "map", color: .info)
             }
+            .buttonStyle(.plain)
         } header: {
             Text("Find Your Place").sectionTitle()
         } footer: {
             Text("Your place stays only on this device. Fiscal never sends it anywhere.")
         }
-        .task { await mine.loadPlaces() }
     }
 }
 
@@ -161,7 +135,7 @@ private struct MineToolbar: ToolbarContent {
     var body: some ToolbarContent {
         ToolbarItem(placement: .primaryAction) {
             Button {
-                mine.isChoosingPlace = true
+                mine.choosePlace(searching: false)
             } label: {
                 Label("Change Place", systemImage: "mappin.and.ellipse")
             }

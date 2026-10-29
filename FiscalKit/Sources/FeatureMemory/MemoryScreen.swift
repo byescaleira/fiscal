@@ -37,6 +37,7 @@ public struct MemoryScreen: View {
 private struct MemoryHeroSection: View {
     @Environment(MemoryModel.self) private var memory
     @Environment(\.appTint) private var tint
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         Section {
@@ -46,7 +47,9 @@ private struct MemoryHeroSection: View {
                 Text("\(memory.republicYears) years")
                     .font(.amountHero)
                     .monospacedDigit()
-                    .contentTransition(.numericText(value: Double(memory.republicYears)))
+                    .contentTransition(
+                        reduceMotion ? .identity : .numericText(value: Double(memory.republicYears))
+                    )
                     .foregroundStyle(.primary)
                 Text(
                     "Past elections, the phases of Brazilian politics and guides to study, with a source on every fact."
@@ -81,7 +84,9 @@ private struct PresidentialTimelineSection: View {
                                 footnote: memory.turnoutLine(race)
                             )
                             .containerRelativeFrame(.horizontal) { width, _ in
-                                min(width * 0.82, .readableColumn * 0.7)
+                                .railCard(
+                                    in: width, share: .winnerCardShare,
+                                    columnShare: .winnerCardColumnShare)
                             }
                         }
                         .buttonStyle(.plain)
@@ -150,25 +155,18 @@ private struct PeriodRow: View {
     let isLast: Bool
 
     var body: some View {
-        HStack(alignment: .top, spacing: .spaceM) {
-            VStack(spacing: .spaceXS) {
-                Circle()
-                    .fill(PeriodPalette.color(for: period.era))
-                    .frame(width: .spaceM, height: .spaceM)
-                if !isLast {
-                    Capsule()
-                        .fill(.tertiary)
-                        .frame(width: .spaceHairline)
-                        .frame(maxHeight: .infinity)
-                }
-            }
-            .accessibilityHidden(true)
+        TimelineRow(isLast: isLast) {
+            Circle()
+                .fill(PeriodPalette.color(for: period.era))
+                .frame(width: .spaceM, height: .spaceM)
+                .accessibilityHidden(true)
+        } content: {
             VStack(alignment: .leading, spacing: .space2XS) {
-                Text(verbatim: period.era.uppercased(with: .app))
+                Text(verbatim: period.eraTitle)
                     .font(.caption2.weight(.bold))
                     .foregroundStyle(PeriodPalette.color(for: period.era))
                 Text(verbatim: period.name).font(.rowTitle)
-                Text(verbatim: MemoryText.years(start: period.startDay, end: period.endDay))
+                Text(verbatim: period.yearsText)
                     .font(.subheadline.weight(.semibold))
                     .monospacedDigit()
                     .foregroundStyle(.secondary)
@@ -224,14 +222,14 @@ private struct StudyTile: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceS) {
-            SymbolBadge(StudySymbols.symbol(for: guide.id), color: color, size: .badgeM)
+            SymbolBadge(guide.symbol, color: color, size: .badgeM)
             Spacer(minLength: .spaceS)
             Text(verbatim: guide.title)
                 .font(.headline)
                 .foregroundStyle(.primary)
                 .multilineTextAlignment(.leading)
                 .fixedSize(horizontal: false, vertical: true)
-            Text(verbatim: StudySymbols.count(guide))
+            Text(verbatim: guide.countText)
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
         }

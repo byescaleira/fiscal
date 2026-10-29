@@ -49,12 +49,8 @@ private struct MineSeatCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceL) {
-            Text(verbatim: seat.kicker)
-                .font(.caption.weight(.heavy))
-                .lineLimit(2)
-                .padding(.horizontal, .spaceM)
-                .padding(.vertical, .space2XS)
-                .background(.white.opacity(.opacityTint), in: .capsule)
+            Chip(seat.kicker, color: .white, shape: .capsule)
+                .environment(\.colorScheme, .dark)
             Button {
                 open(.person(slug: seat.holder.slug), in: section)
             } label: {
@@ -88,7 +84,7 @@ private struct MineSeatCard: View {
                     slug: card.slug, name: card.name, party: card.party, size: .medallion
                 )
                 .overlay { Circle().strokeBorder(.white, lineWidth: .space2XS) }
-                .scaleEffect(appeared ? 1 : 0.6)
+                .scaleEffect(appeared ? 1 : .seatPortraitEntryScale)
                 .opacity(appeared ? 1 : 0)
                 Text(verbatim: card.name)
                     .font(.emphasis(.title2, weight: .heavy))
@@ -128,7 +124,7 @@ private struct MineSeatAction: View {
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceXS) {
             Text(verbatim: mine.actionKicker(item).uppercased(with: .app))
-                .font(.caption2.weight(.heavy))
+                .font(.chipLabel)
                 .opacity(.opacityStrong)
                 .lineLimit(1)
             Text(verbatim: item.title)

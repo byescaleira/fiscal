@@ -31,9 +31,16 @@ public struct PeriodScreen: View {
                 }
             }
         } empty: {
-            ContentUnavailableView(
-                "Period not found", systemImage: "books.vertical",
-                description: Text("The timeline isn't published by Fiscal yet."))
+            EmptyStateView(
+                title: "Period not found",
+                description: "The timeline isn't published by Fiscal yet."
+            ) {
+                IconRow("Milestones", symbol: "flag", color: .retroDenim)
+                IconRow(
+                    "Official indicators", symbol: "chart.line.uptrend.xyaxis", color: .retroTeal)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.plainBackground)
         }
         .emphasisTitle(Text(verbatim: model.period?.name ?? ""))
         .refreshable { await model.load() }
@@ -50,7 +57,7 @@ private struct PeriodHeroSection: View {
         } header: {
             VStack(spacing: .spaceS) {
                 Chip(
-                    period.era.uppercased(with: .app), color: PeriodPalette.color(for: period.era),
+                    period.eraTitle, color: PeriodPalette.color(for: period.era),
                     shape: .capsule)
                 Text(verbatim: model.years)
                     .font(.amountHero)
@@ -77,7 +84,7 @@ private struct PresidentsSection: View {
             ForEach(period.presidents) { president in
                 HStack(alignment: .top, spacing: .spaceM) {
                     PersonPortrait(
-                        slug: MemoryText.slug(president.name), name: president.name, party: "",
+                        slug: president.portraitSlug, name: president.name, party: "",
                         size: .badgeL)
                     VStack(alignment: .leading, spacing: .spaceHairline) {
                         Text(verbatim: president.name).font(.rowTitle)
@@ -95,7 +102,7 @@ private struct PresidentsSection: View {
         } header: {
             Text(verbatim: model.presidentsLine).sectionTitle()
         } footer: {
-            Text(verbatim: MemoryText.sources(period.presidents.flatMap(\.sources)) ?? "")
+            Text(verbatim: period.presidentsSourceLine)
         }
     }
 }
@@ -119,26 +126,15 @@ private struct MilestoneRow: View {
     let isLast: Bool
 
     var body: some View {
-        HStack(alignment: .top, spacing: .spaceM) {
-            VStack(spacing: .spaceXS) {
-                SymbolBadge(
-                    MilestoneStyle.symbol(milestone.kind), color: .retroDenim, size: .badgeS)
-                if !isLast {
-                    Capsule()
-                        .fill(.tertiary)
-                        .frame(width: .spaceHairline)
-                        .frame(maxHeight: .infinity)
-                }
-            }
-            .accessibilityHidden(true)
+        TimelineRow(isLast: isLast) {
+            SymbolBadge(milestone.symbol, color: .retroDenim, size: .badgeS)
+                .accessibilityHidden(true)
+        } content: {
             VStack(alignment: .leading, spacing: .space2XS) {
-                Text(
-                    verbatim:
-                        "\(MemoryText.day(milestone.day)) · \(MilestoneStyle.label(milestone.kind))"
-                )
-                .font(.caption.weight(.semibold))
-                .monospacedDigit()
-                .foregroundStyle(.secondary)
+                Text(verbatim: milestone.dateLine)
+                    .font(.caption.weight(.semibold))
+                    .monospacedDigit()
+                    .foregroundStyle(.secondary)
                 Text(verbatim: milestone.title).font(.rowTitle)
                 Text(verbatim: milestone.text)
                     .font(.subheadline)
@@ -206,7 +202,7 @@ private struct IndicatorsSection: View {
                     PeriodIndicatorChart(
                         indicator: indicator, color: ChartPalette.color(at: index),
                         logScale: model.usesLogScale(indicator))
-                    Text(verbatim: footnote(indicator))
+                    Text(verbatim: model.footnote(indicator))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -217,15 +213,6 @@ private struct IndicatorsSection: View {
         } footer: {
             Text("Full years of the period only. Values as published, without causes attributed.")
         }
-    }
-
-    private func footnote(_ indicator: PeriodIndicator) -> String {
-        var parts = [indicator.note, String(appLocalized: "Source: \(indicator.source).")]
-        if model.usesLogScale(indicator) {
-            parts.append(
-                String(appLocalized: "Logarithmic scale, so small and very large values fit."))
-        }
-        return parts.joined(separator: " ")
     }
 }
 
@@ -266,12 +253,12 @@ private struct DivergenceSection: View {
         Section {
             ForEach(Array(divergence.positions.enumerated()), id: \.offset) { index, position in
                 HStack(alignment: .top, spacing: .spaceM) {
-                    Text(verbatim: String(index + 1))
-                        .font(.caption.weight(.heavy))
+                    Text(verbatim: divergence.positionText(index))
+                        .font(.chipLabel)
                         .foregroundStyle(.secondary)
                         .frame(width: .badgeS, height: .badgeS)
                         .background(.subtleFill, in: .circle)
-                        .accessibilityHidden(true)
+                        .accessibilityLabel(Text("Position \(index + 1)"))
                     VStack(alignment: .leading, spacing: .space2XS) {
                         Text(verbatim: position.text)
                             .font(.subheadline)

@@ -28,9 +28,7 @@ public final class PeriodModel {
 
     var presidentsLine: String {
         let count = period?.presidents.count ?? 0
-        return count == 1
-            ? String(appLocalized: "1 head of government")
-            : String(appLocalized: "\(count) heads of government")
+        return String(appLocalized: "\(count) heads of government")
     }
 
     public func load() async {
@@ -75,6 +73,15 @@ public final class PeriodModel {
                 ))
         }
         return parts.joined(separator: " · ")
+    }
+
+    func footnote(_ indicator: PeriodIndicator) -> String {
+        var parts = [indicator.note, String(appLocalized: "Source: \(indicator.source).")]
+        if usesLogScale(indicator) {
+            parts.append(
+                String(appLocalized: "Logarithmic scale, so small and very large values fit."))
+        }
+        return parts.joined(separator: " ")
     }
 
     func usesLogScale(_ indicator: PeriodIndicator) -> Bool {

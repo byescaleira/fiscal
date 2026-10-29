@@ -19,9 +19,15 @@ public struct StudyGuideScreen: View {
                 }
             }
         } empty: {
-            ContentUnavailableView(
-                "Guide not found", systemImage: "book",
-                description: Text("The study guides aren't published by Fiscal yet."))
+            EmptyStateView(
+                title: "Guide not found",
+                description: "The study guides aren't published by Fiscal yet."
+            ) {
+                IconRow("Swipe through the cards", symbol: "rectangle.stack", color: .retroDenim)
+                IconRow("Test yourself", symbol: "checkmark.circle", color: .retroOlive)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.plainBackground)
         }
         .navigationTitle(Text(verbatim: model.guide?.title ?? ""))
         .task { await model.load() }
@@ -38,12 +44,14 @@ private struct GuideContent: View {
                 EdgeToEdgeRail(lazy: true) {
                     ForEach(Array(guide.cards.enumerated()), id: \.element.id) { index, card in
                         StudyCardView(
-                            card: card, index: index, total: guide.cards.count,
+                            card: card, position: guide.cardPosition(index),
                             color: ChartPalette.color(
                                 at: index % ChartPalette.categorical.count)
                         )
                         .containerRelativeFrame(.horizontal) { width, _ in
-                            min(width * 0.86, .readableColumn * 0.8)
+                            .railCard(
+                                in: width, share: .studyCardShare,
+                                columnShare: .studyCardColumnShare)
                         }
                     }
                 }
@@ -72,7 +80,7 @@ private struct GuideHeroSection: View {
         Section {
         } header: {
             VStack(spacing: .spaceS) {
-                SymbolBadge(StudySymbols.symbol(for: guide.id), color: tint, size: .badgeXL)
+                SymbolBadge(guide.symbol, color: tint, size: .badgeXL)
                 Chip(model.heroChip, color: tint, shape: .capsule)
                 Text(verbatim: guide.summary)
                     .font(.emphasis(.title3, weight: .semibold))
@@ -88,19 +96,15 @@ private struct GuideHeroSection: View {
 
 private struct StudyCardView: View {
     let card: StudyCard
-    let index: Int
-    let total: Int
+    let position: String
     let color: Color
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceM) {
             HStack {
-                Text(verbatim: "\(index + 1)/\(total)")
-                    .font(.caption.weight(.heavy))
+                Chip(position, color: .white, shape: .capsule)
                     .monospacedDigit()
-                    .padding(.horizontal, .spaceS)
-                    .padding(.vertical, .space2XS)
-                    .background(.white.opacity(.opacityTint), in: .capsule)
+                    .environment(\.colorScheme, .dark)
                 Spacer(minLength: .spaceS)
             }
             Text(verbatim: card.title)
@@ -110,13 +114,13 @@ private struct StudyCardView: View {
                 .font(.body)
                 .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: .spaceS)
-            Text(verbatim: MemoryText.sources(card.sources) ?? "")
+            Text(verbatim: card.sourceLine)
                 .font(.caption.weight(.medium))
                 .opacity(.opacityStrong)
         }
         .foregroundStyle(.white)
         .padding(.spaceInset)
-        .frame(maxWidth: .infinity, minHeight: .medallion * 2.5, alignment: .topLeading)
+        .frame(maxWidth: .infinity, minHeight: .studyCardMinHeight, alignment: .topLeading)
         .background {
             ZStack {
                 color
@@ -148,7 +152,7 @@ private struct QuizSections: View {
                                 .foregroundStyle(.secondary)
                         }
                     }
-                    Text(verbatim: "\(index + 1). \(question.question)")
+                    Text(verbatim: guide.questionTitle(index))
                         .font(.headline)
                         .foregroundStyle(.primary)
                 }

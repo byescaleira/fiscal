@@ -49,7 +49,7 @@ public final class StudyGuideModel {
 
     var heroChip: String {
         guard let guide else { return "" }
-        return StudySymbols.count(guide).uppercased(with: .app)
+        return guide.countText.uppercased(with: .app)
     }
 
     public func load() async {

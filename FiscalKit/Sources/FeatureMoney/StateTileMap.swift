@@ -128,6 +128,8 @@ private struct StateTileScale: View {
         }
         .font(.caption)
         .foregroundStyle(.secondary)
-        .accessibilityHidden(true)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text("Color scale"))
+        .accessibilityValue(Text("Lighter is less, darker is more"))
     }
 }

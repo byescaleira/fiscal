@@ -54,13 +54,21 @@ private struct ProfileContextMenu: View {
             }
             .pickerStyle(.inline)
         } label: {
-            Label("Indicator", systemImage: "line.3.horizontal.decrease")
-                .labelStyle(.iconOnly)
-                .accessibilityValue(Text(verbatim: profile.selectedContext?.name ?? ""))
+            HStack(spacing: .spaceXS) {
+                Text(verbatim: profile.selectedContext?.name ?? "")
+                    .lineLimit(1)
+                Image(systemName: "chevron.up.chevron.down")
+                    .imageScale(.small)
+                    .accessibilityHidden(true)
+            }
+            .font(.subheadline.weight(.semibold))
+            .foregroundStyle(Color.primary)
         }
         .menuStyle(.button)
         .buttonStyle(.plain)
         .tint(Color.primary)
+        .accessibilityLabel(Text("Indicator"))
+        .accessibilityValue(Text(verbatim: profile.selectedContext?.name ?? ""))
         .sensoryFeedback(.selection, trigger: profile.selectedIndicatorID)
     }
 }
@@ -79,14 +87,8 @@ private struct ProfileContextSummary: View {
                 .font(.headline)
                 .fixedSize(horizontal: false, vertical: true)
             FlowLayout(spacing: .spaceXS) {
-                Chip(
-                    String(appLocalized: "Before · \(IndicatorFormat.change(item.changeBefore))"),
-                    color: .secondary)
-                Chip(
-                    String(
-                        appLocalized:
-                            "During the term · \(IndicatorFormat.change(item.changeDuring))"),
-                    color: ChartPalette.color(at: 0))
+                Chip(profile.contextBeforeChip(item), color: .secondary)
+                Chip(profile.contextDuringChip(item), color: ChartPalette.color(at: 0))
             }
             .textCase(.uppercase)
             Text(verbatim: profile.contextAreaLine(item))
@@ -127,29 +129,8 @@ private struct ProfileContextChart: View {
             if let first = points.first?.date, let start = profile.mandateStartDate,
                 let last = points.last?.date
             {
-                RectangleMark(xStart: .value("Start", first), xEnd: .value("Took office", start))
-                    .foregroundStyle(Color.secondary.opacity(.opacityFill))
-                    .annotation(position: .overlay, alignment: .topLeading, spacing: .space2XS) {
-                        BandLabel(text: String(appLocalized: "Before"), color: .secondary)
-                    }
-                RectangleMark(xStart: .value("Took office", start), xEnd: .value("Latest", last))
-                    .foregroundStyle(ChartPalette.color(at: 0).opacity(.opacityFill))
-                    .annotation(position: .overlay, alignment: .topTrailing, spacing: .space2XS) {
-                        BandLabel(
-                            text: String(appLocalized: "During the term"),
-                            color: ChartPalette.color(at: 0))
-                    }
-                RuleMark(x: .value("Took office", start))
-                    .foregroundStyle(.secondary)
-                    .lineStyle(.chartAverage)
-                    .annotation(
-                        position: .bottom, alignment: .center, spacing: .space2XS,
-                        overflowResolution: .init(x: .fit(to: .chart), y: .disabled)
-                    ) {
-                        Text(verbatim: profile.mandateStartLabel)
-                            .font(.caption2.weight(.semibold))
-                            .foregroundStyle(.secondary)
-                    }
+                ContextBands(
+                    first: first, start: start, last: last, startLabel: profile.mandateStartLabel)
             }
             ForEach(points) { point in
                 LineMark(
@@ -157,33 +138,15 @@ private struct ProfileContextChart: View {
                     y: .value("Value", revealed ? point.value : domain.lowerBound),
                     series: .value("Period", point.period.rawValue)
                 )
-                .foregroundStyle(
-                    point.period == .during ? ChartPalette.color(at: 0) : Color.secondary
-                )
+                .foregroundStyle(point.period.color)
                 .lineStyle(StrokeStyle(lineWidth: .chartLineWidth, lineCap: .round))
                 .interpolationMethod(.monotone)
             }
             if let selected {
-                RuleMark(x: .value("Selected", selected.date, unit: .month))
-                    .foregroundStyle(Color.secondary.opacity(.opacitySoft))
-                    .lineStyle(StrokeStyle(lineWidth: .chartRuleWidth))
-                    .annotation(
-                        position: .top, spacing: .space2XS,
-                        overflowResolution: .init(x: .fit(to: .chart), y: .disabled)
-                    ) {
-                        ChartCallout(
-                            title: IndicatorFormat.month(selected.day, calendar: profile.calendar),
-                            value: profile.contextValue(selected, item: item)
-                        ) {
-                            EmptyView()
-                        }
-                    }
-                PointMark(
-                    x: .value("Selected", selected.date, unit: .month),
-                    y: .value("Value", selected.value)
-                )
-                .foregroundStyle(
-                    selected.period == .during ? ChartPalette.color(at: 0) : Color.secondary)
+                ContextSelection(
+                    point: selected,
+                    title: IndicatorFormat.month(selected.day, calendar: profile.calendar),
+                    value: profile.contextValue(selected, item: item))
             }
         }
         .chartYScale(domain: domain)
@@ -209,6 +172,65 @@ private struct ProfileContextChart: View {
             withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
         }
     }
+}
+
+private struct ContextBands: ChartContent {
+    let first: Date
+    let start: Date
+    let last: Date
+    let startLabel: String
+
+    var body: some ChartContent {
+        RectangleMark(xStart: .value("Start", first), xEnd: .value("Took office", start))
+            .foregroundStyle(Color.secondary.opacity(.opacityFill))
+            .annotation(position: .overlay, alignment: .topLeading, spacing: .space2XS) {
+                BandLabel(text: String(appLocalized: "Before"), color: .secondary)
+            }
+        RectangleMark(xStart: .value("Took office", start), xEnd: .value("Latest", last))
+            .foregroundStyle(ChartPalette.color(at: 0).opacity(.opacityFill))
+            .annotation(position: .overlay, alignment: .topTrailing, spacing: .space2XS) {
+                BandLabel(
+                    text: String(appLocalized: "During the term"), color: ChartPalette.color(at: 0))
+            }
+        RuleMark(x: .value("Took office", start))
+            .foregroundStyle(.secondary)
+            .lineStyle(.chartAverage)
+            .annotation(
+                position: .bottom, alignment: .center, spacing: .space2XS,
+                overflowResolution: .init(x: .fit(to: .chart), y: .disabled)
+            ) {
+                Text(verbatim: startLabel)
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(.secondary)
+            }
+    }
+}
+
+private struct ContextSelection: ChartContent {
+    let point: ProfileModel.ContextPoint
+    let title: String
+    let value: String
+
+    var body: some ChartContent {
+        RuleMark(x: .value("Selected", point.date, unit: .month))
+            .foregroundStyle(Color.secondary.opacity(.opacitySoft))
+            .lineStyle(StrokeStyle(lineWidth: .chartRuleWidth))
+            .annotation(
+                position: .top, spacing: .space2XS,
+                overflowResolution: .init(x: .fit(to: .chart), y: .disabled)
+            ) {
+                ChartCallout(title: title, value: value) { EmptyView() }
+            }
+        PointMark(
+            x: .value("Selected", point.date, unit: .month),
+            y: .value("Value", point.value)
+        )
+        .foregroundStyle(point.period.color)
+    }
+}
+
+extension ProfileModel.ContextPeriod {
+    fileprivate var color: Color { self == .during ? ChartPalette.color(at: 0) : Color.secondary }
 }
 
 private struct BandLabel: View {
@@ -249,17 +271,14 @@ private struct ProfileContextRow: View {
                 }
                 Spacer(minLength: .spaceS)
                 VStack(alignment: .trailing, spacing: .spaceHairline) {
-                    Text(verbatim: IndicatorFormat.change(item.changeDuring))
+                    Text(verbatim: profile.contextDuringChange(item))
                         .font(.body.weight(.semibold))
                         .monospacedDigit()
                         .foregroundStyle(.primary)
-                    Text(
-                        verbatim: String(
-                            appLocalized: "before \(IndicatorFormat.change(item.changeBefore))")
-                    )
-                    .font(.caption)
-                    .monospacedDigit()
-                    .foregroundStyle(.secondary)
+                    Text(verbatim: profile.contextBeforeLine(item))
+                        .font(.caption)
+                        .monospacedDigit()
+                        .foregroundStyle(.secondary)
                 }
             }
             .contentShape(.rect)

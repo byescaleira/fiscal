@@ -24,7 +24,7 @@ struct ProfileExpensesSection: View {
                     Label("Every Expense", systemImage: "list.bullet.rectangle")
                 }
             } header: {
-                Text("Office Allowance in \(String(profile.year))").sectionTitle()
+                Text(verbatim: profile.expensesSectionTitle).sectionTitle()
             } footer: {
                 ProfileFooter(lines: [profile.sourceText(for: ["expenses"])])
             }
@@ -47,6 +47,9 @@ private struct ProfileExpensesSummary: View {
                     .foregroundStyle(.secondary)
             }
             ProfileMonthChart()
+            Text("Touch a month to see its total. The dashed line is the monthly average.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
         .padding(.vertical, .space2XS)
     }
@@ -54,23 +57,70 @@ private struct ProfileExpensesSummary: View {
 
 private struct ProfileMonthChart: View {
     @Environment(ProfileModel.self) private var profile
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ScaledMetric(relativeTo: .caption) private var height: CGFloat = .chartCompactHeight
+    @State private var revealed = false
+    @State private var scrubbed: String?
 
     var body: some View {
-        Chart(profile.monthBars) { bar in
-            BarMark(
-                x: .value("Month", bar.label),
-                y: .value("Amount", Double(bar.cents) / 100)
-            )
-            .foregroundStyle(
-                bar.month == profile.highlightedMonth
-                    ? Color.primary : Color.secondary.opacity(.opacitySoft)
-            )
-            .clipShape(.rect(cornerRadius: .space2XS))
-            .accessibilityLabel(Text(verbatim: bar.label))
-            .accessibilityValue(Text(verbatim: bar.value))
+        let bars = profile.monthBars
+        let selected = bars.first { $0.label == scrubbed }
+        Chart {
+            ForEach(bars) { bar in
+                BarMark(
+                    x: .value("Month", bar.label),
+                    y: .value("Amount", revealed ? bar.reais : 0),
+                    width: .ratio(.chartBarWidth)
+                )
+                .foregroundStyle(style(for: bar))
+                .clipShape(
+                    UnevenRoundedRectangle(
+                        topLeadingRadius: .chartBarCorner, topTrailingRadius: .chartBarCorner)
+                )
+                .accessibilityLabel(Text(verbatim: bar.name))
+                .accessibilityValue(Text(verbatim: bar.value))
+            }
+            if let average = profile.monthAverageReais {
+                RuleMark(y: .value("Average", average))
+                    .foregroundStyle(.secondary)
+                    .lineStyle(.chartAverage)
+                    .accessibilityHidden(true)
+            }
+            if let selected {
+                ProfileMonthSelection(bar: selected)
+            }
         }
+        .chartXScale(domain: bars.map(\.label))
         .chartYAxis(.hidden)
-        .frame(height: .ring * 2)
+        .chartXSelection(value: $scrubbed)
+        .sensoryFeedback(.selection, trigger: selected?.month)
+        .frame(height: height)
+        .onAppear {
+            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
+        }
+    }
+
+    private func style(for bar: ProfileModel.MonthBar) -> Color {
+        bar.month == profile.highlightedMonth
+            ? Color.primary : Color.secondary.opacity(.opacitySoft)
+    }
+}
+
+private struct ProfileMonthSelection: ChartContent {
+    let bar: ProfileModel.MonthBar
+
+    var body: some ChartContent {
+        RuleMark(x: .value("Selected", bar.label))
+            .foregroundStyle(Color.secondary.opacity(.opacitySoft))
+            .lineStyle(StrokeStyle(lineWidth: .chartRuleWidth))
+            .zIndex(-1)
+            .annotation(
+                position: .top, spacing: .space2XS,
+                overflowResolution: .init(x: .fit(to: .chart), y: .disabled)
+            ) {
+                ChartCallout(title: bar.name, value: bar.value) { EmptyView() }
+            }
+            .accessibilityHidden(true)
     }
 }
 
@@ -78,10 +128,7 @@ extension ProfileModel.CategoryLine {
     fileprivate func ranked(slot: Int) -> RankedBar {
         RankedBar(
             id: id, title: category, value: fraction, valueText: value,
-            details: [
-                PublicFormat.percent(fraction),
-                String(appLocalized: "Receipts: \(PublicFormat.number(count))"),
-            ], color: ChartPalette.color(at: slot))
+            details: [shareText, receiptsText], color: ChartPalette.color(at: slot))
     }
 }
 
@@ -108,7 +155,7 @@ struct ProfileExpensesScreen: View {
             .surfaceRows()
         }
         .listSurface()
-        .navigationTitle("Expenses in \(String(profile.year))")
+        .navigationTitle(Text(verbatim: profile.expensesScreenTitle))
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
         #endif

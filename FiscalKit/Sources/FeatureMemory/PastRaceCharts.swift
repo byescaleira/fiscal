@@ -18,8 +18,8 @@ struct CandidateBarsChart: View {
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceM) {
             if let focused {
-                ChartCallout(title: focused.label, value: MemoryText.percent(focused.share)) {
-                    Text(verbatim: MemoryText.votes(focused.votes))
+                ChartCallout(title: focused.label, value: focused.shareText) {
+                    Text(verbatim: focused.votesText)
                         .font(.caption.weight(.semibold))
                         .monospacedDigit()
                         .foregroundStyle(.secondary)
@@ -40,14 +40,13 @@ struct CandidateBarsChart: View {
                             Image(systemName: "checkmark.seal.fill")
                                 .foregroundStyle(Color.retroTeal)
                         }
-                        Text(verbatim: MemoryText.shortPercent(bar.share))
+                        Text(verbatim: bar.shortShareText)
                             .monospacedDigit()
                     }
                     .font(.caption.weight(.bold))
                 }
                 .accessibilityLabel(bar.label)
-                .accessibilityValue(
-                    "\(MemoryText.percent(bar.share)), \(MemoryText.votes(bar.votes))")
+                .accessibilityValue(bar.accessibilityValue)
             }
             .chartXAxis(.hidden)
             .chartYAxis {
@@ -82,9 +81,9 @@ struct WinnerTileMap: View {
         VStack(alignment: .leading, spacing: .spaceM) {
             if let focused, let winner = breakdown.candidate(number: focused.winner) {
                 ChartCallout(
-                    title: focused.name, value: MemoryText.name(winner.ballotName)
+                    title: focused.name, value: winner.displayName
                 ) {
-                    Text(verbatim: MemoryText.shortPercent(focused.share))
+                    Text(verbatim: focused.shortShareText)
                         .font(.caption.weight(.semibold))
                         .monospacedDigit()
                         .foregroundStyle(.secondary)
@@ -109,7 +108,7 @@ struct WinnerTileMap: View {
                         .foregroundStyle(tile.winner == nil ? Color.secondary : Color.white)
                 }
                 .accessibilityLabel(tile.name)
-                .accessibilityValue(accessibilityValue(tile))
+                .accessibilityValue(breakdown.accessibilityValue(tile))
             }
             .chartXScale(domain: 0...Double(MemoryTiles.columns))
             .chartYScale(domain: 0...Double(MemoryTiles.rows))
@@ -143,13 +142,6 @@ struct WinnerTileMap: View {
         .onAppear {
             withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
         }
-    }
-
-    private func accessibilityValue(_ tile: PastRoundBreakdown.Tile) -> String {
-        guard let winner = breakdown.candidate(number: tile.winner) else {
-            return PublicFormat.missing
-        }
-        return "\(MemoryText.name(winner.ballotName)), \(MemoryText.shortPercent(tile.share))"
     }
 
     private func pick(_ tiles: [PastRoundBreakdown.Tile]) {

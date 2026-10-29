@@ -22,50 +22,10 @@ struct YearTrendChart: View {
     var body: some View {
         Chart {
             ForEach(points) { point in
-                AreaMark(
-                    x: .value("Year", point.year),
-                    y: .value("Amount", revealed ? point.reais : 0)
-                )
-                .interpolationMethod(.monotone)
-                .foregroundStyle(
-                    LinearGradient(
-                        colors: [
-                            Color.info.opacity(.opacityTint), Color.info.opacity(.opacityHidden),
-                        ],
-                        startPoint: .top, endPoint: .bottom)
-                )
-                .accessibilityHidden(true)
-                LineMark(
-                    x: .value("Year", point.year),
-                    y: .value("Amount", revealed ? point.reais : 0)
-                )
-                .interpolationMethod(.monotone)
-                .lineStyle(StrokeStyle(lineWidth: .chartLineWidth, lineCap: .round))
-                .foregroundStyle(Color.info)
-                .accessibilityHidden(true)
-                PointMark(
-                    x: .value("Year", point.year),
-                    y: .value("Amount", revealed ? point.reais : 0)
-                )
-                .symbolSize(
-                    point.isCurrent || point == selected ? .chartPointFocusSize : .chartPointSize
-                )
-                .foregroundStyle(point.isCurrent ? Color.info : Color.info.opacity(.opacityStrong))
-                .accessibilityLabel(String(point.year))
-                .accessibilityValue(point.fullValue)
+                YearTrendMarks(point: point, isSelected: point == selected, revealed: revealed)
             }
             if let selected {
-                RuleMark(x: .value("Selected", selected.year))
-                    .foregroundStyle(Color.secondary.opacity(.opacitySoft))
-                    .lineStyle(StrokeStyle(lineWidth: .chartRuleWidth))
-                    .zIndex(-1)
-                    .annotation(
-                        position: .top, spacing: .space2XS,
-                        overflowResolution: .init(x: .fit(to: .chart), y: .disabled)
-                    ) {
-                        ChartCallout(title: String(selected.year), value: selected.fullValue) {}
-                    }
-                    .accessibilityHidden(true)
+                YearTrendSelection(point: selected)
             }
         }
         .chartXScale(domain: domain, range: .plotDimension(padding: .spaceL))
@@ -73,7 +33,7 @@ struct YearTrendChart: View {
             AxisMarks(values: points.map(\.year)) { value in
                 AxisValueLabel {
                     if let year = value.as(Int.self) {
-                        Text(verbatim: String(year))
+                        Text(verbatim: points.first { $0.year == year }?.yearText ?? "")
                     }
                 }
             }
@@ -94,5 +54,59 @@ struct YearTrendChart: View {
         .onAppear {
             withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
         }
+    }
+}
+
+private struct YearTrendMarks: ChartContent {
+    let point: YearPoint
+    let isSelected: Bool
+    let revealed: Bool
+
+    var body: some ChartContent {
+        AreaMark(
+            x: .value("Year", point.year),
+            y: .value("Amount", revealed ? point.reais : 0)
+        )
+        .interpolationMethod(.monotone)
+        .foregroundStyle(
+            LinearGradient(
+                colors: [Color.info.opacity(.opacityTint), Color.info.opacity(.opacityHidden)],
+                startPoint: .top, endPoint: .bottom)
+        )
+        .accessibilityHidden(true)
+        LineMark(
+            x: .value("Year", point.year),
+            y: .value("Amount", revealed ? point.reais : 0)
+        )
+        .interpolationMethod(.monotone)
+        .lineStyle(StrokeStyle(lineWidth: .chartLineWidth, lineCap: .round))
+        .foregroundStyle(Color.info)
+        .accessibilityHidden(true)
+        PointMark(
+            x: .value("Year", point.year),
+            y: .value("Amount", revealed ? point.reais : 0)
+        )
+        .symbolSize(point.isCurrent || isSelected ? .chartPointFocusSize : .chartPointSize)
+        .foregroundStyle(point.isCurrent ? Color.info : Color.info.opacity(.opacityStrong))
+        .accessibilityLabel(point.yearText)
+        .accessibilityValue(point.fullValue)
+    }
+}
+
+private struct YearTrendSelection: ChartContent {
+    let point: YearPoint
+
+    var body: some ChartContent {
+        RuleMark(x: .value("Selected", point.year))
+            .foregroundStyle(Color.secondary.opacity(.opacitySoft))
+            .lineStyle(StrokeStyle(lineWidth: .chartRuleWidth))
+            .zIndex(-1)
+            .annotation(
+                position: .top, spacing: .space2XS,
+                overflowResolution: .init(x: .fit(to: .chart), y: .disabled)
+            ) {
+                ChartCallout(title: point.yearText, value: point.fullValue) {}
+            }
+            .accessibilityHidden(true)
     }
 }

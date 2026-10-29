@@ -14,26 +14,22 @@ struct MineRosterScreen: View {
             Group {
                 Section {
                     if people.isEmpty {
-                        VStack(spacing: .spaceM) {
-                            Image(systemName: "line.3.horizontal.decrease")
-                                .font(.icon(.l))
-                                .foregroundStyle(.secondary)
-                                .accessibilityHidden(true)
-                            Text("No one matches these filters")
-                                .font(.headline)
+                        ContentUnavailableView {
+                            Label(
+                                "No one matches these filters",
+                                systemImage: "line.3.horizontal.decrease")
+                        } actions: {
                             Button("Clear Filters") {
                                 query = ""
                                 party = nil
                             }
-                            .buttonStyle(.borderless)
+                            .font(.buttonLabel)
                         }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, .spaceXL)
                     } else {
                         ForEach(people) { MineRosterRow(card: $0) }
                     }
                 } header: {
-                    Text(verbatim: header(shown: people.count))
+                    Text(verbatim: roster.header(shown: people.count))
                 } footer: {
                     Text("In alphabetical order. Nobody is ranked.")
                 }
@@ -43,17 +39,15 @@ struct MineRosterScreen: View {
         .listSurface()
         .searchable(text: $query, prompt: Text("Name"))
         .navigationTitle(Text(verbatim: roster.title))
+        #if !os(visionOS)
+            .navigationSubtitle(roster.scopeTitle(party: party))
+        #endif
+        .sensoryFeedback(.selection, trigger: party)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 MineRosterFilter(roster: roster, party: $party)
             }
         }
-    }
-
-    private func header(shown: Int) -> String {
-        let total = roster.people.count
-        guard shown != total else { return String(appLocalized: "\(total) people") }
-        return String(appLocalized: "\(shown) of \(total) people")
     }
 }
 
@@ -66,7 +60,7 @@ private struct MineRosterFilter: View {
             Picker("Party", selection: $party) {
                 Label("All Parties", systemImage: "square.grid.2x2").tag(String?.none)
                 ForEach(roster.parties) { share in
-                    Text(verbatim: "\(share.party) · \(PublicFormat.number(share.count))")
+                    Text(verbatim: roster.partyOption(share))
                         .tag(String?.some(share.party))
                 }
             }
@@ -80,7 +74,7 @@ private struct MineRosterFilter: View {
                 .labelStyle(.iconOnly)
                 .foregroundStyle(Color.primary)
                 .symbolEffect(.bounce, value: party)
-                .accessibilityValue(Text(verbatim: party ?? String(appLocalized: "All Parties")))
+                .accessibilityValue(Text(verbatim: roster.scopeTitle(party: party)))
         }
         .menuStyle(.button)
         .buttonStyle(.plain)

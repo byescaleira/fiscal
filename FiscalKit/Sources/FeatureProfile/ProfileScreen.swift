@@ -112,7 +112,7 @@ private struct NumberTileView: View {
             }
         }
         .padding(.spaceM)
-        .frame(maxWidth: .infinity, minHeight: .ring + .spaceXL, alignment: .topLeading)
+        .frame(maxWidth: .infinity, minHeight: .profileTileMinHeight, alignment: .topLeading)
         .background(.plainRow, in: .rect(cornerRadius: .radiusM))
         .accessibilityElement(children: .combine)
     }

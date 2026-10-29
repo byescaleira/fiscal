@@ -30,9 +30,7 @@ struct MoneyHeroValue: View {
 
     var body: some View {
         VStack(spacing: .spaceS) {
-            Text(verbatim: chip)
-                .font(.caption.weight(.heavy))
-                .foregroundStyle(tint)
+            Chip(chip, color: tint, shape: .capsule)
             Text(verbatim: value)
                 .font(.amountHero)
                 .monospacedDigit()

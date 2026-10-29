@@ -48,6 +48,10 @@ struct MinePlacePicker: View {
                 }
             }
             .task { await mine.loadPlaces() }
+            .onAppear {
+                isSearching = mine.startsSearching
+                mine.startsSearching = false
+            }
         }
     }
 }

@@ -102,6 +102,8 @@ public final class ExpensesModel {
         return values.reduce(0, +) / values.count
     }
 
+    public var averageReais: Double? { averageCents.map { Double($0) / 100 } }
+
     public var averageText: String {
         String(appLocalized: "Monthly average: \(PublicFormat.money(cents: averageCents))")
     }
@@ -129,6 +131,21 @@ public final class ExpensesModel {
 
     public var categoryNames: [String] { categories.map(\.title) }
 
+    public var hasFilter: Bool { activeFilterCount > 0 }
+
+    public var activeFilterCount: Int { categoryFilter == nil ? 0 : 1 }
+
+    public var canFilter: Bool { years.count > 1 || !categoryNames.isEmpty }
+
+    public var scopeTitle: String {
+        [String(year), categoryFilter ?? String(appLocalized: "All kinds")]
+            .joined(separator: " · ")
+    }
+
+    public func clearFilters() {
+        categoryFilter = nil
+    }
+
     public var receipts: [ReceiptPoint] {
         (list?.items ?? []).filter { $0.cents > 0 }.map { expense in
             ReceiptPoint(
@@ -145,6 +162,8 @@ public final class ExpensesModel {
         return values.count.isMultiple(of: 2)
             ? (values[middle - 1] + values[middle]) / 2 : values[middle]
     }
+
+    public var medianReais: Double? { medianCents.map { Double($0) / 100 } }
 
     public var receiptsHeadline: String? {
         guard let medianCents else { return nil }
