@@ -37,6 +37,8 @@ public final class ElectionYearModel {
 
     var isEmpty: Bool { races.isEmpty }
 
+    var roundSubtitle: String { breakdown?.roundLine ?? "" }
+
     var title: String { String(appLocalized: "Elections \(String(year))") }
 
     var sourceLine: String {
@@ -91,6 +93,8 @@ public final class PastRaceModel {
         let chosen = race.rounds.first { $0.round == round } ?? race.rounds.last
         return chosen.map { PastRoundBreakdown(race: race, round: $0) }
     }
+
+    var roundSubtitle: String { breakdown?.roundLine ?? "" }
 
     var title: String {
         guard let race else { return String(appLocalized: "Result") }

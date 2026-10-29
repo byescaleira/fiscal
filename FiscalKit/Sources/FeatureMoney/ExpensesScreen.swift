@@ -5,8 +5,6 @@ import SwiftUI
 
 public struct ExpensesScreen: View {
     @Environment(ExpensesModel.self) private var expenses
-    @Environment(\.open) private var open
-    @Environment(\.navigationSection) private var section
 
     public init() {}
 
@@ -20,28 +18,22 @@ public struct ExpensesScreen: View {
                 ExpensesYearsSection()
                 ExpensesCategoriesSection()
                 ExpensesSpreadSection()
-                ExpensesFilterSection()
-                ForEach(expenses.groups) { ExpensesMonthSection(group: $0) }
+                let groups = expenses.groups
+                ForEach(groups) { group in
+                    ExpensesMonthSection(group: group, isLast: group.id == groups.last?.id)
+                }
             }
         } empty: {
             ExpensesEmptyState()
         }
         .navigationTitle(Text(verbatim: expenses.title))
+        #if !os(visionOS)
+            .navigationSubtitle(expenses.scopeTitle)
+        #endif
         .toolbarTitleDisplayMode(.inline)
-        .toolbar {
-            if expenses.years.count > 1 {
-                ToolbarItem(placement: .primaryAction) { ExpensesYearMenu().tint(Color.primary) }
-            }
-            ToolbarItem(placement: .primaryAction) {
-                Button {
-                    open(expenses.shareRoute, in: section)
-                } label: {
-                    Label("Share", systemImage: "square.and.arrow.up")
-                }
-                .disabled(expenses.isEmpty)
-                .tint(Color.primary)
-            }
-        }
+        .toolbar { ExpensesToolbar() }
+        .sensoryFeedback(.selection, trigger: expenses.categoryFilter)
+        .sensoryFeedback(.selection, trigger: expenses.year)
         .refreshable { await expenses.load() }
         .task { await expenses.load() }
     }
@@ -85,34 +77,6 @@ private struct ExpensesIdentity: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .accessibilityElement(children: .combine)
-    }
-}
-
-private struct ExpensesYearMenu: View {
-    @Environment(ExpensesModel.self) private var expenses
-
-    var body: some View {
-        Menu {
-            Picker(
-                "Year",
-                selection: Binding(
-                    get: { expenses.year },
-                    set: { year in Task { await expenses.select(year: year) } })
-            ) {
-                ForEach(expenses.years, id: \.self) { year in
-                    Text(verbatim: String(year)).tag(year)
-                }
-            }
-            .pickerStyle(.inline)
-        } label: {
-            HStack(spacing: .spaceXS) {
-                Image(systemName: "calendar")
-                Text(verbatim: String(expenses.year)).monospacedDigit()
-            }
-            .font(.subheadline.weight(.semibold))
-        }
-        .accessibilityLabel(Text("Year"))
-        .accessibilityValue(Text(verbatim: String(expenses.year)))
     }
 }
 

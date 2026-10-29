@@ -30,6 +30,10 @@ public struct ElectionYearScreen: View {
                 description: Text("The TSE results for this year aren't published by Fiscal yet."))
         }
         .emphasisTitle(Text(verbatim: model.title))
+        #if !os(visionOS)
+            .navigationSubtitle(model.roundSubtitle)
+        #endif
+        .sensoryFeedback(.selection, trigger: model.round)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 RoundMenu(

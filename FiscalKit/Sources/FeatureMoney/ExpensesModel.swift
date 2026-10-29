@@ -129,6 +129,21 @@ public final class ExpensesModel {
 
     public var categoryNames: [String] { categories.map(\.title) }
 
+    public var hasFilter: Bool { activeFilterCount > 0 }
+
+    public var activeFilterCount: Int { categoryFilter == nil ? 0 : 1 }
+
+    public var canFilter: Bool { years.count > 1 || !categoryNames.isEmpty }
+
+    public var scopeTitle: String {
+        [String(year), categoryFilter ?? String(appLocalized: "All kinds")]
+            .joined(separator: " · ")
+    }
+
+    public func clearFilters() {
+        categoryFilter = nil
+    }
+
     public var receipts: [ReceiptPoint] {
         (list?.items ?? []).filter { $0.cents > 0 }.map { expense in
             ReceiptPoint(

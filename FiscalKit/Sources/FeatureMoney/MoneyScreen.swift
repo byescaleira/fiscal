@@ -28,6 +28,9 @@ public struct MoneyScreen: View {
             MoneyEmptyState()
         }
         .emphasisTitle("Money")
+        #if !os(visionOS)
+            .navigationSubtitle(money.scopeName)
+        #endif
         .toolbar { MoneyToolbar() }
         .refreshable { await money.load() }
         .task { await money.load() }
