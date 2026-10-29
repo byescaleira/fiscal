@@ -69,7 +69,7 @@ struct PeerStripVisual: View {
                 .foregroundStyle(.secondary)
         }
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { isShown = true }
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) { isShown = true }
         }
     }
 }

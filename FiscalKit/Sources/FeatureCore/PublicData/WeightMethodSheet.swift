@@ -17,6 +17,8 @@ public struct WeightMethodButton: View {
             } label: {
                 Label("How We Measure", systemImage: "info.circle")
                     .font(.footnote.weight(.semibold))
+                    .lineLimit(1)
+                    .fixedSize()
             }
             .buttonStyle(.borderless)
             .accessibilityHint(Text("Explains how repercussion and impact are calculated"))
@@ -298,7 +300,7 @@ private struct WeightSignalsList: View {
         if !signals.isEmpty {
             WeightCard {
                 Text("Sources")
-                    .font(.caption.weight(.heavy))
+                    .font(.chipLabel)
                     .textCase(.uppercase)
                     .foregroundStyle(.secondary)
                 ForEach(signals) { signal in

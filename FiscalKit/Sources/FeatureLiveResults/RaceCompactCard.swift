@@ -208,7 +208,7 @@ private struct RaceDuelSplit: View {
                     color: summary.hasStarted ? second.primary : .secondary.opacity(.opacityFill)),
             ], height: .spaceXS
         )
-        .animation(reduceMotion ? nil : .smooth(duration: 1), value: share)
+        .animation(reduceMotion ? nil : .chartReveal(0), value: share)
         .accessibilityHidden(true)
     }
 }

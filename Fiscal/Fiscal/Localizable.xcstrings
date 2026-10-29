@@ -7019,8 +7019,8 @@
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Minimum %1$@ · Recommended %2$@"
+            "state" : "translated",
+            "value" : "Mínimo %1$@ · Recomendado %2$@"
           }
         }
       }
@@ -15082,16 +15082,6 @@
         }
       }
     },
-    "Your data is safe" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seus dados estão seguros"
-          }
-        }
-      }
-    },
     "Your iCloud" : {
       "localizations" : {
         "pt-BR" : {
@@ -15598,6 +15588,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“Aprovadas” conta quantas dessas votações terminaram aprovadas."
+          }
+        }
+      }
+    },
+    "Nothing was erased" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nada foi apagado"
           }
         }
       }

@@ -169,7 +169,7 @@ private struct ProfileContextChart: View {
         .accessibilityLabel(Text(verbatim: item.name))
         .accessibilityValue(Text(verbatim: profile.contextSentence(item)))
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) { revealed = true }
         }
     }
 }

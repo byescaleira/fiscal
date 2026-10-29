@@ -89,7 +89,7 @@ private struct MineHighlightCard: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.scoreboard, in: .rect(cornerRadius: .radiusGroup))
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { appeared = true }
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) { appeared = true }
         }
     }
 

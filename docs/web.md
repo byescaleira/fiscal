@@ -41,9 +41,10 @@ Texto novo no site sai só em pt-BR, direto no HTML. Antes do commit, `python3 s
 Só com o ok do usuário, pedido a cada vez, a partir da worktree de integração (`development`), nunca de uma `feature/*`. O bloco do Caddy está no [runbook do servidor](server-runbook.md#9-site-no-mesmo-bloco-proposta-com-o-ok-do-usuário).
 
 ```sh
-cd /Users/rafael.escaleira/Documents/projects/lab-vibecode/politico-monitor/.claude/worktrees/integration && python3 scripts/site-i18n.py check && ls site/.well-known && rsync -a --delete --exclude '.DS_Store' --exclude '*.test.mjs' --exclude 'package.json' --exclude '_upload' site/ root@179.198.114.91:/opt/fiscal-site/public/
+cd /Users/rafael.escaleira/Documents/projects/lab-vibecode/politico-monitor/.claude/worktrees/integration && python3 scripts/site-i18n.py check && ls site/.well-known && rsync -a --delete --exclude '.DS_Store' --exclude '*.test.mjs' --exclude 'package.json' --exclude '_upload' --exclude 'app.html' --exclude 'link.html' --exclude 'web.css' --exclude 'web*.js' site/ root@179.198.114.91:/opt/fiscal-site/public/
 ```
 
+- **Fiscal na Web fica de fora até depois da 1.0** ([ADR 0016](adr/0016-web-companion-after-1-0.md)): `app.html`, `link.html`, `web.css` e os `web*.js` continuam no repositório e não sobem.
 - **`--delete`** deixa o servidor igual ao repositório; os `--exclude` protegem o que não sobe e o que já está lá com esses nomes. Nunca `--delete-excluded`.
 - **`.well-known/` vai junto e fica.**
 

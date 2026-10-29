@@ -49,7 +49,9 @@ private struct LensSetupArtCard: View {
 
     var body: some View {
         LensLookShelf(
-            "Art", detail: "Works by Brazilian artists in the public domain or under a free licence, always with credit."
+            "Art",
+            detail:
+                "Works by Brazilian artists in the public domain or under a free licence, always with credit."
         ) {
             if setup.collections.count > 1 {
                 LensCollectionPicker(

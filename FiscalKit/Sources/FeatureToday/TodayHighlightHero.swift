@@ -41,7 +41,7 @@ struct TodayHighlightHero: View {
             }
         }
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) {
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) {
                 appeared = true
             }
         }

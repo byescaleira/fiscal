@@ -93,7 +93,7 @@ private struct NumberTileView: View {
                 .amountLine()
             if let fraction = tile.fraction {
                 ProgressBar(value: filled ? fraction : 0, color: .retroTeal)
-                    .animation(reduceMotion ? nil : .smooth(duration: 1), value: filled)
+                    .animation(reduceMotion ? nil : .chartReveal(0), value: filled)
                     .onAppear { filled = true }
             }
             if let caption = tile.caption {

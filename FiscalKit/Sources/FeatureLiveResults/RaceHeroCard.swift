@@ -293,7 +293,7 @@ private struct RaceHeroSplit: View {
                     value: 1 - share, color: .white.opacity(.opacitySoft)),
             ], height: .spaceS, track: .white.opacity(.opacityTint)
         )
-        .animation(reduceMotion ? nil : .smooth(duration: 1), value: share)
+        .animation(reduceMotion ? nil : .chartReveal(0), value: share)
         .accessibilityHidden(true)
     }
 }

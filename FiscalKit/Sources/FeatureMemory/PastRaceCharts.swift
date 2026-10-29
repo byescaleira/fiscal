@@ -62,7 +62,7 @@ struct CandidateBarsChart: View {
             .frame(height: rowHeight * CGFloat(max(bars.count, 1)))
         }
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) { revealed = true }
         }
     }
 }
@@ -140,7 +140,7 @@ struct WinnerTileMap: View {
             }
         }
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) { revealed = true }
         }
     }
 
@@ -212,7 +212,7 @@ struct TurnoutChart: View {
             }
         }
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) { revealed = true }
         }
     }
 }

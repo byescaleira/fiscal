@@ -77,7 +77,7 @@ struct MonthlyBarsChart: View {
         .sensoryFeedback(.selection, trigger: selection)
         .frame(height: height)
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) { revealed = true }
         }
     }
 

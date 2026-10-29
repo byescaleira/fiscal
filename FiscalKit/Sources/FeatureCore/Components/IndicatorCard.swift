@@ -157,7 +157,7 @@ public struct IndicatorCard: View {
         .frame(height: height)
         .accessibilityHidden(true)
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) { revealed = true }
         }
     }
 }

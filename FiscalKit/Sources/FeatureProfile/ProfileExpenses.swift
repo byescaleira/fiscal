@@ -96,7 +96,7 @@ private struct ProfileMonthChart: View {
         .sensoryFeedback(.selection, trigger: selected?.month)
         .frame(height: height)
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) { revealed = true }
         }
     }
 

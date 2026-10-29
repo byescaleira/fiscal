@@ -135,7 +135,7 @@ private struct FiscalRootView: View {
                     actionTitle: "Try Again", action: { attempt += 1 }
                 ) {
                     IconRow(
-                        "Your data is safe", symbol: "lock.shield",
+                        "Nothing was erased", symbol: "externaldrive",
                         color: .retroDenim)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)

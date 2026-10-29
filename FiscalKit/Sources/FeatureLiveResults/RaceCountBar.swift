@@ -12,7 +12,7 @@ struct RaceCountBar: View {
         ProgressBar(value: revealed ? value : 0, color: color)
             .onAppear {
                 let reduced = systemReduceMotion || liteMode.reducesMotion
-                withAnimation(reduced ? nil : .smooth(duration: 1)) { revealed = true }
+                withAnimation(reduced ? nil : .chartReveal(0)) { revealed = true }
             }
     }
 }

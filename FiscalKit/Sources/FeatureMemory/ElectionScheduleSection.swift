@@ -106,7 +106,7 @@ private struct CurrentElectionDetail: View {
             .buttonStyle(.plain)
             .accessibilityElement(children: .combine)
             .accessibilityHint(Text("Opens the live count"))
-            .animation(reduceMotion ? nil : .smooth(duration: 1), value: isShown)
+            .animation(reduceMotion ? nil : .chartReveal(0), value: isShown)
             .onAppear { isShown = true }
         }
         if !memory.awaiting.isEmpty {

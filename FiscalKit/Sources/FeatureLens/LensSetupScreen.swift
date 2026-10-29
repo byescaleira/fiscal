@@ -82,7 +82,7 @@ private struct LensSetupTopBar: View {
             }
             if setup.stepIndex > 0 && !setup.isEditing {
                 ProgressBar(value: setup.progress, color: tint)
-                    .animation(reduceMotion ? nil : .smooth(duration: 1), value: setup.progress)
+                    .animation(reduceMotion ? nil : .chartReveal(0), value: setup.progress)
                 Text(verbatim: setup.stepText)
                     .font(.chipLabel)
                     .foregroundStyle(.secondary)

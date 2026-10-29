@@ -31,7 +31,7 @@ struct MandateStackChart: View {
         }
         .animation(reduceMotion ? nil : .smooth, value: scrubbed)
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) { revealed = true }
         }
     }
 
@@ -109,7 +109,7 @@ struct QuotaStatesChart: View {
         }
         .animation(reduceMotion ? nil : .smooth, value: focused)
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) { revealed = true }
         }
     }
 

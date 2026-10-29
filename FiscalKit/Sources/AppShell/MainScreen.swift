@@ -82,7 +82,7 @@ public struct MainScreen: View {
 
     private var splashAnimation: Animation {
         systemReduceMotion || liteMode.reducesMotion
-            ? .easeInOut(duration: 0.2) : .easeOut(duration: 0.4)
+            ? .splashQuiet : .splashDismiss
     }
 }
 
