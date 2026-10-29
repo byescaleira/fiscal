@@ -5,6 +5,7 @@ import Foundation
 public final class FiscalChangeHub: @unchecked Sendable, StorageChangeFeed {
     private let lock = NSLock()
     private var revision: UInt64 = 0
+    private var localCount: UInt64 = 0
     private var listeners: [UUID: AsyncStream<StorageChange>.Continuation] = [:]
     private var observer: (any NSObjectProtocol)?
     private let center: NotificationCenter
@@ -24,6 +25,8 @@ public final class FiscalChangeHub: @unchecked Sendable, StorageChangeFeed {
 
     public var remoteRevision: UInt64 { lock.withLock { revision } }
 
+    public var localRevision: UInt64 { lock.withLock { localCount } }
+
     public func changes() -> AsyncStream<StorageChange> {
         let id = UUID()
         return AsyncStream(bufferingPolicy: .bufferingNewest(1)) { continuation in
@@ -34,7 +37,7 @@ public final class FiscalChangeHub: @unchecked Sendable, StorageChangeFeed {
 
     public func publish(_ change: StorageChange) {
         let current = lock.withLock {
-            if change.isRemote { revision &+= 1 }
+            if change.isRemote { revision &+= 1 } else { localCount &+= 1 }
             return Array(listeners.values)
         }
         for listener in current { listener.yield(change) }
