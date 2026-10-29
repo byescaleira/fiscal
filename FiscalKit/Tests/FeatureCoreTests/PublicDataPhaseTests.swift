@@ -26,7 +26,8 @@ private final class Pages {
     }
 
     func waitForRequest(_ page: String) async {
-        while gates[page] == nil { await Task.yield() }
+        let deadline = ContinuousClock.now + .seconds(5)
+        while gates[page] == nil, ContinuousClock.now < deadline { await Task.yield() }
     }
 }
 

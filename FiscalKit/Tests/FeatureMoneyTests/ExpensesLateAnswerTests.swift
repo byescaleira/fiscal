@@ -20,7 +20,8 @@ private actor YearGates {
     func isWaiting(_ year: Int) -> Bool { waiting[year] != nil }
 
     func waitForRequest(_ year: Int) async {
-        while !isWaiting(year) { await Task.yield() }
+        let deadline = ContinuousClock.now + .seconds(5)
+        while !isWaiting(year), ContinuousClock.now < deadline { await Task.yield() }
     }
 }
 

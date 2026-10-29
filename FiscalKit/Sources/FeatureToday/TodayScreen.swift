@@ -5,6 +5,7 @@ import SwiftUI
 
 public struct TodayScreen<RaceHero: View>: View {
     @Environment(TodayModel.self) private var today
+    @Environment(SessionModel.self) private var session
     private let raceHero: (Race) -> RaceHero
 
     public init(@ViewBuilder raceHero: @escaping (Race) -> RaceHero) {
@@ -35,6 +36,7 @@ public struct TodayScreen<RaceHero: View>: View {
             await today.load()
             await today.watchRaces()
         }
+        .onChange(of: session.generation) { Task { await today.load() } }
     }
 }
 

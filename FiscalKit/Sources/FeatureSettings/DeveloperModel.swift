@@ -6,6 +6,9 @@ import Observation
 @MainActor @Observable
 public final class DeveloperModel {
     public static let preferencePrefix = "fiscal."
+    public static let dataKeys: Set<String> = [
+        HomePlace.mineKey, "fiscal.search.investigations", "fiscal.search.recent",
+    ]
     public static let simulations: [UpdateState?] = [nil, .recommended, .required]
 
     public private(set) var preferenceCount = 0
@@ -130,7 +133,8 @@ public final class DeveloperModel {
     public var identifierText: String { info.identifier }
 
     private var preferenceKeys: [String] {
-        defaults.dictionaryRepresentation().keys.filter { $0.hasPrefix(Self.preferencePrefix) }
+        defaults.dictionaryRepresentation().keys
+            .filter { $0.hasPrefix(Self.preferencePrefix) && !Self.dataKeys.contains($0) }
             .sorted()
     }
 }

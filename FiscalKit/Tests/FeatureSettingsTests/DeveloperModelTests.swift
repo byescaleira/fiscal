@@ -132,6 +132,13 @@ struct DeveloperModelTests {
         #expect(defaults.string(forKey: other) == "keep")
     }
 
+    @Test func keepsTheKeysThatHoldData() {
+        #expect(DeveloperModel.dataKeys.contains(HomePlace.mineKey))
+        #expect(DeveloperModel.dataKeys.contains("fiscal.search.investigations"))
+        #expect(
+            DeveloperModel.dataKeys.allSatisfy { $0.hasPrefix(DeveloperModel.preferencePrefix) })
+    }
+
     @Test func reloadsTheSessionAndTheRemoteFlags() async throws {
         let source = FakeFlagSource()
         let flags = FeatureFlags(defaults: try suite(), source: source)

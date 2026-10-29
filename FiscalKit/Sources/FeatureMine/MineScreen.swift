@@ -122,7 +122,9 @@ private struct MineInviteSection: View {
         } header: {
             Text("Find Your Place").sectionTitle()
         } footer: {
-            Text("Your place stays only on this device. Fiscal only downloads the public data of your region.")
+            Text(
+                "Your place stays only on this device. Fiscal only downloads the public data of your region."
+            )
         }
     }
 }

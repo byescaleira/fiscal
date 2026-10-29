@@ -22,7 +22,8 @@ private actor Turns {
     }
 
     func waitForTurn(_ turn: Int) async {
-        while waiting[turn] == nil { await Task.yield() }
+        let deadline = ContinuousClock.now + .seconds(5)
+        while waiting[turn] == nil, ContinuousClock.now < deadline { await Task.yield() }
     }
 }
 

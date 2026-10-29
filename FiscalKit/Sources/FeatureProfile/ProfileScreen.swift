@@ -5,6 +5,7 @@ import SwiftUI
 
 public struct ProfileScreen: View {
     @Environment(ProfileModel.self) private var profile
+    @Environment(SessionModel.self) private var session
 
     public init() {}
 
@@ -39,7 +40,7 @@ public struct ProfileScreen: View {
             .navigationBarTitleDisplayMode(.inline)
         #endif
         .refreshable { await profile.load() }
-        .task { await profile.load() }
+        .task(id: session.generation) { await profile.load() }
         .errorAlert($profile.error)
     }
 }
