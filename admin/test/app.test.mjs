@@ -196,7 +196,8 @@ test('flags screen reads and writes CloudKit per environment', async () => {
   const empty = await browser.call('GET', '/admin/flags?env=development');
   assert.equal(empty.status, 200);
   assert.match(empty.body, /Sem valor remoto/);
-  assert.match(empty.body, /Guias/);
+  for (const title of ['Guias', 'Ícones de partido', 'Apuração ao vivo', 'Alertas do destaque', 'Explicações no aparelho']) assert.ok(empty.body.includes(title), title);
+  for (const name of ['guides', 'partyIcons', 'liveResults', 'highlightAlerts', 'intelligence']) assert.ok(empty.body.includes(`value="${name}"`), name);
   const saved = await browser.call('POST', '/admin/flags', { form: { env: 'production', name: 'guides', isOn: 'on', rollout: '40', action: 'save' } });
   assert.equal(saved.status, 303);
   assert.equal(saved.headers.get('location'), '/admin/flags?env=production&ok=saved');
