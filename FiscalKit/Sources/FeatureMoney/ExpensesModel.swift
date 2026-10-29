@@ -41,6 +41,7 @@ public final class ExpensesModel {
     public var categoryFilter: String?
     @ObservationIgnored private let service: (any PublicDataService)?
     @ObservationIgnored private let calendar: Calendar
+    @ObservationIgnored private let requests = PublicDataRequests()
 
     public init(
         slug: String, year: Int, service: (any PublicDataService)?,
@@ -221,10 +222,15 @@ public final class ExpensesModel {
 
     public func load() async {
         if list == nil { phase = .loading }
-        phase = await PublicDataPhase.settle(after: phase) {
+        phase = await PublicDataPhase.settle(after: phase, in: requests) {
             guard let service else { throw PublicDataError.unavailable }
-            if profile == nil { profile = try? await service.profile(slug: slug) }
-            list = try await service.expenses(slug: slug, year: year)
+            let person: Profile? =
+                if profile == nil { try? await service.profile(slug: slug) } else { nil }
+            let expenses = try await service.expenses(slug: slug, year: year)
+            return (profile: person, list: expenses)
+        } apply: { loaded in
+            if profile == nil { profile = loaded.profile }
+            list = loaded.list
         }
     }
 

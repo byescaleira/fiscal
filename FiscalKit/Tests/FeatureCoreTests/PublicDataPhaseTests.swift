@@ -65,17 +65,22 @@ struct PublicDataPhaseTests {
     }
 
     @Test func aCancelledLoadNeverReportsLoaded() async {
+        let requests = PublicDataRequests()
         let task = Task { @MainActor in
-            await PublicDataPhase.settle(after: .loading) {
+            await PublicDataPhase.settle(after: .loading, in: requests) {
                 withUnsafeCurrentTask { $0?.cancel() }
+            } apply: { _ in
+                Issue.record("A cancelled load applied its value")
             }
         }
         #expect(await task.value == .idle)
     }
 
     @Test func aFailureKeepsTheError() async {
-        let phase = await PublicDataPhase.settle(after: .loading) {
+        let phase = await PublicDataPhase.settle(after: .loading, in: PublicDataRequests()) {
             throw PublicDataError.offline
+        } apply: { (_: Void) in
+            Issue.record("A failed load applied its value")
         }
         #expect(phase == .failed(.offline))
     }

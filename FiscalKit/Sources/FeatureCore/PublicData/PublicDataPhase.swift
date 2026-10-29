@@ -13,19 +13,6 @@ public enum PublicDataPhase: Equatable, Sendable {
     public var isLoading: Bool { self == .loading }
 
     @MainActor
-    public static func settle(
-        after previous: PublicDataPhase, _ work: @MainActor () async throws -> Void
-    ) async -> PublicDataPhase {
-        do {
-            try await work()
-            try Task.checkCancellation()
-            return .loaded
-        } catch {
-            return failure(error, after: previous)
-        }
-    }
-
-    @MainActor
     public static func settle<Value>(
         after previous: PublicDataPhase, in requests: PublicDataRequests,
         fetch: @MainActor () async throws -> Value, apply: @MainActor (Value) -> Void

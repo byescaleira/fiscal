@@ -81,6 +81,7 @@ public final class VoteDetailModel {
     public var party: String?
     @ObservationIgnored private let service: (any PublicDataService)?
     @ObservationIgnored private let lensRepository: (any LensRepository)?
+    @ObservationIgnored private let requests = PublicDataRequests()
 
     public init(
         id: String, service: (any PublicDataService)?, lens: (any LensRepository)? = nil,
@@ -197,10 +198,13 @@ public final class VoteDetailModel {
 
     public func load() async {
         if detail == nil { phase = .loading }
-        phase = await PublicDataPhase.settle(after: phase) {
-            lens = try? await lensRepository?.lens()
+        phase = await PublicDataPhase.settle(after: phase, in: requests) {
+            let lens = try? await lensRepository?.lens()
             guard let service else { throw PublicDataError.unavailable }
-            detail = try await service.vote(id: id)
+            return (lens: lens, detail: try await service.vote(id: id))
+        } apply: { loaded in
+            lens = loaded.lens
+            detail = loaded.detail
         }
     }
 

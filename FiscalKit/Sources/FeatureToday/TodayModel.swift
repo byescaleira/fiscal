@@ -41,6 +41,7 @@ public final class TodayModel {
     @ObservationIgnored private let raceService: (any LiveResultsService)?
     @ObservationIgnored private let follows: (any FollowRepository)?
     @ObservationIgnored private let raceInterval: Duration
+    @ObservationIgnored private let requests = PublicDataRequests()
     @ObservationIgnored let now: @Sendable () -> Date
 
     public init(
@@ -148,16 +149,20 @@ public final class TodayModel {
         hasCheckedLens = true
         async let people = loadFollowed()
         async let liveRaces: Void = refreshRaces()
-        phase = await PublicDataPhase.settle(after: phase) {
+        phase = await PublicDataPhase.settle(after: phase, in: requests) {
             guard let service else { throw PublicDataError.unavailable }
             async let today = service.today()
             async let agenda = service.agenda()
             async let votes = service.recentVotes()
             async let highlights = service.highlights()
-            digest = try await today
-            if let value = try? await agenda { self.agenda = value }
-            if let value = try? await votes { recentVotes = value }
-            if let value = try? await highlights { self.highlights = value }
+            return TodayPage(
+                digest: try await today, agenda: try? await agenda, votes: try? await votes,
+                highlights: try? await highlights)
+        } apply: { page in
+            digest = page.digest
+            if let value = page.agenda { agenda = value }
+            if let value = page.votes { recentVotes = value }
+            if let value = page.highlights { highlights = value }
         }
         followed = await people
         await liveRaces
@@ -221,4 +226,11 @@ public final class TodayModel {
             nil
         }
     }
+}
+
+private struct TodayPage {
+    let digest: TodayDigest
+    let agenda: Agenda?
+    let votes: [VoteSummary]?
+    let highlights: HighlightList?
 }

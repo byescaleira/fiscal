@@ -11,6 +11,7 @@ public final class ElectionYearModel {
     public private(set) var president: PastRace?
     public var round: Int?
     @ObservationIgnored private let service: (any PublicDataService)?
+    @ObservationIgnored private let requests = PublicDataRequests()
 
     public init(year: Int, service: (any PublicDataService)?) {
         self.year = year
@@ -52,11 +53,15 @@ public final class ElectionYearModel {
             return
         }
         if isEmpty { phase = .loading }
-        phase = await PublicDataPhase.settle(after: phase) {
-            history = try await service.electionHistory()
-            if let summary = races.first(where: { $0.office == .president }) {
-                president = try await service.pastRace(id: summary.id)
-            }
+        phase = await PublicDataPhase.settle(after: phase, in: requests) {
+            let history = try await service.electionHistory()
+            let summary = history?.races.first { $0.year == year && $0.office == .president }
+            let race: PastRace? =
+                if let summary { try await service.pastRace(id: summary.id) } else { president }
+            return (history: history, president: race)
+        } apply: { loaded in
+            history = loaded.history
+            president = loaded.president
         }
     }
 
@@ -82,6 +87,7 @@ public final class PastRaceModel {
     public private(set) var race: PastRace?
     public var round: Int?
     @ObservationIgnored private let service: (any PublicDataService)?
+    @ObservationIgnored private let requests = PublicDataRequests()
 
     public init(id: String, service: (any PublicDataService)?) {
         self.id = id
@@ -108,10 +114,12 @@ public final class PastRaceModel {
             return
         }
         if race == nil { phase = .loading }
-        phase = await PublicDataPhase.settle(after: phase) {
+        phase = await PublicDataPhase.settle(after: phase, in: requests) {
             guard let loaded = try await service.pastRace(id: id) else {
                 throw PublicDataError.notFound
             }
+            return loaded
+        } apply: { loaded in
             race = loaded
         }
     }
