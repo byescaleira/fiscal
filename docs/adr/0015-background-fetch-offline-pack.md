@@ -1,8 +1,8 @@
 # 0015. Modo `fetch` em segundo plano para o pacote offline
 
-- **Estado:** Proposto
+- **Estado:** Aceito (2026-10-29)
 - **Data:** 2026-10-29
-- **Mudança:** [`align-workspace`](../changes/align-workspace/proposal.md)
+- **Mudança:** [`align-workspace`](../changes/archive/2026-10-29-align-workspace/proposal.md)
 
 ## Contexto
 

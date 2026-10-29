@@ -1,6 +1,6 @@
 # Fiscal no byescaleira-kit
 
-- **Estado:** em andamento
+- **Estado:** entregue
 - **Data:** 2026-10-29
 - **Branch:** `feature/kit-adoption`
 

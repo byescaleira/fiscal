@@ -1,6 +1,6 @@
 # 0004. A Lente fica num banco só do aparelho; os seguidos no iCloud privado
 
-- **Estado:** Proposto
+- **Estado:** Aceito (2026-10-29)
 - **Data:** 2026-10-25
 - **Mudança:** [`app-1.0`](../changes/archive/2026-10-29-app-1.0/proposal.md)
 

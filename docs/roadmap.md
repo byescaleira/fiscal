@@ -28,8 +28,8 @@ A fase 8 corre em etapas:
 | Etapa | Entrega | Estado |
 | --- | --- | --- |
 | 8.1 | Integrações: widgets, Live Activities, App Intents, Spotlight, Foundation Models e pacote offline | entregue (`app-1.0`) |
-| 8.2 | [`kit-adoption`](changes/kit-adoption/proposal.md): design, componentes e idioma do byescaleira-kit ([ADR 0010](adr/0010-byescaleira-kit.md)), mínimo de sistema 26 com o 27 por `#available`, `MARKETING_VERSION` 1.0.0 e `CHANGELOG.md` | entregue na branch; PR para a `development` pendente |
-| 8.3 | [`align-workspace`](changes/align-workspace/proposal.md): fundo branco ou preto, acessibilidade, arquitetura, publicação, site, servidor e processo no padrão do workspace | em andamento |
+| 8.2 | [`kit-adoption`](changes/archive/2026-10-29-kit-adoption/proposal.md): design, componentes e idioma do byescaleira-kit ([ADR 0010](adr/0010-byescaleira-kit.md)), mínimo de sistema 26 com o 27 por `#available`, `MARKETING_VERSION` 1.0.0 e `CHANGELOG.md` | feita (2026-10-29, PR #3) |
+| 8.3 | [`align-workspace`](changes/archive/2026-10-29-align-workspace/proposal.md): fundo branco ou preto, acessibilidade, arquitetura, publicação, site, servidor e processo no padrão do workspace | feita (2026-10-29, PR #4) |
 | 8.4 | Loja: roteiro de [validation.md](validation.md) no iPhone físico, rótulo de privacidade ([ADR 0017](adr/0017-app-store-privacy-label.md)), capturas, TestFlight e envio para a revisão | — |
 
 - **Lançamento só iOS (iPhone e iPad).** Mac e visionOS compilam no mesmo projeto, mas a receita própria do Mac e o envio dessas plataformas ficam no [backlog](backlog.md).

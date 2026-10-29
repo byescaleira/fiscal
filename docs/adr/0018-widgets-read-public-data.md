@@ -2,7 +2,7 @@
 
 - **Estado:** Proposto
 - **Data:** 2026-10-29
-- **Mudança:** [`align-workspace`](../changes/align-workspace/proposal.md)
+- **Mudança:** [`align-workspace`](../changes/archive/2026-10-29-align-workspace/proposal.md)
 
 ## Contexto
 

@@ -2,7 +2,7 @@
 
 _Proposta da mudança `align-workspace`._
 
-- **Estado:** em andamento
+- **Estado:** entregue
 - **Data:** 2026-10-29
 - **Branch:** `feature/workspace-alignment` (sai da `feature/kit-adoption`)
 

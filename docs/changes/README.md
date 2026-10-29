@@ -14,10 +14,9 @@ Toda mudança de comportamento do Fiscal (feature nova, tela refeita, regra alte
 
 | Mudança | Estado |
 | --- | --- |
-| [`kit-adoption`](kit-adoption/proposal.md) | Entregue na `feature/kit-adoption`; espera o merge do PR na `development` para arquivar |
-| [`align-workspace`](align-workspace/proposal.md) | Em andamento: frentes paralelas da fase 2 |
+| _nenhuma_ | |
 
-Arquivadas em [archive/](archive/): `live-results`, `app-1.0` e `setup-lens-art` (substituída pela `app-1.0`).
+Arquivadas em [archive/](archive/): `live-results`, `app-1.0`, `setup-lens-art` (substituída pela `app-1.0`), `kit-adoption` e `align-workspace`.
 
 ## Modelos
 

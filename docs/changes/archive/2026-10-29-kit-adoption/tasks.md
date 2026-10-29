@@ -8,7 +8,7 @@
 
 ## 2. Componentes genéricos
 
-- [x] 2.1 `FeatureCore` reexporta `ByescaleiraUI` e o `FiscalDomain` reexporta `ByescaleiraFoundation`; saem as cópias de guias, estado vazio, seletores, editor, alerta, `ModelHost`, idiomas, `YearMonth` e `FiscalCalendar` (agora `GregorianCalendar`). O idioma fica fixo em pt-BR por `FiscalLanguage.install()` no app e nos widgets ([ADR 0003](../../adr/0003-portuguese-only.md)).
+- [x] 2.1 `FeatureCore` reexporta `ByescaleiraUI` e o `FiscalDomain` reexporta `ByescaleiraFoundation`; saem as cópias de guias, estado vazio, seletores, editor, alerta, `ModelHost`, idiomas, `YearMonth` e `FiscalCalendar` (agora `GregorianCalendar`). O idioma fica fixo em pt-BR por `FiscalLanguage.install()` no app e nos widgets ([ADR 0003](../../../adr/0003-portuguese-only.md)).
 - [x] 2.2 Textos do Fiscal no catálogo conferidos (`scripts/strings.sh`, que agora ignora os textos do kit, já traduzidos no catálogo dele): 969 textos em uso que estavam marcados como obsoletos voltaram a valer e 10 rótulos de gráfico ganharam pt-BR. O iPhone físico estava desconectado: a conferência no aparelho, com widgets e Live Activity, fica pendente.
 
 ## 3. Sistema 26 e versão
@@ -21,5 +21,5 @@
 
 - [x] 4.1 `scripts/verify.sh --full` (lint, 3 plataformas, 503 testes, web e auditoria; testes do admin pulados por falta do `node_modules`).
 - [x] 4.2 Revisões de design e de código: aprovadas, sem bloqueador. Corrigidos nesta fase: três `.fontWidth(.condensed)` que sobraram, teste do dinheiro abreviado em pt-BR, teste de cartões sem mudar o idioma global da suíte, credencial do kit só nas URLs com `byescaleira@`, `audit.sh` com acesso ao kit, `architecture.md`, ADRs 0009 e 0010, `AGENTS.md`, `README.md` e `CHANGELOG.md`.
-- [x] 4.3 [ADR 0010](../../adr/0010-byescaleira-kit.md); `docs/design-system.md` e `AGENTS.md` apontando para o kit.
-- [ ] 4.4 Pasta arquivada em `docs/changes/archive/`.
+- [x] 4.3 [ADR 0010](../../../adr/0010-byescaleira-kit.md); `docs/design-system.md` e `AGENTS.md` apontando para o kit.
+- [x] 4.4 Pasta arquivada em `docs/changes/archive/`.

@@ -1,8 +1,8 @@
 # 0017. Rótulo de privacidade da loja com os tokens e as chaves guardados no servidor
 
-- **Estado:** Proposto
+- **Estado:** Aceito (2026-10-29)
 - **Data:** 2026-10-29
-- **Mudança:** [`align-workspace`](../changes/align-workspace/proposal.md)
+- **Mudança:** [`align-workspace`](../changes/archive/2026-10-29-align-workspace/proposal.md)
 
 ## Contexto
 
