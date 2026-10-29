@@ -101,7 +101,7 @@ struct RaceStatusBadge: View {
                     .contentTransition(
                         reduceMotion
                             ? .identity : .numericText(value: summary.race.sections.percent))
-                ShareBarChart(value: summary.countedFraction, color: .retroTeal)
+                RaceCountBar(value: summary.countedFraction, color: .retroTeal)
                     .frame(width: .badgeL)
             }
         } else {

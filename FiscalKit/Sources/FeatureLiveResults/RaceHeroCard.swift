@@ -249,7 +249,7 @@ private struct RaceHeroCenter: View {
             Text(summary.race.final ? "TSE" : "counted")
                 .font(.caption2.weight(.semibold))
                 .opacity(.opacityStrong)
-            ShareBarChart(value: summary.countedFraction, color: .white)
+            RaceCountBar(value: summary.countedFraction, color: .white)
                 .frame(width: .badgeXL)
         }
         .frame(minWidth: .badgeXL + .spaceL)

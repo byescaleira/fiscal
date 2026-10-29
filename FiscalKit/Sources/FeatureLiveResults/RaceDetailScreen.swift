@@ -163,7 +163,7 @@ private struct RaceCountFacts: View {
                     Spacer(minLength: .spaceS)
                     RaceStatusBadge(summary: summary)
                 }
-                ShareBarChart(value: summary.countedFraction, color: .retroTeal)
+                RaceCountBar(value: summary.countedFraction, color: .retroTeal)
                 Text(verbatim: summary.sectionsText)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
