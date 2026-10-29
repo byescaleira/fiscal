@@ -56,6 +56,8 @@ public struct FiscalDatabase: RepositoryProvider {
             name, schema: schema, isStoredInMemoryOnly: inMemory, cloudKitDatabase: cloud)
     }
 
+    public var changes: any StorageChangeFeed { store.changeHub }
+
     public var repositories: Repositories {
         Repositories(
             lens: SwiftDataLensRepository(store: store),
