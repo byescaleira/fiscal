@@ -1,13 +1,10 @@
-import CoreGraphics
 import FeatureCore
 import FiscalData
 import FiscalDesignSystem
 import FiscalDomain
 import FiscalResource
 import Foundation
-import ImageIO
 import Testing
-import UniformTypeIdentifiers
 
 @testable import FeatureShare
 
@@ -72,10 +69,6 @@ struct ShareCardSnapshotTests {
     private func write(_ model: ShareModel, to url: URL) throws {
         let card = try #require(model.card)
         let image = try #require(ShareRenderer.render(card, code: model.code, scale: 3))
-        let destination = try #require(
-            CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil)
-        )
-        CGImageDestinationAddImage(destination, image, nil)
-        #expect(CGImageDestinationFinalize(destination))
+        try image.png.write(to: url)
     }
 }

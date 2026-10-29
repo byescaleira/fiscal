@@ -14,9 +14,14 @@ public struct ShareScreen: View {
         ) {
             ShareEditor()
         } empty: {
-            ContentUnavailableView(
-                "Nothing to share yet", systemImage: "square.and.arrow.up",
-                description: Text("This data isn't published yet."))
+            EmptyStateView(
+                title: "Nothing to share yet", description: "This data isn't published yet."
+            ) {
+                Image(systemName: "square.and.arrow.up")
+                    .font(.icon(.l))
+                    .foregroundStyle(.secondary)
+                    .accessibilityHidden(true)
+            }
         }
         .navigationTitle("Share")
         #if os(iOS)
@@ -30,18 +35,17 @@ private struct ShareEditor: View {
     @Environment(ShareModel.self) private var model
     @Environment(\.displayScale) private var displayScale
     @Environment(\.portraitArtwork) private var portraits
-    @State private var rendered: RenderedCard?
 
     var body: some View {
         @Bindable var model = model
         ScrollView {
             VStack(spacing: .spaceXL) {
-                ShareCardPreview(rendered: rendered, card: model.card)
+                ShareCardPreview(rendered: model.rendered, card: model.card)
                 ShareFormatChooser(selection: $model.format)
                 if model.usesArt {
                     ShareArtPicker()
                 }
-                ShareAction(rendered: rendered)
+                ShareAction(rendered: model.rendered)
             }
             .padding(.spaceL)
             .readableWidth()
@@ -49,11 +53,7 @@ private struct ShareEditor: View {
         }
         .background(.plainBackground)
         .task(id: model.card) {
-            guard let card = model.card else { return }
-            rendered = ShareRenderer.render(
-                card, code: model.code, scale: displayScale, portraits: portraits
-            )
-            .map { RenderedCard(cgImage: $0, scale: displayScale) }
+            model.render(scale: displayScale, portraits: portraits)
         }
     }
 }
@@ -87,26 +87,29 @@ private struct ShareCardPreview: View {
 
 private struct ShareArtPicker: View {
     @Environment(ShareModel.self) private var model
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    @Environment(\.liteMode) private var liteMode
     @Environment(\.appTint) private var tint
-    @State private var collectionID: ArtCollection.ID?
+
+    private var reduceMotion: Bool { systemReduceMotion || liteMode.reducesMotion }
 
     var body: some View {
-        let collections = model.collections
-        let current = collectionID ?? model.selectedWork?.collection ?? collections.first?.id
+        let current = model.currentCollectionID
         VStack(alignment: .leading, spacing: .spaceM) {
             HStack {
-                Text("Art").font(.emphasis(.title3, weight: .bold))
+                Text("Art")
+                    .sectionTitle()
+                    .accessibilityAddTraits(.isHeader)
                 Spacer()
                 if model.showsLensBadge {
                     LensBadge()
                 }
             }
             HStack(spacing: .spaceS) {
-                ForEach(collections) { collection in
+                ForEach(model.collections) { collection in
                     let isOn = collection.id == current
                     Button {
-                        collectionID = collection.id
+                        model.show(collection.id)
                     } label: {
                         Text(verbatim: collection.name)
                             .font(.subheadline.weight(.semibold))
@@ -125,7 +128,7 @@ private struct ShareArtPicker: View {
             }
             ScrollViewReader { proxy in
                 EdgeToEdgeRail(.padded(.spaceL)) {
-                    ForEach(model.works.filter { $0.collection == current }) { work in
+                    ForEach(model.currentWorks) { work in
                         ShareArtCard(work: work).id(work.id)
                     }
                 }
@@ -133,18 +136,16 @@ private struct ShareArtPicker: View {
                     if let id = model.selectedWorkID { proxy.scrollTo(id, anchor: .center) }
                 }
             }
-            if let work = model.selectedWork {
-                Text(
-                    verbatim: "\(work.artist) · \(work.title), \(work.year) · \(work.licenseLabel)"
-                )
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-                .lineLimit(2)
-                .contentTransition(.opacity)
+            if let credit = model.selectedCredit {
+                Text(verbatim: credit)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+                    .contentTransition(.opacity)
             }
         }
         .animation(reduceMotion ? nil : .smooth, value: model.selectedWorkID)
-        .animation(reduceMotion ? nil : .smooth, value: collectionID)
+        .animation(reduceMotion ? nil : .smooth, value: model.collectionID)
         .sensoryFeedback(.selection, trigger: model.selectedWorkID)
     }
 }
@@ -239,11 +240,13 @@ private struct ShareAction: View {
 
 private struct ShareFormatChooser: View {
     @Binding var selection: ShareFormat
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    @Environment(\.liteMode) private var liteMode
     @Environment(\.appTint) private var tint
 
     var body: some View {
         HStack(alignment: .bottom, spacing: .spaceXL) {
-            ForEach(ShareFormat.allCases) { format in
+            ForEach(ShareFormat.allCases, id: \.self) { format in
                 let isSelected = selection == format
                 Button {
                     selection = format
@@ -271,6 +274,6 @@ private struct ShareFormatChooser: View {
         }
         .frame(maxWidth: .infinity)
         .sensoryFeedback(.selection, trigger: selection)
-        .animation(.snappy, value: selection)
+        .animation(systemReduceMotion || liteMode.reducesMotion ? nil : .snappy, value: selection)
     }
 }

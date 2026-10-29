@@ -141,6 +141,22 @@ struct ShareModelTests {
         #expect(unknownRace.phase == .failed(.notFound))
     }
 
+    @Test func theModelRendersTheCardAndPicksTheArtShelf() async throws {
+        let model = model(.vote(id: "camara-18732026"))
+        await model.load()
+        #expect(model.rendered == nil)
+        model.render(scale: 1, portraits: nil)
+        let rendered = try #require(model.rendered)
+        #expect(!rendered.file.png.isEmpty)
+        #expect(rendered.file.fileName == ShareRenderer.fileName)
+        let other = try #require(
+            model.collections.first { $0.id != model.currentCollectionID })
+        model.show(other.id)
+        #expect(model.currentCollectionID == other.id)
+        #expect(model.currentWorks.allSatisfy { $0.collection == other.id })
+        #expect(model.selectedCredit?.contains(model.selectedWork?.artist ?? "-") == true)
+    }
+
     @Test func longNamesStillLoad() async {
         let model = model(
             .person(slug: "maria-da-conceicao-albuquerque"), scenario: .longNames)
