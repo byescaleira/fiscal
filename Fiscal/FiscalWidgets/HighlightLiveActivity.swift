@@ -76,7 +76,7 @@ private struct HighlightLockScreen: View {
             Text(verbatim: board.title)
                 .font(.headline)
                 .lineLimit(3)
-                .minimumScaleFactor(0.85)
+                .minimumScaleFactor(.widgetTextShrink)
                 .frame(maxWidth: .infinity, alignment: .leading)
             HighlightUncertainty(board: board)
             HighlightWho(board: board)
