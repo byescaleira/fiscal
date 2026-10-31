@@ -56,7 +56,7 @@ struct HighlightWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "fiscal.highlight", provider: HighlightProvider()) { entry in
             HighlightWidgetView(entry: entry)
-                .containerBackground(for: .widget) { Color.groupedRow }
+                .containerBackground(for: .widget) { Color.plainBackground }
                 .widgetURL(entry.state.value?.lead.url ?? IntegrationLink.today)
         }
         .configurationDisplayName("Highlight of the Moment")
@@ -73,7 +73,6 @@ struct HighlightWidgetView: View {
 
     var body: some View {
         content
-            .fontDesign(.rounded)
             .partyMarksStill()
             .redacted(reason: entry.isSample ? .placeholder : [])
     }

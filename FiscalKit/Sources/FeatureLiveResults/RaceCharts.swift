@@ -5,7 +5,7 @@ import FiscalDomain
 import SwiftUI
 
 struct RaceStandings: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @State private var revealed = false
     let contenders: [RaceSummary.Contender]
     let cut: Double?
@@ -26,7 +26,7 @@ struct RaceStandings: View {
 }
 
 private struct RaceStandingRow: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     let contender: RaceSummary.Contender
     let cut: Double?
     let showsVotes: Bool
@@ -43,7 +43,7 @@ private struct RaceStandingRow: View {
                     PartyMark(contender.candidate.party)
                     Spacer(minLength: .spaceXS)
                     Text(verbatim: contender.percent)
-                        .font(.headline.width(.condensed))
+                        .font(.emphasis(.headline, weight: .bold))
                         .monospacedDigit()
                         .contentTransition(
                             reduceMotion
@@ -106,7 +106,7 @@ private struct RaceShareChart: View {
 }
 
 struct RaceBallotChart: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @State private var revealed = false
     @State private var selected: RaceSummary.Ballot.Kind?
     let summary: RaceSummary
@@ -148,7 +148,7 @@ struct RaceBallotChart: View {
         }
         .sensoryFeedback(.selection, trigger: selected)
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) { revealed = true }
         }
     }
 
@@ -196,7 +196,7 @@ private struct RaceBallotLegend: View {
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.secondary)
                     Text(verbatim: ballot.percentText)
-                        .font(.amountRow.width(.condensed))
+                        .font(.amountRow)
                         .monospacedDigit()
                         .contentTransition(.numericText(value: ballot.share))
                     Text(verbatim: ballot.countText)

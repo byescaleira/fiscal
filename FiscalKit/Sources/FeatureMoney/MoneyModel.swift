@@ -66,6 +66,7 @@ public final class MoneyModel {
     @ObservationIgnored private let service: (any PublicDataService)?
     @ObservationIgnored private let lensRepository: (any LensRepository)?
     @ObservationIgnored private let home: @MainActor () -> String?
+    @ObservationIgnored private let requests = PublicDataRequests()
 
     public init(
         service: (any PublicDataService)?, lens: (any LensRepository)? = nil,
@@ -165,12 +166,25 @@ public final class MoneyModel {
     public func load() async {
         refreshHome()
         if overview == nil { phase = .loading }
-        phase = await PublicDataPhase.settle(after: phase) {
-            lens = try? await lensRepository?.lens()
+        phase = await PublicDataPhase.settle(after: phase, in: requests) {
+            let lens = try? await lensRepository?.lens()
             guard let service else { throw PublicDataError.unavailable }
-            overview = try await service.money()
-            mandate = try? await service.mandateCost()
-            places = try? await service.moneyPlaces()
+            let overview = try await service.money()
+            return MoneyPage(
+                lens: lens, overview: overview, mandate: try? await service.mandateCost(),
+                places: try? await service.moneyPlaces())
+        } apply: { page in
+            lens = page.lens
+            overview = page.overview
+            mandate = page.mandate
+            places = page.places
         }
     }
+}
+
+private struct MoneyPage {
+    let lens: Lens?
+    let overview: MoneyOverview
+    let mandate: MandateCost?
+    let places: MoneyPlaces?
 }

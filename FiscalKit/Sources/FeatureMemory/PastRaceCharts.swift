@@ -5,7 +5,7 @@ import FiscalDomain
 import SwiftUI
 
 struct CandidateBarsChart: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @ScaledMetric(relativeTo: .body) private var rowHeight: CGFloat = .badgeL
     @State private var revealed = false
     @State private var scrubbed: String?
@@ -18,8 +18,8 @@ struct CandidateBarsChart: View {
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceM) {
             if let focused {
-                ChartCallout(title: focused.label, value: MemoryText.percent(focused.share)) {
-                    Text(verbatim: MemoryText.votes(focused.votes))
+                ChartCallout(title: focused.label, value: focused.shareText) {
+                    Text(verbatim: focused.votesText)
                         .font(.caption.weight(.semibold))
                         .monospacedDigit()
                         .foregroundStyle(.secondary)
@@ -40,14 +40,13 @@ struct CandidateBarsChart: View {
                             Image(systemName: "checkmark.seal.fill")
                                 .foregroundStyle(Color.retroTeal)
                         }
-                        Text(verbatim: MemoryText.shortPercent(bar.share))
+                        Text(verbatim: bar.shortShareText)
                             .monospacedDigit()
                     }
                     .font(.caption.weight(.bold))
                 }
                 .accessibilityLabel(bar.label)
-                .accessibilityValue(
-                    "\(MemoryText.percent(bar.share)), \(MemoryText.votes(bar.votes))")
+                .accessibilityValue(bar.accessibilityValue)
             }
             .chartXAxis(.hidden)
             .chartYAxis {
@@ -63,13 +62,13 @@ struct CandidateBarsChart: View {
             .frame(height: rowHeight * CGFloat(max(bars.count, 1)))
         }
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) { revealed = true }
         }
     }
 }
 
 struct WinnerTileMap: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @State private var revealed = false
     @State private var scrubbedColumn: Double?
     @State private var scrubbedRow: Double?
@@ -82,9 +81,9 @@ struct WinnerTileMap: View {
         VStack(alignment: .leading, spacing: .spaceM) {
             if let focused, let winner = breakdown.candidate(number: focused.winner) {
                 ChartCallout(
-                    title: focused.name, value: MemoryText.name(winner.ballotName)
+                    title: focused.name, value: winner.displayName
                 ) {
-                    Text(verbatim: MemoryText.shortPercent(focused.share))
+                    Text(verbatim: focused.shortShareText)
                         .font(.caption.weight(.semibold))
                         .monospacedDigit()
                         .foregroundStyle(.secondary)
@@ -105,12 +104,11 @@ struct WinnerTileMap: View {
                 .clipShape(.rect(cornerRadius: .radiusS))
                 .annotation(position: .overlay) {
                     Text(verbatim: tile.code)
-                        .font(.caption2.weight(.bold))
-                        .monospaced()
+                        .font(.emphasis(.caption2, weight: .bold))
                         .foregroundStyle(tile.winner == nil ? Color.secondary : Color.white)
                 }
                 .accessibilityLabel(tile.name)
-                .accessibilityValue(accessibilityValue(tile))
+                .accessibilityValue(breakdown.accessibilityValue(tile))
             }
             .chartXScale(domain: 0...Double(MemoryTiles.columns))
             .chartYScale(domain: 0...Double(MemoryTiles.rows))
@@ -136,21 +134,14 @@ struct WinnerTileMap: View {
                     .font(.caption)
                     .padding(.horizontal, .spaceS)
                     .padding(.vertical, .space2XS)
-                    .background(.groupedBackground, in: .capsule)
+                    .background(.plainBackground, in: .capsule)
                     .accessibilityElement(children: .combine)
                 }
             }
         }
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) { revealed = true }
         }
-    }
-
-    private func accessibilityValue(_ tile: PastRoundBreakdown.Tile) -> String {
-        guard let winner = breakdown.candidate(number: tile.winner) else {
-            return PublicFormat.missing
-        }
-        return "\(MemoryText.name(winner.ballotName)), \(MemoryText.shortPercent(tile.share))"
     }
 
     private func pick(_ tiles: [PastRoundBreakdown.Tile]) {
@@ -179,7 +170,7 @@ private struct TileBox {
 }
 
 struct TurnoutChart: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @State private var revealed = false
     let slices: [PastRoundBreakdown.Slice]
 
@@ -221,7 +212,7 @@ struct TurnoutChart: View {
             }
         }
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) { revealed = true }
         }
     }
 }

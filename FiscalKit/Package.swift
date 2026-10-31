@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "FiscalKit",
     defaultLocalization: "pt-BR",
-    platforms: [.iOS("27.0"), .macOS("27.0"), .visionOS("27.0")],
+    platforms: [.iOS("26.0"), .macOS("26.0"), .visionOS("26.0")],
     products: [
         .library(
             name: "FiscalWidgetKit", targets: ["FiscalDomain", "FiscalData", "FiscalDesignSystem"]),
@@ -13,12 +13,22 @@ let package = Package(
             targets: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureSettings", "AppShell"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/airbnb/lottie-spm.git", from: "4.5.0")
+        .package(url: "https://github.com/byescaleira/byescaleira-kit.git", from: "0.5.1"),
+        .package(url: "https://github.com/airbnb/lottie-spm.git", from: "4.5.0"),
     ],
     targets: [
-        .target(name: "FiscalDomain"),
+        .target(
+            name: "FiscalDomain",
+            dependencies: [.product(name: "ByescaleiraFoundation", package: "byescaleira-kit")]),
         .target(name: "FiscalData", dependencies: ["FiscalDomain"]),
-        .target(name: "FiscalDesignSystem", resources: [.copy("Fonts")]),
+        .target(
+            name: "FiscalDesignSystem",
+            dependencies: [
+                .product(name: "ByescaleiraAccessibility", package: "byescaleira-kit"),
+                .product(name: "ByescaleiraPlatform", package: "byescaleira-kit"),
+                .product(name: "ByescaleiraDesign", package: "byescaleira-kit"),
+                .product(name: "ByescaleiraCharts", package: "byescaleira-kit"),
+            ]),
         .target(
             name: "FiscalResource",
             resources: [
@@ -30,6 +40,8 @@ let package = Package(
             name: "FeatureCore",
             dependencies: [
                 "FiscalDomain", "FiscalDesignSystem", "FiscalResource",
+                .product(name: "ByescaleiraUI", package: "byescaleira-kit"),
+                .product(name: "ByescaleiraAnimation", package: "byescaleira-kit"),
                 .product(name: "Lottie", package: "lottie-spm"),
             ]),
         .target(
@@ -122,7 +134,8 @@ let package = Package(
         .testTarget(
             name: "FeatureShareTests",
             dependencies: [
-                "FiscalDomain", "FiscalData", "FiscalResource", "FeatureCore", "FeatureShare",
+                "FiscalDomain", "FiscalData", "FiscalDesignSystem", "FiscalResource", "FeatureCore",
+                "FeatureShare",
             ]),
         .testTarget(
             name: "FeatureSettingsTests",

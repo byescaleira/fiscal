@@ -13,16 +13,54 @@ public enum PublicDataPhase: Equatable, Sendable {
     public var isLoading: Bool { self == .loading }
 
     @MainActor
-    public static func settle(
-        after previous: PublicDataPhase, _ work: @MainActor () async throws -> Void
+    public static func settle<Value>(
+        after previous: PublicDataPhase, in requests: PublicDataRequests,
+        fetch: @MainActor () async throws -> Value, apply: @MainActor (Value) -> Void
     ) async -> PublicDataPhase {
+        let request = requests.begin()
+        let phase: PublicDataPhase
         do {
-            try await work()
-            return .loaded
-        } catch is CancellationError {
-            return previous == .loading ? .idle : previous
+            let value = try await fetch()
+            try Task.checkCancellation()
+            guard requests.isLatest(request) else { return requests.latestPhase }
+            apply(value)
+            phase = .loaded
         } catch {
-            return .failed(error as? PublicDataError ?? .unavailable)
+            guard requests.isLatest(request) else { return requests.latestPhase }
+            phase = failure(error, after: previous)
         }
+        requests.finish(request, with: phase)
+        return phase
+    }
+
+    static func failure(_ error: any Error, after previous: PublicDataPhase) -> PublicDataPhase {
+        if error is CancellationError { return previous == .loading ? .idle : previous }
+        return .failed(error as? PublicDataError ?? .unavailable)
+    }
+}
+
+@MainActor
+public final class PublicDataRequests {
+    private var latest = 0
+    private var settled: (request: Int, phase: PublicDataPhase)?
+
+    public init() {}
+
+    func begin() -> Int {
+        latest += 1
+        return latest
+    }
+
+    func isLatest(_ request: Int) -> Bool {
+        request == latest
+    }
+
+    func finish(_ request: Int, with phase: PublicDataPhase) {
+        settled = (request, phase)
+    }
+
+    var latestPhase: PublicDataPhase {
+        guard let settled, settled.request == latest else { return .loading }
+        return settled.phase
     }
 }

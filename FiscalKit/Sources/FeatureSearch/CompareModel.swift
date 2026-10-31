@@ -17,6 +17,7 @@ public final class CompareModel {
     @ObservationIgnored private var index = SearchIndex()
     @ObservationIgnored private let service: (any PublicDataService)?
     @ObservationIgnored private let lensRepository: (any LensRepository)?
+    @ObservationIgnored private let requests = PublicDataRequests()
 
     public init(
         slugs: [String], service: (any PublicDataService)? = nil,
@@ -50,14 +51,20 @@ public final class CompareModel {
 
     public var canAdd: Bool { slugs.count < Self.range.upperBound }
 
+    public func missingText(for group: CompareTable.Group) -> String? {
+        guard !group.missing.isEmpty else { return nil }
+        let list = group.missing.formatted(.list(type: .and).locale(.app))
+        return String(appLocalized: "Not published for these offices: \(list)")
+    }
+
     public var choiceText: String {
         String(appLocalized: "\(slugs.count) of \(Self.range.upperBound) chosen")
     }
 
     public var pickerResults: [PersonCard] {
-        let terms = SearchText.words(pickerQuery)
+        let terms = pickerQuery.searchWords
         guard !terms.isEmpty else { return people }
-        return index.people.filter { SearchText.matches(terms, in: $0.words) }.map(\.value)
+        return index.people.filter { $0.words.matchesSearch(terms) }.map(\.value)
     }
 
     public var chosen: [PersonCard] {
@@ -102,11 +109,13 @@ public final class CompareModel {
         let wanted = Set(slugs)
         guard Set(profiles.map(\.slug)) != wanted else { return }
         phase = .loading
-        phase = await PublicDataPhase.settle(after: phase) {
+        phase = await PublicDataPhase.settle(after: phase, in: requests) {
             guard let service else { throw PublicDataError.unavailable }
             var loaded: [Profile] = []
             for slug in slugs { loaded.append(try await service.profile(slug: slug)) }
-            profiles = SearchIndex.alphabetical(loaded, by: \.name)
+            return SearchIndex.alphabetical(loaded, by: \.name)
+        } apply: { loaded in
+            profiles = loaded
         }
     }
 

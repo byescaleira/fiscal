@@ -74,7 +74,7 @@ private struct DoorTile: View {
         }
         .frame(maxWidth: .infinity, minHeight: .caseDoor, alignment: .topLeading)
         .padding(.spaceM)
-        .background(.groupedRow, in: .rect(cornerRadius: .radiusM))
+        .background(.plainRow, in: .rect(cornerRadius: .radiusM))
         .contentShape(.rect(cornerRadius: .radiusM))
         .accessibilityElement(children: .combine)
     }
@@ -112,10 +112,9 @@ extension InvestigationPiece.Kind {
 
 struct SavedInvestigationsSection: View {
     @Environment(InvestigationModel.self) private var board
-    @State private var renaming: Investigation?
-    @State private var name = ""
 
     var body: some View {
+        @Bindable var board = board
         if !board.saved.isEmpty {
             Section {
                 ForEach(board.saved) { investigation in
@@ -130,7 +129,9 @@ struct SavedInvestigationsSection: View {
                         PinButton(investigation: investigation)
                     }
                     .contextMenu {
-                        Button("Rename", systemImage: "pencil") { startRenaming(investigation) }
+                        Button("Rename", systemImage: "pencil") {
+                            board.startRenaming(investigation)
+                        }
                         PinButton(investigation: investigation)
                         Button("Delete", systemImage: "trash", role: .destructive) {
                             board.delete(investigation)
@@ -146,26 +147,12 @@ struct SavedInvestigationsSection: View {
                     Text("Saved in your iCloud. Swipe to pin or delete.")
                 }
             }
-            .alert("Rename investigation", isPresented: isRenaming, presenting: renaming) {
-                investigation in
-                TextField("Name", text: $name)
+            .alert("Rename investigation", isPresented: $board.isRenaming) {
+                TextField("Name", text: $board.renameText)
                 Button("Cancel", role: .cancel) {}
-                Button("Save") { board.rename(investigation, to: name) }
+                Button("Save") { board.commitRenaming() }
             }
         }
-    }
-
-    private var isRenaming: Binding<Bool> {
-        Binding {
-            renaming != nil
-        } set: {
-            if !$0 { renaming = nil }
-        }
-    }
-
-    private func startRenaming(_ investigation: Investigation) {
-        name = investigation.title
-        renaming = investigation
     }
 }
 
@@ -212,12 +199,9 @@ private struct SavedRow: View {
                         .foregroundStyle(tint)
                         .accessibilityLabel(Text("Pinned"))
                 }
-                Text(
-                    verbatim: investigation.updatedAt.formatted(
-                        .dateTime.day().month(.abbreviated).locale(.app))
-                )
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                Text(verbatim: investigation.updatedDay)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
         }
         .padding(.vertical, .space2XS)

@@ -1,7 +1,7 @@
 import SwiftUI
 
 public struct ScoreboardFigure: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @ScaledMetric(relativeTo: .largeTitle) private var size: CGFloat = 72
     private let value: String
     private let numeric: Double
@@ -13,7 +13,7 @@ public struct ScoreboardFigure: View {
 
     public var body: some View {
         Text(verbatim: value)
-            .font(.system(size: size, weight: .heavy).width(.condensed))
+            .font(.emphasis(fixed: size, weight: .heavy))
             .monospacedDigit()
             .lineLimit(1)
             .minimumScaleFactor(0.4)

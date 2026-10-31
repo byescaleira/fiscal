@@ -1,4 +1,3 @@
-import Charts
 import FeatureCore
 import FiscalDesignSystem
 import FiscalDomain
@@ -6,11 +5,12 @@ import SwiftUI
 
 struct LensThemeBars: View {
     @Environment(LensModel.self) private var lens
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var revealed = false
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    @Environment(\.liteMode) private var liteMode
     let tally: LensThemeTally
 
     var body: some View {
+        let reduceMotion = systemReduceMotion || liteMode.reducesMotion
         VStack(alignment: .leading, spacing: .spaceM) {
             VStack(alignment: .leading, spacing: .spaceXS) {
                 Chip("RECENT VOTES · \(tally.total)", color: .secondary)
@@ -19,16 +19,15 @@ struct LensThemeBars: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
             .accessibilityElement(children: .combine)
-            ForEach(Array(tally.slices.enumerated()), id: \.element.id) { index, slice in
+            ForEach(tally.slices) { slice in
                 Button {
                     lens.focus(slice.theme)
                 } label: {
                     LensThemeBarRow(
-                        slice: slice, maxCount: tally.maxCount, revealed: revealed,
+                        slice: slice, share: tally.share(of: slice),
                         isFocused: lens.focusedTheme == slice.theme,
                         isDimmed: lens.focusedTheme.map { $0 != slice.theme } ?? false
                     )
-                    .animation(reduceMotion ? nil : .chartReveal(index), value: revealed)
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(slice.theme.title)
@@ -39,38 +38,21 @@ struct LensThemeBars: View {
         }
         .padding(.vertical, .spaceS)
         .sensoryFeedback(.selection, trigger: lens.focusedTheme)
-        .animation(.smooth, value: lens.focusedTheme)
-        .onAppear { revealed = true }
+        .animation(reduceMotion ? nil : .smooth, value: lens.focusedTheme)
     }
 }
 
 private struct LensThemeBarRow: View {
     let slice: LensThemeTally.Slice
-    let maxCount: Int
-    let revealed: Bool
+    let share: Double
     let isFocused: Bool
     let isDimmed: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceXS) {
             LensThemeBarLabel(slice: slice, isFocused: isFocused)
-            Chart {
-                BarMark(
-                    xStart: .value("Start", 0),
-                    xEnd: .value("Votes", revealed ? slice.count : 0),
-                    y: .value("Topic", slice.id),
-                    height: .fixed(.barHeight)
-                )
-                .foregroundStyle(ChartPalette.color(at: slice.slot).gradient)
-                .clipShape(.capsule)
-            }
-            .chartXScale(domain: 0...max(maxCount, 1), range: .plotDimension(endPadding: 0))
-            .chartXAxis(.hidden)
-            .chartYAxis(.hidden)
-            .chartLegend(.hidden)
-            .frame(height: .barHeight)
-            .background(Color.secondary.opacity(.opacityFill), in: .capsule)
-            .accessibilityHidden(true)
+            ShareBarChart(
+                value: share, color: ChartPalette.color(at: slice.slot), height: .barHeight)
         }
         .opacity(isDimmed ? .opacitySoft : 1)
         .contentShape(.rect)
@@ -145,7 +127,7 @@ struct LensThemeOrderRow: View {
     var body: some View {
         HStack(spacing: .spaceM) {
             Text(verbatim: lens.rankText(index))
-                .font(.headline.width(.condensed))
+                .font(.emphasis(.headline, weight: .bold))
                 .monospacedDigit()
                 .foregroundStyle(.secondary)
                 .frame(minWidth: .badgeS)

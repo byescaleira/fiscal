@@ -5,24 +5,40 @@ public protocol RecentSearchStore: Sendable {
     func save(_ searches: [String])
 }
 
-public struct DeviceRecentSearches: RecentSearchStore, @unchecked Sendable {
-    public static let key = "search.recent"
-    private let defaults: UserDefaults
+public struct DeviceRecentSearches: RecentSearchStore {
+    public static let key = "fiscal.search.recent"
+    public static let legacyKey = "search.recent"
+    private let suiteName: String?
 
-    public init(defaults: UserDefaults = .standard) {
-        self.defaults = defaults
+    public init(suiteName: String? = nil) {
+        self.suiteName = suiteName
     }
 
     public func load() -> [String] {
-        defaults.stringArray(forKey: Self.key) ?? []
+        DeviceDefaults.migrated(suiteName, from: Self.legacyKey, to: Self.key)
+            .stringArray(forKey: Self.key) ?? []
     }
 
     public func save(_ searches: [String]) {
+        let defaults = DeviceDefaults.migrated(suiteName, from: Self.legacyKey, to: Self.key)
         if searches.isEmpty {
             defaults.removeObject(forKey: Self.key)
         } else {
             defaults.set(searches, forKey: Self.key)
         }
+    }
+}
+
+enum DeviceDefaults {
+    static func migrated(_ suiteName: String?, from legacyKey: String, to key: String)
+        -> UserDefaults
+    {
+        let defaults = suiteName.flatMap(UserDefaults.init(suiteName:)) ?? .standard
+        if defaults.object(forKey: key) == nil, let old = defaults.object(forKey: legacyKey) {
+            defaults.set(old, forKey: key)
+        }
+        defaults.removeObject(forKey: legacyKey)
+        return defaults
     }
 }
 
@@ -32,8 +48,8 @@ enum RecentSearches {
     static func adding(_ query: String, to searches: [String]) -> [String] {
         let text = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard text.count >= 2 else { return searches }
-        let key = SearchText.fold(text)
-        let rest = searches.filter { SearchText.fold($0) != key }
+        let key = text.searchFolded
+        let rest = searches.filter { $0.searchFolded != key }
         return Array(([text] + rest).prefix(limit))
     }
 }

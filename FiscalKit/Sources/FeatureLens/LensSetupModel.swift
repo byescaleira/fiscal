@@ -281,6 +281,10 @@ extension LensSetupModel {
 
     public var maxEntryCount: Int { entries.map(\.count).max() ?? 0 }
 
+    public func share(of entry: SupportThemes.Entry) -> Double {
+        maxEntryCount > 0 ? Double(entry.count) / Double(maxEntryCount) : 0
+    }
+
     public func entry(for theme: Theme) -> SupportThemes.Entry? {
         entries.first { $0.theme == theme }
     }

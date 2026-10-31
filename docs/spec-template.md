@@ -1,4 +1,6 @@
-# Modelo de spec viva
+# Modelo de spec viva (histórico)
+
+Congelado em 2026-10-29: specs novas não são mais escritas. A verdade de cada capacidade fica no REASONS Canvas em [spdd/prompt/](../spdd/README.md) ([ADR 0019](adr/0019-spdd-process.md)).
 
 Copie este arquivo para `docs/specs/<capacidade>.md` (ex.: `docs/specs/reminders.md`) ao arquivar a primeira mudança de uma capacidade do Fiscal, e acrescente a linha no [índice das specs](specs/README.md). A spec guarda só a verdade atual; a proposta, o desenho e as etapas de cada mudança ficam em `docs/changes/<id>/`, a partir de [changes/_template/](changes/README.md), e as decisões vão em [adr/](adr/README.md). O que fica fora da capacidade vai em [backlog.md](backlog.md). Apague as instruções em itálico ao preencher. Quando a spec nova substituir uma antiga, apague a antiga.
 
@@ -33,7 +35,7 @@ _O comportamento completo, com números exatos: limites, faixas, prazos, preços
 ### <Mecânica 1>
 
 - _Quando acontece, o que muda, o que a pessoa vê._
-- _Casos de borda: vazio, offline, sem permissão, sem assinatura, dado inválido, outro aparelho._
+- _Casos de borda: vazio, offline, sem permissão, dado inválido, outro aparelho._
 
 | <Entrada> | <Resultado> |
 | --- | --- |
@@ -50,12 +52,12 @@ _Como a área é montada em camadas e como é testada. Cite os tipos e os testes
 1. **Domínio:** _tipos e regras puras; testes `<Assunto>Tests` em `FiscalDomainTests`._
 2. **Dados:** _modelos, migração do schema (se houver) e repositório; testes com banco em memória._
 3. **Feature:** _model com a lógica e os textos; a view só desenha. Testes do model com fontes falsas._
-4. **Integrações:** _widgets, App Intents, notificações, flags (`FeatureFlag`), assinatura (`ProAccess`)._
-5. **Textos:** _chaves em inglês no `Localizable.xcstrings`, com as 9 traduções._
+4. **Integrações:** _widgets, Live Activities, App Intents, flags (`FeatureFlag` e flags remotas do admin), servidor (`server/`)._
+5. **Textos:** _chaves em inglês no `Localizable.xcstrings`, só com a tradução pt-BR ([ADR 0003](../adr/0003-portuguese-only.md))._
 
 ## O que fica com você
 
-_Tarefas que só o usuário pode fazer: App Store Connect, CloudKit Console (Deploy to Production), portal da Apple, contas de teste, preços, aprovações de direção visual. Uma linha por tarefa, com onde fazer._
+_Tarefas que só o usuário pode fazer: App Store Connect, CloudKit Console (Deploy to Production), portal da Apple, deploy na VPS, aprovações de direção visual. Uma linha por tarefa, com onde fazer._
 
 - _ex.: criar o tipo `<Registro>` no CloudKit Console (banco público, Development) e publicar em Production._
 

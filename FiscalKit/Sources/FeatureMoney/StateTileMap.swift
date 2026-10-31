@@ -3,7 +3,7 @@ import FiscalDesignSystem
 import SwiftUI
 
 struct StateTileMap: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @State private var revealed = false
     @State private var scrubbedColumn: Double?
     @State private var scrubbedRow: Double?
@@ -37,7 +37,7 @@ struct StateTileMap: View {
             StateTileScale()
         }
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) { revealed = true }
         }
     }
 
@@ -54,8 +54,7 @@ struct StateTileMap: View {
             .clipShape(.rect(cornerRadius: .radiusS))
             .annotation(position: .overlay) {
                 Text(verbatim: tile.code)
-                    .font(.caption2.weight(.bold))
-                    .monospaced()
+                    .font(.emphasis(.caption2, weight: .bold))
                     .foregroundStyle(labelStyle(for: tile))
             }
             .accessibilityLabel(tile.title)
@@ -129,6 +128,8 @@ private struct StateTileScale: View {
         }
         .font(.caption)
         .foregroundStyle(.secondary)
-        .accessibilityHidden(true)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text("Color scale"))
+        .accessibilityValue(Text("Lighter is less, darker is more"))
     }
 }

@@ -45,9 +45,11 @@ struct LensSupportStep: View {
 
 private struct LensSupportChosen: View {
     @Environment(LensSetupModel.self) private var setup
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    @Environment(\.liteMode) private var liteMode
 
     var body: some View {
+        let reduceMotion = systemReduceMotion || liteMode.reducesMotion
         VStack(alignment: .leading, spacing: .spaceM) {
             HStack(spacing: .spaceS) {
                 Text("You support")
@@ -64,7 +66,7 @@ private struct LensSupportChosen: View {
             EdgeToEdgeRail(.padded(.spaceInset), snaps: false) {
                 ForEach(setup.chosen) { card in
                     LensChosenSlot(card: card)
-                        .transition(.scale.combined(with: .opacity))
+                        .transition(reduceMotion ? .opacity : .scale.combined(with: .opacity))
                 }
                 ForEach(0..<setup.openSlots, id: \.self) { _ in
                     LensEmptySlot()
@@ -118,12 +120,13 @@ private struct LensEmptySlot: View {
                 .overlay {
                     Image(systemName: "plus").font(.headline).foregroundStyle(.secondary)
                 }
+                .accessibilityHidden(true)
             Text("Add person")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
         .frame(width: .choiceTile)
-        .accessibilityHidden(true)
+        .accessibilityElement(children: .combine)
     }
 }
 

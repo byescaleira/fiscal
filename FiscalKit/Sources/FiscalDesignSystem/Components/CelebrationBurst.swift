@@ -1,7 +1,7 @@
 import SwiftUI
 
 public struct CelebrationBurst: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @State private var start = Date.now
     private let colors: [Color]
     private let pieces = 36

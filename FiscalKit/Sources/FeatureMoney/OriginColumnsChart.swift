@@ -4,7 +4,7 @@ import FiscalDomain
 import SwiftUI
 
 struct OriginColumnsChart: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @ScaledMetric(relativeTo: .caption) private var height: CGFloat = .chartHeight
     @State private var revealed = false
     @State private var scrubbed: String?
@@ -91,7 +91,7 @@ struct OriginColumnsChart: View {
         .sensoryFeedback(.selection, trigger: scrubbed)
         .frame(height: height)
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) { revealed = true }
         }
     }
 

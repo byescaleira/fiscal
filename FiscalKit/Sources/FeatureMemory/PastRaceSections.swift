@@ -78,71 +78,24 @@ private struct PastHeroSection: View {
 }
 
 private struct PastHeroCard: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var appeared = false
     let breakdown: PastRoundBreakdown
     let leader: PastCandidate
 
     var body: some View {
-        let palette = PartyPalette.of(party: leader.party, fallback: 0)
         VStack(spacing: .spaceL) {
             HStack {
                 Text(verbatim: breakdown.title.uppercased(with: .app))
-                    .font(.caption.weight(.heavy))
+                    .font(.chipLabel)
                 Spacer(minLength: .spaceS)
                 Text(verbatim: breakdown.roundLine)
                     .font(.caption.weight(.semibold))
                     .opacity(.opacityStrong)
             }
-            VStack(spacing: .spaceS) {
-                PersonPortrait(
-                    slug: MemoryText.slug(leader.ballotName),
-                    name: MemoryText.name(leader.ballotName),
-                    party: leader.party, size: .badgeXL * 2
-                )
-                .overlay { Circle().strokeBorder(.white, lineWidth: .space2XS) }
-                .scaleEffect(appeared ? 1 : 0.6)
-                .opacity(appeared ? 1 : 0)
-                Text(verbatim: breakdown.outcome)
-                    .font(.caption.weight(.heavy))
-                    .padding(.horizontal, .spaceM)
-                    .padding(.vertical, .space2XS)
-                    .background(.white.opacity(.opacityTint), in: .capsule)
-                Text(verbatim: names)
-                    .font(.emphasis(.title, weight: .heavy))
-                    .multilineTextAlignment(.center)
-                    .lineLimit(3)
-                    .minimumScaleFactor(0.7)
-                HStack(spacing: .spaceS) {
-                    PartyMark(leader.party)
-                    Text(verbatim: MemoryText.percent(leader.share))
-                        .font(.scoreboardNumber)
-                        .monospacedDigit()
-                }
-                Text(verbatim: MemoryText.votes(leader.votes))
-                    .font(.subheadline.weight(.semibold))
-                    .opacity(.opacityStrong)
-            }
-            .frame(maxWidth: .infinity)
+            PastHeroLeader(breakdown: breakdown, leader: leader)
             ForEach(breakdown.others) { other in
-                HStack(spacing: .spaceS) {
-                    PersonPortrait(
-                        slug: MemoryText.slug(other.ballotName),
-                        name: MemoryText.name(other.ballotName),
-                        party: other.party, size: .badgeM)
-                    Text(verbatim: MemoryText.name(other.ballotName))
-                        .font(.subheadline.weight(.semibold))
-                        .lineLimit(1)
-                    Text(verbatim: other.party)
-                        .font(.caption.weight(.bold))
-                    Spacer(minLength: .spaceS)
-                    Text(verbatim: MemoryText.percent(other.share))
-                        .font(.headline.weight(.bold))
-                        .monospacedDigit()
-                }
-                .padding(.spaceS)
-                .background(.white.opacity(.opacityTint), in: .rect(cornerRadius: .radiusM))
-                .opacity(.opacityStrong)
+                PastOtherRow(
+                    name: other.displayName, party: other.party, share: other.shareText,
+                    portraitSlug: other.portraitSlug)
             }
             if let turnout = breakdown.turnoutHero {
                 Text("Turnout: \(turnout) of the electorate")
@@ -153,27 +106,50 @@ private struct PastHeroCard: View {
         }
         .padding(.spaceInset)
         .foregroundStyle(.white)
-        .background {
-            ZStack {
-                LinearGradient(
-                    colors: [palette.primary, palette.secondary], startPoint: .topLeading,
-                    endPoint: .bottomTrailing)
-                Color.scoreboard.opacity(.opacitySoft)
-            }
-        }
+        .background { PartyCardBackground(party: leader.party) }
         .clipShape(.rect(cornerRadius: .radiusGroup))
         .accessibilityElement(children: .combine)
+    }
+}
+
+private struct PastHeroLeader: View {
+    @ReducesMotion private var reduceMotion
+    @State private var appeared = false
+    let breakdown: PastRoundBreakdown
+    let leader: PastCandidate
+
+    var body: some View {
+        VStack(spacing: .spaceS) {
+            PersonPortrait(
+                slug: leader.portraitSlug, name: leader.displayName, party: leader.party,
+                size: .medallion
+            )
+            .overlay { Circle().strokeBorder(.white, lineWidth: .space2XS) }
+            .scaleEffect(appeared ? 1 : .heroPortraitEntryScale)
+            .opacity(appeared ? 1 : 0)
+            Chip(breakdown.outcome, color: .white, shape: .capsule)
+                .environment(\.colorScheme, .dark)
+            Text(verbatim: breakdown.leaderNames)
+                .font(.emphasis(.title, weight: .heavy))
+                .multilineTextAlignment(.center)
+                .lineLimit(3)
+                .minimumScaleFactor(0.7)
+            HStack(spacing: .spaceS) {
+                PartyMark(leader.party)
+                Text(verbatim: leader.shareText)
+                    .font(.scoreboardTitle)
+                    .monospacedDigit()
+            }
+            Text(verbatim: leader.votesText)
+                .font(.subheadline.weight(.semibold))
+                .opacity(.opacityStrong)
+        }
+        .frame(maxWidth: .infinity)
         .onAppear {
             withAnimation(reduceMotion ? nil : .spring(duration: 0.8, bounce: 0.4)) {
                 appeared = true
             }
         }
-    }
-
-    private var names: String {
-        let elected = breakdown.winners.filter(\.elected)
-        guard elected.count > 1 else { return MemoryText.name(leader.ballotName) }
-        return elected.map { MemoryText.name($0.ballotName) }.joined(separator: " e ")
     }
 }
 
@@ -210,14 +186,16 @@ struct PastRaceRow: View {
     var body: some View {
         HStack(spacing: .spaceM) {
             Text(verbatim: race.scope.uppercased(with: .app))
-                .font(.subheadline.weight(.heavy).width(.condensed))
+                .font(.emphasis(.subheadline, weight: .heavy))
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
                 .foregroundStyle(.secondary)
                 .frame(width: .badgeM, height: .badgeM)
                 .background(.subtleFill, in: .rect(cornerRadius: .radiusS))
             VStack(alignment: .leading, spacing: .spaceHairline) {
                 ForEach(winners) { winner in
                     HStack(spacing: .spaceS) {
-                        Text(verbatim: MemoryText.name(winner.ballotName))
+                        Text(verbatim: winner.displayName)
                             .font(.rowTitle)
                             .lineLimit(1)
                         PartyMark(winner.party)
@@ -228,9 +206,9 @@ struct PastRaceRow: View {
                     .foregroundStyle(.secondary)
             }
             Spacer(minLength: .spaceS)
-            if let share = winners.first?.share {
-                Text(verbatim: MemoryText.shortPercent(share))
-                    .font(.headline.weight(.bold).width(.condensed))
+            if let share = winners.first?.shortShareText {
+                Text(verbatim: share)
+                    .font(.emphasis(.headline, weight: .bold))
                     .monospacedDigit()
             }
         }

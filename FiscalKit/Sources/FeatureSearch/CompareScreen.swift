@@ -105,10 +105,8 @@ private struct CompareGroupSection: View {
                     )
                     PeerMethodButton(items: compare.peerItems)
                 }
-                if !group.missing.isEmpty {
-                    Text(
-                        "Not published for these offices: \(group.missing.formatted(.list(type: .and).locale(.app)))"
-                    )
+                if let missing = compare.missingText(for: group) {
+                    Text(verbatim: missing)
                 }
                 if let line = compare.sourceLine { Text(verbatim: line) }
             }
@@ -136,6 +134,6 @@ private struct CompareEmptyState: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.groupedBackground)
+        .background(.plainBackground)
     }
 }

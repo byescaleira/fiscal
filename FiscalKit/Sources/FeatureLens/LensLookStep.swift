@@ -44,10 +44,14 @@ struct LensLookStep: View {
 
 private struct LensSetupArtCard: View {
     @Environment(LensSetupModel.self) private var setup
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    @Environment(\.liteMode) private var liteMode
 
     var body: some View {
         LensLookShelf(
-            "Art", detail: "Public domain works by Brazilian artists, always with credit."
+            "Art",
+            detail:
+                "Works by Brazilian artists in the public domain or under a free licence, always with credit."
         ) {
             if setup.collections.count > 1 {
                 LensCollectionPicker(
@@ -59,7 +63,9 @@ private struct LensSetupArtCard: View {
                 .id(setup.collection?.id)
                 .transition(.opacity)
         }
-        .animation(.smooth, value: setup.collection?.id)
+        .animation(
+            systemReduceMotion || liteMode.reducesMotion ? nil : .smooth,
+            value: setup.collection?.id)
     }
 }
 
@@ -123,7 +129,7 @@ struct LensChoiceTitle: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: .space2XS) {
-            Text(title).font(.emphasis(.title3, weight: .bold)).accessibilityAddTraits(.isHeader)
+            Text(title).sectionTitle().accessibilityAddTraits(.isHeader)
             Text(detail).font(.footnote).foregroundStyle(.secondary)
         }
     }

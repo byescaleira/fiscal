@@ -45,6 +45,7 @@ struct TodayRecentVotesSection: View {
 }
 
 private struct RecentVoteRow: View {
+    @Environment(TodayModel.self) private var today
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
     let vote: VoteSummary
@@ -54,7 +55,7 @@ private struct RecentVoteRow: View {
             VStack(alignment: .leading, spacing: .spaceS) {
                 AdaptiveStack(alignment: .center, spacing: .spaceS) {
                     if let theme = vote.themes.first { ThemeTag(theme: theme) }
-                    Text(verbatim: TodayText.voteLine(vote))
+                    Text(verbatim: today.voteLine(vote))
                         .font(.caption2.weight(.semibold))
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
@@ -64,7 +65,7 @@ private struct RecentVoteRow: View {
                     .lineLimit(3)
                 SameDayVotesMark(vote: vote)
                 HStack(alignment: .bottom) {
-                    TallyLine(tally: vote.tally, font: .amountRow.width(.condensed))
+                    TallyLine(tally: vote.tally, font: .amountRow)
                     Spacer(minLength: .spaceS)
                     if let approved = vote.approved { ResultChip(approved: approved) }
                 }

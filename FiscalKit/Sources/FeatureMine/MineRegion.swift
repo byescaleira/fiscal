@@ -119,6 +119,20 @@ public struct MineRoster: Hashable, Sendable {
                 && (term.isEmpty || MineModel.normalized(card.name).contains(term))
         }
     }
+
+    public func scopeTitle(party: String?) -> String {
+        party ?? String(appLocalized: "All Parties")
+    }
+
+    public func header(shown: Int) -> String {
+        let total = people.count
+        guard shown != total else { return String(appLocalized: "\(total) people") }
+        return String(appLocalized: "\(shown) of \(total) people")
+    }
+
+    public func partyOption(_ share: MineBench.PartyShare) -> String {
+        "\(share.party) · \(PublicFormat.number(share.count))"
+    }
 }
 
 public struct MineVote: Identifiable, Hashable, Sendable {

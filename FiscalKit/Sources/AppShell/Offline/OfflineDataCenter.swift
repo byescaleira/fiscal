@@ -38,9 +38,20 @@ public final class OfflineDataCenter {
         await model?.load()
     }
 
-    public func refreshInBackground() async {
+    public func refreshInBackground(store: AppReleaseStore = .shared) async {
+        guard Self.refreshesInBackground(store: store) else { return }
         scheduleBackgroundRefresh()
         _ = try? await coordinator?.refresh()
+    }
+
+    static func refreshesInBackground(store: AppReleaseStore) -> Bool {
+        !store.blocks
+    }
+
+    func cancelBackgroundRefresh() {
+        #if os(iOS) || os(visionOS)
+            BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: Self.refreshIdentifier)
+        #endif
     }
 
     public func scheduleBackgroundRefresh() {
@@ -60,8 +71,6 @@ public final class OfflineDataCenter {
         else { return OfflinePackRequest(placeCode: place) }
         let repositories = database.repositories
         let followed = (try? await repositories.follows.followed()) ?? []
-        let supported = (try? await repositories.lens.lens())?.supported ?? []
-        return OfflinePackRequest(
-            followed: followed.map(\.card.slug), supported: supported, placeCode: place)
+        return OfflinePackRequest(followed: followed.map(\.card.slug), placeCode: place)
     }
 }

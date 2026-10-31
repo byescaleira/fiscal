@@ -43,13 +43,13 @@ private struct MineHeroSection: View {
 
 private struct MineHeroCard: View {
     @Environment(MineModel.self) private var mine
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceL) {
             VStack(alignment: .leading, spacing: .space2XS) {
                 Text(verbatim: mine.placeKicker)
-                    .font(.caption.weight(.heavy))
+                    .font(.chipLabel)
                     .foregroundStyle(.secondary)
                 HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
                     Text(verbatim: mine.placeTitle)
@@ -66,7 +66,7 @@ private struct MineHeroCard: View {
             if mine.hasPlace, mine.phase == .loaded, mine.representativeCount > 0 {
                 HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
                     Text(verbatim: mine.countText)
-                        .font(.scoreboardNumber)
+                        .font(.scoreboardTitle)
                         .monospacedDigit()
                         .contentTransition(
                             reduceMotion
@@ -80,7 +80,7 @@ private struct MineHeroCard: View {
         .foregroundStyle(.primary)
         .padding(.spaceInset)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.groupedRow, in: .rect(cornerRadius: .radiusGroup))
+        .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isHeader)
     }
@@ -92,7 +92,6 @@ private struct MineStatePlate: View {
     var body: some View {
         Text(verbatim: uf)
             .font(.titleMedium)
-            .fontWidth(.condensed)
             .padding(.horizontal, .spaceS)
             .overlay(
                 RoundedRectangle(cornerRadius: .radiusS)
@@ -102,55 +101,31 @@ private struct MineStatePlate: View {
 
 private struct MineInviteSection: View {
     @Environment(MineModel.self) private var mine
-    @FocusState private var isSearching: Bool
 
     var body: some View {
-        @Bindable var mine = mine
         Section {
-            HStack(spacing: .spaceS) {
-                Image(systemName: "magnifyingglass")
-                    .foregroundStyle(.secondary)
-                    .accessibilityHidden(true)
-                TextField("State or city", text: $mine.query)
-                    .focused($isSearching)
-                    .autocorrectionDisabled()
-                    .submitLabel(.search)
-                if !mine.query.isEmpty {
-                    Button("Clear", systemImage: "xmark.circle.fill") { mine.query = "" }
-                        .labelStyle(.iconOnly)
-                        .buttonStyle(.borderless)
-                        .foregroundStyle(.secondary)
-                }
+            Button {
+                mine.choosePlace(searching: true)
+            } label: {
+                IconRow("State or city", symbol: "magnifyingglass", color: .secondary)
             }
-            if mine.isSearchingPlaces {
-                if mine.placeResults.isEmpty {
-                    Text(
-                        mine.places.isEmpty
-                            ? LocalizedStringKey("Loading") : "No place with that name."
-                    )
-                    .foregroundStyle(.secondary)
-                } else {
-                    ForEach(mine.placeResults.prefix(MineModel.inviteLimit)) { place in
-                        MinePlaceRow(place: place)
-                    }
-                }
-            } else {
-                Button {
-                    mine.isChoosingPlace = true
-                } label: {
-                    IconRow(
-                        "See All States and Cities",
-                        detail: "State capitals first. Search finds any other city.",
-                        symbol: "map", color: .info)
-                }
-                .buttonStyle(.plain)
+            .buttonStyle(.plain)
+            Button {
+                mine.choosePlace(searching: false)
+            } label: {
+                IconRow(
+                    "See All States and Cities",
+                    detail: "State capitals first. Search finds any other city.",
+                    symbol: "map", color: .info)
             }
+            .buttonStyle(.plain)
         } header: {
             Text("Find Your Place").sectionTitle()
         } footer: {
-            Text("Your place stays only on this device. Fiscal never sends it anywhere.")
+            Text(
+                "Your place stays only on this device. Fiscal only downloads the public data of your region."
+            )
         }
-        .task { await mine.loadPlaces() }
     }
 }
 
@@ -162,7 +137,7 @@ private struct MineToolbar: ToolbarContent {
     var body: some ToolbarContent {
         ToolbarItem(placement: .primaryAction) {
             Button {
-                mine.isChoosingPlace = true
+                mine.choosePlace(searching: false)
             } label: {
                 Label("Change Place", systemImage: "mappin.and.ellipse")
             }

@@ -5,6 +5,8 @@ import SwiftUI
 
 struct LensLookPreview: View {
     @Environment(\.appTint) private var inheritedTint
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    @Environment(\.liteMode) private var liteMode
     let palette: LensPaletteSwatch?
     let theme: Theme?
 
@@ -22,11 +24,10 @@ struct LensLookPreview: View {
             LensPreviewControls()
         }
         .padding(.spaceL)
-        .background(.groupedBackground, in: .rect(cornerRadius: .radiusGroup))
+        .background(.plainBackground, in: .rect(cornerRadius: .radiusGroup))
         .appTint(palette?.accent ?? inheritedTint)
         .partyMarksStill()
-        .dynamicTypeSize(...DynamicTypeSize.xLarge)
-        .animation(.smooth, value: palette)
+        .animation(systemReduceMotion || liteMode.reducesMotion ? nil : .smooth, value: palette)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("Preview of your look"))
         .accessibilityValue(Text(verbatim: palette?.title ?? ""))
@@ -61,12 +62,7 @@ private struct LensPreviewVoteCard: View {
                 LensPreviewCount(label: "Yes", value: 312, symbol: "checkmark", color: .positive)
                 LensPreviewCount(label: "No", value: 141, symbol: "xmark", color: .negative)
                 Spacer(minLength: .zero)
-                Label("Approved", systemImage: "checkmark.seal")
-                    .font(.chipLabel)
-                    .foregroundStyle(Color.positive)
-                    .padding(.horizontal, .spaceS)
-                    .padding(.vertical, .space2XS)
-                    .background(Color.positive.opacity(.opacityTint), in: .capsule)
+                Chip("Approved", color: .positive, shape: .capsule)
             }
             TallyBar(segments: [
                 TallyBar.Segment(id: "yes", value: 312, color: .positive),
@@ -74,9 +70,12 @@ private struct LensPreviewVoteCard: View {
                 TallyBar.Segment(id: "others", value: 12, color: .warning),
             ])
             HStack(spacing: .spaceXS) {
-                ForEach(LensText.sampleParties, id: \.self) { party in
-                    PartyMark(party)
+                HStack(spacing: .spaceXS) {
+                    ForEach(LensText.sampleParties, id: \.self) { party in
+                        PartyMark(party)
+                    }
                 }
+                .dynamicTypeSize(...DynamicTypeSize.xLarge)
                 Spacer(minLength: .zero)
                 Text("Party colors never change")
                     .font(.caption2)
@@ -86,7 +85,7 @@ private struct LensPreviewVoteCard: View {
             }
         }
         .padding(.spaceL)
-        .background(.groupedRow, in: .rect(cornerRadius: .radiusL))
+        .background(.plainRow, in: .rect(cornerRadius: .radiusL))
     }
 }
 
@@ -103,7 +102,7 @@ private struct LensPreviewCount: View {
                 .textCase(.uppercase)
                 .foregroundStyle(color)
             Text(verbatim: PublicFormat.number(value))
-                .font(.scoreboardNumber)
+                .font(.scoreboardTitle)
                 .monospacedDigit()
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)
@@ -116,12 +115,7 @@ private struct LensPreviewControls: View {
 
     var body: some View {
         HStack(spacing: .spaceM) {
-            Label("Follow", systemImage: "plus")
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(.white)
-                .padding(.horizontal, .spaceL)
-                .padding(.vertical, .spaceS)
-                .background(tint, in: .capsule)
+            Chip("Follow", color: tint, shape: .capsule)
             Spacer(minLength: .zero)
             HStack(spacing: .spaceM) {
                 ForEach(AppSection.allCases) { section in
@@ -132,7 +126,9 @@ private struct LensPreviewControls: View {
             .font(.icon(.s))
             .padding(.horizontal, .spaceM)
             .padding(.vertical, .spaceS)
-            .background(.groupedRow, in: .capsule)
+            .background(.plainRow, in: .capsule)
+            .dynamicTypeSize(...DynamicTypeSize.xLarge)
+            .accessibilityHidden(true)
         }
     }
 }

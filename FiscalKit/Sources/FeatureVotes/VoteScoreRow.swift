@@ -79,12 +79,13 @@ private struct ScoreSide: View {
 
     var body: some View {
         VStack(alignment: alignment, spacing: 0) {
-            Label(choice.title.uppercased(with: .app), systemImage: choice.symbol)
-                .font(.caption2.weight(.heavy))
+            Label(choice.title, systemImage: choice.symbol)
+                .font(.chipLabel)
+                .textCase(.uppercase)
                 .foregroundStyle(choice.color)
                 .labelStyle(SideLabelStyle(isLeading: isLeading))
             Text(verbatim: value)
-                .font(.scoreboardNumber)
+                .font(.scoreboardTitle)
                 .monospacedDigit()
                 .foregroundStyle(isDimmed ? .secondary : .primary)
                 .lineLimit(1)

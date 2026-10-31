@@ -2,32 +2,60 @@
 
 Guia para qualquer agente de código (Claude Code, Codex, Cursor e afins) e para quem chega ao repositório. É a fonte compartilhada das regras, dos comandos e da estrutura; o `CLAUDE.md` importa este arquivo e acrescenta só o que é do Claude Code.
 
-App SwiftUI para iOS, iPadOS, macOS e visionOS 27, com SwiftData local e sincronização CloudKit (`iCloud.fiscal`) em aparelhos assinados, site público em `fiscal.byescaleira.com` e o Fiscal na Web em `/app`.
+App SwiftUI para iOS, iPadOS, macOS e visionOS a partir do 26, com os recursos do 27 quando o aparelho tem, com SwiftData local e sincronização CloudKit (`iCloud.fiscal`) em aparelhos assinados, site público em `fiscal.byescaleira.com` e o Fiscal na Web em `/app`.
 
 ## Regras
 
 - **Constituição:** [docs/constitution.md](docs/constitution.md) traz as regras inegociáveis (processo, arquitetura, código, design, textos, verificação, git, aprovação humana). Ela vence qualquer outro texto do repositório.
 - **Idioma:** responda em pt-BR, inclusive nas notas de andamento; código, chaves de texto, nomes de tipos e commits em inglês.
 - **Código:** zero comentários, zero warnings, Swift Testing para toda lógica nova, tokens do design system em vez de números soltos.
-- **Aprovação humana:** push para `main` ou `development`, merge na `main`, envio para a App Store ou o TestFlight, publicação do site e deploy na VPS só com o ok explícito do usuário, pedido a cada vez.
+- **Aprovação humana:** push para `main` ou `development`, merge na `main` ou na `development`, tag e release, envio para a App Store ou o TestFlight, publicação do site e deploy na VPS só com o ok explícito do usuário, pedido a cada vez.
 - **CI:** Xcode Cloud (`ci_scripts/`). O repositório não usa GitHub Actions.
 - **Simulador:** só pelo sim-monitor ou por `scripts/simulator.sh acquire/release <udid>`, no máximo dois ligados na máquina; verificação visual no iPhone físico quando houver.
+- **byescaleira-kit:** design, gráficos, componentes genéricos e idioma vêm do pacote privado `byescaleira-kit` ([ADR 0010](docs/adr/0010-byescaleira-kit.md)); peça genérica nova ou correção numa peça do kit vai para o kit, num PR de lá. Os scripts acham o repositório privado por `scripts/kit-access.sh` (conta `byescaleira` do `gh`).
 - **Cache de build:** `~/Library/Developer/FiscalBuild`, ou `FISCAL_BUILD_ROOT` próprio por agente em paralelo; um build pesado por vez.
 
-## Fluxo de trabalho (spec-driven)
+## Fluxo de trabalho (SPDD)
 
-1. **Specs vivas** em [docs/specs/](docs/specs/README.md): um arquivo por capacidade, sempre com a verdade atual do app.
-2. **Mudanças** em [docs/changes/](docs/changes/README.md): cada mudança ganha `docs/changes/<id>/` com `proposal.md` (por quê e o quê), `design.md` (como) e `tasks.md` (etapas), copiados de `docs/changes/_template/`. Para tela existente, crítica honesta antes de redesenhar.
-3. **Implementação** seguindo o `tasks.md`, com verificação por etapa. "Em etapas" quer dizer parar e esperar o ok entre uma etapa e outra.
-4. **Arquivamento:** com a mudança entregue, aplique o que ela muda em `docs/specs/` e mova a pasta para `docs/changes/archive/<AAAA-MM-DD>-<id>/`.
-5. **Decisões** de arquitetura, dados, dependências, plataforma ou exceções do lint e da auditoria viram um ADR em [docs/adr/](docs/adr/README.md). O `docs/decisions.md` é só o histórico de antes dos ADRs.
+O repositório segue o SPDD (Structured-Prompt-Driven Development, do [open-spdd](https://github.com/gszhangwei/open-spdd); [ADR 0019](docs/adr/0019-spdd-process.md)). O prompt estruturado de cada mudança, o **REASONS Canvas**, é versionado junto do código, aprovado antes da geração e mantido em sincronia depois dela. **Quando a realidade diverge, corrija o canvas primeiro e depois o código.**
+
+1. **Índice:** fica em [spdd/README.md](spdd/README.md). Traz o código do projeto (`FSC`), a próxima sequência e uma linha por mudança ou capacidade (ID `FSC-<NNN>`, canvas, estado, branch e PR).
+2. **Análise:** fica em `spdd/analysis/<ID>-<AAAAMMDDHHmm>-[Analysis]-<descricao>.md` e diz o quê e o porquê, sem código. Tem as seções Original Requirement, Domain Concept Identification, Strategic Approach e Risk & Gap Analysis. Em tela existente, começa pela crítica honesta antes de redesenhar. Termina com as decisões genuínas e a pergunta "sigo para o canvas?".
+3. **REASONS Canvas:** fica em `spdd/prompt/<ID>-<AAAAMMDDHHmm>-[<Tipo>]-<escopo>-<descricao>.md`. Tem as seções Requirements (definição de pronto em Given/When/Then), Entities, Approach, Structure, Operations, Norms e Safeguards. **Nenhum código antes do ok do usuário no canvas.** As capacidades de antes do SPDD têm um canvas `[Codify]` (`FSC-001` a `FSC-007`), que registra o código como ele é e lista as "Known divergences" no fim de Approach.
+4. **Geração:**
+   - segue o canvas operação por operação, na ordem, respeitando as Norms e os Safeguards;
+   - a análise e o canvas entram no primeiro commit de código;
+   - todo commit da mudança traz `Canvas: spdd/prompt/<arquivo>.md` no corpo;
+   - "em etapas" quer dizer parar e esperar o ok entre uma etapa e outra.
+5. **Correção e sincronia:**
+   - se o requisito ou o comportamento mudou, o canvas muda antes do código (`spdd-prompt-update`);
+   - numa refatoração, muda o código e depois o canvas (`spdd-sync`);
+   - o canvas nunca é editado à mão depois do ok.
+6. **Revisão e fechamento:**
+   - o diff da fase é revisado contra o canvas (`spec-reviewer`) e pelos revisores que ele toca, uma vez;
+   - depois do merge, a linha em `spdd/README.md` fica **entregue**, e o canvas continua em `spdd/prompt/` como contexto da próxima mudança, sem arquivar.
+7. **Decisões:** as de arquitetura, dados, dependências, plataforma ou exceções do lint e da auditoria viram um ADR em [docs/adr/](docs/adr/README.md), citado em Approach.
+8. **Histórico:** `docs/specs/`, `docs/changes/` e `docs/decisions.md` são histórico congelado de antes do SPDD e não recebem entrada nova.
 
 ## Caminho rápido
 
-1. **Dimensione antes de começar:** S (uma sessão, sem dado nem tela nova), M (duas ou três etapas) ou L (quatro ou mais, dado novo, serviço externo ou plataforma). S vai direto ao código com uma linha no `tasks.md` ou no commit; M e L passam por `docs/changes/<id>/`. O tamanho de cada fase fica no [roadmap](docs/roadmap.md), com a 1.0 em até ~8 fases.
-2. **Padrão em vez de pergunta:** quando a constituição, a skill `byescaleira-sdd` ou o template já respondem, siga e diga o que escolheu no relatório. Pergunte só o que muda produto, dinheiro, dados da pessoa ou o que é publicado, com a opção recomendada primeiro.
-3. **Uma rodada de revisão por fase:** revisores de código e de design uma vez, no fim da fase, com as correções na mesma fase; não reabra etapas já aprovadas.
-4. **Checkpoint no fim da fase:** `scripts/verify.sh --full`, commit da fase, `tasks.md` e specs em dia, e um relatório curto (o que mudou, o que não foi verificado, decisões pendentes). Em trabalho "em etapas", pare ali e espere o ok.
+1. **Dimensione antes de começar:**
+   - **S** (ajuste, bug, polimento, texto) vai direto ao código, num commit. Se muda um comportamento descrito num canvas, rode antes o `spdd-prompt-update`. Se só refatora uma área com canvas, rode o `spdd-sync` depois.
+   - **M** (uma feature, uma tela nova ou refeita) passa por análise e canvas.
+   - **L** (área nova, dado novo com migração, serviço externo ou plataforma) ganha fases no [roadmap](docs/roadmap.md), com a 1.0 em até ~8 fases, e cada fase segue como uma M.
+2. **Padrão em vez de pergunta:** quando a constituição, a skill `byescaleira-sdd` ou o template já respondem, siga e registre a escolha em Approach do canvas. Pergunte só o que muda produto, dinheiro, dados da pessoa ou o que é publicado, com a opção recomendada primeiro, num único lote no fim da análise.
+3. **Uma rodada de revisão por fase:**
+   - no fim da fase, rodam juntos, uma vez, a revisão contra o canvas (`spec-reviewer`) e os revisores de design, de acessibilidade e de código;
+   - as correções entram na mesma fase, sem reabrir etapas já aprovadas;
+   - o revisor de segurança entra quando o diff mexe em rede, cripto, servidor, ponte, admin, entitlements ou dependências.
+4. **Checkpoint no fim da fase:**
+   - `scripts/verify.sh --full`;
+   - o commit da fase;
+   - `spdd/README.md`, roadmap e backlog em dia;
+   - o canvas em sincronia com o código;
+   - um relatório curto: o que mudou, o que não foi verificado e as decisões pendentes.
+
+   Em trabalho "em etapas", pare ali e espere o ok.
 
 ## Comandos
 
@@ -46,8 +74,9 @@ App SwiftUI para iOS, iPadOS, macOS e visionOS 27, com SwiftData local e sincron
 | `scripts/icons.sh`, `python3 scripts/animations.py` | Ícone e animações Lottie |
 | `python3 -I scripts/art.py check\|fetch` | Checa a licença e baixa o acervo em domínio público (`art-credits.json`, `Art.xcassets`) |
 | `node scripts/site-server.mjs` | Site e ponte em `http://127.0.0.1:4173` |
+| `cd server && go vet ./... && go test ./...` | Servidor Go (carga, API da apuração e publicação no Pages); o `verify.sh` usa a versão do Go do `server/go.mod` |
 | `scripts/server-deploy.sh [--apply]` | Plano (padrão) ou deploy do servidor na VPS, um serviço por vez, com o ok do usuário ([runbook](docs/server-runbook.md)) |
-| `python3 scripts/site-i18n.py extract\|check` | Textos do site nos 10 idiomas |
+| `python3 scripts/site-i18n.py extract\|check` | Textos do site, só em pt-BR ([ADR 0003](docs/adr/0003-portuguese-only.md)) |
 | `node --test bridge/server.test.mjs site/web-crypto.test.mjs` | Testes da ponte e da cifra |
 | `cd admin && npm ci --ignore-scripts && node --test test/*.test.mjs` | Testes do admin |
 
@@ -58,23 +87,36 @@ Durante o trabalho e antes de cada commit, `scripts/verify.sh --quick`; uma vez 
 ```text
 fiscal/
 ├── AGENTS.md, CLAUDE.md           regras para agentes (este arquivo e as notas do Claude Code)
+├── README.md, CHANGELOG.md        apresentação do repositório e o que muda em cada versão
+├── LICENSE.md                     PolyForm Noncommercial 1.0.0 (ADR 0011)
+├── .github/readme/                cabeçalho, ícone e capturas do README
 ├── .claude/                       settings.json (permissões e plugin) e launch.json (preview do site)
-├── .byescaleira-sdd.json                configuração da auditoria do plugin
+├── .byescaleira-sdd.json          configuração da auditoria do plugin
 ├── Fiscal.xcworkspace            projeto + pacote; scheme compartilhado FiscalKitTests
 ├── Fiscal/                       projeto Xcode fino, app, FiscalWidgets e FiscalUITests
 ├── FiscalKit/                    pacote com um target por feature (Sources/<Target>, Tests/<Target>Tests)
 ├── site/, bridge/, admin/         site público com o Fiscal na Web, ponte cifrada e painel na VPS
+├── server/                        Go: carga das fontes (fiscal-ingest), API da apuração e alertas (fiscal-api) e publicação no Cloudflare Pages (fiscal-pages)
 ├── scripts/, ci_scripts/          ferramentas locais e Xcode Cloud
-└── docs/                          constituição, specs, mudanças, ADRs e guias
+├── spdd/                          SPDD: índice, análises, canvases (prompt/), revisões e histórias
+└── docs/                          constituição, ADRs, guias e o histórico congelado (specs, mudanças, decisões)
 ```
 
 ## Documentação
 
-- [Constituição](docs/constitution.md), [specs](docs/specs/README.md), [mudanças](docs/changes/README.md), [ADRs](docs/adr/README.md) e o [histórico de decisões](docs/decisions.md).
-- [Arquitetura](docs/architecture.md), [design system](docs/design-system.md), [modelo de spec](docs/spec-template.md), [backlog](docs/backlog.md) e [roadmap](docs/roadmap.md).
+- [Constituição](docs/constitution.md), [SPDD](spdd/README.md) (análises e canvases) e [ADRs](docs/adr/README.md).
+- Histórico congelado de antes do SPDD: [specs](docs/specs/README.md), [mudanças](docs/changes/README.md) e [decisões](docs/decisions.md).
+- [Arquitetura](docs/architecture.md), [design system](docs/design-system.md), [backlog](docs/backlog.md) e [roadmap](docs/roadmap.md).
 - [Atualização obrigatória](docs/force-update.md), [site e web](docs/web.md), [admin](docs/admin.md), [servidor e publicação](docs/server-runbook.md), [validação antes de distribuir](docs/validation.md) e [App Store](docs/app-store/README.md).
 - Padrão completo dos apps (processo, arquitetura, design, textos, testes, release): skill `byescaleira-sdd` do plugin `byescaleira-workspace`.
+
+## Versão
+
+Mínimo de sistema 26, tudo do 27 por `#available`; `MARKETING_VERSION` SemVer igual em todos os alvos; [CHANGELOG.md](CHANGELOG.md) com `Unreleased` atualizado em todo PR; tag `vX.Y.Z` em cada versão da loja, só com o ok do usuário ([constituição](docs/constitution.md), regra 13).
 
 ## Git flow
 
 `main` (loja), `development` (integração) e `feature/<assunto>` saindo da `development` e voltando com `git merge --no-ff`. Nunca commite direto na `main` ou na `development`; `main` só por merge pedido pelo usuário. Frentes independentes em paralelo usam um worktree por frente, com `FISCAL_BUILD_ROOT` próprio e sem simulador.
+
+- **PR da fase:** no fim da fase, push da `feature/<assunto>` e um PR para a `development` com o `CHANGELOG` em dia; o merge na `development` espera o ok do usuário (constituição, regra 9).
+- **Correção urgente da loja:** `hotfix/<assunto>` sai da `main`, volta para a `main` com o ok do usuário e é mergeada também na `development`.

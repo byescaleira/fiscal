@@ -1,37 +1,44 @@
 # Roadmap
 
-O que o Fiscal vai ganhar, por fase, até a 1.0. A visão, os públicos, a Lente e as 5 abas estão no [brief](brief.md). Cada fase vira uma ou mais mudanças em [changes/](changes/README.md); os pré-requisitos técnicos ficam no [backlog](backlog.md).
+O que o Fiscal vai ganhar, por fase, até a 1.0. A visão, os públicos, a Lente e as 5 abas estão no [brief](brief.md). Cada fase vira uma ou mais mudanças em [spdd/](../spdd/README.md), cada uma com análise, canvas e ID `FSC-<NNN>` próprios ([ADR 0019](adr/0019-spdd-process.md)). As mudanças de antes do SPDD estão no histórico congelado em [changes/archive/](changes/README.md); os pré-requisitos técnicos ficam no [backlog](backlog.md).
 
 ## Como dimensionar
 
-- **S:** uma sessão; uma mudança pequena, sem dado novo nem tela nova.
-- **M:** duas ou três etapas; uma tela ou entidade nova com testes, sem migração delicada.
-- **L:** quatro ou mais etapas; dado novo com migração, serviço externo, plataforma nova ou fluxo inteiro. Uma fase L que puder ser dividida vira duas M.
+- **S:** uma sessão; uma mudança pequena, sem dado novo nem tela nova. Vai direto ao código, sem análise nem canvas; se muda um comportamento descrito num canvas, `spdd-prompt-update` antes.
+- **M:** duas ou três etapas; uma tela ou entidade nova com testes, sem migração delicada. Análise e canvas, com o ok do usuário no canvas antes do código.
+- **L:** quatro ou mais etapas; dado novo com migração, serviço externo, plataforma nova ou fluxo inteiro. Uma fase L que puder ser dividida vira duas M. Fase L que não puder ser dividida vira histórias (`spdd-story`), com um canvas por história.
+- **Mantenha a 1.0 com até ~8 fases.** Passou disso, corte escopo para depois da 1.0 antes de começar; trabalho de base ou de alinhamento entra como etapa da fase em que acontece, não como fase nova.
 
 ## Fases até a 1.0
 
 | Fase | Entrega | Tecnologia | Tamanho | Estado |
 | --- | --- | --- | --- | --- |
-| 0 | Base: estrutura por feature, design system, Ajustes, guias, flags, deep links, idiomas, lint, scripts, CI, site, ponte e admin | Template `byescaleira-workspace` | S | pronta |
-| 1 | **Apuração ao vivo do 2º turno** (25/10/2026), com a Live Activity atualizada por push | TSE `resultados`, servidor Go, ActivityKit, APNs | L | em andamento |
-| 2 | **Dados federais no servidor:** carga diária da Câmara, do Senado e do TSE; API `/api/v1` com lista, busca, perfil, votos, propostas, discursos e gastos | Go, SQLite ou Postgres na VPS, arquivos anuais oficiais | L | — |
-| 3 | **Meus, perfil e Fiscalizar:** os representantes pelo endereço, seguir no aparelho, perfil federal completo (presença, votos, propostas, gastos, patrimônio, campanhas, contato), busca universal e as 5 abas no lugar das atuais | SwiftData, IBGE, `Tab(role: .search)` | L | — |
-| 4 | **Lente e Aparência:** onboarding de prioridades, posicionamento opcional e privado, Hoje personalizado, "Outra lente", paletas, símbolos e ícones alternativos | SwiftData no aparelho, `GuideSheet`, Lottie, ícones alternativos | M | — |
-| 5 | **Votações:** pauta e calendário, placar por partido e por estado, quem votou como, "o que muda para você", alertas por tema e a Live Activity da votação importante | Servidor (pauta do dia), ActivityKit, notificações filtradas no aparelho | L | — |
-| 6 | **Dinheiro:** cota e notas, salários e benefícios, emendas, financiamento de campanha, patrimônio ao longo do tempo e arrecadação federal | Swift Charts com Audio Graphs, Receita, Portal da Transparência | M | — |
-| 7 | **Compartilhar com arte:** cards de Stories, feed e mensagem para cada tela, coleções de artistas pela Lente, galeria com crédito e licença, manifesto `art-credits.json` e Comparar | `ImageRenderer`, `ShareLink`/`Transferable`, deep links, licenças assinadas | M | — |
-| 8 | **Integrações e polimento para a loja e o Apple Design Award:** widgets, App Intents com a Siri, Spotlight, resumo de projetos no aparelho, acessibilidade completa, iPad, Mac e visionOS, revisão de neutralidade, App Store e TestFlight público | WidgetKit, App Intents, Core Spotlight, Foundation Models; revisores; `app-store-release.md` | L | — |
+| 0 | Base: estrutura por feature, design system, Ajustes, guias, flags, deep links, lint, scripts, CI, site, ponte e admin | Template `byescaleira-workspace` | S | pronta |
+| 1 | **Apuração ao vivo do 2º turno** (25/10/2026), com a Live Activity atualizada por push | TSE `resultados`, servidor Go, ActivityKit, APNs | L | entregue ([`live-results`](changes/archive/2026-10-29-live-results/proposal.md)) |
+| 2 | **Dados públicos no servidor:** carga por cadência da Câmara, do Senado, do TSE, do IBGE, da Receita, da ANP, das assembleias e do Comprova; arquivos estáticos `v2` na CDN | Go, SQLite na VPS, Cloudflare Pages | L | entregue ([`app-1.0`](changes/archive/2026-10-29-app-1.0/proposal.md)) |
+| 3 | **Região, perfil e Fiscalizar:** quem governa cada lugar, seguir no aparelho, perfil com presença, votos, propostas, gastos, patrimônio e campanhas, busca, Comparar, investigações e Memória, nas 5 abas | SwiftData, IBGE, `Tab(role: .search)` | L | entregue (`app-1.0`) |
+| 4 | **Lente e Aparência:** "quem você apoia", temas, Hoje e listas na ordem da pessoa, "Outra lente" na tela da Lente, paletas e ícones alternativos | SwiftData só no aparelho, Lottie, ícones alternativos | M | entregue (`app-1.0`) |
+| 5 | **Votações:** pauta e calendário, placar por partido, votações do mesmo projeto agrupadas, "o que muda na prática" e o destaque na tela de bloqueio | Servidor (pauta do dia), ActivityKit | L | entregue em parte (`app-1.0`); alertas por tema no backlog |
+| 6 | **Dinheiro:** cota e recibos, custo do mandato contra o salário mínimo, financiamento de campanha, patrimônio declarado e arrecadação federal | Swift Charts, Receita, TSE | M | entregue em parte (`app-1.0`); emendas no backlog |
+| 7 | **Compartilhar com arte:** cartazes de Stories, feed e mensagem, galeria de artistas com crédito e licença, `art-credits.json` | `ImageRenderer`, `ShareLink`/`Transferable`, deep links | M | entregue (`app-1.0`); arte encomendada depois da 1.0 |
+| 8 | **Integrações e polimento para a loja:** widgets, Live Activities, App Intents, Spotlight, explicações no aparelho, acessibilidade completa, revisão de neutralidade, App Store e TestFlight | WidgetKit, App Intents, Core Spotlight, Foundation Models; revisores; `app-store-release.md` | L | em andamento |
 
-- **Ordem:** a fase 2 destrava as fases de 3 a 8.
-- **Em paralelo:** 4 e 6 podem correr ao mesmo tempo que 5, cada uma em sua worktree.
-- **Fase 7:** começa o licenciamento das obras logo depois da [pesquisa de artistas](research/README.md), porque contrato leva semanas. O código dos cards pode ser feito com obras em domínio público enquanto os contratos andam.
-- **Fase 1:** depois de hoje, a apuração vira um card em Hoje durante eleições e uma seção em Fiscalizar.
+A fase 8 corre em etapas:
 
-- **Antes da fase 2:** tirar os outros idiomas ([ADR 0003](adr/0003-portuguese-only.md)) e ligar o setup inicial da Lente com Aparência e arte, que o usuário pediu como prioridade (imagens de artistas primeiro).
+| Etapa | Entrega | Estado |
+| --- | --- | --- |
+| 8.1 | Integrações: widgets, Live Activities, App Intents, Spotlight, Foundation Models e pacote offline | entregue (`app-1.0`) |
+| 8.2 | [`kit-adoption`](changes/archive/2026-10-29-kit-adoption/proposal.md): design, componentes e idioma do byescaleira-kit ([ADR 0010](adr/0010-byescaleira-kit.md)), mínimo de sistema 26 com o 27 por `#available`, `MARKETING_VERSION` 1.0.0 e `CHANGELOG.md` | feita (2026-10-29, PR #3) |
+| 8.3 | [`align-workspace`](changes/archive/2026-10-29-align-workspace/proposal.md): fundo branco ou preto, acessibilidade, arquitetura, publicação, site, servidor e processo no padrão do workspace | feita (2026-10-29, PR #4) |
+| 8.3.1 | Migração para o SPDD ([ADR 0019](adr/0019-spdd-process.md)): `spdd/` com o código `FSC`, canvases `[Codify]` `FSC-001` a `FSC-007`, specs e mudanças congeladas | entregue na branch `feature/spdd-migration`; [PR #5](https://github.com/byescaleira/fiscal/pull/5) para a `development` |
+| 8.4 | Loja: roteiro de [validation.md](validation.md) no iPhone físico, rótulo de privacidade ([ADR 0017](adr/0017-app-store-privacy-label.md)), capturas, TestFlight e envio para a revisão | — |
+
+- **Lançamento só iOS (iPhone e iPad).** Mac e visionOS compilam no mesmo projeto, mas a receita própria do Mac e o envio dessas plataformas ficam no [backlog](backlog.md).
+- **Arte encomendada:** o licenciamento com artistas atuais segue a [pesquisa de artistas](research/README.md) e fica para depois da 1.0; os cartazes usam o acervo com licença conferida.
 
 ## Design de cada seção
 
-Cada aba e cada peça visível (Hoje, Meus, Votações, Dinheiro, Fiscalizar, setup, cards, widgets) passa pelo ciclo da skill `byescaleira-sdd` (`design-principles.md` §4.1), o mesmo que levou a Live Activity da apuração à versão aprovada:
+Cada aba e cada peça visível (Hoje, Região, Votações, Dinheiro, Fiscalizar, setup, cards, widgets) passa pelo ciclo da skill `byescaleira-sdd` (`design-principles.md` §4.1), o mesmo que levou a Live Activity da apuração à versão aprovada:
 1. referência visual real (capturas oficiais da App Store, HIG, Dribbble);
 2. versão com dados de teste de todos os estados, no iPhone;
 3. revisão com o usuário;
@@ -44,7 +51,7 @@ Correto no HIG não basta: a seção não pode parecer genérica.
 - Uma pessoa de qualquer lado instala, escolhe a Lente em menos de um minuto e, na primeira tela, vê o que os seus representantes fizeram nos temas dela, com fonte e data.
 - Os 513 deputados, os 81 senadores e o presidente com perfil completo; Live Activity para apuração e para votação importante.
 - Zero dado pessoal no servidor; a Lente só no aparelho.
-- VoiceOver, Dynamic Type nos tamanhos de acessibilidade e Reduzir movimento em todas as telas; iPhone, iPad e Mac.
+- VoiceOver, Dynamic Type nos tamanhos de acessibilidade e Reduzir movimento em todas as telas, no iPhone e no iPad.
 
 ## Depois da 1.0
 
@@ -52,7 +59,7 @@ Correto no HIG não basta: a seção não pode parecer genérica.
 - STF: pauta, julgamentos e votos dos ministros.
 - Eleições municipais de 2028: apuração por cidade, prefeitos e vereadores.
 - Push-to-start da Live Activity (a apuração começa sozinha na tela de bloqueio).
-- Apple Watch (complicação com a votação do dia) e o Fiscal na Web.
+- Apple Watch (complicação com a votação do dia), a receita do Mac e o Fiscal na Web ([ADR 0016](adr/0016-web-companion-after-1-0.md)).
 
 ### Pedidos do usuário para depois (2026-10-25)
 
@@ -62,7 +69,7 @@ Correto no HIG não basta: a seção não pode parecer genérica.
   - a cesta de alimentos comuns, por exemplo os itens que aparecem na mídia quando sobem (arroz, feijão, carne, café, leite, ovo).
 
   Fontes oficiais a pesquisar: ANP (combustíveis), Banco Central (câmbio, via SGS/PTAX), IBGE (IPCA por item) e DIEESE (cesta básica por capital).
-- **Notificações por feature, iguais para todo mundo:**
+- **Notificações por feature, iguais para todo mundo** (hoje o destaque e a apuração chegam por Live Activity, um push por token; ver [`FSC-007`](../spdd/prompt/FSC-007-202610291700-[Codify]-notifications.md)):
   - não são personalizadas por pessoa;
   - todo mundo recebe as mesmas, por canal de feature (broadcast do APNs), por exemplo "votação importante", "resultado da apuração", "variação forte de preço";
   - raras: só quando há necessidade ou variação significativa dos dados, nunca rotina diária.

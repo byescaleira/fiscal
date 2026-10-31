@@ -20,8 +20,11 @@ public struct LiveResultsScreen: View {
                 LiveResultsBoard()
             }
         }
-        .background(.groupedBackground)
+        .background(.plainBackground)
         .emphasisTitle("Live Results")
+        #if !os(visionOS)
+            .navigationSubtitle(results.scopeText)
+        #endif
         .toolbar { LiveResultsToolbar() }
         .refreshable { await results.refresh() }
         .task { await results.run() }
@@ -34,7 +37,7 @@ public struct LiveResultsScreen: View {
 
 private struct LiveResultsBoard: View {
     @Environment(LiveResultsModel.self) private var results
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
 
     var body: some View {
         ScrollView {
@@ -72,14 +75,9 @@ private struct RaceGroupSection: View {
                 Image(systemName: group.region?.symbol ?? "map")
                     .foregroundStyle(.secondary)
             }
-            .font(.titleMedium)
+            .sectionTitle()
             .accessibilityAddTraits(.isHeader)
-            LazyVGrid(
-                columns: [
-                    GridItem(.adaptive(minimum: .cardColumn), spacing: .spaceL, alignment: .top)
-                ],
-                alignment: .leading, spacing: .spaceL
-            ) {
+            CardGrid(minimumWidth: .cardColumn, spacing: .spaceL) {
                 ForEach(group.races) { RaceCompactCard(race: $0) }
             }
         }
@@ -112,17 +110,19 @@ private struct LiveResultsNoMatch: View {
 
     var body: some View {
         VStack(spacing: .spaceM) {
-            Image(systemName: "line.3.horizontal.decrease")
-                .font(.icon(.l))
-                .foregroundStyle(.secondary)
+            SymbolBadge("line.3.horizontal.decrease", color: .secondary, size: .badgeXL)
             Text("No race matches these filters")
-                .font(.headline)
+                .font(.titleMedium)
+            Text("Change the status or the region to see more races.")
+                .font(.body)
+                .foregroundStyle(.secondary)
             Button("Clear Filters") { results.clearFilters() }
-                .buttonStyle(.borderless)
+                .primaryButton()
+                .padding(.top, .spaceS)
         }
+        .multilineTextAlignment(.center)
         .frame(maxWidth: .infinity)
-        .padding(.spaceXL)
-        .background(.groupedRow, in: .rect(cornerRadius: .radiusGroup))
+        .padding(.vertical, .spaceM)
     }
 }
 
@@ -157,7 +157,7 @@ private struct LiveResultsNotice: View {
             }
             .padding(.spaceL)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.groupedRow, in: .rect(cornerRadius: .radiusGroup))
+            .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
         }
     }
 }
@@ -202,7 +202,7 @@ private struct LiveResultsFilterMenu: View {
             Label("Filters", systemImage: "line.3.horizontal.decrease")
                 .labelStyle(.iconOnly)
                 .foregroundStyle(Color.primary)
-                .symbolEffect(.bounce, value: results.hasFilter)
+                .quietBounce(value: results.hasFilter)
                 .accessibilityValue(Text(verbatim: results.filterSummary))
         }
         .menuStyle(.button)

@@ -10,7 +10,7 @@ public struct PartySeal: View {
     private static let minimumScale: CGFloat = 0.5
 
     @Environment(PortraitStore.self) private var store
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @Environment(\.partyMarksAreStill) private var partyMarksAreStill
     @Environment(\.self) private var environment
     private let party: String
@@ -34,11 +34,7 @@ public struct PartySeal: View {
                     PartyStripes(palette: PartyPalette.of(party: party)).clipShape(.capsule)
                 }
                 Text(party.uppercased())
-                    .font(
-                        .system(
-                            size: proxy.size.height * Self.letterScale, weight: .heavy,
-                            design: .rounded)
-                    )
+                    .font(.emphasis(fixed: proxy.size.height * Self.letterScale, weight: .heavy))
                     .foregroundStyle(.white)
                     .lineLimit(1)
                     .minimumScaleFactor(Self.minimumScale)

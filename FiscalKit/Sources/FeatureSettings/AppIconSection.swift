@@ -4,11 +4,10 @@ import SwiftUI
 
 struct AppIconSection: View {
     @Environment(SettingsModel.self) private var settings
-    @Environment(\.featureFlags) private var flags
 
     var body: some View {
         if settings.supportsAlternateIcons {
-            ForEach(AppIcon.Collection.visible(partyIcons: flags?.isOn(.partyIcons) == true)) {
+            ForEach(AppIcon.Collection.visible(partyIcons: settings.showsPartyIcons)) {
                 collection in
                 Section {
                     LazyVGrid(
@@ -49,6 +48,7 @@ private struct AppIconFooter: View {
 private struct AppIconTile: View {
     @Environment(SettingsModel.self) private var settings
     @Environment(\.appTint) private var tint
+    @Environment(\.settingsReducesMotion) private var reduceMotion
     let icon: AppIcon
 
     var body: some View {
@@ -70,7 +70,8 @@ private struct AppIconTile: View {
                                 .symbolRenderingMode(.palette)
                                 .foregroundStyle(.white, tint)
                                 .offset(x: .spaceXS, y: -.spaceXS)
-                                .transition(.scale.combined(with: .opacity))
+                                .transition(
+                                    reduceMotion ? .opacity : .scale.combined(with: .opacity))
                         }
                     }
                 Text(verbatim: icon.title)
@@ -82,7 +83,7 @@ private struct AppIconTile: View {
             }
             .frame(maxWidth: .infinity)
             .contentShape(.rect)
-            .animation(.snappy, value: isSelected)
+            .animation(reduceMotion ? nil : .snappy, value: isSelected)
         }
         .buttonStyle(.plain)
         .accessibilityLabel(Text(verbatim: icon.title))

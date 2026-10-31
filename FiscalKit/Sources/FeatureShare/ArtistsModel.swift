@@ -11,11 +11,16 @@ public struct GallerySection: Hashable, Identifiable, Sendable {
     public var id: String { collection.id }
 }
 
+public enum GalleryKind: Hashable, Sendable {
+    case openLicense, historical
+}
+
 @MainActor @Observable
 public final class ArtistsModel {
     public private(set) var hasLoaded = false
     public private(set) var catalog: ArtCatalog?
     public private(set) var lens: Lens?
+    public private(set) var shownCollections: [GalleryKind: ArtCollection.ID] = [:]
 
     @ObservationIgnored private let loader: @Sendable () throws -> ArtCatalog
     @ObservationIgnored private let lensRepository: (any LensRepository)?
@@ -52,6 +57,22 @@ public final class ArtistsModel {
 
     public var historical: [GallerySection] { sections(where: \.isPublicDomain) }
 
+    public func sections(on shelf: GalleryKind) -> [GallerySection] {
+        switch shelf {
+        case .openLicense: openLicense
+        case .historical: historical
+        }
+    }
+
+    public func current(on shelf: GalleryKind) -> GallerySection? {
+        let sections = sections(on: shelf)
+        return sections.first { $0.id == shownCollections[shelf] } ?? sections.first
+    }
+
+    public func show(_ collection: ArtCollection.ID, on shelf: GalleryKind) {
+        shownCollections[shelf] = collection
+    }
+
     public func load() async {
         catalog = try? loader()
         lens = try? await lensRepository?.lens()
@@ -64,5 +85,11 @@ public final class ArtistsModel {
             let works = catalog.works(in: collection.id).filter(include)
             return works.isEmpty ? nil : GallerySection(collection: collection, works: works)
         }
+    }
+}
+
+extension ArtWork {
+    var imageLabel: String {
+        [title, artist, lifeSpan].compactMap(\.self).joined(separator: ", ")
     }
 }

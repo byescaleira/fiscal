@@ -15,9 +15,7 @@ struct MineBenchSection: View {
                 MineBenchLeaders(bench: bench)
             }
             .padding(.vertical, .spaceXS)
-            NavigationLink {
-                MineRosterScreen(roster: MineRoster(title: bench.title, people: bench.members))
-            } label: {
+            RouteLink(.roster(title: bench.title, people: bench.members)) {
                 MineFacePile(bench: bench)
             }
             MineNextTermLink(bench: bench)
@@ -28,14 +26,15 @@ struct MineBenchSection: View {
 }
 
 private struct MineBenchHeader: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     let bench: MineBench
 
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
             Text(verbatim: PublicFormat.number(bench.total))
-                .font(.scoreboardNumber)
+                .font(.scoreboardTitle)
                 .monospacedDigit()
+                .amountLine()
                 .contentTransition(
                     reduceMotion ? .identity : .numericText(value: Double(bench.total)))
             Text(verbatim: bench.subtitle)
@@ -48,7 +47,7 @@ private struct MineBenchHeader: View {
 }
 
 private struct MineBenchChart: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @State private var revealed = false
     @State private var position: Int?
     let bench: MineBench
@@ -72,7 +71,7 @@ private struct MineBenchChart: View {
                 )
                 if share.end < bench.total {
                     RuleMark(x: .value("Edge", revealed ? share.end : 0))
-                        .foregroundStyle(Color.groupedRow)
+                        .foregroundStyle(Color.plainRow)
                         .lineStyle(StrokeStyle(lineWidth: .spaceHairline))
                         .accessibilityHidden(true)
                 }
@@ -100,7 +99,7 @@ private struct MineBenchChart: View {
         }
         .sensoryFeedback(.selection, trigger: selected?.party)
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) { revealed = true }
         }
     }
 }
@@ -118,7 +117,7 @@ private struct MineBenchLeaders: View {
             ForEach(bench.leading) { share in
                 VStack(alignment: .leading, spacing: .space2XS) {
                     Text(verbatim: PublicFormat.number(share.count))
-                        .font(.amountRow.width(.condensed))
+                        .font(.amountRow)
                         .monospacedDigit()
                     PartyMark(share.party)
                 }
@@ -129,7 +128,7 @@ private struct MineBenchLeaders: View {
             if bench.parties.count > MineBench.leadingLimit {
                 VStack(alignment: .leading, spacing: .space2XS) {
                     Text(verbatim: "+\(bench.parties.count - MineBench.leadingLimit)")
-                        .font(.amountRow.width(.condensed))
+                        .font(.amountRow)
                         .monospacedDigit()
                         .foregroundStyle(.secondary)
                     Text("other parties")
@@ -155,7 +154,7 @@ private struct MineFacePile: View {
                             slug: card.slug, name: card.name, party: card.party, size: .badgeM
                         )
                         .overlay {
-                            Circle().strokeBorder(Color.groupedRow, lineWidth: .spaceHairline)
+                            Circle().strokeBorder(Color.plainRow, lineWidth: .spaceHairline)
                         }
                     }
                 }
@@ -178,11 +177,9 @@ private struct MineNextTermLink: View {
 
     var body: some View {
         if !bench.elected.isEmpty {
-            NavigationLink {
-                MineRosterScreen(
-                    roster: MineRoster(
-                        title: String(appLocalized: "Next Term"), people: bench.elected))
-            } label: {
+            RouteLink(
+                .roster(title: String(appLocalized: "Next Term"), people: bench.elected)
+            ) {
                 HStack(spacing: .spaceM) {
                     Label("Next Term", systemImage: "calendar.badge.clock")
                         .font(.subheadline.weight(.semibold))

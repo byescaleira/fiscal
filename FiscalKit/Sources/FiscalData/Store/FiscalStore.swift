@@ -4,6 +4,13 @@ import SwiftData
 
 @ModelActor
 public actor FiscalStore {
+    public nonisolated let changeHub = FiscalChangeHub()
+
+    func commit() throws {
+        try modelContext.save()
+        changeHub.publish(.local)
+    }
+
     public func lens() throws -> Lens? {
         try lensEntity()?.lens
     }
@@ -15,7 +22,7 @@ public actor FiscalStore {
             } else {
                 modelContext.insert(LensEntity(lens: lens, updatedAt: date))
             }
-            try modelContext.save()
+            try commit()
         } catch {
             modelContext.rollback()
             throw error
@@ -25,7 +32,7 @@ public actor FiscalStore {
     public func resetLens() throws {
         do {
             try modelContext.delete(model: LensEntity.self)
-            try modelContext.save()
+            try commit()
         } catch {
             modelContext.rollback()
             throw error
@@ -60,7 +67,7 @@ public actor FiscalStore {
             } else {
                 for entity in existing { entity.update(with: card) }
             }
-            try modelContext.save()
+            try commit()
         } catch {
             modelContext.rollback()
             throw error
@@ -72,7 +79,7 @@ public actor FiscalStore {
             let existing = try modelContext.fetch(
                 FetchDescriptor<FollowEntity>(predicate: #Predicate { $0.slug == slug }))
             for entity in existing { modelContext.delete(entity) }
-            try modelContext.save()
+            try commit()
         } catch {
             modelContext.rollback()
             throw error

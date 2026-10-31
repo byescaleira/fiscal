@@ -11,7 +11,7 @@
 
         public init(
             scenario: PublicDataScenario, now: Date = .now,
-            calendar: Calendar = FiscalCalendar.current, roster: ShowcaseRoster = .curated,
+            calendar: Calendar = GregorianCalendar.current, roster: ShowcaseRoster = .curated,
             indicators: ShowcaseIndicators = .none
         ) {
             self.scenario = scenario

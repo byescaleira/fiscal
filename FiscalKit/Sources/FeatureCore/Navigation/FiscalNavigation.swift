@@ -10,6 +10,7 @@ public final class FiscalNavigation {
     public private(set) var opensBeside = false
     public var inspectorPath: [Route] = []
     public var guide: Guide?
+    public var isShowingLensSetup = false
     public init() {}
 
     public struct Inspector: Identifiable, Equatable {
@@ -26,8 +27,8 @@ public final class FiscalNavigation {
         Binding(get: { self.inspector != nil }, set: { if !$0 { self.closeInspector() } })
     }
 
-    public func fit(width: CGFloat) {
-        opensBeside = Self.opensRoutesBeside && width >= .readableColumn + .inspectorIdeal
+    public func fit(_ context: LayoutContext) {
+        opensBeside = context.opensRoutesBeside
     }
 
     public func open(_ route: Route, in section: AppSection) {
@@ -65,16 +66,12 @@ public final class FiscalNavigation {
         inspectorPath = []
     }
 
+    public var isFree: Bool {
+        guide == nil && !isShowingLensSetup
+    }
+
     public func reset() {
         paths = [:]
         closeInspector()
-    }
-
-    static var opensRoutesBeside: Bool {
-        #if os(tvOS)
-            false
-        #else
-            true
-        #endif
     }
 }

@@ -5,6 +5,7 @@ import SwiftUI
 
 public struct VotesScreen: View {
     @Environment(VotesModel.self) private var votes
+    @ReducesMotion private var reduceMotion
 
     public init() {}
 
@@ -22,7 +23,7 @@ public struct VotesScreen: View {
                     VotesDaySection(day: day)
                 }
             }
-            .animation(.smooth, value: votes.days)
+            .animation(reduceMotion ? nil : .smooth, value: votes.days)
         } empty: {
             VotesEmptyState()
         }
@@ -143,6 +144,6 @@ private struct VotesEmptyState: View {
                 "Absent", symbol: BallotChoice.absent.symbol, color: BallotChoice.absent.color)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.groupedBackground)
+        .background(.plainBackground)
     }
 }

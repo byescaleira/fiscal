@@ -60,7 +60,7 @@ enum QuestionReader {
 
     static func plan(_ question: String, index: SearchIndex) -> InvestigationPlan {
         var plan = InvestigationPlan()
-        let folded = " \(SearchText.words(question).joined(separator: " ")) "
+        let folded = " \(question.searchWords.joined(separator: " ")) "
         plan.people = people(in: folded, index: index)
         plan.party = party(in: question, index: index)
         plan.state = state(in: question, folded: folded, index: index)
@@ -82,7 +82,7 @@ enum QuestionReader {
     static func people(in folded: String, index: SearchIndex) -> [String] {
         var found: [String] = []
         for entry in index.people {
-            let name = SearchText.words(entry.value.name)
+            let name = entry.value.name.searchWords
             guard name.count > 1 || (name.first?.count ?? 0) >= 4 else { continue }
             if folded.contains(" \(name.joined(separator: " ")) ") {
                 found.append(entry.value.slug)
@@ -108,14 +108,14 @@ enum QuestionReader {
         }
         let states = index.places.map(\.value).filter(\.isState)
         return states.first { place in
-            folded.contains(" \(SearchText.words(place.name).joined(separator: " ")) ")
+            folded.contains(" \(place.name.searchWords.joined(separator: " ")) ")
         }?.uf
     }
 
     static func theme(in folded: String) -> Theme? {
         Theme.allCases.first { theme in
-            let key = SearchText.words(theme.rawValue).joined(separator: " ")
-            let first = SearchText.words(theme.title).first ?? key
+            let key = theme.rawValue.searchWords.joined(separator: " ")
+            let first = theme.title.searchWords.first ?? key
             return folded.contains(" \(key)") || (first.count >= 5 && folded.contains(" \(first)"))
         }
     }
@@ -127,7 +127,7 @@ enum QuestionReader {
         let kind = String(match.output.1).uppercased()
         let number = String(match.output.2)
         return index.votes.first { entry in
-            let words = SearchText.words(entry.value.proposition)
+            let words = entry.value.proposition.searchWords
             return words.first == kind.lowercased() && words.dropFirst().first == number
         }?.value.id
     }
@@ -176,20 +176,20 @@ enum InvestigationResolver {
         if let id = QuestionReader.vote(in: text, index: index) {
             return index.votes.first { $0.value.id == id }?.value
         }
-        let terms = SearchText.words(text)
+        let terms = text.searchWords
         guard !terms.isEmpty else { return nil }
-        return index.votes.first { SearchText.matches(terms, in: $0.words) }?.value
+        return index.votes.first { $0.words.matchesSearch(terms) }?.value
     }
 
     static func person(_ key: String, index: SearchIndex) -> PersonCard? {
         if let card = index.people.first(where: { $0.value.slug == key })?.value { return card }
-        let terms = SearchText.words(key)
+        let terms = key.searchWords
         guard !terms.isEmpty else { return nil }
-        let matches = index.people.filter { SearchText.matches(terms, in: $0.words) }
+        let matches = index.people.filter { $0.words.matchesSearch(terms) }
         return matches.count == 1
             ? matches.first?.value
             : matches.first {
-                SearchText.words($0.value.name) == terms
+                $0.value.name.searchWords == terms
             }?.value
     }
 }

@@ -19,7 +19,7 @@ struct WhatsNewScreen: View {
             .padding(.bottom, .spaceXL)
         }
         .readableWidth()
-        .background(.groupedBackground)
+        .background(.plainBackground)
         #if os(visionOS) || os(tvOS)
             .navigationTitle(String(appLocalized: "What's New in Version \(settings.info.number)"))
         #else
@@ -50,7 +50,7 @@ private struct ReleaseCard: View {
         }
         .padding(.spaceL)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.groupedRow, in: .rect(cornerRadius: .radiusGroup, style: .continuous))
+        .background(.plainRow, in: .rect(cornerRadius: .radiusGroup, style: .continuous))
         .overlay {
             RoundedRectangle(cornerRadius: .radiusGroup, style: .continuous)
                 .strokeBorder(
@@ -77,7 +77,7 @@ private struct ReleaseCardHeader: View {
                 }
                 .textCase(.uppercase)
                 Text(verbatim: release.version)
-                    .font(.scoreboardNumber)
+                    .font(.scoreboardTitle)
                     .monospacedDigit()
                     .padding(.top, .space2XS)
                 Text(verbatim: release.headline)
@@ -93,7 +93,7 @@ private struct ReleaseCardHeader: View {
                         SymbolBadge(
                             note.symbol, color: note.color.color, size: .badgeM, style: .filled
                         )
-                        .overlay(Circle().stroke(Color.groupedRow, lineWidth: .selectionStroke))
+                        .overlay(Circle().stroke(Color.plainRow, lineWidth: .selectionStroke))
                         .releaseCascade(index)
                     }
                 }
@@ -128,7 +128,7 @@ extension View {
 }
 
 private struct ReleaseCascade: ViewModifier {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @State private var isShown = false
     let index: Int
 

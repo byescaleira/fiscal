@@ -27,11 +27,43 @@ admin() {
   fi
 }
 
+server() {
+  if ! command -v go > /dev/null; then
+    echo "==> go not found; skipping the server checks"
+    return
+  fi
+  local toolchain
+  toolchain="go$(awk '$1 == "go" { print $2; exit }' server/go.mod)"
+  (
+    cd server
+    export GOTOOLCHAIN="$toolchain"
+    step go build ./...
+    step go vet ./...
+    step go test ./...
+  )
+}
+
+server_changed() {
+  local base=HEAD
+  for ref in development main; do
+    if git rev-parse --verify -q "$ref" > /dev/null; then
+      base="$ref"
+      break
+    fi
+  done
+  [[ -n "$(git diff --name-only "$base...HEAD" -- server)$(git status --porcelain -- server)" ]]
+}
+
 case "$mode" in
   --quick)
     step scripts/build.sh Debug "$platform"
     step scripts/test.sh --affected
     web
+    if server_changed; then
+      server
+    else
+      echo "==> server unchanged; skipping the Go checks"
+    fi
     ;;
   --full)
     step scripts/lint.sh
@@ -39,6 +71,8 @@ case "$mode" in
     step scripts/test.sh
     web
     admin
+    server
+    step python3 -I scripts/art.py check
     step scripts/audit.sh
     ;;
   *)

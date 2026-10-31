@@ -13,7 +13,7 @@ Registro `AppRelease` por plataforma (`ios` vale para iPhone e iPad, `macos`, `v
 | `current` | o resto, inclusive sem registro para a plataforma | nada |
 
 - Versões comparam por número, parte a parte (`AppVersion`: `1.10.0` > `1.9.2`, `1.0` = `1.0.0`). O app aceita de 1 a 3 partes; o admin exige `x.y.z`.
-- Sem texto livre: título e mensagem são fixos e traduzidos no catálogo, nos 10 idiomas.
+- Sem texto livre: título e mensagem são fixos, com a tradução pt-BR no catálogo ([ADR 0003](adr/0003-portuguese-only.md)).
 - O app nunca bloqueia se não consegue ler a própria versão e build, e trata recomendada abaixo da mínima como igual à mínima.
 
 ## Onde fica
@@ -24,7 +24,7 @@ Registro `AppRelease` por plataforma (`ios` vale para iPhone e iPad, `macos`, `v
 | `FiscalData` | `Services/CloudKitAppReleaseSource.swift` | lê o registro do banco público do container `iCloud.fiscal` |
 | `FeatureCore` | `Update/AppUpdateModel.swift` | estado efetivo, leituras, intervalo, aviso recomendado e simulação |
 | `FeatureCore` | `Update/UpdateHoldModel.swift` | liga e desliga as conexões quando o bloqueio chega ou sai com o app aberto |
-| `AppShell` | `Update/UpdateRequiredScreen.swift` | tela de bloqueio com **Update** e **Export Data** |
+| `AppShell` | `Update/UpdateRequiredScreen.swift` | tela de bloqueio com **Atualizar** e **Exportar dados** |
 
 ## Schema no CloudKit
 
@@ -51,25 +51,18 @@ Tipo `AppRelease` no **banco público** do container `iCloud.fiscal`, um registr
 
 ## O que para no bloqueio
 
-- **A interface:** `UpdateRequiredScreen` substitui o app inteiro (e a janela de Ajustes no Mac), entra e sai com fade (`.opacity`) e usa a animação de abertura em loop. O texto cita as versões ("Version 1.0 is no longer supported. Update to 1.1.0 or later. You can still export your data."); sem política no cache, fica o texto genérico.
-- **Botões:** **Update** abre `https://apps.apple.com/app/id<FiscalAppStoreID>`, com o id lido do `Info.plist`; **Export Data** gera um `DataArchive` (`FeatureCore/Export`, todos os itens em JSON) pelo `DataExportModel` e abre o seletor de arquivos (`fileExporter`). Os dados nunca ficam presos. Na simulação aparece também **Stop Simulating**.
-- **Siri, Atalhos e App Intents:** o atalho do template (`NewItemIntent`) só abre o app, que mostra o bloqueio. Intent que grava, quando existir, lê `AppReleaseStore.shared.blocks` e responde com erro pedindo a atualização, sem gravar nada.
+- **A interface:** `UpdateRequiredScreen` substitui o app inteiro (e a janela de Ajustes no Mac), entra e sai com fade (`.opacity`) e usa a animação de abertura em loop. O título é "Atualize o Fiscal"; o texto cita as versões ("A versão 1.0.0 não tem mais suporte. Atualize para a 1.1.0 ou mais nova. Você ainda pode exportar seus dados."); sem política no cache, fica "Esta versão não tem mais suporte. Atualize para continuar usando o Fiscal. Seus dados continuam no aparelho e você pode exportá-los agora."
+- **Botões:** **Atualizar** abre `https://apps.apple.com/app/id<FiscalAppStoreID>`, com o id lido do `Info.plist` (`6826982117`); **Exportar dados** gera um `DataArchive` (`FeatureCore/Export`: a Lente e os seguidos, em JSON) pelo `DataExportModel` e abre o seletor de arquivos (`fileExporter`). Os dados nunca ficam presos. Na simulação aparece também **Parar simulação**.
+- **Siri, Atalhos e App Intents:** os três atalhos ("Como meu deputado votou", "Abrir o perfil de…", "Ver a apuração") rodam em primeiro plano e abrem o app, que mostra o bloqueio. O "Como meu deputado votou" ainda responde com a última votação antes de abrir: a recusa no bloqueio entra na mudança `align-workspace` (etapa A.12). Nenhum intent grava dado.
 - **Widgets:** só leem o último dado gravado; tocar abre o app, que mostra o bloqueio.
 
 ## Bloqueio com o app aberto
 
-`UpdateHoldModel` liga e desliga as conexões conforme `isRequired`. A composição entrega a lista ao abrir o banco (`attach`) e chama `apply()` a cada mudança do estado; as transições rodam em fila e, se o estado vira de novo no meio, o model termina no estado atual.
+`UpdateHoldModel` liga e desliga conexões conforme `isRequired`: recebe a lista ao abrir o banco (`attach`) e chama `apply()` a cada mudança do estado; as transições rodam em fila e, se o estado vira de novo no meio, o model termina no estado atual.
 
-| Conexão (exemplos) | Bloqueio chega | Bloqueio sai |
-| --- | --- | --- |
-| Servidor local (ex.: MCP no Mac) | para e descarta o model | recria se a flag e o ajuste estiverem ligados |
-| Ponte com a web | desliga as sessões | religa com as sessões guardadas |
-| Sincronização própria (ex.: `CKSyncEngine` de dados compartilhados) | para os motores guardando o estado | recria a partir do estado guardado |
-| Sincronização do SwiftData | segue | segue como abriu |
-
-- O template nasce sem conexões: a lista começa vazia e cada integração nova entra nela.
+- Hoje a composição ainda não entrega nenhuma conexão: o destaque na tela de bloqueio, as Atividades ao Vivo da apuração e a atualização do pacote offline em segundo plano continuam rodando com o app bloqueado. Ligá-las ao `UpdateHoldModel` é a etapa A.12 da mudança `align-workspace`.
 - Abertura bloqueada não liga nada; se o bloqueio sai depois, tudo liga como numa abertura normal.
-- O SwiftData não desliga o CloudKit de um `ModelContainer` aberto, e trocar o container com o app aberto arrisca o histórico. Como no bloqueio nada grava na base, a sincronização segue até fechar o app.
+- A sincronização do SwiftData segue até fechar o app: ela não desliga o CloudKit de um `ModelContainer` aberto, e no bloqueio nada grava na base.
 
 ## Desenvolvimento
 
@@ -80,5 +73,5 @@ Tipo `AppRelease` no **banco público** do container `iCloud.fiscal`, um registr
 ## Como testar
 
 1. **Testes:** `AppReleaseTests` (`FiscalDomainTests`: comparação de versões, regra dos três estados, cache), `AppReleaseRecordTests` (`FiscalDataTests`: leitura do registro) e, em `FeatureCoreTests`, `DataExportModelTests` (exportação e erros), `AppUpdateModelTests` (fontes falsas: bloqueio, cache offline, intervalo de 15 e 1 minuto, aviso uma vez por versão, simulação) e `UpdateHoldModelTests` (abertura livre e bloqueada, bloqueio e liberação com o app aberto, modo avião, estado que vira no meio da transição).
-2. **Debug:** abrir com `-fiscal.developer.update required` e depois `recommended`; conferir a tela, o **Export Data** e o atalho "New Item" abrindo o app no bloqueio.
+2. **Debug:** abrir com `-fiscal.developer.update required` e depois `recommended`; conferir a tela, o **Exportar dados** e o atalho "Ver a apuração" abrindo o app no bloqueio.
 3. **Bloqueio real:** precisa de configuração Release. Instalada pelo Xcode (assinatura de desenvolvimento) ela lê o ambiente Development; TestFlight e App Store leem Production. No admin, no ambiente certo, gravar a mínima acima da build instalada; abrir o app e ver o bloqueio; ligar o modo avião e reabrir (continua bloqueado); remover a política e voltar ao primeiro plano depois de 1 minuto (solta). Repetir com só a recomendada acima para ver o aviso uma única vez.

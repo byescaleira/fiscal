@@ -24,13 +24,14 @@ public final class ProfileModel {
     @ObservationIgnored private let service: (any PublicDataService)?
     @ObservationIgnored private let follows: (any FollowRepository)?
     @ObservationIgnored private let lensRepository: (any LensRepository)?
+    @ObservationIgnored private let requests = PublicDataRequests()
     @ObservationIgnored private let now: @Sendable () -> Date
     @ObservationIgnored let calendar: Calendar
 
     public init(
         slug: String, service: (any PublicDataService)?, follows: (any FollowRepository)? = nil,
         lens: (any LensRepository)? = nil, now: @escaping @Sendable () -> Date = { .now },
-        calendar: Calendar = FiscalCalendar.current
+        calendar: Calendar = GregorianCalendar.current
     ) {
         self.slug = slug
         self.service = service
@@ -87,11 +88,16 @@ public final class ProfileModel {
 
     public func load() async {
         if profile == nil { phase = .loading }
-        phase = await PublicDataPhase.settle(after: phase) {
+        phase = await PublicDataPhase.settle(after: phase, in: requests) {
             guard let service else { throw PublicDataError.unavailable }
-            profile = try await service.profile(slug: slug)
-            isFollowing = (try? await follows?.isFollowing(slug: slug)) ?? false
-            lens = try? await lensRepository?.lens()
+            let profile = try await service.profile(slug: slug)
+            let isFollowing = (try? await follows?.isFollowing(slug: slug)) ?? false
+            let lens = try? await lensRepository?.lens()
+            return ProfileHeader(profile: profile, isFollowing: isFollowing, lens: lens)
+        } apply: { header in
+            profile = header.profile
+            isFollowing = header.isFollowing
+            lens = header.lens
         }
         await loadActivity()
     }
@@ -150,4 +156,10 @@ public final class ProfileModel {
         guard wanted else { return nil }
         return try? await work()
     }
+}
+
+private struct ProfileHeader {
+    let profile: Profile
+    let isFollowing: Bool
+    let lens: Lens?
 }

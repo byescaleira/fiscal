@@ -5,11 +5,14 @@ import SwiftUI
 
 public struct LensSetupScreen: View {
     @Environment(LensSetupModel.self) private var setup
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    @Environment(\.liteMode) private var liteMode
     @Environment(\.appTint) private var inheritedTint
     @Environment(\.dismiss) private var dismiss
 
     public init() {}
+
+    private var reduceMotion: Bool { systemReduceMotion || liteMode.reducesMotion }
 
     public var body: some View {
         let tint = setup.palette?.accent ?? inheritedTint
@@ -62,23 +65,24 @@ private struct LensSetupStepView: View {
 
 private struct LensSetupTopBar: View {
     @Environment(LensSetupModel.self) private var setup
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    @Environment(\.liteMode) private var liteMode
     @Environment(\.appTint) private var tint
     let close: () -> Void
 
     var body: some View {
+        let reduceMotion = systemReduceMotion || liteMode.reducesMotion
         HStack(spacing: .spaceM) {
             if setup.isEditing {
                 Button("Cancel", systemImage: "xmark", action: close)
-                    .labelStyle(.iconOnly)
                     .lensRoundButton()
             } else if setup.canGoBack {
                 Button("Back", systemImage: "chevron.backward") { setup.goBack() }
-                    .labelStyle(.iconOnly)
                     .lensRoundButton()
             }
             if setup.stepIndex > 0 && !setup.isEditing {
                 ProgressBar(value: setup.progress, color: tint)
-                    .animation(.smooth(duration: 1), value: setup.progress)
+                    .animation(reduceMotion ? nil : .chartReveal(0), value: setup.progress)
                 Text(verbatim: setup.stepText)
                     .font(.chipLabel)
                     .foregroundStyle(.secondary)
@@ -159,12 +163,11 @@ struct LensChoiceBackground: ViewModifier {
 }
 
 extension View {
-    @ViewBuilder func lensRoundButton() -> some View {
-        #if os(visionOS)
-            buttonStyle(.bordered).buttonBorderShape(.circle)
-        #else
-            buttonStyle(.glass).buttonBorderShape(.circle)
-        #endif
+    func lensRoundButton() -> some View {
+        labelStyle(.iconOnly)
+            .buttonBorderShape(.circle)
+            .buttonStyle(.bordered)
+            .controlSize(.large)
     }
 
     func lensChoice(isSelected: Bool) -> some View {

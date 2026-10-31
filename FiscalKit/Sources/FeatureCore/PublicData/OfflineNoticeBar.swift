@@ -9,6 +9,8 @@ extension View {
 }
 
 private struct OfflineNoticeModifier: ViewModifier {
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    @Environment(\.liteMode) private var liteMode
     let notice: OfflineNotice
 
     func body(content: Content) -> some View {
@@ -17,10 +19,16 @@ private struct OfflineNoticeModifier: ViewModifier {
                 if case .offline(let date) = notice.state {
                     OfflineNoticeBar(date: date)
                         .padding(.vertical, .space2XS)
-                        .transition(.move(edge: .top).combined(with: .opacity))
+                        .transition(transition)
                 }
             }
-            .animation(.smooth, value: notice.state)
+            .animation(reduceMotion ? .easeInOut : .smooth, value: notice.state)
+    }
+
+    private var reduceMotion: Bool { systemReduceMotion || liteMode.reducesMotion }
+
+    private var transition: AnyTransition {
+        reduceMotion ? .opacity : .move(edge: .top).combined(with: .opacity)
     }
 }
 

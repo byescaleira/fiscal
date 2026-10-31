@@ -64,7 +64,7 @@ private struct LinkThread: View {
                     }
                 }
             }
-            .accessibilityHidden(true)
+            .accessibilityElement(children: .combine)
         }
     }
 }
@@ -191,26 +191,17 @@ private struct DivergedPile: View {
                             size: .badgeM
                         )
                         .overlay {
-                            Circle().strokeBorder(Color.groupedRow, lineWidth: .spaceHairline)
+                            Circle().strokeBorder(Color.plainRow, lineWidth: .spaceHairline)
                         }
                     }
                 }
                 .accessibilityHidden(true)
             }
-            Text(verbatim: names)
+            Text(verbatim: ballots.namesText(limit: Self.faceLimit))
                 .font(.footnote)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
-    }
-
-    private var names: String {
-        let shown = ballots.prefix(Self.faceLimit).map {
-            "\($0.name) (\($0.party)-\($0.uf.uppercased()))"
-        }
-        let rest = ballots.count - shown.count
-        let list = shown.formatted(.list(type: .and).locale(.app))
-        return rest > 0 ? String(appLocalized: "\(list) and \(rest) more") : list
     }
 }
 
