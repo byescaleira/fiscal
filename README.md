@@ -76,7 +76,7 @@ App em SwiftUI para iOS a partir do 26, com os recursos do 27 (e iPadOS, macOS e
 scripts/verify.sh --quick
 ```
 
-O fluxo é spec-driven: a [constituição](docs/constitution.md) traz as regras inegociáveis, as [specs](docs/specs/README.md) a verdade atual de cada capacidade, as [mudanças](docs/changes/README.md) o que está em andamento e os [ADRs](docs/adr/README.md) as decisões. Para agentes de código, o ponto de partida é o [AGENTS.md](AGENTS.md).
+O fluxo é o SPDD ([open-spdd](https://github.com/gszhangwei/open-spdd)): a [constituição](docs/constitution.md) traz as regras inegociáveis, o [spdd/](spdd/README.md) as análises e os REASONS Canvases (a verdade atual de cada capacidade) e os [ADRs](docs/adr/README.md) as decisões. Para agentes de código, o ponto de partida é o [AGENTS.md](AGENTS.md).
 
 Mais: [arquitetura](docs/architecture.md) · [design system](docs/design-system.md) · [roadmap](docs/roadmap.md) · [site e Fiscal na Web](docs/web.md) · [App Store](docs/app-store/README.md) · [validação antes de distribuir](docs/validation.md).
 

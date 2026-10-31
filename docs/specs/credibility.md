@@ -1,4 +1,6 @@
-# Credibilidade
+# Credibilidade (histórico)
+
+Congelada em 2026-10-29; a verdade atual está em [`spdd/prompt/FSC-004-202610291700-[Codify]-credibility.md`](../../spdd/prompt/FSC-004-202610291700-[Codify]-credibility.md).
 
 Como o Fiscal mostra números e textos sem tomar partido: fonte e data em cada bloco, "—" para o que falta, comparação com os colegas por uma régua pública, peso das ações por faixa, a linha "Estimado" em tudo que não é número oficial e explicações em linguagem simples geradas no aparelho. Vale em todas as abas, no perfil, nos widgets e nos cartazes. A regra está na [constituição](../constitution.md) (regra 14, [ADR 0012](../adr/0012-constitution-version-and-facts.md)); o que falta fazer está em [backlog.md](../backlog.md).
 

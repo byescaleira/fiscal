@@ -39,3 +39,4 @@ Cada decisão que molda o Fiscal além de uma única mudança ganha um registro 
 | [0016](0016-web-companion-after-1-0.md) | Fiscal na Web só depois da 1.0 | Aceito |
 | [0017](0017-app-store-privacy-label.md) | Rótulo de privacidade da loja com os tokens e as chaves guardados no servidor | Aceito |
 | [0018](0018-widgets-read-public-data.md) | Os widgets leem os dados públicos direto, sem retrato escrito pelo app | Proposto |
+| [0019](0019-spdd-process.md) | Processo SPDD no lugar de specs e mudanças | Aceito |

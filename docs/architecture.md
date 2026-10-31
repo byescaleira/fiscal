@@ -16,7 +16,8 @@ fiscal/
 ├── site/, bridge/, admin/      site público, ponte do Fiscal na Web (não publicada) e painel na VPS
 ├── scripts/                     build, lint, format, test, verify, strings, icons, animations, art, simulator, deploy do servidor
 ├── ci_scripts/                  Xcode Cloud
-└── docs/                        constitution, specs/, changes/, adr/, este arquivo, design-system, backlog, roadmap
+├── spdd/                        índice, análises, canvases (prompt/) e revisões do SPDD
+└── docs/                        constitution, adr/, specs/ e changes/ (histórico congelado), este arquivo, design-system, backlog, roadmap
 ```
 
 ## Targets
@@ -36,9 +37,9 @@ fiscal/
 | `FeatureMoney` | Aba Dinheiro e recibos (`Route.expenses`) | Domain, DesignSystem, FeatureCore |
 | `FeatureSearch` | Aba Fiscalizar (`Tab(role: .search)`): busca no índice, Comparar (`Route.compare(slugs:)`), Eleições e investigações | Domain, DesignSystem, FeatureCore |
 | `FeatureMemory` | Memória, em Fiscalizar: eleições desde 1989, períodos da política e guias de estudo (`Route.memory`, `pastElection`, `period`, `studyGuide`) | Domain, DesignSystem, FeatureCore |
-| `FeatureLens` | Lente (`Route.lens`): setup, edição, aparência e "Outra lente" ([lens.md](specs/lens.md)) | Domain, DesignSystem, Resource, FeatureCore |
-| `FeatureShare` | Cartazes de compartilhar e galeria de artistas (`Route.artists`) ([share-cards-and-art.md](specs/share-cards-and-art.md)) | Domain, DesignSystem, Resource, FeatureCore |
-| `FeatureLiveResults` | Apuração (`Route.races`) e as Atividades ao Vivo da disputa e do destaque ([live-results.md](specs/live-results.md), [notifications.md](specs/notifications.md)) | Domain, DesignSystem, FeatureCore |
+| `FeatureLens` | Lente (`Route.lens`): setup, edição, aparência e "Outra lente" ([`FSC-003`](../spdd/prompt/FSC-003-202610291700-[Codify]-lens.md)) | Domain, DesignSystem, Resource, FeatureCore |
+| `FeatureShare` | Cartazes de compartilhar e galeria de artistas (`Route.artists`) ([`FSC-005`](../spdd/prompt/FSC-005-202610291700-[Codify]-share-cards-and-art.md)) | Domain, DesignSystem, Resource, FeatureCore |
+| `FeatureLiveResults` | Apuração (`Route.races`) e as Atividades ao Vivo da disputa e do destaque ([`FSC-001`](../spdd/prompt/FSC-001-202610291700-[Codify]-live-results.md), [`FSC-007`](../spdd/prompt/FSC-007-202610291700-[Codify]-notifications.md)) | Domain, DesignSystem, FeatureCore |
 | `FeatureSettings` | Ajustes: Seu Fiscal, Aparência, Seus dados e privacidade, Fontes e método, Sobre e Desenvolvedor | Domain, DesignSystem, Resource, FeatureCore |
 | `AppShell` | `FiscalWindow`, `MainScreen`, `SectionStack`, `SectionScreen`, `RouteScreen`, `InspectorScreen`, `SplashScreen`/`LaunchProgress`, `DeepLinks`, `FiscalServices`, `OfflineDataCenter`, App Intents e Spotlight | todas as features |
 
@@ -58,7 +59,7 @@ TSE ao vivo ─▶ fiscal-api (apuração, App Attest, registros) ─▶ APNs �
 
 - Nada é calculado por acesso: o servidor prepara e publica arquivos estáticos ([ADR 0002](adr/0002-static-first-server.md)); cada fonte é lida no seu ritmo e só quando muda ([ADR 0008](adr/0008-smart-sync.md)), com o histórico num SQLite ([ADR 0006](adr/0006-ingest-sqlite-store.md)) e a CDN no Pages ([ADR 0007](adr/0007-pages-cdn-phased-ingest.md)).
 - O único endpoint que recebe dado do aparelho é o `fiscal-api`: tokens de push das Atividades ao Vivo, protegidos por App Attest ([ADR 0017](adr/0017-app-store-privacy-label.md)).
-- Os detalhes estão em [public-data-api.md](specs/public-data-api.md), [live-results.md](specs/live-results.md), no `server/README.md` e no [runbook](server-runbook.md).
+- Os detalhes estão em [`FSC-002`](../spdd/prompt/FSC-002-202610291700-[Codify]-public-data-api.md), [`FSC-001`](../spdd/prompt/FSC-001-202610291700-[Codify]-live-results.md), no `server/README.md` e no [runbook](server-runbook.md).
 
 ## Links
 

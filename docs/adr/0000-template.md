@@ -2,7 +2,7 @@
 
 - **Estado:** Proposto | Aceito | Substituído por [NNNN](NNNN-titulo.md)
 - **Data:** AAAA-MM-DD
-- **Mudança:** [`<id>`](../changes/<id>/proposal.md) _ou "nenhuma"_
+- **Mudança:** [`FSC-<NNN>`](../../spdd/prompt/<arquivo-do-canvas>.md) _ou "nenhuma"_
 
 ## Contexto
 

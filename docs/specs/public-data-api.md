@@ -1,4 +1,6 @@
-# Dados públicos
+# Dados públicos (histórico)
+
+Congelada em 2026-10-29; a verdade atual está em [`spdd/prompt/FSC-002-202610291700-[Codify]-public-data-api.md`](../../spdd/prompt/FSC-002-202610291700-[Codify]-public-data-api.md).
 
 Os arquivos estáticos que o app lê para tudo que não é a apuração: perfis, votações, pauta, dinheiro, lugares, Hoje, destaques, indicadores e a Memória. Saem da carga das fontes oficiais na VPS e ficam na CDN `dados.fiscal.byescaleira.com` (Cloudflare Pages), com os arquivos do dia também na VPS. As decisões estão em [ADR 0002](../adr/0002-static-first-server.md), [0006](../adr/0006-ingest-sqlite-store.md), [0007](../adr/0007-pages-cdn-phased-ingest.md) e [0008](../adr/0008-smart-sync.md); o que falta fazer está em [backlog.md](../backlog.md).
 

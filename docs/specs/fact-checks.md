@@ -1,4 +1,6 @@
-# Checagens
+# Checagens (histórico)
+
+Congelada em 2026-10-29; a verdade atual está em [`spdd/prompt/FSC-006-202610291700-[Codify]-fact-checks.md`](../../spdd/prompt/FSC-006-202610291700-[Codify]-fact-checks.md).
 
 As checagens do Projeto Comprova que citam um político pelo nome, ligadas à pessoa só quando o nome não deixa dúvida. Hoje aparecem nas investigações de Fiscalizar; a seção do perfil existe, mas está desligada. A escolha da fonte está na [pesquisa de checagens](../research/2026-10-25-fact-checks.md); o que falta fazer está em [backlog.md](../backlog.md).
 

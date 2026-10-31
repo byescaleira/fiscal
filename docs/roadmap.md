@@ -1,12 +1,12 @@
 # Roadmap
 
-O que o Fiscal vai ganhar, por fase, até a 1.0. A visão, os públicos, a Lente e as 5 abas estão no [brief](brief.md). Cada fase vira uma ou mais mudanças em [changes/](changes/README.md); os pré-requisitos técnicos ficam no [backlog](backlog.md).
+O que o Fiscal vai ganhar, por fase, até a 1.0. A visão, os públicos, a Lente e as 5 abas estão no [brief](brief.md). Cada fase vira uma ou mais mudanças em [spdd/](../spdd/README.md), cada uma com análise, canvas e ID `FSC-<NNN>` próprios ([ADR 0019](adr/0019-spdd-process.md)). As mudanças de antes do SPDD estão no histórico congelado em [changes/archive/](changes/README.md); os pré-requisitos técnicos ficam no [backlog](backlog.md).
 
 ## Como dimensionar
 
-- **S:** uma sessão; uma mudança pequena, sem dado novo nem tela nova.
-- **M:** duas ou três etapas; uma tela ou entidade nova com testes, sem migração delicada.
-- **L:** quatro ou mais etapas; dado novo com migração, serviço externo, plataforma nova ou fluxo inteiro. Uma fase L que puder ser dividida vira duas M.
+- **S:** uma sessão; uma mudança pequena, sem dado novo nem tela nova. Vai direto ao código, sem análise nem canvas; se muda um comportamento descrito num canvas, `spdd-prompt-update` antes.
+- **M:** duas ou três etapas; uma tela ou entidade nova com testes, sem migração delicada. Análise e canvas, com o ok do usuário no canvas antes do código.
+- **L:** quatro ou mais etapas; dado novo com migração, serviço externo, plataforma nova ou fluxo inteiro. Uma fase L que puder ser dividida vira duas M. Fase L que não puder ser dividida vira histórias (`spdd-story`), com um canvas por história.
 - **Mantenha a 1.0 com até ~8 fases.** Passou disso, corte escopo para depois da 1.0 antes de começar; trabalho de base ou de alinhamento entra como etapa da fase em que acontece, não como fase nova.
 
 ## Fases até a 1.0
@@ -30,6 +30,7 @@ A fase 8 corre em etapas:
 | 8.1 | Integrações: widgets, Live Activities, App Intents, Spotlight, Foundation Models e pacote offline | entregue (`app-1.0`) |
 | 8.2 | [`kit-adoption`](changes/archive/2026-10-29-kit-adoption/proposal.md): design, componentes e idioma do byescaleira-kit ([ADR 0010](adr/0010-byescaleira-kit.md)), mínimo de sistema 26 com o 27 por `#available`, `MARKETING_VERSION` 1.0.0 e `CHANGELOG.md` | feita (2026-10-29, PR #3) |
 | 8.3 | [`align-workspace`](changes/archive/2026-10-29-align-workspace/proposal.md): fundo branco ou preto, acessibilidade, arquitetura, publicação, site, servidor e processo no padrão do workspace | feita (2026-10-29, PR #4) |
+| 8.3.1 | Migração para o SPDD ([ADR 0019](adr/0019-spdd-process.md)): `spdd/` com o código `FSC`, canvases `[Codify]` `FSC-001` a `FSC-007`, specs e mudanças congeladas | entregue na branch `feature/spdd-migration`; [PR #5](https://github.com/byescaleira/fiscal/pull/5) para a `development` |
 | 8.4 | Loja: roteiro de [validation.md](validation.md) no iPhone físico, rótulo de privacidade ([ADR 0017](adr/0017-app-store-privacy-label.md)), capturas, TestFlight e envio para a revisão | — |
 
 - **Lançamento só iOS (iPhone e iPad).** Mac e visionOS compilam no mesmo projeto, mas a receita própria do Mac e o envio dessas plataformas ficam no [backlog](backlog.md).
@@ -68,7 +69,7 @@ Correto no HIG não basta: a seção não pode parecer genérica.
   - a cesta de alimentos comuns, por exemplo os itens que aparecem na mídia quando sobem (arroz, feijão, carne, café, leite, ovo).
 
   Fontes oficiais a pesquisar: ANP (combustíveis), Banco Central (câmbio, via SGS/PTAX), IBGE (IPCA por item) e DIEESE (cesta básica por capital).
-- **Notificações por feature, iguais para todo mundo** (hoje o destaque e a apuração chegam por Live Activity, um push por token; ver [notifications.md](specs/notifications.md)):
+- **Notificações por feature, iguais para todo mundo** (hoje o destaque e a apuração chegam por Live Activity, um push por token; ver [`FSC-007`](../spdd/prompt/FSC-007-202610291700-[Codify]-notifications.md)):
   - não são personalizadas por pessoa;
   - todo mundo recebe as mesmas, por canal de feature (broadcast do APNs), por exemplo "votação importante", "resultado da apuração", "variação forte de preço";
   - raras: só quando há necessidade ou variação significativa dos dados, nunca rotina diária.
