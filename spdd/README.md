@@ -27,6 +27,6 @@ No shell, ponha esses caminhos entre aspas: o zsh trata `[...]` como padrão de 
 | `FSC-005` | [Cartazes de compartilhar, acervo de arte e créditos](prompt/FSC-005-202610291700-[Codify]-share-cards-and-art.md) | entregue | `feature/spdd-migration` | [#5](https://github.com/byescaleira/fiscal/pull/5) |
 | `FSC-006` | [Checagens do Projeto Comprova](prompt/FSC-006-202610291700-[Codify]-fact-checks.md) | entregue | `feature/spdd-migration` | [#5](https://github.com/byescaleira/fiscal/pull/5) |
 | `FSC-007` | [Alertas: destaque do momento e resultado da disputa](prompt/FSC-007-202610291700-[Codify]-notifications.md) | entregue | `feature/spdd-migration` | [#5](https://github.com/byescaleira/fiscal/pull/5) |
-| `FSC-008` | [Fiscal no padrão atual do workspace: dobrável, Mac, visionOS e ferramentas](prompt/FSC-008-202610311530-[Feat]-shell-fold-mac-vision-developer.md) | em andamento | `feature/platform-alignment` | — |
+| `FSC-008` | [Fiscal no padrão atual do workspace: dobrável, Mac, visionOS e ferramentas](prompt/FSC-008-202610311530-[Feat]-shell-fold-mac-vision-developer.md) | em revisão | `feature/platform-alignment` | [#6](https://github.com/byescaleira/fiscal/pull/6) |
 
 As capacidades que ainda vivem em guias de recurso (atualização obrigatória em [force-update.md](../docs/force-update.md), site e Fiscal na Web em [web.md](../docs/web.md), admin e flags em [admin.md](../docs/admin.md)) ganham um canvas `[Codify]` na primeira mudança da área.

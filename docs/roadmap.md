@@ -31,7 +31,7 @@ A fase 8 corre em etapas:
 | 8.2 | [`kit-adoption`](changes/archive/2026-10-29-kit-adoption/proposal.md): design, componentes e idioma do byescaleira-kit ([ADR 0010](adr/0010-byescaleira-kit.md)), mínimo de sistema 26 com o 27 por `#available`, `MARKETING_VERSION` 1.0.0 e `CHANGELOG.md` | feita (2026-10-29, PR #3) |
 | 8.3 | [`align-workspace`](changes/archive/2026-10-29-align-workspace/proposal.md): fundo branco ou preto, acessibilidade, arquitetura, publicação, site, servidor e processo no padrão do workspace | feita (2026-10-29, PR #4) |
 | 8.3.1 | Migração para o SPDD ([ADR 0019](adr/0019-spdd-process.md)): `spdd/` com o código `FSC`, canvases `[Codify]` `FSC-001` a `FSC-007`, specs e mudanças congeladas | entregue na branch `feature/spdd-migration`; [PR #5](https://github.com/byescaleira/fiscal/pull/5) para a `development` |
-| 8.3.2 | [`FSC-008`](../spdd/prompt/FSC-008-202610311530-[Feat]-shell-fold-mac-vision-developer.md): kit 0.7.2, toda aba na dobra do iPhone Duo, receita do Mac e do visionOS, Developer com as ferramentas do kit | em revisão, branch `feature/platform-alignment` |
+| 8.3.2 | [`FSC-008`](../spdd/prompt/FSC-008-202610311530-[Feat]-shell-fold-mac-vision-developer.md): kit 0.7.2, toda aba na dobra do iPhone Duo, receita do Mac e do visionOS, Developer com as ferramentas do kit | em revisão, [PR #6](https://github.com/byescaleira/fiscal/pull/6) |
 | 8.4 | Loja: roteiro de [validation.md](validation.md) no iPhone físico, rótulo de privacidade ([ADR 0017](adr/0017-app-store-privacy-label.md)), capturas, TestFlight e envio para a revisão | — |
 
 - **Lançamento só iOS (iPhone e iPad).** Mac e visionOS compilam no mesmo projeto, mas a receita própria do Mac e o envio dessas plataformas ficam no [backlog](backlog.md).
