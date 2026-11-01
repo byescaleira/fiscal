@@ -25,7 +25,7 @@ struct SectionScreen: View {
             ) {
                 TodayScreen { race in RaceHeroCard(race: race, opensDetail: true) }
             }
-        case .mine:
+        case .following:
             ModelHost(MineModel(service: data, follows: session.repositories.follows)) {
                 MineScreen()
             }

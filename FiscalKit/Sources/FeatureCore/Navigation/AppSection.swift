@@ -2,14 +2,14 @@ import FiscalDomain
 import SwiftUI
 
 public enum AppSection: String, CaseIterable, Identifiable, Sendable {
-    case today, mine, votes, money, search
+    case following, today, votes, money, search
 
     public var id: String { rawValue }
 
     public var title: String {
         switch self {
         case .today: String(appLocalized: "Today")
-        case .mine: String(appLocalized: "Mine")
+        case .following: String(appLocalized: "Following")
         case .votes: String(appLocalized: "Votes")
         case .money: String(appLocalized: "Money")
         case .search: String(appLocalized: "Search")
@@ -19,7 +19,7 @@ public enum AppSection: String, CaseIterable, Identifiable, Sendable {
     public var systemImage: String {
         switch self {
         case .today: "calendar.badge.checkmark"
-        case .mine: "mappin.and.ellipse"
+        case .following: "person.2"
         case .votes: "checklist"
         case .money: "building.columns"
         case .search: "magnifyingglass"
@@ -29,7 +29,7 @@ public enum AppSection: String, CaseIterable, Identifiable, Sendable {
     public var routePlaceholderTitle: String {
         switch self {
         case .today: String(appLocalized: "Choose a Highlight")
-        case .mine: String(appLocalized: "Choose a Representative")
+        case .following: String(appLocalized: "Choose a Representative")
         case .votes: String(appLocalized: "Choose a Vote")
         case .money: String(appLocalized: "Choose an Expense")
         case .search: String(appLocalized: "Choose a Person")
@@ -40,7 +40,7 @@ public enum AppSection: String, CaseIterable, Identifiable, Sendable {
         switch self {
         case .today:
             String(appLocalized: "The highlight or vote you tap on the other half opens here.")
-        case .mine: String(appLocalized: "The person you tap on the other half opens here.")
+        case .following: String(appLocalized: "The person you tap on the other half opens here.")
         case .votes:
             String(
                 appLocalized: "The vote you tap on the other half opens here, with who voted how.")
@@ -71,7 +71,7 @@ public enum AppSection: String, CaseIterable, Identifiable, Sendable {
 
     public var sourceGroup: SourceGroup {
         switch self {
-        case .today, .mine: .followAlong
+        case .following, .today: .followAlong
         case .votes, .money, .search: .congress
         }
     }

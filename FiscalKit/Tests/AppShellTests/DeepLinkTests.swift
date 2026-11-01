@@ -7,13 +7,14 @@ import Testing
 struct DeepLinkTests {
     @Test(arguments: [
         ("fiscal://today", DeepLink.section(.today)),
-        ("fiscal://mine", DeepLink.section(.mine)),
+        ("fiscal://mine", DeepLink.section(.following)),
+        ("fiscal://following", DeepLink.section(.following)),
         ("fiscal://votes", DeepLink.section(.votes)),
         ("fiscal://money", DeepLink.section(.money)),
         ("fiscal://search", DeepLink.section(.search)),
         (
             "fiscal://person/nikolas-ferreira",
-            DeepLink.route(.person(slug: "nikolas-ferreira"), in: .mine)
+            DeepLink.route(.person(slug: "nikolas-ferreira"), in: .following)
         ),
         (
             "fiscal://vote/camara-2026-1234",

@@ -51,7 +51,7 @@ private struct TodayBody: View {
             TodayBriefingSection()
             CardGrid(minimumWidth: .cardColumn, spacing: .spaceXL) {
                 TodayCongressSection()
-                TodayRepresentativesSection()
+                TodayFollowingLink()
                 TodayRecentVotesSection()
             }
         } else if let error = today.phase.error {

@@ -89,64 +89,6 @@ private struct MineFailureSection: View {
     }
 }
 
-struct MineFollowingSection: View {
-    @Environment(MineModel.self) private var mine
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
-    var body: some View {
-        Section {
-            if mine.isEmpty {
-                IconRow(
-                    "Nobody followed yet",
-                    detail:
-                        "Tap Follow on any profile and that person shows up here, on this device.",
-                    symbol: "person.crop.circle.badge.plus", color: .retroTeal)
-            } else if dynamicTypeSize.isAccessibilitySize {
-                ForEach(mine.followedCards) { MineRosterRow(card: $0, showsPlace: true) }
-            } else {
-                EdgeToEdgeRail(spacing: .spaceL, snaps: false) {
-                    ForEach(mine.followedCards) { MineFace(card: $0) }
-                }
-            }
-        } header: {
-            Text("Following").sectionTitle().railHeader(showsRail)
-        } footer: {
-            Text("Who you follow stays on this device.").railHeader(showsRail)
-        }
-        .railSection(showsRail)
-    }
-
-    private var showsRail: Bool {
-        !mine.isEmpty && !dynamicTypeSize.isAccessibilitySize
-    }
-}
-
-struct MineFace: View {
-    @Environment(\.open) private var open
-    @Environment(\.navigationSection) private var section
-    let card: PersonCard
-
-    var body: some View {
-        Button {
-            open(.person(slug: card.slug), in: section)
-        } label: {
-            VStack(spacing: .spaceXS) {
-                PersonPortrait(slug: card.slug, name: card.name, party: card.party, size: .badgeXL)
-                Text(verbatim: MineModel.shortName(card.name))
-                    .font(.caption.weight(.semibold))
-                    .lineLimit(1)
-                PartyMark(card.party)
-            }
-            .frame(width: .regionMiniCard)
-            .contentShape(.rect)
-        }
-        .buttonStyle(.plain)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(verbatim: "\(card.name), \(card.party), \(card.officeTitle)"))
-        .accessibilityAddTraits(.isButton)
-    }
-}
-
 struct MineRosterRow: View {
     let card: PersonCard
     let showsPlace: Bool
@@ -178,6 +120,7 @@ struct MineRosterRow: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: "\(card.name), \(card.party), \(detail)"))
         .accessibilityAddTraits(.isButton)
+        .followActions(card)
     }
 
     private var detail: String {

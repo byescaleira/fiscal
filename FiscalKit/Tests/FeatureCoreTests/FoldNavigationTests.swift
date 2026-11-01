@@ -87,8 +87,8 @@ struct FoldNavigationTests {
         let navigation = FiscalNavigation()
         navigation.fit(.folded(.horizontal, accessibility: true))
         #expect(navigation.layout == .stack)
-        navigation.open(.person(slug: "a"), in: .mine)
-        #expect(navigation.paths[.mine] == [.person(slug: "a")])
+        navigation.open(.person(slug: "a"), in: .following)
+        #expect(navigation.paths[.following] == [.person(slug: "a")])
         navigation.fit(.flat(width: 1024, accessibility: true))
         #expect(navigation.layout == .stack)
     }

@@ -35,20 +35,34 @@ public final class MineModel {
     public var isChoosingPlace = false
     public var startsSearching = false
     public var error: FiscalError?
-    @ObservationIgnored private let service: (any PublicDataService)?
-    @ObservationIgnored private let follows: (any FollowRepository)?
+    public internal(set) var updates: [FollowingUpdate] = []
+    public internal(set) var updatesPhase: PublicDataPhase = .idle
+    public internal(set) var missing: [PersonCard] = []
+    public internal(set) var supportedCards: [PersonCard] = []
+    var seenVersion = 0
+    @ObservationIgnored let service: (any PublicDataService)?
+    @ObservationIgnored let follows: (any FollowRepository)?
     @ObservationIgnored private let memory: MinePlaceMemory
+    @ObservationIgnored let seenStore: FollowingSeenStore
+    @ObservationIgnored let now: @Sendable () -> Date
+    @ObservationIgnored let publishesSnapshot: Bool
+    @ObservationIgnored let updateRequests = PublicDataRequests()
     @ObservationIgnored private let placeRequests = PublicDataRequests()
     @ObservationIgnored private let placesRequests = PublicDataRequests()
     @ObservationIgnored var searchNames: [String: String] = [:]
 
     public init(
         service: (any PublicDataService)? = nil, follows: (any FollowRepository)?,
-        memory: MinePlaceMemory = MinePlaceMemory()
+        memory: MinePlaceMemory = MinePlaceMemory(),
+        seen: FollowingSeenStore = FollowingSeenStore(),
+        now: @escaping @Sendable () -> Date = { .now }, publishesSnapshot: Bool = true
     ) {
         self.service = service
         self.follows = follows
         self.memory = memory
+        seenStore = seen
+        self.now = now
+        self.publishesSnapshot = publishesSnapshot
     }
 
     public var isEmpty: Bool { followed.isEmpty }
@@ -149,7 +163,9 @@ public final class MineModel {
 
     public func load() async {
         await loadFollowed()
-        await loadPlace()
+        async let updates: Void = loadUpdates()
+        async let place: Void = loadPlace()
+        _ = await (updates, place)
     }
 
     public func loadFollowed() async {

@@ -243,6 +243,7 @@ private struct MineSenatorCard: View {
             .contentShape(.rect)
         }
         .buttonStyle(.plain)
+        .followActions(card)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: "\(card.name), \(card.party), \(card.officeTitle)"))
         .accessibilityAddTraits(.isButton)

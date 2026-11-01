@@ -11,7 +11,7 @@ enum DeepLink: Equatable {
             return
         }
         let path = url.pathComponents.dropFirst().first
-        if let section = AppSection(rawValue: host) {
+        if let section = host == "mine" ? .following : AppSection(rawValue: host) {
             self = .section(section)
         } else if let destination = Self.destination(host: host, path: path, url: url) {
             self = destination
@@ -22,7 +22,7 @@ enum DeepLink: Equatable {
 
     private static func destination(host: String, path: String?, url: URL) -> DeepLink? {
         switch host {
-        case "person": path.map { DeepLink.route(.person(slug: $0), in: .mine) }
+        case "person": path.map { DeepLink.route(.person(slug: $0), in: .following) }
         case "vote": path.map { DeepLink.route(.vote(id: $0), in: .votes) }
         case "expenses":
             path.map { DeepLink.route(.expenses(slug: $0, year: year(in: url)), in: .money) }

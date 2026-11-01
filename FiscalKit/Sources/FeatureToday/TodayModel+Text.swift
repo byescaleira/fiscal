@@ -26,8 +26,19 @@ extension TodayModel {
             recentVotes.map(\.house), suffix: String(appLocalized: "votes up to \(date)"))
     }
 
-    public var moreFollowedText: String? {
-        moreFollowed > 0 ? String(appLocalized: "More in Mine: \(moreFollowed)") : nil
+    public func followingTitle(newCount: Int) -> String {
+        if followedCount == 0 { return String(appLocalized: "Follow who represents you") }
+        return newCount > 0
+            ? String(appLocalized: "\(newCount) updates from who you follow")
+            : String(appLocalized: "Who you follow")
+    }
+
+    public var followingDetail: String {
+        followedCount == 0
+            ? String(
+                appLocalized: "Open Following and tap the person icon next to your representatives."
+            )
+            : String(appLocalized: "Votes, spending and fact checks, newest first.")
     }
 
     public func detail(for card: PersonCard) -> String {

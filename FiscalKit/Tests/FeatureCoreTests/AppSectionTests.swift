@@ -17,7 +17,12 @@ struct AppSectionTests {
     @Test func sourceGroupsCoverEverySectionOnceInOrder() {
         let grouped = AppSection.SourceGroup.allCases.flatMap(\.sections)
         #expect(grouped == AppSection.allCases)
-        #expect(AppSection.SourceGroup.followAlong.sections == [.today, .mine])
+        #expect(AppSection.SourceGroup.followAlong.sections == [.following, .today])
+    }
+
+    @Test func followingIsTheFirstSection() {
+        #expect(AppSection.allCases.first == .following)
+        #expect(AppSection.following.rawValue == "following")
     }
 
     @Test func shortcutsFollowTheSectionOrder() {

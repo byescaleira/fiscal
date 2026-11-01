@@ -6,21 +6,35 @@ import SwiftUI
 public struct MineScreen: View {
     @Environment(MineModel.self) private var mine
     @Environment(SessionModel.self) private var session
+    @Environment(LensContext.self) private var lens
+    @Environment(FollowingBadge.self) private var badge: FollowingBadge?
+    @Environment(\.scenePhase) private var scenePhase
 
     public init() {}
 
     public var body: some View {
         @Bindable var mine = mine
         AdaptiveList {
+            if !mine.isEmpty {
+                FollowingUpdatesSection()
+                FollowingPeopleSection()
+            }
+            FollowingSuggestionsSection()
+            FollowingRegionHeader()
             MineHeroSection()
             if mine.hasPlace {
                 MineRegionContent()
             } else {
                 MineInviteSection()
             }
-            MineFollowingSection()
         }
-        .emphasisTitle("Region")
+        .emphasisTitle("Following")
+        .task(id: lens.supported) { await mine.loadSupported(lens.supported) }
+        .onChange(of: mine.newCount, initial: true) { _, count in badge?.count = count }
+        .onDisappear { mine.markSeen() }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .background { mine.markSeen() }
+        }
         .toolbar { MineToolbar() }
         .sheet(isPresented: $mine.isChoosingPlace) {
             MinePlacePicker().environment(mine)
