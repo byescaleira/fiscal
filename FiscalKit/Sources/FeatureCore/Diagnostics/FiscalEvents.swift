@@ -17,6 +17,8 @@ public enum FiscalEvents: Hashable, Sendable {
         case compare
         case races
         case race
+        case place
+        case highlight
         case awaiting
         case memory
         case election

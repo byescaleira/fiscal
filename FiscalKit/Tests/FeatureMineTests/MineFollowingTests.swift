@@ -162,4 +162,37 @@ struct MineFollowingTests {
         #expect(model.missing.isEmpty)
         #expect(model.updates.map(\.day) == [december])
     }
+
+    @Test func invitesToShareOnlyAfterTheFirstFollowUntilDismissed() async throws {
+        let suite = "following-\(UUID().uuidString)"
+        let invites = "invite-\(UUID().uuidString)"
+        defer {
+            UserDefaults.standard.removePersistentDomain(forName: suite)
+            UserDefaults.standard.removePersistentDomain(forName: invites)
+        }
+        let inviteDefaults = try #require(UserDefaults(suiteName: invites))
+        let follows = try FiscalDatabase.open(inMemory: true).repositories.follows
+        let memory = MinePlaceMemory(
+            defaults: try #require(UserDefaults(suiteName: "mine-\(UUID().uuidString)")))
+        let make = {
+            MineModel(
+                service: ShowcasePublicData(scenario: .normal, now: self.now), follows: follows,
+                memory: memory, seen: FollowingSeenStore(suiteName: suite), now: { self.now },
+                publishesSnapshot: false, inviteDefaults: inviteDefaults)
+        }
+        let model = make()
+        await model.load()
+        #expect(!model.showsFollowingInvite)
+        try await follows.follow(Self.card("c", "Caio"), at: now)
+        await model.load()
+        #expect(model.showsFollowingInvite)
+        #expect(model.followingInviteRoute == .share(.following))
+        model.dismissFollowingInvite()
+        #expect(!model.showsFollowingInvite)
+        #expect(inviteDefaults.bool(forKey: MineModel.followingInviteKey))
+        let reopened = make()
+        await reopened.load()
+        #expect(!reopened.followed.isEmpty)
+        #expect(!reopened.showsFollowingInvite)
+    }
 }

@@ -5,7 +5,14 @@ enum DeepLink: Equatable {
     case section(AppSection)
     case route(Route, in: AppSection)
 
+    static let siteHost = "fiscal.byescaleira.com"
+    static let siteKeys = ["person", "vote", "expenses", "compare", "place", "race", "highlight"]
+
     init(url: URL) {
+        if Self.isSite(url) {
+            self = Self.site(url) ?? .section(.today)
+            return
+        }
         guard url.scheme == "fiscal", let host = url.host() else {
             self = .section(.today)
             return
@@ -42,6 +49,45 @@ enum DeepLink: Equatable {
         }
     }
 
+    private static func isSite(_ url: URL) -> Bool {
+        url.scheme == "https" && url.host()?.lowercased() == siteHost
+    }
+
+    private static func siteItem(in url: URL) -> (key: String, value: String)? {
+        guard url.path().isEmpty || url.path() == "/" else { return nil }
+        let items = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems ?? []
+        for item in items where siteKeys.contains(item.name) {
+            guard let value = item.value, !value.isEmpty else { return nil }
+            return (item.name, value)
+        }
+        return nil
+    }
+
+    private static func site(_ url: URL) -> DeepLink? {
+        guard let item = siteItem(in: url) else { return nil }
+        let value = item.value
+        return switch item.key {
+        case "person": .route(.person(slug: value), in: .following)
+        case "vote": .route(.vote(id: value), in: .votes)
+        case "expenses": expenses(value)
+        case "compare": .route(.compare(slugs: slugs(value)), in: .search)
+        case "place": .route(.share(.representatives(uf: value.lowercased())), in: .following)
+        case "race": .route(.race(id: value), in: .search)
+        case "highlight": .route(.share(.highlight(id: value)), in: .today)
+        default: nil
+        }
+    }
+
+    private static func expenses(_ value: String) -> DeepLink {
+        let parts = value.split(separator: "-")
+        if parts.count > 1, let last = parts.last, let year = Int(last), last.count == 4 {
+            let slug = parts.dropLast().joined(separator: "-")
+            return .route(.expenses(slug: slug, year: year), in: .money)
+        }
+        let year = Calendar.current.component(.year, from: .now)
+        return .route(.expenses(slug: value, year: year), in: .money)
+    }
+
     private static func section(host: String) -> AppSection? {
         host == "mine" ? .following : AppSection(rawValue: host)
     }
@@ -49,7 +95,11 @@ enum DeepLink: Equatable {
     private static func slugs(in url: URL) -> [String] {
         let value = URLComponents(url: url, resolvingAgainstBaseURL: false)?
             .queryItems?.first { $0.name == "slugs" }?.value
-        return value?.split(separator: ",").map(String.init).filter { !$0.isEmpty } ?? []
+        return slugs(value ?? "")
+    }
+
+    private static func slugs(_ value: String) -> [String] {
+        value.split(separator: ",").map(String.init).filter { !$0.isEmpty }
     }
 
     private static func year(in url: URL) -> Int {
@@ -59,6 +109,10 @@ enum DeepLink: Equatable {
     }
 
     static func kind(of url: URL) -> FiscalEvents.DeepLinkKind {
+        if isSite(url) {
+            guard let item = siteItem(in: url), site(url) != nil else { return .unknown }
+            return FiscalEvents.DeepLinkKind(rawValue: item.key) ?? .unknown
+        }
         guard url.scheme == "fiscal", let host = url.host() else { return .unknown }
         if section(host: host) != nil { return .section }
         guard let kind = FiscalEvents.DeepLinkKind(rawValue: host), kind != .section else {
@@ -68,6 +122,6 @@ enum DeepLink: Equatable {
     }
 
     static func handles(_ url: URL) -> Bool {
-        url.scheme == "fiscal"
+        url.scheme == "fiscal" || isSite(url)
     }
 }

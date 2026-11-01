@@ -11,7 +11,7 @@ O site público de `fiscal.byescaleira.com` (landing, privacidade, termos e supo
 | `site/fonts/BricolageGrotesque.woff2`, `site/fonts/OFL.txt` | A fonte de ênfase do app ([ADR 0009](adr/0009-bricolage-emphasis-font.md)), local, com a licença ao lado |
 | `site/assets/` | Ícone claro e escuro (`FiscalIcon.imageset`) e favicon de 64 px |
 | `site/llms.txt` | O mesmo resumo da landing em Markdown simples, em português, para agentes e buscadores com IA |
-| `site/link.html`, `site/.well-known/apple-app-site-association` | Link universal `/link` e a página para quem não tem o app |
+| `site/link.html`, `site/.well-known/apple-app-site-association` | Links universais: `/link` (com a página para quem não tem o app) e a raiz `/` com `?person=`, `?vote=`, `?expenses=`, `?compare=`, `?place=`, `?race=` ou `?highlight=`, os links que os cartões de compartilhar imprimem |
 | `site/package.json` | Só a versão do site (SemVer, `0.1.0` até o lançamento); não vai para o servidor |
 | `site/app.html`, `site/web*.js`, `site/web.css`, `site/vendor/` | O Fiscal na Web, parado até depois da 1.0 |
 | `bridge/` | Ponte em Node 22 sem dependências (`bridge/README.md`), também para depois da 1.0 |
@@ -47,6 +47,7 @@ cd /Users/rafael.escaleira/Documents/projects/lab-vibecode/politico-monitor/.cla
 - **Fiscal na Web fica de fora até depois da 1.0** ([ADR 0016](adr/0016-web-companion-after-1-0.md)): `app.html`, `link.html`, `web.css` e os `web*.js` continuam no repositório e não sobem.
 - **`--delete`** deixa o servidor igual ao repositório; os `--exclude` protegem o que não sobe e o que já está lá com esses nomes. Nunca `--delete-excluded`.
 - **`.well-known/` vai junto e fica.**
+- **Links universais.** O app tem o entitlement `com.apple.developer.associated-domains` com `applinks:fiscal.byescaleira.com`, e a AASA lista um `components` por chave na raiz (`{"/": "/", "?": {"person": "*"}}` e assim por diante), além de `/link`. O `DeepLink` do app abre cada chave no mesmo destino do `fiscal://` (`person` no perfil, `vote` na votação, `expenses` em `<slug>-<ano>` nos gastos, `compare` em `a,b` no lado a lado, `race` na disputa); `place` e `highlight`, que não têm tela própria, abrem o cartão de compartilhar de quem representa a UF e do destaque. Chave desconhecida ou outro caminho do site abre o app em Hoje; outro domínio fica com o navegador. A AASA nova só vale depois de publicada (com o ok do usuário) e de o iOS baixá-la de novo pela CDN da Apple, o que leva até um dia; antes disso, os links abrem o site. O `Content-Type` é `application/json` no Caddy (`@aasa` no [runbook](server-runbook.md)) e no `scripts/site-server.mjs`, que serve arquivo sem extensão como JSON. Para conferir depois de publicar: `curl -s https://app-site-association.cdn-apple.com/a/v1/fiscal.byescaleira.com`.
 
 Depois, confira cada rota:
 
@@ -99,6 +100,6 @@ O app cifra um JSON com chaves ordenadas. `v` do resumo é `1` e só ganha campo
 
 - Alvo de serviço `FiscalWeb` (link, cifra, pacote, resumo, cliente da ponte, sessões no Keychain) e tela em `FeatureSettings/Web`, só no iPhone e no iPad.
 - Flag remota `web` (`FeatureFlag.web`) no app e no `admin/src/flags.mjs`, e as chaves `FiscalWebBridgeURL` e `FiscalWebsiteURL` no `Info.plist`.
-- Entitlement `com.apple.developer.associated-domains` com `applinks:fiscal.byescaleira.com`.
+- Entitlement `com.apple.developer.associated-domains` com `applinks:fiscal.byescaleira.com`, que já está no app desde os links dos cartões de compartilhar (FSC-010); falta só tratar o `/link` no `DeepLink`, que hoje abre Hoje.
 - Teste Swift do vetor (`FiscalKit/Tests/FiscalWebTests/WebVector.swift`) lendo `docs/web-test-vector-v2.json`.
 - Com o recurso ligado, um resumo sai do aparelho cifrado de ponta a ponta para o navegador cujo QR o iPhone leu, fica até 24 horas na ponte e só abre naquele navegador. O rótulo da App Store continua o do [ADR 0017](adr/0017-app-store-privacy-label.md).

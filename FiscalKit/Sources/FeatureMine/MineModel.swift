@@ -50,12 +50,15 @@ public final class MineModel {
     @ObservationIgnored private let placeRequests = PublicDataRequests()
     @ObservationIgnored private let placesRequests = PublicDataRequests()
     @ObservationIgnored var searchNames: [String: String] = [:]
+    @ObservationIgnored let inviteDefaults: UserDefaults
+    var isFollowingInviteDismissed: Bool
 
     public init(
         service: (any PublicDataService)? = nil, follows: (any FollowRepository)?,
         memory: MinePlaceMemory = MinePlaceMemory(),
         seen: FollowingSeenStore = FollowingSeenStore(),
-        now: @escaping @Sendable () -> Date = { .now }, publishesSnapshot: Bool = true
+        now: @escaping @Sendable () -> Date = { .now }, publishesSnapshot: Bool = true,
+        inviteDefaults: UserDefaults = .standard
     ) {
         self.service = service
         self.follows = follows
@@ -63,6 +66,8 @@ public final class MineModel {
         seenStore = seen
         self.now = now
         self.publishesSnapshot = publishesSnapshot
+        self.inviteDefaults = inviteDefaults
+        isFollowingInviteDismissed = inviteDefaults.bool(forKey: Self.followingInviteKey)
     }
 
     public var isEmpty: Bool { followed.isEmpty }
