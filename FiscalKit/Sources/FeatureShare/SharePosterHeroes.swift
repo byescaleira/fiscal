@@ -9,7 +9,9 @@ struct ShareHero: View {
         switch hero {
         case .figure(let value, let caption):
             VStack(alignment: .leading, spacing: .zero) {
-                ShareFigure(value: value, size: format.figureSize(format.heroSize, for: value))
+                ShareFigure(
+                    value: value, size: format.figureSize(format.heroSize, for: value),
+                    animates: true)
                 Text(verbatim: caption)
                     .font(.posterHeadlineCompact)
                     .foregroundStyle(Color.posterSecondary)
@@ -33,16 +35,26 @@ struct ShareHero: View {
             ShareVictoryHero(victory: victory, format: format)
         case .investigation(let investigation):
             ShareInvestigationHero(investigation: investigation, format: format)
+        case .people(let faces):
+            SharePeopleList(faces: faces, format: format)
         }
     }
 }
 
 struct ShareFigure: View {
+    @Environment(\.shareProgress) private var progress
     let value: String
     let size: CGFloat
+    let animates: Bool
+
+    init(value: String, size: CGFloat, animates: Bool = false) {
+        self.value = value
+        self.size = size
+        self.animates = animates
+    }
 
     var body: some View {
-        Text(verbatim: value)
+        Text(verbatim: animates ? ShareMotion.countUp(value, progress: progress) : value)
             .font(.posterFigure(size))
             .monospacedDigit()
             .lineLimit(1)
@@ -54,26 +66,28 @@ struct ShareTallyHero: View {
     let tally: ShareTally
     let format: ShareFormat
     let size: CGFloat
+    var animates = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceS) {
             HStack(alignment: .lastTextBaseline, spacing: .spaceL) {
                 ShareCount(
                     value: tally.yes, label: "YES", symbol: "checkmark", color: .voteYes,
-                    size: size
+                    size: size, animates: animates
                 )
                 .frame(width: format.column, alignment: .leading)
                 ShareCount(
                     value: tally.no, label: "NO", symbol: "xmark", color: .voteNo,
-                    size: size
+                    size: size, animates: animates
                 )
                 .frame(width: format.column, alignment: .leading)
             }
-            ShareTallyBar(segments: [
-                ShareSegment(share: tally.yesShare, color: .voteYes),
-                ShareSegment(share: tally.noShare, color: .voteNo),
-                ShareSegment(share: tally.othersShare, color: .voteAbstain),
-            ])
+            ShareTallyBar(
+                segments: [
+                    ShareSegment(share: tally.yesShare, color: .voteYes),
+                    ShareSegment(share: tally.noShare, color: .voteNo),
+                    ShareSegment(share: tally.othersShare, color: .voteAbstain),
+                ], animates: animates)
             HStack(alignment: .firstTextBaseline, spacing: .spaceM) {
                 if let result = tally.result {
                     HStack(spacing: .spaceXS) {
@@ -120,6 +134,7 @@ private struct ShareCount: View {
     let symbol: String
     let color: Color
     let size: CGFloat
+    let animates: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: .zero) {
@@ -130,7 +145,7 @@ private struct ShareCount: View {
             .font(.posterParty)
             .tracking(.posterTracking)
             .foregroundStyle(color)
-            ShareFigure(value: value, size: size)
+            ShareFigure(value: value, size: size, animates: animates)
         }
     }
 }
@@ -141,7 +156,14 @@ struct ShareSegment: Hashable {
 }
 
 struct ShareTallyBar: View {
+    @Environment(\.shareProgress) private var progress
     let segments: [ShareSegment]
+    let animates: Bool
+
+    init(segments: [ShareSegment], animates: Bool = false) {
+        self.segments = segments
+        self.animates = animates
+    }
 
     var body: some View {
         GeometryReader { proxy in
@@ -149,7 +171,10 @@ struct ShareTallyBar: View {
                 ForEach(Array(segments.enumerated()), id: \.offset) { _, segment in
                     Rectangle()
                         .fill(segment.color)
-                        .frame(width: proxy.size.width * min(max(segment.share, 0), 1))
+                        .frame(
+                            width: proxy.size.width
+                                * ShareMotion.fill(segment.share, progress: animates ? progress : 1)
+                        )
                 }
                 Spacer(minLength: .zero)
             }
@@ -211,7 +236,7 @@ private struct ShareElected: View {
     }
 }
 
-private struct ShareVersusHero: View {
+struct ShareVersusHero: View {
     let faces: [ShareFace]
     let rows: [ShareCompareRow]
     let format: ShareFormat
@@ -309,5 +334,38 @@ private struct SharePartyStripes: View {
         }
         .frame(width: .posterStripe * 2 + .spaceHairline)
         .accessibilityHidden(true)
+    }
+}
+
+struct SharePeopleList: View {
+    let faces: [ShareFace]
+    let format: ShareFormat
+
+    var body: some View {
+        if format == .stories {
+            VStack(alignment: .leading, spacing: .spaceS) {
+                ForEach(faces) { face in
+                    VStack(alignment: .leading, spacing: .zero) {
+                        ShareIdentity(name: face.name, party: face.party)
+                        Text(verbatim: face.detail)
+                            .font(.posterLabel)
+                            .foregroundStyle(Color.posterSecondary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(.shareTextShrink)
+                    }
+                }
+            }
+        } else {
+            Grid(alignment: .topLeading, horizontalSpacing: .spaceL, verticalSpacing: .spaceS) {
+                ForEach(Array(stride(from: 0, to: faces.count, by: 2)), id: \.self) { start in
+                    GridRow {
+                        ForEach(faces[start..<min(start + 2, faces.count)]) { face in
+                            ShareIdentity(name: face.name, party: face.party)
+                                .frame(width: format.column, alignment: .leading)
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -43,13 +43,17 @@ struct ShareCardSnapshotTests {
                 subject: subject, service: ShowcasePublicData(scenario: .normal, now: now),
                 races: ShowcaseLiveResults(scenario: .finished))
             await model.load()
-            for format in FeatureShare.ShareFormat.allCases {
-                model.format = format
-                try write(
-                    model,
-                    to: folder.appending(
-                        path: "\(ShareSnapshotFolder.prefix)-\(name)-\(format).png"))
+            for style in ShareStyle.allCases {
+                model.style = style
+                for format in FeatureShare.ShareFormat.allCases {
+                    model.format = format
+                    try write(
+                        model,
+                        to: folder.appending(
+                            path: "\(ShareSnapshotFolder.prefix)-\(name)-\(style)-\(format).png"))
+                }
             }
+            model.style = .poster
             if name == "person" || name == "vote" {
                 let historical = try #require(
                     model.works.first { $0.collection == "acervo-historico" })

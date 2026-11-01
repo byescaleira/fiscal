@@ -12,7 +12,6 @@ extension CGFloat {
     public static let shareStripe: CGFloat = 4
     public static let shareBar: CGFloat = 8
     public static let shareThumbnail: CGFloat = 56
-    public static let sharePreviewMax: CGFloat = 520
     public static let shareTextShrink: CGFloat = 0.6
     public static let shareArtFade: CGFloat = 0.7
     public static let shareBlur: CGFloat = 24

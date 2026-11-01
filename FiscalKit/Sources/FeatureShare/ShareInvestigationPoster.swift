@@ -47,7 +47,7 @@ struct ShareInvestigationPoster: View {
     let code: CGImage?
 
     var body: some View {
-        let format = card.format
+        let format = card.format.textFormat
         VStack(alignment: .leading, spacing: format == .message ? .spaceS : .spaceM) {
             ShareInvestigationHero(investigation: investigation, format: format)
             Spacer(minLength: .zero)
@@ -58,6 +58,7 @@ struct ShareInvestigationPoster: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .padding(format.margin)
+        .padding(card.format.safeExtra(beyond: format.margin))
         .background { ShareCaseField() }
         .clipped()
     }

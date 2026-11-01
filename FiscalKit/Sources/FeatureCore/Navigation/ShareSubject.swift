@@ -7,4 +7,5 @@ public enum ShareSubject: Hashable, Sendable {
     case representatives(uf: String)
     case highlight(id: String)
     case investigation(InvestigationSummary)
+    case following
 }

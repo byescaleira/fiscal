@@ -70,11 +70,16 @@ struct ShareModelTests {
                 await model.load()
                 #expect(model.showsLensBadge)
                 let card = try #require(model.card)
-                let text = card.texts.joined(separator: "\n")
-                #expect(!text.contains("Lens"))
-                for slug in lens.supported {
-                    #expect(!card.accessibilityLabel.contains(slug))
-                    #expect(!model.shareMessage.contains(slug))
+                for style in ShareStyle.allCases {
+                    let styled = try #require(model.card(style: style))
+                    let text = styled.texts.joined(separator: "\n")
+                    #expect(!text.contains("Lens"))
+                    #expect(!model.caption.contains("Lens"))
+                    #expect(model.caption == ShareCaption.make(card.content))
+                    for slug in lens.supported {
+                        #expect(!styled.accessibilityLabel.contains(slug))
+                        #expect(!model.shareMessage.contains(slug))
+                    }
                 }
                 if let previous = contents[subject] {
                     #expect(previous == card.content)
@@ -148,13 +153,44 @@ struct ShareModelTests {
         model.render(scale: 1, portraits: nil)
         let rendered = try #require(model.rendered)
         #expect(!rendered.file.png.isEmpty)
-        #expect(rendered.file.fileName == ShareRenderer.fileName)
+        #expect(rendered.file.fileName == ShareRenderer.fileName(for: try #require(model.content)))
         let other = try #require(
             model.collections.first { $0.id != model.currentCollectionID })
         model.show(other.id)
         #expect(model.currentCollectionID == other.id)
         #expect(model.currentWorks.allSatisfy { $0.collection == other.id })
         #expect(model.selectedCredit?.contains(model.selectedWork?.artist ?? "-") == true)
+    }
+
+    @Test func followingCardListsUpToSixAlphabetically() async throws {
+        let names = ["Zeca", "Bia", "Ana", "Hugo", "Davi", "Caio", "Eva", "Gil"]
+        let follows = try await ShareFixtures.follows(
+            names.map { ShareFixtures.person($0.lowercased(), $0) })
+        let model = ShareFixtures.model(.following, follows: follows)
+        await model.load()
+        #expect(model.phase == .loaded)
+        let content = try #require(model.content)
+        guard case .following(let faces) = content.body else {
+            Issue.record("Wrong body")
+            return
+        }
+        #expect(faces.map(\.name) == ["Ana", "Bia", "Caio", "Davi", "Eva", "Gil"])
+        #expect(faces.allSatisfy { !$0.party.isEmpty && !$0.detail.isEmpty })
+        let text = (model.card?.texts ?? []).joined(separator: " ")
+        for name in ["Hugo", "Zeca"] {
+            #expect(!text.contains(name))
+            #expect(!model.caption.contains(name))
+        }
+        #expect(content.stamp.contains("·SEG·LISTA·"))
+    }
+
+    @Test func followingNeedsSomeoneToShow() async throws {
+        let empty = ShareFixtures.model(.following, follows: try await ShareFixtures.follows([]))
+        await empty.load()
+        #expect(empty.phase == .failed(.notFound))
+        let missing = ShareFixtures.model(.following)
+        await missing.load()
+        #expect(missing.phase == .failed(.unavailable))
     }
 
     @Test func longNamesStillLoad() async {
