@@ -486,7 +486,7 @@
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%1$@%2$@ · %3$@"
           }
         }
