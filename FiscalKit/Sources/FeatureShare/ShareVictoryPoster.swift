@@ -138,6 +138,8 @@ private struct ShareVictoryChip: View {
         Text("ELECTED")
             .font(format.victoryChip)
             .tracking(.posterTracking)
+            .lineLimit(1)
+            .fixedSize()
             .padding(.horizontal, .spaceM)
             .padding(.vertical, .space2XS)
             .background(.white.opacity(.opacityTint), in: .capsule)

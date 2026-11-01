@@ -101,6 +101,8 @@ struct ShareInvestigationHero: View {
                     .tracking(.posterTracking)
             }
             .font(.posterVictoryChipCompact)
+            .lineLimit(1)
+            .fixedSize()
             .padding(.horizontal, .spaceS)
             .padding(.vertical, .space2XS)
             .background(.white.opacity(.opacityTint), in: .capsule)
