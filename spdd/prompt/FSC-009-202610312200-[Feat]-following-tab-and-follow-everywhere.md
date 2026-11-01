@@ -17,7 +17,7 @@ Definição de pronto:
 - **Given** a pessoa segue Fulana e Beltrano, Fulana votou "Sim" no PL 1/2026 em 30/10 e Beltrano teve R$ 12.345,67 de gastos publicados em outubro **When** abre a aba Seguindo **Then** o topo "Novidades" lista as duas, da mais nova para a mais antiga, cada uma com nome, o que aconteceu, data e fonte, e o toque abre a votação ou os gastos (`FollowingFeedTests.ordersNewestFirstAcrossPeople`).
 - **Given** a primeira visita **When** as novidades são montadas **Then** entram só itens dos últimos 30 dias, no máximo 50 (`FollowingFeedTests.keepsThirtyDaysAndFiftyItems`).
 - **Given** a última visita em 28/10 **When** a pessoa volta em 31/10 **Then** os itens depois de 28/10 têm o selo "Novo", e a aba mostra o número deles (`.badge`). Ao sair da aba, a marca de cada seguido passa para agora e o número zera (`FollowingSeenStoreTests`, `FollowingFeedTests.countsOnlyWhatIsNewSinceTheLastVisit`).
-- **Given** ninguém seguido e o estado SP escolhido **When** a aba abre **Then** aparece o convite "Siga quem representa você" com os representantes de SP e quem a pessoa apoia na Lente, cada um com o botão Seguir na linha. Sem lugar e sem Lente, o convite pede o lugar (`MineModelTests.suggestsRepresentativesAndSupportedNotFollowed`).
+- **Given** ninguém seguido e o estado SP escolhido **When** a aba abre **Then** aparece o convite "Siga quem representa você" com até 8 sugestões, quem a pessoa apoia primeiro e depois os representantes de SP na ordem presidente, governador, senadores, prefeito, deputados e vereadores, cada um com o botão Seguir na linha. Sem lugar e sem Lente, o convite pede o lugar (`MineModelTests.suggestsRepresentativesAndSupportedNotFollowed`).
 - **Given** a aba Seguindo **When** a pessoa rola abaixo das novidades **Then** vê, nesta ordem:
   - "Quem você segue", em ordem alfabética;
   - "Sugestões";
@@ -39,6 +39,7 @@ Definição de pronto:
   - o rodapé diz "Quem você segue fica no seu iCloud, se a sincronização estiver ligada.";
   - Hoje não manda escolher o estado para seguir.
 - **Given** Hoje **When** a pessoa segue alguém **Then** o cartão de seguidos dá lugar a uma linha "N novidades de quem você segue", ou "Siga quem representa você" com zero seguidos, que abre a aba Seguindo.
+- **Given** um seguido sem votos, gastos nem checagens publicados (um prefeito, por exemplo) **When** a aba monta as novidades **Then** ele não conta como falha: o arquivo que não existe (`PublicDataError.notFound`) é lido como vazio.
 - **Erro:** se a leitura de uma pessoa falha (sem rede e fora do pacote offline), as outras novidades aparecem e a linha da pessoa diz "Sem dados agora" com "Tentar de novo". Nenhuma falha esconde a aba.
 
 ## Entities
@@ -104,7 +105,7 @@ classDiagram
 - **`FollowingUpdate`** (novo, `FiscalDomain`):
   - `Kind` é `.vote(choice)`, `.expenses(cents)` ou `.check(verdict)`;
   - `id` é o slug mais o tipo e o id de origem;
-  - `route` é `.vote(id:)`, `.expenses(slug:year:)` ou o link da checagem;
+  - o destino fica no model da aba (`route(for:)`, `.vote(id:)` ou `.expenses(slug:year:)`), e a checagem abre o link da fonte, porque a `Route` mora no `FeatureCore`;
   - presença fica de fora, porque só existe somada por ano, sem data.
 - **`FollowingFeed`** (novo, `FiscalDomain`, funções puras): junta as listas de cada seguido, corta em 30 dias e 50 itens, ordena por data (desempate por nome) e conta os itens mais novos que a marca de cada pessoa.
 - **`FollowingSeenStore`** (novo, `FeatureCore`): `UserDefaults` local, chave `fiscal.following.seen` (`[slug: Date]`). Fica fora do iCloud e do SwiftData, e entra no "Apagar preferências" do Developer.
@@ -114,6 +115,7 @@ classDiagram
   - `toggle(slug:)` acha o `PersonCard` no índice de pessoas (`service.people()`) para as linhas que só têm slug, como a de quem votou.
 - **`FollowingBadge`** (novo, `FeatureCore`, `@Observable`, por janela): o número de novidades que a `TabView` e a lista de origem do Mac mostram. O `MineModel` atualiza.
 - **`FollowingSnapshot`** (novo, `FiscalDomain/Integrations`): até 6 entradas (`PersonCard` mais a novidade mais recente), gravadas pelo app em `fiscal/following.json` no App Group e lidas pelo widget.
+- **Sugestões (prompt-update de 31/10/2026, achado na QA):** no máximo 8, em ordem de cargo (`MineModel.suggestionOrder`), porque uma cidade grande lista dezenas de vereadores.
 - **`MineModel`** ganha:
   - `updates`, `updatesPhase`, `suggestions`, `newCount` e `markSeen()`;
   - um `PublicDataService` para `votes(slug:year:)`, `expenses(slug:year:)` e `checks(slug:)` de cada seguido, com no máximo 6 leituras ao mesmo tempo e o `settle` da FSC-002.
