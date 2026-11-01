@@ -55,6 +55,7 @@ Definição de pronto:
 - **Given** um link `https://fiscal.byescaleira.com/?person=<slug>` (e `vote`, `expenses`, `compare`, `place`, `race`, `highlight`) **When** ele é aberto num iPhone com o Fiscal **Then** o app abre no conteúdo, pelo Associated Domains com a AASA, que passa a aceitar esses parâmetros na raiz (`DeepLinkTests.siteLinksOpenTheContent`). Sem o app, o site abre. A AASA nova só passa a valer com o site publicado, o que espera o ok do usuário.
 - **Given** a pessoa segue alguém pela primeira vez **When** volta à aba Seguindo **Then** aparece uma linha dispensável "Compartilhe quem você acompanha". Ela abre o assunto novo "Quem eu sigo", que mostra até 6 pessoas com nome, partido e cargo, em ordem alfabética. Nunca há contagem nem ranking (`ShareModelTests.followingCardListsUpToSixAlphabetically`).
 - **Given** qualquer assunto e qualquer Lente **When** o cartaz e a legenda são montados **Then** nenhum texto traz a Lente ou quem a pessoa apoia, o "—" segue no lugar de dado ausente, e o arquivo se chama "Fiscal - <assunto>.png" ou ".mp4" (`ShareModelTests.theCardNeverCarriesWhoTheUserSupports`, já existente e ampliado aos estilos).
+- **Given** o fluxo pronto **When** as imagens são redesenhadas (pedido do usuário em 01/11/2026: "vale revisitar as imagens para compartilhar também, esse processo de compartilhamento ele deve ser repensado com um todo") **Then** cada tipo de assunto (pessoa, votação, gastos, disputa, comparação, seguindo) tem composição própria com uma frase-gancho factual, saída de uma crítica honesta das imagens atuais e de um quadro de referências reais; 2 ou 3 direções visuais vão ao iPhone do usuário e a escolhida é a que ele aprovar (roteiro: capturas de cada direção em `docs/evidence/FSC-010/directions/`).
 - **Erro:** falha ao gerar o vídeo cai na imagem, com o aviso "Não deu para gerar o vídeo; vai a imagem." Falha ao salvar no Fotos mostra o motivo. Nenhuma falha perde a seleção feita.
 
 ## Entities
@@ -253,7 +254,12 @@ docs/evidence/FSC-010/, CHANGELOG.md, docs/roadmap.md, spdd/README.md
 8. **Textos.** Depende de: 6 e 7.
    - Chaves em pt-BR.
    - Verificação: `scripts/strings.sh`.
-9. **Rodar e QA.** Depende de: 1 a 8.
+8.1. **Redesenho das imagens** (prompt-update de 01/11/2026). Depende de: 3 e 6.
+    - Crítica das imagens atuais e quadro de referências (Spotify Wrapped, resumos do Apple Fitness, Strava, The Pudding, NYT Upshot) em `docs/research/`.
+    - Composição por tipo de assunto, com frase-gancho factual no topo, menos elementos por cartaz e a arte a serviço do dado.
+    - 2 ou 3 direções no iPhone do usuário; iterar até o ok; a direção aprovada substitui o desenho dos estilos.
+    - Verificação: `ShareStyleTests` (matriz) e capturas por direção.
+9. **Rodar e QA.** Depende de: 1 a 8.1.
    - `scripts/verify.sh --full`.
    - Build no iPhone do usuário.
    - Roteiros em `docs/evidence/FSC-010/qa.md`:
