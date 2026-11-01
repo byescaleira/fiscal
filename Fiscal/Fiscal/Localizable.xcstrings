@@ -1433,6 +1433,16 @@
         }
       }
     },
+    "A card with up to six people you follow, with name, party and office." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um cartão com até seis pessoas que você segue, com nome, partido e cargo."
+          }
+        }
+      }
+    },
     "A constitutional amendment needs three fifths of the seats voting yes, not just more yes than no." : {
       "localizations" : {
         "pt-BR" : {
@@ -1983,6 +1993,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Valor"
+          }
+        }
+      }
+    },
+    "Animated video" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vídeo animado"
           }
         }
       }
@@ -2948,6 +2968,16 @@
         }
       }
     },
+    "Caption" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legenda"
+          }
+        }
+      }
+    },
     "Career" : {
       "localizations" : {
         "pt-BR" : {
@@ -3029,6 +3059,16 @@
         }
       }
     },
+    "Chamber, Senate and TSE" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Câmara, Senado e TSE"
+          }
+        }
+      }
+    },
     "Change" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3096,6 +3136,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Muda todos os blocos para o lugar escolhido"
+          }
+        }
+      }
+    },
+    "Chat" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conversa"
           }
         }
       }
@@ -3595,12 +3645,32 @@
         }
       }
     },
+    "Couldn't make the video; the image goes instead." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não deu para gerar o vídeo; vai a imagem."
+          }
+        }
+      }
+    },
     "Couldn't open Fiscal" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Não foi possível abrir o Fiscal"
+          }
+        }
+      }
+    },
+    "Couldn't prepare the file. Try again." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não deu para preparar o arquivo. Tente de novo."
           }
         }
       }
@@ -3621,6 +3691,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Não foi possível falar com o servidor de resultados. O app tenta de novo sozinho."
+          }
+        }
+      }
+    },
+    "Couldn't save to Photos." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não deu para salvar no Fotos."
           }
         }
       }
@@ -4834,6 +4914,16 @@
         }
       }
     },
+    "Facebook" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Facebook"
+          }
+        }
+      }
+    },
     "Fact Checks" : {
       "localizations" : {
         "pt-BR" : {
@@ -5136,7 +5226,18 @@
         }
       }
     },
+    "Fiscal can't add to Photos. Allow it in Settings > Fiscal > Photos." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Fiscal não tem acesso ao Fotos. Libere em Ajustes > Fiscal > Fotos."
+          }
+        }
+      }
+    },
     "Fiscal card" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -6491,6 +6592,16 @@
         }
       }
     },
+    "Instagram" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instagram"
+          }
+        }
+      }
+    },
     "Installed" : {
       "localizations" : {
         "pt-BR" : {
@@ -6738,6 +6849,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Faixa"
+          }
+        }
+      }
+    },
+    "Largest category" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maior categoria"
           }
         }
       }
@@ -7293,6 +7414,7 @@
       }
     },
     "Message" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -9235,6 +9357,16 @@
         }
       }
     },
+    "Other apps" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outros apps"
+          }
+        }
+      }
+    },
     "Other categories" : {
       "localizations" : {
         "pt-BR" : {
@@ -9901,6 +10033,86 @@
         }
       }
     },
+    "Post to Facebook Feed" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Postar no Facebook Feed"
+          }
+        }
+      }
+    },
+    "Post to Facebook Stories" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Postar no Facebook Stories"
+          }
+        }
+      }
+    },
+    "Post to Instagram Feed" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Postar no Instagram Feed"
+          }
+        }
+      }
+    },
+    "Post to Instagram Reels" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Postar no Instagram Reels"
+          }
+        }
+      }
+    },
+    "Post to Instagram Stories" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Postar no Instagram Stories"
+          }
+        }
+      }
+    },
+    "Post to TikTok" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Postar no TikTok"
+          }
+        }
+      }
+    },
+    "Post to WhatsApp Status" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Postar no Status do WhatsApp"
+          }
+        }
+      }
+    },
+    "Poster" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pôster"
+          }
+        }
+      }
+    },
     "Posture" : {
       "localizations" : {
         "pt-BR" : {
@@ -9932,11 +10144,22 @@
       }
     },
     "Preparing the image" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Preparando a imagem"
+          }
+        }
+      }
+    },
+    "Preparing the video" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparando o vídeo"
           }
         }
       }
@@ -10281,6 +10504,16 @@
         }
       }
     },
+    "QR code" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "QR code"
+          }
+        }
+      }
+    },
     "Quorum %@" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -10509,6 +10742,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Votações registradas em %@: %@"
+          }
+        }
+      }
+    },
+    "Reels" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reels"
           }
         }
       }
@@ -11149,6 +11392,26 @@
         }
       }
     },
+    "Saved to Photos. Open TikTok and pick the image." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvo no Fotos. Abra o TikTok e escolha a imagem."
+          }
+        }
+      }
+    },
+    "Saved to Photos. Open TikTok and pick the video." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvo no Fotos. Abra o TikTok e escolha o vídeo."
+          }
+        }
+      }
+    },
     "Schools, universities and teachers" : {
       "localizations" : {
         "pt-BR" : {
@@ -11389,6 +11652,16 @@
         }
       }
     },
+    "Send on WhatsApp" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar no WhatsApp"
+          }
+        }
+      }
+    },
     "Sergipe" : {
       "localizations" : {
         "pt-BR" : {
@@ -11460,6 +11733,7 @@
       }
     },
     "Share Image" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11475,6 +11749,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Compartilhar meus representantes"
+          }
+        }
+      }
+    },
+    "Share who you follow" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartilhe quem você acompanha"
           }
         }
       }
@@ -12432,6 +12716,16 @@
         }
       }
     },
+    "Style" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estilo"
+          }
+        }
+      }
+    },
     "Suggested" : {
       "localizations" : {
         "pt-BR" : {
@@ -12914,6 +13208,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O card leva os números oficiais do TSE e o horário do arquivo. Quem você apoia nunca vai para a imagem."
+          }
+        }
+      }
+    },
+    "The card carries the official source and the date. Your Lens never goes into the image." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O cartão leva a fonte oficial e a data. Sua Lente nunca entra na imagem."
           }
         }
       }
@@ -13819,6 +14123,16 @@
         }
       }
     },
+    "TikTok" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TikTok"
+          }
+        }
+      }
+    },
     "To study" : {
       "localizations" : {
         "pt-BR" : {
@@ -14136,6 +14450,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Digite o nome de qualquer cidade na busca. Todos os municípios do Brasil estão lá, com prefeito e vereadores."
+          }
+        }
+      }
+    },
+    "Typographic" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipográfico"
           }
         }
       }
@@ -14526,6 +14850,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vice-prefeitos"
+          }
+        }
+      }
+    },
+    "Video" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vídeo"
           }
         }
       }
@@ -15113,6 +15447,16 @@
         }
       }
     },
+    "What goes in" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que entra"
+          }
+        }
+      }
+    },
     "What happens when a signal is missing, and how highlights and alerts work." : {
       "localizations" : {
         "pt-BR" : {
@@ -15234,6 +15578,26 @@
         }
       }
     },
+    "WhatsApp" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WhatsApp"
+          }
+        }
+      }
+    },
+    "WhatsApp Status" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Status"
+          }
+        }
+      }
+    },
     "When a Signal Is Missing" : {
       "localizations" : {
         "pt-BR" : {
@@ -15304,6 +15668,16 @@
         }
       }
     },
+    "Where to post" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Onde postar"
+          }
+        }
+      }
+    },
     "Where your data lives" : {
       "localizations" : {
         "pt-BR" : {
@@ -15340,6 +15714,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quem governa"
+          }
+        }
+      }
+    },
+    "Who I follow" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem eu sigo"
+          }
+        }
+      }
+    },
+    "Who I follow on Fiscal" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem eu sigo no Fiscal"
           }
         }
       }
@@ -15748,6 +16142,16 @@
         }
       }
     },
+    "Yes %@, No %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Sim %1$@, Não %2$@"
+          }
+        }
+      }
+    },
     "Yes %@, no %@, other %@" : {
       "localizations" : {
         "pt-BR" : {
@@ -15774,6 +16178,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Votos Sim: %@"
+          }
+        }
+      }
+    },
+    "Yes × No" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sim × Não"
           }
         }
       }

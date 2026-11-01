@@ -112,7 +112,7 @@ public enum ShareDestination: String, CaseIterable, Hashable, Sendable, Identifi
         case .instagramFeed, .facebookFeed: "Feed"
         case .tiktok: "Video"
         case .whatsapp: "Chat"
-        case .whatsappStatus: "Status"
+        case .whatsappStatus: "WhatsApp Status"
         case .other: "Other apps"
         }
     }
