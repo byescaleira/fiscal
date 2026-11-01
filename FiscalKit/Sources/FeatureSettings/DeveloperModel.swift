@@ -1,4 +1,5 @@
 import FeatureCore
+import FiscalDesignSystem
 import FiscalDomain
 import Foundation
 import Observation
@@ -15,39 +16,34 @@ public final class DeveloperModel {
     public private(set) var isReloading = false
     public var isConfirmingDelete = false
     public let info: AppInfo
-    @ObservationIgnored private let flags: FeatureFlags?
+    public let flags: DeveloperFlagsModel?
+    public let log: DeveloperLogModel
+    public let diagnostics: DeveloperDiagnosticsModel
+    public let bucket: Int
+    @ObservationIgnored private let featureFlags: FeatureFlags?
     @ObservationIgnored private let update: AppUpdateModel?
     @ObservationIgnored private let session: SessionModel?
     @ObservationIgnored private let defaults: UserDefaults
 
     public init(
         flags: FeatureFlags?, update: AppUpdateModel?, session: SessionModel?,
-        info: AppInfo = .main, defaults: UserDefaults = .standard
+        info: AppInfo = .main, defaults: UserDefaults = .standard, events: EventLog = .shared
     ) {
-        self.flags = flags
+        let model = flags.map { flags in
+            DeveloperFlagsModel(
+                definitions: flags.definitions, overrides: flags.overrides,
+                remote: { flags.remoteValue($0) })
+        }
+        self.flags = model
+        log = DeveloperLogModel(log: events)
+        diagnostics = DeveloperDiagnosticsModel(log: events, flags: model)
+        bucket = flags?.bucket ?? .zero
+        featureFlags = flags
         self.update = update
         self.session = session
         self.info = info
         self.defaults = defaults
         countPreferences()
-    }
-
-    public var hasFlags: Bool { flags != nil }
-
-    public var bucket: Int { flags?.bucket ?? .zero }
-
-    public func isOn(_ flag: FeatureFlag) -> Bool {
-        flags?.isOn(flag) ?? flag.defaultValue
-    }
-
-    public func set(_ flag: FeatureFlag, isOn: Bool) {
-        flags?.override(flag, isOn)
-    }
-
-    public var hasOverrides: Bool { !(flags?.overrides.isEmpty ?? true) }
-
-    public func restoreFlags() {
-        for flag in FeatureFlag.allCases { flags?.override(flag, nil) }
     }
 
     public var canSimulateUpdates: Bool { update.map { !$0.enforces } ?? false }
@@ -94,6 +90,10 @@ public final class DeveloperModel {
         }
     }
 
+    public func layout(_ context: LayoutContext) -> DeveloperLayout {
+        DeveloperLayout(context)
+    }
+
     public var preferencesFooter: String {
         String(
             appLocalized:
@@ -112,18 +112,19 @@ public final class DeveloperModel {
 
     public func deletePreferences() {
         for key in preferenceKeys { defaults.removeObject(forKey: key) }
+        flags?.restoreDefaults()
         isConfirmingDelete = false
         countPreferences()
     }
 
-    public var canReload: Bool { session != nil || flags != nil }
+    public var canReload: Bool { session != nil || featureFlags != nil }
 
     public func reloadData() async {
         guard !isReloading else { return }
         isReloading = true
         defer { isReloading = false }
         session?.reload()
-        await flags?.refresh()
+        await featureFlags?.refresh()
     }
 
     public var versionText: String { info.number }

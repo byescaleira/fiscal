@@ -1,5 +1,6 @@
 import FeatureCore
 import FiscalData
+import FiscalDesignSystem
 import FiscalDomain
 import Foundation
 import Testing
@@ -26,8 +27,11 @@ private actor FakeFlagSource: RemoteFlagSource {
 }
 
 @MainActor
+@Suite(.timeLimit(.minutes(1)))
 struct DeveloperModelTests {
-    private let defaults = UserDefaults(suiteName: "DeveloperModelTests.\(UUID().uuidString)")
+    private let name = "DeveloperModelTests.\(UUID().uuidString)"
+    private let events = EventLog(subsystem: "DeveloperModelTests", capacity: 20)
+    private var defaults: UserDefaults? { UserDefaults(suiteName: name) }
     private let directory = FileManager.default.temporaryDirectory.appending(
         path: UUID().uuidString)
     private let info = AppInfo(info: [
@@ -50,26 +54,94 @@ struct DeveloperModelTests {
         flags: FeatureFlags? = nil, update: AppUpdateModel? = nil, session: SessionModel? = nil
     ) throws -> DeveloperModel {
         DeveloperModel(
-            flags: flags, update: update, session: session, info: info, defaults: try suite())
+            flags: flags, update: update, session: session, info: info, defaults: try suite(),
+            events: events)
     }
 
-    @Test func overridesFlagsAndRestoresTheDefaults() throws {
-        let flags = FeatureFlags(defaults: try suite())
-        let developer = try model(flags: flags)
-        #expect(developer.hasFlags)
-        #expect(developer.bucket == flags.bucket)
-        #expect(!developer.hasOverrides)
+    private func flags(source: (any RemoteFlagSource)? = nil) throws -> FeatureFlags {
+        FeatureFlags(
+            defaults: try suite(),
+            overrides: FlagOverrides(prefix: FeatureFlags.prefix, suiteName: name), source: source)
+    }
 
-        developer.set(.partyIcons, isOn: true)
-        developer.set(.guides, isOn: false)
-        #expect(developer.isOn(.partyIcons))
-        #expect(!developer.isOn(.guides))
-        #expect(developer.hasOverrides)
+    @Test func choosesEachFlagInThreeStatesAndRestoresTheDefaults() throws {
+        let featureFlags = try flags()
+        let developer = try model(flags: featureFlags)
+        let choices = try #require(developer.flags)
+        #expect(developer.bucket == featureFlags.bucket)
+        #expect(choices.states.map(\.key) == FeatureFlag.allCases.map(\.rawValue))
+        #expect(choices.states.allSatisfy { $0.source == .default })
+        #expect(!choices.hasChanges)
 
-        developer.restoreFlags()
-        #expect(!developer.hasOverrides)
-        #expect(developer.isOn(.guides) == FeatureFlag.guides.defaultValue)
-        #expect(developer.isOn(.partyIcons) == FeatureFlag.partyIcons.defaultValue)
+        choices.setChoice(.on, for: FeatureFlag.partyIcons.rawValue)
+        choices.setChoice(.off, for: FeatureFlag.guides.rawValue)
+        #expect(featureFlags.isOn(.partyIcons))
+        #expect(!featureFlags.isOn(.guides))
+        #expect(choices.choice(for: FeatureFlag.guides.rawValue) == .off)
+        #expect(choices.changedCount == 2)
+        #expect(
+            try suite().dictionary(forKey: "fiscal.flags.overrides") as? [String: Bool]
+                == ["partyIcons": true, "guides": false])
+
+        choices.setChoice(.default, for: FeatureFlag.guides.rawValue)
+        #expect(featureFlags.isOn(.guides) == FeatureFlag.guides.defaultValue)
+        choices.restoreDefaults()
+        #expect(!choices.hasChanges)
+        #expect(featureFlags.isOn(.partyIcons) == FeatureFlag.partyIcons.defaultValue)
+        #expect(try model().flags == nil)
+    }
+
+    @Test func showsTheEventLogFilteredAndClearsIt() throws {
+        FiscalEvents.launch.log(to: events)
+        FiscalEvents.networkError(status: 403).log(to: events)
+        let developer = try model()
+        #expect(developer.log.totalCount == 2)
+
+        developer.log.minimumLevel = .error
+        #expect(developer.log.entries.map(\.message) == ["Network error, HTTP status 403"])
+        #expect(developer.log.text.contains("data: Network error, HTTP status 403"))
+
+        developer.log.clear()
+        #expect(events.entries.isEmpty)
+        #expect(!developer.log.isConfirmingClear)
+    }
+
+    @Test func diagnosticsListTheFlagsAndTheEvents() throws {
+        FiscalEvents.offlinePack(files: 3).log(to: events)
+        let developer = try model(flags: try flags())
+        developer.flags?.setChoice(.on, for: FeatureFlag.partyIcons.rawValue)
+        let text = developer.diagnostics.text
+        #expect(text.contains("partyIcons: on (local)"))
+        #expect(text.contains("guides: on (default)"))
+        #expect(text.contains("Offline pack refreshed, 3 files"))
+        #expect(developer.diagnostics.report.flags.count == FeatureFlag.allCases.count)
+    }
+
+    @Test func describesTheLayoutTheWindowMeasures() throws {
+        let developer = try model()
+        let flat = developer.layout(
+            LayoutContext(size: CGSize(width: 402, height: 874), isHorizontallyCompact: true))
+        #expect(flat.sizeText == "402 × 874 pt")
+        #expect(flat.postureText == String(appLocalized: "Flat"))
+        #expect(flat.divisionsText == String(appLocalized: "None"))
+        #expect(flat.verticalBarText == String(appLocalized: "None"))
+
+        let standing = developer.layout(
+            LayoutContext(
+                size: CGSize(width: 800, height: 600), isHorizontallyCompact: false,
+                verticalBarEdge: .trailing,
+                divisions: [CGRect(x: 390, y: 0, width: 20, height: 600)]))
+        #expect(standing.postureText == String(appLocalized: "Folded, side by side"))
+        #expect(standing.divisionsText == "(390, 0) 20 × 600 pt")
+        #expect(standing.verticalBarText == String(appLocalized: "Trailing"))
+
+        let lying = developer.layout(
+            LayoutContext(
+                size: CGSize(width: 600, height: 800), isHorizontallyCompact: true,
+                verticalBarEdge: .leading,
+                divisions: [CGRect(x: 0, y: 390, width: 600, height: 20)]))
+        #expect(lying.postureText == String(appLocalized: "Folded, stacked"))
+        #expect(lying.verticalBarText == String(appLocalized: "Leading"))
     }
 
     @Test func simulatesRecommendedAndRequiredUpdates() throws {
@@ -141,10 +213,10 @@ struct DeveloperModelTests {
 
     @Test func reloadsTheSessionAndTheRemoteFlags() async throws {
         let source = FakeFlagSource()
-        let flags = FeatureFlags(defaults: try suite(), source: source)
+        let featureFlags = try flags(source: source)
         let session = SessionModel(
             repositories: try FiscalDatabase.open(inMemory: true).repositories)
-        let developer = try model(flags: flags, session: session)
+        let developer = try model(flags: featureFlags, session: session)
         #expect(developer.canReload)
 
         await developer.reloadData()

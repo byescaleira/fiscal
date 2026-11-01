@@ -21,9 +21,18 @@ private struct DeveloperPage: View {
     var body: some View {
         @Bindable var developer = developer
         SettingsPage("Developer") {
-            if developer.hasFlags { DeveloperFlagsSection() }
+            if let flags = developer.flags {
+                DeveloperFlagsSection(flags) {
+                    Text(
+                        "This device's rollout group: \(developer.bucket). Only shown in development builds."
+                    )
+                }
+            }
+            DeveloperLayoutSection()
             if developer.canSimulateUpdates { DeveloperUpdatesSection() }
             DeveloperDataSection()
+            DeveloperLogSection(developer.log)
+            DeveloperDiagnosticsSection(developer.diagnostics)
             DeveloperPreferencesSection()
             DeveloperAppSection()
         }
@@ -39,30 +48,21 @@ private struct DeveloperPage: View {
     }
 }
 
-private struct DeveloperFlagsSection: View {
+private struct DeveloperLayoutSection: View {
     @Environment(DeveloperModel.self) private var developer
+    @Environment(\.layoutContext) private var context
 
     var body: some View {
+        let layout = developer.layout(context)
         Section {
-            ForEach(FeatureFlag.allCases) { flag in
-                Toggle(
-                    flag.title,
-                    isOn: Binding(
-                        get: { developer.isOn(flag) }, set: { developer.set(flag, isOn: $0) }))
-            }
-            .tint(.positive)
-            Button {
-                developer.restoreFlags()
-            } label: {
-                IconRow("Restore Defaults", symbol: "arrow.uturn.backward", color: .companion)
-            }
-            .disabled(!developer.hasOverrides)
+            LabeledContent("Size", value: layout.sizeText)
+            LabeledContent("Posture", value: layout.postureText)
+            LabeledContent("Divisions", value: layout.divisionsText)
+            LabeledContent("Vertical Bar", value: layout.verticalBarText)
         } header: {
-            Text("Flags").sectionTitle()
+            Text("Layout").sectionTitle()
         } footer: {
-            Text(
-                "This device's rollout group: \(developer.bucket). Only shown in development builds."
-            )
+            Text("What this window measures now. Fold, rotate or resize it to see the change.")
         }
     }
 }
