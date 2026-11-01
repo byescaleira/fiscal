@@ -17,42 +17,91 @@ public final class ShareModel {
     public private(set) var lens: Lens?
     public private(set) var code: CGImage?
     public private(set) var rendered: RenderedCard?
-    public var format: ShareFormat = .stories
+    public var format: ShareFormat = ShareDestination.instagramStories.format
     public var selectedWorkID: ArtWork.ID?
     public private(set) var collectionID: ArtCollection.ID?
+    public var style: ShareStyle = .poster
+    public private(set) var destination: ShareDestination = .instagramStories
+    public private(set) var selection = ShareSelection()
+    public private(set) var caption = ""
+    public private(set) var isCaptionEdited = false
+    public private(set) var exportProgress: Double = 0
+    public private(set) var isPosting = false
+    public private(set) var postFailed = false
+    public var postRequest: SharePostRequest?
 
     @ObservationIgnored private let service: (any PublicDataService)?
     @ObservationIgnored private let races: (any LiveResultsService)?
     @ObservationIgnored private let lensRepository: (any LensRepository)?
+    @ObservationIgnored private let follows: (any FollowRepository)?
+    @ObservationIgnored private var renderScale: CGFloat = 3
+    @ObservationIgnored private var renderPortraits: PortraitArtwork?
     @ObservationIgnored private let catalog: ArtCatalog?
     @ObservationIgnored private let builder: ShareCardBuilder
+    @ObservationIgnored private let now: @Sendable () -> Date
     @ObservationIgnored private let requests = PublicDataRequests()
 
     public init(
         subject: ShareSubject, service: (any PublicDataService)?,
         races: (any LiveResultsService)? = nil, lens: (any LensRepository)? = nil,
+        follows: (any FollowRepository)? = nil,
         catalog: ArtCatalog? = try? ArtCatalog.bundled(),
-        calendar: Calendar = GregorianCalendar.current
+        calendar: Calendar = GregorianCalendar.current,
+        now: @escaping @Sendable () -> Date = { .now }
     ) {
         self.subject = subject
         self.service = service
         self.races = races
         lensRepository = lens
+        self.follows = follows
         self.catalog = catalog
         builder = ShareCardBuilder(calendar: calendar)
+        self.now = now
     }
 
     public var isEmpty: Bool { content == nil }
 
-    public var card: ShareCard? {
+    public var card: ShareCard? { card(style: style) }
+
+    public func card(style: ShareStyle) -> ShareCard? {
         content.map {
-            ShareCard(content: $0, artwork: $0.hasOwnPoster ? nil : artwork, format: format)
+            ShareCard(
+                content: $0.applying(selection), artwork: $0.hasOwnPoster ? nil : artwork,
+                format: format, style: style, showsCode: selection.showsCode)
         }
     }
 
-    public var usesArt: Bool { content?.hasOwnPoster != true }
+    public var usesArt: Bool { style == .poster && content?.hasOwnPoster != true }
+
+    public var facts: [ShareFact] {
+        guard let content else { return [] }
+        return content.optionalFacts + (code != nil && format.showsCode ? [.code] : [])
+    }
+
+    public func isOn(_ fact: ShareFact) -> Bool { selection.isOn(fact) }
+
+    public func canToggle(_ fact: ShareFact) -> Bool {
+        selection.canToggle(fact, among: facts)
+    }
+
+    public func toggle(_ fact: ShareFact) {
+        selection.toggle(fact, among: facts)
+        refreshCaption()
+    }
+
+    public func choose(_ destination: ShareDestination) {
+        self.destination = destination
+        format = destination.format
+    }
+
+    public func editCaption(_ text: String) {
+        caption = String(text.prefix(ShareCaption.limit))
+        isCaptionEdited = true
+    }
 
     public var isInvestigation: Bool { content?.investigation != nil }
+
+    public var isVictory: Bool { content?.isVictory == true }
 
     public var shareMessage: String {
         guard let content else { return ShareCardBuilder.host }
@@ -121,10 +170,28 @@ public final class ShareModel {
     }
 
     public func render(scale: CGFloat, portraits: PortraitArtwork?) {
+        renderScale = scale
+        renderPortraits = portraits
         rendered = card.flatMap { card in
             ShareRenderer.render(card, code: code, scale: scale, portraits: portraits)
                 .flatMap { RenderedCard(file: $0, scale: scale) }
         }
+    }
+
+    public func post() async {
+        guard !isPosting else { return }
+        isPosting = true
+        postFailed = false
+        exportProgress = 0
+        defer { isPosting = false }
+        render(scale: renderScale, portraits: renderPortraits)
+        guard let file = rendered?.file, let url = try? ShareRenderer.write(file) else {
+            postFailed = true
+            return
+        }
+        exportProgress = 1
+        postRequest = SharePostRequest(
+            file: url, caption: destination.acceptsCaption ? caption : nil)
     }
 
     public func load() async {
@@ -136,7 +203,13 @@ public final class ShareModel {
             lens = loaded.lens
             content = loaded.content
             code = ShareCode.image(for: loaded.content.link)
+            refreshCaption()
         }
+    }
+
+    private func refreshCaption() {
+        guard !isCaptionEdited, let content else { return }
+        caption = ShareCaption.make(content, selection: selection)
     }
 
     private var preferredCollectionID: ArtCollection.ID {
@@ -149,6 +222,7 @@ public final class ShareModel {
     private func fetch() async throws -> ShareCardContent {
         if case .race(let id) = subject { return try await race(id) }
         if case .investigation(let summary) = subject { return builder.investigation(summary) }
+        if case .following = subject { return try await following() }
         guard let service else { throw PublicDataError.unavailable }
         return try await fetch(from: service)
     }
@@ -180,7 +254,16 @@ public final class ShareModel {
             return try await highlight(id, from: service)
         case .investigation(let summary):
             return builder.investigation(summary)
+        case .following:
+            return try await following()
         }
+    }
+
+    private func following() async throws -> ShareCardContent {
+        guard let follows else { throw PublicDataError.unavailable }
+        let people = try await follows.followed()
+        guard !people.isEmpty else { throw PublicDataError.notFound }
+        return builder.following(people, at: now())
     }
 
     private func highlight(_ id: String, from service: any PublicDataService) async throws

@@ -2,7 +2,7 @@ import SwiftUI
 
 extension CGFloat {
     public static let posterMargin: CGFloat = 24
-    public static let posterMarginCompact: CGFloat = 18
+    public static let posterMarginCompact: CGFloat = 22
     public static let posterHeroStories: CGFloat = 132
     public static let posterHeroFeed: CGFloat = 96
     public static let posterHeroMessage: CGFloat = 72

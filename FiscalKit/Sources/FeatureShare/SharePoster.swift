@@ -11,6 +11,7 @@ public struct SharePoster: Hashable, Sendable {
         case highlight(ShareHighlight)
         case victory(ShareVictory)
         case investigation(ShareInvestigation)
+        case people([ShareFace])
     }
 
     public struct Fact: Hashable, Sendable, Identifiable {
@@ -85,8 +86,9 @@ public struct SharePoster: Hashable, Sendable {
             headline = nil
             hero = .highlight(highlight)
             facts = []
-            note = [highlight.weight, highlight.uncertainty].compactMap(\.self)
-                .joined(separator: " · ")
+            let parts = [highlight.weight, highlight.uncertainty].compactMap(\.self)
+                .filter { !$0.isEmpty }
+            note = parts.isEmpty ? nil : parts.joined(separator: " · ")
             person = nil
         case .victory(let victory):
             headline = nil
@@ -100,6 +102,12 @@ public struct SharePoster: Hashable, Sendable {
             facts = investigation.numbers
             note = investigation.uncertainty
             person = nil
+        case .following(let faces):
+            headline = content.headline
+            hero = .people(faces)
+            facts = []
+            note = nil
+            person = nil
         }
     }
 
@@ -111,7 +119,7 @@ public struct SharePoster: Hashable, Sendable {
     public var noteIsEssential: Bool {
         switch hero {
         case .race, .highlight, .investigation: true
-        case .figure, .place, .tally, .versus, .victory: false
+        case .figure, .place, .tally, .versus, .victory, .people: false
         }
     }
 
@@ -145,6 +153,7 @@ extension SharePoster.Hero {
                 + [highlight.place] + (highlight.tally.map { Self.tally($0).texts } ?? [])
         case .victory(let victory): victory.texts
         case .investigation(let investigation): investigation.texts
+        case .people(let faces): faces.flatMap { [$0.name, $0.party, $0.detail] }
         }
     }
 }

@@ -9,18 +9,16 @@ public struct ShareCardView: View {
 
     public init(card: ShareCard, code: CGImage?) {
         self.card = card
-        self.code = code
+        self.code = card.showsCode ? code : nil
     }
 
     public var body: some View {
         let size = card.format.size
         Group {
-            if let victory = card.victory {
-                ShareVictoryPoster(card: card, victory: victory, code: code)
-            } else if let investigation = card.investigation {
-                ShareInvestigationPoster(card: card, investigation: investigation, code: code)
-            } else {
-                standard
+            switch card.style {
+            case .poster: poster
+            case .typographic: ShareTypographicView(card: card, code: code)
+            case .data: ShareDataView(card: card, code: code)
             }
         }
         .frame(width: size.width, height: size.height)
@@ -30,8 +28,19 @@ public struct ShareCardView: View {
         .dynamicTypeSize(.large)
     }
 
+    @ViewBuilder private var poster: some View {
+        if let victory = card.victory {
+            ShareVictoryPoster(card: card, victory: victory, code: code)
+        } else if let investigation = card.investigation {
+            ShareInvestigationPoster(card: card, investigation: investigation, code: code)
+        } else {
+            standard
+        }
+    }
+
     private var standard: some View {
         let size = card.format.size
+        let format = card.format.textFormat
         let field = Color.posterField(card.artwork?.shade)
         return ZStack(alignment: .top) {
             LinearGradient(
@@ -41,7 +50,7 @@ public struct ShareCardView: View {
                 ShareBackdrop(artwork: artwork, size: size)
             }
             VStack(alignment: .leading, spacing: .zero) {
-                ShareArtHeader(artwork: card.artwork, format: card.format, field: field)
+                ShareArtHeader(artwork: card.artwork, format: format, field: field)
                     .layoutPriority(1)
                 if card.artwork?.isBackdrop == true {
                     Spacer(minLength: .spaceM)
@@ -49,17 +58,18 @@ public struct ShareCardView: View {
                         .fixedSize(horizontal: false, vertical: true)
                         .layoutPriority(2)
                 } else {
-                    ShareLead(poster: card.poster, format: card.format)
-                        .padding([.top, .horizontal], card.format.margin)
+                    ShareLead(poster: card.poster, format: format)
+                        .padding([.top, .horizontal], format.margin)
                         .fixedSize(horizontal: false, vertical: true)
                         .layoutPriority(2)
                     Spacer(minLength: .spaceM)
                     ShareFooter(card: card, code: code)
-                        .padding([.bottom, .horizontal], card.format.margin)
+                        .padding([.bottom, .horizontal], format.margin)
                         .fixedSize(horizontal: false, vertical: true)
                         .layoutPriority(2)
                 }
             }
+            .padding(card.format.safeExtra(beyond: format.margin))
         }
     }
 }
@@ -152,15 +162,19 @@ private struct ShareContent: View {
     let field: Color
 
     var body: some View {
+        let format = card.format.textFormat
+        let extra = card.format.safeExtra(beyond: format.margin)
         VStack(alignment: .leading, spacing: .spaceL) {
-            ShareLead(poster: card.poster, format: card.format)
+            ShareLead(poster: card.poster, format: format)
             ShareFooter(card: card, code: code)
         }
-        .padding(card.format.margin)
+        .padding(format.margin)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(alignment: .bottom) {
             if card.artwork?.isBackdrop == true {
                 ShareScrim(field: field)
+                    .padding(.horizontal, -extra.leading)
+                    .padding(.bottom, -extra.bottom)
             }
         }
     }
@@ -219,7 +233,7 @@ private struct ShareLead: View {
     }
 }
 
-private struct ShareFooter: View {
+struct ShareFooter: View {
     let card: ShareCard
     let code: CGImage?
 

@@ -38,20 +38,35 @@ private struct ShareEditor: View {
 
     var body: some View {
         @Bindable var model = model
-        ScrollView {
-            VStack(spacing: .spaceXL) {
-                ShareCardPreview(rendered: model.rendered, card: model.card)
-                ShareFormatChooser(selection: $model.format)
+        VStack(spacing: .zero) {
+            ShareCardPreview(rendered: model.rendered, card: model.card)
+                .padding(.spaceM)
+                .frame(maxWidth: .infinity)
+            List {
+                ShareFactsSection()
+                ShareStyleSection()
                 if model.usesArt {
-                    ShareArtPicker()
+                    Section {
+                        ShareArtPicker()
+                            .padding(.horizontal, .spaceL)
+                            .padding(.vertical, .spaceS)
+                            .listRowBackground(Color.clear)
+                            .listRowInsets(EdgeInsets())
+                    }
                 }
-                ShareAction(rendered: model.rendered)
+                ShareDestinationSection()
+                if model.destination.acceptsCaption {
+                    ShareCaptionSection()
+                }
+                ShareNoteSection()
             }
-            .padding(.spaceL)
-            .readableWidth()
-            .frame(maxWidth: .infinity)
+            .scrollContentBackground(.hidden)
         }
         .background(.plainBackground)
+        .safeAreaInset(edge: .bottom) {
+            SharePostBar()
+        }
+        .sharePostSheet($model.postRequest)
         .task(id: model.card) {
             model.render(scale: displayScale, portraits: portraits)
         }
@@ -77,7 +92,7 @@ private struct ShareCardPreview: View {
         }
         .aspectRatio(size.width / size.height, contentMode: .fit)
         .clipShape(.rect(cornerRadius: .radiusL))
-        .frame(maxHeight: .sharePreviewMax)
+        .frame(maxHeight: .shareStylePreview)
         .shadow(color: .black.opacity(.opacityTint), radius: .spaceM, y: .spaceS)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: card?.accessibilityLabel ?? ""))
@@ -195,85 +210,5 @@ private struct ShareArtCard: View {
         .buttonStyle(.plain)
         .accessibilityLabel(Text(verbatim: "\(work.title), \(work.artist), \(work.year)"))
         .accessibilityAddTraits(selected ? .isSelected : [])
-    }
-}
-
-private struct ShareAction: View {
-    @Environment(ShareModel.self) private var model
-    let rendered: RenderedCard?
-
-    var body: some View {
-        VStack(spacing: .spaceM) {
-            if let rendered {
-                ShareLink(
-                    item: rendered.file,
-                    preview: SharePreview(Text("Fiscal card"), image: rendered.image)
-                ) {
-                    Label("Share Image", systemImage: "square.and.arrow.up")
-                        .frame(maxWidth: .infinity)
-                }
-                .primaryButton()
-            } else {
-                ProgressView("Preparing the image")
-            }
-            Group {
-                if model.isInvestigation {
-                    Text(
-                        "The card carries only the numbers found, their sources and the date. Your question stays on this device unless you share it."
-                    )
-                } else if model.usesArt {
-                    Text(
-                        "The card carries the official source, the date and the art credit. Your Lens never goes into the image."
-                    )
-                } else {
-                    Text(
-                        "The card carries the official TSE numbers and the time of the file. Your Lens never goes into the image."
-                    )
-                }
-            }
-            .font(.footnote)
-            .foregroundStyle(.secondary)
-            .multilineTextAlignment(.center)
-        }
-    }
-}
-
-private struct ShareFormatChooser: View {
-    @Binding var selection: ShareFormat
-    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
-    @Environment(\.liteMode) private var liteMode
-    @Environment(\.appTint) private var tint
-
-    var body: some View {
-        HStack(alignment: .bottom, spacing: .spaceXL) {
-            ForEach(ShareFormat.allCases, id: \.self) { format in
-                let isSelected = selection == format
-                Button {
-                    selection = format
-                } label: {
-                    VStack(spacing: .spaceS) {
-                        RoundedRectangle(cornerRadius: .spaceXS, style: .continuous)
-                            .fill(isSelected ? tint.opacity(.opacityTint) : Color.clear)
-                            .strokeBorder(
-                                isSelected ? tint : Color.secondary, lineWidth: .spaceHairline
-                            )
-                            .frame(
-                                width: .badgeXL * format.size.width / format.size.height,
-                                height: .badgeXL)
-                        Text(format.title)
-                            .font(.footnote.weight(isSelected ? .bold : .regular))
-                            .foregroundStyle(
-                                isSelected ? AnyShapeStyle(tint) : AnyShapeStyle(.secondary))
-                    }
-                    .contentShape(.rect)
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(Text(format.title))
-                .accessibilityAddTraits(isSelected ? .isSelected : [])
-            }
-        }
-        .frame(maxWidth: .infinity)
-        .sensoryFeedback(.selection, trigger: selection)
-        .animation(systemReduceMotion || liteMode.reducesMotion ? nil : .snappy, value: selection)
     }
 }

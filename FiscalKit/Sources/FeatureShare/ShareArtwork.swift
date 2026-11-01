@@ -35,24 +35,43 @@ public struct ShareCard: Hashable, Sendable {
     public let content: ShareCardContent
     public let artwork: ShareArtwork?
     public let format: ShareFormat
+    public let style: ShareStyle
+    public let showsCode: Bool
 
-    public init(content: ShareCardContent, artwork: ShareArtwork?, format: ShareFormat) {
+    public init(
+        content: ShareCardContent, artwork: ShareArtwork?, format: ShareFormat,
+        style: ShareStyle = .poster, showsCode: Bool = true
+    ) {
         self.content = content
-        self.artwork = artwork
+        self.artwork = style == .poster ? artwork : nil
         self.format = format
+        self.style = style
+        self.showsCode = showsCode
     }
 
     public var brand: String { "Fiscal" }
 
     public var poster: SharePoster { SharePoster(content) }
 
+    public var statement: ShareStatement { ShareStatement(content) }
+
+    public var board: ShareBoard { ShareBoard(content) }
+
+    public var styleTexts: [String] {
+        switch style {
+        case .poster: poster.texts
+        case .typographic: statement.texts + [content.source]
+        case .data: board.texts + [content.source]
+        }
+    }
+
     public var texts: [String] {
-        poster.texts + [artwork?.credit, brand, ShareCardBuilder.host].compactMap(\.self)
+        styleTexts + [artwork?.credit, brand, ShareCardBuilder.host].compactMap(\.self)
     }
 
     public var accessibilityLabel: String {
-        ([poster.accessibilitySummary, artwork?.credit].compactMap(\.self))
-            .joined(separator: ". ")
+        let summary = styleTexts.filter { !$0.isEmpty }.joined(separator: ", ")
+        return ([summary, artwork?.credit].compactMap(\.self)).joined(separator: ". ")
     }
 }
 

@@ -8,7 +8,7 @@ struct ShareVictoryPoster: View {
     let code: CGImage?
 
     var body: some View {
-        let format = card.format
+        let format = card.format.textFormat
         VStack(alignment: .leading, spacing: .zero) {
             Spacer(minLength: .zero)
             ShareVictoryHero(victory: victory, format: format)
@@ -24,6 +24,7 @@ struct ShareVictoryPoster: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .padding(format.victoryMargin)
+        .padding(card.format.safeExtra(beyond: format.victoryMargin))
         .background { ShareVictoryField(party: victory.winner.party) }
         .clipped()
     }
@@ -90,7 +91,7 @@ struct ShareVictoryHero: View {
         HStack(alignment: .center, spacing: .spaceM) {
             ShareVictoryParty(party: victory.winner.party, size: format.victoryParty)
                 .fixedSize()
-            ShareFigure(value: victory.percent, size: format.victoryPercent)
+            ShareFigure(value: victory.percent, size: format.victoryPercent, animates: true)
                 .layoutPriority(1)
         }
         .frame(maxWidth: .infinity)
@@ -124,9 +125,11 @@ private struct ShareVictoryPortrait: View {
                 .foregroundStyle(.white, Color.scoreboardAccent)
         }
         .background {
-            CelebrationConfetti(colors: [palette.secondary, .white])
-                .frame(width: size * .posterVictoryHalo, height: size * .posterVictoryHalo)
-                .opacity(.opacityStrong)
+            if !format.victoryIsSideBySide {
+                CelebrationConfetti(colors: [palette.secondary, .white])
+                    .frame(width: size * .posterVictoryHalo, height: size * .posterVictoryHalo)
+                    .opacity(.opacityStrong)
+            }
         }
     }
 }

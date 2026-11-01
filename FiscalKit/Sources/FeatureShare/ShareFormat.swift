@@ -13,14 +13,6 @@ extension ShareFormat {
         }
     }
 
-    public var title: LocalizedStringKey {
-        switch self {
-        case .stories: "Stories"
-        case .feed: "Feed"
-        case .message: "Message"
-        }
-    }
-
     public var heroSize: CGFloat {
         switch self {
         case .stories: .posterHeroStories
