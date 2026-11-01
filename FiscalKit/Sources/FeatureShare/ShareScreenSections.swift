@@ -3,18 +3,15 @@ import SwiftUI
 
 struct ShareControls: View {
     @Environment(ShareModel.self) private var model
-    @Environment(\.layoutContext) private var context
 
     var body: some View {
-        VStack(alignment: .leading, spacing: .spaceS) {
+        VStack(alignment: .leading, spacing: .spaceL) {
             if model.usesArt {
                 ShareArtRail()
             }
             ShareDestinationPicker()
             ShareFactsRail()
-            if context.size.height >= .shareNoteMinimumHeight {
-                ShareNote()
-            }
+            ShareNote()
         }
         .padding(.horizontal, .spaceL)
     }
@@ -25,8 +22,7 @@ private struct ShareControlTitle: View {
 
     var body: some View {
         Text(title)
-            .font(.emphasis(.subheadline, weight: .bold))
-            .foregroundStyle(.primary)
+            .sectionTitle()
             .accessibilityAddTraits(.isHeader)
     }
 }

@@ -11,11 +11,12 @@ Decisões do usuário em 31/10/2026:
 
 Definição de pronto:
 
-- **Given** a pessoa abre Compartilhar num perfil **When** a tela aparece **Then** ela vê, sem rolar, num iPhone de tela comum:
-  - o carrossel dos estilos, com o cartão escolhido no centro e os vizinhos aparecendo nas bordas;
+- **Given** a pessoa abre Compartilhar num perfil **When** a tela aparece **Then** ela vê:
+  - o carrossel dos estilos fixo no topo e grande, com o cartão escolhido no centro e os vizinhos aparecendo nas bordas;
+  - abaixo, um painel visualmente separado que rola sozinho, sem mover o cartão, com os controles;
   - "Onde postar", com as redes e, abaixo, os lugares da rede escolhida;
   - "O que entra", com um chip marcado por fato;
-  - no Pôster, um trilho "Arte" com as miniaturas das obras, em que um toque troca a arte do cartão;
+  - no Pôster, como primeira seção do painel, o trilho "Arte" com as coleções e as obras em tamanho grande, com artista e título, em que um toque troca a arte do cartão;
   - só as ferramentas que valem para a escolha: "Vídeo animado" em destino de vídeo ou imagem e "Legenda" em destino com texto, esta numa folha;
   - embaixo, um botão com o nome do destino escolhido (por exemplo, "Postar no Instagram Stories").
   - Em tela larga (iPad, Mac, Duo aberto), o cartão fica à esquerda e os controles à direita. Com fonte de acessibilidade, a tela inteira rola em vez de cortar.
@@ -152,7 +153,7 @@ classDiagram
 ## Approach
 
 1. **Estratégia:**
-   - A `ShareScreen` vira um estúdio: o cartão é o centro da tela, os controles ficam abaixo sem rolagem e o botão de postar fica fixo embaixo.
+   - A `ShareScreen` vira um estúdio: o cartão fica fixo e grande no topo, os controles rolam num painel separado e o botão de postar fica fixo embaixo.
    - Todo estilo desenha o mesmo `ShareCardContent` filtrado pela `ShareSelection`.
    - O destino decide formato, mídia e entrega.
    - O vídeo nasce dos mesmos views, animados por um progresso.
@@ -161,7 +162,7 @@ classDiagram
      - a lista de interruptores parecia Ajustes, e não um editor;
      - a prévia ocupava metade da tela, e chegar a "Onde postar" levava quatro rolagens, embora o destino decida o formato;
      - as miniaturas de estilo repetiam a prévia;
-     - agora o próprio cartão escolhe o estilo, num carrossel. Destino e fatos viram trilhos de toque único, e Arte e Legenda só aparecem quando valem, numa folha. Referência: o cartão de letras do Spotify, com a prévia, a troca de visual tocando nela e os apps de destino na mesma tela ([quadro](../../docs/research/2026-11-01-share-card-references.md)).
+     - agora o próprio cartão escolhe o estilo, num carrossel. Destino e fatos viram trilhos de toque único, e a Arte e a Legenda só aparecem quando valem. Referência: o cartão de letras do Spotify, com a prévia, a troca de visual tocando nela e os apps de destino na mesma tela ([quadro](../../docs/research/2026-11-01-share-card-references.md)).
      - A pessoa vê tudo e muda em qualquer ordem, sem assistente de páginas e sem `Picker` segmentado.
    - **Destinos agrupados por rede:** Instagram (Stories, Reels, Feed), TikTok, Facebook (Stories, Feed), WhatsApp (conversa, Status) e Outros.
      - O ícone de cada rede é um símbolo SF genérico (câmera, play, pessoas, balão), sem logo de terceiros.
@@ -195,7 +196,8 @@ classDiagram
    - **Identidade (refino de 01/11/2026):**
      - crítica: os cartões e o estúdio estavam corretos, mas genéricos, sem o retrato, a marca e o gradiente que identificam o Fiscal; as redes eram blocos cinzas iguais, os títulos das seções sumiam, e a barra de postar era uma faixa cinza;
      - o carrossel fica direto sobre o fundo da tela, com o cartão escolhido maior. Alternativa descartada: um palco com o gradiente do partido atrás do carrossel, como no Apple Invites (usuário em 01/11/2026: "esse background atrás do carrossel ficou ruim");
-     - a arte do Pôster fica à vista num trilho de miniaturas. Alternativa descartada: o botão "Arte" abrindo uma folha, que ficava escondido no fim do trilho (usuário: "precisa se apresentar de uma forma mais clara");
+     - a arte do Pôster é a primeira seção do painel, com o trilho grande da primeira versão do compartilhar (usuário: "estava muito bom lá no começo [...], tem que ser maior e parecido com o que tinha antes"). Alternativas descartadas: o botão "Arte" abrindo uma folha, escondido no fim do trilho ("precisa se apresentar de uma forma mais clara"), e as miniaturas pequenas;
+     - o cartão fica fixo e grande, e os controles rolam num painel cinza separado (usuário: "pode existir um scroll vertical para manter o resultado final grande, desde que seja possível separar esses dois, visualmente falando"). Alternativa descartada: tudo sem rolagem, que encolhia o cartão;
      - as redes viram círculos com o `SymbolBadge`, como a fileira da folha do sistema, e os lugares e fatos usam a cápsula `.bordered` do kit (a mesma do `ChoicePills`);
      - os títulos das seções passam à Bricolage, e o botão de postar fica numa barra de vidro (`safeAreaBar`);
      - o Dados de uma pessoa é um placar sobre o gradiente do partido, e o Duelo coloca os dois retratos sobre as duas cores;

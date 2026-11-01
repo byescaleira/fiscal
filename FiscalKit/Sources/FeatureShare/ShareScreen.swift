@@ -52,42 +52,60 @@ private struct ShareEditor: View {
 
     @ViewBuilder private var studio: some View {
         if context.widthClass == .compact {
-            ShareCompactStudio()
-                .padding(.top, .spaceS)
+            ShareStudioLayout {
+                ShareCardCarousel()
+                ShareControlsPanel()
+            }
+            .padding(.top, .spaceS)
         } else {
             HStack(spacing: .spaceL) {
                 ShareCardCarousel()
                     .frame(maxWidth: .infinity)
-                ScrollView {
-                    ShareControls()
-                }
-                .frame(width: .shareControlsWidth)
+                ShareControlsPanel()
+                    .frame(width: .shareControlsWidth)
             }
-            .padding(.vertical, .spaceM)
+            .padding(.top, .spaceM)
         }
     }
 }
 
-private struct ShareCompactStudio: View {
-    @State private var controlsHeight: CGFloat = .zero
+private struct ShareStudioLayout: Layout {
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        proposal.replacingUnspecifiedDimensions()
+    }
+
+    func placeSubviews(
+        in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()
+    ) {
+        guard let preview = subviews.first, let panel = subviews.last else { return }
+        let height = bounds.height * .shareStudioPreviewShare
+        preview.place(
+            at: bounds.origin, proposal: ProposedViewSize(width: bounds.width, height: height))
+        panel.place(
+            at: CGPoint(x: bounds.minX, y: bounds.minY + height + .spaceM),
+            proposal: ProposedViewSize(
+                width: bounds.width, height: bounds.height - height - .spaceM))
+    }
+}
+
+private struct ShareControlsPanel: View {
+    private let panelShape = UnevenRoundedRectangle(
+        topLeadingRadius: .radiusGroup, topTrailingRadius: .radiusGroup)
 
     var body: some View {
-        GeometryReader { proxy in
-            ScrollView {
-                VStack(spacing: .spaceM) {
-                    ShareCardCarousel()
-                        .frame(
-                            height: max(
-                                proxy.size.height - controlsHeight - .spaceM,
-                                .shareCarouselMinimum))
-                    ShareControls()
-                        .onGeometryChange(for: CGFloat.self, of: \.size.height) { height in
-                            controlsHeight = height
-                        }
-                }
-            }
-            .scrollBounceBehavior(.basedOnSize)
-            .scrollIndicators(.hidden)
+        ScrollView {
+            ShareControls()
+                .padding(.vertical, .spaceL)
+        }
+        .scrollIndicators(.hidden)
+        .mask {
+            panelShape
+                .ignoresSafeArea(edges: .bottom)
+        }
+        .background {
+            panelShape
+                .fill(.plainRow)
+                .ignoresSafeArea(edges: .bottom)
         }
     }
 }

@@ -5,68 +5,70 @@ import SwiftUI
 
 struct ShareArtRail: View {
     @Environment(ShareModel.self) private var model
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    @Environment(\.liteMode) private var liteMode
+    @Environment(\.appTint) private var tint
+
+    private var reduceMotion: Bool { systemReduceMotion || liteMode.reducesMotion }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: .spaceS) {
-            ViewThatFits(in: .horizontal) {
-                header(showsBadge: model.showsLensBadge)
-                header(showsBadge: false)
+        let current = model.currentCollectionID
+        VStack(alignment: .leading, spacing: .spaceM) {
+            HStack {
+                Text("Art")
+                    .sectionTitle()
+                    .accessibilityAddTraits(.isHeader)
+                Spacer()
+                if model.showsLensBadge {
+                    LensBadge()
+                }
+            }
+            HStack(spacing: .spaceS) {
+                ForEach(model.collections) { collection in
+                    let isOn = collection.id == current
+                    Button {
+                        model.show(collection.id)
+                    } label: {
+                        Text(verbatim: collection.name)
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(isOn ? AnyShapeStyle(.white) : AnyShapeStyle(tint))
+                            .padding(.horizontal, .spaceM)
+                            .padding(.vertical, .spaceS)
+                            .background(
+                                isOn
+                                    ? AnyShapeStyle(tint)
+                                    : AnyShapeStyle(tint.opacity(.opacityTint)),
+                                in: .capsule)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityAddTraits(isOn ? .isSelected : [])
+                }
             }
             ScrollViewReader { proxy in
-                EdgeToEdgeRail(.padded(.spaceL), spacing: .spaceS, lazy: true, snaps: false) {
+                EdgeToEdgeRail(.padded(.spaceL)) {
                     ForEach(model.currentWorks) { work in
-                        ShareArtThumbnail(work: work).id(work.id)
+                        ShareArtCard(work: work).id(work.id)
                     }
                 }
                 .onAppear {
-                    if let id = model.selectedWork?.id { proxy.scrollTo(id, anchor: .center) }
+                    if let id = model.selectedWorkID { proxy.scrollTo(id, anchor: .center) }
                 }
             }
+            if let credit = model.selectedCredit {
+                Text(verbatim: credit)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+                    .contentTransition(.opacity)
+            }
         }
+        .animation(reduceMotion ? nil : .smooth, value: model.selectedWorkID)
         .animation(reduceMotion ? nil : .smooth, value: model.collectionID)
         .sensoryFeedback(.selection, trigger: model.selectedWorkID)
     }
-
-    private func header(showsBadge: Bool) -> some View {
-        HStack(spacing: .spaceM) {
-            Text("Art")
-                .font(.emphasis(.subheadline, weight: .bold))
-                .accessibilityAddTraits(.isHeader)
-            if showsBadge {
-                LensBadge()
-                    .fixedSize()
-            }
-            Spacer(minLength: .zero)
-            ForEach(model.collections) { collection in
-                ShareArtCollectionName(collection: collection)
-            }
-        }
-    }
 }
 
-private struct ShareArtCollectionName: View {
-    @Environment(ShareModel.self) private var model
-    let collection: ArtCollection
-
-    var body: some View {
-        let selected = collection.id == model.currentCollectionID
-        Button {
-            model.show(collection.id)
-        } label: {
-            Text(verbatim: collection.name)
-                .font(.footnote.weight(selected ? .bold : .regular))
-                .foregroundStyle(selected ? AnyShapeStyle(.primary) : AnyShapeStyle(.secondary))
-                .lineLimit(1)
-                .fixedSize()
-                .frame(minHeight: .rowHeight)
-        }
-        .buttonStyle(.plain)
-        .accessibilityAddTraits(selected ? .isSelected : [])
-    }
-}
-
-private struct ShareArtThumbnail: View {
+private struct ShareArtCard: View {
     @Environment(ShareModel.self) private var model
     @Environment(\.appTint) private var tint
     let work: ArtWork
@@ -76,24 +78,37 @@ private struct ShareArtThumbnail: View {
         Button {
             model.select(work)
         } label: {
-            work.image
-                .resizable()
-                .scaledToFill()
-                .frame(width: .shareArtThumbWidth, height: .shareArtThumbHeight)
-                .clipShape(.rect(cornerRadius: .radiusS))
-                .overlay {
-                    RoundedRectangle(cornerRadius: .radiusS)
-                        .strokeBorder(selected ? tint : .clear, lineWidth: .space2XS)
-                }
-                .overlay(alignment: .topTrailing) {
-                    if selected {
-                        Image(systemName: "checkmark.circle.fill")
-                            .font(.icon(.s))
-                            .symbolRenderingMode(.palette)
-                            .foregroundStyle(.white, tint)
-                            .padding(.space2XS)
+            VStack(alignment: .leading, spacing: .spaceXS) {
+                work.image
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: .shareThumbnail * 2, height: .shareThumbnail * 3)
+                    .clipShape(.rect(cornerRadius: .radiusM))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: .radiusM)
+                            .strokeBorder(selected ? tint : .clear, lineWidth: .space2XS)
                     }
-                }
+                    .overlay(alignment: .topTrailing) {
+                        if selected {
+                            Image(systemName: "checkmark.circle.fill")
+                                .font(.icon(.m))
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(.white, tint)
+                                .padding(.spaceXS)
+                        }
+                    }
+                    .shadow(color: .black.opacity(selected ? .opacityTint : 0), radius: .spaceS)
+                Text(verbatim: work.artist)
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(.primary)
+                    .lineLimit(1)
+                Text(verbatim: work.title)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
+            .frame(width: .shareThumbnail * 2)
+            .scaleEffect(selected ? 1 : 0.94)
         }
         .buttonStyle(.plain)
         .accessibilityLabel(Text(verbatim: "\(work.title), \(work.artist), \(work.year)"))
