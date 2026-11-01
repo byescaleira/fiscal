@@ -33,21 +33,6 @@ struct TodayModelTextTests {
         #expect(line.contains("TSE"))
     }
 
-    @Test func ballotsAreReadFromTheOfficialWords() {
-        #expect(TodayBallot("Sim") == .yes)
-        #expect(TodayBallot("Não") == .no)
-        #expect(TodayBallot("NAO") == .no)
-        #expect(TodayBallot("Abstenção") == .abstention)
-        #expect(TodayBallot("Ausente") == .absent)
-        #expect(TodayBallot("Obstrução") == .other("Obstrução"))
-        #expect(TodayBallot("Obstrução").title == "Obstrução")
-    }
-
-    @Test func everyBallotHasItsOwnSymbol() {
-        let ballots: [TodayBallot] = [.yes, .no, .abstention, .absent, .other("Art. 17")]
-        #expect(Set(ballots.map(\.symbol)).count == ballots.count)
-    }
-
     @Test func theLensLineOnlyAppearsWhenSomethingChanges() {
         #expect(TodayModel.lensLine(nil) == nil)
         #expect(TodayModel.lensLine(Lens(supported: ["lula"])) == nil)

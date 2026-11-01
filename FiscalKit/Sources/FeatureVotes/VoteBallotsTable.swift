@@ -8,6 +8,7 @@
         @Environment(VoteDetailModel.self) private var vote
         @Environment(\.open) private var open
         @Environment(\.navigationSection) private var section
+        @Environment(FollowController.self) private var follow: FollowController?
         @State private var order: [KeyPathComparator<VoteDetailModel.BallotRecord>] =
             VoteDetailModel.ballotOrder
         @State private var selection: VoteDetailModel.BallotRecord.ID?
@@ -47,6 +48,18 @@
                             open(route, in: section)
                         }
                     }
+                    if let follow, ids.count == 1,
+                        let record = records.first(where: { ids.contains($0.id) }),
+                        let slug = record.slug
+                    {
+                        let isFollowing = follow.isFollowing(slug)
+                        Button(
+                            isFollowing ? LocalizedStringKey("Unfollow") : "Follow",
+                            systemImage: isFollowing ? "person.badge.minus" : "person.badge.plus"
+                        ) {
+                            Task { await toggle(slug: slug, name: record.name, with: follow) }
+                        }
+                    }
                 } primaryAction: { ids in
                     if let route = vote.profileRoute(for: ids) { open(route, in: section) }
                 }
@@ -56,6 +69,11 @@
                     .padding(.horizontal, .spaceL)
                     .padding(.vertical, .spaceS)
             }
+        }
+
+        private func toggle(slug: String, name: String, with follow: FollowController) async {
+            let isFollowing = await follow.toggle(slug: slug)
+            FollowController.announce(name: name, isFollowing: isFollowing)
         }
     }
 #endif

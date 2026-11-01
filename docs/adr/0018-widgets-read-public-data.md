@@ -17,6 +17,8 @@ No Fiscal, os widgets de Votações, Destaque do momento e Seus representantes m
 3. Os widgets nunca abrem o SwiftData nem o CloudKit, e nunca leem dado da pessoa além da UF.
 4. A resposta fica no cache HTTP do `PublicDataClient` (`URLCache`, com `ETag`) dentro do processo do widget; sem rede, o estado vira `WidgetState.unavailable(offline: true)` e o widget diz isso e tenta de novo no próximo horário do `WidgetSchedule`.
 5. A Live Activity da apuração continua recebendo os números por push, sem buscar nada.
+6. Exceção do widget "Quem eu sigo" ([FSC-009](../../spdd/prompt/FSC-009-202610312200-[Feat]-following-tab-and-follow-everywhere.md)): ele lê `fiscal/following.json`, um retrato que o app grava no App Group `group.com.byescaleira` com até 6 pessoas seguidas (nome, cargo, partido, UF e a última novidade pública de cada uma). O App Group é compartilhado por todos os apps byescaleira, mas só o widget do Fiscal lê esse arquivo; o app o regrava a cada carga da aba Seguindo e tira a pessoa na hora em que ela deixa de ser seguida (pelo app, pela Siri ou pelos Atalhos).
+7. A aba Seguindo busca no CDN os arquivos públicos de cada pessoa seguida (votos, gastos e checagens). O CDN vê o IP do aparelho e o conjunto de pessoas pedidas, como em qualquer perfil aberto no app; o Fiscal não guarda nada disso em servidor próprio.
 
 ## Consequências
 
@@ -25,6 +27,7 @@ No Fiscal, os widgets de Votações, Destaque do momento e Seus representantes m
 - Cada widget faz a própria requisição: mais acessos ao CDN (absorvidos pelo cache estático, sem custo por acesso no servidor) e o orçamento de atualização do WidgetKit vira o limite.
 - Os dois processos podem mostrar números de horários diferentes por alguns minutos; a linha de fonte com o horário do arquivo ("arquivo do TSE das …", "atualizado …") deixa isso claro.
 - Sem rede e sem cache, o widget mostra o estado sem conexão em vez do último retrato do app.
+- Quem segue alguém deixa no App Group compartilhado a lista de até 6 pessoas seguidas; qualquer app byescaleira com o mesmo App Group conseguiria ler o arquivo, embora só o widget do Fiscal o leia.
 - A auditoria do plugin e o `.byescaleira-sdd.json` precisam aceitar essa exceção ao padrão `WidgetSnapshot`, citando este ADR.
 
 ## Alternativas consideradas

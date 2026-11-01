@@ -60,28 +60,33 @@ private struct PersonResultRow: View {
     let card: PersonCard
 
     var body: some View {
-        RouteLink(.person(slug: card.slug)) {
-            HStack(spacing: .spaceM) {
-                PersonPortrait(slug: card.slug, name: card.name, party: card.party, size: .badgeL)
-                VStack(alignment: .leading, spacing: .space2XS) {
-                    Text(verbatim: card.name).font(.rowTitle).foregroundStyle(Color.primary)
-                    AdaptiveStack(spacing: .spaceS) {
-                        PartyMark(card.party)
-                        Text(verbatim: search.detail(for: card))
-                            .font(.rowDetail)
-                            .foregroundStyle(.secondary)
-                    }
-                    if card.status != .inOffice {
-                        Text(verbatim: card.status.title)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+        HStack(spacing: .spaceS) {
+            RouteLink(.person(slug: card.slug)) {
+                HStack(spacing: .spaceM) {
+                    PersonPortrait(
+                        slug: card.slug, name: card.name, party: card.party, size: .badgeL)
+                    VStack(alignment: .leading, spacing: .space2XS) {
+                        Text(verbatim: card.name).font(.rowTitle).foregroundStyle(Color.primary)
+                        AdaptiveStack(spacing: .spaceS) {
+                            PartyMark(card.party)
+                            Text(verbatim: search.detail(for: card))
+                                .font(.rowDetail)
+                                .foregroundStyle(.secondary)
+                        }
+                        if card.status != .inOffice {
+                            Text(verbatim: card.status.title)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
+                .padding(.vertical, .space2XS)
+                .accessibilityElement(children: .combine)
             }
-            .padding(.vertical, .space2XS)
-            .accessibilityElement(children: .combine)
+            .simultaneousGesture(TapGesture().onEnded { search.record() })
+            FollowButton(card)
         }
-        .simultaneousGesture(TapGesture().onEnded { search.record() })
+        .followActions(card)
     }
 }
 

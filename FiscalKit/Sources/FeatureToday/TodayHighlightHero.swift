@@ -138,6 +138,7 @@ private struct TodayHighlightAuthor: View {
         .accessibilityLabel(Text(verbatim: today.highlightAuthorAccessibility(person)))
         .accessibilityHint(Text("Opens the profile"))
         .accessibilityAddTraits(.isButton)
+        .followActions(person)
     }
 
     private var details: some View {

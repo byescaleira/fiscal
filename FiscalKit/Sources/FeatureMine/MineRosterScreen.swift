@@ -38,7 +38,12 @@ public struct MineRosterScreen: View {
                             if people.isEmpty {
                                 MineRosterNoMatch(query: $query, party: $party)
                             } else {
-                                ForEach(people) { MineRosterRow(card: $0) }
+                                ForEach(people) { card in
+                                    HStack(spacing: .spaceS) {
+                                        MineRosterRow(card: card)
+                                        FollowButton(card)
+                                    }
+                                }
                             }
                         } header: {
                             Text(verbatim: roster.header(shown: people.count))

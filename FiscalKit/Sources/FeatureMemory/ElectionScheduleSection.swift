@@ -149,25 +149,7 @@ public struct AwaitingScreen: View {
             Group {
                 Section {
                     ForEach(memory.awaiting, id: \.slug) { person in
-                        RouteLink(.person(slug: person.slug)) {
-                            HStack(spacing: .spaceM) {
-                                PersonPortrait(
-                                    slug: person.slug, name: person.name, party: person.party,
-                                    size: .badgeL)
-                                VStack(alignment: .leading, spacing: .spaceHairline) {
-                                    Text(verbatim: person.name).font(.rowTitle)
-                                    Text(
-                                        verbatim:
-                                            "\(person.office.title) · \(person.uf.uppercased())"
-                                    )
-                                    .font(.rowDetail)
-                                    .foregroundStyle(.secondary)
-                                }
-                                Spacer(minLength: .spaceS)
-                                PartyMark(person.party)
-                            }
-                            .accessibilityElement(children: .combine)
-                        }
+                        AwaitingRow(person: person)
                     }
                 } footer: {
                     Text("Alphabetical order. Source: TSE, candidates elected in 2026.")
@@ -177,5 +159,31 @@ public struct AwaitingScreen: View {
         }
         .listSurface()
         .emphasisTitle("Awaiting inauguration")
+    }
+}
+
+private struct AwaitingRow: View {
+    let person: PersonCard
+
+    var body: some View {
+        HStack(spacing: .spaceS) {
+            RouteLink(.person(slug: person.slug)) {
+                HStack(spacing: .spaceM) {
+                    PersonPortrait(
+                        slug: person.slug, name: person.name, party: person.party, size: .badgeL)
+                    VStack(alignment: .leading, spacing: .spaceHairline) {
+                        Text(verbatim: person.name).font(.rowTitle)
+                        Text(verbatim: "\(person.office.title) · \(person.uf.uppercased())")
+                            .font(.rowDetail)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer(minLength: .spaceS)
+                    PartyMark(person.party)
+                }
+                .accessibilityElement(children: .combine)
+            }
+            FollowButton(person)
+        }
+        .followActions(person)
     }
 }

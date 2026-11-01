@@ -5,14 +5,6 @@ import Observation
 
 @MainActor @Observable
 public final class TodayModel {
-    public struct Representative: Hashable, Identifiable {
-        public let card: PersonCard
-        public let vote: VoteSummary?
-        public let ballot: TodayBallot?
-
-        public var id: String { card.slug }
-    }
-
     public struct HouseAgenda: Hashable, Identifiable {
         public let day: Agenda.HouseDay
         public let items: [LensOrdered<AgendaItem>]
@@ -21,7 +13,6 @@ public final class TodayModel {
     }
 
     public static let recentLimit = 3
-    public static let representativesLimit = 4
     public static let agendaLimit = 3
 
     public private(set) var digest: TodayDigest?
@@ -30,9 +21,7 @@ public final class TodayModel {
     public private(set) var highlights: HighlightList?
     public private(set) var races: [Race] = []
     public private(set) var racesOffline = false
-    public private(set) var followed: [PersonCard] = []
-    public private(set) var ballots: [String: String] = [:]
-    public private(set) var latestVotes: [House: VoteSummary] = [:]
+    public private(set) var followedCount = 0
     public private(set) var lens: Lens?
     public private(set) var hasCheckedLens = false
     public private(set) var phase: PublicDataPhase = .idle
@@ -117,22 +106,6 @@ public final class TodayModel {
         return Array(recentVotes.filter { $0.id != featured }.prefix(Self.recentLimit))
     }
 
-    public var representatives: [Representative] {
-        let ordered = followed.enumerated()
-            .sorted { lhs, rhs in
-                (lens?.supportRank(of: lhs.element.slug) ?? 0, lhs.offset)
-                    < (lens?.supportRank(of: rhs.element.slug) ?? 0, rhs.offset)
-            }
-            .map(\.element)
-        return ordered.prefix(Self.representativesLimit).map { card in
-            let vote = Self.house(for: card.office).flatMap { latestVotes[$0] }
-            return Representative(
-                card: card, vote: vote, ballot: ballots[card.slug].map(TodayBallot.init))
-        }
-    }
-
-    public var moreFollowed: Int { max(followed.count - Self.representativesLimit, 0) }
-
     public var notice: (text: String, symbol: String)? {
         guard hasLoadedDigest, let error = phase.error else { return nil }
         return error == .offline
@@ -147,7 +120,7 @@ public final class TodayModel {
         if digest == nil { phase = .loading }
         lens = try? await lensRepository?.lens()
         hasCheckedLens = true
-        async let people = loadFollowed()
+        async let people = loadFollowedCount()
         async let liveRaces: Void = refreshRaces()
         phase = await PublicDataPhase.settle(after: phase, in: requests) {
             guard let service else { throw PublicDataError.unavailable }
@@ -164,9 +137,8 @@ public final class TodayModel {
             if let value = page.votes { recentVotes = value }
             if let value = page.highlights { highlights = value }
         }
-        followed = await people
+        followedCount = await people
         await liveRaces
-        await loadBallots()
     }
 
     public func refreshRaces() async {
@@ -192,39 +164,8 @@ public final class TodayModel {
         TodayBriefing.order(events, mode: mode, themes: \.themes)
     }
 
-    private func loadFollowed() async -> [PersonCard] {
-        let people = (try? await follows?.followed()) ?? []
-        return people.map(\.card).sorted {
-            $0.name.localizedStandardCompare($1.name) == .orderedAscending
-        }
-    }
-
-    private func loadBallots() async {
-        guard let service else { return }
-        let houses = Set(followed.compactMap { Self.house(for: $0.office) })
-        var latest: [House: VoteSummary] = [:]
-        for house in houses {
-            latest[house] = recentVotes.filter { $0.house == house }.max { $0.date < $1.date }
-        }
-        var found: [String: String] = [:]
-        for vote in latest.values {
-            guard let detail = try? await service.vote(id: vote.id) else { continue }
-            for ballot in detail.people {
-                if let slug = ballot.slug { found[slug] = ballot.vote }
-            }
-        }
-        latestVotes = latest
-        ballots = found
-    }
-
-    static func house(for office: Office) -> House? {
-        switch office {
-        case .federalDeputy: .camara
-        case .senator: .senado
-        case .president, .vicePresident, .governor, .viceGovernor, .stateDeputy, .mayor,
-            .viceMayor, .cityCouncilor:
-            nil
-        }
+    private func loadFollowedCount() async -> Int {
+        (try? await follows?.followed().count) ?? 0
     }
 }
 

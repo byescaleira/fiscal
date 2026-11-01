@@ -133,6 +133,8 @@ private struct PreviewControls: View {
         HStack(spacing: .spaceM) {
             Label("Follow", systemImage: "plus")
                 .font(.subheadline.weight(.semibold))
+                .lineLimit(1)
+                .fixedSize()
                 .foregroundStyle(.white)
                 .padding(.horizontal, .spaceL)
                 .padding(.vertical, .spaceS)

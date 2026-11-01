@@ -164,6 +164,37 @@
         }
       }
     },
+    "%@ in receipts" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ em recibos"
+          }
+        }
+      }
+    },
+    "%@ in receipts · %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ em recibos · %2$@"
+          }
+        }
+      }
+    },
+    "%@ in receipts · Chamber" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ em recibos · Câmara"
+          }
+        }
+      }
+    },
     "%@ is represented here by the people elected in %@. Mayors and city councillors come after version 1.0." : {
       "localizations" : {
         "pt-BR" : {
@@ -468,6 +499,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ · até %@"
+          }
+        }
+      }
+    },
+    "%@%@ · %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@%2$@ · %3$@"
           }
         }
       }
@@ -1212,6 +1253,16 @@
         }
       }
     },
+    "%lld updates from who you follow" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld novidades de quem você segue"
+          }
+        }
+      }
+    },
     "%lld works" : {
       "localizations" : {
         "pt-BR" : {
@@ -1564,6 +1615,7 @@
       }
     },
     "Abstained" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -3481,6 +3533,16 @@
         }
       }
     },
+    "Couldn't load %@. Tap to try again." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não deu para carregar %@. Toque para tentar de novo."
+          }
+        }
+      }
+    },
     "Couldn't load the data" : {
       "localizations" : {
         "pt-BR" : {
@@ -4629,7 +4691,18 @@
         }
       }
     },
+    "Everything starts on the Following tab, with the latest from who you follow. Settings, in the Today toolbar, keeps the choices that are yours." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tudo começa na aba Seguindo, com as novidades de quem você segue. Os Ajustes, na barra de cima do Hoje, guardam as escolhas que são suas."
+          }
+        }
+      }
+    },
     "Everything starts on the Today tab. Settings, in its toolbar, keeps the choices that are yours." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -5317,6 +5390,26 @@
         }
       }
     },
+    "Follow ${target}" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seguir ${target}"
+          }
+        }
+      }
+    },
+    "Follow %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seguir %@"
+          }
+        }
+      }
+    },
     "Follow %@ on the Lock Screen" : {
       "localizations" : {
         "pt-BR" : {
@@ -5333,6 +5426,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Acompanhar"
+          }
+        }
+      }
+    },
+    "Follow Who Represents You" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siga quem representa você"
+          }
+        }
+      }
+    },
+    "Follow a Politician" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seguir um político"
           }
         }
       }
@@ -5363,6 +5476,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Seguindo"
+          }
+        }
+      }
+    },
+    "Following %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seguindo %@"
+          }
+        }
+      }
+    },
+    "Follows a politician in Fiscal without opening the app." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Segue um político no Fiscal sem abrir o app."
           }
         }
       }
@@ -5444,6 +5577,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gratuito para todo mundo"
+          }
+        }
+      }
+    },
+    "From the official sources, newest first. Nobody is ranked." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das fontes oficiais, da mais recente para a mais antiga. Ninguém é ranqueado."
           }
         }
       }
@@ -6226,6 +6369,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Em ordem alfabética. Ninguém é ranqueado."
+          }
+        }
+      }
+    },
+    "In alphabetical order. Who you follow stays in your iCloud when sync is on." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em ordem alfabética. Quem você segue fica no seu iCloud, se a sincronização estiver ligada."
           }
         }
       }
@@ -7170,6 +7323,7 @@
       }
     },
     "Mine" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7320,6 +7474,7 @@
       }
     },
     "More in Mine: %lld" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7521,6 +7676,16 @@
         }
       }
     },
+    "New" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Novo"
+          }
+        }
+      }
+    },
     "New investigation" : {
       "localizations" : {
         "pt-BR" : {
@@ -7707,6 +7872,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sem conexão. Mostrando o último resumo recebido."
+          }
+        }
+      }
+    },
+    "No data right now" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem dados agora"
           }
         }
       }
@@ -8053,6 +8228,7 @@
       }
     },
     "Nobody followed yet" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -8208,6 +8384,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nada fica escondido: os outros estão a um toque."
+          }
+        }
+      }
+    },
+    "Nothing new in the last 30 days" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nada novo nos últimos 30 dias"
           }
         }
       }
@@ -8714,7 +8900,29 @@
         }
       }
     },
+    "Open Following and tap Follow next to your representatives." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abra Seguindo e toque em Seguir ao lado dos seus representantes."
+          }
+        }
+      }
+    },
+    "Open Following and tap the person icon next to your representatives." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abra Seguindo e toque no ícone de pessoa ao lado dos seus representantes."
+          }
+        }
+      }
+    },
     "Open Mine" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -8781,6 +8989,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abrindo Fiscal"
+          }
+        }
+      }
+    },
+    "Opens the Following tab in Fiscal, with the latest from who you follow." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre a aba Seguindo no Fiscal, com as novidades de quem você segue."
           }
         }
       }
@@ -9439,7 +9657,18 @@
         }
       }
     },
+    "Pick your state in Fiscal, in the Following tab." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha seu estado no Fiscal, na aba Seguindo."
+          }
+        }
+      }
+    },
     "Pick your state in Fiscal, in the Mine tab." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -9450,6 +9679,7 @@
       }
     },
     "Pick your state in Mine to see your deputies, senators and governor here, with how they voted." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11300,6 +11530,16 @@
         }
       }
     },
+    "Show Who I Follow" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver quem eu sigo"
+          }
+        }
+      }
+    },
     "Show the Vote Count" : {
       "localizations" : {
         "pt-BR" : {
@@ -11841,6 +12081,16 @@
         }
       }
     },
+    "Spending in %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gastos de %@"
+          }
+        }
+      }
+    },
     "Spending of %@" : {
       "localizations" : {
         "pt-BR" : {
@@ -12152,6 +12402,26 @@
         }
       }
     },
+    "Stopped following %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deixou de seguir %@"
+          }
+        }
+      }
+    },
+    "Stops following a politician in Fiscal without opening the app." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deixa de seguir um político no Fiscal sem abrir o app."
+          }
+        }
+      }
+    },
     "Stories" : {
       "localizations" : {
         "pt-BR" : {
@@ -12188,6 +12458,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sugerida para começar"
+          }
+        }
+      }
+    },
+    "Suggestions" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sugestões"
           }
         }
       }
@@ -12233,7 +12513,18 @@
         }
       }
     },
+    "Supporting is not following: in Following you follow anyone. The people you support are also followed, and their topics and actions come first." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apoiar não é seguir: em Seguindo você segue qualquer pessoa. Quem você apoia também passa a ser seguido, e os temas e as ações dessas pessoas vêm primeiro."
+          }
+        }
+      }
+    },
     "Supporting is not following: in Mine you follow anyone. The people you support are also followed, and their topics and actions come first." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -12326,6 +12617,7 @@
       }
     },
     "Tap Follow on any profile and that person shows up here, on this device." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -13167,7 +13459,18 @@
         }
       }
     },
+    "The state you chose in Following. Names in alphabetical order." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O estado que você escolheu em Seguindo. Nomes em ordem alfabética."
+          }
+        }
+      }
+    },
     "The state you chose in Mine. Names in alphabetical order." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -13746,6 +14049,17 @@
         }
       }
     },
+    "Try again" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tentar de novo"
+          }
+        }
+      }
+    },
     "Turn %lld" : {
       "localizations" : {
         "pt-BR" : {
@@ -13832,6 +14146,56 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Incerteza"
+          }
+        }
+      }
+    },
+    "Unfollow" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deixar de seguir"
+          }
+        }
+      }
+    },
+    "Unfollow ${target}" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deixar de seguir ${target}"
+          }
+        }
+      }
+    },
+    "Unfollow %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deixar de seguir %@"
+          }
+        }
+      }
+    },
+    "Unfollow a Politician" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deixar de seguir um político"
+          }
+        }
+      }
+    },
+    "Unfollowed %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deixou de seguir %@"
           }
         }
       }
@@ -13972,6 +14336,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Atualizado em %@"
+          }
+        }
+      }
+    },
+    "Updates" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Novidades"
           }
         }
       }
@@ -14247,6 +14621,26 @@
         }
       }
     },
+    "Voted %@ · %@ · %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votou %1$@ · %2$@ · %3$@"
+          }
+        }
+      }
+    },
+    "Voted %@ · %@ · %@ · %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votou %1$@ · %2$@ · %3$@ · %4$@"
+          }
+        }
+      }
+    },
     "Voted differently from their party" : {
       "localizations" : {
         "pt-BR" : {
@@ -14393,6 +14787,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Votações, sessões e leis novas aparecem aqui assim que acontecem."
+          }
+        }
+      }
+    },
+    "Votes, spending and fact checks of who you follow show up here." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votos, gastos e checagens de quem você segue aparecem aqui."
+          }
+        }
+      }
+    },
+    "Votes, spending and fact checks, newest first." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votos, gastos e checagens, do mais recente para o mais antigo."
           }
         }
       }
@@ -14810,6 +15224,16 @@
         }
       }
     },
+    "What's new from who you follow, and who represents your region." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As novidades de quem você segue e quem representa a sua região."
+          }
+        }
+      }
+    },
     "When a Signal Is Missing" : {
       "localizations" : {
         "pt-BR" : {
@@ -14930,6 +15354,16 @@
         }
       }
     },
+    "Who You Follow" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem você segue"
+          }
+        }
+      }
+    },
     "Who You Support" : {
       "localizations" : {
         "pt-BR" : {
@@ -15001,11 +15435,33 @@
       }
     },
     "Who represents you and who you follow." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quem representa você e quem você segue."
+          }
+        }
+      }
+    },
+    "Who represents your place and who you support. Tap Follow next to the name." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem representa o seu lugar e quem você apoia. Toque em Seguir ao lado do nome."
+          }
+        }
+      }
+    },
+    "Who represents your place and who you support. Tap the person icon to follow." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem representa o seu lugar e quem você apoia. Toque no ícone de pessoa para seguir."
           }
         }
       }
@@ -15082,6 +15538,7 @@
       }
     },
     "Who you follow stays on this device." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -15396,12 +15853,13 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sua Região"
+            "value" : "Sua região"
           }
         }
       }
     },
     "Your Representatives" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {

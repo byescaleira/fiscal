@@ -128,29 +128,16 @@ struct TodayModelTests {
         #expect(model.liveBoard?.isStale == true)
     }
 
-    @Test func followedPeopleShowHowTheyVotedInTheirHouse() async throws {
+    @Test func pointsToFollowingWithTheNumberOfUpdates() async {
         let model = model(follows: .normal)
         await model.load()
-        let people = model.representatives
-        #expect(people.count == TodayModel.representativesLimit)
-        #expect(model.moreFollowed == 1)
-        #expect(model.moreFollowedText == "More in Mine: 1")
-        #expect(people.map(\.card.name) == people.map(\.card.name).sorted())
-        let senator = try #require(people.first { $0.card.office == .senator })
-        #expect(senator.vote?.house == .senado)
-        #expect(senator.ballot != nil)
-        let deputy = try #require(people.first { $0.card.office == .federalDeputy })
-        #expect(deputy.vote?.house == .camara)
-        #expect(deputy.ballot != nil)
-    }
-
-    @Test func peopleWhoDoNotVoteOnTheFloorShowNoBallot() async {
-        let model = model(follows: .normal)
-        await model.load()
-        let governor = TodayModel.house(for: .governor)
-        #expect(governor == nil)
-        #expect(TodayModel.house(for: .stateDeputy) == nil)
-        #expect(TodayModel.house(for: .federalDeputy) == .camara)
+        #expect(model.followedCount == 5)
+        #expect(model.followingTitle(newCount: 3) == "3 updates from who you follow")
+        #expect(model.followingTitle(newCount: 0) == "Who you follow")
+        let empty = self.model()
+        await empty.load()
+        #expect(empty.followedCount == 0)
+        #expect(empty.followingTitle(newCount: 3) == "Follow who represents you")
     }
 
     @Test func anEmptyDayIsHonest() async {
@@ -162,7 +149,7 @@ struct TodayModelTests {
         #expect(model.houses.isEmpty)
         #expect(model.recent.isEmpty)
         #expect(model.agendaSource == nil)
-        #expect(model.representatives.isEmpty)
+        #expect(model.followedCount == 0)
     }
 
     @Test func reportsWhyTheDayDidNotLoad() async {
@@ -183,7 +170,6 @@ struct TodayModelTests {
         let model = model()
         await model.load()
         #expect(model.dateKicker == model.dateLine.uppercased())
-        #expect(model.moreFollowedText == nil)
         let house = try #require(model.houses.first)
         #expect(model.shownItems(house).count == min(house.items.count, TodayModel.agendaLimit))
         #expect(
@@ -200,6 +186,6 @@ struct TodayModelTests {
         let model = model(.longNames, follows: .longNames)
         await model.load()
         #expect(model.phase == .loaded)
-        #expect(model.representatives.contains { $0.card.name.count > 40 })
+        #expect(model.followedCount > 0)
     }
 }

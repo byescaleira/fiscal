@@ -8,7 +8,7 @@ Primeira versão, a 1.0.0.
 
 ### Added
 
-- Hoje, Meus, Votações, Dinheiro e Fiscalizar com dados oficiais da Câmara, do Senado, do TSE, do Portal da Transparência e dos municípios.
+- Seguindo, Hoje, Votações, Dinheiro e Fiscalizar com dados oficiais da Câmara, do Senado, do TSE, do Portal da Transparência e dos municípios.
 - Apuração ao vivo das eleições, com Live Activity e Ilha Dinâmica.
 - Lente: ordem, cores e arte adaptadas ao que importa para a pessoa, com os mesmos fatos para todos e a escolha guardada só no aparelho.
 - Cartões de compartilhar com arte brasileira de licença livre, retratos desenhados e o que circulou sobre cada político segundo o Projeto Comprova.
@@ -18,7 +18,7 @@ Primeira versão, a 1.0.0.
 - Cores com contraste de texto conferido, botões e superfícies opacos com Reduzir transparência e barras de progresso lidas pelo VoiceOver.
 - Fundo branco no claro e preto no escuro em todas as telas, com os cartões em cinza do sistema.
 - Ajustes com o interruptor de sincronização com o iCloud, Notificações e Privacidade em páginas próprias, e a seção Desenvolvedor completa nas builds de desenvolvimento.
-- Filtros de recibos e da lista da Região na barra de ferramentas, com o escopo escrito sob o título.
+- Filtros de recibos e da lista de representantes de Seguindo na barra de ferramentas, com o escopo escrito sob o título.
 - Gráfico mensal de gastos do perfil com a média e o valor de cada mês ao tocar.
 - Site só em português, com o que o app faz de verdade, a fonte Bricolage e a lista real do que sai do aparelho.
 - No iPhone dobrável meio aberto, toda aba fica com a lista de um lado da dobra e o que se abre nela do outro (em pé, lado a lado; deitado, o detalhe em cima), com um estado vazio por aba ([FSC-008](spdd/prompt/FSC-008-202610311530-[Feat]-shell-fold-mac-vision-developer.md)).
@@ -26,6 +26,10 @@ Primeira versão, a 1.0.0.
 - No visionOS, a rota aberta ao lado vira uma janela vizinha.
 - Página Desenvolvedor com flags em três estados, registro de eventos sem dado pessoal, diagnóstico e a medida da tela.
 - Envio das capturas da loja pela API do App Store Connect (`scripts/store-media.py`).
+- Seguindo é a primeira aba e o app abre nela: as novidades dos últimos 30 dias de quem você segue (votos, gastos e checagens, com a fonte de cada uma e o selo "Novo" até você sair da aba), quem você segue, até oito sugestões entre quem representa o seu lugar e quem você apoia, e Sua região logo abaixo ([FSC-009](spdd/prompt/FSC-009-202610312200-[Feat]-following-tab-and-follow-everywhere.md)).
+- Seguir e deixar de seguir em qualquer linha de pessoa (botão ao lado do nome e menu de contexto), no perfil e nas tabelas do Mac.
+- Siri e Atalhos seguem e deixam de seguir um político sem abrir o app, com o aparelho desbloqueado, e "Quem eu sigo" abre a aba Seguindo.
+- Widget "Quem eu sigo", com as últimas novidades de até seis pessoas seguidas, e o atalho de Seguindo no Hoje com o número de novidades.
 
 ### Changed
 

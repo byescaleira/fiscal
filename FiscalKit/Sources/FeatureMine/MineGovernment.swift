@@ -57,6 +57,7 @@ private struct MineSeatCard: View {
                 holder.contentShape(.rect)
             }
             .buttonStyle(.plain)
+            .followActions(seat.holder)
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(Text(verbatim: mine.seatAccessibility(seat)))
             .accessibilityAddTraits(.isButton)
@@ -182,6 +183,7 @@ private struct MineSeatPerson: View {
             .contentShape(.rect)
         }
         .buttonStyle(.plain)
+        .followActions(card)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: mine.accessibilityLabel(for: card)))
         .accessibilityAddTraits(.isButton)

@@ -15,11 +15,17 @@ extension XCUIApplication {
     }
 
     func waitForSections() -> Bool {
-        buttons["Ajustes"].firstMatch.waitForExistence(timeout: 30)
+        buttons["Seguindo"].firstMatch.waitForExistence(timeout: 30)
+    }
+
+    func showToday() {
+        buttons["Hoje"].firstMatch.tap()
     }
 
     #if !os(tvOS)
         func openSettings() -> Bool {
+            showToday()
+            guard buttons["Ajustes"].firstMatch.waitForExistence(timeout: 10) else { return false }
             buttons["Ajustes"].firstMatch.tap()
             return navigationBars["Ajustes"].waitForExistence(timeout: 10)
         }

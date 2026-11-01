@@ -87,3 +87,68 @@ public struct ShowRacesIntent: AppIntent {
         return .result()
     }
 }
+
+public struct FollowPersonIntent: AppIntent {
+    public static var title: LocalizedStringResource { "Follow a Politician" }
+    public static var description: IntentDescription {
+        IntentDescription("Follows a politician in Fiscal without opening the app.")
+    }
+    public static var supportedModes: IntentModes { .background }
+    public static var authenticationPolicy: IntentAuthenticationPolicy { .requiresAuthentication }
+
+    @Parameter(title: "Politician")
+    public var target: PersonEntity
+
+    public init() {}
+
+    public static var parameterSummary: some ParameterSummary {
+        Summary("Follow \(\.$target)")
+    }
+
+    @MainActor
+    public func perform() async throws -> some IntentResult & ProvidesDialog {
+        let card = try await FollowIntentWriter.live().follow(slug: target.id)
+        return .result(dialog: "Following \(card.name)")
+    }
+}
+
+public struct UnfollowPersonIntent: AppIntent {
+    public static var title: LocalizedStringResource { "Unfollow a Politician" }
+    public static var description: IntentDescription {
+        IntentDescription("Stops following a politician in Fiscal without opening the app.")
+    }
+    public static var supportedModes: IntentModes { .background }
+    public static var authenticationPolicy: IntentAuthenticationPolicy { .requiresAuthentication }
+
+    @Parameter(title: "Politician")
+    public var target: PersonEntity
+
+    public init() {}
+
+    public static var parameterSummary: some ParameterSummary {
+        Summary("Unfollow \(\.$target)")
+    }
+
+    @MainActor
+    public func perform() async throws -> some IntentResult & ProvidesDialog {
+        try await FollowIntentWriter.live().unfollow(slug: target.id)
+        return .result(dialog: "Unfollowed \(target.name)")
+    }
+}
+
+public struct OpenFollowingIntent: AppIntent {
+    public static var title: LocalizedStringResource { "Show Who I Follow" }
+    public static var description: IntentDescription {
+        IntentDescription("Opens the Following tab in Fiscal, with the latest from who you follow.")
+    }
+    public static var supportedModes: IntentModes { .foreground }
+
+    public init() {}
+
+    @MainActor
+    public func perform() async throws -> some IntentResult {
+        try IntentWorkspace.ensureOpen()
+        FiscalServices.shared.pendingURL = IntegrationLink.following
+        return .result()
+    }
+}

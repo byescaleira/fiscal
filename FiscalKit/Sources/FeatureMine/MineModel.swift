@@ -35,20 +35,34 @@ public final class MineModel {
     public var isChoosingPlace = false
     public var startsSearching = false
     public var error: FiscalError?
-    @ObservationIgnored private let service: (any PublicDataService)?
-    @ObservationIgnored private let follows: (any FollowRepository)?
+    public internal(set) var updates: [FollowingUpdate] = []
+    public internal(set) var updatesPhase: PublicDataPhase = .idle
+    public internal(set) var missing: [PersonCard] = []
+    public internal(set) var supportedCards: [PersonCard] = []
+    var seenVersion = 0
+    @ObservationIgnored let service: (any PublicDataService)?
+    @ObservationIgnored let follows: (any FollowRepository)?
     @ObservationIgnored private let memory: MinePlaceMemory
+    @ObservationIgnored let seenStore: FollowingSeenStore
+    @ObservationIgnored let now: @Sendable () -> Date
+    @ObservationIgnored let publishesSnapshot: Bool
+    @ObservationIgnored let updateRequests = PublicDataRequests()
     @ObservationIgnored private let placeRequests = PublicDataRequests()
     @ObservationIgnored private let placesRequests = PublicDataRequests()
     @ObservationIgnored var searchNames: [String: String] = [:]
 
     public init(
         service: (any PublicDataService)? = nil, follows: (any FollowRepository)?,
-        memory: MinePlaceMemory = MinePlaceMemory()
+        memory: MinePlaceMemory = MinePlaceMemory(),
+        seen: FollowingSeenStore = FollowingSeenStore(),
+        now: @escaping @Sendable () -> Date = { .now }, publishesSnapshot: Bool = true
     ) {
         self.service = service
         self.follows = follows
         self.memory = memory
+        seenStore = seen
+        self.now = now
+        self.publishesSnapshot = publishesSnapshot
     }
 
     public var isEmpty: Bool { followed.isEmpty }
@@ -149,7 +163,9 @@ public final class MineModel {
 
     public func load() async {
         await loadFollowed()
-        await loadPlace()
+        async let updates: Void = loadUpdates()
+        async let place: Void = loadPlace()
+        _ = await (updates, place)
     }
 
     public func loadFollowed() async {
@@ -162,22 +178,6 @@ public final class MineModel {
             hasLoaded = true
         } catch is CancellationError {} catch {
             self.error = error as? FiscalError ?? .onFetch
-        }
-    }
-
-    private func withGenders(_ list: [FollowedPerson]) async -> [FollowedPerson] {
-        guard list.contains(where: { $0.card.gender == nil }),
-            let people = try? await service?.people()
-        else { return list }
-        let genders = Dictionary(
-            people.compactMap { card in card.gender.map { (card.slug, $0) } },
-            uniquingKeysWith: { first, _ in first })
-        return list.map { person in
-            guard person.card.gender == nil, let gender = genders[person.card.slug] else {
-                return person
-            }
-            return FollowedPerson(
-                card: person.card.with(gender: gender), followedAt: person.followedAt)
         }
     }
 
@@ -284,5 +284,23 @@ public final class MineModel {
         var seen = Set<String>()
         return people.filter { seen.insert($0.slug).inserted }
             .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+    }
+}
+
+extension MineModel {
+    fileprivate func withGenders(_ list: [FollowedPerson]) async -> [FollowedPerson] {
+        guard list.contains(where: { $0.card.gender == nil }),
+            let people = try? await service?.people()
+        else { return list }
+        let genders = Dictionary(
+            people.compactMap { card in card.gender.map { (card.slug, $0) } },
+            uniquingKeysWith: { first, _ in first })
+        return list.map { person in
+            guard person.card.gender == nil, let gender = genders[person.card.slug] else {
+                return person
+            }
+            return FollowedPerson(
+                card: person.card.with(gender: gender), followedAt: person.followedAt)
+        }
     }
 }

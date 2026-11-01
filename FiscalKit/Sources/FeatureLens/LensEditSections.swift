@@ -32,7 +32,7 @@ struct LensSupportSection: View {
             Text("Who you support").sectionTitle()
         } footer: {
             Text(
-                "Supporting is not following: in Mine you follow anyone. The people you support are also followed, and their topics and actions come first."
+                "Supporting is not following: in Following you follow anyone. The people you support are also followed, and their topics and actions come first."
             )
         }
     }

@@ -119,6 +119,8 @@ private struct HeroSide: View {
             Label(choice.title, systemImage: choice.symbol)
                 .font(.chipLabel)
                 .textCase(.uppercase)
+                .lineLimit(1)
+                .fixedSize()
                 .foregroundStyle(BoardStyle.primary)
                 .padding(.horizontal, .spaceS)
                 .padding(.vertical, .space2XS)

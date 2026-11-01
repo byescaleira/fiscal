@@ -17,7 +17,6 @@ public final class ProfileModel {
     public private(set) var weightMethod: WeightMethod?
     public private(set) var context: PersonContext?
     public var selectedIndicatorID: String?
-    public private(set) var isFollowing = false
     public private(set) var hasJustFollowed = false
     public private(set) var phase: PublicDataPhase = .idle
     public var error: FiscalError?
@@ -91,30 +90,19 @@ public final class ProfileModel {
         phase = await PublicDataPhase.settle(after: phase, in: requests) {
             guard let service else { throw PublicDataError.unavailable }
             let profile = try await service.profile(slug: slug)
-            let isFollowing = (try? await follows?.isFollowing(slug: slug)) ?? false
             let lens = try? await lensRepository?.lens()
-            return ProfileHeader(profile: profile, isFollowing: isFollowing, lens: lens)
+            return ProfileHeader(profile: profile, lens: lens)
         } apply: { header in
             profile = header.profile
-            isFollowing = header.isFollowing
             lens = header.lens
         }
         await loadActivity()
     }
 
-    public func toggleFollow() async {
-        guard let follows, let card = profile?.card else { return }
-        do {
-            if isFollowing {
-                try await follows.unfollow(slug: slug)
-            } else {
-                try await follows.follow(card, at: now())
-            }
-            isFollowing.toggle()
-            hasJustFollowed = isFollowing
-        } catch {
-            self.error = .onSave
-        }
+    public var followCard: PersonCard? { canFollow ? profile?.card : nil }
+
+    public func followChanged(to isFollowing: Bool) {
+        hasJustFollowed = isFollowing
     }
 
     private func loadActivity() async {
@@ -160,6 +148,5 @@ public final class ProfileModel {
 
 private struct ProfileHeader {
     let profile: Profile
-    let isFollowing: Bool
     let lens: Lens?
 }

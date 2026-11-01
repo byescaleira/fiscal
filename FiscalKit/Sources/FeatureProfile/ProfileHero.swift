@@ -72,28 +72,30 @@ private struct ProfileHero: View {
 private struct ProfileHeroActions: View {
     @Environment(ProfileModel.self) private var profile
     @Environment(SessionModel.self) private var session
+    @Environment(FollowController.self) private var follow: FollowController?
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
 
     var body: some View {
         AdaptiveRow(spacing: .spaceM) {
-            if profile.canFollow {
+            if let follow, let card = profile.followCard {
+                let isFollowing = follow.isFollowing(card.slug)
                 Button {
-                    Task {
-                        await profile.toggleFollow()
-                        session.reload()
-                    }
+                    Task { await toggle(card, with: follow) }
                 } label: {
                     Label(
-                        profile.isFollowing ? LocalizedStringKey("Following") : "Follow",
-                        systemImage: profile.isFollowing ? "checkmark" : "plus"
+                        isFollowing ? LocalizedStringKey("Following") : "Follow",
+                        systemImage: isFollowing ? "checkmark" : "plus"
                     )
                     .lineLimit(1)
                     .minimumScaleFactor(.opacitySoft * 2)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
                 .heroGlassButton()
-                .sensoryFeedback(.selection, trigger: profile.isFollowing)
+                .accessibilityLabel(
+                    isFollowing ? Text("Unfollow \(card.name)") : Text("Follow \(card.name)")
+                )
+                .sensoryFeedback(.success, trigger: isFollowing)
             }
             if let route = profile.shareRoute {
                 Button {
@@ -108,6 +110,13 @@ private struct ProfileHeroActions: View {
             }
         }
         .fixedSize(horizontal: false, vertical: true)
+    }
+
+    private func toggle(_ card: PersonCard, with follow: FollowController) async {
+        let isFollowing = await follow.toggle(card)
+        profile.followChanged(to: isFollowing)
+        session.reload()
+        FollowController.announce(name: card.name, isFollowing: isFollowing)
     }
 }
 

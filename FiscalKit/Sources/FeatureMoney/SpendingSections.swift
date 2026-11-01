@@ -110,22 +110,28 @@ private struct SpenderCard: View {
             .accessibilityAddTraits(.isButton)
             .accessibilityHint(Text("Opens the profile"))
             Spacer(minLength: 0)
-            if let year = money.spendYear {
-                Button {
-                    open(.expenses(slug: spender.person.slug, year: year), in: section)
-                } label: {
-                    Label("See Receipts", systemImage: "doc.text.magnifyingglass")
-                        .font(.buttonLabel)
-                        .frame(maxWidth: .infinity)
+            AdaptiveRow(spacing: .spaceS) {
+                if let year = money.spendYear {
+                    Button {
+                        open(.expenses(slug: spender.person.slug, year: year), in: section)
+                    } label: {
+                        Label("See Receipts", systemImage: "doc.text.magnifyingglass")
+                            .font(.buttonLabel)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.large)
+                    .tint(Color.primary)
+                } else {
+                    Spacer(minLength: 0)
                 }
-                .buttonStyle(.bordered)
-                .controlSize(.large)
-                .tint(Color.primary)
+                FollowButton(spender.person)
             }
         }
         .padding(.spaceL)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
+        .followActions(spender.person)
     }
 
     private var identity: some View {
@@ -191,15 +197,21 @@ public struct MoneySpendersScreen: View {
         AdaptiveList {
             Section {
                 ForEach(spenders) { spender in
-                    Button {
-                        open(.person(slug: spender.person.slug), in: section)
-                    } label: {
-                        SpenderRow(spender: spender)
+                    HStack(spacing: .spaceS) {
+                        Button {
+                            open(.person(slug: spender.person.slug), in: section)
+                        } label: {
+                            SpenderRow(spender: spender)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel(
+                            Text(verbatim: money.accessibilityLabel(for: spender))
+                        )
+                        .accessibilityAddTraits(.isButton)
+                        FollowButton(spender.person)
                     }
-                    .buttonStyle(.plain)
-                    .accessibilityElement(children: .ignore)
-                    .accessibilityLabel(Text(verbatim: money.accessibilityLabel(for: spender)))
-                    .accessibilityAddTraits(.isButton)
+                    .followActions(spender.person)
                 }
             } footer: {
                 Text(verbatim: money.sourceLine(for: .quota))

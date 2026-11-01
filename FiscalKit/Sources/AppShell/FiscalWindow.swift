@@ -11,6 +11,8 @@ public struct FiscalWindow {
     public let lens: LensContext
     public let portraits: PortraitStore
     public let liveResults: LiveResultsModel
+    public let follow: FollowController
+    public let followingBadge: FollowingBadge
 
     public init(provider: any RepositoryProvider) {
         let repositories = Self.repositories(provider.repositories)
@@ -19,6 +21,10 @@ public struct FiscalWindow {
         lens = LensContext(repository: repositories.lens)
         portraits = PortraitStore()
         liveResults = FiscalServices.shared.liveResults()
+        follow = FollowController(
+            follows: repositories.follows,
+            people: { try await FiscalServices.shared.publicData()?.people() ?? [] })
+        followingBadge = FollowingBadge()
     }
 
     private static func repositories(_ repositories: Repositories) -> Repositories {
@@ -39,6 +45,8 @@ extension View {
             .environment(window.navigation)
             .environment(window.lens)
             .environment(window.liveResults)
+            .environment(window.follow)
+            .environment(window.followingBadge)
             .fiscalPortraits(window.portraits)
             .environment(\.currentWindow, window)
     }
