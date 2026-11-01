@@ -54,6 +54,15 @@ enum DeepLink: Equatable {
         return value.flatMap(Int.init) ?? Calendar.current.component(.year, from: .now)
     }
 
+    static func kind(of url: URL) -> FiscalEvents.DeepLinkKind {
+        guard url.scheme == "fiscal", let host = url.host() else { return .unknown }
+        if AppSection(rawValue: host) != nil { return .section }
+        guard let kind = FiscalEvents.DeepLinkKind(rawValue: host), kind != .section else {
+            return .unknown
+        }
+        return DeepLink(url: url) == .section(.today) ? .unknown : kind
+    }
+
     static func handles(_ url: URL) -> Bool {
         url.scheme == "fiscal"
     }

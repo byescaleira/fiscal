@@ -40,7 +40,7 @@ public final class ExpensesModel {
     public var selectedMonth: Int?
     public var categoryFilter: String?
     @ObservationIgnored private let service: (any PublicDataService)?
-    @ObservationIgnored private let calendar: Calendar
+    @ObservationIgnored let calendar: Calendar
     @ObservationIgnored private let requests = PublicDataRequests()
 
     public init(
@@ -243,7 +243,7 @@ public final class ExpensesModel {
         await load()
     }
 
-    private static func line(_ expense: Expense) -> Line {
+    static func line(_ expense: Expense) -> Line {
         let document = MoneyText.cnpj(expense.document)
         return Line(
             id: expense.id, supplier: expense.supplier, category: expense.category,

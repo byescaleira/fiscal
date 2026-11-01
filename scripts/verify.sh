@@ -40,6 +40,14 @@ server() {
     step go build ./...
     step go vet ./...
     step go test ./...
+    if [[ "${1:-}" == "--deep" ]]; then
+      step go test -race ./...
+      if ! command -v govulncheck > /dev/null; then
+        echo "govulncheck not found; install it with: go install golang.org/x/vuln/cmd/govulncheck@latest" >&2
+        exit 1
+      fi
+      step govulncheck ./...
+    fi
   )
 }
 
@@ -71,7 +79,7 @@ case "$mode" in
     step scripts/test.sh
     web
     admin
-    server
+    server --deep
     step python3 -I scripts/art.py check
     step scripts/audit.sh
     ;;

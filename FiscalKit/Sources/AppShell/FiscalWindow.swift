@@ -40,5 +40,10 @@ extension View {
             .environment(window.lens)
             .environment(window.liveResults)
             .fiscalPortraits(window.portraits)
+            .environment(\.currentWindow, window)
     }
+}
+
+extension EnvironmentValues {
+    @Entry var currentWindow: FiscalWindow?
 }

@@ -188,18 +188,23 @@ public struct OfflinePackUpdater: Sendable {
 }
 
 public actor OfflinePackCoordinator: OfflinePackService {
+    public typealias Report = @Sendable (Result<OfflinePackSummary, any Error>) async -> Void
+
     private let updater: OfflinePackUpdater
     private let request: @Sendable () async -> OfflinePackRequest
+    private let report: Report
     private let now: @Sendable () -> Date
     private var running: Task<OfflinePackSummary, any Error>?
     private var lastAttempt: Date?
 
     public init(
         updater: OfflinePackUpdater, now: @escaping @Sendable () -> Date = { Date() },
+        report: @escaping Report = { _ in },
         request: @escaping @Sendable () async -> OfflinePackRequest
     ) {
         self.updater = updater
         self.now = now
+        self.report = report
         self.request = request
     }
 
@@ -213,7 +218,14 @@ public actor OfflinePackCoordinator: OfflinePackService {
         running = task
         lastAttempt = now()
         defer { running = nil }
-        return try await task.value
+        do {
+            let summary = try await task.value
+            await report(.success(summary))
+            return summary
+        } catch {
+            await report(.failure(error))
+            throw error
+        }
     }
 
     public func refreshIfDue(every interval: TimeInterval) async {

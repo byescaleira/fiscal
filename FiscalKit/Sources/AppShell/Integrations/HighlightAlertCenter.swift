@@ -1,3 +1,4 @@
+import FeatureCore
 import FeatureLiveResults
 import FeatureSettings
 import FiscalData
@@ -51,7 +52,10 @@ final class HighlightAlertCenter {
         if !isObserving {
             isObserving = true
             activities.onStartToken = { [weak self] token in self?.received(token) }
-            activities.onShown = { [weak self] id in self?.ledger.record(id) }
+            activities.onShown = { [weak self] id in
+                FiscalEvents.alertReceived.log()
+                self?.ledger.record(id)
+            }
             activities.observe()
         }
         await activities.endExpired(now: .now)

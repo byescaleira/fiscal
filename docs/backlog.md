@@ -15,7 +15,9 @@ O que falta, por prioridade. Itens concluídos saem daqui; o motivo das decisõe
 
 ## Depois da 1.0 ou sem data
 
-- **[P2] Receita do Mac.** Lista de origem na barra lateral, `Table` nas listas longas, `GroupBox` nos painéis, comandos de menu e atalhos de teclado, antes de enviar o Mac para a loja.
+- **[P2] Mac: grade do painel.** Hoje e Dinheiro em `CardGrid` com cartões de tamanhos diferentes (herói em duas colunas, métricas pequenas); a lista de origem, as tabelas, o `GroupBox` e o menu Ir entraram na `FSC-008`.
+- **[P2] Capturas do iPhone Duo.** Aberto, meio aberto em pé e deitado e AX no simulador, com a postura trocada à mão no Device Hub (puladas na `FSC-008` a pedido do usuário; a lógica está coberta pelo `FoldNavigationTests`).
+- **[P3] Workspace: `asc.py` mais estrito.** Aceitar só URLs da API da Apple no `call` e no `links.next`, e trocar os `assert` do DER por saída com erro (no template do workspace, revisão de segurança da `FSC-008`).
 - **[P2] Alvos `FiscalMock`, `FiscalPreview` e `FiscalAudit`.** Dados falsos compartilhados, prévias por tela e a auditoria do pacote (migração, prévia e volume), para o `scripts/audit.sh` deixar de pular.
 - **[P2] Contrato do Fiscal na Web.** Resumo cifrado, ponte e pareamento por QR numa mudança própria ([ADR 0016](adr/0016-web-companion-after-1-0.md)).
 - **[P2] Branch `feature/news-webngrams`.** Quatro commits fora da `development` que trocam a repercussão da API DOC do GDELT pelos arquivos Web NGrams; decidir entre integrar numa mudança própria ou descartar. Recomendado: manter a branch até a decisão.

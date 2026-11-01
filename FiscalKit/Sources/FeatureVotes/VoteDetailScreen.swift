@@ -13,16 +13,15 @@ public struct VoteDetailScreen: View {
         PublicDataContent(
             phase: vote.phase, isEmpty: vote.isEmpty, retry: { await vote.load() }
         ) {
-            AdaptiveList {
-                VoteHeroSection()
-                VoteExplainSection()
-                VoteSummarySection()
-                VoteSameDaySection()
-                VoteSupportSection()
-                VoteRepresentativesSection()
-                VoteGuidanceSection()
-                VotePartySection()
-                VoteBallotsSection()
+            Group {
+                #if os(macOS)
+                    VSplitView {
+                        VoteDetailOverview()
+                        VoteBallotsTable()
+                    }
+                #else
+                    VoteDetailOverview()
+                #endif
             }
             .searchable(text: $vote.searchText, prompt: Text("Name, party or state"))
         } empty: {
@@ -35,6 +34,24 @@ public struct VoteDetailScreen: View {
         .toolbar { VoteDetailToolbar() }
         .refreshable { await vote.load() }
         .task { await vote.load() }
+    }
+}
+
+private struct VoteDetailOverview: View {
+    var body: some View {
+        AdaptiveList {
+            VoteHeroSection()
+            VoteExplainSection()
+            VoteSummarySection()
+            VoteSameDaySection()
+            VoteSupportSection()
+            VoteRepresentativesSection()
+            VoteGuidanceSection()
+            VotePartySection()
+            #if !os(macOS)
+                VoteBallotsSection()
+            #endif
+        }
     }
 }
 

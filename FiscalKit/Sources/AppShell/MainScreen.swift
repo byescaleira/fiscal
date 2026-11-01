@@ -18,71 +18,83 @@ public struct MainScreen: View {
     @ViewBuilder
     public var body: some View {
         @Bindable var navigation = navigation
-        TabView(selection: $navigation.selectedSection) {
-            ForEach(AppSection.allCases) { section in
-                Tab(
-                    section.title, systemImage: section.systemImage, value: section,
-                    role: section.role
-                ) {
-                    SectionStack(section: section)
+        sections
+            .id(locale.identifier)
+            .focusedSceneValue(\.fiscalNavigation, navigation)
+            .overlay {
+                if !launch.isDismissed {
+                    SplashScreen(progress: launch.fraction, status: launch.status)
+                        .transition(.opacity)
                 }
             }
-        }
-        .id(locale.identifier)
-        .tabViewStyle(.sidebarAdaptable)
-        .overlay {
-            if !launch.isDismissed {
-                SplashScreen(progress: launch.fraction, status: launch.status)
-                    .transition(.opacity)
+            .animation(splashAnimation, value: launch.isDismissed)
+            .sheet(item: $navigation.guide) { GuideScreen($0) }
+            .environment(\.showGuide, ShowGuideAction { navigation.guide = $0 })
+            .routeInspector(isPresented: navigation.isInspecting) {
+                if let inspector = navigation.inspector {
+                    InspectorScreen(inspector: inspector)
+                }
             }
-        }
-        .animation(splashAnimation, value: launch.isDismissed)
-        .sheet(item: $navigation.guide) { GuideScreen($0) }
-        .environment(\.showGuide, ShowGuideAction { navigation.guide = $0 })
-        .routeInspector(isPresented: navigation.isInspecting) {
-            if let inspector = navigation.inspector {
-                InspectorScreen(inspector: inspector)
+            .onChange(of: navigation.inspector) { _, inspector in
+                if inspector != nil { AccessibilityNotification.ScreenChanged(nil).post() }
             }
-        }
-        .onChange(of: navigation.inspector) { _, inspector in
-            if inspector != nil { AccessibilityNotification.ScreenChanged(nil).post() }
-        }
-        .onChange(of: navigation.inspectorPath) { _, path in
-            if !path.isEmpty { AccessibilityNotification.ScreenChanged(nil).post() }
-        }
-        .modifier(RoutesBeside())
-        .readsLayoutContext()
-        .environment(
-            \.open,
-            FiscalDestination { route, section in
-                navigation.open(route, in: section)
+            .onChange(of: navigation.inspectorPath) { _, path in
+                if !path.isEmpty { AccessibilityNotification.ScreenChanged(nil).post() }
             }
-        )
-        .environment(\.explainer, FiscalServices.shared.explainer)
-        .onChange(of: session.generation, initial: true) { launch.finish(.content) }
-        .task { await session.start() }
-        .task(id: launch.isComplete) {
-            try? await Task.sleep(for: launch.isComplete ? .milliseconds(600) : .seconds(8))
-            launch.dismiss()
-        }
-        .onChange(of: navigation.selectedSection) { navigation.closeInspectorOutsideSelection() }
-        .modifier(DeepLinks())
-        .modifier(UpdateRecommendation())
-        .lensExperience(isReady: launch.isDismissed)
-        .modifier(LensSetupCover())
-        .modifier(SystemIntegrations())
-        .environment(OfflineDataCenter.shared.model)
-        .task(id: launch.isDismissed) {
-            guard launch.isDismissed else { return }
-            await OfflineDataCenter.shared.refreshIfDue()
-        }
-        .onChange(of: scenePhase) { _, phase in
-            switch phase {
-            case .active: Task { await OfflineDataCenter.shared.refreshIfDue() }
-            case .background: OfflineDataCenter.shared.scheduleBackgroundRefresh()
-            default: break
+            .modifier(RoutesBeside())
+            .readsLayoutContext()
+            .environment(
+                \.open,
+                FiscalDestination { route, section in
+                    navigation.open(route, in: section)
+                }
+            )
+            .environment(\.explainer, FiscalServices.shared.explainer)
+            .onChange(of: session.generation, initial: true) { launch.finish(.content) }
+            .task { await session.start() }
+            .task(id: launch.isComplete) {
+                try? await Task.sleep(for: launch.isComplete ? .milliseconds(600) : .seconds(8))
+                launch.dismiss()
             }
-        }
+            .onChange(of: navigation.selectedSection) {
+                navigation.closeInspectorOutsideSelection()
+            }
+            .modifier(DeepLinks())
+            .modifier(UpdateRecommendation())
+            .lensExperience(isReady: launch.isDismissed)
+            .modifier(LensSetupCover())
+            .modifier(SystemIntegrations())
+            .environment(OfflineDataCenter.shared.model)
+            .task(id: launch.isDismissed) {
+                guard launch.isDismissed else { return }
+                await OfflineDataCenter.shared.refreshIfDue()
+            }
+            .onChange(of: scenePhase) { _, phase in
+                switch phase {
+                case .active: Task { await OfflineDataCenter.shared.refreshIfDue() }
+                case .background: OfflineDataCenter.shared.scheduleBackgroundRefresh()
+                default: break
+                }
+            }
+    }
+
+    @ViewBuilder private var sections: some View {
+        @Bindable var navigation = navigation
+        #if os(macOS)
+            MacShell()
+        #else
+            TabView(selection: $navigation.selectedSection) {
+                ForEach(AppSection.allCases) { section in
+                    Tab(
+                        section.title, systemImage: section.systemImage, value: section,
+                        role: section.role
+                    ) {
+                        SectionStack(section: section)
+                    }
+                }
+            }
+            .tabViewStyle(.sidebarAdaptable)
+        #endif
     }
 
     private var splashAnimation: Animation {

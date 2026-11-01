@@ -1,3 +1,4 @@
+import FeatureCore
 import Foundation
 import Testing
 
@@ -38,6 +39,24 @@ struct DeepLinkTests {
         let url = try #require(URL(string: link))
         #expect(DeepLink.handles(url))
         #expect(DeepLink(url: url) == expected)
+    }
+
+    @Test(arguments: [
+        ("fiscal://votes", FiscalEvents.DeepLinkKind.section),
+        ("fiscal://person/nikolas-ferreira", .person),
+        ("fiscal://expenses/tabata-amaral?year=2025", .expenses),
+        ("fiscal://compare?slugs=tabata-amaral,kim-kataguiri", .compare),
+        ("fiscal://race", .unknown),
+        ("fiscal://items/new", .unknown),
+        ("https://example.com/person/nikolas-ferreira", .unknown),
+    ])
+    func logsOnlyTheRouteKind(link: String, kind: FiscalEvents.DeepLinkKind) throws {
+        let url = try #require(URL(string: link))
+        #expect(DeepLink.kind(of: url) == kind)
+        let message = FiscalEvents.deepLink(DeepLink.kind(of: url)).message.text
+        #expect(!message.contains("nikolas"))
+        #expect(!message.contains("tabata"))
+        #expect(!message.contains("2025"))
     }
 
     @Test func ignoresOtherSchemes() throws {

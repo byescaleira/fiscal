@@ -120,6 +120,30 @@ public struct MineRoster: Hashable, Sendable {
         }
     }
 
+    public static var order: [KeyPathComparator<PersonCard>] {
+        [KeyPathComparator(\.name, comparator: .localizedStandard)]
+    }
+
+    public func sorted(query: String, party: String?, by order: [KeyPathComparator<PersonCard>])
+        -> [PersonCard]
+    {
+        filtered(query: query, party: party).sorted(
+            using: order + [
+                KeyPathComparator(\.name, comparator: .localizedStandard),
+                KeyPathComparator(\.slug),
+            ])
+    }
+
+    public func stateText(_ card: PersonCard) -> String {
+        card.uf.lowercased() == "br" ? PublicFormat.missing : card.uf.uppercased()
+    }
+
+    public func profileRoute(for ids: Set<PersonCard.ID>) -> Route? {
+        guard ids.count == 1, let id = ids.first, people.contains(where: { $0.id == id })
+        else { return nil }
+        return .person(slug: id)
+    }
+
     public func scopeTitle(party: String?) -> String {
         party ?? String(appLocalized: "All Parties")
     }

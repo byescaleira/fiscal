@@ -69,7 +69,10 @@ struct SettingsModelTests {
         #expect(!settings.showsPartyIcons)
         #expect(!settings.showsDeveloper)
 
-        let flags = FeatureFlags(defaults: defaults)
+        let suite = "SettingsModelTests.\(UUID().uuidString)"
+        let flags = FeatureFlags(
+            defaults: defaults,
+            overrides: FlagOverrides(prefix: FeatureFlags.prefix, suiteName: suite))
         settings.use(flags)
         flags.override(.guides, false)
         flags.override(.partyIcons, true)

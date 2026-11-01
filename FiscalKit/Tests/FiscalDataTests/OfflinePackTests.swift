@@ -4,6 +4,7 @@ import Testing
 
 @testable import FiscalData
 
+@Suite(.timeLimit(.minutes(1)))
 struct OfflinePackTests {
     private static let today = #"{ "date": "2026-10-26", "events": [], "sources": [] }"#
     private static let state =
@@ -244,5 +245,30 @@ struct OfflinePackTests {
         await coordinator.refreshIfDue(every: 600)
         #expect(harness.paths.filter { $0 == "/v2/release.json" }.count == 1)
         #expect(await coordinator.erase() == .empty)
+    }
+
+    @Test func reportsTheResultOfEachRefresh() async throws {
+        let harness = try Harness()
+        harness.publishBasics()
+        let reports = Reports()
+        let coordinator = OfflinePackCoordinator(
+            updater: harness.updater, report: { await reports.add($0) },
+            request: { OfflinePackRequest() })
+        let summary = try await coordinator.refresh()
+        harness.on("release.json", "{}", status: 403)
+        await #expect(throws: (any Error).self) { try await coordinator.refresh() }
+
+        let results = await reports.results
+        #expect(results.count == 2)
+        #expect(try results.first?.get() == summary)
+        #expect(results.last.map { if case .failure = $0 { true } else { false } } == true)
+    }
+}
+
+private actor Reports {
+    private(set) var results: [Result<OfflinePackSummary, any Error>] = []
+
+    func add(_ result: Result<OfflinePackSummary, any Error>) {
+        results.append(result)
     }
 }

@@ -11,12 +11,7 @@ struct InspectorScreen: View {
         NavigationStack(path: $navigation.inspectorPath) {
             RouteScreen(route: inspector.route)
                 .navigationDestination(for: Route.self) { RouteScreen(route: $0) }
-                .toolbar {
-                    ToolbarItem(placement: .primaryAction) {
-                        Button("Close", systemImage: "xmark") { navigation.closeInspector() }
-                            .tint(Color.primary)
-                    }
-                }
+                .toolbar { RoutePaneCloseItem { navigation.closeInspector() } }
         }
         .environment(\.navigationSection, inspector.section)
         .environment(
