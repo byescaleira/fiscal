@@ -25,9 +25,11 @@ public enum PublicDataPhase: Equatable, Sendable {
             guard requests.isLatest(request) else { return requests.latestPhase }
             apply(value)
             phase = .loaded
+            FiscalEvents.dataLoaded.log()
         } catch {
             guard requests.isLatest(request) else { return requests.latestPhase }
             phase = failure(error, after: previous)
+            FiscalEvents.networkError(for: error)?.log()
         }
         requests.finish(request, with: phase)
         return phase

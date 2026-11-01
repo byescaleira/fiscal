@@ -14,7 +14,9 @@ public final class FiscalServices {
     @ObservationIgnored private var opening: Task<FiscalDatabase, any Error>?
     @ObservationIgnored private var resolvedPublicData: PublicDataSlot?
 
-    private init() {}
+    private init() {
+        FiscalEvents.launch.log()
+    }
 
     public func database(cloudSync: Bool) async throws -> FiscalDatabase {
         if let opening {

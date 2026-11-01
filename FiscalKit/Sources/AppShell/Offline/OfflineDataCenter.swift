@@ -1,3 +1,4 @@
+import FeatureCore
 import FeatureSettings
 import FiscalData
 import FiscalDomain
@@ -26,9 +27,9 @@ public final class OfflineDataCenter {
             model = nil
             return
         }
-        let coordinator = OfflinePackCoordinator(updater: updater) {
-            await OfflineDataCenter.request()
-        }
+        let coordinator = OfflinePackCoordinator(
+            updater: updater, report: { await OfflineDataCenter.record($0) },
+            request: { await OfflineDataCenter.request() })
         self.coordinator = coordinator
         model = OfflineDataModel(service: coordinator)
     }
@@ -61,6 +62,13 @@ public final class OfflineDataCenter {
             request.earliestBeginDate = Date(timeIntervalSinceNow: Self.backgroundInterval)
             try? BGTaskScheduler.shared.submit(request)
         #endif
+    }
+
+    static func record(_ result: Result<OfflinePackSummary, any Error>) {
+        switch result {
+        case .success(let summary): FiscalEvents.offlinePack(files: summary.files).log()
+        case .failure(let error): FiscalEvents.networkError(for: error)?.log()
+        }
     }
 
     nonisolated static func request() async -> OfflinePackRequest {

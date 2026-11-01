@@ -27,6 +27,7 @@ struct DeepLinks: ViewModifier {
 
     private func handle(_ url: URL) {
         guard DeepLink.handles(url) else { return }
+        FiscalEvents.deepLink(DeepLink.kind(of: url)).log()
         switch DeepLink(url: url) {
         case .section(let section):
             navigation.selectedSection = section
