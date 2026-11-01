@@ -21,9 +21,9 @@ private struct ShareControlTitle: View {
 
     var body: some View {
         Text(title)
-            .font(.footnote.weight(.semibold))
-            .foregroundStyle(.secondary)
-            .accessibilityHeading(.h2)
+            .font(.emphasis(.subheadline, weight: .bold))
+            .foregroundStyle(.primary)
+            .accessibilityAddTraits(.isHeader)
     }
 }
 
@@ -62,21 +62,16 @@ private struct ShareNetworkTile: View {
             withAnimation(reduceMotion ? nil : .smooth) { model.choose(first) }
         } label: {
             VStack(spacing: .space2XS) {
-                Image(systemName: network.symbol)
-                    .font(.icon(.s))
-                    .frame(height: .shareNetworkSymbol)
+                SymbolBadge(
+                    network.symbol, color: selected ? tint : .secondary,
+                    style: selected ? .filled : .tinted)
                 Text(network.title)
-                    .font(.caption2.weight(.semibold))
+                    .font(.caption2.weight(selected ? .bold : .medium))
+                    .foregroundStyle(selected ? AnyShapeStyle(.primary) : AnyShapeStyle(.secondary))
                     .lineLimit(1)
                     .fixedSize()
             }
-            .foregroundStyle(selected ? AnyShapeStyle(.white) : AnyShapeStyle(tint))
             .frame(minWidth: .shareNetworkTile)
-            .padding(.vertical, .spaceS)
-            .padding(.horizontal, .space2XS)
-            .background(
-                selected ? AnyShapeStyle(tint) : AnyShapeStyle(tint.opacity(.opacityTint)),
-                in: .rect(cornerRadius: .radiusM))
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .ignore)
@@ -87,55 +82,50 @@ private struct ShareNetworkTile: View {
 
 private struct ShareDestinationChip: View {
     @Environment(ShareModel.self) private var model
-    @Environment(\.appTint) private var tint
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let destination: ShareDestination
 
     var body: some View {
         let selected = model.destination == destination
-        Button {
+        ShareCapsule(
+            title: destination.title, symbol: selected ? "checkmark" : nil, isOn: selected
+        ) {
             withAnimation(reduceMotion ? nil : .smooth) { model.choose(destination) }
-        } label: {
-            ShareCapsule(
-                title: destination.title, symbol: selected ? "checkmark" : nil, isOn: selected,
-                tint: tint)
         }
-        .buttonStyle(.plain)
         .accessibilityLabel(Text(destination.postTitle))
         .accessibilityAddTraits(selected ? .isSelected : [])
     }
 }
 
 private struct ShareCapsule: View {
+    @Environment(\.appTint) private var tint
     let title: LocalizedStringKey
     let symbol: String?
     let isOn: Bool
-    let tint: Color
+    let action: () -> Void
 
     var body: some View {
-        HStack(spacing: .spaceXS) {
-            if let symbol {
-                Image(systemName: symbol)
-                    .font(.caption.weight(.bold))
-                    .accessibilityHidden(true)
+        Button(action: action) {
+            HStack(spacing: .spaceXS) {
+                if let symbol {
+                    Image(systemName: symbol)
+                        .font(.caption.weight(.bold))
+                        .accessibilityHidden(true)
+                }
+                Text(title)
+                    .font(.subheadline.weight(.semibold))
+                    .lineLimit(1)
+                    .fixedSize()
             }
-            Text(title)
-                .font(.subheadline.weight(.semibold))
-                .lineLimit(1)
-                .fixedSize()
         }
-        .foregroundStyle(isOn ? AnyShapeStyle(tint) : AnyShapeStyle(.secondary))
-        .padding(.horizontal, .spaceM)
-        .padding(.vertical, .spaceS)
-        .background(
-            isOn ? AnyShapeStyle(tint.opacity(.opacityTint)) : AnyShapeStyle(.subtleFill),
-            in: .capsule)
+        .buttonStyle(.bordered)
+        .buttonBorderShape(.capsule)
+        .tint(isOn ? tint : nil)
     }
 }
 
 private struct ShareFactsRail: View {
     @Environment(ShareModel.self) private var model
-    @Environment(\.appTint) private var tint
 
     var body: some View {
         if !model.facts.isEmpty {
@@ -144,14 +134,11 @@ private struct ShareFactsRail: View {
                 EdgeToEdgeRail(.padded(.spaceL), spacing: .spaceS, snaps: false) {
                     ForEach(model.facts) { fact in
                         let isOn = model.isOn(fact)
-                        Button {
+                        ShareCapsule(
+                            title: "\(fact.title)", symbol: isOn ? "checkmark" : "plus", isOn: isOn
+                        ) {
                             model.toggle(fact)
-                        } label: {
-                            ShareCapsule(
-                                title: "\(fact.title)", symbol: isOn ? "checkmark" : "plus",
-                                isOn: isOn, tint: tint)
                         }
-                        .buttonStyle(.plain)
                         .disabled(!model.canToggle(fact))
                         .accessibilityValue(Text(isOn ? "On" : "Off"))
                     }
@@ -164,29 +151,27 @@ private struct ShareFactsRail: View {
 
 private struct ShareTools: View {
     @Environment(ShareModel.self) private var model
-    @Environment(\.appTint) private var tint
     @State private var showsArt = false
     @State private var showsCaption = false
 
     var body: some View {
+        if model.offersMediaChoice || model.usesArt || model.destination.acceptsCaption {
+            Divider()
+                .frame(height: .shareToolDivider)
+        }
         if model.offersMediaChoice {
-            Button {
+            ShareCapsule(
+                title: "Animated video", symbol: model.sendsVideo ? "checkmark" : "plus",
+                isOn: model.sendsVideo
+            ) {
                 model.sendsVideo.toggle()
-            } label: {
-                ShareCapsule(
-                    title: "Animated video", symbol: model.sendsVideo ? "checkmark" : "plus",
-                    isOn: model.sendsVideo, tint: tint)
             }
-            .buttonStyle(.plain)
             .accessibilityValue(Text(model.sendsVideo ? "On" : "Off"))
         }
         if model.usesArt {
-            Button {
+            ShareCapsule(title: "Art", symbol: "photo", isOn: false) {
                 showsArt = true
-            } label: {
-                ShareCapsule(title: "Art", symbol: "photo", isOn: false, tint: tint)
             }
-            .buttonStyle(.plain)
             .sheet(isPresented: $showsArt) {
                 ShareToolSheet(title: "Art") {
                     ScrollView {
@@ -197,12 +182,9 @@ private struct ShareTools: View {
             }
         }
         if model.destination.acceptsCaption {
-            Button {
+            ShareCapsule(title: "Caption", symbol: "text.alignleft", isOn: false) {
                 showsCaption = true
-            } label: {
-                ShareCapsule(title: "Caption", symbol: "text.alignleft", isOn: false, tint: tint)
             }
-            .buttonStyle(.plain)
             .sheet(isPresented: $showsCaption) {
                 ShareToolSheet(title: "Caption") {
                     Form {

@@ -12,6 +12,13 @@ struct ShareCardCarousel: View {
             }
             ShareStyleNames()
         }
+        .padding(.vertical, .spaceM)
+        .background {
+            ShareStageField(parties: model.content?.stageParties ?? [])
+                .overlay(Color.scoreboard.opacity(.opacityShareStage))
+        }
+        .clipShape(.rect(cornerRadius: .radiusGroup))
+        .environment(\.colorScheme, .dark)
         .sensoryFeedback(.selection, trigger: model.style)
     }
 
@@ -73,11 +80,7 @@ private struct ShareCarouselCard: View {
                 width: size.width * scale, height: size.height * scale, alignment: .topLeading
             )
             .clipShape(.rect(cornerRadius: .radiusL))
-            .overlay {
-                RoundedRectangle(cornerRadius: .radiusL)
-                    .strokeBorder(.separator)
-            }
-            .shadow(color: .black.opacity(.opacityTint), radius: .spaceM, y: .spaceS)
+            .shadow(color: .black.opacity(.opacityShareCardShadow), radius: .spaceM, y: .spaceS)
         }
         .buttonStyle(.plain)
         .id(style)
@@ -90,7 +93,6 @@ private struct ShareCarouselCard: View {
 
 private struct ShareStyleNames: View {
     @Environment(ShareModel.self) private var model
-    @Environment(\.appTint) private var tint
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
@@ -101,8 +103,10 @@ private struct ShareStyleNames: View {
                     withAnimation(reduceMotion ? nil : .smooth) { model.style = style }
                 } label: {
                     Text(style.title)
-                        .font(.footnote.weight(selected ? .bold : .regular))
-                        .foregroundStyle(selected ? AnyShapeStyle(tint) : AnyShapeStyle(.secondary))
+                        .font(.emphasis(.subheadline, weight: selected ? .bold : .regular))
+                        .foregroundStyle(
+                            selected ? AnyShapeStyle(.primary) : AnyShapeStyle(.secondary)
+                        )
                         .lineLimit(1)
                         .fixedSize()
                 }

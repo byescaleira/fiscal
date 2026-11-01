@@ -137,30 +137,32 @@ struct ShareDataView: View {
     @ViewBuilder private var standard: some View {
         let format = card.format
         let board = card.board
-        VStack(alignment: .leading, spacing: .spaceS) {
+        VStack(alignment: .leading, spacing: .spaceXS) {
             Text(verbatim: board.eyebrow)
                 .font(.posterEyebrow)
                 .tracking(.posterTracking)
                 .foregroundStyle(Color.posterSecondary)
                 .lineLimit(1)
                 .minimumScaleFactor(.shareTextShrink)
-            if let title = board.title {
-                Text(verbatim: title)
-                    .font(format == .feed ? .posterHeadline : .posterHeadlineCompact)
-                    .lineLimit(3)
-                    .minimumScaleFactor(.shareTextShrink)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
+                .fixedSize(horizontal: false, vertical: true)
             if let person = board.person {
-                ShareIdentity(name: person.name, party: person.party)
+                ShareFaceLine(face: person)
+            }
+            if board.lead == nil, let title = board.title {
+                ShareBoardTitle(title: title, format: format)
             }
             Spacer(minLength: .zero)
             if let lead = board.lead {
                 ShareFigure(
                     value: lead,
                     size: format.figureSize(
-                        format == .feed ? format.scoreSize : format.dataCell, for: lead,
-                        in: format.safeWidth))
+                        format == .feed ? format.scoreSize : .shareDataLead, for: lead,
+                        in: format.safeWidth)
+                )
+                .fixedSize(horizontal: false, vertical: true)
+                if let title = board.title {
+                    ShareBoardTitle(title: title, format: format)
+                }
             }
             ShareBoardLayout(layout: board.layout, format: format)
             if let note = board.note, !note.isEmpty, format == .feed || board.lead == nil {
@@ -176,7 +178,22 @@ struct ShareDataView: View {
         }
         .padding(format.textInsets)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(Color.shareDataField)
+        .background {
+            ShareStageField(parties: card.content.stageParties)
+        }
+    }
+}
+
+private struct ShareBoardTitle: View {
+    let title: String
+    let format: ShareFormat
+
+    var body: some View {
+        Text(verbatim: title)
+            .font(format == .feed ? .posterHeadline : .posterHeadlineCompact)
+            .lineLimit(3)
+            .minimumScaleFactor(.shareTextShrink)
+            .fixedSize(horizontal: false, vertical: true)
     }
 }
 
@@ -191,7 +208,7 @@ private struct ShareBoardLayout: View {
             ShareTallyHero(
                 tally: tally, format: compact, size: compact.scoreSize, animates: true)
         case .bars(let bars):
-            VStack(alignment: .leading, spacing: .spaceS) {
+            VStack(alignment: .leading, spacing: .spaceXS) {
                 ForEach(bars.prefix(format == .feed ? 4 : 3)) { bar in
                     ShareBarRow(bar: bar, format: format)
                 }
@@ -218,13 +235,14 @@ private struct ShareBarRow: View {
                     .font(.posterLabel)
                     .lineLimit(1)
                     .minimumScaleFactor(.shareTextShrink)
+                    .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: .zero)
-                ShareFigure(value: bar.value, size: format.textFormat.factSize)
+                ShareFigure(value: bar.value, size: .shareDataBarFigure)
                     .fixedSize()
             }
             GeometryReader { proxy in
                 Capsule()
-                    .fill(Color.scoreboardAccent)
+                    .fill(.white)
                     .frame(
                         width: proxy.size.width * ShareMotion.fill(bar.share, progress: progress)
                     )

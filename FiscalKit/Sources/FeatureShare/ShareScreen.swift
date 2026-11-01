@@ -41,7 +41,7 @@ private struct ShareEditor: View {
         @Bindable var model = model
         studio
             .background(.plainBackground)
-            .safeAreaInset(edge: .bottom) {
+            .safeAreaBar(edge: .bottom) {
                 SharePostBar()
             }
             .sharePostSheet($model.postRequest)

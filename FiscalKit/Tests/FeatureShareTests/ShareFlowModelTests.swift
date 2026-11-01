@@ -228,4 +228,17 @@ struct ShareFlowModelTests {
         }
         #expect(ShareStyle.typographic.storyField != ShareStyle.data.storyField)
     }
+
+    @Test func theStageTakesThePartiesOfTheSubject() async throws {
+        let person = ShareFixtures.model(.person(slug: "tabata-amaral"))
+        await person.load()
+        let face = try #require(person.content?.faces.first)
+        #expect(person.content?.stageParties == [face.party])
+        let compare = ShareFixtures.model(.compare(slugs: ["kim-kataguiri", "erika-hilton"]))
+        await compare.load()
+        #expect(compare.content?.stageParties.count == 2)
+        let place = ShareFixtures.model(.representatives(uf: "sp"))
+        await place.load()
+        #expect(place.content?.stageParties.isEmpty == true)
+    }
 }

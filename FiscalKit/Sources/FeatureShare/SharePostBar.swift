@@ -22,10 +22,10 @@ struct SharePostBar: View {
                 .disabled(model.rendered == nil || model.isPosting)
             }
         }
-        .padding(.spaceM)
+        .padding(.horizontal, .spaceL)
+        .padding(.vertical, .spaceS)
         .readableWidth()
         .frame(maxWidth: .infinity)
-        .background(.bar)
     }
 }
 

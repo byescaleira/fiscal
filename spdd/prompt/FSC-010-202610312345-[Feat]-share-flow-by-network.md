@@ -40,6 +40,7 @@ Definição de pronto:
   | WhatsApp, conversa | 1:1 | imagem | sim |
   | WhatsApp Status | 9:16 | vídeo ou imagem | não |
   | Outros | 4:5 | imagem | sim |
+- **Given** um cartão ou o estúdio de um assunto com pessoa (usuário em 01/11/2026: "falta um refino no design, mas a cara do byescaleira, do projeto") **When** eles aparecem **Then** trazem a identidade do Fiscal, igual à do herói do perfil: o retrato desenhado, a marca do partido e o gradiente do partido. Na Comparação, cada lado tem a cor do próprio partido. Assunto sem pessoa fica no palco escuro do placar e, na Folha, com a cor do tipo de assunto. A cor do partido é a mesma para todo mundo e nunca vem da Lente (`ShareFlowModelTests.theStageTakesThePartiesOfTheSubject`).
 - **Given** um perfil com classificação entre colegas **When** o cartão ou a legenda são montados **Then** nenhum texto diz "Melhor que a média", "Pior que a média", "Mais ativo" ou "Menos ativo". No lugar vai o dado, como "Presença · Mediana da Câmara: 90%" (`ShareModelTests.theCardShowsTheMedianInsteadOfAVerdict`). A tela do perfil continua como está.
 - **Given** um formato 9:16 **When** o cartaz é desenhado **Then** nenhum texto, número ou QR fica nos 14% de cima (90 de 640 pt), nos 35% de baixo (224 pt) nem nos 6% de cada lado (22 pt). Fundo e arte podem passar, e contam como arte a repetição do número-herói e o × em baixo contraste, que nunca trazem dado que não esteja também dentro da zona (`ShareSafeAreaTests.ninebysixteenKeepsTheSafeZone`).
 - **Given** um destino de "vídeo ou imagem" **When** a pessoa vê "Onde postar" **Then** um interruptor "Vídeo animado", ligado por padrão, escolhe a mídia. Reels é sempre vídeo, e os destinos só de imagem não mostram o interruptor (`ShareFlowModelTests.theImageChoiceSkipsTheVideo`).
@@ -188,8 +189,15 @@ classDiagram
    - **Direção visual (A + C, recomendada):**
      - Folha é o padrão porque lê em 1 segundo e não sugere juízo; Duelo fica em Comparação e Disputa porque só ali há dois lados de verdade;
      - da direção B fica só a ideia das faixas proporcionais, no movimento das barras do vídeo;
-     - a cor do tipo de assunto identifica o assunto, nunca diz bom ou ruim, e não usa cor de partido;
+     - a cor do tipo de assunto identifica o assunto e nunca diz bom ou ruim. A cor de partido só entra como identidade da pessoa, como no resto do app;
      - a faixa inferior da Folha e o × do Duelo ocupam a zona dos botões, para ela não ficar vazia.
+   - **Identidade (refino de 01/11/2026):**
+     - crítica: os cartões e o estúdio estavam corretos, mas genéricos, sem o retrato, a marca e o gradiente que identificam o Fiscal; as redes eram blocos cinzas iguais, os títulos das seções sumiam, e a barra de postar era uma faixa cinza;
+     - o palco do carrossel assume a cor do assunto, como no Apple Invites, usando o `PartyBackdrop` do herói do perfil;
+     - as redes viram círculos com o `SymbolBadge`, como a fileira da folha do sistema, e os lugares e fatos usam a cápsula `.bordered` do kit (a mesma do `ChoicePills`);
+     - os títulos das seções passam à Bricolage, e o botão de postar fica numa barra de vidro (`safeAreaBar`);
+     - o Dados de uma pessoa é um placar sobre o gradiente do partido, e o Duelo coloca os dois retratos sobre as duas cores;
+     - a frase "A e B" sai do Duelo de Comparação, porque os nomes já estão nos lados.
    - **Classificação no cartão:** a faixa "Melhor" ou "Pior que a média" fica só no perfil, onde vem com o critério. O cartão sai do contexto do app, então leva a mediana (`medianText`).
    - **Mídia:** "Vídeo animado" é uma ferramenta de ligar e desligar, separada dos lugares, porque não troca o destino.
    - **Nome do arquivo:** "Fiscal - <assunto>", com o nome da pessoa, o número da votação ou o título, sem barras.
@@ -199,7 +207,8 @@ classDiagram
 3. **Referências:**
    - a pesquisa de 31/10/2026, com as Meta Sharing to Stories e Reels, o TikTok Share Kit e o WhatsApp Link Previews;
    - Spotify Wrapped (cartões 9:16 por slide), Strava (sticker de dados) e Apple Music (escolher o trecho antes);
-   - o canvas [FSC-005](FSC-005-202610291700-[Codify]-share-cards-and-art.md) para o pôster, a arte e os créditos.
+   - o canvas [FSC-005](FSC-005-202610291700-[Codify]-share-cards-and-art.md) para o pôster, a arte e os créditos;
+   - Apple Invites, capturas da App Store: o carrossel de cartões sobre um palco com a cor do cartão, e os rostos em círculo.
 
 ## Structure
 
@@ -288,6 +297,7 @@ docs/evidence/FSC-010/, CHANGELOG.md, docs/roadmap.md, spdd/README.md
     - O carrossel dos estilos com os cartões de verdade.
     - Os trilhos "Onde postar" e "O que entra", as ferramentas por contexto, as folhas de Arte e Legenda e o layout de tela larga.
     - Os números parados em todo quadro do vídeo e a mediana no lugar da classificação.
+    - A identidade do Fiscal nos cartões e no palco: retrato, marca e gradiente do partido.
     - Verificação: `ShareStyleTests.everyFrameShowsTheRealNumbers`, `ShareModelTests.theCardShowsTheMedianInsteadOfAVerdict`, capturas no simulador e no iPhone, iterando até o ok do usuário.
 9. **Rodar e QA.** Depende de: 1 a 8.2.
    - `scripts/verify.sh --full`.
@@ -335,7 +345,7 @@ docs/evidence/FSC-010/, CHANGELOG.md, docs/roadmap.md, spdd/README.md
   - "—" no lugar de dado ausente;
   - Lente e apoio nunca no cartaz nem na legenda;
   - as falhas de vídeo e de Fotos não perdem a seleção;
-  - a cor do tipo de assunto nunca indica juízo nem partido, e os dois lados do Duelo têm o mesmo tamanho e peso.
+  - a cor nunca indica juízo, a cor de partido é só identidade da pessoa e não muda com a Lente, e os dois lados do Duelo têm o mesmo tamanho e peso.
 - **Desempenho:**
   - vídeo de 4 s, 120 quadros em 1080×1920, até 8 Mbps e menos de 50 MB;
   - geração cancelável, com progresso;

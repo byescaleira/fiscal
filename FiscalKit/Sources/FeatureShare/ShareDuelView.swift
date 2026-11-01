@@ -7,6 +7,7 @@ public struct ShareDuel: Hashable, Sendable {
         public let value: String
         public let name: String
         public let detail: String
+        public let slug: String?
     }
 
     public struct Row: Hashable, Sendable, Identifiable {
@@ -32,9 +33,13 @@ public struct ShareDuel: Hashable, Sendable {
             let compared = rows.filter { $0.values.count >= 2 }
             guard content.faces.count >= 2, let lead = compared.first else { return nil }
             let faces = content.faces
-            hook = String(appLocalized: "\(faces[0].name) and \(faces[1].name)")
-            left = Side(value: lead.values[0], name: faces[0].name, detail: faces[0].party)
-            right = Side(value: lead.values[1], name: faces[1].name, detail: faces[1].party)
+            hook = nil
+            left = Side(
+                value: lead.values[0], name: faces[0].name, detail: faces[0].party,
+                slug: faces[0].slug)
+            right = Side(
+                value: lead.values[1], name: faces[1].name, detail: faces[1].party,
+                slug: faces[1].slug)
             criterion = lead.label
             self.rows = compared.dropFirst().map {
                 Row(label: $0.label, left: $0.values[0], right: $0.values[1])
@@ -45,8 +50,9 @@ public struct ShareDuel: Hashable, Sendable {
             let first = race.candidates[0]
             let second = race.candidates[1]
             hook = content.headline
-            left = Side(value: first.percent, name: first.name, detail: first.party)
-            right = Side(value: second.percent, name: second.name, detail: second.party)
+            left = Side(value: first.percent, name: first.name, detail: first.party, slug: nil)
+            right = Side(
+                value: second.percent, name: second.name, detail: second.party, slug: nil)
             criterion = race.counted
             rows = []
             shares = [first.share, second.share]
@@ -66,7 +72,7 @@ struct ShareDuelView: View {
     var body: some View {
         let format = card.format
         ZStack(alignment: .bottom) {
-            Color.shareDataField
+            ShareStageField(parties: [duel.left.detail, duel.right.detail])
             if showsArt, format == .stories {
                 Text(verbatim: "×")
                     .font(.posterFigure(.shareDuelMark))
@@ -79,13 +85,14 @@ struct ShareDuelView: View {
                     .offset(y: .shareDuelMarkDrop)
                     .accessibilityHidden(true)
             }
-            VStack(spacing: .spaceS) {
+            VStack(spacing: .spaceXS) {
                 Text(verbatim: duel.eyebrow)
                     .font(.posterEyebrow)
                     .tracking(.posterTracking)
                     .foregroundStyle(Color.posterSecondary)
                     .lineLimit(1)
                     .minimumScaleFactor(.shareTextShrink)
+                    .fixedSize(horizontal: false, vertical: true)
                 if let hook = duel.hook {
                     Text(verbatim: hook)
                         .font(.posterTitle(.shareFolhaHook))
@@ -96,15 +103,18 @@ struct ShareDuelView: View {
                 }
                 Spacer(minLength: .zero)
                 ShareDuelSides(duel: duel, format: format)
+                    .fixedSize(horizontal: false, vertical: true)
                 if let criterion = duel.criterion, !criterion.isEmpty {
                     Text(verbatim: criterion)
-                        .font(.posterLabel)
-                        .foregroundStyle(Color.posterSecondary)
+                        .font(.posterHeadlineCompact)
                         .lineLimit(1)
                         .minimumScaleFactor(.shareTextShrink)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                ForEach(duel.rows.prefix(format.folhaRows)) { row in
-                    ShareDuelRow(row: row)
+                VStack(spacing: .space2XS) {
+                    ForEach(duel.rows.prefix(format.folhaRows)) { row in
+                        ShareDuelRow(row: row)
+                    }
                 }
                 if duel.shares.count == 2 {
                     ShareTallyBar(
@@ -137,10 +147,6 @@ private struct ShareDuelSides: View {
         HStack(alignment: .top, spacing: .zero) {
             ShareDuelSide(side: duel.left, size: size)
                 .padding(.trailing, .spaceS)
-            Rectangle()
-                .fill(Color.posterSecondary)
-                .frame(width: 1, height: .shareDuelDivider)
-                .accessibilityHidden(true)
             ShareDuelSide(side: duel.right, size: size)
                 .padding(.leading, .spaceS)
         }
@@ -153,17 +159,18 @@ private struct ShareDuelSide: View {
 
     var body: some View {
         VStack(spacing: .space2XS) {
-            ShareFigure(value: side.value, size: size)
-            Text(verbatim: side.name.uppercased())
-                .font(.posterParty)
-                .tracking(.posterTracking)
+            if let slug = side.slug {
+                PersonPortrait(
+                    slug: slug, name: side.name, party: side.detail, size: .shareDuelPortrait)
+            }
+            Text(verbatim: side.name)
+                .font(.posterName)
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
                 .minimumScaleFactor(.shareTextShrink)
-            Text(verbatim: side.detail)
-                .font(.posterSource)
-                .foregroundStyle(Color.posterSecondary)
-                .lineLimit(1)
+            PartyMark(side.detail)
+            ShareFigure(value: side.value, size: size)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity)
     }
@@ -189,5 +196,23 @@ private struct ShareDuelRow: View {
         }
         .lineLimit(1)
         .minimumScaleFactor(.shareTextShrink)
+        .fixedSize(horizontal: false, vertical: true)
+    }
+}
+
+struct ShareStageField: View {
+    @Environment(\.shareShowsArt) private var showsArt
+    let parties: [String]
+
+    var body: some View {
+        if showsArt, !parties.isEmpty {
+            HStack(spacing: .zero) {
+                ForEach(Array(parties.enumerated()), id: \.offset) { _, party in
+                    PartyBackdrop(party: party)
+                }
+            }
+        } else {
+            Color.shareDataField
+        }
     }
 }

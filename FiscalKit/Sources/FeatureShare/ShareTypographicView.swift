@@ -129,7 +129,23 @@ public struct ShareStatement: Hashable, Sendable {
     }
 }
 
+extension Array {
+    fileprivate var onlyElement: [Element] {
+        dropFirst().isEmpty ? self : []
+    }
+}
+
 extension ShareCardContent {
+    public var stageParties: [String] {
+        switch body {
+        case .compare: faces.prefix(2).map(\.party)
+        case .following, .representatives: []
+        case .highlight(let highlight): highlight.person.map { [$0.party] } ?? []
+        case .victory(let victory): [victory.winner.party]
+        default: Array(faces.prefix(2).map(\.party)).onlyElement
+        }
+    }
+
     var accent: Color {
         switch body {
         case .vote, .highlight: .retroTeal
@@ -152,8 +168,9 @@ struct ShareTypographicView: View {
         ZStack(alignment: .bottom) {
             Color.sharePaper
             ShareFolhaBand(
-                figure: format == .stories ? statement.ghost : nil, color: card.content.accent,
-                height: format.folhaBand)
+                figure: format == .stories ? statement.ghost : nil,
+                party: card.content.stageParties.onlyElement.first,
+                color: card.content.accent, height: format.folhaBand)
             ShareFolhaText(card: card, statement: statement, code: code)
                 .padding(format.folhaInsets)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -167,11 +184,20 @@ private struct ShareFolhaBand: View {
     @Environment(\.shareProgress) private var progress
     @Environment(\.shareShowsArt) private var showsArt
     let figure: String?
+    let party: String?
     let color: Color
     let height: CGFloat
 
+    @ViewBuilder private var field: some View {
+        if let party, showsArt {
+            PartyBackdrop(party: party)
+        } else {
+            color
+        }
+    }
+
     var body: some View {
-        color
+        field
             .overlay {
                 if let figure, showsArt {
                     Text(verbatim: figure)
@@ -201,11 +227,11 @@ private struct ShareFolhaText: View {
             Text(verbatim: statement.eyebrow)
                 .font(.posterEyebrow)
                 .tracking(.posterTracking)
-                .foregroundStyle(card.content.accent)
+                .foregroundStyle(Color.posterSecondary)
                 .lineLimit(1)
                 .minimumScaleFactor(.shareTextShrink)
             if let person = statement.person {
-                ShareIdentity(name: person.name, party: person.party)
+                ShareFaceLine(face: person)
             }
             if let phrase = statement.phrase {
                 let lines = statement.figure == nil ? 5 : 3
@@ -223,7 +249,9 @@ private struct ShareFolhaText: View {
             if let figure = statement.figure {
                 ShareFigure(
                     value: figure,
-                    size: format.figureSize(format.typeFigure, for: figure, in: format.safeWidth))
+                    size: format.figureSize(format.typeFigure, for: figure, in: format.safeWidth)
+                )
+                .layoutPriority(-1)
             }
             if let caption = statement.caption, !caption.isEmpty {
                 Text(verbatim: caption)
@@ -235,15 +263,36 @@ private struct ShareFolhaText: View {
             }
             ShareFolhaRule()
             let limit = statement.figure == nil ? format.folhaRowsWithoutFigure : format.folhaRows
-            ForEach(statement.rows.prefix(limit)) { row in
-                ShareFolhaRow(row: row)
-            }
-            ForEach(statement.people) { face in
-                ShareFolhaPerson(face: face)
+            VStack(spacing: .space2XS) {
+                ForEach(statement.rows.prefix(limit)) { row in
+                    ShareFolhaRow(row: row)
+                }
+                ForEach(statement.people) { face in
+                    ShareFolhaPerson(face: face)
+                }
             }
             ShareFooter(card: card, code: code)
                 .fixedSize(horizontal: false, vertical: true)
         }
+    }
+}
+
+struct ShareFaceLine: View {
+    let face: ShareFace
+
+    var body: some View {
+        HStack(spacing: .spaceS) {
+            PersonPortrait(
+                slug: face.slug, name: face.name, party: face.party, size: .shareFacePortrait)
+            VStack(alignment: .leading, spacing: .space2XS) {
+                Text(verbatim: face.name)
+                    .font(.posterName)
+                    .lineLimit(1)
+                    .minimumScaleFactor(.shareTextShrink)
+                PartyMark(face.party)
+            }
+        }
+        .fixedSize(horizontal: false, vertical: true)
     }
 }
 
@@ -276,6 +325,7 @@ private struct ShareFolhaRow: View {
                 .lineLimit(1)
                 .fixedSize()
         }
+        .fixedSize(horizontal: false, vertical: true)
     }
 }
 
@@ -284,7 +334,8 @@ private struct ShareFolhaPerson: View {
 
     var body: some View {
         HStack(spacing: .spaceS) {
-            SharePartyStripes(party: face.party)
+            PersonPortrait(
+                slug: face.slug, name: face.name, party: face.party, size: .shareFacePortraitSmall)
             Text(verbatim: face.name)
                 .font(.posterHeadlineCompact)
                 .lineLimit(1)
@@ -296,5 +347,6 @@ private struct ShareFolhaPerson: View {
                 .lineLimit(1)
                 .minimumScaleFactor(.shareTextShrink)
         }
+        .fixedSize(horizontal: false, vertical: true)
     }
 }
