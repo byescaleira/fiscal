@@ -157,6 +157,9 @@ classDiagram
      - `asc.py` e `store-media.py` copiados do template sem mudança de lógica;
      - a regra 5 da constituição com o texto do template.
    - **Versão do servidor e da ponte:** o servidor já recebe a versão SemVer pela tag ou pelo `MARKETING_VERSION` no deploy (`scripts/server-deploy.sh`, `-X main.version`), e a ponte usa o `version` do `package.json` no `/health`. Nada muda aqui; o levantamento contou isso como lacuna por engano.
+   - **Rede no Mac (prompt-update de 31/10/2026, achado na QA):** o app do Mac roda no App Sandbox sem `com.apple.security.network.client`, então nenhuma tela carregava dados ("Disponível com conexão"). O alvo ganha `ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES`, só saída; o iOS e o visionOS ignoram a chave. A verificação no Mac usa um build assinado (`xcodebuild -allowProvisioningUpdates`), porque o `scripts/build.sh` compila sem assinatura e, sem o entitlement do iCloud, o `CKContainer` derruba o app na abertura.
+   - **Barra inferior no visionOS:** o Fiscal não tem barra inferior em nenhuma tela; o `platformBottomBar` fica para quando houver uma.
+   - **Tabelas do Mac dentro de telas de lista:** uma `Table` não cabe numa `List`; em Gastos e na votação, o Mac usa um `VSplitView` com o painel de hoje em cima e a tabela embaixo, e a lista de representantes vira só a tabela.
    - **Portas (análise):** shell do Mac, tabelas, janela vizinha no visionOS e Ajustes na dobra são `veto`, listadas na parada do canvas; o resto é `reversível`; nenhuma é `pergunta`.
    - **ADR:** nenhum. As regras são do workspace, já aceitas lá, e as decisões são locais.
 3. **Referências:**
@@ -198,6 +201,7 @@ FiscalKit/
   Tests/FeatureCoreTests/EventLogPrivacyTests.swift              (novo)
   Tests/FeatureSettingsTests/DeveloperModelTests.swift           flags em três estados, registro, diagnóstico
 docs/evidence/FSC-008/qa.md                                     (novo) resultado dos roteiros manuais
+Fiscal/Fiscal.xcodeproj/project.pbxproj                          ENABLE_OUTGOING_NETWORK_CONNECTIONS no alvo do app
 Fiscal/Fiscal/FiscalApp.swift                                    comandos no macOS, WindowGroup(for: UUID.self) no visionOS, EmptyStateView com texto do model
 Fiscal/Fiscal/Localizable.xcstrings                              textos novos em pt-BR
 Fiscal.xcworkspace/xcshareddata/swiftpm/Package.resolved         byescaleira-kit 0.7.2
@@ -321,6 +325,7 @@ docs/evidence/FSC-008/                                           capturas do Duo
   - Nenhuma Lente, apoio, seguido, busca ou lugar.
   - Nada vai à rede.
   - A página Developer só existe em `#if DEBUG`.
+  - O sandbox do Mac ganha só a rede de saída (`network.client`), sem servidor nem outra permissão.
 - **Integração e compatibilidade:**
   - Nenhuma `Route`, chave salva, schema do SwiftData, container do CloudKit ou link muda.
   - `fiscal.flags.overrides` mantém a chave e o formato.
