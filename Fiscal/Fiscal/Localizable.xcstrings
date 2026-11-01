@@ -14,6 +14,16 @@
         }
       }
     },
+    "%@ and %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ e %2$@"
+          }
+        }
+      }
+    },
     "%@ and %@, side by side" : {
       "localizations" : {
         "pt-BR" : {
@@ -12717,6 +12727,7 @@
       }
     },
     "Style" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -14459,7 +14470,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tipográfico"
+            "value" : "Folha"
           }
         }
       }
@@ -16146,7 +16157,7 @@
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Sim %1$@, Não %2$@"
           }
         }

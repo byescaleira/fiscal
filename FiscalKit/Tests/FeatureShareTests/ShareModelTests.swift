@@ -33,6 +33,7 @@ struct ShareModelTests {
         for subject in subjects {
             let model = model(subject)
             await model.load()
+            model.style = .poster
             #expect(model.phase == .loaded, "\(subject)")
             let work = try #require(model.artwork?.work)
             for format in FeatureShare.ShareFormat.allCases {
@@ -110,6 +111,7 @@ struct ShareModelTests {
     @Test func pickingAnotherWorkKeepsTheCreditInStep() async throws {
         let model = model(.vote(id: "camara-18732026"))
         await model.load()
+        model.style = .poster
         let other = try #require(model.works.last)
         model.select(other)
         #expect(model.isSelected(other))
@@ -199,5 +201,26 @@ struct ShareModelTests {
         await model.load()
         #expect(model.phase == .loaded)
         #expect(model.card?.content.faces.first?.name.count ?? 0 > 30)
+    }
+
+    @Test func theCardShowsTheMedianInsteadOfAVerdict() async throws {
+        let service = ShowcasePublicData(scenario: .normal, now: ShareFixtures.now)
+        let profile = try await service.profile(slug: "tabata-amaral")
+        let classification = try #require(profile.classification)
+        let model = ShareModel(subject: .person(slug: "tabata-amaral"), service: service)
+        await model.load()
+        let content = try #require(model.content)
+        guard case .person(let metrics) = content.body else {
+            Issue.record("expected a person card")
+            return
+        }
+        #expect(metrics.first?.peer == classification.medianText(.presence))
+        let bands: [PeerClassification.Band] = [.better, .worse, .more, .less, .average]
+        for style in ShareStyle.allCases {
+            let texts = try #require(model.card(style: style)).texts + [model.caption]
+            for band in bands {
+                #expect(!texts.contains { $0.contains(band.title) }, "\(style) \(band)")
+            }
+        }
     }
 }

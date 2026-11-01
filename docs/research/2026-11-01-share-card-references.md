@@ -42,6 +42,18 @@ Insumo do redesenho das imagens da [FSC-010](../../spdd/prompt/FSC-010-202610312
   - um número comparado como gancho e os dois nomes iguais em tamanho e peso;
   - cor neutra e simetria total.
 
+## Tela de configurar o compartilhamento
+
+Insumo da operação 8.2, depois de o usuário dizer que a primeira versão "ainda não está muito legal".
+
+| Referência | Fonte | O que dá para afirmar | Para o Fiscal |
+| --- | --- | --- | --- |
+| Cartão de letras do Spotify | [Beebom, 24/02/2021](https://beebom.com/how-share-spotify-apple-music-song-lyrics-instagram-stories/) (média, guia de terceiro e antigo) | Escolhe o trecho antes. A folha própria mostra o cartão e os apps de destino juntos, e o visual troca tocando na prévia | O cartão é o seletor de estilo, com os destinos na mesma tela |
+| Strava, Sticker Stats | [BikeRadar, 2025](https://www.bikeradar.com/news/strava-sticker-stats-spring-2025-updates) e [Tom's Guide](https://www.tomsguide.com/wellness/fitness/stop-screenshotting-your-runs-this-hidden-strava-feature-looks-much-cleaner-on-instagram) (média) | Do botão de compartilhar sai direto para o Instagram Stories, com os dados prontos | Destino de um toque, sem etapas |
+| Reclamações do cartão novo do Spotify | [Comunidade Spotify](https://community.spotify.com/t5/App-Features/Bring-back-previous-share-lyrics-design-options/td-p/5443173) (baixa, relatos) | Pessoas sentem falta das opções de visual antigas | Manter a escolha de estilo visível |
+
+Não vi capturas atuais dessas telas: as buscas não trouxeram documentação oficial do layout de hoje, e por isso a referência vale como padrão de interação, e não como desenho a copiar.
+
 ## O que evitar
 
 - **Cor:** que sugira juízo (verde bom, vermelho ruim) ou cor de partido.

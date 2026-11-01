@@ -72,15 +72,16 @@ struct ShareSafeAreaTests {
 }
 
 @MainActor
-private struct Pixels {
+struct Pixels {
     let data: [UInt8]
     let width: Int
     let height: Int
 
-    init?(card: ShareCard, code: CGImage?) {
+    init?(card: ShareCard, code: CGImage?, progress: Double = 1) {
         let size = card.format.size
         let renderer = ImageRenderer(
-            content: ShareRenderer.frame(card, code: code, portraits: nil)
+            content: ShareRenderer.frame(card, code: code, portraits: nil, progress: progress)
+                .environment(\.shareShowsArt, false)
                 .frame(width: size.width, height: size.height))
         renderer.scale = 1
         guard let image = renderer.cgImage else { return nil }
@@ -105,8 +106,8 @@ private struct Pixels {
     }
 
     func offender(outside zone: CGRect) -> CGPoint? {
-        let field = pixel(0, 0)
         for y in 0..<height {
+            let field = pixel(0, y)
             for x in 0..<width {
                 let point = CGPoint(x: Double(x) + 0.5, y: Double(y) + 0.5)
                 guard !zone.contains(point) else { continue }
@@ -116,6 +117,14 @@ private struct Pixels {
             }
         }
         return nil
+    }
+
+    func differingRows(from other: Pixels) -> Int {
+        (0..<height).filter { y in
+            (0..<width).contains { x in
+                zip(pixel(x, y), other.pixel(x, y)).contains { abs(Int($0) - Int($1)) > 2 }
+            }
+        }.count
     }
 
     private func pixel(_ x: Int, _ y: Int) -> [UInt8] {

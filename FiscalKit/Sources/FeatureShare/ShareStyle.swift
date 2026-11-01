@@ -13,6 +13,29 @@ public enum ShareStyle: String, CaseIterable, Hashable, Sendable, Identifiable {
         case .data: "Data"
         }
     }
+
+    public var storyField: String {
+        switch self {
+        case .poster: .sharePosterStoryField
+        case .typographic: .sharePaperStoryField
+        case .data: .shareDataStoryField
+        }
+    }
+}
+
+extension ShareCardContent {
+    public var defaultStyle: ShareStyle {
+        if hasOwnPoster { return .poster }
+        switch body {
+        case .compare, .race: return .data
+        default: return .typographic
+        }
+    }
+
+    public var styles: [ShareStyle] {
+        let lead = defaultStyle
+        return [lead] + [ShareStyle.typographic, .data, .poster].filter { $0 != lead }
+    }
 }
 
 extension ShareFormat {
@@ -32,6 +55,18 @@ extension ShareFormat {
     }
 
     public var textFormat: ShareFormat { self == .stories ? .message : self }
+
+    public var folhaBand: CGFloat { self == .stories ? .shareFolhaBand : .shareFolhaStrip }
+
+    public var folhaRows: Int { 3 }
+
+    public var folhaRowsWithoutFigure: Int { self == .message ? 4 : 6 }
+
+    public var folhaInsets: EdgeInsets {
+        var insets = textInsets
+        insets.bottom = Swift.max(insets.bottom, folhaBand + .spaceS)
+        return insets
+    }
 
     public func safeExtra(beyond margin: CGFloat) -> EdgeInsets {
         let insets = safeInsets

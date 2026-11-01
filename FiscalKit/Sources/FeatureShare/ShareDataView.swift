@@ -127,6 +127,14 @@ struct ShareDataView: View {
     let code: CGImage?
 
     var body: some View {
+        if let duel = card.duel {
+            ShareDuelView(card: card, duel: duel, code: code)
+        } else {
+            standard
+        }
+    }
+
+    @ViewBuilder private var standard: some View {
         let format = card.format
         let board = card.board
         VStack(alignment: .leading, spacing: .spaceS) {
@@ -152,8 +160,7 @@ struct ShareDataView: View {
                     value: lead,
                     size: format.figureSize(
                         format == .feed ? format.scoreSize : format.dataCell, for: lead,
-                        in: format.safeWidth),
-                    animates: true)
+                        in: format.safeWidth))
             }
             ShareBoardLayout(layout: board.layout, format: format)
             if let note = board.note, !note.isEmpty, format == .feed || board.lead == nil {
@@ -212,7 +219,7 @@ private struct ShareBarRow: View {
                     .lineLimit(1)
                     .minimumScaleFactor(.shareTextShrink)
                 Spacer(minLength: .zero)
-                ShareFigure(value: bar.value, size: format.textFormat.factSize, animates: true)
+                ShareFigure(value: bar.value, size: format.textFormat.factSize)
                     .fixedSize()
             }
             GeometryReader { proxy in
@@ -240,7 +247,7 @@ private struct ShareBoardCells: View {
                 GridRow {
                     ForEach(cells[start..<min(start + 2, cells.count)]) { cell in
                         VStack(alignment: .leading, spacing: .zero) {
-                            ShareFigure(value: cell.value, size: format.dataCell, animates: true)
+                            ShareFigure(value: cell.value, size: format.dataCell)
                             Text(verbatim: cell.label)
                                 .font(.posterLabel)
                                 .foregroundStyle(Color.posterSecondary)

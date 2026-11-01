@@ -11,18 +11,22 @@ Decisões do usuário em 31/10/2026:
 
 Definição de pronto:
 
-- **Given** a pessoa abre Compartilhar num perfil **When** a tela aparece **Then** ela vê:
-  - a prévia no topo;
-  - três seções, nesta ordem: "O que entra", "Estilo" e "Onde postar";
+- **Given** a pessoa abre Compartilhar num perfil **When** a tela aparece **Then** ela vê, sem rolar, num iPhone de tela comum:
+  - o carrossel dos estilos, com o cartão escolhido no centro e os vizinhos aparecendo nas bordas;
+  - "Onde postar", com as redes e, abaixo, os lugares da rede escolhida;
+  - "O que entra", com um chip marcado por fato;
+  - só as ferramentas que valem para a escolha: "Vídeo animado" em destino de vídeo ou imagem, "Arte" no Pôster e "Legenda" em destino com texto, as duas últimas numa folha;
   - embaixo, um botão com o nome do destino escolhido (por exemplo, "Postar no Instagram Stories").
-  - Prova: captura em `docs/evidence/FSC-010/`.
+  - Em tela larga (iPad, Mac, Duo aberto), o cartão fica à esquerda e os controles à direita. Com fonte de acessibilidade, a tela inteira rola em vez de cortar.
+  - Prova: capturas em `docs/evidence/FSC-010/`.
 - **Given** "O que entra" num perfil de deputada com 4 métricas **When** a pessoa desliga "Presença" e o QR **Then** a prévia e o arquivo saem sem a presença e sem o QR. A fonte, a data, "Fiscal" e o crédito da obra continuam e não podem ser desligados (`ShareSelectionTests.hidesOnlyOptionalFacts`).
 - **Given** os estilos **When** a pessoa escolhe entre eles **Then** a prévia troca para:
   - **Pôster:** o de hoje, com arte e crédito;
-  - **Tipográfico:** fundo de cor sólida neutra, o número ou a frase principal em Bricolage grande e a fonte embaixo;
-  - **Dados:** o placar ou as barras no centro, com o fato.
+  - **Tipográfico (Folha de apuração):** papel branco, a frase-gancho factual no topo, o número ou a frase principal em Bricolage monumental, as linhas de fatos, a fonte e a marca dentro da zona segura, e uma faixa inferior com a cor do tipo de assunto;
+  - **Dados:** fundo preto. Em Comparação e na Disputa de dois nomes, o Duelo: dois lados de mesmo tamanho e peso, com o critério escrito. Nos outros assuntos, o placar ou as barras no centro, com o fato.
 
   Os 8 assuntos desenham nos três estilos e nos três formatos sem cortar texto (`ShareStyleTests.everySubjectFitsEveryStyleAndFormat`).
+- **Given** a pessoa abre Compartilhar **When** a tela aparece **Then** o estilo já escolhido é o Tipográfico, ou Dados em Comparação e Disputa, ou o Pôster nos assuntos que têm pôster próprio (vitória e investigação). O Pôster continua como opção, e a troca não perde a seleção (`ShareFlowModelTests.defaultStyleFollowsTheSubject`).
 - **Given** "Onde postar" **When** a pessoa escolhe o destino **Then** o formato e a mídia seguem a tabela (`ShareDestinationTests.mapsEachDestination`):
 
   | Destino | Formato | Mídia | Texto |
@@ -36,15 +40,18 @@ Definição de pronto:
   | WhatsApp, conversa | 1:1 | imagem | sim |
   | WhatsApp Status | 9:16 | vídeo ou imagem | não |
   | Outros | 4:5 | imagem | sim |
-- **Given** um formato 9:16 **When** o cartaz é desenhado **Then** nenhum texto, número ou QR fica nos 14% de cima (90 de 640 pt), nos 35% de baixo (224 pt) nem nos 6% de cada lado (22 pt). Fundo e arte podem passar (`ShareSafeAreaTests.ninebysixteenKeepsTheSafeZone`).
+- **Given** um perfil com classificação entre colegas **When** o cartão ou a legenda são montados **Then** nenhum texto diz "Melhor que a média", "Pior que a média", "Mais ativo" ou "Menos ativo". No lugar vai o dado, como "Presença · Mediana da Câmara: 90%" (`ShareModelTests.theCardShowsTheMedianInsteadOfAVerdict`). A tela do perfil continua como está.
+- **Given** um formato 9:16 **When** o cartaz é desenhado **Then** nenhum texto, número ou QR fica nos 14% de cima (90 de 640 pt), nos 35% de baixo (224 pt) nem nos 6% de cada lado (22 pt). Fundo e arte podem passar, e contam como arte a repetição do número-herói e o × em baixo contraste, que nunca trazem dado que não esteja também dentro da zona (`ShareSafeAreaTests.ninebysixteenKeepsTheSafeZone`).
+- **Given** um destino de "vídeo ou imagem" **When** a pessoa vê "Onde postar" **Then** um interruptor "Vídeo animado", ligado por padrão, escolhe a mídia. Reels é sempre vídeo, e os destinos só de imagem não mostram o interruptor (`ShareFlowModelTests.theImageChoiceSkipsTheVideo`).
 - **Given** um destino de vídeo e os estilos Tipográfico ou Dados **When** a pessoa toca em postar **Then**:
-  - o app gera um MP4 H.264 de 4 s, 30 fps, 1080×1920, com os números contando e as barras enchendo, e com menos de 50 MB;
+  - o app gera um MP4 H.264 de 4 s, 30 fps, 1080×1920, com menos de 50 MB;
+  - todo texto e todo número aparecem certos desde o primeiro quadro, porque qualquer quadro pode virar capa ou ser pausado (`ShareStyleTests.everyFrameShowsTheRealNumbers`). O que se move são as barras enchendo, o fio da Folha e a arte de baixo contraste;
   - aparece uma barra de progresso ("Preparando o vídeo"), e a geração pode ser cancelada.
 
-  Prova: `ShareVideoTests.writesAFourSecondLoop`. No estilo Pôster, o vídeo anima só o número do herói.
+  Prova: `ShareVideoTests.writesAFourSecondLoop`. No estilo Pôster, o que se move é uma aproximação lenta da arte.
 - **Given** Reduzir movimento ligado **When** a prévia aparece **Then** ela fica parada no quadro final. O vídeo exportado continua animado, porque é para outra pessoa ver.
 - **Given** o App ID da Meta no `Info.plist` (`FiscalMetaAppID`) e o Instagram instalado **When** a pessoa posta no Instagram Stories **Then** o app abre o Stories com o cartaz:
-  - o cartaz vai como `backgroundImage` ou `backgroundVideo`, com as cores de topo e base da paleta do estilo;
+  - o cartaz vai como `backgroundImage` ou `backgroundVideo`, com as cores de topo e base tiradas do fundo do estilo (`ShareFlowModelTests.storyColorsFollowTheStyle`);
   - a pasteboard é escrita com expiração de 5 min.
 
   O Facebook Stories funciona igual, com as chaves `com.facebook.sharedSticker.*` e o `appID`. Prova: `ShareDeliveryTests.storiesWriteThePasteboardItems`, mais o roteiro no iPhone.
@@ -52,10 +59,10 @@ Definição de pronto:
 - **Given** TikTok **When** a pessoa toca em postar **Then** o app pede o acesso de só adicionar ao Fotos, salva o arquivo, mostra "Salvo no Fotos. Abra o TikTok e escolha o vídeo." e abre o TikTok se ele estiver instalado. Sem permissão, o texto explica como liberar nos Ajustes. Prova: roteiro no iPhone.
 - **Given** Instagram Feed, Facebook Feed, WhatsApp ou Outros **When** a pessoa posta **Then** a folha do sistema recebe o arquivo e a legenda.
 - **Given** a legenda **When** a pessoa a vê e edita **Then** ela começa com o fato e traz a fonte, a data e o link `https://fiscal.byescaleira.com/?person=<slug>`, com no máximo 280 caracteres (`ShareCaptionTests.carriesFactSourceAndLink`). Ela nunca leva a Lente, apoio ou adjetivo.
-- **Given** um link `https://fiscal.byescaleira.com/?person=<slug>` (e `vote`, `expenses`, `compare`, `place`, `race`, `highlight`) **When** ele é aberto num iPhone com o Fiscal **Then** o app abre no conteúdo, pelo Associated Domains com a AASA, que passa a aceitar esses parâmetros na raiz (`DeepLinkTests.siteLinksOpenTheContent`). Sem o app, o site abre. A AASA nova só passa a valer com o site publicado, o que espera o ok do usuário.
+- **Given** um link `https://fiscal.byescaleira.com/?person=<slug>` (e `vote`, `expenses`, `compare`, `place`, `race`, `highlight`) **When** ele é aberto num iPhone com o Fiscal **Then** o app abre no conteúdo, pelo Associated Domains com a AASA, que passa a aceitar esses parâmetros na raiz (`DeepLinkTests.siteLinksOpenTheContent`). `?place=` e `?highlight=` abrem a tela de compartilhar desse assunto, e `/link` abre o app em Hoje. Sem o app, o site abre. A AASA nova só passa a valer com o site publicado, o que espera o ok do usuário.
 - **Given** a pessoa segue alguém pela primeira vez **When** volta à aba Seguindo **Then** aparece uma linha dispensável "Compartilhe quem você acompanha". Ela abre o assunto novo "Quem eu sigo", que mostra até 6 pessoas com nome, partido e cargo, em ordem alfabética. Nunca há contagem nem ranking (`ShareModelTests.followingCardListsUpToSixAlphabetically`).
 - **Given** qualquer assunto e qualquer Lente **When** o cartaz e a legenda são montados **Then** nenhum texto traz a Lente ou quem a pessoa apoia, o "—" segue no lugar de dado ausente, e o arquivo se chama "Fiscal - <assunto>.png" ou ".mp4" (`ShareModelTests.theCardNeverCarriesWhoTheUserSupports`, já existente e ampliado aos estilos).
-- **Given** o fluxo pronto **When** as imagens são redesenhadas (pedido do usuário em 01/11/2026: "vale revisitar as imagens para compartilhar também, esse processo de compartilhamento ele deve ser repensado com um todo") **Then** cada tipo de assunto (pessoa, votação, gastos, disputa, comparação, seguindo) tem composição própria com uma frase-gancho factual, saída de uma crítica honesta das imagens atuais e de um quadro de referências reais; 2 ou 3 direções visuais vão ao iPhone do usuário e a escolhida é a que ele aprovar (roteiro: capturas de cada direção em `docs/evidence/FSC-010/directions/`).
+- **Given** o fluxo pronto **When** as imagens são redesenhadas (pedido do usuário em 01/11/2026: "vale revisitar as imagens para compartilhar também, esse processo de compartilhamento ele deve ser repensado com um todo") **Then** cada tipo de assunto (pessoa, votação, gastos, disputa, comparação, seguindo) tem composição própria com uma frase-gancho factual, saída de uma crítica honesta das imagens atuais e de um quadro de referências reais; 2 ou 3 direções visuais vão ao iPhone do usuário e a escolhida é a que ele aprovar (roteiro: capturas de cada direção em `docs/evidence/FSC-010/directions/`). Em 01/11/2026, as três direções (A Folha de apuração, B Faixas e blocos, C Duelo) foram ao iPhone, o usuário respondeu "ta ficando bom até" e a recomendação é A como padrão e C em Comparação e Disputa; a direção só vale como aprovada com o ok dele sobre os cartões prontos.
 - **Erro:** falha ao gerar o vídeo cai na imagem, com o aviso "Não deu para gerar o vídeo; vai a imagem." Falha ao salvar no Fotos mostra o motivo. Nenhuma falha perde a seleção feita.
 
 ## Entities
@@ -123,6 +130,8 @@ classDiagram
   - `.photosThenOpen(URL)`: salvar no Fotos e abrir o app;
   - `.shareSheet`: folha do sistema.
 - **`ShareStyle`** (novo): o `ShareCardView` desenha o pôster de hoje, e dois views novos desenham `ShareTypographicView` e `ShareDataView` a partir do mesmo `ShareCardContent`.
+  - O conteúdo diz o estilo padrão do assunto, a frase-gancho e a cor do tipo de assunto, em funções puras.
+  - O estilo diz as cores de fundo que vão aos Stories.
 - **`ShareFact`** e **`ShareSelection`** (novos):
   - o `ShareCardContent` expõe os fatos opcionais de cada assunto: métricas do perfil, linhas de comparação, maior categoria de gastos, peso do destaque e QR;
   - a seleção guarda os ids desligados;
@@ -141,12 +150,17 @@ classDiagram
 ## Approach
 
 1. **Estratégia:**
-   - A `ShareScreen` vira uma tela de três seções com a prévia fixa no topo e o botão de postar fixo embaixo.
+   - A `ShareScreen` vira um estúdio: o cartão é o centro da tela, os controles ficam abaixo sem rolagem e o botão de postar fica fixo embaixo.
    - Todo estilo desenha o mesmo `ShareCardContent` filtrado pela `ShareSelection`.
    - O destino decide formato, mídia e entrega.
    - O vídeo nasce dos mesmos views, animados por um progresso.
 2. **Decisões:**
-   - **Seções em vez de páginas:** as três seções ficam numa lista só, e não num assistente de páginas. A pessoa vê tudo e muda em qualquer ordem, com a prévia sempre visível. Estilos e destinos são grades de miniaturas, porque escolhas visuais vão em grade (`design-principles.md`), e não `Picker` segmentado.
+   - **Estúdio em vez de formulário** (crítica da primeira versão, usuário em 01/11/2026: "a layout e design para configurar o compartilhamento ainda não está muito legal"):
+     - a lista de interruptores parecia Ajustes, e não um editor;
+     - a prévia ocupava metade da tela, e chegar a "Onde postar" levava quatro rolagens, embora o destino decida o formato;
+     - as miniaturas de estilo repetiam a prévia;
+     - agora o próprio cartão escolhe o estilo, num carrossel. Destino e fatos viram trilhos de toque único, e Arte e Legenda só aparecem quando valem, numa folha. Referência: o cartão de letras do Spotify, com a prévia, a troca de visual tocando nela e os apps de destino na mesma tela ([quadro](../../docs/research/2026-11-01-share-card-references.md)).
+     - A pessoa vê tudo e muda em qualquer ordem, sem assistente de páginas e sem `Picker` segmentado.
    - **Destinos agrupados por rede:** Instagram (Stories, Reels, Feed), TikTok, Facebook (Stories, Feed), WhatsApp (conversa, Status) e Outros.
      - O ícone de cada rede é um símbolo SF genérico (câmera, play, pessoas, balão), sem logo de terceiros.
      - O nome da rede vai escrito.
@@ -159,7 +173,7 @@ classDiagram
    - **TikTok sem SDK:** a mídia é salva no Fotos (`NSPhotoLibraryAddUsageDescription`: "O Fiscal salva no Fotos o cartão que você quer postar."), e o app abre o TikTok pelo esquema registrado. A existência do esquema é conferida com `canOpenURL` na QA; sem ele, só o aviso.
    - **Vídeo:**
      - 4 s, para ficar dentro dos 3 a 6 s da pesquisa e do mínimo de 3 s do Reels;
-     - os números contam com a curva do `MotionBudget`;
+     - os números não contam: um quadro parado no meio mostraria um valor falso (a miniatura do sistema mostrou 75,3% num valor de 85,7%), e por isso só barras, fio e arte se movem, com a curva do `MotionBudget`;
      - os quadros saem do `ImageRenderer` (só views do SwiftUI, sem retrato Lottie em movimento, com `portraitsStill`);
      - a geração roda fora da main thread, mas o `ImageRenderer` exige a main, então os quadros saem em lotes com `Task.yield`.
    - **Links:**
@@ -171,6 +185,13 @@ classDiagram
    - **Incentivo:**
      - uma linha dispensável na aba Seguindo depois do primeiro seguir, guardada em `fiscal.share.followingInviteDismissed`;
      - sem push, sem contagem e sem pedido repetido.
+   - **Direção visual (A + C, recomendada):**
+     - Folha é o padrão porque lê em 1 segundo e não sugere juízo; Duelo fica em Comparação e Disputa porque só ali há dois lados de verdade;
+     - da direção B fica só a ideia das faixas proporcionais, no movimento das barras do vídeo;
+     - a cor do tipo de assunto identifica o assunto, nunca diz bom ou ruim, e não usa cor de partido;
+     - a faixa inferior da Folha e o × do Duelo ocupam a zona dos botões, para ela não ficar vazia.
+   - **Classificação no cartão:** a faixa "Melhor" ou "Pior que a média" fica só no perfil, onde vem com o critério. O cartão sai do contexto do app, então leva a mediana (`medianText`).
+   - **Mídia:** "Vídeo animado" é uma ferramenta de ligar e desligar, separada dos lugares, porque não troca o destino.
    - **Nome do arquivo:** "Fiscal - <assunto>", com o nome da pessoa, o número da votação ou o título, sem barras.
    - **ADR:**
      - [ADR 0020](../../docs/adr/0020-share-to-social-networks.md) (Proposto) registra a integração com Meta e TikTok sem SDK, o App ID no `Info.plist` e a regra de não usar logos de terceiros;
@@ -197,7 +218,8 @@ FiscalKit/
   Sources/FeatureShare/ShareCardContent.swift, ShareCardBuilder*.swift   fatos opcionais, assunto seguindo
   Sources/FeatureShare/ShareCardView.swift, SharePoster*.swift zona segura 9:16 e seleção
   Sources/FeatureShare/ShareModel.swift                        estilo, destino, seleção, legenda, exportação
-  Sources/FeatureShare/ShareScreen.swift                       três seções, prévia e botão de postar
+  Sources/FeatureShare/ShareScreen.swift                       estúdio: carrossel, controles e botão de postar
+  Sources/FeatureShare/ShareScreenSections.swift               trilhos de destino e fatos, ferramentas e folhas
   Sources/FeatureShare/ShareRenderer.swift                     nome do arquivo por assunto
   Sources/FeatureMine/MineFollowing.swift                      convite "Compartilhe quem você acompanha"
   Sources/AppShell/DeepLink.swift                              links https do site
@@ -243,7 +265,7 @@ docs/evidence/FSC-010/, CHANGELOG.md, docs/roadmap.md, spdd/README.md
    - `Info.plist` e esquemas.
    - Verificação: `ShareDeliveryTests`, com a pasteboard e o abridor injetados.
 6. **Tela.** Depende de: 1 a 5.
-   - `ShareScreen` com as três seções, a prévia, a legenda editável e o botão de postar com progresso.
+   - `ShareScreen` com a prévia, os controles, a legenda editável e o botão de postar com progresso.
    - O `ShareModel` amarra tudo.
    - Verificação: `scripts/verify.sh --quick ios`.
 7. **Links e incentivo.** `[P]` com 6.
@@ -258,12 +280,20 @@ docs/evidence/FSC-010/, CHANGELOG.md, docs/roadmap.md, spdd/README.md
     - Crítica das imagens atuais e quadro de referências (Spotify Wrapped, resumos do Apple Fitness, Strava, The Pudding, NYT Upshot) em `docs/research/`.
     - Composição por tipo de assunto, com frase-gancho factual no topo, menos elementos por cartaz e a arte a serviço do dado.
     - 2 ou 3 direções no iPhone do usuário; iterar até o ok; a direção aprovada substitui o desenho dos estilos.
-    - Verificação: `ShareStyleTests` (matriz) e capturas por direção.
-9. **Rodar e QA.** Depende de: 1 a 8.1.
+    - Direção A + C: `ShareTypographicView` vira a Folha, `ShareDataView` ganha o Duelo em Comparação e Disputa, e o `ShareModel` abre no estilo padrão do assunto.
+    - As cores dos Stories passam a sair do fundo do estilo.
+    - O `ShareSafeAreaTests` passa a medir cada linha contra o próprio fundo, por causa da faixa, e desliga a arte para achar texto fora da zona.
+    - Verificação: `ShareStyleTests` (matriz), `ShareSafeAreaTests`, `ShareFlowModelTests.defaultStyleFollowsTheSubject`, `ShareFlowModelTests.storyColorsFollowTheStyle` e capturas por direção.
+8.2. **Estúdio de compartilhar** (prompt-update de 01/11/2026). Depende de: 6 e 8.1.
+    - O carrossel dos estilos com os cartões de verdade.
+    - Os trilhos "Onde postar" e "O que entra", as ferramentas por contexto, as folhas de Arte e Legenda e o layout de tela larga.
+    - Os números parados em todo quadro do vídeo e a mediana no lugar da classificação.
+    - Verificação: `ShareStyleTests.everyFrameShowsTheRealNumbers`, `ShareModelTests.theCardShowsTheMedianInsteadOfAVerdict`, capturas no simulador e no iPhone, iterando até o ok do usuário.
+9. **Rodar e QA.** Depende de: 1 a 8.2.
    - `scripts/verify.sh --full`.
    - Build no iPhone do usuário.
    - Roteiros em `docs/evidence/FSC-010/qa.md`:
-     - a tela de três seções;
+     - o estúdio;
      - desligar fatos;
      - os três estilos;
      - o 9:16 com a zona segura;
@@ -289,7 +319,7 @@ docs/evidence/FSC-010/, CHANGELOG.md, docs/roadmap.md, spdd/README.md
   - tokens para medidas (zona segura como tokens novos `.shareSafeTop`, `.shareSafeBottom`, `.shareSafeSide`).
 - **Regra 5:**
   - Bricolage só no número e no título de destaque;
-  - grades de miniaturas para estilo e destino;
+  - o carrossel dos cartões para o estilo e trilhos de toque único para destino e fatos;
   - nada de `Picker` segmentado;
   - cápsulas de texto curto com `lineLimit(1).fixedSize()` (memória "no-mid-word-wrap");
   - Reduzir movimento respeitado na prévia.
@@ -304,7 +334,8 @@ docs/evidence/FSC-010/, CHANGELOG.md, docs/roadmap.md, spdd/README.md
   - fonte, data, "Fiscal" e crédito da obra presentes em todo estilo, formato e mídia;
   - "—" no lugar de dado ausente;
   - Lente e apoio nunca no cartaz nem na legenda;
-  - as falhas de vídeo e de Fotos não perdem a seleção.
+  - as falhas de vídeo e de Fotos não perdem a seleção;
+  - a cor do tipo de assunto nunca indica juízo nem partido, e os dois lados do Duelo têm o mesmo tamanho e peso.
 - **Desempenho:**
   - vídeo de 4 s, 120 quadros em 1080×1920, até 8 Mbps e menos de 50 MB;
   - geração cancelável, com progresso;
@@ -322,6 +353,7 @@ docs/evidence/FSC-010/, CHANGELOG.md, docs/roadmap.md, spdd/README.md
 - **QUEBRA:**
   - o nome do arquivo deixa de ser "Fiscal.png" e passa a ser "Fiscal - <assunto>";
   - os seletores "Stories / Feed / Mensagem" viram destinos;
+  - o cartão deixa de trazer a classificação entre colegas, que passa a ser a mediana;
   - entram o Associated Domains, a permissão de adicionar ao Fotos e os esquemas de outros apps.
 - **Fora do escopo:**
   - SDK da Meta e do TikTok;

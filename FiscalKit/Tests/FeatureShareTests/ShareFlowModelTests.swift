@@ -185,7 +185,7 @@ struct ShareFlowModelTests {
         @Test func tikTokSavesTheVideoAndCleansUp() async throws {
             let file = try video()
             var saved: (file: URL, isVideo: Bool)?
-            let model = await model(saved: { saved = ($0, $1) }) { _, _, _, _ in file }
+            let model = await model(saved: { saved = ($0, $1) }, makeVideo: { _, _, _, _ in file })
             model.choose(.tiktok)
             await model.post()
             #expect(saved?.file == file)
@@ -195,4 +195,37 @@ struct ShareFlowModelTests {
             #expect(!FileManager.default.fileExists(atPath: file.path(percentEncoded: false)))
         }
     #endif
+
+    @Test func defaultStyleFollowsTheSubject() async throws {
+        let person = ShareFixtures.model(.person(slug: "tabata-amaral"))
+        await person.load()
+        #expect(person.style == .typographic)
+        #expect(person.styles == [.typographic, .data, .poster])
+        let compare = ShareFixtures.model(.compare(slugs: ["kim-kataguiri", "erika-hilton"]))
+        await compare.load()
+        #expect(compare.style == .data)
+        #expect(compare.styles == [.data, .typographic, .poster])
+        let investigation = ShareFixtures.model(.investigation(ShareFixtures.investigation))
+        await investigation.load()
+        #expect(investigation.style == .poster)
+    }
+
+    @Test func aChosenStyleSurvivesAReload() async {
+        let model = ShareFixtures.model(.person(slug: "tabata-amaral"))
+        await model.load()
+        model.style = .data
+        await model.load()
+        #expect(model.style == .data)
+    }
+
+    @Test func storyColorsFollowTheStyle() async throws {
+        let model = ShareFixtures.model(.person(slug: "tabata-amaral"))
+        await model.load()
+        for style in ShareStyle.allCases {
+            let colors = try #require(model.card(style: style)?.storyColors)
+            #expect(colors.top == style.storyField)
+            #expect(colors.bottom == style.storyField)
+        }
+        #expect(ShareStyle.typographic.storyField != ShareStyle.data.storyField)
+    }
 }

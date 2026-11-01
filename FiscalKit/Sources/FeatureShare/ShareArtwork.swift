@@ -56,10 +56,12 @@ public struct ShareCard: Hashable, Sendable {
     public var statement: ShareStatement { ShareStatement(content) }
 
     public var storyColors: (top: String, bottom: String) {
-        (String.shareStoryField, String.shareStoryField)
+        (style.storyField, style.storyField)
     }
 
     public var board: ShareBoard { ShareBoard(content) }
+
+    public var duel: ShareDuel? { ShareDuel(content) }
 
     public var styleTexts: [String] {
         switch style {

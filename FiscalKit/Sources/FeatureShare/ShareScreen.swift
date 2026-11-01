@@ -35,74 +35,54 @@ private struct ShareEditor: View {
     @Environment(ShareModel.self) private var model
     @Environment(\.displayScale) private var displayScale
     @Environment(\.portraitArtwork) private var portraits
+    @Environment(\.layoutContext) private var context
 
     var body: some View {
         @Bindable var model = model
-        VStack(spacing: .zero) {
-            ShareCardPreview(rendered: model.rendered, card: model.card)
-                .padding(.spaceM)
-                .frame(maxWidth: .infinity)
-            List {
-                ShareFactsSection()
-                ShareStyleSection()
-                if model.usesArt {
-                    Section {
-                        ShareArtPicker()
-                            .padding(.horizontal, .spaceL)
-                            .padding(.vertical, .spaceS)
-                            .listRowBackground(Color.clear)
-                            .listRowInsets(EdgeInsets())
+        studio
+            .background(.plainBackground)
+            .safeAreaInset(edge: .bottom) {
+                SharePostBar()
+            }
+            .sharePostSheet($model.postRequest)
+            .onDisappear { model.discardExport() }
+            .task(id: model.card) {
+                model.render(scale: displayScale, portraits: portraits)
+            }
+    }
+
+    @ViewBuilder private var studio: some View {
+        if context.widthClass == .compact {
+            ViewThatFits(in: .vertical) {
+                VStack(spacing: .spaceM) {
+                    ShareCardCarousel()
+                        .frame(minHeight: .shareCarouselMinimum)
+                    ShareControls()
+                }
+                ScrollView {
+                    VStack(spacing: .spaceM) {
+                        ShareCardCarousel()
+                            .frame(height: .shareCarouselScrolling)
+                        ShareControls()
                     }
                 }
-                ShareDestinationSection()
-                ShareMediaSection()
-                if model.destination.acceptsCaption {
-                    ShareCaptionSection()
+            }
+            .padding(.top, .spaceS)
+        } else {
+            HStack(spacing: .spaceL) {
+                ShareCardCarousel()
+                    .frame(maxWidth: .infinity)
+                ScrollView {
+                    ShareControls()
                 }
-                ShareNoteSection()
+                .frame(width: .shareControlsWidth)
             }
-            .scrollContentBackground(.hidden)
-        }
-        .background(.plainBackground)
-        .safeAreaInset(edge: .bottom) {
-            SharePostBar()
-        }
-        .sharePostSheet($model.postRequest)
-        .onDisappear { model.discardExport() }
-        .task(id: model.card) {
-            model.render(scale: displayScale, portraits: portraits)
+            .padding(.vertical, .spaceM)
         }
     }
 }
 
-private struct ShareCardPreview: View {
-    let rendered: RenderedCard?
-    let card: ShareCard?
-
-    var body: some View {
-        let size = card?.format.size ?? ShareFormat.stories.size
-        Group {
-            if let rendered {
-                rendered.image
-                    .resizable()
-                    .scaledToFit()
-            } else {
-                ProgressView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(.subtleFill)
-            }
-        }
-        .aspectRatio(size.width / size.height, contentMode: .fit)
-        .clipShape(.rect(cornerRadius: .radiusL))
-        .frame(maxHeight: .shareStylePreview)
-        .shadow(color: .black.opacity(.opacityTint), radius: .spaceM, y: .spaceS)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(verbatim: card?.accessibilityLabel ?? ""))
-        .accessibilityAddTraits(.isImage)
-    }
-}
-
-private struct ShareArtPicker: View {
+struct ShareArtPicker: View {
     @Environment(ShareModel.self) private var model
     @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
     @Environment(\.liteMode) private var liteMode

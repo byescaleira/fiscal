@@ -22,18 +22,18 @@ public final class ShareModel {
     public private(set) var rendered: RenderedCard?
     public var format: ShareFormat = ShareDestination.instagramStories.format
     public var selectedWorkID: ArtWork.ID?
-    public private(set) var collectionID: ArtCollection.ID?
+    public internal(set) var collectionID: ArtCollection.ID?
     public var style: ShareStyle = .poster
     public private(set) var destination: ShareDestination = .instagramStories
     public private(set) var selection = ShareSelection()
     public private(set) var caption = ""
     public private(set) var isCaptionEdited = false
-    public private(set) var exportProgress: Double = 0
-    public private(set) var isPosting = false
-    public private(set) var postFailed = false
-    public private(set) var isExportingVideo = false
-    public private(set) var videoFellBack = false
-    public private(set) var notice: ShareNotice?
+    public internal(set) var exportProgress: Double = 0
+    public internal(set) var isPosting = false
+    public internal(set) var postFailed = false
+    public internal(set) var isExportingVideo = false
+    public internal(set) var videoFellBack = false
+    public internal(set) var notice: ShareNotice?
     public var sendsVideo = true
     public var postRequest: SharePostRequest?
 
@@ -41,17 +41,18 @@ public final class ShareModel {
     @ObservationIgnored private let races: (any LiveResultsService)?
     @ObservationIgnored private let lensRepository: (any LensRepository)?
     @ObservationIgnored private let follows: (any FollowRepository)?
-    @ObservationIgnored private var renderScale: CGFloat = 3
-    @ObservationIgnored private var renderPortraits: PortraitArtwork?
-    @ObservationIgnored private let catalog: ArtCatalog?
+    @ObservationIgnored var renderScale: CGFloat = 3
+    @ObservationIgnored var renderPortraits: PortraitArtwork?
+    @ObservationIgnored let catalog: ArtCatalog?
     @ObservationIgnored private let builder: ShareCardBuilder
     @ObservationIgnored private let now: @Sendable () -> Date
     @ObservationIgnored private let requests = PublicDataRequests()
-    @ObservationIgnored private let delivery: ShareDelivery
-    @ObservationIgnored private let metaAppID: String?
-    @ObservationIgnored private let makeVideo: VideoMaker
-    @ObservationIgnored private var exportedFile: URL?
-    @ObservationIgnored private var postTask: Task<Void, Never>?
+    @ObservationIgnored let delivery: ShareDelivery
+    @ObservationIgnored let metaAppID: String?
+    @ObservationIgnored let makeVideo: VideoMaker
+    @ObservationIgnored var exportedFile: URL?
+    @ObservationIgnored private var didApplyDefaultStyle = false
+    @ObservationIgnored var postTask: Task<Void, Never>?
 
     public init(
         subject: ShareSubject, service: (any PublicDataService)?,
@@ -77,6 +78,8 @@ public final class ShareModel {
     }
 
     public var isEmpty: Bool { content == nil }
+
+    public var styles: [ShareStyle] { content?.styles ?? ShareStyle.allCases }
 
     public var card: ShareCard? { card(style: style) }
 
@@ -125,163 +128,12 @@ public final class ShareModel {
         return [content.source, ShareCardBuilder.host].joined(separator: " · ")
     }
 
-    public var isArtAdapted: Bool {
-        guard let id = lens?.artCollection else { return false }
-        return catalog?.collection(id: id) != nil
-    }
-
-    public var showsLensBadge: Bool { isArtAdapted }
-
-    public var collections: [ArtCollection] {
-        guard let catalog else { return [] }
-        let preferred = preferredCollectionID
-        return catalog.collections.filter { $0.id == preferred }
-            + catalog.collections.filter { $0.id != preferred }
-    }
-
-    public var works: [ArtWork] {
-        guard let catalog else { return [] }
-        return collections.flatMap { collection in
-            let works = catalog.works(in: collection.id)
-            return works.filter { $0.series != Self.lastSeries }
-                + works.filter { $0.series == Self.lastSeries }
-        }
-    }
-
-    public var artwork: ShareArtwork? {
-        guard let catalog, let work = selectedWork else { return nil }
-        return ShareArtwork(
-            work: work, palette: catalog.collection(id: work.collection)?.palette ?? [])
-    }
-
-    public var selectedWork: ArtWork? {
-        guard let catalog else { return nil }
-        if let selectedWorkID, let work = catalog.work(id: selectedWorkID) { return work }
-        return catalog.collection(id: preferredCollectionID).flatMap(catalog.leadWork(of:))
-            ?? catalog.works.first
-    }
-
-    public var currentCollectionID: ArtCollection.ID? {
-        collectionID ?? selectedWork?.collection ?? collections.first?.id
-    }
-
-    public var currentWorks: [ArtWork] {
-        let current = currentCollectionID
-        return works.filter { $0.collection == current }
-    }
-
-    public var selectedCredit: String? {
-        selectedWork.map { "\($0.artist) · \($0.title), \($0.year) · \($0.licenseLabel)" }
-    }
-
-    public func isSelected(_ work: ArtWork) -> Bool {
-        selectedWork?.id == work.id
-    }
-
-    public func select(_ work: ArtWork) {
-        selectedWorkID = work.id
-    }
-
-    public func show(_ collection: ArtCollection.ID) {
-        collectionID = collection
-    }
-
     public func render(scale: CGFloat, portraits: PortraitArtwork?) {
         renderScale = scale
         renderPortraits = portraits
         rendered = card.flatMap { card in
             ShareRenderer.render(card, code: code, scale: scale, portraits: portraits)
                 .flatMap { RenderedCard(file: $0, scale: scale) }
-        }
-    }
-
-    public var usesVideo: Bool {
-        switch destination.media {
-        case .video: true
-        case .either: sendsVideo
-        case .image: false
-        }
-    }
-
-    public var offersMediaChoice: Bool { destination.media == .either }
-
-    public func startPost() {
-        guard !isPosting else { return }
-        postTask = Task { await post() }
-    }
-
-    public func cancelPost() {
-        postTask?.cancel()
-    }
-
-    public func post() async {
-        guard !isPosting else { return }
-        isPosting = true
-        postFailed = false
-        videoFellBack = false
-        notice = nil
-        exportProgress = 0
-        discardExport()
-        defer {
-            isPosting = false
-            isExportingVideo = false
-        }
-        render(scale: renderScale, portraits: renderPortraits)
-        guard let card else {
-            postFailed = true
-            return
-        }
-        var isVideo = usesVideo
-        var file: URL?
-        if isVideo {
-            isExportingVideo = true
-            do {
-                file = try await makeVideo(card, code, renderPortraits) { [weak self] value in
-                    self?.exportProgress = value
-                }
-            } catch is CancellationError {
-                exportProgress = 0
-                return
-            } catch {
-                videoFellBack = true
-                isVideo = false
-            }
-            isExportingVideo = false
-        }
-        guard let url = file ?? rendered.flatMap({ try? ShareRenderer.write($0.file) }) else {
-            postFailed = true
-            return
-        }
-        exportProgress = 1
-        exportedFile = url
-        let caption = destination.acceptsCaption ? caption : nil
-        let result = await delivery.send(
-            url, isVideo: isVideo, caption: caption, route: destination.delivery,
-            metaAppID: metaAppID, topColor: card.storyColors.top,
-            bottomColor: card.storyColors.bottom)
-        finish(result, file: url, caption: caption, isVideo: isVideo)
-    }
-
-    public func discardExport() {
-        guard let exportedFile else { return }
-        try? FileManager.default.removeItem(at: exportedFile.deletingLastPathComponent())
-        self.exportedFile = nil
-    }
-
-    private func finish(
-        _ result: ShareDeliveryResult, file: URL, caption: String?, isVideo: Bool
-    ) {
-        switch result {
-        case .needsShareSheet:
-            postRequest = SharePostRequest(file: file, caption: caption)
-        case .openedStories:
-            discardExport()
-        case .savedToPhotos:
-            notice = .savedToPhotos(isVideo: isVideo)
-            discardExport()
-        case .failed(let reason):
-            notice = .failed(reason)
-            discardExport()
         }
     }
 
@@ -293,6 +145,10 @@ public final class ShareModel {
         } apply: { loaded in
             lens = loaded.lens
             content = loaded.content
+            if !didApplyDefaultStyle {
+                didApplyDefaultStyle = true
+                style = loaded.content.defaultStyle
+            }
             code = ShareCode.image(for: loaded.content.link)
             refreshCaption()
         }
@@ -301,13 +157,6 @@ public final class ShareModel {
     private func refreshCaption() {
         guard !isCaptionEdited, let content else { return }
         caption = ShareCaption.make(content, selection: selection)
-    }
-
-    private var preferredCollectionID: ArtCollection.ID {
-        let ids = catalog?.collections.map(\.id) ?? []
-        if ids.contains(Self.neutralCollection) { return Self.neutralCollection }
-        if let chosen = lens?.artCollection, ids.contains(chosen) { return chosen }
-        return ids.first ?? Self.neutralCollection
     }
 
     private func fetch() async throws -> ShareCardContent {

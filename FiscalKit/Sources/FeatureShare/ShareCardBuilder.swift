@@ -71,18 +71,18 @@ public struct ShareCardBuilder: Sendable {
             ShareMetric(
                 label: String(appLocalized: "Attendance"),
                 value: PublicFormat.percent(numbers.attendance?.fraction),
-                peer: peers?.presence?.band.title, peerDetail: peers?.detailText(.presence)),
+                peer: peers?.medianText(.presence), peerDetail: peers?.detailText(.presence)),
             ShareMetric(
                 label: String(appLocalized: "Roll-call votes"),
                 value: PublicFormat.number(numbers.votes)),
             ShareMetric(
                 label: String(appLocalized: "Bills filed"),
                 value: PublicFormat.number(numbers.proposals),
-                peer: peers?.proposals?.band.title, peerDetail: peers?.detailText(.proposals)),
+                peer: peers?.medianText(.proposals), peerDetail: peers?.detailText(.proposals)),
             ShareMetric(
                 label: String(appLocalized: "Office allowance used"),
                 value: PublicFormat.compactMoney(cents: numbers.quotaCents),
-                peer: peers?.quota?.band.title, peerDetail: peers?.detailText(.quota)),
+                peer: peers?.medianText(.quota), peerDetail: peers?.detailText(.quota)),
         ]
     }
 

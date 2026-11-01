@@ -9,9 +9,7 @@ struct ShareHero: View {
         switch hero {
         case .figure(let value, let caption):
             VStack(alignment: .leading, spacing: .zero) {
-                ShareFigure(
-                    value: value, size: format.figureSize(format.heroSize, for: value),
-                    animates: true)
+                ShareFigure(value: value, size: format.figureSize(format.heroSize, for: value))
                 Text(verbatim: caption)
                     .font(.posterHeadlineCompact)
                     .foregroundStyle(Color.posterSecondary)
@@ -42,19 +40,11 @@ struct ShareHero: View {
 }
 
 struct ShareFigure: View {
-    @Environment(\.shareProgress) private var progress
     let value: String
     let size: CGFloat
-    let animates: Bool
-
-    init(value: String, size: CGFloat, animates: Bool = false) {
-        self.value = value
-        self.size = size
-        self.animates = animates
-    }
 
     var body: some View {
-        Text(verbatim: animates ? ShareMotion.countUp(value, progress: progress) : value)
+        Text(verbatim: value)
             .font(.posterFigure(size))
             .monospacedDigit()
             .lineLimit(1)
@@ -73,12 +63,12 @@ struct ShareTallyHero: View {
             HStack(alignment: .lastTextBaseline, spacing: .spaceL) {
                 ShareCount(
                     value: tally.yes, label: "YES", symbol: "checkmark", color: .voteYes,
-                    size: size, animates: animates
+                    size: size
                 )
                 .frame(width: format.column, alignment: .leading)
                 ShareCount(
                     value: tally.no, label: "NO", symbol: "xmark", color: .voteNo,
-                    size: size, animates: animates
+                    size: size
                 )
                 .frame(width: format.column, alignment: .leading)
             }
@@ -134,7 +124,6 @@ private struct ShareCount: View {
     let symbol: String
     let color: Color
     let size: CGFloat
-    let animates: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: .zero) {
@@ -145,7 +134,7 @@ private struct ShareCount: View {
             .font(.posterParty)
             .tracking(.posterTracking)
             .foregroundStyle(color)
-            ShareFigure(value: value, size: size, animates: animates)
+            ShareFigure(value: value, size: size)
         }
     }
 }
@@ -323,7 +312,7 @@ struct ShareIdentity: View {
     }
 }
 
-private struct SharePartyStripes: View {
+struct SharePartyStripes: View {
     let party: String
 
     var body: some View {

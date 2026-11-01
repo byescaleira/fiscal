@@ -87,6 +87,7 @@ struct ShareStyleTests {
     @Test func onlyThePosterCarriesTheArt() async throws {
         let model = ShareFixtures.model(.person(slug: "tabata-amaral"))
         await model.load()
+        model.style = .poster
         #expect(model.usesArt)
         #expect(model.card?.artwork != nil)
         for style in [ShareStyle.typographic, .data] {
@@ -114,18 +115,40 @@ struct ShareStyleTests {
         #expect(board.texts.contains("87"))
     }
 
-    @Test func numbersCountUpToTheExactFinalText() {
-        #expect(ShareMotion.countUp("92%", progress: 1) == "92%")
-        #expect(ShareMotion.countUp("R$ 1,2 mi", progress: 1) == "R$ 1,2 mi")
-        #expect(ShareMotion.countUp("92%", progress: 0) == "0%")
-        #expect(ShareMotion.countUp("1.234", progress: 0) == "0")
-        #expect(ShareMotion.countUp("R$ 1,2 mi", progress: 0) == "R$ 0,0 mi")
-        #expect(ShareMotion.countUp("412 × 61", progress: 0) == "0 × 0")
-        #expect(ShareMotion.countUp(PublicFormat.missing, progress: 0) == PublicFormat.missing)
+    @Test func barsFillWithTheProgress() {
         #expect(ShareMotion.fill(0.5, progress: 1) == 0.5)
         #expect(ShareMotion.fill(0.5, progress: 0) == 0)
         #expect(ShareMotion.fill(2, progress: 1) == 1)
         #expect(ShareMotion.eased(0.5) > 0.5)
+    }
+
+    @Test func everyFrameShowsTheRealNumbers() async throws {
+        let subjects: [ShareSubject] = [
+            .person(slug: "tabata-amaral"), .compare(slugs: ["kim-kataguiri", "erika-hilton"]),
+        ]
+        for subject in subjects {
+            let model = ShareFixtures.model(subject)
+            await model.load()
+            model.format = .stories
+            for style in [ShareStyle.typographic, .data] {
+                let card = try #require(model.card(style: style))
+                let first = try #require(Pixels(card: card, code: model.code, progress: 0))
+                let last = try #require(Pixels(card: card, code: model.code, progress: 1))
+                let allowed = style == .typographic ? Int(CGFloat.shareFolhaRule) + 2 : 0
+                #expect(first.differingRows(from: last) <= allowed, "\(subject) \(style)")
+            }
+        }
+    }
+
+    @Test func theDuelIsOnlyForTwoSides() async throws {
+        let compare = ShareFixtures.model(.compare(slugs: ["kim-kataguiri", "erika-hilton"]))
+        await compare.load()
+        let duel = try #require(compare.card(style: .data)?.duel)
+        #expect(duel.left.name != duel.right.name)
+        #expect(duel.criterion?.isEmpty == false)
+        let person = ShareFixtures.model(.person(slug: "tabata-amaral"))
+        await person.load()
+        #expect(person.card(style: .data)?.duel == nil)
     }
 
     @Test func theFinalFrameIsStatic() {

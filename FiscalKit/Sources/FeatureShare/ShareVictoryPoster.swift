@@ -91,7 +91,7 @@ struct ShareVictoryHero: View {
         HStack(alignment: .center, spacing: .spaceM) {
             ShareVictoryParty(party: victory.winner.party, size: format.victoryParty)
                 .fixedSize()
-            ShareFigure(value: victory.percent, size: format.victoryPercent, animates: true)
+            ShareFigure(value: victory.percent, size: format.victoryPercent)
                 .layoutPriority(1)
         }
         .frame(maxWidth: .infinity)

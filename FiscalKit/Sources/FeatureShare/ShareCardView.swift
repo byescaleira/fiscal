@@ -80,10 +80,11 @@ extension Color {
         return Color.scoreboard.mix(with: Color(hex: shade), by: .opacityPosterTint)
     }
 
-    static let posterSecondary = Color.white.opacity(.opacityPosterSecondary)
+    static let posterSecondary = Color.primary.opacity(.opacityPosterSecondary)
 }
 
 private struct ShareBackdrop: View {
+    @Environment(\.shareProgress) private var progress
     let artwork: ShareArtwork
     let size: CGSize
 
@@ -92,6 +93,7 @@ private struct ShareBackdrop: View {
             .resizable()
             .scaledToFill()
             .frame(width: size.width, height: size.height)
+            .scaleEffect(1 + (1 - ShareMotion.eased(progress)) * .shareArtApproach)
             .clipped()
             .accessibilityHidden(true)
     }
