@@ -8,7 +8,8 @@
         @Environment(VoteDetailModel.self) private var vote
         @Environment(\.open) private var open
         @Environment(\.navigationSection) private var section
-        @State private var order = VoteDetailModel.ballotOrder
+        @State private var order: [KeyPathComparator<VoteDetailModel.BallotRecord>] =
+            VoteDetailModel.ballotOrder
         @State private var selection: VoteDetailModel.BallotRecord.ID?
 
         var body: some View {

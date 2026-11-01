@@ -20,6 +20,17 @@ public struct MineRosterScreen: View {
                     .overlay {
                         if people.isEmpty { MineRosterNoMatch(query: $query, party: $party) }
                     }
+                    .safeAreaInset(edge: .bottom) {
+                        VStack(alignment: .leading, spacing: .spaceXS) {
+                            Text(verbatim: roster.header(shown: people.count))
+                            Text("In alphabetical order. Nobody is ranked.")
+                        }
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, .spaceL)
+                        .padding(.vertical, .spaceS)
+                    }
             #else
                 List {
                     Group {

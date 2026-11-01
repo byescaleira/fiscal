@@ -158,6 +158,7 @@ struct BallotMark: View {
                 .foregroundStyle(color)
                 .frame(width: diameter, height: diameter)
                 .background(color.opacity(.opacityTint), in: .circle)
+                .accessibilityHidden(true)
         }
         .fixedSize()
     }

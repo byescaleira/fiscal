@@ -59,9 +59,13 @@ struct SourceFooter: View {
 }
 
 extension View {
-    func todayCard() -> some View {
-        frame(maxWidth: .infinity, alignment: .leading)
-            .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
+    @ViewBuilder func todayCard() -> some View {
+        #if os(macOS)
+            GroupBox { frame(maxWidth: .infinity, alignment: .leading) }
+        #else
+            frame(maxWidth: .infinity, alignment: .leading)
+                .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
+        #endif
     }
 }
 

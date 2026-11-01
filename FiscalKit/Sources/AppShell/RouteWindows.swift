@@ -1,5 +1,6 @@
 #if os(visionOS)
     import FeatureCore
+    import FeatureGuides
     import FiscalDesignSystem
     import SwiftUI
 
@@ -53,6 +54,7 @@
 
     private struct RouteWindowStack: View {
         @State private var path: [Route] = []
+        @State private var guide: Guide?
         let entry: RouteWindows.Entry
 
         var body: some View {
@@ -63,6 +65,9 @@
             .environment(\.navigationSection, entry.section)
             .environment(\.open, FiscalDestination { route, _ in path.append(route) })
             .environment(\.close, CloseAction { if !path.isEmpty { path.removeLast() } })
+            .environment(\.showGuide, ShowGuideAction { guide = $0 })
+            .sheet(item: $guide) { GuideScreen($0) }
+            .readsLayoutContext()
         }
     }
 

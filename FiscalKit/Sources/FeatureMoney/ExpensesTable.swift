@@ -8,7 +8,8 @@
     struct ExpensesTable: View {
         @Environment(ExpensesModel.self) private var expenses
         @Environment(\.openURL) private var openURL
-        @State private var order = ExpensesModel.recordOrder
+        @State private var order: [KeyPathComparator<ExpensesModel.Record>] = ExpensesModel
+            .recordOrder
         @State private var selection = Set<ExpensesModel.Record.ID>()
 
         var body: some View {

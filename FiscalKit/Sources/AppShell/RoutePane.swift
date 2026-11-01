@@ -25,8 +25,8 @@ struct RoutePane: View {
             }
         }
         .environment(\.close, CloseAction { navigation.closePane(in: section, all: false) })
-        .onChange(of: navigation.panes[section]) { _, pane in
-            if pane?.isEmpty == false { AccessibilityNotification.ScreenChanged(nil).post() }
+        .onChange(of: navigation.panes[section]) {
+            AccessibilityNotification.ScreenChanged(nil).post()
         }
     }
 

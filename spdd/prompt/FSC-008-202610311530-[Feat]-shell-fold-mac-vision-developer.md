@@ -23,7 +23,7 @@ Definição de pronto:
 - **Given** o Mac **When** o app abre **Then** a janela é um `NavigationSplitView`:
   - uma lista de origem com duas seções: "Acompanhar" (Hoje e Região) e "Congresso" (Votações, Dinheiro e Fiscalizar);
   - a raiz da seção no centro;
-  - a rota ao lado no inspector;
+  - a rota ao lado no inspector a partir de 960 pt de janela; abaixo disso, na pilha da seção;
   - nada de abas.
 - **Given** o Mac **When** a pessoa usa o menu Ir **Then** ⌘1 a ⌘5 abrem as seções na ordem de `AppSection.allCases`, e "Fechar" fecha a rota do inspector com Esc (`.keyboardShortcut(.cancelAction)`).
 - **Given** o Mac em Gastos de um parlamentar **When** os recibos aparecem **Then** eles vêm numa `Table`:
@@ -39,8 +39,8 @@ Definição de pronto:
 - **Given** o Mac na lista de representantes de um lugar **When** ela aparece **Then** ela vem numa `Table`:
   - colunas Nome, Cargo, Partido e UF;
   - duplo clique abre o perfil.
-- **Given** o Mac nas telas de painel (Hoje e Dinheiro) **When** elas aparecem **Then** os cartões são `GroupBox` na grade do `CardGrid`.
-- **Given** o visionOS **When** a pessoa abre uma rota **Then** ela abre numa janela vizinha (`openWindow`), e não numa folha. Fechar a janela é com o sistema.
+- **Given** o Mac nas telas de painel (Hoje e Dinheiro) **When** elas aparecem **Then** os cartões são `GroupBox` (`todayCard()` e `MoneyCard`), na ordem da lista de hoje; a grade de tamanhos diferentes (`CardGrid`) fica no backlog.
+- **Given** o visionOS com a janela a partir de 960 pt **When** a pessoa abre uma rota **Then** ela abre numa janela vizinha (`openWindow`), e não numa folha; abaixo de 960 pt a rota empilha na seção, como no iPad. Fechar a janela é com o sistema.
 - **Given** o visionOS **When** a barra inferior de uma tela tem ações **Then** ela usa o `platformBottomBar` do kit, que vira ornamento.
 - **Given** um build Debug **When** a pessoa abre Ajustes › Developer **Then** a página traz (`DeveloperModelTests`):
   - flags com três estados (padrão, ligado e desligado), do `DeveloperFlagsSection` do kit;
@@ -80,6 +80,9 @@ classDiagram
     fit(LayoutContext)
     open(Route, AppSection)
     close(AppSection, inspecting)
+    closePane(AppSection, all)
+    pane(AppSection) Binding
+    openRoutes Route[]
   }
   class AppSection {
     String routePlaceholderTitle
@@ -88,9 +91,10 @@ classDiagram
     KeyEquivalent shortcut
   }
   class RouteWindows {
-    Dictionary~UUID, Route~ routes
-    open(Route) UUID
-    route(UUID) Route
+    Dictionary~UUID, Entry~ entries
+    store(Route, AppSection, FiscalWindow) UUID
+    entry(UUID) Entry
+    remove(UUID)
   }
   class FeatureFlags {
     FlagOverrides overrides
@@ -123,12 +127,12 @@ classDiagram
   - com `opensRoutesBeside`, `.beside`;
   - senão, `.stack`.
 
-  Ele ganha `panes: [AppSection: [Route]]`, a pilha do painel da rota de cada aba na dobra. Ao entrar na dobra, `paths[section]` passa inteiro para `panes[section]`, e o inspector aberto passa para `panes[inspector.section]` e fecha. Ao sair, `panes[section]` volta para o fim de `paths[section]`. `open(_:in:)` abre no painel em `.folded`, no inspector em `.beside` e na pilha em `.stack`.
+  Ele ganha `panes: [AppSection: [Route]]`, a pilha do painel da rota de cada aba na dobra, com `pane(for:)` para a `NavigationStack` do painel e `closePane(in:all:)` para voltar um passo ou fechar o painel. Ao entrar na dobra, `paths[section]` passa inteiro para `panes[section]`, e o inspector aberto passa para `panes[inspector.section]` e fecha. Ao sair, `panes[section]` volta para o fim de `paths[section]`. `open(_:in:)` abre no painel em `.folded`, no inspector em `.beside` e na pilha em `.stack`; `close(in:inspecting:)` continua só para a pilha e o inspector. `openRoutes` junta pilhas, painéis e inspector para o Spotlight e as integrações.
 - **`AppSection`** ganha:
   - `routePlaceholderTitle`, `routePlaceholderMessage` e a animação do estado vazio;
   - `sourceGroup` ("Acompanhar" ou "Congresso") para a lista de origem do Mac;
   - `shortcut` (1 a 5), tirado da posição em `allCases`.
-- **`RouteWindows`** (novo, `AppShell`, só visionOS): guarda a rota de cada janela por um `UUID`, porque a `Route` não é `Codable`. A cena `WindowGroup(for: UUID.self)` pede a rota pelo id; sem rota, por exemplo depois de reiniciar, a janela fecha.
+- **`RouteWindows`** (novo, `AppShell`, só visionOS): guarda, por um `UUID`, a rota, a aba e o `FiscalWindow` de cada janela (`Entry`), porque a `Route` não é `Codable` e a janela nova precisa dos mesmos models. A cena `WindowGroup(for: UUID.self)` pede a entrada pelo id; sem entrada, por exemplo depois de reiniciar, a janela fecha. O `RouteWindowOpener` troca o inspector por `openWindow`.
 - **`FeatureFlags`** passa a gravar os overrides no `FlagOverrides(prefix: "fiscal")` do kit. A chave (`fiscal.flags.overrides`) e o formato continuam os mesmos, e `remote`, `bucket` e o `isOn` não mudam. Ganha `definitions`, um `FlagDefinition` por `FeatureFlag`, para o `DeveloperFlagsModel` do kit.
 - **`FiscalEvents`** (novo, `FeatureCore`): a lista fechada de eventos que o app grava no `EventLog.shared`, cada um com categoria e frase fixa em inglês, sem parâmetro livre. Só valores sem dado pessoal: a contagem de arquivos, o código HTTP e a rota do deep link sem o slug.
 
@@ -146,7 +150,8 @@ classDiagram
    - **Mac** (§7.4, decisão do usuário em 28/10/2026 no workspace):
      - `MacShell` com `NavigationSplitView`, lista de origem em seções e a raiz no `detail`, com a pilha da seção.
      - A rota ao lado continua no `.inspector`, no lado oposto.
-     - A busca de Fiscalizar fica no `.searchable` da janela quando Fiscalizar está selecionado.
+     - A busca de Fiscalizar continua no `.searchable` da própria `SearchScreen`, que no Mac vai para a toolbar da janela.
+     - O menu Ir (`FiscalCommands`) mora no `MacShell.swift`, junto com o `FocusedValues.fiscalNavigation` que ele lê; com a janela fora de foco, os itens ficam desativados.
      - Os registros viram `Table` só em `#if os(macOS)`, em três telas: recibos, votos de uma votação e representantes de um lugar. O resto segue em lista e cartão. Os painéis de Hoje e Dinheiro usam o `GridCard` do kit, que no Mac já é `GroupBox`.
    - **Menu do Mac:** `CommandMenu("Ir")` com as seções e ⌘1…⌘5 tirados de `AppSection.allCases`. A fase 2 vai trocar Região por Seguindo, e o menu acompanha sem mudança. "Fechar" fica no botão do inspector, com `.keyboardShortcut(.cancelAction)`.
    - **visionOS:** a rota abre numa janela vizinha (§7.4, de 28/10/2026). Ela substitui a folha do §8, mais antigo. O `RouteWindows` guarda a rota em memória porque a `Route` não é `Codable`. Tornar a `Route` `Codable` seria uma refatoração de todos os assuntos, sem pedido.
@@ -159,6 +164,8 @@ classDiagram
    - **Versão do servidor e da ponte:** o servidor já recebe a versão SemVer pela tag ou pelo `MARKETING_VERSION` no deploy (`scripts/server-deploy.sh`, `-X main.version`), e a ponte usa o `version` do `package.json` no `/health`. Nada muda aqui; o levantamento contou isso como lacuna por engano.
    - **Rede no Mac (prompt-update de 31/10/2026, achado na QA):** o app do Mac roda no App Sandbox sem `com.apple.security.network.client`, então nenhuma tela carregava dados ("Disponível com conexão"). O alvo ganha `ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES`, só saída; o iOS e o visionOS ignoram a chave. A verificação no Mac usa um build assinado (`xcodebuild -allowProvisioningUpdates`), porque o `scripts/build.sh` compila sem assinatura e, sem o entitlement do iCloud, o `CKContainer` derruba o app na abertura.
    - **Barra inferior no visionOS:** o Fiscal não tem barra inferior em nenhuma tela; o `platformBottomBar` fica para quando houver uma.
+   - **Painéis do Mac (sync de 31/10/2026, revisão de spec):** `todayCard()` e `MoneyCard` viram `GroupBox` no Mac, na ordem de hoje. A grade de tamanhos diferentes do `CardGrid` mudaria a composição de Hoje e Dinheiro e fica no backlog.
+   - **visionOS abaixo de 960 pt (sync):** a janela vizinha substitui o inspector, então só aparece quando a janela tem 960 pt ou mais; abaixo disso a rota empilha, como no iPad.
    - **Tabelas do Mac dentro de telas de lista:** uma `Table` não cabe numa `List`; em Gastos e na votação, o Mac usa um `VSplitView` com o painel de hoje em cima e a tabela embaixo, e a lista de representantes vira só a tabela.
    - **Portas (análise):** shell do Mac, tabelas, janela vizinha no visionOS e Ajustes na dobra são `veto`, listadas na parada do canvas; o resto é `reversível`; nenhuma é `pergunta`.
    - **ADR:** nenhum. As regras são do workspace, já aceitas lá, e as decisões são locais.
@@ -182,17 +189,28 @@ FiscalKit/
   Sources/AppShell/MainScreen.swift                              MacShell no macOS, RouteWindows no visionOS
   Sources/AppShell/SectionStack.swift                            SectionFold com FoldAwareArrangement(.split) e o painel vazio
   Sources/AppShell/RoutePane.swift                               (novo) pilha do painel da rota, Close e aviso ao VoiceOver
-  Sources/AppShell/MacShell.swift                                (novo) NavigationSplitView, lista de origem, busca
-  Sources/AppShell/FiscalCommands.swift                          (novo) menu Ir com ⌘1…⌘5
-  Sources/AppShell/RouteWindows.swift                            (novo, visionOS) janela por UUID
+  Sources/AppShell/MacShell.swift                                (novo) NavigationSplitView, lista de origem e FiscalCommands (menu Ir com ⌘1…⌘5)
+  Sources/AppShell/RouteWindows.swift                            (novo, visionOS) janela por UUID e RouteWindowOpener
+  Sources/AppShell/FiscalWindow.swift                            currentWindow no ambiente
   Sources/AppShell/View+RouteInspector.swift                     visionOS abre janela em vez de folha
   Sources/AppShell/InspectorScreen.swift                         Close com .cancelAction
-  Sources/AppShell/Integrations/*                                eventos no EventLog (deep link, alerta, pacote offline)
+  Sources/AppShell/Integrations/*, DeepLink.swift, DeepLinks.swift, FiscalServices.swift, Offline/OfflineDataCenter.swift
+                                                                 eventos no EventLog (abertura, deep link, alerta, pacote offline)
+  Sources/FeatureCore/PublicData/PublicDataPhase.swift           eventos de carga e erro HTTP
+  Sources/FiscalData/PublicData/Offline/OfflinePackUpdater.swift report: do coordenador do pacote offline
   Sources/FeatureMoney/ExpensesTable.swift                       (novo, macOS) recibos em Table
+  Sources/FeatureMoney/ExpensesModel+Records.swift, ExpensesModel.swift, ExpensesScreen.swift
+                                                                 registros e ordem dos recibos; VSplitView no Mac
+  Sources/FeatureMoney/MoneyCard.swift                           GroupBox no Mac
+  Sources/FeatureToday/TodayComponents.swift                     todayCard() em GroupBox no Mac
   Sources/FeatureVotes/VoteBallotsTable.swift                    (novo, macOS) votos em Table
+  Sources/FeatureVotes/VoteDetailModel+Records.swift, VoteBallotsSection.swift, VoteDetailScreen.swift
+                                                                 registros e ordem dos votos; peças reaproveitadas; VSplitView no Mac
   Sources/FeatureMine/MineRosterTable.swift                      (novo, macOS) representantes em Table
+  Sources/FeatureMine/MineRegion.swift, MineRosterScreen.swift   ordem do roster; contagem e "ninguém é ranqueado" sob a tabela
   Sources/FeatureLens/LensArt.swift                              .extendsUnderVerticalBar()
   Sources/FeatureSettings/DeveloperScreen.swift                  seções do kit e a seção Layout
+  Sources/FeatureSettings/DeveloperLayout.swift                  (novo) textos da seção Layout
   Sources/FeatureSettings/DeveloperModel.swift                   models do kit, sem o override próprio
   Tests/FeatureCoreTests/NavigationTests.swift                   LayoutContext plano
   Tests/FeatureCoreTests/FoldNavigationTests.swift               (novo) dobra, inspector, AX, volta para a pilha
@@ -200,6 +218,8 @@ FiscalKit/
   Tests/FeatureCoreTests/FeatureFlagsTests.swift                 override antigo continua valendo
   Tests/FeatureCoreTests/EventLogPrivacyTests.swift              (novo)
   Tests/FeatureSettingsTests/DeveloperModelTests.swift           flags em três estados, registro, diagnóstico
+  Tests/AppShellTests/DeepLinkTests.swift, FiscalDataTests/OfflinePackTests.swift, FeatureSettingsTests/SettingsModelTests.swift
+  Tests/FeatureMoneyTests/ExpensesRecordsTests.swift, FeatureVotesTests/VoteBallotRecordsTests.swift, FeatureMineTests/MineRosterTests.swift
 docs/evidence/FSC-008/qa.md                                     (novo) resultado dos roteiros manuais
 Fiscal/Fiscal.xcodeproj/project.pbxproj                          ENABLE_OUTGOING_NETWORK_CONNECTIONS no alvo do app
 Fiscal/Fiscal/FiscalApp.swift                                    comandos no macOS, WindowGroup(for: UUID.self) no visionOS, EmptyStateView com texto do model

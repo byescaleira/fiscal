@@ -9,14 +9,23 @@ struct MoneyCard<Content: View>: View {
     }
 
     var body: some View {
-        VStack(spacing: .spaceM) { content }
-            .multilineTextAlignment(.center)
-            .foregroundStyle(.primary)
-            .padding(.spaceInset)
-            .frame(maxWidth: .infinity)
-            .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
+        card
             .listRowInsets(EdgeInsets())
             .listRowBackground(Color.clear)
+    }
+
+    @ViewBuilder private var card: some View {
+        let stack = VStack(spacing: .spaceM) { content }
+            .multilineTextAlignment(.center)
+            .foregroundStyle(.primary)
+            .frame(maxWidth: .infinity)
+        #if os(macOS)
+            GroupBox { stack }
+        #else
+            stack
+                .padding(.spaceInset)
+                .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
+        #endif
     }
 }
 

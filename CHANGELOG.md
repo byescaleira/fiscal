@@ -21,6 +21,11 @@ Primeira versão, a 1.0.0.
 - Filtros de recibos e da lista da Região na barra de ferramentas, com o escopo escrito sob o título.
 - Gráfico mensal de gastos do perfil com a média e o valor de cada mês ao tocar.
 - Site só em português, com o que o app faz de verdade, a fonte Bricolage e a lista real do que sai do aparelho.
+- No iPhone dobrável meio aberto, toda aba fica com a lista de um lado da dobra e o que se abre nela do outro (em pé, lado a lado; deitado, o detalhe em cima), com um estado vazio por aba ([FSC-008](spdd/prompt/FSC-008-202610311530-[Feat]-shell-fold-mac-vision-developer.md)).
+- No Mac, lista de origem com Acompanhar e Congresso, menu Ir com ⌘1 a ⌘5, recibos, votos e representantes em tabelas ordenáveis e cartões em `GroupBox`.
+- No visionOS, a rota aberta ao lado vira uma janela vizinha.
+- Página Desenvolvedor com flags em três estados, registro de eventos sem dado pessoal, diagnóstico e a medida da tela.
+- Envio das capturas da loja pela API do App Store Connect (`scripts/store-media.py`).
 
 ### Changed
 
@@ -28,6 +33,11 @@ Primeira versão, a 1.0.0.
 - "Como medimos" e a confirmação de apagar os dados offline viram guias curtos.
 - Toda animação para com Reduzir movimento ou com o Modo econômico (pouca energia ou aparelho quente).
 - Mudanças vindas do iCloud chegam à tela sem reabrir o app, e cada carga de dados ignora resposta atrasada.
+- byescaleira-kit 0.7.2; a verificação completa roda o servidor com `-race` e o `govulncheck`.
+
+### Fixed
+
+- O app do Mac carrega os dados: o sandbox ganhou a rede de saída.
 - Com a atualização obrigatória, atalhos, alertas de destaque, registro da Live Activity e a atualização em segundo plano também param.
 - A Live Activity da apuração abre a Apuração, não a tela inicial.
 - Contagens no plural certo, inclusive no zero.
