@@ -58,3 +58,14 @@ Requisitos: Google Chrome em `/Applications`, Python 3 com Pillow e as fontes qu
 - [ ] Nenhum dado pessoal nas capturas; só os cenários de teste.
 - [ ] Barra de status 9:41 em todas; nenhuma dica do TipKit ou alerta do sistema na frente.
 - [ ] Tamanhos conferidos (`sips -g pixelWidth -g pixelHeight <arquivo>`) e PNG sem transparência.
+
+## Envio pela API
+
+`python3 scripts/store-media.py list` mostra os conjuntos de capturas da versão em preparação, e `replace [--dry-run] [tipos]` troca as capturas do iPhone 6,9" (`APP_IPHONE_67`), do iPhone 6,3" (`APP_IPHONE_61`) e do iPad 13" (`APP_IPAD_PRO_3GEN_129`) em pt-BR, na ordem dos arquivos de `iphone/`, `iphone-6.3/` e `ipad/`. `repair` reenvia as que ficarem presas em processamento. O script usa `scripts/asc.py` e a chave da API do App Store Connect, que fica com o Rafael:
+
+1. App Store Connect › Users and Access › Integrations › App Store Connect API › Team Keys › **+**, com acesso **App Manager**.
+2. O `.p8` vai para `~/.appstoreconnect/private_keys/` (pasta 700, arquivo 600), nunca para o repositório.
+3. No `~/.zshrc`: `ASC_KEY_ID`, `ASC_ISSUER_ID` e `ASC_KEY_PATH`.
+
+O cabeçalho e a arte da busca não têm rota na API e continuam pelo Claude in Chrome. O envio à loja só sai com o ok do Rafael.
+
