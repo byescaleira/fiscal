@@ -13,6 +13,7 @@ public struct MainScreen: View {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
     @Environment(\.liteMode) private var liteMode
+    @Environment(FollowingBadge.self) private var badge
     public init() {}
 
     @ViewBuilder
@@ -92,6 +93,7 @@ public struct MainScreen: View {
                     ) {
                         SectionStack(section: section)
                     }
+                    .badge(section == .following ? badge.count : 0)
                 }
             }
             .tabViewStyle(.sidebarAdaptable)
