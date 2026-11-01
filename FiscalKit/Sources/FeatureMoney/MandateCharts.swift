@@ -6,7 +6,7 @@ import SwiftUI
 
 struct MandateStackChart: View {
     @ReducesMotion private var reduceMotion
-    @ScaledMetric(relativeTo: .caption) private var rowHeight: CGFloat = .badgeL
+    @ScaledMetric(relativeTo: .caption) private var rowHeight: CGFloat = .mandateRowHeight
     @ScaledMetric(relativeTo: .caption) private var labelRoom: CGFloat = .chartLabelRoom
     @State private var revealed = false
     @State private var scrubbed: String?
@@ -27,7 +27,7 @@ struct MandateStackChart: View {
             if let focused {
                 ChartCallout(title: focused.title, value: focused.monthly) { EmptyView() }
             }
-            VStack(alignment: .leading, spacing: .spaceM) {
+            VStack(alignment: .leading, spacing: .spaceS) {
                 chart
                 MandateLegend(kinds: kinds)
             }
@@ -99,7 +99,7 @@ private struct MandateLegend: View {
                 HStack(spacing: .spaceXS) {
                     Circle()
                         .fill(MandateText.kindColor(kind))
-                        .frame(width: .spaceS, height: .spaceS)
+                        .frame(width: .chartLegendSwatch, height: .chartLegendSwatch)
                     Text(verbatim: MandateText.kindTitle(kind))
                         .font(.caption)
                         .foregroundStyle(.secondary)

@@ -72,7 +72,7 @@ struct ContentDetailModelTests {
         let model = ContentDetailModel(highlightID: item.id, service: service)
         await model.load()
         #expect(model.phase == .loaded)
-        #expect(model.content?.title == item.title)
+        #expect(model.content?.title == item.plainSummary ?? item.title)
         #expect(model.content?.method == list.method)
         #expect(model.shareRoute == .share(.highlight(id: item.id)))
     }

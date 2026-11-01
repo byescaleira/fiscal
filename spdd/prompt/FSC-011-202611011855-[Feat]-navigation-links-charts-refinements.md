@@ -39,7 +39,7 @@ Primeira das quatro fases da [análise FSC-011](../analysis/FSC-011-202611011850
 
 **Gráficos**
 
-21. Dado "Quanto custa um mandato", quando o gráfico aparece, então a distância entre a última barra e a legenda é de um `.spaceM` mais a folga natural da linha da barra, e a legenda quebra em várias linhas sem cortar texto.
+21. Dado "Quanto custa um mandato", quando o gráfico aparece, então o nome do cargo fica nitidamente afastado da barra de cima, sem encostar nela; a distância entre a última barra e a legenda é de um `.spaceS` mais a folga natural da linha da barra; e a legenda quebra em várias linhas sem cortar texto.
 22. Dado "Teto da cota por estado", quando o gráfico aparece, então não há siglas no eixo horizontal; tocar numa barra mostra o estado e o valor, e o VoiceOver lê cada estado.
 
 ## Entities
@@ -180,7 +180,7 @@ classDiagram
    - `MineSeat.standsAlone` e `Spacer` acima do titular nesse caso.
    - Cobre: 19, 20. Verificação: `MineFollowingTests`, captura com e sem vice.
 4. **Gráficos.** `[P]` com 2.
-   - `MandateStackChart`: `.chartLegend(.hidden)`, altura só das barras e legenda em `FlowLayout`, oculta do VoiceOver, porque cada barra já diz o item.
+   - `MandateStackChart`: `.chartLegend(.hidden)`, linha mais alta com o token `mandateRowHeight`, altura só das barras e legenda em `FlowLayout`, oculta do VoiceOver, porque cada barra já diz o item.
    - `QuotaStatesChart`: `.chartXAxis(.hidden)`, sem o caso de fonte grande.
    - Cobre: 21, 22. Verificação: captura no simulador; `FeatureMoneyTests`.
 5. **`ContentDetail`.**
