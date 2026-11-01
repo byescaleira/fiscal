@@ -229,7 +229,7 @@ struct ShareFlowModelTests {
         #expect(ShareStyle.typographic.storyField != ShareStyle.data.storyField)
     }
 
-    @Test func theStageTakesThePartiesOfTheSubject() async throws {
+    @Test func theCardTakesThePartiesOfTheSubject() async throws {
         let person = ShareFixtures.model(.person(slug: "tabata-amaral"))
         await person.load()
         let face = try #require(person.content?.faces.first)

@@ -2,10 +2,14 @@ import FiscalDesignSystem
 import SwiftUI
 
 struct ShareControls: View {
+    @Environment(ShareModel.self) private var model
     @Environment(\.layoutContext) private var context
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceS) {
+            if model.usesArt {
+                ShareArtRail()
+            }
             ShareDestinationPicker()
             ShareFactsRail()
             if context.size.height >= .shareNoteMinimumHeight {
@@ -151,11 +155,10 @@ private struct ShareFactsRail: View {
 
 private struct ShareTools: View {
     @Environment(ShareModel.self) private var model
-    @State private var showsArt = false
     @State private var showsCaption = false
 
     var body: some View {
-        if model.offersMediaChoice || model.usesArt || model.destination.acceptsCaption {
+        if model.offersMediaChoice || model.destination.acceptsCaption {
             Divider()
                 .frame(height: .shareToolDivider)
         }
@@ -167,19 +170,6 @@ private struct ShareTools: View {
                 model.sendsVideo.toggle()
             }
             .accessibilityValue(Text(model.sendsVideo ? "On" : "Off"))
-        }
-        if model.usesArt {
-            ShareCapsule(title: "Art", symbol: "photo", isOn: false) {
-                showsArt = true
-            }
-            .sheet(isPresented: $showsArt) {
-                ShareToolSheet(title: "Art") {
-                    ScrollView {
-                        ShareArtPicker()
-                            .padding(.spaceL)
-                    }
-                }
-            }
         }
         if model.destination.acceptsCaption {
             ShareCapsule(title: "Caption", symbol: "text.alignleft", isOn: false) {

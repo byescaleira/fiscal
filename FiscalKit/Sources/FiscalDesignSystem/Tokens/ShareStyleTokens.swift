@@ -24,6 +24,8 @@ extension CGFloat {
     public static let shareFacePortraitSmall: CGFloat = 26
     public static let shareDuelPortrait: CGFloat = 46
     public static let shareToolDivider: CGFloat = 24
+    public static let shareArtThumbWidth: CGFloat = 54
+    public static let shareArtThumbHeight: CGFloat = 72
     public static let shareDuelFigure: CGFloat = 52
     public static let shareDataLead: CGFloat = 40
     public static let shareDataBarFigure: CGFloat = 16
@@ -33,7 +35,6 @@ extension CGFloat {
     public static let shareDuelDivider: CGFloat = 72
     public static let shareArtApproach: CGFloat = 0.08
     public static let shareCarouselMinimum: CGFloat = 220
-    public static let shareCarouselScrolling: CGFloat = 340
     public static let shareCarouselShare: CGFloat = 0.72
     public static let shareNeighborScale: CGFloat = 0.92
     public static let shareControlsWidth: CGFloat = 400
@@ -49,8 +50,7 @@ extension Double {
     public static let opacityFolhaGhost = 0.12
     public static let opacityDuelMark = 0.07
     public static let opacityShareNeighbor = 0.9
-    public static let opacityShareStage = 0.45
-    public static let opacityShareCardShadow = 0.35
+    public static let opacityShareCardShadow = 0.22
 }
 
 extension String {
