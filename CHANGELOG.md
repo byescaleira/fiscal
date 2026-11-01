@@ -11,7 +11,7 @@ Primeira versão, a 1.0.0.
 - Seguindo, Hoje, Votações, Dinheiro e Fiscalizar com dados oficiais da Câmara, do Senado, do TSE, do Portal da Transparência e dos municípios.
 - Apuração ao vivo das eleições, com Live Activity e Ilha Dinâmica.
 - Lente: ordem, cores e arte adaptadas ao que importa para a pessoa, com os mesmos fatos para todos e a escolha guardada só no aparelho.
-- Cartões de compartilhar com arte brasileira de licença livre, retratos desenhados e o que circulou sobre cada político segundo o Projeto Comprova.
+- Cartões de compartilhar com arte brasileira de licença livre e o que circulou sobre cada político segundo o Projeto Comprova.
 - Widgets, atalhos da Siri e busca no Spotlight.
 - Ícone da Amazônia ao amanhecer, com ícones alternativos de temas, fauna e partidos.
 - Roda a partir do iOS, iPadOS, macOS e visionOS 26, com o que é do 27 quando o aparelho tem.
@@ -30,6 +30,11 @@ Primeira versão, a 1.0.0.
 - Seguir e deixar de seguir em qualquer linha de pessoa (botão ao lado do nome e menu de contexto), no perfil e nas tabelas do Mac.
 - Siri e Atalhos seguem e deixam de seguir um político sem abrir o app, com o aparelho desbloqueado, e "Quem eu sigo" abre a aba Seguindo.
 - Widget "Quem eu sigo", com as últimas novidades de até seis pessoas seguidas, e o atalho de Seguindo no Hoje com o número de novidades.
+- Compartilhar virou um estúdio: o cartão fica grande no topo, com os estilos Folha, Dados e Pôster num carrossel, e os controles num painel separado: arte, rede e lugar (Instagram, TikTok, Facebook, WhatsApp e outros) e fatos a mostrar ou esconder, com legenda editável e o botão de postar na barra de cima.
+- Vídeo animado de 5 s para Stories, Reels, TikTok e Status: fundos e blocos aparecem em sequência e os números rolam até o valor real, com progresso e cancelamento.
+- Envio direto aos Stories do Instagram e do Facebook com o App ID da Meta; TikTok pelo Fotos, abrindo o app.
+- Links do site abrem o app no conteúdo, pelos links universais, assim que a nova AASA for publicada.
+- Convite dispensável na aba Seguindo para compartilhar quem você acompanha, com o novo cartão "Quem eu sigo".
 
 ### Changed
 
@@ -37,6 +42,9 @@ Primeira versão, a 1.0.0.
 - "Como medimos" e a confirmação de apagar os dados offline viram guias curtos.
 - Toda animação para com Reduzir movimento ou com o Modo econômico (pouca energia ou aparelho quente).
 - Mudanças vindas do iCloud chegam à tela sem reabrir o app, e cada carga de dados ignora resposta atrasada.
+- Todos os cartões de compartilhar têm o mesmo sistema de blocos de ponta a ponta, sem retrato, com as cores do partido na zona que as redes cobrem. Os cartões de vitória e de investigação passam a usar esse sistema.
+- O cartão não mostra dado ausente: ele some também da legenda e das opções, um zero nunca é o número principal, e sem dado ou sem fonte não há cartão.
+- O cartão traz a mediana dos colegas no lugar de "Melhor" ou "Pior que a média", que fica só no perfil.
 - byescaleira-kit 0.7.2; a verificação completa roda o servidor com `-race` e o `govulncheck`.
 
 ### Fixed

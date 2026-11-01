@@ -8,6 +8,9 @@ import Observation
 
 @MainActor @Observable
 public final class ShareModel {
+    public typealias VideoMaker =
+        @MainActor (ShareCard, CGImage?, (Double) -> Void) async throws -> URL
+
     public static let neutralCollection = "acervo-historico"
     public static let lastSeries = "paisagens"
 
@@ -17,112 +20,117 @@ public final class ShareModel {
     public private(set) var lens: Lens?
     public private(set) var code: CGImage?
     public private(set) var rendered: RenderedCard?
-    public var format: ShareFormat = .stories
+    public var format: ShareFormat = ShareDestination.instagramStories.format
     public var selectedWorkID: ArtWork.ID?
-    public private(set) var collectionID: ArtCollection.ID?
+    public internal(set) var collectionID: ArtCollection.ID?
+    public var style: ShareStyle = .poster
+    public private(set) var destination: ShareDestination = .instagramStories
+    public private(set) var selection = ShareSelection()
+    public private(set) var caption = ""
+    public private(set) var isCaptionEdited = false
+    public internal(set) var exportProgress: Double = 0
+    public internal(set) var isPosting = false
+    public internal(set) var postFailed = false
+    public internal(set) var isExportingVideo = false
+    public internal(set) var videoFellBack = false
+    public internal(set) var notice: ShareNotice?
+    public var sendsVideo = true
+    public var postRequest: SharePostRequest?
 
     @ObservationIgnored private let service: (any PublicDataService)?
     @ObservationIgnored private let races: (any LiveResultsService)?
     @ObservationIgnored private let lensRepository: (any LensRepository)?
-    @ObservationIgnored private let catalog: ArtCatalog?
+    @ObservationIgnored private let follows: (any FollowRepository)?
+    @ObservationIgnored var renderScale: CGFloat = 3
+    @ObservationIgnored let catalog: ArtCatalog?
     @ObservationIgnored private let builder: ShareCardBuilder
+    @ObservationIgnored private let now: @Sendable () -> Date
     @ObservationIgnored private let requests = PublicDataRequests()
+    @ObservationIgnored let delivery: ShareDelivery
+    @ObservationIgnored let metaAppID: String?
+    @ObservationIgnored let makeVideo: VideoMaker
+    @ObservationIgnored var exportedFile: URL?
+    @ObservationIgnored private var didApplyDefaultStyle = false
+    @ObservationIgnored var postTask: Task<Void, Never>?
 
     public init(
         subject: ShareSubject, service: (any PublicDataService)?,
         races: (any LiveResultsService)? = nil, lens: (any LensRepository)? = nil,
+        follows: (any FollowRepository)? = nil,
         catalog: ArtCatalog? = try? ArtCatalog.bundled(),
-        calendar: Calendar = GregorianCalendar.current
+        calendar: Calendar = GregorianCalendar.current,
+        now: @escaping @Sendable () -> Date = { .now },
+        delivery: ShareDelivery = .live, metaAppID: String? = ShareMetaApp.id(),
+        makeVideo: @escaping VideoMaker = ShareRenderer.video
     ) {
         self.subject = subject
         self.service = service
         self.races = races
         lensRepository = lens
+        self.follows = follows
         self.catalog = catalog
         builder = ShareCardBuilder(calendar: calendar)
+        self.now = now
+        self.delivery = delivery
+        self.metaAppID = metaAppID
+        self.makeVideo = makeVideo
     }
 
     public var isEmpty: Bool { content == nil }
 
-    public var card: ShareCard? {
+    public var styles: [ShareStyle] { content?.styles ?? ShareStyle.allCases }
+
+    public var card: ShareCard? { card(style: style) }
+
+    public func card(style: ShareStyle) -> ShareCard? {
         content.map {
-            ShareCard(content: $0, artwork: $0.hasOwnPoster ? nil : artwork, format: format)
+            ShareCard(
+                content: $0.applying(selection), artwork: artwork,
+                format: format, style: style, showsCode: selection.showsCode)
         }
     }
 
-    public var usesArt: Bool { content?.hasOwnPoster != true }
+    public var usesArt: Bool { style == .poster }
+
+    public var facts: [ShareFact] {
+        guard let content else { return [] }
+        return content.optionalFacts + (code != nil && format.showsCode ? [.code] : [])
+    }
+
+    public func isOn(_ fact: ShareFact) -> Bool { selection.isOn(fact) }
+
+    public func canToggle(_ fact: ShareFact) -> Bool {
+        selection.canToggle(fact, among: facts)
+    }
+
+    public func toggle(_ fact: ShareFact) {
+        selection.toggle(fact, among: facts)
+        refreshCaption()
+    }
+
+    public func choose(_ destination: ShareDestination) {
+        self.destination = destination
+        format = destination.format
+    }
+
+    public func editCaption(_ text: String) {
+        caption = String(text.prefix(ShareCaption.limit))
+        isCaptionEdited = true
+    }
 
     public var isInvestigation: Bool { content?.investigation != nil }
+
+    public var isVictory: Bool { content?.isVictory == true }
 
     public var shareMessage: String {
         guard let content else { return ShareCardBuilder.host }
         return [content.source, ShareCardBuilder.host].joined(separator: " · ")
     }
 
-    public var isArtAdapted: Bool {
-        guard let id = lens?.artCollection else { return false }
-        return catalog?.collection(id: id) != nil
-    }
-
-    public var showsLensBadge: Bool { isArtAdapted }
-
-    public var collections: [ArtCollection] {
-        guard let catalog else { return [] }
-        let preferred = preferredCollectionID
-        return catalog.collections.filter { $0.id == preferred }
-            + catalog.collections.filter { $0.id != preferred }
-    }
-
-    public var works: [ArtWork] {
-        guard let catalog else { return [] }
-        return collections.flatMap { collection in
-            let works = catalog.works(in: collection.id)
-            return works.filter { $0.series != Self.lastSeries }
-                + works.filter { $0.series == Self.lastSeries }
-        }
-    }
-
-    public var artwork: ShareArtwork? {
-        guard let catalog, let work = selectedWork else { return nil }
-        return ShareArtwork(
-            work: work, palette: catalog.collection(id: work.collection)?.palette ?? [])
-    }
-
-    public var selectedWork: ArtWork? {
-        guard let catalog else { return nil }
-        if let selectedWorkID, let work = catalog.work(id: selectedWorkID) { return work }
-        return catalog.collection(id: preferredCollectionID).flatMap(catalog.leadWork(of:))
-            ?? catalog.works.first
-    }
-
-    public var currentCollectionID: ArtCollection.ID? {
-        collectionID ?? selectedWork?.collection ?? collections.first?.id
-    }
-
-    public var currentWorks: [ArtWork] {
-        let current = currentCollectionID
-        return works.filter { $0.collection == current }
-    }
-
-    public var selectedCredit: String? {
-        selectedWork.map { "\($0.artist) · \($0.title), \($0.year) · \($0.licenseLabel)" }
-    }
-
-    public func isSelected(_ work: ArtWork) -> Bool {
-        selectedWork?.id == work.id
-    }
-
-    public func select(_ work: ArtWork) {
-        selectedWorkID = work.id
-    }
-
-    public func show(_ collection: ArtCollection.ID) {
-        collectionID = collection
-    }
-
-    public func render(scale: CGFloat, portraits: PortraitArtwork?) {
+    public func render(scale: CGFloat) {
+        renderScale = scale
         rendered = card.flatMap { card in
-            ShareRenderer.render(card, code: code, scale: scale, portraits: portraits)
+            ShareRenderer.render(card, code: code, scale: scale)
                 .flatMap { RenderedCard(file: $0, scale: scale) }
         }
     }
@@ -131,24 +139,31 @@ public final class ShareModel {
         if content == nil { phase = .loading }
         phase = await PublicDataPhase.settle(after: phase, in: requests) {
             let lens = try? await lensRepository?.lens()
-            return (lens: lens, content: try await fetch())
+            guard let content = try await fetch().published else {
+                throw PublicDataError.notFound
+            }
+            return (lens: lens, content: content)
         } apply: { loaded in
             lens = loaded.lens
             content = loaded.content
+            if !didApplyDefaultStyle {
+                didApplyDefaultStyle = true
+                style = loaded.content.defaultStyle
+            }
             code = ShareCode.image(for: loaded.content.link)
+            refreshCaption()
         }
     }
 
-    private var preferredCollectionID: ArtCollection.ID {
-        let ids = catalog?.collections.map(\.id) ?? []
-        if ids.contains(Self.neutralCollection) { return Self.neutralCollection }
-        if let chosen = lens?.artCollection, ids.contains(chosen) { return chosen }
-        return ids.first ?? Self.neutralCollection
+    private func refreshCaption() {
+        guard !isCaptionEdited, let content else { return }
+        caption = ShareCaption.make(content, selection: selection)
     }
 
     private func fetch() async throws -> ShareCardContent {
         if case .race(let id) = subject { return try await race(id) }
         if case .investigation(let summary) = subject { return builder.investigation(summary) }
+        if case .following = subject { return try await following() }
         guard let service else { throw PublicDataError.unavailable }
         return try await fetch(from: service)
     }
@@ -180,7 +195,16 @@ public final class ShareModel {
             return try await highlight(id, from: service)
         case .investigation(let summary):
             return builder.investigation(summary)
+        case .following:
+            return try await following()
         }
+    }
+
+    private func following() async throws -> ShareCardContent {
+        guard let follows else { throw PublicDataError.unavailable }
+        let people = try await follows.followed()
+        guard !people.isEmpty else { throw PublicDataError.notFound }
+        return builder.following(people, at: now())
     }
 
     private func highlight(_ id: String, from service: any PublicDataService) async throws

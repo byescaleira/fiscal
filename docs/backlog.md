@@ -7,7 +7,10 @@ O que falta, por prioridade. Itens concluídos saem daqui; o motivo das decisõe
 - **[P1] Live Activity da apuração ponta a ponta.** Etapas abertas da [`live-results`](changes/archive/2026-10-29-live-results/tasks.md): conferir a chave APNs em `/opt/fiscal-api/secrets/apns.p8` e a conta no Xcode (usuário), rodar o servidor em modo de simulação, iniciar a Live Activity no iPhone físico e receber os pushes de atualização e de fim.
 - **[P1] Vencedor na Live Activity da apuração.** A regra de vencedor do widget (`RaceBoard.winner`) difere da do app (`Race.winner`) e mostra "ELEITO" a 100% no 1º turno com mais de 2 candidatos: igualar as duas ([FSC-001](../spdd/prompt/FSC-001-202610291700-[Codify]-live-results.md)). O toque já abre `fiscal://races`.
 - **[P1] Rótulo de privacidade e política.** Declarar o rótulo do [ADR 0017](adr/0017-app-store-privacy-label.md) no App Store Connect e listar na política do site as três saídas com os prazos.
-- **[P1] Retratos nos cartazes.** Marca visível "Ilustração do Fiscal" nos retratos e nos cartazes de vitória e de investigação, e a regra de não gerar cartaz de candidato com retrato nas 72 h antes e nas 24 h depois de uma votação ([brief](brief.md), "Retratos e marcas animados"); hoje nenhuma das duas existe.
+- **[P1] Retratos do app.** Marca visível "Ilustração do Fiscal" nos retratos, e a regra de não gerar cartaz de candidato com retrato nas 72 h antes e nas 24 h depois de uma votação ([brief](brief.md), "Retratos e marcas animados"); hoje nenhuma das duas existe.
+- **[P1] Testes de interface.** `testLaunchShowsFollowingAndOpensSettings` (linha 17, `openSettings`) e `testTodayOpensTheLiveResults` (linha 28, botão da Apuração) falham no simulador do iPhone Duo, também na `development` em 01/11/2026, antes da FSC-010.
+- **[P1] App ID da Meta.** Criar o app na Meta e preencher `FiscalMetaAppID` no `Info.plist`. Sem ele, os Stories do Instagram e do Facebook abrem pela folha do sistema ([ADR 0020](adr/0020-share-to-social-networks.md)).
+- **[P1] Publicar a AASA dos links do site.** Com o ok do usuário. Antes disso, os links impressos nos cartões abrem o site, não o app ([docs/web.md](web.md)).
 - **[P1] Apagar a escolha da Lente.** A confirmação "Apagar minha escolha" existe no `LensScreen`, mas nenhum botão a abre; o brief pede o botão.
 - **[P1] Testes do destaque na tela de bloqueio.** `HighlightAlertRule` e `HighlightAlertCenter` não têm testes (peso mínimo, janela de 24 h, ids já mostrados, desligar remove o token); a constituição pede Swift Testing para toda lógica.
 - **[P1] Capabilities no portal da Apple.** Conferir no App ID `com.byescaleira.fiscal`: App Attest, Push Notifications, iCloud (`iCloud.fiscal`), App Group `group.com.byescaleira` e Background Modes, e o App Group na extensão dos widgets.
@@ -85,7 +88,7 @@ Registradas na migração para o SPDD ([ADR 0019](adr/0019-spdd-process.md)), se
 - **[P2] Galeria mostra o `holder`**, não o acervo.
 - **[P2] QR da bancada com `place`** e investigação sem pessoa única caindo na raiz do site.
 - **[P2] Pôster de vitória com SF heavy em tamanho fixo**, galeria sem `.monospacedDigit()` e `scaleEffect` 0.94 solto.
-- **[P2] Testes** dos pôsteres de investigação e de destaque, e do portão de licença do `art.py` e do `art-photos.py`. A marca dos retratos já está em "Retratos nos cartazes".
+- **[P2] Testes** do pôster de destaque e do portão de licença do `art.py` e do `art-photos.py`. A marca dos retratos já está em "Retratos do app".
 
 ### Checagens ([FSC-006](../spdd/prompt/FSC-006-202610291700-[Codify]-fact-checks.md))
 

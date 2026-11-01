@@ -2,7 +2,7 @@ import SwiftUI
 
 extension CGFloat {
     public static let posterMargin: CGFloat = 24
-    public static let posterMarginCompact: CGFloat = 18
+    public static let posterMarginCompact: CGFloat = 22
     public static let posterHeroStories: CGFloat = 132
     public static let posterHeroFeed: CGFloat = 96
     public static let posterHeroMessage: CGFloat = 72
@@ -19,7 +19,6 @@ extension CGFloat {
     public static let posterRowFeed: CGFloat = 30
     public static let posterRowMessage: CGFloat = 24
     public static let posterPlateFeed: CGFloat = 168
-    public static let posterFade: CGFloat = 96
     public static let posterStripe: CGFloat = 5
     public static let posterBar: CGFloat = 6
     public static let posterCode: CGFloat = 38
@@ -31,13 +30,9 @@ extension CGFloat {
 }
 
 extension Double {
-    public static let opacityPosterScrim = 0.94
-    public static let opacityPosterLabel = 0.86
     public static let opacityPosterTint = 0.32
     public static let opacityPosterSecondary = 0.74
-    public static let opacityPosterQuiet = 0.6
     public static let opacityPosterTrack = 0.18
-    public static let opacityPosterGlow = 0.08
 }
 
 extension Font {

@@ -80,7 +80,7 @@ struct RouteScreen: View {
                 ShareModel(
                     subject: subject, service: data,
                     races: FiscalServices.shared.liveResultsService(),
-                    lens: session.repositories.lens)
+                    lens: session.repositories.lens, follows: session.repositories.follows)
             ) {
                 ShareScreen()
             }

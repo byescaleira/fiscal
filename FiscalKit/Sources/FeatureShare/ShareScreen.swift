@@ -1,6 +1,5 @@
 import FeatureCore
 import FiscalDesignSystem
-import FiscalResource
 import SwiftUI
 
 public struct ShareScreen: View {
@@ -34,246 +33,105 @@ public struct ShareScreen: View {
 private struct ShareEditor: View {
     @Environment(ShareModel.self) private var model
     @Environment(\.displayScale) private var displayScale
-    @Environment(\.portraitArtwork) private var portraits
+    @Environment(\.layoutContext) private var context
 
     var body: some View {
         @Bindable var model = model
+        studio
+            .background(.plainBackground)
+            .safeAreaBar(edge: .bottom) {
+                ShareStatusBar()
+            }
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    SharePostButton()
+                }
+            }
+            .sharePostSheet($model.postRequest)
+            .onChange(of: model.postRequest) { old, new in
+                if old != nil, new == nil { model.discardExport() }
+            }
+            .onChange(of: model.statusMessage) { _, message in
+                if let message { AccessibilityNotification.Announcement(message).post() }
+            }
+            .onChange(of: model.isExportingVideo) { _, isExporting in
+                if isExporting {
+                    AccessibilityNotification.Announcement(
+                        String(appLocalized: "Preparing the video")
+                    ).post()
+                }
+            }
+            .onDisappear { model.leave() }
+            .task(id: model.card) {
+                model.render(scale: displayScale)
+            }
+    }
+
+    @ViewBuilder private var studio: some View {
+        if context.isAccessibilitySize {
+            ScrollView {
+                VStack(spacing: .spaceM) {
+                    ShareCardCarousel()
+                        .frame(height: .shareStudioAccessibilityPreview)
+                    ShareControls()
+                }
+                .padding(.vertical, .spaceM)
+            }
+        } else if context.widthClass == .compact {
+            ShareStudioLayout {
+                ShareCardCarousel()
+                ShareControlsPanel()
+            }
+            .padding(.top, .spaceS)
+        } else {
+            HStack(spacing: .spaceL) {
+                ShareCardCarousel()
+                    .frame(maxWidth: .infinity)
+                ShareControlsPanel()
+                    .frame(width: .shareControlsWidth)
+            }
+            .padding(.top, .spaceM)
+        }
+    }
+}
+
+private struct ShareStudioLayout: Layout {
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        proposal.replacingUnspecifiedDimensions()
+    }
+
+    func placeSubviews(
+        in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()
+    ) {
+        guard let preview = subviews.first, let panel = subviews.last else { return }
+        let height = bounds.height * .shareStudioPreviewShare
+        preview.place(
+            at: bounds.origin, proposal: ProposedViewSize(width: bounds.width, height: height))
+        panel.place(
+            at: CGPoint(x: bounds.minX, y: bounds.minY + height + .spaceM),
+            proposal: ProposedViewSize(
+                width: bounds.width, height: bounds.height - height - .spaceM))
+    }
+}
+
+private struct ShareControlsPanel: View {
+    private let panelShape = UnevenRoundedRectangle(
+        topLeadingRadius: .radiusGroup, topTrailingRadius: .radiusGroup)
+
+    var body: some View {
         ScrollView {
-            VStack(spacing: .spaceXL) {
-                ShareCardPreview(rendered: model.rendered, card: model.card)
-                ShareFormatChooser(selection: $model.format)
-                if model.usesArt {
-                    ShareArtPicker()
-                }
-                ShareAction(rendered: model.rendered)
-            }
-            .padding(.spaceL)
-            .readableWidth()
-            .frame(maxWidth: .infinity)
+            ShareControls()
+                .padding(.vertical, .spaceL)
         }
-        .background(.plainBackground)
-        .task(id: model.card) {
-            model.render(scale: displayScale, portraits: portraits)
+        .scrollIndicators(.hidden)
+        .mask {
+            panelShape
+                .ignoresSafeArea(edges: .bottom)
         }
-    }
-}
-
-private struct ShareCardPreview: View {
-    let rendered: RenderedCard?
-    let card: ShareCard?
-
-    var body: some View {
-        let size = card?.format.size ?? ShareFormat.stories.size
-        Group {
-            if let rendered {
-                rendered.image
-                    .resizable()
-                    .scaledToFit()
-            } else {
-                ProgressView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(.subtleFill)
-            }
+        .background {
+            panelShape
+                .fill(.plainRow)
+                .ignoresSafeArea(edges: .bottom)
         }
-        .aspectRatio(size.width / size.height, contentMode: .fit)
-        .clipShape(.rect(cornerRadius: .radiusL))
-        .frame(maxHeight: .sharePreviewMax)
-        .shadow(color: .black.opacity(.opacityTint), radius: .spaceM, y: .spaceS)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(verbatim: card?.accessibilityLabel ?? ""))
-        .accessibilityAddTraits(.isImage)
-    }
-}
-
-private struct ShareArtPicker: View {
-    @Environment(ShareModel.self) private var model
-    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
-    @Environment(\.liteMode) private var liteMode
-    @Environment(\.appTint) private var tint
-
-    private var reduceMotion: Bool { systemReduceMotion || liteMode.reducesMotion }
-
-    var body: some View {
-        let current = model.currentCollectionID
-        VStack(alignment: .leading, spacing: .spaceM) {
-            HStack {
-                Text("Art")
-                    .sectionTitle()
-                    .accessibilityAddTraits(.isHeader)
-                Spacer()
-                if model.showsLensBadge {
-                    LensBadge()
-                }
-            }
-            HStack(spacing: .spaceS) {
-                ForEach(model.collections) { collection in
-                    let isOn = collection.id == current
-                    Button {
-                        model.show(collection.id)
-                    } label: {
-                        Text(verbatim: collection.name)
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(isOn ? AnyShapeStyle(.white) : AnyShapeStyle(tint))
-                            .padding(.horizontal, .spaceM)
-                            .padding(.vertical, .spaceS)
-                            .background(
-                                isOn
-                                    ? AnyShapeStyle(tint)
-                                    : AnyShapeStyle(tint.opacity(.opacityTint)),
-                                in: .capsule)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityAddTraits(isOn ? .isSelected : [])
-                }
-            }
-            ScrollViewReader { proxy in
-                EdgeToEdgeRail(.padded(.spaceL)) {
-                    ForEach(model.currentWorks) { work in
-                        ShareArtCard(work: work).id(work.id)
-                    }
-                }
-                .onAppear {
-                    if let id = model.selectedWorkID { proxy.scrollTo(id, anchor: .center) }
-                }
-            }
-            if let credit = model.selectedCredit {
-                Text(verbatim: credit)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(2)
-                    .contentTransition(.opacity)
-            }
-        }
-        .animation(reduceMotion ? nil : .smooth, value: model.selectedWorkID)
-        .animation(reduceMotion ? nil : .smooth, value: model.collectionID)
-        .sensoryFeedback(.selection, trigger: model.selectedWorkID)
-    }
-}
-
-private struct ShareArtCard: View {
-    @Environment(ShareModel.self) private var model
-    @Environment(\.appTint) private var tint
-    let work: ArtWork
-
-    var body: some View {
-        let selected = model.isSelected(work)
-        Button {
-            model.select(work)
-        } label: {
-            VStack(alignment: .leading, spacing: .spaceXS) {
-                work.image
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: .shareThumbnail * 2, height: .shareThumbnail * 3)
-                    .clipShape(.rect(cornerRadius: .radiusM))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: .radiusM)
-                            .strokeBorder(selected ? tint : .clear, lineWidth: .space2XS)
-                    }
-                    .overlay(alignment: .topTrailing) {
-                        if selected {
-                            Image(systemName: "checkmark.circle.fill")
-                                .font(.icon(.m))
-                                .symbolRenderingMode(.palette)
-                                .foregroundStyle(.white, tint)
-                                .padding(.spaceXS)
-                        }
-                    }
-                    .shadow(color: .black.opacity(selected ? .opacityTint : 0), radius: .spaceS)
-                Text(verbatim: work.artist)
-                    .font(.caption.weight(.bold))
-                    .foregroundStyle(.primary)
-                    .lineLimit(1)
-                Text(verbatim: work.title)
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-            }
-            .frame(width: .shareThumbnail * 2)
-            .scaleEffect(selected ? 1 : 0.94)
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(Text(verbatim: "\(work.title), \(work.artist), \(work.year)"))
-        .accessibilityAddTraits(selected ? .isSelected : [])
-    }
-}
-
-private struct ShareAction: View {
-    @Environment(ShareModel.self) private var model
-    let rendered: RenderedCard?
-
-    var body: some View {
-        VStack(spacing: .spaceM) {
-            if let rendered {
-                ShareLink(
-                    item: rendered.file,
-                    preview: SharePreview(Text("Fiscal card"), image: rendered.image)
-                ) {
-                    Label("Share Image", systemImage: "square.and.arrow.up")
-                        .frame(maxWidth: .infinity)
-                }
-                .primaryButton()
-            } else {
-                ProgressView("Preparing the image")
-            }
-            Group {
-                if model.isInvestigation {
-                    Text(
-                        "The card carries only the numbers found, their sources and the date. Your question stays on this device unless you share it."
-                    )
-                } else if model.usesArt {
-                    Text(
-                        "The card carries the official source, the date and the art credit. Your Lens never goes into the image."
-                    )
-                } else {
-                    Text(
-                        "The card carries the official TSE numbers and the time of the file. Your Lens never goes into the image."
-                    )
-                }
-            }
-            .font(.footnote)
-            .foregroundStyle(.secondary)
-            .multilineTextAlignment(.center)
-        }
-    }
-}
-
-private struct ShareFormatChooser: View {
-    @Binding var selection: ShareFormat
-    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
-    @Environment(\.liteMode) private var liteMode
-    @Environment(\.appTint) private var tint
-
-    var body: some View {
-        HStack(alignment: .bottom, spacing: .spaceXL) {
-            ForEach(ShareFormat.allCases, id: \.self) { format in
-                let isSelected = selection == format
-                Button {
-                    selection = format
-                } label: {
-                    VStack(spacing: .spaceS) {
-                        RoundedRectangle(cornerRadius: .spaceXS, style: .continuous)
-                            .fill(isSelected ? tint.opacity(.opacityTint) : Color.clear)
-                            .strokeBorder(
-                                isSelected ? tint : Color.secondary, lineWidth: .spaceHairline
-                            )
-                            .frame(
-                                width: .badgeXL * format.size.width / format.size.height,
-                                height: .badgeXL)
-                        Text(format.title)
-                            .font(.footnote.weight(isSelected ? .bold : .regular))
-                            .foregroundStyle(
-                                isSelected ? AnyShapeStyle(tint) : AnyShapeStyle(.secondary))
-                    }
-                    .contentShape(.rect)
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(Text(format.title))
-                .accessibilityAddTraits(isSelected ? .isSelected : [])
-            }
-        }
-        .frame(maxWidth: .infinity)
-        .sensoryFeedback(.selection, trigger: selection)
-        .animation(systemReduceMotion || liteMode.reducesMotion ? nil : .snappy, value: selection)
     }
 }

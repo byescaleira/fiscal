@@ -27,6 +27,8 @@
 	<string>https://dados.fiscal.byescaleira.com</string>
 	<key>FiscalHelpURL</key>
 	<string>https://fiscal.byescaleira.com/support</string>
+	<key>FiscalMetaAppID</key>
+	<string></string>
 	<key>FiscalPrivacyURL</key>
 	<string>https://fiscal.byescaleira.com/privacy</string>
 	<key>FiscalSupportEmail</key>
@@ -37,6 +39,14 @@
 	<string></string>
 	<key>FiscalWebsiteURL</key>
 	<string>https://fiscal.byescaleira.com</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>instagram-stories</string>
+		<string>facebook-stories</string>
+		<string>tiktok</string>
+	</array>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>O Fiscal salva no Fotos o cartão que você quer postar.</string>
 	<key>NSUbiquitousContainers</key>
 	<dict>
 		<key>iCloud.fiscal</key>

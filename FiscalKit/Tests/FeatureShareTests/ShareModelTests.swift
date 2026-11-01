@@ -33,6 +33,7 @@ struct ShareModelTests {
         for subject in subjects {
             let model = model(subject)
             await model.load()
+            model.style = .poster
             #expect(model.phase == .loaded, "\(subject)")
             let work = try #require(model.artwork?.work)
             for format in FeatureShare.ShareFormat.allCases {
@@ -40,11 +41,6 @@ struct ShareModelTests {
                 let card = try #require(model.card)
                 #expect(card.texts.contains(ShareCardBuilder.host))
                 #expect(!card.content.source.isEmpty)
-                if card.content.hasOwnPoster {
-                    #expect(card.artwork == nil, "\(subject)")
-                    #expect(!model.usesArt)
-                    continue
-                }
                 let credit = try #require(card.artwork?.credit, "\(subject)")
                 #expect(card.texts.contains(credit))
                 for part in [work.artist, work.title, work.year] {
@@ -70,11 +66,16 @@ struct ShareModelTests {
                 await model.load()
                 #expect(model.showsLensBadge)
                 let card = try #require(model.card)
-                let text = card.texts.joined(separator: "\n")
-                #expect(!text.contains("Lens"))
-                for slug in lens.supported {
-                    #expect(!card.accessibilityLabel.contains(slug))
-                    #expect(!model.shareMessage.contains(slug))
+                for style in ShareStyle.allCases {
+                    let styled = try #require(model.card(style: style))
+                    let text = styled.texts.joined(separator: "\n")
+                    #expect(!text.contains("Lens"))
+                    #expect(!model.caption.contains("Lens"))
+                    #expect(model.caption == ShareCaption.make(card.content))
+                    for slug in lens.supported {
+                        #expect(!styled.accessibilityLabel.contains(slug))
+                        #expect(!model.shareMessage.contains(slug))
+                    }
                 }
                 if let previous = contents[subject] {
                     #expect(previous == card.content)
@@ -105,6 +106,7 @@ struct ShareModelTests {
     @Test func pickingAnotherWorkKeepsTheCreditInStep() async throws {
         let model = model(.vote(id: "camara-18732026"))
         await model.load()
+        model.style = .poster
         let other = try #require(model.works.last)
         model.select(other)
         #expect(model.isSelected(other))
@@ -145,10 +147,10 @@ struct ShareModelTests {
         let model = model(.vote(id: "camara-18732026"))
         await model.load()
         #expect(model.rendered == nil)
-        model.render(scale: 1, portraits: nil)
+        model.render(scale: 1)
         let rendered = try #require(model.rendered)
         #expect(!rendered.file.png.isEmpty)
-        #expect(rendered.file.fileName == ShareRenderer.fileName)
+        #expect(rendered.file.fileName == ShareRenderer.fileName(for: try #require(model.content)))
         let other = try #require(
             model.collections.first { $0.id != model.currentCollectionID })
         model.show(other.id)
@@ -157,11 +159,63 @@ struct ShareModelTests {
         #expect(model.selectedCredit?.contains(model.selectedWork?.artist ?? "-") == true)
     }
 
+    @Test func followingCardListsUpToSixAlphabetically() async throws {
+        let names = ["Zeca", "Bia", "Ana", "Hugo", "Davi", "Caio", "Eva", "Gil"]
+        let follows = try await ShareFixtures.follows(
+            names.map { ShareFixtures.person($0.lowercased(), $0) })
+        let model = ShareFixtures.model(.following, follows: follows)
+        await model.load()
+        #expect(model.phase == .loaded)
+        let content = try #require(model.content)
+        guard case .following(let faces) = content.body else {
+            Issue.record("Wrong body")
+            return
+        }
+        #expect(faces.map(\.name) == ["Ana", "Bia", "Caio", "Davi", "Eva", "Gil"])
+        #expect(faces.allSatisfy { !$0.party.isEmpty && !$0.detail.isEmpty })
+        let text = (model.card?.texts ?? []).joined(separator: " ")
+        for name in ["Hugo", "Zeca"] {
+            #expect(!text.contains(name))
+            #expect(!model.caption.contains(name))
+        }
+        #expect(content.stamp.contains("·SEG·LISTA·"))
+    }
+
+    @Test func followingNeedsSomeoneToShow() async throws {
+        let empty = ShareFixtures.model(.following, follows: try await ShareFixtures.follows([]))
+        await empty.load()
+        #expect(empty.phase == .failed(.notFound))
+        let missing = ShareFixtures.model(.following)
+        await missing.load()
+        #expect(missing.phase == .failed(.unavailable))
+    }
+
     @Test func longNamesStillLoad() async {
         let model = model(
             .person(slug: "maria-da-conceicao-albuquerque"), scenario: .longNames)
         await model.load()
         #expect(model.phase == .loaded)
         #expect(model.card?.content.faces.first?.name.count ?? 0 > 30)
+    }
+
+    @Test func theCardShowsTheMedianInsteadOfAVerdict() async throws {
+        let service = ShowcasePublicData(scenario: .normal, now: ShareFixtures.now)
+        let profile = try await service.profile(slug: "tabata-amaral")
+        let classification = try #require(profile.classification)
+        let model = ShareModel(subject: .person(slug: "tabata-amaral"), service: service)
+        await model.load()
+        let content = try #require(model.content)
+        guard case .person(let metrics) = content.body else {
+            Issue.record("expected a person card")
+            return
+        }
+        #expect(metrics.first?.peer == classification.medianText(.presence))
+        let bands: [PeerClassification.Band] = [.better, .worse, .more, .less, .average]
+        for style in ShareStyle.allCases {
+            let texts = try #require(model.card(style: style)).texts + [model.caption]
+            for band in bands {
+                #expect(!texts.contains { $0.contains(band.title) }, "\(style) \(band)")
+            }
+        }
     }
 }

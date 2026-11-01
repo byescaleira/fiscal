@@ -64,4 +64,72 @@ struct DeepLinkTests {
     @Test func ignoresOtherSchemes() throws {
         #expect(!DeepLink.handles(try #require(URL(string: "https://example.com"))))
     }
+
+    @Test(arguments: [
+        (
+            "https://fiscal.byescaleira.com/?person=nikolas-ferreira",
+            DeepLink.route(.person(slug: "nikolas-ferreira"), in: .following),
+            FiscalEvents.DeepLinkKind.person
+        ),
+        (
+            "https://fiscal.byescaleira.com/?vote=camara-2026-1234",
+            DeepLink.route(.vote(id: "camara-2026-1234"), in: .votes), .vote
+        ),
+        (
+            "https://fiscal.byescaleira.com/?expenses=tabata-amaral-2025",
+            DeepLink.route(.expenses(slug: "tabata-amaral", year: 2025), in: .money), .expenses
+        ),
+        (
+            "https://fiscal.byescaleira.com/?compare=tabata-amaral,kim-kataguiri",
+            DeepLink.route(.compare(slugs: ["tabata-amaral", "kim-kataguiri"]), in: .search),
+            .compare
+        ),
+        (
+            "https://fiscal.byescaleira.com/?place=SP",
+            DeepLink.route(.share(.representatives(uf: "sp")), in: .following), .place
+        ),
+        (
+            "https://fiscal.byescaleira.com/?race=br-presidente",
+            DeepLink.route(.race(id: "br-presidente"), in: .search), .race
+        ),
+        (
+            "https://fiscal.byescaleira.com/?highlight=camara-2026-1234",
+            DeepLink.route(.share(.highlight(id: "camara-2026-1234")), in: .today), .highlight
+        ),
+        (
+            "https://fiscal.byescaleira.com?person=nikolas-ferreira",
+            DeepLink.route(.person(slug: "nikolas-ferreira"), in: .following), .person
+        ),
+        ("https://fiscal.byescaleira.com/?locale=pt-BR", DeepLink.section(.today), .unknown),
+        ("https://fiscal.byescaleira.com/?person=", DeepLink.section(.today), .unknown),
+        ("https://fiscal.byescaleira.com/privacy?person=x", DeepLink.section(.today), .unknown),
+        ("https://fiscal.byescaleira.com/link?s=abc&k=def", DeepLink.section(.today), .unknown),
+    ])
+    func siteLinksOpenTheContent(
+        link: String, expected: DeepLink, kind: FiscalEvents.DeepLinkKind
+    ) throws {
+        let url = try #require(URL(string: link))
+        #expect(DeepLink.handles(url))
+        #expect(DeepLink(url: url) == expected)
+        #expect(DeepLink.kind(of: url) == kind)
+    }
+
+    @Test(arguments: [
+        "https://example.com/?person=nikolas-ferreira",
+        "http://fiscal.byescaleira.com/?person=nikolas-ferreira",
+        "https://fiscal.byescaleira.com.example.com/?person=nikolas-ferreira",
+    ])
+    func siteLinksFromAnotherHostFallBack(link: String) throws {
+        let url = try #require(URL(string: link))
+        #expect(!DeepLink.handles(url))
+        #expect(DeepLink(url: url) == .section(.today))
+        #expect(DeepLink.kind(of: url) == .unknown)
+    }
+
+    @Test func siteLinksWithAPathInTheValueOpenToday() throws {
+        for query in ["person=../../x", "vote=a%2Fb", "race=..", "place=a%5Cb"] {
+            let url = try #require(URL(string: "https://fiscal.byescaleira.com/?\(query)"))
+            #expect(DeepLink(url: url) == .section(.today), "\(query)")
+        }
+    }
 }
