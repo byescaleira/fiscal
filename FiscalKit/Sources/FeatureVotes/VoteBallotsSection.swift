@@ -68,22 +68,7 @@ struct VoteBallotsSection: View {
         }
         .railSection()
         Section {
-            if let party = vote.party {
-                Button {
-                    vote.select(party: nil)
-                } label: {
-                    HStack(spacing: .spaceS) {
-                        Text("Showing only")
-                        PartyMark(party)
-                        Spacer(minLength: .spaceS)
-                        Image(systemName: "xmark.circle")
-                            .foregroundStyle(.secondary)
-                    }
-                    .contentShape(.rect)
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(Text("Remove the party filter \(party)"))
-            }
+            BallotPartyFilter()
             let ballots = vote.ballots
             if ballots.isEmpty {
                 Text(verbatim: vote.ballotsEmptyText).foregroundStyle(.secondary)
@@ -133,7 +118,30 @@ private struct BallotRow: View {
     }
 }
 
-private struct BallotMark: View {
+struct BallotPartyFilter: View {
+    @Environment(VoteDetailModel.self) private var vote
+
+    var body: some View {
+        if let party = vote.party {
+            Button {
+                vote.select(party: nil)
+            } label: {
+                HStack(spacing: .spaceS) {
+                    Text("Showing only")
+                    PartyMark(party)
+                    Spacer(minLength: .spaceS)
+                    Image(systemName: "xmark.circle")
+                        .foregroundStyle(.secondary)
+                }
+                .contentShape(.rect)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(Text("Remove the party filter \(party)"))
+        }
+    }
+}
+
+struct BallotMark: View {
     @ScaledMetric(relativeTo: .caption) private var diameter: CGFloat = .badgeS
     let text: String
     let choice: BallotChoice?
@@ -155,7 +163,7 @@ private struct BallotMark: View {
     }
 }
 
-private struct BallotFilterPills: View {
+struct BallotFilterPills: View {
     @Environment(VoteDetailModel.self) private var vote
 
     var body: some View {

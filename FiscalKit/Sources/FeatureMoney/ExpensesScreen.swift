@@ -12,22 +12,21 @@ public struct ExpensesScreen: View {
         PublicDataContent(
             phase: expenses.phase, isEmpty: expenses.isEmpty, retry: { await expenses.load() }
         ) {
-            AdaptiveList {
-                ExpensesHeroSection()
-                ExpensesMonthsSection()
-                ExpensesYearsSection()
-                ExpensesCategoriesSection()
-                ExpensesSpreadSection()
-                let groups = expenses.groups
-                ForEach(groups) { group in
-                    ExpensesMonthSection(group: group, isLast: group.id == groups.last?.id)
+            #if os(macOS)
+                VSplitView {
+                    ExpensesOverview()
+                    ExpensesTable()
                 }
-            }
+            #else
+                ExpensesOverview()
+            #endif
         } empty: {
             ExpensesEmptyState()
         }
         .navigationTitle(Text(verbatim: expenses.title))
-        #if !os(visionOS)
+        #if os(macOS)
+            .navigationSubtitle(expenses.recordsSubtitle)
+        #elseif !os(visionOS)
             .navigationSubtitle(expenses.scopeTitle)
         #endif
         .toolbarTitleDisplayMode(.inline)
@@ -36,6 +35,26 @@ public struct ExpensesScreen: View {
         .sensoryFeedback(.selection, trigger: expenses.year)
         .refreshable { await expenses.load() }
         .task { await expenses.load() }
+    }
+}
+
+private struct ExpensesOverview: View {
+    @Environment(ExpensesModel.self) private var expenses
+
+    var body: some View {
+        AdaptiveList {
+            ExpensesHeroSection()
+            ExpensesMonthsSection()
+            ExpensesYearsSection()
+            ExpensesCategoriesSection()
+            ExpensesSpreadSection()
+            #if !os(macOS)
+                let groups = expenses.groups
+                ForEach(groups) { group in
+                    ExpensesMonthSection(group: group, isLast: group.id == groups.last?.id)
+                }
+            #endif
+        }
     }
 }
 

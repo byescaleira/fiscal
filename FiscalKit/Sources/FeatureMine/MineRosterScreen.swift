@@ -14,33 +14,32 @@ public struct MineRosterScreen: View {
 
     public var body: some View {
         let people = roster.filtered(query: query, party: party)
-        List {
-            Group {
-                Section {
-                    if people.isEmpty {
-                        ContentUnavailableView {
-                            Label(
-                                "No one matches these filters",
-                                systemImage: "line.3.horizontal.decrease")
-                        } actions: {
-                            Button("Clear Filters") {
-                                query = ""
-                                party = nil
-                            }
-                            .font(.buttonLabel)
-                        }
-                    } else {
-                        ForEach(people) { MineRosterRow(card: $0) }
+        Group {
+            #if os(macOS)
+                MineRosterTable(roster: roster, query: query, party: party)
+                    .overlay {
+                        if people.isEmpty { MineRosterNoMatch(query: $query, party: $party) }
                     }
-                } header: {
-                    Text(verbatim: roster.header(shown: people.count))
-                } footer: {
-                    Text("In alphabetical order. Nobody is ranked.")
+            #else
+                List {
+                    Group {
+                        Section {
+                            if people.isEmpty {
+                                MineRosterNoMatch(query: $query, party: $party)
+                            } else {
+                                ForEach(people) { MineRosterRow(card: $0) }
+                            }
+                        } header: {
+                            Text(verbatim: roster.header(shown: people.count))
+                        } footer: {
+                            Text("In alphabetical order. Nobody is ranked.")
+                        }
+                    }
+                    .surfaceRows()
                 }
-            }
-            .surfaceRows()
+                .listSurface()
+            #endif
         }
-        .listSurface()
         .searchable(text: $query, prompt: Text("Name"))
         .navigationTitle(Text(verbatim: roster.title))
         #if !os(visionOS)
@@ -51,6 +50,23 @@ public struct MineRosterScreen: View {
             ToolbarItem(placement: .primaryAction) {
                 MineRosterFilter(roster: roster, party: $party)
             }
+        }
+    }
+}
+
+private struct MineRosterNoMatch: View {
+    @Binding var query: String
+    @Binding var party: String?
+
+    var body: some View {
+        ContentUnavailableView {
+            Label("No one matches these filters", systemImage: "line.3.horizontal.decrease")
+        } actions: {
+            Button("Clear Filters") {
+                query = ""
+                party = nil
+            }
+            .font(.buttonLabel)
         }
     }
 }
