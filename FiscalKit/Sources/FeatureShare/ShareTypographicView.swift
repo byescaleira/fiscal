@@ -123,12 +123,6 @@ public struct ShareStatement: Hashable, Sendable {
     }
 }
 
-extension Array {
-    fileprivate var onlyElement: [Element] {
-        dropFirst().isEmpty ? self : []
-    }
-}
-
 extension ShareCardContent {
     public var stageParties: [String] {
         switch body {
@@ -136,7 +130,7 @@ extension ShareCardContent {
         case .following, .representatives: []
         case .highlight(let highlight): highlight.person.map { [$0.party] } ?? []
         case .victory(let victory): [victory.winner.party]
-        default: Array(faces.prefix(2).map(\.party)).onlyElement
+        default: faces.dropFirst().isEmpty ? faces.map(\.party) : []
         }
     }
 
@@ -159,82 +153,54 @@ struct ShareTypographicView: View {
     var body: some View {
         let format = card.format
         let statement = card.statement
-        ZStack(alignment: .bottom) {
-            Color.sharePaper
-            ShareFolhaBand(
-                content: card.content, showsArtwork: format == .stories, height: format.folhaBand)
-            ShareFolhaText(card: card, statement: statement, code: code)
-                .padding(format.folhaInsets)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        }
-        .foregroundStyle(Color.primary)
-        .environment(\.colorScheme, .light)
-    }
-}
-
-private struct ShareFolhaBand: View {
-    @Environment(\.shareShowsArt) private var showsArt
-    let content: ShareCardContent
-    let showsArtwork: Bool
-    let height: CGFloat
-
-    @ViewBuilder private var field: some View {
-        if showsArt, let party = content.stageParties.onlyElement.first {
-            PartyBackdrop(party: party)
-        } else {
-            content.accent
-        }
-    }
-
-    var body: some View {
-        field
-            .overlay {
-                if showsArtwork {
-                    ShareZoneArt(content: content)
+        let facts = statement.rows.prefix(
+            statement.figure == nil ? format.folhaRowsWithoutFigure : format.folhaRows
+        )
+        .map { SharePoster.Fact(value: $0.value, label: $0.label) }
+        VStack(spacing: .zero) {
+            ShareHeaderBlock(
+                card: card, color: card.content.leadColor,
+                title: statement.figure == nil && statement.people.isEmpty ? nil : statement.phrase,
+                person: statement.person
+            ) {
+                if let person = statement.person {
+                    PersonPortrait(
+                        slug: person.slug, name: person.name, party: person.party,
+                        size: .shareHeaderPortrait)
                 }
             }
-            .frame(height: height)
-            .clipped()
-            .accessibilityHidden(true)
+            ShareFolhaHero(card: card, statement: statement)
+            ShareTileRows(
+                facts: facts, color: card.content.leadColor, side: format.textInsets.leading)
+            ShareFooterBlock(card: card, code: code)
+            if format == .stories {
+                ShareZoneArt(content: card.content)
+                    .frame(height: .shareSafeBottom)
+                    .accessibilityHidden(true)
+            }
+        }
+        .background(Color.sharePaper)
     }
 }
 
-private struct ShareFolhaText: View {
+private struct ShareFolhaHero: View {
     let card: ShareCard
     let statement: ShareStatement
-    let code: CGImage?
 
     var body: some View {
         let format = card.format
-        VStack(alignment: .leading, spacing: .spaceS) {
-            Text(verbatim: statement.eyebrow)
-                .font(.posterEyebrow)
-                .tracking(.posterTracking)
-                .foregroundStyle(Color.posterSecondary)
-                .lineLimit(1)
-                .minimumScaleFactor(.shareTextShrink)
-            if let person = statement.person {
-                ShareFaceLine(face: person, showsPortrait: format != .stories)
-            }
-            if let phrase = statement.phrase {
-                let lines = statement.figure == nil ? 5 : 3
-                Text(verbatim: phrase)
-                    .font(
-                        .posterTitle(
-                            statement.figure == nil
-                                ? format.phraseSize(for: phrase, lines: lines) : .shareFolhaHook)
-                    )
-                    .lineLimit(lines)
-                    .minimumScaleFactor(.posterShrink)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
+        let side = format.textInsets.leading
+        VStack(alignment: .leading, spacing: .space2XS) {
             Spacer(minLength: .zero)
             if let figure = statement.figure {
                 ShareFigure(
                     value: figure,
-                    size: format.figureSize(format.typeFigure, for: figure, in: format.safeWidth)
-                )
-                .layoutPriority(-1)
+                    size: format.figureSize(.shareFolhaFigure, for: figure, in: format.safeWidth))
+            } else if statement.people.isEmpty, let phrase = statement.phrase {
+                Text(verbatim: phrase)
+                    .font(.posterTitle(format.phraseSize(for: phrase, lines: 5)))
+                    .lineLimit(5)
+                    .minimumScaleFactor(.posterShrink)
             }
             if let caption = statement.caption, !caption.isEmpty {
                 Text(verbatim: caption)
@@ -244,33 +210,26 @@ private struct ShareFolhaText: View {
                     .minimumScaleFactor(.shareTextShrink)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            ShareFolhaRule()
-            let limit = statement.figure == nil ? format.folhaRowsWithoutFigure : format.folhaRows
-            VStack(spacing: .space2XS) {
-                ForEach(statement.rows.prefix(limit)) { row in
-                    ShareFolhaRow(row: row)
-                }
-                ForEach(statement.people) { face in
-                    ShareFolhaPerson(face: face)
-                }
+            ForEach(statement.people) { face in
+                ShareFolhaPerson(face: face)
             }
             Spacer(minLength: .zero)
-            ShareFooter(card: card, code: code)
-                .fixedSize(horizontal: false, vertical: true)
         }
+        .foregroundStyle(Color.primary)
+        .padding(.horizontal, side)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        .background(Color.sharePaper)
+        .environment(\.colorScheme, .light)
     }
 }
 
 struct ShareFaceLine: View {
     let face: ShareFace
-    var showsPortrait = true
 
     var body: some View {
         HStack(spacing: .spaceS) {
-            if showsPortrait {
-                PersonPortrait(
-                    slug: face.slug, name: face.name, party: face.party, size: .shareFacePortrait)
-            }
+            PersonPortrait(
+                slug: face.slug, name: face.name, party: face.party, size: .shareFacePortrait)
             VStack(alignment: .leading, spacing: .space2XS) {
                 Text(verbatim: face.name)
                     .font(.posterName)
@@ -278,39 +237,6 @@ struct ShareFaceLine: View {
                     .minimumScaleFactor(.shareTextShrink)
                 PartyMark(face.party)
             }
-        }
-        .fixedSize(horizontal: false, vertical: true)
-    }
-}
-
-private struct ShareFolhaRule: View {
-    @Environment(\.shareProgress) private var progress
-
-    var body: some View {
-        GeometryReader { proxy in
-            Rectangle()
-                .fill(Color.primary)
-                .frame(width: proxy.size.width * ShareMotion.eased(progress))
-        }
-        .frame(height: .shareFolhaRule)
-        .accessibilityHidden(true)
-    }
-}
-
-private struct ShareFolhaRow: View {
-    let row: ShareStatement.Row
-
-    var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
-            Text(verbatim: row.label)
-                .font(.posterLabel)
-                .lineLimit(1)
-                .minimumScaleFactor(.shareTextShrink)
-            Spacer(minLength: .zero)
-            Text(verbatim: row.value)
-                .font(.posterHeadlineCompact)
-                .lineLimit(1)
-                .fixedSize()
         }
         .fixedSize(horizontal: false, vertical: true)
     }

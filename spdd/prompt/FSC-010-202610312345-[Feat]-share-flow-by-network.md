@@ -22,9 +22,9 @@ Definição de pronto:
   - Prova: capturas em `docs/evidence/FSC-010/`.
 - **Given** "O que entra" num perfil de deputada com 4 métricas **When** a pessoa desliga "Presença" e o QR **Then** a prévia e o arquivo saem sem a presença e sem o QR. A fonte, a data, "Fiscal" e o crédito da obra continuam e não podem ser desligados (`ShareSelectionTests.hidesOnlyOptionalFacts`).
 - **Given** os estilos **When** a pessoa escolhe entre eles **Then** a prévia troca para:
-  - **Pôster:** a arte inteira, sem véu, e o texto num painel flutuante, para a obra aparecer em volta, com o crédito;
-  - **Tipográfico (Folha de apuração):** papel branco, a frase-gancho factual no topo, o número ou a frase principal em Bricolage monumental, as linhas de fatos, a fonte e a marca dentro da zona segura, e uma faixa inferior com a cor do tipo de assunto;
-  - **Dados:** fundo preto. Em Comparação e na Disputa de dois nomes, o Duelo: dois lados de mesmo tamanho e peso, com o critério escrito. Nos outros assuntos, o placar ou as barras no centro, com o fato.
+  - **Pôster:** a arte inteira, sem nada por cima, e o texto num bloco sólido de ponta a ponta, com o crédito, como um cartão colecionável;
+  - **Tipográfico (Folha de apuração):** um mosaico de blocos sólidos: quem é o assunto no topo, o número ou a frase principal em Bricolage grande sobre papel branco, um bloco por fato, a fonte e a marca dentro da zona segura, e as faixas de identidade embaixo;
+  - **Dados:** um mosaico em que os blocos são os próprios dados, com o número principal no maior. Em Comparação e na Disputa de dois nomes, o Duelo: duas colunas de mesmo tamanho e peso, com o critério escrito.
 
   Os 8 assuntos desenham nos três estilos e nos três formatos sem cortar texto (`ShareStyleTests.everySubjectFitsEveryStyleAndFormat`).
 - **Given** a pessoa abre Compartilhar **When** a tela aparece **Then** o estilo já escolhido é o Tipográfico, ou Dados em Comparação e Disputa, ou o Pôster nos assuntos que têm pôster próprio (vitória e investigação). O Pôster continua como opção, e a troca não perde a seleção (`ShareFlowModelTests.defaultStyleFollowsTheSubject`).
@@ -43,11 +43,11 @@ Definição de pronto:
   | Outros | 4:5 | imagem | sim |
 - **Given** um cartão de um assunto com pessoa (usuário em 01/11/2026: "falta um refino no design, mas a cara do byescaleira, do projeto") **When** eles aparecem **Then** trazem a identidade do Fiscal, igual à do herói do perfil: o retrato desenhado, a marca do partido e o gradiente do partido. Na Comparação, cada lado tem a cor do próprio partido. Assunto sem pessoa fica no fundo escuro do placar e, na Folha, com a cor do tipo de assunto. A cor do partido é a mesma para todo mundo e nunca vem da Lente (`ShareFlowModelTests.theCardTakesThePartiesOfTheSubject`).
 - **Given** um perfil com classificação entre colegas **When** o cartão ou a legenda são montados **Then** nenhum texto diz "Melhor que a média", "Pior que a média", "Mais ativo" ou "Menos ativo". No lugar vai o dado, como "Presença · Mediana da Câmara: 90%" (`ShareModelTests.theCardShowsTheMedianInsteadOfAVerdict`). A tela do perfil continua como está.
-- **Given** um formato 9:16 **When** o cartaz é desenhado **Then** nenhum texto, número ou QR fica nos 14% de cima (90 de 640 pt), nos 35% de baixo (224 pt) nem nos 6% de cada lado (22 pt). Fundo e arte podem passar, e contam como arte o retrato grande e os blocos proporcionais, que não trazem texto nem dado que não esteja também dentro da zona. Um número cortado nunca entra no cartão, porque pode ser lido como outro valor (`ShareSafeAreaTests.ninebysixteenKeepsTheSafeZone`).
+- **Given** um formato 9:16 **When** o cartaz é desenhado **Then** nenhum texto, número ou QR fica nos 14% de cima (90 de 640 pt), nos 35% de baixo (224 pt) nem nos 6% de cada lado (22 pt). Fundo e arte podem passar, e contam como arte as faixas de partido e os blocos proporcionais, que não trazem texto nem dado que não esteja também dentro da zona. Um número cortado nunca entra no cartão, porque pode ser lido como outro valor (`ShareSafeAreaTests.ninebysixteenKeepsTheSafeZone`).
 - **Given** um destino de "vídeo ou imagem" **When** a pessoa vê "Onde postar" **Then** um interruptor "Vídeo animado", ligado por padrão, escolhe a mídia. Reels é sempre vídeo, e os destinos só de imagem não mostram o interruptor (`ShareFlowModelTests.theImageChoiceSkipsTheVideo`).
 - **Given** um destino de vídeo e os estilos Tipográfico ou Dados **When** a pessoa toca em postar **Then**:
   - o app gera um MP4 H.264 de 4 s, 30 fps, 1080×1920, com menos de 50 MB;
-  - todo texto e todo número aparecem certos desde o primeiro quadro, porque qualquer quadro pode virar capa ou ser pausado (`ShareStyleTests.everyFrameShowsTheRealNumbers`). O que se move são as barras e os blocos enchendo, o fio da Folha e o retrato;
+  - todo texto e todo número aparecem certos desde o primeiro quadro, porque qualquer quadro pode virar capa ou ser pausado (`ShareStyleTests.everyFrameShowsTheRealNumbers`). O que se move são as barras e os blocos proporcionais enchendo;
   - aparece uma barra de progresso ("Preparando o vídeo"), e a geração pode ser cancelada.
 
   Prova: `ShareVideoTests.writesAFourSecondLoop`. No estilo Pôster, o que se move é uma aproximação lenta da arte.
@@ -201,11 +201,10 @@ classDiagram
      - o Dados de uma pessoa é um placar sobre o gradiente do partido, e o Duelo coloca os dois retratos sobre as duas cores;
      - a frase "A e B" sai do Duelo de Comparação, porque os nomes já estão nos lados.
    - **Distribuição (usuário em 01/11/2026: "ficam uns espaços vazios feios"):**
-     - a área livre da zona segura vira imagem: retrato grande de quem é o assunto, blocos proporcionais na votação e na disputa, e cor do assunto quando não há nenhum dos dois;
-     - Folha: os blocos de texto se distribuem por igual na altura. Alternativa descartada: o número-herói gigante e cortado na faixa ("pode passar alguma informação errada");
-     - Dados: os números viram blocos que preenchem a área, com um número principal em destaque ("tem que chamar mais atenção para os dados");
-     - Pôster: a arte perde o véu, e o texto vai para um painel flutuante ("o poster tem que embelezar mais");
-     - nos Stories, o retrato pequeno sai do cabeçalho, porque o grande já está no cartão.
+     - o cartão inteiro é um mosaico de blocos sólidos, de ponta a ponta, com um dado por bloco, a partir de referências vistas em imagem: o Strava Year in Sport (Manual) e os cartões do Spotify Wrapped 2025;
+     - a área livre da zona segura leva as faixas do partido (a marca da casa), ou os blocos proporcionais da votação e da disputa, ou a cor do assunto;
+     - Pôster: a arte fica inteira e sem véu, e o texto vai para um bloco sólido, como o cartão colecionável do Wrapped;
+     - alternativas descartadas ("parece que piorou"): o número-herói gigante e cortado na faixa ("pode passar alguma informação errada"); o retrato gigante na faixa; os blocos translúcidos em Dados; o painel escuro flutuante no Pôster.
    - **Classificação no cartão:** a faixa "Melhor" ou "Pior que a média" fica só no perfil, onde vem com o critério. O cartão sai do contexto do app, então leva a mediana (`medianText`).
    - **Mídia:** "Vídeo animado" é uma ferramenta de ligar e desligar, separada dos lugares, porque não troca o destino.
    - **Nome do arquivo:** "Fiscal - <assunto>", com o nome da pessoa, o número da votação ou o título, sem barras.

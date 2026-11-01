@@ -134,8 +134,7 @@ struct ShareStyleTests {
                 let card = try #require(model.card(style: style))
                 let first = try #require(Pixels(card: card, code: model.code, progress: 0))
                 let last = try #require(Pixels(card: card, code: model.code, progress: 1))
-                let allowed = style == .typographic ? Int(CGFloat.shareFolhaRule) + 2 : 0
-                #expect(first.differingRows(from: last) <= allowed, "\(subject) \(style)")
+                #expect(first.differingRows(from: last) == 0, "\(subject) \(style)")
             }
         }
     }

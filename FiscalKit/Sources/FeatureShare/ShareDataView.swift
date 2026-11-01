@@ -149,116 +149,110 @@ struct ShareDataView: View {
         }
     }
 
-    @ViewBuilder private var standard: some View {
+    private var standard: some View {
         let format = card.format
         let board = card.board
-        VStack(alignment: .leading, spacing: .spaceXS) {
-            Text(verbatim: board.eyebrow)
-                .font(.posterEyebrow)
-                .tracking(.posterTracking)
-                .foregroundStyle(Color.posterSecondary)
-                .lineLimit(1)
-                .minimumScaleFactor(.shareTextShrink)
-                .fixedSize(horizontal: false, vertical: true)
-            if let person = board.person {
-                ShareFaceLine(face: person, showsPortrait: format != .stories)
-            }
-            if board.lead == nil, let title = board.title {
-                ShareBoardTitle(title: title, format: format)
-            }
-            if !board.layout.fillsTheCard {
-                Spacer(minLength: .zero)
-            }
-            if let lead = board.lead {
-                ShareFigure(
-                    value: lead,
-                    size: format.figureSize(
-                        format == .feed ? format.scoreSize : .shareDataLead, for: lead,
-                        in: format.safeWidth)
-                )
-                .fixedSize(horizontal: false, vertical: true)
-                if let title = board.title {
-                    ShareBoardTitle(title: title, format: format)
+        let color = card.content.leadColor
+        return VStack(spacing: .zero) {
+            ShareHeaderBlock(
+                card: card, color: .shareDataField,
+                title: board.lead == nil ? board.title : nil, person: board.person
+            ) {
+                if let person = board.person {
+                    PersonPortrait(
+                        slug: person.slug, name: person.name, party: person.party,
+                        size: .shareHeaderPortrait)
                 }
             }
-            ShareBoardLayout(layout: board.layout, format: format)
-            if let note = board.note, !note.isEmpty, format == .feed || board.lead == nil {
-                Text(verbatim: note)
-                    .font(.posterLabel)
-                    .foregroundStyle(Color.posterSecondary)
-                    .lineLimit(2)
-                    .minimumScaleFactor(.shareTextShrink)
+            if let lead = board.lead {
+                ShareTile(
+                    fact: SharePoster.Fact(value: lead, label: board.title ?? ""), tone: .lead,
+                    color: color, leading: format.textInsets.leading,
+                    trailing: format.textInsets.leading,
+                    size: format.figureSize(
+                        .shareFolhaHook * 2, for: lead, in: format.safeWidth))
             }
-            if !board.layout.fillsTheCard {
-                Spacer(minLength: .zero)
-            }
-            ShareFooter(card: card, code: code)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .padding(format.textInsets)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background {
-            ShareStageField(parties: card.content.stageParties)
-        }
-        .overlay(alignment: .bottom) {
+            ShareBoardMosaic(layout: board.layout, format: format, color: color)
+            ShareFooterBlock(card: card, code: code)
             if format == .stories {
-                ShareDataZone(content: card.content)
-                    .frame(height: .shareFolhaBand)
-                    .environment(\.colorScheme, .light)
+                ShareZoneArt(content: card.content)
+                    .frame(height: .shareSafeBottom)
                     .accessibilityHidden(true)
             }
         }
+        .background(Color.shareDataField)
     }
 }
 
-private struct ShareBoardTitle: View {
-    let title: String
-    let format: ShareFormat
-
-    var body: some View {
-        Text(verbatim: title)
-            .font(format == .feed ? .posterHeadline : .posterHeadlineCompact)
-            .lineLimit(3)
-            .minimumScaleFactor(.shareTextShrink)
-            .fixedSize(horizontal: false, vertical: true)
-    }
-}
-
-private struct ShareBoardLayout: View {
+private struct ShareBoardMosaic: View {
     let layout: ShareBoard.Layout
     let format: ShareFormat
+    let color: Color
 
     var body: some View {
-        let compact = format.textFormat
+        let side = format.textInsets.leading
         switch layout {
         case .tally(let tally):
-            ShareTallyHero(
-                tally: tally, format: compact, size: compact.scoreSize, animates: true)
+            ShareTallyMosaic(tally: tally, format: format)
         case .bars(let bars):
-            VStack(alignment: .leading, spacing: .spaceXS) {
+            VStack(spacing: .spaceHairline) {
                 ForEach(bars.prefix(format == .feed ? 4 : 3)) { bar in
-                    ShareBarRow(bar: bar, format: format)
+                    ShareBarRow(bar: bar, color: color, side: side)
                 }
             }
         case .stats(let lead, let rest):
-            VStack(spacing: .spaceXS) {
-                ShareStatTile(fact: lead, size: .shareStatLead, width: format.safeWidth)
-                if !rest.isEmpty {
-                    HStack(spacing: .spaceXS) {
-                        ForEach(rest.prefix(3)) { fact in
-                            ShareStatTile(
-                                fact: fact, size: .shareStatSmall,
-                                width: format.safeWidth / CGFloat(min(rest.count, 3)))
-                        }
-                    }
-                }
+            VStack(spacing: .zero) {
+                ShareTile(
+                    fact: lead, tone: .lead, color: color, leading: side, trailing: side,
+                    size: format.figureSize(.shareStatLead, for: lead.value, in: format.safeWidth))
+                ShareTileRows(facts: Array(rest.prefix(3)), color: color, side: side)
             }
         case .cells(let cells):
-            ShareBoardCells(cells: cells, format: format)
+            ShareTileRows(facts: cells, color: color, side: side, fills: true)
         case .versus(let faces, let rows):
-            ShareVersusHero(faces: faces, rows: rows, format: compact)
+            ShareVersusHero(faces: faces, rows: rows, format: format.textFormat)
+                .padding(.horizontal, side)
+                .frame(maxHeight: .infinity)
         case .people(let faces):
-            SharePeopleList(faces: faces, format: compact)
+            SharePeopleList(faces: faces, format: format.textFormat)
+                .padding(.horizontal, side)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        }
+    }
+}
+
+private struct ShareTallyMosaic: View {
+    let tally: ShareTally
+    let format: ShareFormat
+
+    var body: some View {
+        let side = format.textInsets.leading
+        VStack(spacing: .zero) {
+            HStack(spacing: .zero) {
+                ShareTile(
+                    fact: SharePoster.Fact(value: tally.yes, label: String(appLocalized: "Yes")),
+                    tone: .lead, color: .voteYesBoard, leading: side, trailing: .spaceS,
+                    size: .shareStatLead)
+                ShareTile(
+                    fact: SharePoster.Fact(value: tally.no, label: String(appLocalized: "No")),
+                    tone: .lead, color: .voteNoBoard, leading: .spaceS, trailing: side,
+                    size: .shareStatLead)
+            }
+            HStack(alignment: .firstTextBaseline, spacing: .spaceM) {
+                if let result = tally.result {
+                    Text(verbatim: result)
+                        .font(.posterHeadline)
+                }
+                Spacer(minLength: .zero)
+                Text(verbatim: "\(tally.others) \(String(appLocalized: "Others"))")
+                    .font(.posterLabel)
+                    .foregroundStyle(Color.posterSecondary)
+            }
+            .lineLimit(1)
+            .minimumScaleFactor(.shareTextShrink)
+            .padding(.horizontal, side)
+            .padding(.vertical, .spaceS)
+            .frame(maxWidth: .infinity)
         }
     }
 }
@@ -266,86 +260,26 @@ private struct ShareBoardLayout: View {
 private struct ShareBarRow: View {
     @Environment(\.shareProgress) private var progress
     let bar: ShareBoard.Bar
-    let format: ShareFormat
+    let color: Color
+    let side: CGFloat
 
     var body: some View {
-        VStack(alignment: .leading, spacing: .space2XS) {
-            HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
-                Text(verbatim: bar.label)
-                    .font(.posterLabel)
-                    .lineLimit(1)
-                    .minimumScaleFactor(.shareTextShrink)
-                    .fixedSize(horizontal: false, vertical: true)
-                Spacer(minLength: .zero)
-                ShareFigure(value: bar.value, size: .shareDataBarFigure)
-                    .fixedSize()
-            }
-            GeometryReader { proxy in
-                Capsule()
-                    .fill(.white)
-                    .frame(
-                        width: proxy.size.width * ShareMotion.fill(bar.share, progress: progress)
-                    )
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(.white.opacity(.opacityPosterTrack), in: .capsule)
-            }
-            .frame(height: .shareDataBar)
-            .accessibilityHidden(true)
-        }
-    }
-}
-
-private struct ShareDataZone: View {
-    @Environment(\.shareShowsArt) private var showsArt
-    let content: ShareCardContent
-
-    var body: some View {
-        if showsArt, content.zoneContent == .none {
-            content.accent
-        } else {
-            ShareZoneArt(content: content)
-        }
-    }
-}
-
-private struct ShareStatTile: View {
-    let fact: SharePoster.Fact
-    let size: CGFloat
-    let width: CGFloat
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: .space2XS) {
-            Spacer(minLength: .zero)
-            ShareFigure(
-                value: fact.value, size: min(size, width / CGFloat(max(fact.value.count, 1)))
-            )
-            .fixedSize(horizontal: false, vertical: true)
-            Text(verbatim: fact.label)
+        HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
+            Text(verbatim: bar.label)
                 .font(.posterLabel)
-                .foregroundStyle(Color.posterSecondary)
-                .lineLimit(2)
+                .lineLimit(1)
                 .minimumScaleFactor(.shareTextShrink)
-                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: .zero)
+            ShareFigure(value: bar.value, size: .shareDataBarFigure)
+                .fixedSize()
         }
-        .padding(.spaceS)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-        .background(.white.opacity(.opacityShareTile), in: .rect(cornerRadius: .radiusM))
-    }
-}
-
-private struct ShareBoardCells: View {
-    let cells: [SharePoster.Fact]
-    let format: ShareFormat
-
-    var body: some View {
-        VStack(spacing: .spaceXS) {
-            ForEach(Array(stride(from: 0, to: cells.count, by: 2)), id: \.self) { start in
-                HStack(spacing: .spaceXS) {
-                    ForEach(cells[start..<min(start + 2, cells.count)]) { cell in
-                        ShareStatTile(
-                            fact: cell, size: format.dataCell, width: format.safeWidth / 2)
-                    }
-                }
+        .padding(.horizontal, side)
+        .frame(maxWidth: .infinity, minHeight: .shareBarRowHeight)
+        .background(alignment: .leading) {
+            GeometryReader { proxy in
+                ShareBlockField(color: color)
+                    .frame(
+                        width: proxy.size.width * ShareMotion.fill(bar.share, progress: progress))
             }
         }
     }

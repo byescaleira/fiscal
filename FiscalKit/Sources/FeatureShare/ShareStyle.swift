@@ -56,17 +56,9 @@ extension ShareFormat {
 
     public var textFormat: ShareFormat { self == .stories ? .message : self }
 
-    public var folhaBand: CGFloat { self == .stories ? .shareFolhaBand : .shareFolhaStrip }
-
     public var folhaRows: Int { 3 }
 
     public var folhaRowsWithoutFigure: Int { self == .message ? 4 : 6 }
-
-    public var folhaInsets: EdgeInsets {
-        var insets = textInsets
-        insets.bottom = Swift.max(insets.bottom, folhaBand + .spaceS)
-        return insets
-    }
 
     public func safeExtra(beyond margin: CGFloat) -> EdgeInsets {
         let insets = safeInsets

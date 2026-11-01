@@ -69,43 +69,27 @@ struct ShareDuelView: View {
 
     var body: some View {
         let format = card.format
-        ZStack(alignment: .bottom) {
-            ShareStageField(parties: [duel.left.detail, duel.right.detail])
-            if format == .stories {
-                ShareZoneArt(content: card.content)
-                    .frame(height: .shareFolhaBand)
-                    .accessibilityHidden(true)
+        let insets = format.textInsets
+        VStack(spacing: .zero) {
+            HStack(spacing: .zero) {
+                ShareDuelSide(
+                    side: duel.left, format: format, longest: duel.longestValue,
+                    color: card.content.blockColor(party: duel.left.detail),
+                    leading: insets.leading, trailing: .spaceS)
+                ShareDuelSide(
+                    side: duel.right, format: format, longest: duel.longestValue,
+                    color: card.content.blockColor(party: duel.right.detail),
+                    leading: .spaceS, trailing: insets.leading)
             }
-            VStack(spacing: .spaceXS) {
-                Text(verbatim: duel.eyebrow)
-                    .font(.posterEyebrow)
-                    .tracking(.posterTracking)
-                    .foregroundStyle(Color.posterSecondary)
-                    .lineLimit(1)
-                    .minimumScaleFactor(.shareTextShrink)
-                    .fixedSize(horizontal: false, vertical: true)
-                if let hook = duel.hook {
-                    Text(verbatim: hook)
-                        .font(.posterTitle(.shareFolhaHook))
-                        .multilineTextAlignment(.center)
-                        .lineLimit(2)
-                        .minimumScaleFactor(.posterShrink)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                Spacer(minLength: .zero)
-                ShareDuelSides(duel: duel, format: format)
-                    .fixedSize(horizontal: false, vertical: true)
+            VStack(spacing: .space2XS) {
                 if let criterion = duel.criterion, !criterion.isEmpty {
                     Text(verbatim: criterion)
                         .font(.posterHeadlineCompact)
                         .lineLimit(1)
                         .minimumScaleFactor(.shareTextShrink)
-                        .fixedSize(horizontal: false, vertical: true)
                 }
-                VStack(spacing: .space2XS) {
-                    ForEach(duel.rows.prefix(format.folhaRows)) { row in
-                        ShareDuelRow(row: row)
-                    }
+                ForEach(duel.rows.prefix(format.folhaRows)) { row in
+                    ShareDuelRow(row: row)
                 }
                 if duel.shares.count == 2 {
                     ShareTallyBar(
@@ -116,55 +100,60 @@ struct ShareDuelView: View {
                                 color: .white.opacity(.opacityPosterSecondary)),
                         ], animates: true)
                 }
-                Spacer(minLength: .zero)
-                ShareFooter(card: card, code: code)
-                    .fixedSize(horizontal: false, vertical: true)
             }
-            .padding(format.textInsets)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(.horizontal, insets.leading)
+            .padding(.vertical, .spaceS)
+            .frame(maxWidth: .infinity)
+            .background { ShareBlockField(color: .shareDataField) }
+            ShareFooterBlock(card: card, code: code)
+            if format == .stories {
+                ShareZoneArt(content: card.content)
+                    .frame(height: .shareSafeBottom)
+                    .accessibilityHidden(true)
+            }
         }
+        .background(Color.shareDataField)
     }
 }
 
-private struct ShareDuelSides: View {
-    let duel: ShareDuel
-    let format: ShareFormat
-
-    var body: some View {
-        let longest = max(duel.left.value.count, duel.right.value.count)
-        let value = String(repeating: "0", count: longest)
-        let size = format.figureSize(
-            .shareDuelFigure, for: value, in: (format.safeWidth - .spaceL * 2) / 2)
-        HStack(alignment: .top, spacing: .zero) {
-            ShareDuelSide(side: duel.left, size: size, showsPortrait: format != .stories)
-                .padding(.trailing, .spaceS)
-            ShareDuelSide(side: duel.right, size: size, showsPortrait: format != .stories)
-                .padding(.leading, .spaceS)
-        }
-    }
+extension ShareDuel {
+    var longestValue: Int { max(left.value.count, right.value.count) }
 }
 
 private struct ShareDuelSide: View {
     let side: ShareDuel.Side
-    let size: CGFloat
-    let showsPortrait: Bool
+    let format: ShareFormat
+    let longest: Int
+    let color: Color
+    let leading: CGFloat
+    let trailing: CGFloat
 
     var body: some View {
-        VStack(spacing: .space2XS) {
-            if showsPortrait, let slug = side.slug {
+        let size = format.figureSize(
+            .shareDuelFigure, for: String(repeating: "0", count: longest),
+            in: (format.safeWidth - .spaceL * 2) / 2)
+        VStack(alignment: .leading, spacing: .space2XS) {
+            if let slug = side.slug {
                 PersonPortrait(
                     slug: slug, name: side.name, party: side.detail, size: .shareDuelPortrait)
             }
+            Spacer(minLength: .zero)
             Text(verbatim: side.name)
                 .font(.posterName)
-                .multilineTextAlignment(.center)
                 .lineLimit(2)
                 .minimumScaleFactor(.shareTextShrink)
+                .fixedSize(horizontal: false, vertical: true)
             PartyMark(side.detail)
             ShareFigure(value: side.value, size: size)
                 .fixedSize(horizontal: false, vertical: true)
         }
-        .frame(maxWidth: .infinity)
+        .padding(.top, format.textInsets.top)
+        .padding(.leading, leading)
+        .padding(.trailing, trailing)
+        .padding(.bottom, .spaceS)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        .background { ShareBlockField(color: color) }
     }
 }
 

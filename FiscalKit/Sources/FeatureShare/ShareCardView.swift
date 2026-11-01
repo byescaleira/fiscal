@@ -39,37 +39,16 @@ public struct ShareCardView: View {
     }
 
     private var standard: some View {
-        let size = card.format.size
-        let format = card.format.textFormat
         let field = Color.posterField(card.artwork?.shade)
-        return ZStack(alignment: .top) {
-            LinearGradient(
-                colors: [field.mix(with: .white, by: .opacityPosterGlow), field],
-                startPoint: .top, endPoint: .bottom)
-            if let artwork = card.artwork, artwork.isBackdrop {
-                ShareBackdrop(artwork: artwork, size: size)
+        let insets = card.format.safeInsets
+        return VStack(spacing: .zero) {
+            if card.format == .stories {
+                ShareContent(card: card, code: code, field: field, top: insets.top)
+                ShareArtBlock(artwork: card.artwork, field: field)
+            } else {
+                ShareArtBlock(artwork: card.artwork, field: field)
+                ShareContent(card: card, code: code, field: field, top: .spaceM)
             }
-            VStack(alignment: .leading, spacing: .zero) {
-                ShareArtHeader(artwork: card.artwork, format: format, field: field)
-                    .layoutPriority(1)
-                if card.artwork?.isBackdrop == true {
-                    Spacer(minLength: .spaceM)
-                    ShareContent(card: card, code: code, field: field)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .layoutPriority(2)
-                } else {
-                    ShareLead(poster: card.poster, format: format)
-                        .padding([.top, .horizontal], format.margin)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .layoutPriority(2)
-                    Spacer(minLength: .spaceM)
-                    ShareFooter(card: card, code: code)
-                        .padding([.bottom, .horizontal], format.margin)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .layoutPriority(2)
-                }
-            }
-            .padding(card.format.safeExtra(beyond: format.margin))
         }
     }
 }
@@ -83,64 +62,25 @@ extension Color {
     static let posterSecondary = Color.primary.opacity(.opacityPosterSecondary)
 }
 
-private struct ShareBackdrop: View {
+private struct ShareArtBlock: View {
     @Environment(\.shareProgress) private var progress
-    let artwork: ShareArtwork
-    let size: CGSize
-
-    var body: some View {
-        artwork.work.image
-            .resizable()
-            .scaledToFill()
-            .frame(width: size.width, height: size.height)
-            .scaleEffect(1 + (1 - ShareMotion.eased(progress)) * .shareArtApproach)
-            .clipped()
-            .accessibilityHidden(true)
-    }
-}
-
-private struct ShareArtHeader: View {
     let artwork: ShareArtwork?
-    let format: ShareFormat
     let field: Color
 
     var body: some View {
-        if let artwork {
-            if artwork.isBackdrop {
-                ShareCredit(text: artwork.credit, lines: 3)
-                    .padding(.horizontal, .spaceS)
-                    .padding(.vertical, .space2XS)
-                    .background(
-                        field.opacity(.opacityPosterLabel), in: .rect(cornerRadius: .radiusS)
-                    )
-                    .padding(format.margin)
-            } else if format.plateSpansWidth {
-                VStack(alignment: .leading, spacing: .spaceS) {
-                    SharePlate(artwork: artwork)
-                    ShareCredit(text: artwork.credit, lines: 3)
-                }
-                .padding([.top, .horizontal], format.margin)
+        GeometryReader { proxy in
+            if let artwork {
+                artwork.work.image
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: proxy.size.width, height: proxy.size.height)
+                    .scaleEffect(1 + (1 - ShareMotion.eased(progress)) * .shareArtApproach)
+                    .clipped()
             } else {
-                HStack(alignment: .top, spacing: .spaceM) {
-                    ShareCredit(text: artwork.credit, lines: 7)
-                        .frame(maxWidth: .infinity, alignment: .topLeading)
-                    SharePlate(artwork: artwork)
-                        .frame(width: format.plateWidth)
-                }
-                .padding([.top, .horizontal], format.margin)
+                field
             }
         }
-    }
-}
-
-private struct SharePlate: View {
-    let artwork: ShareArtwork
-
-    var body: some View {
-        artwork.work.image
-            .resizable()
-            .aspectRatio(contentMode: .fit)
-            .accessibilityHidden(true)
+        .accessibilityHidden(true)
     }
 }
 
@@ -162,19 +102,23 @@ private struct ShareContent: View {
     let card: ShareCard
     let code: CGImage?
     let field: Color
+    let top: CGFloat
 
     var body: some View {
         let format = card.format.textFormat
-        VStack(alignment: .leading, spacing: .spaceM) {
+        VStack(alignment: .leading, spacing: .spaceS) {
             ShareLead(poster: card.poster, format: format)
             ShareFooter(card: card, code: code)
+            if let artwork = card.artwork {
+                ShareCredit(text: artwork.credit, lines: 2)
+            }
         }
-        .padding(format.margin - .spaceS)
+        .fixedSize(horizontal: false, vertical: true)
+        .padding(.top, top)
+        .padding(.bottom, .spaceM)
+        .padding(.horizontal, format.margin)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            field.opacity(.opacityPosterPanel), in: .rect(cornerRadius: .radiusL)
-        )
-        .padding(.spaceS)
+        .background(field)
     }
 }
 

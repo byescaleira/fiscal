@@ -55,6 +55,16 @@ Insumo da operação 8.2, depois de o usuário dizer que a primeira versão "ain
 
 Do Spotify e do Strava não vi capturas atuais: as buscas não trouxeram documentação oficial do layout de hoje, e por isso eles valem como padrão de interação, e não como desenho a copiar.
 
+## Exemplos elogiados vistos em imagem (01/11/2026)
+
+Pedido do usuário depois da terceira versão. Estas imagens foram abertas e vistas, em vez de só lidas.
+
+| Exemplo | Fonte | O que se vê | O que veio para o Fiscal |
+| --- | --- | --- | --- |
+| Strava Year in Sport 2020 (Manual) | [It's Nice That, 15/03/2021](https://www.itsnicethat.com/articles/manual-strava-year-in-sport-graphic-design-150321) | Mosaico de blocos sólidos de ponta a ponta, um dado por bloco, sem vazio, com a foto ocupando um bloco | Folha e Dados como mosaico |
+| Spotify Wrapped 2025, cartões de compartilhar | [Spotify Newsroom, 03/12/2025](https://newsroom.spotify.com/2025-12-03/2025-wrapped-user-experience/) | Cartão colecionável: a imagem inteira em cima, os dados embaixo sobre fundo sólido, rótulos pequenos e números grandes, e o endereço no fim | Pôster com arte sem véu e bloco sólido |
+| Spotify Wrapped 2022 | [It's Nice That, 30/11/2022](https://www.itsnicethat.com/features/spotify-wrapped-campaign-identity-2022-graphic-design-301122) | Cor chapada e saturada, sem transparência, e uma forma gráfica forte | Faixas de partido chapadas em vez de véus |
+
 ## O que evitar
 
 - **Cor:** que sugira juízo (verde bom, vermelho ruim) ou cor de partido.
