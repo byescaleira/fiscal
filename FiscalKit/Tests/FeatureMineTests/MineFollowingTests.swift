@@ -30,9 +30,10 @@ struct MineFollowingTests {
         let follows = try FiscalDatabase.open(inMemory: true).repositories.follows
         let model = try makeModel(code: "sp", follows: follows, suite: suite)
         await model.load()
-        let representatives = model.groups.flatMap(\.people)
-        let first = try #require(representatives.first)
-        #expect(model.suggestions.map(\.slug).contains(first.slug))
+        let first = try #require(model.suggestions.first)
+        #expect(model.suggestions.count <= MineModel.suggestionLimit)
+        let ranks = model.suggestions.map { MineModel.rank($0.office) }
+        #expect(ranks == ranks.sorted())
         try await follows.follow(first, at: now)
         await model.load()
         #expect(!model.suggestions.map(\.slug).contains(first.slug))

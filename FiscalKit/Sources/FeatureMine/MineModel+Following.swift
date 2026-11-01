@@ -12,12 +12,29 @@ extension MineModel {
         let missing: [PersonCard]
     }
 
+    nonisolated static let suggestionLimit = 8
+    nonisolated static let suggestionOrder: [Office] = [
+        .president, .governor, .senator, .mayor, .federalDeputy, .stateDeputy, .vicePresident,
+        .viceGovernor, .viceMayor, .cityCouncilor,
+    ]
+
     public var suggestions: [PersonCard] {
         let followedSlugs = Set(followed.map(\.card.slug))
         var included = Set<String>()
-        return (supportedCards + groups.flatMap(\.people)).filter {
+        let representatives = groups.flatMap(\.people).enumerated().sorted { lhs, rhs in
+            (Self.rank(lhs.element.office), lhs.offset) < (
+                Self.rank(rhs.element.office), rhs.offset
+            )
+        }
+        .map(\.element)
+        let pool = (supportedCards + representatives).filter {
             !followedSlugs.contains($0.slug) && included.insert($0.slug).inserted
         }
+        return Array(pool.prefix(Self.suggestionLimit))
+    }
+
+    nonisolated static func rank(_ office: Office) -> Int {
+        suggestionOrder.firstIndex(of: office) ?? suggestionOrder.count
     }
 
     public var newCount: Int {
@@ -106,13 +123,25 @@ extension MineModel {
     nonisolated private static func activity(
         of person: PersonCard, service: any PublicDataService, year: Int
     ) async -> FollowingFeed.Activity? {
-        async let votes = try? service.votes(slug: person.slug, year: year)
-        async let expenses = try? service.expenses(slug: person.slug, year: year)
-        async let checks = try? service.checks(slug: person.slug)
+        async let votes = read { try await service.votes(slug: person.slug, year: year) }
+        async let expenses = read { try await service.expenses(slug: person.slug, year: year) }
+        async let checks = read { try await service.checks(slug: person.slug) }
         let (voteList, expenseList, checkList) = await (votes, expenses, checks)
-        guard voteList != nil || expenseList != nil || checkList != nil else { return nil }
+        guard !voteList.failed || !expenseList.failed || !checkList.failed else { return nil }
         return FollowingFeed.Activity(
-            person: person, votes: voteList?.items ?? [], expenses: expenseList,
-            expensesYear: year, checks: checkList?.items ?? [])
+            person: person, votes: voteList.value?.items ?? [], expenses: expenseList.value,
+            expensesYear: year, checks: checkList.value??.items ?? [])
+    }
+
+    nonisolated private static func read<Value: Sendable>(
+        _ load: @Sendable () async throws -> Value
+    ) async -> (value: Value?, failed: Bool) {
+        do {
+            return (try await load(), false)
+        } catch PublicDataError.notFound {
+            return (nil, false)
+        } catch {
+            return (nil, true)
+        }
     }
 }
