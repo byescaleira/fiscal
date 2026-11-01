@@ -1,31 +1,40 @@
 import FiscalDesignSystem
 import SwiftUI
 
-struct SharePostBar: View {
+struct SharePostButton: View {
     @Environment(ShareModel.self) private var model
 
     var body: some View {
-        VStack(spacing: .spaceS) {
-            SharePostMessages()
-            if model.isExportingVideo {
-                ShareVideoProgress()
-            } else {
-                Button {
-                    model.startPost()
-                } label: {
-                    Label(model.destination.postTitle, systemImage: "square.and.arrow.up")
-                        .lineLimit(1)
-                        .minimumScaleFactor(.shareTextShrink)
-                        .frame(maxWidth: .infinity)
-                }
-                .primaryButton()
-                .disabled(model.rendered == nil || model.isPosting)
-            }
+        Button {
+            model.startPost()
+        } label: {
+            Label(model.destination.network.title, systemImage: "square.and.arrow.up")
+                .labelStyle(.titleAndIcon)
+                .lineLimit(1)
+                .fixedSize()
         }
-        .padding(.horizontal, .spaceL)
-        .padding(.vertical, .spaceS)
-        .readableWidth()
-        .frame(maxWidth: .infinity)
+        .prominentButton()
+        .disabled(model.rendered == nil || model.isPosting)
+        .accessibilityLabel(Text(model.destination.postTitle))
+    }
+}
+
+struct ShareStatusBar: View {
+    @Environment(ShareModel.self) private var model
+
+    var body: some View {
+        if model.isExportingVideo || model.hasPostMessage {
+            VStack(spacing: .spaceS) {
+                SharePostMessages()
+                if model.isExportingVideo {
+                    ShareVideoProgress()
+                }
+            }
+            .padding(.horizontal, .spaceL)
+            .padding(.vertical, .spaceS)
+            .readableWidth()
+            .frame(maxWidth: .infinity)
+        }
     }
 }
 

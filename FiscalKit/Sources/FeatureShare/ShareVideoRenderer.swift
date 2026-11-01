@@ -12,7 +12,8 @@ public enum ShareVideoError: Error, Equatable {
 
 @MainActor
 public enum ShareVideoRenderer {
-    public static let bitRate = 8_000_000
+    public static let bitRate = 24_000_000
+    static let keyFramesPerSecond = 2
     static let framesPerBatch = 4
 
     public static func render(
@@ -69,7 +70,8 @@ public enum ShareVideoRenderer {
                 AVVideoAverageBitRateKey: bitRate,
                 AVVideoProfileLevelKey: AVVideoProfileLevelH264HighAutoLevel,
                 AVVideoExpectedSourceFrameRateKey: fps,
-                AVVideoMaxKeyFrameIntervalKey: fps,
+                AVVideoMaxKeyFrameIntervalKey: max(1, fps / keyFramesPerSecond),
+                AVVideoH264EntropyModeKey: AVVideoH264EntropyModeCABAC,
             ],
         ]
     }

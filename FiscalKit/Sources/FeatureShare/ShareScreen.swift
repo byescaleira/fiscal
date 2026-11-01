@@ -41,7 +41,12 @@ private struct ShareEditor: View {
         studio
             .background(.plainBackground)
             .safeAreaBar(edge: .bottom) {
-                SharePostBar()
+                ShareStatusBar()
+            }
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    SharePostButton()
+                }
             }
             .sharePostSheet($model.postRequest)
             .onDisappear { model.discardExport() }

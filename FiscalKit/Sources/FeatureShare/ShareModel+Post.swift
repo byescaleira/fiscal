@@ -11,6 +11,8 @@ extension ShareModel {
 
     public var offersMediaChoice: Bool { destination.media == .either }
 
+    public var hasPostMessage: Bool { postFailed || videoFellBack || notice != nil }
+
     public func startPost() {
         guard !isPosting else { return }
         postTask = Task { await post() }

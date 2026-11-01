@@ -18,7 +18,7 @@ Definição de pronto:
   - "O que entra", com um chip marcado por fato;
   - no Pôster, como primeira seção do painel, o trilho "Arte" com as coleções e as obras em tamanho grande, com artista e título, em que um toque troca a arte do cartão;
   - só as ferramentas que valem para a escolha: "Vídeo animado" em destino de vídeo ou imagem e "Legenda" em destino com texto, esta numa folha;
-  - embaixo, um botão com o nome do destino escolhido (por exemplo, "Postar no Instagram Stories").
+  - na barra superior, um botão com fundo, o ícone de compartilhar e o nome da rede (por exemplo, "Instagram"), que o VoiceOver lê com o destino completo ("Postar no Instagram Stories").
   - Em tela larga (iPad, Mac, Duo aberto), o cartão fica à esquerda e os controles à direita. Com fonte de acessibilidade, a tela inteira rola em vez de cortar.
   - Prova: capturas em `docs/evidence/FSC-010/`.
 - **Given** "O que entra" num perfil de deputada com 4 métricas **When** a pessoa desliga "Presença" e o QR **Then** a prévia e o arquivo saem sem a presença e sem o QR. A fonte, a data, "Fiscal" e o crédito da obra continuam e não podem ser desligados (`ShareSelectionTests.hidesOnlyOptionalFacts`).
@@ -47,7 +47,7 @@ Definição de pronto:
 - **Given** um formato 9:16 **When** o cartaz é desenhado **Then** nenhum texto, número ou QR fica nos 14% de cima (90 de 640 pt), nos 35% de baixo (224 pt) nem nos 6% de cada lado (22 pt). Fundo e arte podem passar, e contam como arte as faixas de partido e os blocos proporcionais, que não trazem texto nem dado que não esteja também dentro da zona. Um número cortado nunca entra no cartão, porque pode ser lido como outro valor (`ShareSafeAreaTests.ninebysixteenKeepsTheSafeZone`).
 - **Given** um destino de "vídeo ou imagem" **When** a pessoa vê "Onde postar" **Then** um interruptor "Vídeo animado", ligado por padrão, escolhe a mídia. Reels é sempre vídeo, e os destinos só de imagem não mostram o interruptor (`ShareFlowModelTests.theImageChoiceSkipsTheVideo`).
 - **Given** um destino de vídeo e os estilos Tipográfico ou Dados **When** a pessoa toca em postar **Then**:
-  - o app gera um MP4 H.264 de 4 s, 30 fps, 1080×1920, com menos de 50 MB;
+  - o app gera um MP4 H.264 de 4 s, 30 fps, 1080×1920, com até 24 Mbps e menos de 50 MB, porque as redes recomprimem o arquivo ao publicar e uma fonte com poucos dados perde nitidez;
   - todo texto e todo número aparecem certos desde o primeiro quadro, porque qualquer quadro pode virar capa ou ser pausado (`ShareStyleTests.everyFrameShowsTheRealNumbers`). O que se move são as barras e os blocos proporcionais enchendo;
   - aparece uma barra de progresso ("Preparando o vídeo"), e a geração pode ser cancelada.
 
@@ -142,7 +142,7 @@ classDiagram
 - **`ShareCaption`** (novo, função pura): monta a legenda com no máximo 280 caracteres.
 - **`ShareVideoRenderer`** (novo):
   - desenha os quadros com o `ImageRenderer` sobre o mesmo view, com `\.shareProgress` de 0 a 1;
-  - grava com `AVAssetWriter` (H.264, 30 fps, 4 s, 1080×1920, até 8 Mbps), usando o pool do `AVAssetWriterInputPixelBufferAdaptor`;
+  - grava com `AVAssetWriter` (H.264, 30 fps, 4 s, 1080×1920, até 24 Mbps), usando o pool do `AVAssetWriterInputPixelBufferAdaptor`;
   - escreve num arquivo temporário e só entrega depois do `finishWriting`.
 - **`ShareDelivery`** (novo, iOS):
   - escreve a pasteboard dos Stories com `UIPasteboard.setItems(_:options:)` e expiração de 300 s, e abre `instagram-stories://share?source_application=<id>` ou `facebook-stories://share`;
@@ -153,7 +153,7 @@ classDiagram
 ## Approach
 
 1. **Estratégia:**
-   - A `ShareScreen` vira um estúdio: o cartão fica fixo e grande no topo, os controles rolam num painel separado e o botão de postar fica fixo embaixo.
+   - A `ShareScreen` vira um estúdio: o cartão fica fixo e grande no topo, os controles rolam num painel separado e o botão de postar fica na barra superior.
    - Todo estilo desenha o mesmo `ShareCardContent` filtrado pela `ShareSelection`.
    - O destino decide formato, mídia e entrega.
    - O vídeo nasce dos mesmos views, animados por um progresso.
@@ -208,6 +208,7 @@ classDiagram
      - Pôster: a arte fica inteira e sem véu, e o texto vai para um bloco sólido, como o cartão colecionável do Wrapped;
      - alternativas descartadas ("parece que piorou"): o número-herói gigante e cortado na faixa ("pode passar alguma informação errada"); o retrato gigante na faixa; os blocos translúcidos em Dados; o painel escuro flutuante no Pôster.
    - **Classificação no cartão:** a faixa "Melhor" ou "Pior que a média" fica só no perfil, onde vem com o critério. O cartão sai do contexto do app, então leva a mediana (`medianText`).
+   - **Botão de postar (usuário em 01/11/2026):** sai do rodapé, onde era grande demais, e vai para a barra superior com fundo. É um pedido dele, acima da regra geral de botão neutro na barra. O rodapé só aparece para o progresso do vídeo e os avisos.
    - **Mídia:** "Vídeo animado" é uma ferramenta de ligar e desligar, separada dos lugares, porque não troca o destino.
    - **Nome do arquivo:** "Fiscal - <assunto>", com o nome da pessoa, o número da votação ou o título, sem barras.
    - **ADR:**
@@ -356,7 +357,7 @@ docs/evidence/FSC-010/, CHANGELOG.md, docs/roadmap.md, spdd/README.md
   - as falhas de vídeo e de Fotos não perdem a seleção;
   - a cor nunca indica juízo, a cor de partido é só identidade da pessoa e não muda com a Lente, e os dois lados do Duelo têm o mesmo tamanho e peso.
 - **Desempenho:**
-  - vídeo de 4 s, 120 quadros em 1080×1920, até 8 Mbps e menos de 50 MB;
+  - vídeo de 4 s, 120 quadros em 1080×1920, até 24 Mbps e menos de 50 MB;
   - geração cancelável, com progresso;
   - a prévia não gera vídeo.
 - **Privacidade e segurança:**

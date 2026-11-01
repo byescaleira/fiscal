@@ -73,6 +73,7 @@ private struct ShareCarouselCard: View {
                 width: size.width * scale, height: size.height * scale, alignment: .topLeading
             )
             .clipShape(.rect(cornerRadius: .radiusL))
+            .contentShape(.rect(cornerRadius: .radiusL))
             .overlay {
                 RoundedRectangle(cornerRadius: .radiusL)
                     .strokeBorder(.separator)

@@ -108,6 +108,7 @@ private struct ShareArtCard: View {
                     .lineLimit(1)
             }
             .frame(width: .shareThumbnail * 2)
+            .contentShape(.rect)
             .scaleEffect(selected ? 1 : 0.94)
         }
         .buttonStyle(.plain)
