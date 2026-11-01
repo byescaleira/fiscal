@@ -164,7 +164,28 @@
         }
       }
     },
+    "%@ in receipts" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ em recibos"
+          }
+        }
+      }
+    },
+    "%@ in receipts · %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ em recibos · %2$@"
+          }
+        }
+      }
+    },
     "%@ in receipts · Chamber" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -1594,6 +1615,7 @@
       }
     },
     "Abstained" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -4669,7 +4691,18 @@
         }
       }
     },
+    "Everything starts on the Following tab, with the latest from who you follow. Settings, in the Today toolbar, keeps the choices that are yours." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tudo começa na aba Seguindo, com as novidades de quem você segue. Os Ajustes, na barra de cima do Hoje, guardam as escolhas que são suas."
+          }
+        }
+      }
+    },
     "Everything starts on the Today tab. Settings, in its toolbar, keeps the choices that are yours." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7290,6 +7323,7 @@
       }
     },
     "Mine" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -8866,7 +8900,18 @@
         }
       }
     },
+    "Open Following and tap Follow next to your representatives." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abra Seguindo e toque em Seguir ao lado dos seus representantes."
+          }
+        }
+      }
+    },
     "Open Following and tap the person icon next to your representatives." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -12468,7 +12513,18 @@
         }
       }
     },
+    "Supporting is not following: in Following you follow anyone. The people you support are also followed, and their topics and actions come first." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apoiar não é seguir: em Seguindo você segue qualquer pessoa. Quem você apoia também passa a ser seguido, e os temas e as ações dessas pessoas vêm primeiro."
+          }
+        }
+      }
+    },
     "Supporting is not following: in Mine you follow anyone. The people you support are also followed, and their topics and actions come first." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -13403,7 +13459,18 @@
         }
       }
     },
+    "The state you chose in Following. Names in alphabetical order." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O estado que você escolheu em Seguindo. Nomes em ordem alfabética."
+          }
+        }
+      }
+    },
     "The state you chose in Mine. Names in alphabetical order." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -13983,6 +14050,7 @@
       }
     },
     "Try again" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -14559,6 +14627,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Votou %1$@ · %2$@ · %3$@"
+          }
+        }
+      }
+    },
+    "Voted %@ · %@ · %@ · %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votou %1$@ · %2$@ · %3$@ · %4$@"
           }
         }
       }
@@ -15146,6 +15224,16 @@
         }
       }
     },
+    "What's new from who you follow, and who represents your region." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As novidades de quem você segue e quem representa a sua região."
+          }
+        }
+      }
+    },
     "When a Signal Is Missing" : {
       "localizations" : {
         "pt-BR" : {
@@ -15347,6 +15435,7 @@
       }
     },
     "Who represents you and who you follow." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -15356,7 +15445,18 @@
         }
       }
     },
+    "Who represents your place and who you support. Tap Follow next to the name." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem representa o seu lugar e quem você apoia. Toque em Seguir ao lado do nome."
+          }
+        }
+      }
+    },
     "Who represents your place and who you support. Tap the person icon to follow." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {

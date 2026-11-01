@@ -7,6 +7,7 @@
     struct MineRosterTable: View {
         @Environment(\.open) private var open
         @Environment(\.navigationSection) private var section
+        @Environment(FollowController.self) private var follow: FollowController?
         @State private var order = MineRoster.order
         @State private var selection: PersonCard.ID?
         let roster: MineRoster
@@ -37,9 +38,23 @@
                         open(route, in: section)
                     }
                 }
+                if let follow, let card = roster.card(for: ids) {
+                    let isFollowing = follow.isFollowing(card.slug)
+                    Button(
+                        isFollowing ? LocalizedStringKey("Unfollow") : "Follow",
+                        systemImage: isFollowing ? "person.badge.minus" : "person.badge.plus"
+                    ) {
+                        Task { await toggle(card, with: follow) }
+                    }
+                }
             } primaryAction: { ids in
                 if let route = roster.profileRoute(for: ids) { open(route, in: section) }
             }
+        }
+
+        private func toggle(_ card: PersonCard, with follow: FollowController) async {
+            let isFollowing = await follow.toggle(card)
+            FollowController.announce(name: card.name, isFollowing: isFollowing)
         }
     }
 #endif

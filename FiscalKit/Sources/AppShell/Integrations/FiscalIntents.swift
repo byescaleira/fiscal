@@ -94,6 +94,7 @@ public struct FollowPersonIntent: AppIntent {
         IntentDescription("Follows a politician in Fiscal without opening the app.")
     }
     public static var supportedModes: IntentModes { .background }
+    public static var authenticationPolicy: IntentAuthenticationPolicy { .requiresAuthentication }
 
     @Parameter(title: "Politician")
     public var target: PersonEntity
@@ -117,6 +118,7 @@ public struct UnfollowPersonIntent: AppIntent {
         IntentDescription("Stops following a politician in Fiscal without opening the app.")
     }
     public static var supportedModes: IntentModes { .background }
+    public static var authenticationPolicy: IntentAuthenticationPolicy { .requiresAuthentication }
 
     @Parameter(title: "Politician")
     public var target: PersonEntity

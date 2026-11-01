@@ -49,6 +49,13 @@ enum FollowingLine {
         [entry.person.name, place(entry.person), update(entry.latest), day(entry.latest)]
             .compactMap(\.self).filter { !$0.isEmpty }.joined(separator: ", ")
     }
+
+    static func accessibility(_ snapshot: FollowingSnapshot) -> String? {
+        guard let first = snapshot.entries.first else { return nil }
+        let others = snapshot.entries.count - 1
+        guard others > 0 else { return accessibility(first) }
+        return "\(accessibility(first)), \(String(appLocalized: "and \(others) more"))"
+    }
 }
 
 struct FollowingSmall: View {
@@ -93,7 +100,7 @@ struct FollowingSmall: View {
                 }
                 .minimumScaleFactor(.widgetTextShrink)
                 .accessibilityElement(children: .ignore)
-                .accessibilityLabel(Text(verbatim: FollowingLine.accessibility(first)))
+                .accessibilityLabel(Text(verbatim: FollowingLine.accessibility(snapshot) ?? ""))
             }
         }
         .privacySensitive()

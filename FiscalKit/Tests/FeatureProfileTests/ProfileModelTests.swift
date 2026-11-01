@@ -128,7 +128,7 @@ struct ProfileModelTests {
         await model.load()
         #expect(model.canFollow)
         let card = try #require(model.followCard)
-        let follow = FollowController(follows: follows)
+        let follow = FollowController(follows: follows, widget: { _ in })
         model.followChanged(to: await follow.toggle(card))
         #expect(model.hasJustFollowed)
         #expect(try await follows.followed().map(\.card.name) == ["Kim Kataguiri"])

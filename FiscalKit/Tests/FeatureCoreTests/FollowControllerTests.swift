@@ -21,6 +21,30 @@ struct FollowControllerTests {
         func failNext() { fails = true }
     }
 
+    private actor SlowStore: FollowRepository {
+        var people: [FollowedPerson] = []
+        var calls = 0
+        private var gate: CheckedContinuation<Void, Never>?
+
+        func followed() async throws -> [FollowedPerson] { people }
+        func isFollowing(slug: String) async throws -> Bool { people.contains { $0.id == slug } }
+        func follow(_ card: PersonCard, at date: Date) async throws {
+            calls += 1
+            await withCheckedContinuation { gate = $0 }
+            people.append(FollowedPerson(card: card, followedAt: date))
+        }
+        func unfollow(slug: String) async throws { people.removeAll { $0.id == slug } }
+        func isWaiting() -> Bool { gate != nil }
+        func open() {
+            gate?.resume()
+            gate = nil
+        }
+    }
+
+    private final class WidgetCalls {
+        var unfollowed: [String?] = []
+    }
+
     nonisolated private static func card(_ slug: String) -> PersonCard {
         PersonCard(
             slug: slug, name: slug.capitalized, office: .senator, uf: "sp", party: "PL", photo: nil,
@@ -29,7 +53,8 @@ struct FollowControllerTests {
 
     @Test func togglesFromAnyRow() async {
         let store = Store()
-        let follow = FollowController(follows: store, people: { [Self.card("b")] })
+        let follow = FollowController(
+            follows: store, people: { [Self.card("b")] }, widget: { _ in })
         #expect(await follow.toggle(Self.card("a")))
         #expect(follow.isFollowing("a"))
         #expect(await follow.toggle(slug: "b"))
@@ -41,7 +66,7 @@ struct FollowControllerTests {
     @Test func reloadsWhatTheStoreHas() async throws {
         let store = Store()
         try await store.follow(Self.card("x"), at: .now)
-        let follow = FollowController(follows: store)
+        let follow = FollowController(follows: store, widget: { _ in })
         await follow.reload()
         #expect(follow.followed == ["x"])
     }
@@ -49,9 +74,29 @@ struct FollowControllerTests {
     @Test func keepsTheStateAndReportsWhenSavingFails() async {
         let store = Store()
         await store.failNext()
-        let follow = FollowController(follows: store)
+        let follow = FollowController(follows: store, widget: { _ in })
         #expect(await !follow.toggle(Self.card("a")))
         #expect(follow.error == .onSave)
         #expect(await !follow.toggle(slug: "unknown"))
+    }
+
+    @Test func refreshesTheWidgetAndForgetsWhoWasUnfollowed() async {
+        let calls = WidgetCalls()
+        let follow = FollowController(follows: Store(), widget: { calls.unfollowed.append($0) })
+        await follow.toggle(Self.card("a"))
+        await follow.toggle(Self.card("a"))
+        #expect(calls.unfollowed == [nil, "a"])
+    }
+
+    @Test func ignoresASecondTapWhileTheFirstIsSaving() async {
+        let store = SlowStore()
+        let follow = FollowController(follows: store, widget: { _ in })
+        let first = Task { await follow.toggle(Self.card("a")) }
+        while await !store.isWaiting() { await Task.yield() }
+        #expect(await !follow.toggle(Self.card("a")))
+        await store.open()
+        #expect(await first.value)
+        #expect(await store.calls == 1)
+        #expect(follow.isFollowing("a"))
     }
 }

@@ -167,16 +167,6 @@ public final class TodayModel {
     private func loadFollowedCount() async -> Int {
         (try? await follows?.followed().count) ?? 0
     }
-
-    static func house(for office: Office) -> House? {
-        switch office {
-        case .federalDeputy: .camara
-        case .senator: .senado
-        case .president, .vicePresident, .governor, .viceGovernor, .stateDeputy, .mayor,
-            .viceMayor, .cityCouncilor:
-            nil
-        }
-    }
 }
 
 private struct TodayPage {

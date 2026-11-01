@@ -92,6 +92,9 @@ private struct ProfileHeroActions: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
                 .heroGlassButton()
+                .accessibilityLabel(
+                    isFollowing ? Text("Unfollow \(card.name)") : Text("Follow \(card.name)")
+                )
                 .sensoryFeedback(.success, trigger: isFollowing)
             }
             if let route = profile.shareRoute {

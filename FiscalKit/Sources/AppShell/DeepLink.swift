@@ -11,7 +11,7 @@ enum DeepLink: Equatable {
             return
         }
         let path = url.pathComponents.dropFirst().first
-        if let section = host == "mine" ? .following : AppSection(rawValue: host) {
+        if let section = Self.section(host: host) {
             self = .section(section)
         } else if let destination = Self.destination(host: host, path: path, url: url) {
             self = destination
@@ -42,6 +42,10 @@ enum DeepLink: Equatable {
         }
     }
 
+    private static func section(host: String) -> AppSection? {
+        host == "mine" ? .following : AppSection(rawValue: host)
+    }
+
     private static func slugs(in url: URL) -> [String] {
         let value = URLComponents(url: url, resolvingAgainstBaseURL: false)?
             .queryItems?.first { $0.name == "slugs" }?.value
@@ -56,7 +60,7 @@ enum DeepLink: Equatable {
 
     static func kind(of url: URL) -> FiscalEvents.DeepLinkKind {
         guard url.scheme == "fiscal", let host = url.host() else { return .unknown }
-        if AppSection(rawValue: host) != nil { return .section }
+        if section(host: host) != nil { return .section }
         guard let kind = FiscalEvents.DeepLinkKind(rawValue: host), kind != .section else {
             return .unknown
         }

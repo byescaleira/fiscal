@@ -1,3 +1,4 @@
+import AppIntents
 import FeatureCore
 import FiscalDomain
 import Foundation
@@ -29,18 +30,26 @@ struct FollowIntentTests {
         return store
     }
 
+    @MainActor
+    private final class WidgetCalls {
+        var unfollowed: [String?] = []
+    }
+
     private static func writer(
-        _ store: Store, release: AppReleaseStore, index: [PersonCard] = [fulana]
+        _ store: Store, release: AppReleaseStore, index: [PersonCard] = [fulana],
+        calls: WidgetCalls? = nil
     ) -> FollowIntentWriter {
         FollowIntentWriter(
             store: release,
             people: { slugs in index.filter { slugs.contains($0.slug) } },
-            follows: { store })
+            follows: { store },
+            widget: { calls?.unfollowed.append($0) })
     }
 
     @Test func followsAndUnfollowsWithoutOpeningTheApp() async throws {
         let store = Store()
-        let writer = Self.writer(store, release: try Self.releaseStore(nil))
+        let calls = WidgetCalls()
+        let writer = Self.writer(store, release: try Self.releaseStore(nil), calls: calls)
         let day = Date(timeIntervalSince1970: 1_792_917_720)
         let card = try await writer.follow(slug: "fulana", at: day)
         #expect(card == Self.fulana)
@@ -48,6 +57,12 @@ struct FollowIntentTests {
         #expect(await store.people.first?.followedAt == day)
         try await writer.unfollow(slug: "fulana")
         #expect(await store.people.isEmpty)
+        #expect(await calls.unfollowed == [nil, "fulana"])
+    }
+
+    @Test func followingAndUnfollowingAskForTheDevicePasscode() {
+        #expect(FollowPersonIntent.authenticationPolicy == .requiresAuthentication)
+        #expect(UnfollowPersonIntent.authenticationPolicy == .requiresAuthentication)
     }
 
     @Test func refusesAPersonOutsideTheIndex() async throws {

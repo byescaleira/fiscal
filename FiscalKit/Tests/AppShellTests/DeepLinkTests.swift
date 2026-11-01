@@ -44,6 +44,7 @@ struct DeepLinkTests {
 
     @Test(arguments: [
         ("fiscal://votes", FiscalEvents.DeepLinkKind.section),
+        ("fiscal://mine", .section),
         ("fiscal://person/nikolas-ferreira", .person),
         ("fiscal://expenses/tabata-amaral?year=2025", .expenses),
         ("fiscal://compare?slugs=tabata-amaral,kim-kataguiri", .compare),

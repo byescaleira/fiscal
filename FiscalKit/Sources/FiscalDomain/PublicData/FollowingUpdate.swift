@@ -57,12 +57,24 @@ public enum FollowingFeed {
         _ activities: [Activity], today: CalendarDay,
         calendar: Calendar = GregorianCalendar.current
     ) -> [FollowingUpdate] {
-        let start =
-            calendar.date(byAdding: .day, value: -windowDays, to: today.date(in: calendar))
-            .map { CalendarDay($0, calendar: calendar) } ?? today
+        let start = windowStart(today, calendar: calendar)
         let updates = activities.flatMap { updates(for: $0) }
             .filter { $0.day >= start && $0.day <= today }
         return Array(updates.sorted(by: isOrderedBefore).prefix(limit))
+    }
+
+    public static func windowStart(
+        _ today: CalendarDay, calendar: Calendar = GregorianCalendar.current
+    ) -> CalendarDay {
+        calendar.date(byAdding: .day, value: -windowDays, to: today.date(in: calendar))
+            .map { CalendarDay($0, calendar: calendar) } ?? today
+    }
+
+    public static func years(
+        for today: CalendarDay, calendar: Calendar = GregorianCalendar.current
+    ) -> [Int] {
+        let start = windowStart(today, calendar: calendar).year
+        return start < today.year ? [today.year, start] : [today.year]
     }
 
     public static func newCount(

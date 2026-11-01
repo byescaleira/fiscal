@@ -110,7 +110,7 @@ private struct SpenderCard: View {
             .accessibilityAddTraits(.isButton)
             .accessibilityHint(Text("Opens the profile"))
             Spacer(minLength: 0)
-            HStack(spacing: .spaceS) {
+            AdaptiveRow(spacing: .spaceS) {
                 if let year = money.spendYear {
                     Button {
                         open(.expenses(slug: spender.person.slug, year: year), in: section)

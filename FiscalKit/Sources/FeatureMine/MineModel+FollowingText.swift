@@ -23,11 +23,18 @@ extension MineModel {
     public func detail(for update: FollowingUpdate) -> String {
         let date = update.day.date().formatted(
             Date.FormatStyle(locale: .app).day().month(.abbreviated))
+        let house = Self.houseName(update.person.office)
         switch update.kind {
         case .vote(let vote):
-            return String(appLocalized: "Voted \(vote.vote) · \(vote.proposition) · \(date)")
+            guard let house else {
+                return String(appLocalized: "Voted \(vote.vote) · \(vote.proposition) · \(date)")
+            }
+            return String(
+                appLocalized: "Voted \(vote.vote) · \(vote.proposition) · \(house) · \(date)")
         case .expenses(_, _, let cents):
-            return String(appLocalized: "\(PublicFormat.money(cents: cents)) in receipts · Chamber")
+            let money = PublicFormat.money(cents: cents)
+            guard let house else { return String(appLocalized: "\(money) in receipts") }
+            return String(appLocalized: "\(money) in receipts · \(house)")
         case .check(let check):
             let verdict = check.verdict.map { "\($0) · " } ?? ""
             return String(appLocalized: "\(verdict)\(check.publisher) · \(date)")
@@ -37,6 +44,16 @@ extension MineModel {
     public var missingText: String {
         let names = missing.map(\.name).formatted(.list(type: .and).locale(.app))
         return String(appLocalized: "Couldn't load \(names). Tap to try again.")
+    }
+
+    nonisolated static func houseName(_ office: Office) -> String? {
+        switch office {
+        case .federalDeputy: String(appLocalized: "Chamber")
+        case .senator: String(appLocalized: "Senate")
+        case .president, .vicePresident, .governor, .viceGovernor, .stateDeputy, .mayor,
+            .viceMayor, .cityCouncilor:
+            nil
+        }
     }
 
     static func monthName(_ day: CalendarDay) -> String {

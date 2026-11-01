@@ -33,6 +33,8 @@ struct FollowingUpdatesSection: View {
 
 struct FollowingUpdateRow: View {
     @Environment(MineModel.self) private var mine
+    @Environment(\.appTint) private var tint
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let update: FollowingUpdate
 
     var body: some View {
@@ -50,22 +52,20 @@ struct FollowingUpdateRow: View {
     private var label: some View {
         HStack(alignment: .top, spacing: .spaceM) {
             PersonPortrait(
-                slug: update.person.slug, name: update.person.name, party: update.person.party)
+                slug: update.person.slug, name: update.person.name, party: update.person.party
+            )
+            .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: .space2XS) {
-                HStack(spacing: .spaceXS) {
+                AdaptiveStack(spacing: .spaceXS) {
                     Text(verbatim: update.person.name)
                         .font(.rowTitle)
                     if mine.isNew(update) {
-                        Text("New")
-                            .font(.chipLabel)
-                            .foregroundStyle(.tint)
-                            .padding(.horizontal, .spaceXS)
-                            .background(.tint.opacity(.opacityTint), in: .capsule)
+                        Chip("New", color: tint, shape: .capsule)
                     }
                 }
                 Text(verbatim: mine.title(for: update))
                     .font(.subheadline)
-                    .lineLimit(3)
+                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 3)
                     .fixedSize(horizontal: false, vertical: true)
                 Text(verbatim: mine.detail(for: update))
                     .font(.footnote)
@@ -97,7 +97,6 @@ private struct FollowingMissingRow: View {
             .contentShape(.rect)
         }
         .buttonStyle(.plain)
-        .accessibilityHint(Text("Try again"))
     }
 }
 
@@ -136,17 +135,8 @@ struct FollowingSuggestionsSection: View {
                 Text(mine.isEmpty ? "Follow Who Represents You" : "Suggestions").sectionTitle()
             } footer: {
                 Text(
-                    "Who represents your place and who you support. Tap the person icon to follow.")
+                    "Who represents your place and who you support. Tap Follow next to the name.")
             }
-        }
-    }
-}
-
-struct FollowingRegionHeader: View {
-    var body: some View {
-        Section {
-        } header: {
-            Text("Your Region").sectionTitle()
         }
     }
 }

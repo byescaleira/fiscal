@@ -111,25 +111,6 @@ struct ThemeTile: View {
     }
 }
 
-extension TodayBallot {
-    var color: Color {
-        switch self {
-        case .yes: .positive
-        case .no: .negative
-        case .abstention: .warning
-        case .absent, .other: .secondary
-        }
-    }
-}
-
-struct BallotChip: View {
-    let ballot: TodayBallot
-
-    var body: some View {
-        StatusCircle(ballot.title, symbol: ballot.symbol, color: ballot.color)
-    }
-}
-
 struct ResultChip: View {
     let approved: Bool
 

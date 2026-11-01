@@ -5,11 +5,17 @@ import WidgetKit
 
 extension MineModel {
     nonisolated static let concurrentReads = 6
-    static let widgetKind = "fiscal.representatives"
 
     struct LoadedActivity: Sendable {
         let activities: [FollowingFeed.Activity]
         let missing: [PersonCard]
+    }
+
+    struct YearActivity: Sendable {
+        let year: Int
+        let votes: [PersonVote]
+        let expenses: ExpenseList?
+        let failed: Bool
     }
 
     nonisolated static let suggestionLimit = 8
@@ -56,17 +62,22 @@ extension MineModel {
     public func loadUpdates() async {
         let people = followed.map(\.card)
         guard !people.isEmpty else {
-            updates = []
-            missing = []
-            updatesPhase = .idle
-            publishSnapshot()
+            let phase = await PublicDataPhase.settle(after: updatesPhase, in: updateRequests) {
+                ()
+            } apply: { _ in
+                updates = []
+                missing = []
+                publishSnapshot()
+            }
+            updatesPhase = phase == .loaded ? .idle : phase
             return
         }
         if updates.isEmpty { updatesPhase = .loading }
         let today = CalendarDay(now())
+        let years = FollowingFeed.years(for: today)
         updatesPhase = await PublicDataPhase.settle(after: updatesPhase, in: updateRequests) {
             guard let service else { throw PublicDataError.unavailable }
-            return await Self.activities(for: people, service: service, year: today.year)
+            return await Self.activities(for: people, service: service, years: years)
         } apply: { loaded in
             updates = FollowingFeed.build(loaded.activities, today: today)
             missing = loaded.missing
@@ -91,29 +102,33 @@ extension MineModel {
         let snapshot = FollowingSnapshot.make(
             followed: followed.map(\.card), updates: updates, at: now())
         try? snapshot.write()
-        WidgetCenter.shared.reloadTimelines(ofKind: Self.widgetKind)
+        WidgetCenter.shared.reloadTimelines(ofKind: FollowingWidget.kind)
     }
 
     nonisolated static func activities(
-        for people: [PersonCard], service: any PublicDataService, year: Int
+        for people: [PersonCard], service: any PublicDataService, years: [Int]
     ) async -> LoadedActivity {
         var activities: [FollowingFeed.Activity] = []
         var missing: [PersonCard] = []
         for start in stride(from: 0, to: people.count, by: concurrentReads) {
             let batch = people[start..<min(start + concurrentReads, people.count)]
-            let results = await withTaskGroup(of: (PersonCard, FollowingFeed.Activity?).self) {
+            let results = await withTaskGroup(of: (PersonCard, [FollowingFeed.Activity]?).self) {
                 group in
                 for person in batch {
                     group.addTask {
-                        (person, await activity(of: person, service: service, year: year))
+                        (person, await activity(of: person, service: service, years: years))
                     }
                 }
-                var found: [(PersonCard, FollowingFeed.Activity?)] = []
+                var found: [(PersonCard, [FollowingFeed.Activity]?)] = []
                 for await result in group { found.append(result) }
                 return found
             }
             for (person, activity) in results {
-                if let activity { activities.append(activity) } else { missing.append(person) }
+                if let activity {
+                    activities.append(contentsOf: activity)
+                } else {
+                    missing.append(person)
+                }
             }
         }
         missing.sort { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
@@ -121,16 +136,27 @@ extension MineModel {
     }
 
     nonisolated private static func activity(
-        of person: PersonCard, service: any PublicDataService, year: Int
-    ) async -> FollowingFeed.Activity? {
-        async let votes = read { try await service.votes(slug: person.slug, year: year) }
-        async let expenses = read { try await service.expenses(slug: person.slug, year: year) }
+        of person: PersonCard, service: any PublicDataService, years: [Int]
+    ) async -> [FollowingFeed.Activity]? {
         async let checks = read { try await service.checks(slug: person.slug) }
-        let (voteList, expenseList, checkList) = await (votes, expenses, checks)
-        guard !voteList.failed || !expenseList.failed || !checkList.failed else { return nil }
-        return FollowingFeed.Activity(
-            person: person, votes: voteList.value?.items ?? [], expenses: expenseList.value,
-            expensesYear: year, checks: checkList.value??.items ?? [])
+        var yearly: [YearActivity] = []
+        for year in years {
+            async let votes = read { try await service.votes(slug: person.slug, year: year) }
+            async let expenses = read { try await service.expenses(slug: person.slug, year: year) }
+            let (voteList, expenseList) = await (votes, expenses)
+            yearly.append(
+                YearActivity(
+                    year: year, votes: voteList.value?.items ?? [], expenses: expenseList.value,
+                    failed: voteList.failed && expenseList.failed))
+        }
+        let checkList = await checks
+        guard !checkList.failed || yearly.contains(where: { !$0.failed }) else { return nil }
+        let checkItems = checkList.value??.items ?? []
+        return yearly.enumerated().map { index, read in
+            FollowingFeed.Activity(
+                person: person, votes: read.votes, expenses: read.expenses,
+                expensesYear: read.year, checks: index == 0 ? checkItems : [])
+        }
     }
 
     nonisolated private static func read<Value: Sendable>(

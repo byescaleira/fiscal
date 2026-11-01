@@ -834,6 +834,16 @@
         }
       }
     },
+    "and %lld more" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "e mais %lld"
+          }
+        }
+      }
+    },
     "counted" : {
       "localizations" : {
         "pt-BR" : {

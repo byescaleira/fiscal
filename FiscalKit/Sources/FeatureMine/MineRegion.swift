@@ -138,10 +138,13 @@ public struct MineRoster: Hashable, Sendable {
         card.uf.lowercased() == "br" ? PublicFormat.missing : card.uf.uppercased()
     }
 
+    public func card(for ids: Set<PersonCard.ID>) -> PersonCard? {
+        guard ids.count == 1, let id = ids.first else { return nil }
+        return people.first { $0.id == id }
+    }
+
     public func profileRoute(for ids: Set<PersonCard.ID>) -> Route? {
-        guard ids.count == 1, let id = ids.first, people.contains(where: { $0.id == id })
-        else { return nil }
-        return .person(slug: id)
+        card(for: ids).map { .person(slug: $0.slug) }
     }
 
     public func scopeTitle(party: String?) -> String {

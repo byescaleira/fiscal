@@ -111,4 +111,11 @@ struct FollowingFeedTests {
             today: Self.today)
         #expect(updates.isEmpty)
     }
+
+    @Test func theWindowReachesThePreviousYearOnlyInEarlyJanuary() throws {
+        let january = try #require(CalendarDay(year: 2_027, month: 1, day: 5))
+        let lateOctober = try #require(CalendarDay(year: 2_026, month: 10, day: 25))
+        #expect(FollowingFeed.years(for: january) == [2_027, 2_026])
+        #expect(FollowingFeed.years(for: lateOctober) == [2_026])
+    }
 }

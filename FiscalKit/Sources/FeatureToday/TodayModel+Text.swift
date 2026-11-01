@@ -36,13 +36,9 @@ extension TodayModel {
     public var followingDetail: String {
         followedCount == 0
             ? String(
-                appLocalized: "Open Following and tap the person icon next to your representatives."
+                appLocalized: "Open Following and tap Follow next to your representatives."
             )
             : String(appLocalized: "Votes, spending and fact checks, newest first.")
-    }
-
-    public func detail(for card: PersonCard) -> String {
-        card.uf == "br" ? card.officeTitle : "\(card.officeTitle) · \(card.uf.uppercased())"
     }
 
     public func failureTitle(_ error: PublicDataError) -> String {

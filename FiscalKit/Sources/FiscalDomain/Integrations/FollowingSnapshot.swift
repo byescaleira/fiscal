@@ -43,6 +43,16 @@ public struct FollowingSnapshot: Codable, Hashable, Sendable {
         return FollowingSnapshot(entries: Array(entries.prefix(limit)), updatedAt: date)
     }
 
+    public func removing(_ slug: String) -> FollowingSnapshot {
+        FollowingSnapshot(entries: entries.filter { $0.id != slug }, updatedAt: updatedAt)
+    }
+
+    public static func forget(_ slug: String, in container: URL? = AppGroup.containerURL) {
+        let snapshot = read(in: container)
+        guard snapshot.entries.contains(where: { $0.id == slug }) else { return }
+        try? snapshot.removing(slug).write(in: container)
+    }
+
     public static var empty: FollowingSnapshot {
         FollowingSnapshot(entries: [], updatedAt: .distantPast)
     }

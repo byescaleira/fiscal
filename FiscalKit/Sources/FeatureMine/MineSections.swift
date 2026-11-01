@@ -90,6 +90,7 @@ private struct MineFailureSection: View {
 }
 
 struct MineRosterRow: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let card: PersonCard
     let showsPlace: Bool
 
@@ -111,7 +112,7 @@ struct MineRosterRow: View {
                         Text(verbatim: detail)
                             .font(.footnote)
                             .foregroundStyle(.secondary)
-                            .lineLimit(1)
+                            .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
                     }
                 }
             }

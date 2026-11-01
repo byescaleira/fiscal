@@ -140,15 +140,6 @@ struct TodayModelTests {
         #expect(empty.followingTitle(newCount: 3) == "Follow who represents you")
     }
 
-    @Test func peopleWhoDoNotVoteOnTheFloorShowNoBallot() async {
-        let model = model(follows: .normal)
-        await model.load()
-        let governor = TodayModel.house(for: .governor)
-        #expect(governor == nil)
-        #expect(TodayModel.house(for: .stateDeputy) == nil)
-        #expect(TodayModel.house(for: .federalDeputy) == .camara)
-    }
-
     @Test func anEmptyDayIsHonest() async {
         let model = model(.empty)
         await model.load()

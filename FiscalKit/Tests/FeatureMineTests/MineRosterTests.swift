@@ -77,6 +77,8 @@ struct MineRosterTests {
         #expect(roster.profileRoute(for: ["ana", "bia"]) == nil)
         #expect(roster.profileRoute(for: ["caio"]) == nil)
         #expect(roster.profileRoute(for: []) == nil)
+        #expect(roster.card(for: ["ana"])?.slug == "ana")
+        #expect(roster.card(for: ["ana", "bia"]) == nil)
     }
 
     @Test func choosingAPlaceCanStartWithTheSearch() throws {

@@ -33,4 +33,20 @@ struct FollowingSnapshotTests {
         try snapshot.write(in: container)
         #expect(FollowingSnapshot.read(in: container) == snapshot)
     }
+
+    @Test func forgetsWhoWasUnfollowed() throws {
+        let container = FileManager.default.temporaryDirectory
+            .appending(path: "FollowingSnapshot-\(UUID().uuidString)", directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(at: container, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: container) }
+        let snapshot = FollowingSnapshot.make(
+            followed: [FollowingFeedTests.card("a", "Ana"), FollowingFeedTests.card("b", "Bia")],
+            updates: [], at: Date(timeIntervalSince1970: 1_793_000_000))
+        try snapshot.write(in: container)
+        FollowingSnapshot.forget("a", in: container)
+        #expect(FollowingSnapshot.read(in: container).entries.map(\.id) == ["b"])
+        #expect(FollowingSnapshot.read(in: container).updatedAt == snapshot.updatedAt)
+        FollowingSnapshot.forget("z", in: container)
+        #expect(FollowingSnapshot.read(in: container) == snapshot.removing("a"))
+    }
 }

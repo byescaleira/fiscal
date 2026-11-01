@@ -17,15 +17,21 @@ public final class FollowController {
     @ObservationIgnored private let follows: (any FollowRepository)?
     @ObservationIgnored private let people: @Sendable () async throws -> [PersonCard]
     @ObservationIgnored private let now: @Sendable () -> Date
+    @ObservationIgnored private let widget: @MainActor (_ unfollowed: String?) -> Void
+    @ObservationIgnored private var pending: Set<String> = []
 
     public init(
         follows: (any FollowRepository)?,
         people: @escaping @Sendable () async throws -> [PersonCard] = { [] },
-        now: @escaping @Sendable () -> Date = { .now }
+        now: @escaping @Sendable () -> Date = { .now },
+        widget: @escaping @MainActor (_ unfollowed: String?) -> Void = {
+            FollowingWidget.refresh(unfollowed: $0)
+        }
     ) {
         self.follows = follows
         self.people = people
         self.now = now
+        self.widget = widget
     }
 
     public func isFollowing(_ slug: String) -> Bool {
@@ -39,7 +45,10 @@ public final class FollowController {
 
     @discardableResult
     public func toggle(_ card: PersonCard) async -> Bool {
-        guard let follows else { return isFollowing(card.slug) }
+        guard let follows, pending.insert(card.slug).inserted else {
+            return isFollowing(card.slug)
+        }
+        defer { pending.remove(card.slug) }
         let wasFollowing = isFollowing(card.slug)
         do {
             if wasFollowing {
@@ -49,6 +58,7 @@ public final class FollowController {
                 try await follows.follow(card, at: now())
                 followed.insert(card.slug)
             }
+            widget(wasFollowing ? card.slug : nil)
         } catch {
             self.error = .onSave
         }

@@ -50,7 +50,7 @@ struct VoteRepresentativesSection: View {
             } header: {
                 Text(verbatim: vote.representativesTitle).sectionTitle()
             } footer: {
-                Text("The state you chose in Mine. Names in alphabetical order.")
+                Text("The state you chose in Following. Names in alphabetical order.")
             }
         }
     }

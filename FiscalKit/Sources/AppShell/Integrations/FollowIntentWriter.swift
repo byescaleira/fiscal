@@ -6,6 +6,9 @@ struct FollowIntentWriter: Sendable {
     let store: AppReleaseStore
     let people: @Sendable ([String]) async throws -> [PersonCard]
     let follows: @Sendable () async throws -> any FollowRepository
+    var widget: @MainActor @Sendable (_ unfollowed: String?) -> Void = {
+        FollowingWidget.refresh(unfollowed: $0)
+    }
 
     func follow(slug: String, at date: Date = .now) async throws -> PersonCard {
         try IntentWorkspace.ensureOpen(store: store)
@@ -17,12 +20,14 @@ struct FollowIntentWriter: Sendable {
         }
         guard let card else { throw IntegrationError.unavailable }
         try await follows().follow(card, at: date)
+        await widget(nil)
         return card
     }
 
     func unfollow(slug: String) async throws {
         try IntentWorkspace.ensureOpen(store: store)
         try await follows().unfollow(slug: slug)
+        await widget(slug)
     }
 }
 
