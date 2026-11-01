@@ -52,6 +52,7 @@ public struct MainScreen: View {
             .environment(\.explainer, FiscalServices.shared.explainer)
             .onChange(of: session.generation, initial: true) { launch.finish(.content) }
             .task { await session.start() }
+            .modifier(FollowSync())
             .task(id: launch.isComplete) {
                 try? await Task.sleep(for: launch.isComplete ? .milliseconds(600) : .seconds(8))
                 launch.dismiss()
@@ -109,6 +110,18 @@ private struct RoutesBeside: ViewModifier {
 
     func body(content: Content) -> some View {
         content.onChange(of: context, initial: true) { navigation.fit(context) }
+    }
+}
+
+private struct FollowSync: ViewModifier {
+    @Environment(SessionModel.self) private var session
+    @Environment(FollowController.self) private var follow
+
+    func body(content: Content) -> some View {
+        @Bindable var follow = follow
+        content
+            .task(id: session.generation) { await follow.reload() }
+            .errorAlert($follow.error)
     }
 }
 
