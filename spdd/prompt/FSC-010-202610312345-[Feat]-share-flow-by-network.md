@@ -27,8 +27,8 @@ Definição de pronto:
   - **Tipográfico (Folha de apuração):** um mosaico de blocos sólidos: quem é o assunto no topo, o número ou a frase principal em Bricolage grande sobre papel branco, um bloco por fato, a fonte e a marca dentro da zona segura, e as faixas de identidade embaixo;
   - **Dados:** um mosaico em que os blocos são os próprios dados, com o número principal no maior. Em Comparação e na Disputa de dois nomes, o Duelo: duas colunas de mesmo tamanho e peso, com o critério escrito.
 
-  Os 8 assuntos desenham nos três estilos e nos três formatos sem cortar texto (`ShareStyleTests.everySubjectFitsEveryStyleAndFormat`).
-- **Given** a pessoa abre Compartilhar **When** a tela aparece **Then** o estilo já escolhido é o Tipográfico, ou Dados em Comparação e Disputa, O Pôster continua como opção, e a troca não perde a seleção (`ShareFlowModelTests.defaultStyleFollowsTheSubject`).
+  Os 10 assuntos desenham nos três estilos e nos três formatos sem cortar texto (`ShareStyleTests.everySubjectFitsEveryStyleAndFormat`).
+- **Given** a pessoa abre Compartilhar **When** a tela aparece **Then** o estilo já escolhido é o Tipográfico, ou Dados em Comparação e Disputa. O Pôster continua como opção, e a troca não perde a seleção (`ShareFlowModelTests.defaultStyleFollowsTheSubject`).
 - **Given** "Onde postar" **When** a pessoa escolhe o destino **Then** o formato e a mídia seguem a tabela (`ShareDestinationTests.mapsEachDestination`):
 
   | Destino | Formato | Mídia | Texto |
@@ -180,7 +180,7 @@ classDiagram
    - **Vídeo:**
      - 5 s, para ficar dentro dos 3 a 6 s da pesquisa e do mínimo de 3 s do Reels, com tempo de leitura depois da animação;
      - os números rolam, e o risco de um quadro parado no meio mostrar um valor falso (a miniatura do sistema mostrou 75,3% num valor de 85,7%) é contido por um primeiro quadro sem número e por mais de 2 s parados no valor real; data não rola, porque não é contagem;
-     - os quadros saem do `ImageRenderer` (só views do SwiftUI, sem retrato Lottie em movimento, com `portraitsStill`);
+     - os quadros saem do `ImageRenderer`, só com views do SwiftUI;
      - a geração roda fora da main thread, mas o `ImageRenderer` exige a main, então os quadros saem em lotes com `Task.yield`.
    - **Links:**
      - o app ganha o entitlement `com.apple.developer.associated-domains` com `applinks:fiscal.byescaleira.com`;
@@ -193,17 +193,17 @@ classDiagram
      - sem push, sem contagem e sem pedido repetido.
    - **Direção visual (A + C, recomendada):**
      - Folha é o padrão porque lê em 1 segundo e não sugere juízo; Duelo fica em Comparação e Disputa porque só ali há dois lados de verdade;
-     - da direção B fica só a ideia das faixas proporcionais, no movimento das barras do vídeo;
+     - da direção B ficam o mosaico de blocos e as faixas proporcionais;
      - a cor do tipo de assunto identifica o assunto e nunca diz bom ou ruim. A cor de partido só entra como identidade da pessoa, como no resto do app;
-     - a faixa inferior da Folha e o × do Duelo ocupam a zona dos botões, para ela não ficar vazia.
+     - as faixas do partido ou os blocos proporcionais ocupam a zona dos botões, para ela não ficar vazia.
    - **Identidade (refino de 01/11/2026):**
      - crítica: os cartões e o estúdio estavam corretos, mas genéricos, sem a marca e a cor que identificam o Fiscal; as redes eram blocos cinzas iguais, os títulos das seções sumiam, e a barra de postar era uma faixa cinza;
      - o carrossel fica direto sobre o fundo da tela, com o cartão escolhido maior. Alternativa descartada: um palco com o gradiente do partido atrás do carrossel, como no Apple Invites (usuário em 01/11/2026: "esse background atrás do carrossel ficou ruim");
      - a arte do Pôster é a primeira seção do painel, com o trilho grande da primeira versão do compartilhar (usuário: "estava muito bom lá no começo [...], tem que ser maior e parecido com o que tinha antes"). Alternativas descartadas: o botão "Arte" abrindo uma folha, escondido no fim do trilho ("precisa se apresentar de uma forma mais clara"), e as miniaturas pequenas;
      - o cartão fica fixo e grande, e os controles rolam num painel cinza separado (usuário: "pode existir um scroll vertical para manter o resultado final grande, desde que seja possível separar esses dois, visualmente falando"). Alternativa descartada: tudo sem rolagem, que encolhia o cartão;
      - as redes viram círculos com o `SymbolBadge`, como a fileira da folha do sistema, e os lugares e fatos usam a cápsula `.bordered` do kit (a mesma do `ChoicePills`);
-     - os títulos das seções passam à Bricolage, e o botão de postar fica numa barra de vidro (`safeAreaBar`);
-     - o Dados de uma pessoa é um placar sobre o gradiente do partido, e o Duelo coloca os dois nomes sobre as duas cores;
+     - os títulos das seções passam à Bricolage;
+     - o Dados de uma pessoa é um mosaico na cor do partido, e o Duelo coloca os dois nomes sobre as duas cores;
      - a frase "A e B" sai do Duelo de Comparação, porque os nomes já estão nos lados.
    - **Distribuição (usuário em 01/11/2026: "ficam uns espaços vazios feios"):**
      - o cartão inteiro é um mosaico de blocos sólidos, de ponta a ponta, com um dado por bloco, a partir de referências vistas em imagem: o Strava Year in Sport (Manual) e os cartões do Spotify Wrapped 2025;
@@ -221,7 +221,8 @@ classDiagram
    - a pesquisa de 31/10/2026, com as Meta Sharing to Stories e Reels, o TikTok Share Kit e o WhatsApp Link Previews;
    - Spotify Wrapped (cartões 9:16 por slide), Strava (sticker de dados) e Apple Music (escolher o trecho antes);
    - o canvas [FSC-005](FSC-005-202610291700-[Codify]-share-cards-and-art.md) para o pôster, a arte e os créditos;
-   - Apple Invites, capturas da App Store: o carrossel de cartões com o escolhido maior, e os rostos em círculo.
+   - Apple Invites, capturas da App Store: o carrossel de cartões com o escolhido maior;
+   - Strava Year in Sport (Manual) e cartões do Spotify Wrapped 2025, vistos em imagem, para o mosaico e o bloco sólido do Pôster.
 
 ## Structure
 
@@ -234,7 +235,12 @@ FiscalKit/
   Sources/FeatureShare/ShareCaption.swift                      (novo) legenda
   Sources/FeatureShare/ShareTypographicView.swift              (novo) estilo Tipográfico
   Sources/FeatureShare/ShareDataView.swift                     (novo) estilo Dados
-  Sources/FeatureShare/ShareMotion.swift                       (novo) \.shareProgress e contagem
+  Sources/FeatureShare/ShareMotion.swift                       (novo) \.shareProgress, sequência e números rolando
+  Sources/FeatureShare/ShareContentRules.swift                 (novo) a porta que retira dado ausente
+  Sources/FeatureShare/ShareDuelView.swift                     (novo) Duelo
+  Sources/FeatureShare/ShareZoneArt.swift                      (novo) blocos, cabeçalho, rodapé e zona segura
+  Sources/FeatureShare/ShareCardCarousel.swift, ShareArtRail.swift, SharePostBar.swift, ShareModel+Art.swift, ShareModel+Post.swift
+  Sources/FeatureShare/ShareVictoryPoster.swift, ShareInvestigationPoster.swift, ShareFormat+Victory.swift   (removidos)
   Sources/FeatureShare/ShareVideoRenderer.swift                (novo) MP4 com AVAssetWriter
   Sources/FeatureShare/ShareDelivery.swift                     (novo, iOS) pasteboard, Fotos, folha
   Sources/FeatureShare/ShareCardContent.swift, ShareCardBuilder*.swift   fatos opcionais, assunto seguindo
@@ -309,11 +315,11 @@ docs/evidence/FSC-010/, CHANGELOG.md, docs/roadmap.md, spdd/README.md
 8.2. **Estúdio de compartilhar** (prompt-update de 01/11/2026). Depende de: 6 e 8.1.
     - O carrossel dos estilos com os cartões de verdade.
     - Os trilhos "Onde postar" e "O que entra", o trilho de Arte no Pôster, as ferramentas por contexto, a folha de Legenda e o layout de tela larga.
-    - Os números parados em todo quadro do vídeo e a mediana no lugar da classificação.
+    - A sequência do vídeo, com os números rolando, e a mediana no lugar da classificação.
     - A identidade do Fiscal nos cartões: nome, marca e cor do partido, sem retrato.
     - `ShareCardContent.published`: a única porta por onde o conteúdo chega aos cartões, sem dado ausente e com o principal primeiro.
     - Verificação: `ShareContentRulesTests` e imagens dos 10 assuntos nos 3 estilos e formatos.
-    - Verificação: `ShareStyleTests.everyFrameShowsTheRealNumbers`, `ShareModelTests.theCardShowsTheMedianInsteadOfAVerdict`, capturas no simulador e no iPhone, iterando até o ok do usuário.
+    - Verificação: `ShareStyleTests.theVideoSettlesOnTheRealNumbers`, `ShareStyleTests.numbersRollAndTheFirstFrameHasNone`, `ShareModelTests.theCardShowsTheMedianInsteadOfAVerdict`, capturas no simulador e no iPhone, iterando até o ok do usuário.
 9. **Rodar e QA.** Depende de: 1 a 8.2.
    - `scripts/verify.sh --full`.
    - Build no iPhone do usuário.
