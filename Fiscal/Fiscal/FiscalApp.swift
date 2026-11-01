@@ -43,6 +43,20 @@ struct FiscalApp: App {
             }
         #endif
         #if os(macOS)
+            .commands { FiscalCommands() }
+        #endif
+        #if os(visionOS)
+            WindowGroup(for: UUID.self) { $id in
+                RouteWindowScreen(id: id)
+                    .environment(bootstrap.update)
+                    .environment(bootstrap.export)
+                    .featureFlags(bootstrap.flags)
+                    .fiscalSettings(settings)
+                    .groupedSurface(.plain)
+                    .readsLiteMode()
+            }
+        #endif
+        #if os(macOS)
             Settings {
                 FiscalSettingsWindow()
                     .environment(bootstrap.update)
