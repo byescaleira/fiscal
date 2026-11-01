@@ -241,4 +241,21 @@ struct ShareFlowModelTests {
         await place.load()
         #expect(place.content?.stageParties.isEmpty == true)
     }
+
+    @Test func theFreeZoneShowsFacesOrSharesAndNeverANumber() async throws {
+        let person = ShareFixtures.model(.person(slug: "tabata-amaral"))
+        await person.load()
+        let face = try #require(person.content?.faces.first)
+        #expect(person.content?.zoneContent == .faces([face]))
+        let vote = ShareFixtures.model(.vote(id: "camara-18732026"))
+        await vote.load()
+        guard case .shares(let segments)? = vote.content?.zoneContent else {
+            Issue.record("expected the vote shares")
+            return
+        }
+        #expect(segments.count == 3)
+        let place = ShareFixtures.model(.representatives(uf: "sp"))
+        await place.load()
+        #expect(place.content?.zoneContent == ShareZoneContent.none)
+    }
 }

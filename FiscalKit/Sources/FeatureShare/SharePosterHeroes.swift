@@ -139,7 +139,7 @@ private struct ShareCount: View {
     }
 }
 
-struct ShareSegment: Hashable {
+struct ShareSegment: Hashable, Sendable {
     let share: Double
     let color: Color
 }

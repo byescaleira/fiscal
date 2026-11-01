@@ -165,36 +165,16 @@ private struct ShareContent: View {
 
     var body: some View {
         let format = card.format.textFormat
-        let extra = card.format.safeExtra(beyond: format.margin)
-        VStack(alignment: .leading, spacing: .spaceL) {
+        VStack(alignment: .leading, spacing: .spaceM) {
             ShareLead(poster: card.poster, format: format)
             ShareFooter(card: card, code: code)
         }
-        .padding(format.margin)
+        .padding(format.margin - .spaceS)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(alignment: .bottom) {
-            if card.artwork?.isBackdrop == true {
-                ShareScrim(field: field)
-                    .padding(.horizontal, -extra.leading)
-                    .padding(.bottom, -extra.bottom)
-            }
-        }
-    }
-}
-
-private struct ShareScrim: View {
-    let field: Color
-
-    var body: some View {
-        VStack(spacing: .zero) {
-            LinearGradient(
-                colors: [field.opacity(.zero), field.opacity(.opacityPosterScrim)],
-                startPoint: .top, endPoint: .bottom
-            )
-            .frame(height: .posterFade)
-            field.opacity(.opacityPosterScrim)
-        }
-        .padding(.top, -.posterFade)
+        .background(
+            field.opacity(.opacityPosterPanel), in: .rect(cornerRadius: .radiusL)
+        )
+        .padding(.spaceS)
     }
 }
 
@@ -229,7 +209,7 @@ private struct ShareLead: View {
                     .minimumScaleFactor(.shareTextShrink)
             }
             if let person = poster.person {
-                ShareIdentity(name: person.name, party: person.party)
+                ShareFaceLine(face: person)
             }
         }
     }

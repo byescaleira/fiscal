@@ -19,7 +19,6 @@ extension CGFloat {
     public static let posterRowFeed: CGFloat = 30
     public static let posterRowMessage: CGFloat = 24
     public static let posterPlateFeed: CGFloat = 168
-    public static let posterFade: CGFloat = 96
     public static let posterStripe: CGFloat = 5
     public static let posterBar: CGFloat = 6
     public static let posterCode: CGFloat = 38
@@ -31,7 +30,6 @@ extension CGFloat {
 }
 
 extension Double {
-    public static let opacityPosterScrim = 0.94
     public static let opacityPosterLabel = 0.86
     public static let opacityPosterTint = 0.32
     public static let opacityPosterSecondary = 0.74

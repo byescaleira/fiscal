@@ -16,11 +16,12 @@ extension CGFloat {
     public static let shareFolhaBand: CGFloat = 212
     public static let shareFolhaStrip: CGFloat = 14
     public static let shareFolhaHook: CGFloat = 20
-    public static let shareFolhaGhost: CGFloat = 190
-    public static let shareFolhaGhostDrop: CGFloat = 30
-    public static let shareFolhaDrift: CGFloat = 48
     public static let shareFolhaRule: CGFloat = 2
     public static let shareFacePortrait: CGFloat = 48
+    public static let shareZonePortrait: CGFloat = 176
+    public static let shareZonePortraitPair: CGFloat = 112
+    public static let shareStatLead: CGFloat = 64
+    public static let shareStatSmall: CGFloat = 24
     public static let shareFacePortraitSmall: CGFloat = 26
     public static let shareDuelPortrait: CGFloat = 46
     public static let shareToolDivider: CGFloat = 24
@@ -29,10 +30,7 @@ extension CGFloat {
     public static let shareDuelFigure: CGFloat = 52
     public static let shareDataLead: CGFloat = 40
     public static let shareDataBarFigure: CGFloat = 16
-    public static let shareDuelMark: CGFloat = 300
-    public static let shareDuelMarkDrop: CGFloat = 104
     public static let shareDuelLabel: CGFloat = 124
-    public static let shareDuelDivider: CGFloat = 72
     public static let shareArtApproach: CGFloat = 0.08
     public static let shareCarouselMinimum: CGFloat = 220
     public static let shareCarouselShare: CGFloat = 0.72
@@ -40,15 +38,15 @@ extension CGFloat {
     public static let shareControlsWidth: CGFloat = 400
     public static let shareNetworkTile: CGFloat = 66
     public static let shareNoteMinimumHeight: CGFloat = 800
-    public static let shareDataBar: CGFloat = 8
+    public static let shareDataBar: CGFloat = 12
     public static let shareDataCellStories: CGFloat = 30
     public static let shareDataCellFeed: CGFloat = 34
     public static let shareDataCellMessage: CGFloat = 26
 }
 
 extension Double {
-    public static let opacityFolhaGhost = 0.12
-    public static let opacityDuelMark = 0.07
+    public static let opacityShareTile = 0.14
+    public static let opacityPosterPanel = 0.86
     public static let opacityShareNeighbor = 0.9
     public static let opacityShareCardShadow = 0.22
 }

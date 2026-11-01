@@ -63,8 +63,6 @@ public struct ShareDuel: Hashable, Sendable {
 }
 
 struct ShareDuelView: View {
-    @Environment(\.shareProgress) private var progress
-    @Environment(\.shareShowsArt) private var showsArt
     let card: ShareCard
     let duel: ShareDuel
     let code: CGImage?
@@ -73,16 +71,9 @@ struct ShareDuelView: View {
         let format = card.format
         ZStack(alignment: .bottom) {
             ShareStageField(parties: [duel.left.detail, duel.right.detail])
-            if showsArt, format == .stories {
-                Text(verbatim: "×")
-                    .font(.posterFigure(.shareDuelMark))
-                    .foregroundStyle(.white.opacity(.opacityDuelMark))
-                    .fixedSize()
-                    .scaleEffect(
-                        .shareNeighborScale + (1 - .shareNeighborScale)
-                            * ShareMotion.eased(progress)
-                    )
-                    .offset(y: .shareDuelMarkDrop)
+            if format == .stories {
+                ShareZoneArt(content: card.content)
+                    .frame(height: .shareFolhaBand)
                     .accessibilityHidden(true)
             }
             VStack(spacing: .spaceXS) {
@@ -145,9 +136,9 @@ private struct ShareDuelSides: View {
         let size = format.figureSize(
             .shareDuelFigure, for: value, in: (format.safeWidth - .spaceL * 2) / 2)
         HStack(alignment: .top, spacing: .zero) {
-            ShareDuelSide(side: duel.left, size: size)
+            ShareDuelSide(side: duel.left, size: size, showsPortrait: format != .stories)
                 .padding(.trailing, .spaceS)
-            ShareDuelSide(side: duel.right, size: size)
+            ShareDuelSide(side: duel.right, size: size, showsPortrait: format != .stories)
                 .padding(.leading, .spaceS)
         }
     }
@@ -156,10 +147,11 @@ private struct ShareDuelSides: View {
 private struct ShareDuelSide: View {
     let side: ShareDuel.Side
     let size: CGFloat
+    let showsPortrait: Bool
 
     var body: some View {
         VStack(spacing: .space2XS) {
-            if let slug = side.slug {
+            if showsPortrait, let slug = side.slug {
                 PersonPortrait(
                     slug: slug, name: side.name, party: side.detail, size: .shareDuelPortrait)
             }

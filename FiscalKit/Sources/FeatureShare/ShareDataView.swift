@@ -15,6 +15,7 @@ public struct ShareBoard: Hashable, Sendable {
     public enum Layout: Hashable, Sendable {
         case tally(ShareTally)
         case bars([Bar])
+        case stats(lead: SharePoster.Fact, rest: [SharePoster.Fact])
         case cells([SharePoster.Fact])
         case versus([ShareFace], [ShareCompareRow])
         case people([ShareFace])
@@ -34,7 +35,12 @@ public struct ShareBoard: Hashable, Sendable {
             title = nil
             lead = nil
             person = content.faces.first
-            layout = .cells(metrics.map { SharePoster.Fact(value: $0.value, label: $0.label) })
+            let facts = metrics.map { SharePoster.Fact(value: $0.value, label: $0.label) }
+            if let lead = facts.first(where: { $0.value != PublicFormat.missing }) ?? facts.first {
+                layout = .stats(lead: lead, rest: facts.filter { $0 != lead })
+            } else {
+                layout = .cells([])
+            }
             note = nil
         case .vote(let tally):
             title = content.headline ?? tally.proposition
@@ -109,11 +115,20 @@ public struct ShareBoard: Hashable, Sendable {
 }
 
 extension ShareBoard.Layout {
+    var fillsTheCard: Bool {
+        switch self {
+        case .stats: true
+        case .cells(let cells): !cells.isEmpty
+        default: false
+        }
+    }
+
     var texts: [String] {
         switch self {
         case .tally(let tally):
             [tally.yes, tally.no, tally.others, tally.result].compactMap(\.self)
         case .bars(let bars): bars.flatMap { [$0.label, $0.value] }
+        case .stats(let lead, let rest): ([lead] + rest).flatMap { [$0.value, $0.label] }
         case .cells(let cells): cells.flatMap { [$0.value, $0.label] }
         case .versus(let faces, let rows):
             faces.flatMap { [$0.name, $0.party] } + rows.flatMap { [$0.label] + $0.values }
@@ -146,12 +161,14 @@ struct ShareDataView: View {
                 .minimumScaleFactor(.shareTextShrink)
                 .fixedSize(horizontal: false, vertical: true)
             if let person = board.person {
-                ShareFaceLine(face: person)
+                ShareFaceLine(face: person, showsPortrait: format != .stories)
             }
             if board.lead == nil, let title = board.title {
                 ShareBoardTitle(title: title, format: format)
             }
-            Spacer(minLength: .zero)
+            if !board.layout.fillsTheCard {
+                Spacer(minLength: .zero)
+            }
             if let lead = board.lead {
                 ShareFigure(
                     value: lead,
@@ -172,7 +189,9 @@ struct ShareDataView: View {
                     .lineLimit(2)
                     .minimumScaleFactor(.shareTextShrink)
             }
-            Spacer(minLength: .zero)
+            if !board.layout.fillsTheCard {
+                Spacer(minLength: .zero)
+            }
             ShareFooter(card: card, code: code)
                 .fixedSize(horizontal: false, vertical: true)
         }
@@ -180,6 +199,14 @@ struct ShareDataView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .background {
             ShareStageField(parties: card.content.stageParties)
+        }
+        .overlay(alignment: .bottom) {
+            if format == .stories {
+                ShareDataZone(content: card.content)
+                    .frame(height: .shareFolhaBand)
+                    .environment(\.colorScheme, .light)
+                    .accessibilityHidden(true)
+            }
         }
     }
 }
@@ -211,6 +238,19 @@ private struct ShareBoardLayout: View {
             VStack(alignment: .leading, spacing: .spaceXS) {
                 ForEach(bars.prefix(format == .feed ? 4 : 3)) { bar in
                     ShareBarRow(bar: bar, format: format)
+                }
+            }
+        case .stats(let lead, let rest):
+            VStack(spacing: .spaceXS) {
+                ShareStatTile(fact: lead, size: .shareStatLead, width: format.safeWidth)
+                if !rest.isEmpty {
+                    HStack(spacing: .spaceXS) {
+                        ForEach(rest.prefix(3)) { fact in
+                            ShareStatTile(
+                                fact: fact, size: .shareStatSmall,
+                                width: format.safeWidth / CGFloat(min(rest.count, 3)))
+                        }
+                    }
                 }
             }
         case .cells(let cells):
@@ -255,25 +295,55 @@ private struct ShareBarRow: View {
     }
 }
 
+private struct ShareDataZone: View {
+    @Environment(\.shareShowsArt) private var showsArt
+    let content: ShareCardContent
+
+    var body: some View {
+        if showsArt, content.zoneContent == .none {
+            content.accent
+        } else {
+            ShareZoneArt(content: content)
+        }
+    }
+}
+
+private struct ShareStatTile: View {
+    let fact: SharePoster.Fact
+    let size: CGFloat
+    let width: CGFloat
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: .space2XS) {
+            Spacer(minLength: .zero)
+            ShareFigure(
+                value: fact.value, size: min(size, width / CGFloat(max(fact.value.count, 1)))
+            )
+            .fixedSize(horizontal: false, vertical: true)
+            Text(verbatim: fact.label)
+                .font(.posterLabel)
+                .foregroundStyle(Color.posterSecondary)
+                .lineLimit(2)
+                .minimumScaleFactor(.shareTextShrink)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(.spaceS)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        .background(.white.opacity(.opacityShareTile), in: .rect(cornerRadius: .radiusM))
+    }
+}
+
 private struct ShareBoardCells: View {
     let cells: [SharePoster.Fact]
     let format: ShareFormat
 
     var body: some View {
-        Grid(alignment: .topLeading, horizontalSpacing: .spaceL, verticalSpacing: .spaceS) {
+        VStack(spacing: .spaceXS) {
             ForEach(Array(stride(from: 0, to: cells.count, by: 2)), id: \.self) { start in
-                GridRow {
+                HStack(spacing: .spaceXS) {
                     ForEach(cells[start..<min(start + 2, cells.count)]) { cell in
-                        VStack(alignment: .leading, spacing: .zero) {
-                            ShareFigure(value: cell.value, size: format.dataCell)
-                            Text(verbatim: cell.label)
-                                .font(.posterLabel)
-                                .foregroundStyle(Color.posterSecondary)
-                                .lineLimit(2)
-                                .minimumScaleFactor(.shareTextShrink)
-                                .fixedSize(horizontal: false, vertical: true)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                        ShareStatTile(
+                            fact: cell, size: format.dataCell, width: format.safeWidth / 2)
                     }
                 }
             }
