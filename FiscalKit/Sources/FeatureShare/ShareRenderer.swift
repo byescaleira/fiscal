@@ -8,6 +8,9 @@ import SwiftUI
 public enum ShareRenderer {
     public static let brand = "Fiscal"
     public static let subjectLimit = 60
+    public static let videoScale: CGFloat = 3
+    public static let videoSeconds = 4.0
+    public static let videoFPS = 30
 
     public static func fileName(for content: ShareCardContent, extension suffix: String = "png")
         -> String
@@ -39,6 +42,17 @@ public enum ShareRenderer {
         let url = folder.appending(path: file.fileName)
         try file.png.write(to: url, options: .atomic)
         return url
+    }
+
+    public static func video(
+        _ card: ShareCard, code: CGImage?, portraits: PortraitArtwork?,
+        progress: (Double) -> Void
+    ) async throws -> URL {
+        try await ShareVideoRenderer.render(
+            size: card.format.size, scale: videoScale, seconds: videoSeconds, fps: videoFPS,
+            fileName: fileName(for: card.content, extension: "mp4"),
+            frame: { AnyView(frame(card, code: code, portraits: portraits, progress: $0)) },
+            progress: progress)
     }
 
     public static func frame(

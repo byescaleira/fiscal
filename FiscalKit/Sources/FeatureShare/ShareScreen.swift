@@ -55,6 +55,7 @@ private struct ShareEditor: View {
                     }
                 }
                 ShareDestinationSection()
+                ShareMediaSection()
                 if model.destination.acceptsCaption {
                     ShareCaptionSection()
                 }
@@ -67,6 +68,7 @@ private struct ShareEditor: View {
             SharePostBar()
         }
         .sharePostSheet($model.postRequest)
+        .onDisappear { model.discardExport() }
         .task(id: model.card) {
             model.render(scale: displayScale, portraits: portraits)
         }

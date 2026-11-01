@@ -8,6 +8,9 @@ import Observation
 
 @MainActor @Observable
 public final class ShareModel {
+    public typealias VideoMaker =
+        @MainActor (ShareCard, CGImage?, PortraitArtwork?, (Double) -> Void) async throws -> URL
+
     public static let neutralCollection = "acervo-historico"
     public static let lastSeries = "paisagens"
 
@@ -28,6 +31,10 @@ public final class ShareModel {
     public private(set) var exportProgress: Double = 0
     public private(set) var isPosting = false
     public private(set) var postFailed = false
+    public private(set) var isExportingVideo = false
+    public private(set) var videoFellBack = false
+    public private(set) var notice: ShareNotice?
+    public var sendsVideo = true
     public var postRequest: SharePostRequest?
 
     @ObservationIgnored private let service: (any PublicDataService)?
@@ -40,6 +47,11 @@ public final class ShareModel {
     @ObservationIgnored private let builder: ShareCardBuilder
     @ObservationIgnored private let now: @Sendable () -> Date
     @ObservationIgnored private let requests = PublicDataRequests()
+    @ObservationIgnored private let delivery: ShareDelivery
+    @ObservationIgnored private let metaAppID: String?
+    @ObservationIgnored private let makeVideo: VideoMaker
+    @ObservationIgnored private var exportedFile: URL?
+    @ObservationIgnored private var postTask: Task<Void, Never>?
 
     public init(
         subject: ShareSubject, service: (any PublicDataService)?,
@@ -47,7 +59,9 @@ public final class ShareModel {
         follows: (any FollowRepository)? = nil,
         catalog: ArtCatalog? = try? ArtCatalog.bundled(),
         calendar: Calendar = GregorianCalendar.current,
-        now: @escaping @Sendable () -> Date = { .now }
+        now: @escaping @Sendable () -> Date = { .now },
+        delivery: ShareDelivery = .live, metaAppID: String? = ShareMetaApp.id(),
+        makeVideo: @escaping VideoMaker = ShareRenderer.video
     ) {
         self.subject = subject
         self.service = service
@@ -57,6 +71,9 @@ public final class ShareModel {
         self.catalog = catalog
         builder = ShareCardBuilder(calendar: calendar)
         self.now = now
+        self.delivery = delivery
+        self.metaAppID = metaAppID
+        self.makeVideo = makeVideo
     }
 
     public var isEmpty: Bool { content == nil }
@@ -178,20 +195,94 @@ public final class ShareModel {
         }
     }
 
+    public var usesVideo: Bool {
+        switch destination.media {
+        case .video: true
+        case .either: sendsVideo
+        case .image: false
+        }
+    }
+
+    public var offersMediaChoice: Bool { destination.media == .either }
+
+    public func startPost() {
+        guard !isPosting else { return }
+        postTask = Task { await post() }
+    }
+
+    public func cancelPost() {
+        postTask?.cancel()
+    }
+
     public func post() async {
         guard !isPosting else { return }
         isPosting = true
         postFailed = false
+        videoFellBack = false
+        notice = nil
         exportProgress = 0
-        defer { isPosting = false }
+        discardExport()
+        defer {
+            isPosting = false
+            isExportingVideo = false
+        }
         render(scale: renderScale, portraits: renderPortraits)
-        guard let file = rendered?.file, let url = try? ShareRenderer.write(file) else {
+        guard let card else {
+            postFailed = true
+            return
+        }
+        var isVideo = usesVideo
+        var file: URL?
+        if isVideo {
+            isExportingVideo = true
+            do {
+                file = try await makeVideo(card, code, renderPortraits) { [weak self] value in
+                    self?.exportProgress = value
+                }
+            } catch is CancellationError {
+                exportProgress = 0
+                return
+            } catch {
+                videoFellBack = true
+                isVideo = false
+            }
+            isExportingVideo = false
+        }
+        guard let url = file ?? rendered.flatMap({ try? ShareRenderer.write($0.file) }) else {
             postFailed = true
             return
         }
         exportProgress = 1
-        postRequest = SharePostRequest(
-            file: url, caption: destination.acceptsCaption ? caption : nil)
+        exportedFile = url
+        let caption = destination.acceptsCaption ? caption : nil
+        let result = await delivery.send(
+            url, isVideo: isVideo, caption: caption, route: destination.delivery,
+            metaAppID: metaAppID, topColor: card.storyColors.top,
+            bottomColor: card.storyColors.bottom)
+        finish(result, file: url, caption: caption, isVideo: isVideo)
+    }
+
+    public func discardExport() {
+        guard let exportedFile else { return }
+        try? FileManager.default.removeItem(at: exportedFile.deletingLastPathComponent())
+        self.exportedFile = nil
+    }
+
+    private func finish(
+        _ result: ShareDeliveryResult, file: URL, caption: String?, isVideo: Bool
+    ) {
+        switch result {
+        case .needsShareSheet:
+            postRequest = SharePostRequest(file: file, caption: caption)
+        case .openedStories:
+            discardExport()
+        case .savedToPhotos:
+            notice = .savedToPhotos(isVideo: isVideo)
+            discardExport()
+        case .failed(let reason):
+            notice = .failed(reason)
+            discardExport()
+        }
     }
 
     public func load() async {

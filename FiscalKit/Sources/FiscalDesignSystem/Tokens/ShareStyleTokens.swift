@@ -21,6 +21,10 @@ extension CGFloat {
     public static let shareStyleTile: CGFloat = 96
 }
 
+extension String {
+    public static let shareStoryField = "#0F1717"
+}
+
 extension Color {
     public static let shareTypeField = Color(light: 0x0F1717, dark: 0x0F1717)
     public static let shareDataField = Color(light: 0x18211F, dark: 0x18211F)

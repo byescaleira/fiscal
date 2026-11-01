@@ -16,6 +16,11 @@ public struct SharePostRequest: Identifiable, Hashable, Sendable {
     }
 }
 
+public enum ShareNotice: Equatable, Sendable {
+    case savedToPhotos(isVideo: Bool)
+    case failed(String)
+}
+
 extension View {
     func sharePostSheet(_ request: Binding<SharePostRequest?>) -> some View {
         modifier(SharePostSheet(request: request))

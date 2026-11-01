@@ -1,3 +1,4 @@
+import FiscalData
 import FiscalDomain
 import Foundation
 import Testing
@@ -93,8 +94,105 @@ struct ShareFlowModelTests {
         #expect(model.exportProgress == 1)
         #expect(!model.isPosting)
         model.choose(.instagramStories)
+        model.sendsVideo = false
         await model.post()
         #expect(model.postRequest?.caption == nil)
         #expect(model.postRequest?.file.pathExtension == "png")
     }
+
+    private struct VideoFailure: Error {}
+
+    private func delivery(saved: @escaping @MainActor (URL, Bool) -> Void = { _, _ in })
+        -> ShareDelivery
+    {
+        ShareDelivery(
+            writePasteboard: { _, _ in }, open: { _ in true }, canOpen: { _ in true },
+            saveToPhotos: { file, isVideo in saved(file, isVideo) })
+    }
+
+    private func video() throws -> URL {
+        let folder = FileManager.default.temporaryDirectory
+            .appending(path: UUID().uuidString, directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        let file = folder.appending(path: "Fiscal.mp4")
+        try Data([1]).write(to: file)
+        return file
+    }
+
+    private func model(
+        saved: @escaping @MainActor (URL, Bool) -> Void = { _, _ in },
+        makeVideo: @escaping ShareModel.VideoMaker
+    ) async -> ShareModel {
+        let model = ShareModel(
+            subject: .person(slug: "tabata-amaral"),
+            service: ShowcasePublicData(scenario: .normal, now: ShareFixtures.now),
+            delivery: delivery(saved: saved), metaAppID: nil, makeVideo: makeVideo)
+        await model.load()
+        model.render(scale: 1, portraits: nil)
+        return model
+    }
+
+    @Test func reelsMakeAVideoAndOpenTheSheetWithoutACaption() async throws {
+        let file = try video()
+        let model = await model { _, _, _, progress in
+            progress(0.5)
+            return file
+        }
+        model.choose(.instagramReels)
+        await model.post()
+        let request = try #require(model.postRequest)
+        #expect(request.file == file)
+        #expect(request.caption == nil)
+        #expect(!model.videoFellBack)
+        #expect(model.exportProgress == 1)
+        #expect(!model.isExportingVideo)
+    }
+
+    @Test func aFailedVideoFallsBackToTheImageAndKeepsTheSelection() async throws {
+        let model = await model { _, _, _, _ in throw VideoFailure() }
+        let fact = try #require(model.facts.first)
+        model.toggle(fact)
+        model.choose(.instagramStories)
+        await model.post()
+        #expect(model.videoFellBack)
+        #expect(model.postRequest?.file.pathExtension == "png")
+        #expect(!model.isOn(fact))
+    }
+
+    @Test func aCancelledVideoDeliversNothing() async {
+        let model = await model { _, _, _, _ in throw CancellationError() }
+        model.choose(.tiktok)
+        await model.post()
+        #expect(model.postRequest == nil)
+        #expect(model.notice == nil)
+        #expect(!model.videoFellBack)
+        #expect(!model.postFailed)
+        #expect(model.exportProgress == 0)
+    }
+
+    @Test func theImageChoiceSkipsTheVideo() async throws {
+        let model = await model { _, _, _, _ in
+            Issue.record("the video must not be made")
+            throw VideoFailure()
+        }
+        model.choose(.instagramStories)
+        model.sendsVideo = false
+        await model.post()
+        #expect(model.postRequest?.file.pathExtension == "png")
+    }
+
+    #if canImport(UIKit) && !os(visionOS)
+        @Test func tikTokSavesTheVideoAndCleansUp() async throws {
+            let file = try video()
+            var saved: (file: URL, isVideo: Bool)?
+            let model = await model(saved: { saved = ($0, $1) }) { _, _, _, _ in file }
+            model.choose(.tiktok)
+            await model.post()
+            #expect(saved?.file == file)
+            #expect(saved?.isVideo == true)
+            #expect(model.notice == .savedToPhotos(isVideo: true))
+            #expect(model.postRequest == nil)
+            #expect(!FileManager.default.fileExists(atPath: file.path(percentEncoded: false)))
+        }
+    #endif
 }
