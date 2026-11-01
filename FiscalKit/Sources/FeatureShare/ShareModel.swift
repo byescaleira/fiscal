@@ -180,6 +180,8 @@ public final class ShareModel {
             return try await highlight(id, from: service)
         case .investigation(let summary):
             return builder.investigation(summary)
+        case .following:
+            throw PublicDataError.notFound
         }
     }
 
