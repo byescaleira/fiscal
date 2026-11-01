@@ -131,8 +131,8 @@ private struct FiscalRootView: View {
                 MainScreen().fiscalWindow(window).environment(launch)
             } else if let error = bootstrap.error {
                 EmptyStateView(
-                    title: "Couldn't open Fiscal", description: LocalizedStringKey(error),
-                    actionTitle: "Try Again", action: { attempt += 1 }
+                    title: String(appLocalized: "Couldn't open Fiscal"), description: error,
+                    actionTitle: String(appLocalized: "Try Again"), action: { attempt += 1 }
                 ) {
                     IconRow(
                         "Nothing was erased", symbol: "externaldrive",
