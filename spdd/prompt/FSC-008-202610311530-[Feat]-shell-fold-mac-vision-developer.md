@@ -152,7 +152,7 @@ classDiagram
      - A rota ao lado continua no `.inspector`, no lado oposto.
      - A busca de Fiscalizar continua no `.searchable` da própria `SearchScreen`, que no Mac vai para a toolbar da janela.
      - O menu Ir (`FiscalCommands`) mora no `MacShell.swift`, junto com o `FocusedValues.fiscalNavigation` que ele lê; com a janela fora de foco, os itens ficam desativados.
-     - Os registros viram `Table` só em `#if os(macOS)`, em três telas: recibos, votos de uma votação e representantes de um lugar. O resto segue em lista e cartão. Os painéis de Hoje e Dinheiro usam o `GridCard` do kit, que no Mac já é `GroupBox`.
+     - Os registros viram `Table` só em `#if os(macOS)`, em três telas: recibos, votos de uma votação e representantes de um lugar. O resto segue em lista e cartão. Os cartões de Hoje e Dinheiro (`todayCard()` e `MoneyCard`) viram `GroupBox` no Mac.
    - **Menu do Mac:** `CommandMenu("Ir")` com as seções e ⌘1…⌘5 tirados de `AppSection.allCases`. A fase 2 vai trocar Região por Seguindo, e o menu acompanha sem mudança. "Fechar" fica no botão do inspector, com `.keyboardShortcut(.cancelAction)`.
    - **visionOS:** a rota abre numa janela vizinha (§7.4, de 28/10/2026). Ela substitui a folha do §8, mais antigo. O `RouteWindows` guarda a rota em memória porque a `Route` não é `Codable`. Tornar a `Route` `Codable` seria uma refatoração de todos os assuntos, sem pedido.
    - **Registro de eventos sem dado pessoal:** o `FiscalEvents` é um `enum` fechado, sem `String` livre vinda de fora. O teste percorre todos os casos e confere que nenhuma frase interpola slug, UF, código IBGE ou texto de busca (ADR 0017 e a promessa de privacidade de 29/10/2026).
