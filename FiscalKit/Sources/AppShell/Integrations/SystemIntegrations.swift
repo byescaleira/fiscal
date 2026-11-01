@@ -38,7 +38,6 @@ struct SystemIntegrations: ViewModifier {
     }
 
     private var openRoutes: [Route] {
-        navigation.paths.values.flatMap(\.self)
-            + [navigation.inspector?.route].compactMap(\.self) + navigation.inspectorPath
+        navigation.openRoutes
     }
 }

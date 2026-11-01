@@ -64,6 +64,7 @@ struct LensBackdrop: View {
                 startPoint: .top, endPoint: .center)
         }
         .ignoresSafeArea()
+        .extendsUnderVerticalBar()
         .accessibilityHidden(true)
     }
 }
