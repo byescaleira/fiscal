@@ -4,7 +4,7 @@ import Foundation
 extension ShareCardBuilder {
     public static let followingLimit = 6
 
-    public func following(_ people: [FollowedPerson]) -> ShareCardContent {
+    public func following(_ people: [FollowedPerson], at date: Date) -> ShareCardContent {
         let shown = people.sorted {
             $0.card.name.localizedStandardCompare($1.card.name) == .orderedAscending
         }
@@ -14,9 +14,11 @@ extension ShareCardBuilder {
             eyebrow: eyebrow(String(appLocalized: "Who I follow")),
             headline: String(appLocalized: "Who I follow on Fiscal"), faces: faces,
             body: .following(faces),
-            source: sourceLine(
-                name: String(appLocalized: "Chamber, Senate and TSE"), updatedAt: nil),
-            stamp: stamp(origin: "fiscal", "SEG", "lista", shown.map(\.followedAt).max()),
+            source: String(
+                appLocalized:
+                    "Source: \(String(appLocalized: "Chamber, Senate and TSE")) · \(fullDate(CalendarDay(date, calendar: calendar)))"
+            ),
+            stamp: stamp(origin: "fiscal", "SEG", "lista", date),
             link: home())
     }
 

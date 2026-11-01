@@ -38,6 +38,7 @@ public final class ShareModel {
     @ObservationIgnored private var renderPortraits: PortraitArtwork?
     @ObservationIgnored private let catalog: ArtCatalog?
     @ObservationIgnored private let builder: ShareCardBuilder
+    @ObservationIgnored private let now: @Sendable () -> Date
     @ObservationIgnored private let requests = PublicDataRequests()
 
     public init(
@@ -45,7 +46,8 @@ public final class ShareModel {
         races: (any LiveResultsService)? = nil, lens: (any LensRepository)? = nil,
         follows: (any FollowRepository)? = nil,
         catalog: ArtCatalog? = try? ArtCatalog.bundled(),
-        calendar: Calendar = GregorianCalendar.current
+        calendar: Calendar = GregorianCalendar.current,
+        now: @escaping @Sendable () -> Date = { .now }
     ) {
         self.subject = subject
         self.service = service
@@ -54,6 +56,7 @@ public final class ShareModel {
         self.follows = follows
         self.catalog = catalog
         builder = ShareCardBuilder(calendar: calendar)
+        self.now = now
     }
 
     public var isEmpty: Bool { content == nil }
@@ -260,7 +263,7 @@ public final class ShareModel {
         guard let follows else { throw PublicDataError.unavailable }
         let people = try await follows.followed()
         guard !people.isEmpty else { throw PublicDataError.notFound }
-        return builder.following(people)
+        return builder.following(people, at: now())
     }
 
     private func highlight(_ id: String, from service: any PublicDataService) async throws

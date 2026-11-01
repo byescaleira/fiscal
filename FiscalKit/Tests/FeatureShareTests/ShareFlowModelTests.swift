@@ -1,3 +1,4 @@
+import FiscalDomain
 import Foundation
 import Testing
 
@@ -5,6 +6,17 @@ import Testing
 
 @MainActor
 struct ShareFlowModelTests {
+    @Test func theFollowingCardCarriesItsSourceAndDate() {
+        let calendar = GregorianCalendar.current
+        let content = ShareCardBuilder(calendar: calendar).following(
+            [ShareFixtures.person("ana-souza", "Ana Souza")], at: ShareFixtures.now)
+        let parts = calendar.dateComponents([.day, .month, .year], from: ShareFixtures.now)
+        let date = String(
+            format: "%02d/%02d/%04d", parts.day ?? 0, parts.month ?? 0, parts.year ?? 0)
+        #expect(content.source.contains(date))
+        #expect(ShareCaption.make(content).components(separatedBy: date).count == 2)
+    }
+
     @Test func filesAreNamedAfterTheSubject() async throws {
         let person = ShareFixtures.model(.person(slug: "tabata-amaral"))
         await person.load()
