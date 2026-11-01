@@ -3,8 +3,12 @@ import Testing
 
 @testable import FiscalDomain
 
+func october(_ day: Int, month: Int = 10) -> CalendarDay {
+    CalendarDay(year: 2026, month: month, day: day) ?? CalendarDay(.distantPast)
+}
+
 struct FollowingFeedTests {
-    private static let today = CalendarDay(year: 2026, month: 10, day: 31)!
+    private static let today = october(31)
 
     static func card(_ slug: String, _ name: String) -> PersonCard {
         PersonCard(
@@ -14,7 +18,7 @@ struct FollowingFeedTests {
 
     static func vote(_ id: String, day: Int, month: Int = 10) -> PersonVote {
         PersonVote(
-            voteId: id, date: CalendarDay(year: 2026, month: month, day: day)!,
+            voteId: id, date: october(day, month: month),
             proposition: "PL 1/2026", summary: "Resumo", vote: "Sim", partyGuidance: nil,
             approved: true, themes: [])
     }
@@ -22,7 +26,7 @@ struct FollowingFeedTests {
     private static func check(_ id: String, day: Int) throws -> FactCheck {
         FactCheck(
             id: id, title: "Título", verdict: "Falso",
-            date: CalendarDay(year: 2026, month: 10, day: day)!,
+            date: october(day),
             url: try #require(URL(string: "https://projetocomprova.com.br/\(id)")),
             publisher: "Comprova", license: "CC BY-ND 4.0",
             licenseUrl: try #require(URL(string: "https://creativecommons.org/licenses/by-nd/4.0/"))

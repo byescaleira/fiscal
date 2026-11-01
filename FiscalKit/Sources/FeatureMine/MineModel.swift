@@ -181,22 +181,6 @@ public final class MineModel {
         }
     }
 
-    private func withGenders(_ list: [FollowedPerson]) async -> [FollowedPerson] {
-        guard list.contains(where: { $0.card.gender == nil }),
-            let people = try? await service?.people()
-        else { return list }
-        let genders = Dictionary(
-            people.compactMap { card in card.gender.map { (card.slug, $0) } },
-            uniquingKeysWith: { first, _ in first })
-        return list.map { person in
-            guard person.card.gender == nil, let gender = genders[person.card.slug] else {
-                return person
-            }
-            return FollowedPerson(
-                card: person.card.with(gender: gender), followedAt: person.followedAt)
-        }
-    }
-
     public func loadPlace() async {
         guard let code = memory.code else {
             place = nil
@@ -300,5 +284,23 @@ public final class MineModel {
         var seen = Set<String>()
         return people.filter { seen.insert($0.slug).inserted }
             .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+    }
+}
+
+extension MineModel {
+    fileprivate func withGenders(_ list: [FollowedPerson]) async -> [FollowedPerson] {
+        guard list.contains(where: { $0.card.gender == nil }),
+            let people = try? await service?.people()
+        else { return list }
+        let genders = Dictionary(
+            people.compactMap { card in card.gender.map { (card.slug, $0) } },
+            uniquingKeysWith: { first, _ in first })
+        return list.map { person in
+            guard person.card.gender == nil, let gender = genders[person.card.slug] else {
+                return person
+            }
+            return FollowedPerson(
+                card: person.card.with(gender: gender), followedAt: person.followedAt)
+        }
     }
 }

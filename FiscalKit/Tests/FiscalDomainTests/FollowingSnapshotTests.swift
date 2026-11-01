@@ -11,10 +11,10 @@ struct FollowingSnapshotTests {
         let updates = [
             FollowingUpdate(
                 person: people[0], kind: .vote(FollowingFeedTests.vote("1", day: 20)),
-                day: CalendarDay(year: 2026, month: 10, day: 20)!),
+                day: october(20)),
             FollowingUpdate(
                 person: people[1], kind: .vote(FollowingFeedTests.vote("2", day: 30)),
-                day: CalendarDay(year: 2026, month: 10, day: 30)!),
+                day: october(30)),
         ]
         let snapshot = FollowingSnapshot.make(followed: people, updates: updates, at: .distantPast)
         #expect(snapshot.entries.map(\.id) == ["e", "f", "a", "b", "c", "d"])

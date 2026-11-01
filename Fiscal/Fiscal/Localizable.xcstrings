@@ -5357,6 +5357,16 @@
         }
       }
     },
+    "Follow ${target}" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seguir ${target}"
+          }
+        }
+      }
+    },
     "Follow %@" : {
       "localizations" : {
         "pt-BR" : {
@@ -5397,6 +5407,16 @@
         }
       }
     },
+    "Follow a Politician" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seguir um político"
+          }
+        }
+      }
+    },
     "Follow on Lock Screen" : {
       "localizations" : {
         "pt-BR" : {
@@ -5433,6 +5453,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Seguindo %@"
+          }
+        }
+      }
+    },
+    "Follows a politician in Fiscal without opening the app." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Segue um político no Fiscal sem abrir o app."
           }
         }
       }
@@ -8918,6 +8948,16 @@
         }
       }
     },
+    "Opens the Following tab in Fiscal, with the latest from who you follow." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre a aba Seguindo no Fiscal, com as novidades de quem você segue."
+          }
+        }
+      }
+    },
     "Opens the investigation board" : {
       "localizations" : {
         "pt-BR" : {
@@ -9572,7 +9612,18 @@
         }
       }
     },
+    "Pick your state in Fiscal, in the Following tab." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha seu estado no Fiscal, na aba Seguindo."
+          }
+        }
+      }
+    },
     "Pick your state in Fiscal, in the Mine tab." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11434,6 +11485,16 @@
         }
       }
     },
+    "Show Who I Follow" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver quem eu sigo"
+          }
+        }
+      }
+    },
     "Show the Vote Count" : {
       "localizations" : {
         "pt-BR" : {
@@ -12302,6 +12363,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Deixou de seguir %@"
+          }
+        }
+      }
+    },
+    "Stops following a politician in Fiscal without opening the app." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deixa de seguir um político no Fiscal sem abrir o app."
           }
         }
       }
@@ -14021,12 +14092,42 @@
         }
       }
     },
+    "Unfollow ${target}" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deixar de seguir ${target}"
+          }
+        }
+      }
+    },
     "Unfollow %@" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Deixar de seguir %@"
+          }
+        }
+      }
+    },
+    "Unfollow a Politician" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deixar de seguir um político"
+          }
+        }
+      }
+    },
+    "Unfollowed %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deixou de seguir %@"
           }
         }
       }
