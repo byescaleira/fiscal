@@ -11,7 +11,22 @@ extension ShareModel {
 
     public var offersMediaChoice: Bool { destination.media == .either }
 
-    public var hasPostMessage: Bool { postFailed || videoFellBack || notice != nil }
+    public var hasPostMessage: Bool { statusMessage != nil }
+
+    public var statusMessage: String? {
+        if postFailed { return String(appLocalized: "Couldn't prepare the file. Try again.") }
+        switch notice {
+        case .savedToPhotos(true):
+            return String(appLocalized: "Saved to Photos. Open TikTok and pick the video.")
+        case .savedToPhotos(false):
+            return String(appLocalized: "Saved to Photos. Open TikTok and pick the image.")
+        case .failed(let reason):
+            return reason
+        case nil:
+            return videoFellBack
+                ? String(appLocalized: "Couldn't make the video; the image goes instead.") : nil
+        }
+    }
 
     public func startPost() {
         guard !isPosting else { return }
@@ -20,6 +35,10 @@ extension ShareModel {
 
     public func cancelPost() {
         postTask?.cancel()
+    }
+
+    func waitForPost() async {
+        await postTask?.value
     }
 
     public func post() async {
@@ -60,14 +79,24 @@ extension ShareModel {
             postFailed = true
             return
         }
-        exportProgress = 1
         exportedFile = url
+        guard !Task.isCancelled else {
+            exportProgress = 0
+            discardExport()
+            return
+        }
+        exportProgress = 1
         let caption = destination.acceptsCaption ? caption : nil
         let result = await delivery.send(
             url, isVideo: isVideo, caption: caption, route: destination.delivery,
             metaAppID: metaAppID, topColor: card.storyColors.top,
             bottomColor: card.storyColors.bottom)
         finish(result, file: url, caption: caption, isVideo: isVideo)
+    }
+
+    public func leave() {
+        cancelPost()
+        discardExport()
     }
 
     public func discardExport() {

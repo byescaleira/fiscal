@@ -3,7 +3,7 @@ import SwiftUI
 
 struct ShareCardCarousel: View {
     @Environment(ShareModel.self) private var model
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
 
     var body: some View {
         VStack(spacing: .spaceS) {
@@ -50,7 +50,7 @@ struct ShareCardCarousel: View {
 
 private struct ShareCarouselCard: View {
     @Environment(ShareModel.self) private var model
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     let style: ShareStyle
     let scale: CGFloat
 
@@ -90,7 +90,7 @@ private struct ShareCarouselCard: View {
 
 private struct ShareStyleNames: View {
     @Environment(ShareModel.self) private var model
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
 
     var body: some View {
         HStack(spacing: .spaceL) {

@@ -52,7 +52,7 @@ private struct ShareDestinationPicker: View {
 private struct ShareNetworkTile: View {
     @Environment(ShareModel.self) private var model
     @Environment(\.appTint) private var tint
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     let network: ShareNetwork
 
     var body: some View {
@@ -82,7 +82,7 @@ private struct ShareNetworkTile: View {
 
 private struct ShareDestinationChip: View {
     @Environment(ShareModel.self) private var model
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     let destination: ShareDestination
 
     var body: some View {
@@ -117,6 +117,7 @@ private struct ShareCapsule: View {
                     .lineLimit(1)
                     .fixedSize()
             }
+            .frame(minHeight: .shareCapsuleLabel)
         }
         .buttonStyle(.bordered)
         .buttonBorderShape(.capsule)

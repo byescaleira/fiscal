@@ -25,7 +25,7 @@ struct ShareVideoTests {
             })
     }
 
-    @Test func writesAFourSecondLoop() async throws {
+    @Test func writesTheLoopWithTheRequestedFrames() async throws {
         var reported: [Double] = []
         var seen: [Double] = []
         let url = try await ShareVideoRenderer.render(

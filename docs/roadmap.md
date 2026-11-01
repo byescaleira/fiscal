@@ -20,7 +20,7 @@ O que o Fiscal vai ganhar, por fase, até a 1.0. A visão, os públicos, a Lente
 | 4 | **Lente e Aparência:** "quem você apoia", temas, Hoje e listas na ordem da pessoa, "Outra lente" na tela da Lente, paletas e ícones alternativos | SwiftData só no aparelho, Lottie, ícones alternativos | M | entregue (`app-1.0`) |
 | 5 | **Votações:** pauta e calendário, placar por partido, votações do mesmo projeto agrupadas, "o que muda na prática" e o destaque na tela de bloqueio | Servidor (pauta do dia), ActivityKit | L | entregue em parte (`app-1.0`); alertas por tema no backlog |
 | 6 | **Dinheiro:** cota e recibos, custo do mandato contra o salário mínimo, financiamento de campanha, patrimônio declarado e arrecadação federal | Swift Charts, Receita, TSE | M | entregue em parte (`app-1.0`); emendas no backlog |
-| 7 | **Compartilhar com arte:** cartazes de Stories, feed e mensagem, galeria de artistas com crédito e licença, `art-credits.json` | `ImageRenderer`, `ShareLink`/`Transferable`, deep links | M | entregue (`app-1.0`); arte encomendada depois da 1.0 |
+| 7 | **Compartilhar com arte:** cartazes de Stories, feed e mensagem, galeria de artistas com crédito e licença, `art-credits.json` | `ImageRenderer`, `ShareLink`/`Transferable`, deep links | M | entregue (`app-1.0`); refeito como fluxo por rede, com vídeo, na [FSC-010](../spdd/prompt/FSC-010-202610312345-[Feat]-share-flow-by-network.md); arte encomendada depois da 1.0 |
 | 8 | **Integrações e polimento para a loja:** widgets, Live Activities, App Intents, Spotlight, explicações no aparelho, acessibilidade completa, revisão de neutralidade, App Store e TestFlight | WidgetKit, App Intents, Core Spotlight, Foundation Models; revisores; `app-store-release.md` | L | em andamento |
 
 A fase 8 corre em etapas:

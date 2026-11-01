@@ -61,28 +61,11 @@ private struct SharePostMessages: View {
     @Environment(ShareModel.self) private var model
 
     var body: some View {
-        Group {
-            if model.postFailed {
-                Text("Couldn't prepare the file. Try again.")
-            }
-            if model.videoFellBack {
-                Text("Couldn't make the video; the image goes instead.")
-            }
-            switch model.notice {
-            case .savedToPhotos(let isVideo):
-                if isVideo {
-                    Text("Saved to Photos. Open TikTok and pick the video.")
-                } else {
-                    Text("Saved to Photos. Open TikTok and pick the image.")
-                }
-            case .failed(let reason):
-                Text(verbatim: reason)
-            case nil:
-                EmptyView()
-            }
+        if let message = model.statusMessage {
+            Text(verbatim: message)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
         }
-        .font(.footnote)
-        .foregroundStyle(.secondary)
-        .fixedSize(horizontal: false, vertical: true)
     }
 }

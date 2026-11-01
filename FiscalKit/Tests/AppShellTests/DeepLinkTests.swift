@@ -125,4 +125,11 @@ struct DeepLinkTests {
         #expect(DeepLink(url: url) == .section(.today))
         #expect(DeepLink.kind(of: url) == .unknown)
     }
+
+    @Test func siteLinksWithAPathInTheValueOpenToday() throws {
+        for query in ["person=../../x", "vote=a%2Fb", "race=..", "place=a%5Cb"] {
+            let url = try #require(URL(string: "https://fiscal.byescaleira.com/?\(query)"))
+            #expect(DeepLink(url: url) == .section(.today), "\(query)")
+        }
+    }
 }

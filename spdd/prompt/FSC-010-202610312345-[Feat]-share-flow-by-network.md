@@ -54,7 +54,7 @@ Definição de pronto:
   - o primeiro quadro não tem número, porque pode virar capa, e em 55% do vídeo tudo está no valor real e fica parado até o fim (`ShareStyleTests.theVideoSettlesOnTheRealNumbers`);
   - aparece uma barra de progresso ("Preparando o vídeo"), e a geração pode ser cancelada.
 
-  Prova: `ShareVideoTests.writesAFourSecondLoop`. No estilo Pôster, a arte entra com uma aproximação e o bloco de dados sobe.
+  Prova: `ShareVideoTests.writesTheLoopWithTheRequestedFrames`. No estilo Pôster, a arte entra com uma aproximação e o bloco de dados sobe.
 - **Given** Reduzir movimento ligado **When** a prévia aparece **Then** ela fica parada no quadro final. O vídeo exportado continua animado, porque é para outra pessoa ver.
 - **Given** o App ID da Meta no `Info.plist` (`FiscalMetaAppID`) e o Instagram instalado **When** a pessoa posta no Instagram Stories **Then** o app abre o Stories com o cartaz:
   - o cartaz vai como `backgroundImage` ou `backgroundVideo`, com as cores de topo e base tiradas do fundo do estilo (`ShareFlowModelTests.storyColorsFollowTheStyle`);
@@ -62,7 +62,7 @@ Definição de pronto:
 
   O Facebook Stories funciona igual, com as chaves `com.facebook.sharedSticker.*` e o `appID`. Prova: `ShareDeliveryTests.storiesWriteThePasteboardItems`, mais o roteiro no iPhone.
 - **Given** o App ID vazio ou o app da rede não instalado **When** a pessoa posta nos Stories **Then** a folha do sistema abre com o arquivo, sem erro (`ShareDeliveryTests.fallsBackToTheShareSheet`).
-- **Given** TikTok **When** a pessoa toca em postar **Then** o app pede o acesso de só adicionar ao Fotos, salva o arquivo, mostra "Salvo no Fotos. Abra o TikTok e escolha o vídeo." e abre o TikTok se ele estiver instalado. Sem permissão, o texto explica como liberar nos Ajustes. Prova: roteiro no iPhone.
+- **Given** TikTok **When** a pessoa toca em postar **Then** o app pede o acesso de só adicionar ao Fotos, salva o arquivo, mostra "Salvo no Fotos. Abra o TikTok e escolha o vídeo." (ou "a imagem", com o vídeo desligado) e abre o TikTok se ele estiver instalado. Sem permissão, o texto explica como liberar nos Ajustes. Prova: roteiro no iPhone.
 - **Given** Instagram Feed, Facebook Feed, WhatsApp ou Outros **When** a pessoa posta **Then** a folha do sistema recebe o arquivo e a legenda.
 - **Given** a legenda **When** a pessoa a vê e edita **Then** ela começa com o fato e traz a fonte, a data e o link `https://fiscal.byescaleira.com/?person=<slug>`, com no máximo 280 caracteres (`ShareCaptionTests.carriesFactSourceAndLink`). Ela nunca leva a Lente, apoio ou adjetivo.
 - **Given** um link `https://fiscal.byescaleira.com/?person=<slug>` (e `vote`, `expenses`, `compare`, `place`, `race`, `highlight`) **When** ele é aberto num iPhone com o Fiscal **Then** o app abre no conteúdo, pelo Associated Domains com a AASA, que passa a aceitar esses parâmetros na raiz (`DeepLinkTests.siteLinksOpenTheContent`). `?place=` e `?highlight=` abrem a tela de compartilhar desse assunto, e `/link` abre o app em Hoje. Sem o app, o site abre. A AASA nova só passa a valer com o site publicado, o que espera o ok do usuário.
@@ -111,10 +111,10 @@ classDiagram
     make(content, selection) String
   }
   class ShareVideoRenderer {
-    render(card, seconds, fps, progress) URL
+    render(size, scale, seconds, fps, fileName, frame, progress) URL
   }
   class ShareDelivery {
-    send(file, caption, destination) Result
+    send(file, isVideo, caption, route, metaAppID, topColor, bottomColor) Result
   }
   class ShareModel {
     ShareStyle style
@@ -151,6 +151,7 @@ classDiagram
   - escreve a pasteboard dos Stories com `UIPasteboard.setItems(_:options:)` e expiração de 300 s, e abre `instagram-stories://share?source_application=<id>` ou `facebook-stories://share`;
   - salva no Fotos com `PHPhotoLibrary`, só adição;
   - devolve o que fez, para a tela dizer.
+- **`ShareMetaApp`** (novo): lê o App ID da Meta do `Info.plist` e devolve nada quando está vazio.
 - **`ShareSubject.following`** (novo caso): a lista de até 6 pessoas seguidas vem do `FollowController`.
 
 ## Approach
@@ -173,7 +174,8 @@ classDiagram
      - Logo de marca exige licença, e por isso não entra.
    - **Meta:**
      - o App ID entra pelo `Info.plist` (`FiscalMetaAppID`, vazio no repositório até o usuário criar o app);
-     - `instagram-stories` e `facebook-stories` entram em `LSApplicationQueriesSchemes`;
+     - `instagram-stories` e `facebook-stories` entram em `LSApplicationQueriesSchemes`, com `tiktok` para abrir o TikTok, e nenhum esquema sem uso no código;
+     - só o Facebook leva o `appID` na pasteboard; o Instagram recebe o id em `source_application`, na URL;
      - sem App ID, a entrega é a folha do sistema;
      - nada do SDK da Meta entra no app.
    - **TikTok sem SDK:** a mídia é salva no Fotos (`NSPhotoLibraryAddUsageDescription`: "O Fiscal salva no Fotos o cartão que você quer postar."), e o app abre o TikTok pelo esquema registrado. A existência do esquema é conferida com `canOpenURL` na QA; sem ele, só o aviso.
@@ -181,7 +183,7 @@ classDiagram
      - 5 s, para ficar dentro dos 3 a 6 s da pesquisa e do mínimo de 3 s do Reels, com tempo de leitura depois da animação;
      - os números rolam, e o risco de um quadro parado no meio mostrar um valor falso (a miniatura do sistema mostrou 75,3% num valor de 85,7%) é contido por um primeiro quadro sem número e por mais de 2 s parados no valor real; data não rola, porque não é contagem;
      - os quadros saem do `ImageRenderer`, só com views do SwiftUI;
-     - a geração roda fora da main thread, mas o `ImageRenderer` exige a main, então os quadros saem em lotes com `Task.yield`.
+     - o `ImageRenderer` exige a main thread, então o renderer é `@MainActor` e os quadros saem em lotes com `Task.yield`, para a tela seguir respondendo.
    - **Links:**
      - o app ganha o entitlement `com.apple.developer.associated-domains` com `applinks:fiscal.byescaleira.com`;
      - `site/.well-known/apple-app-site-association` passa a ter `components` para `/` com `?person=*` e os outros parâmetros, além de `/link`;
@@ -215,8 +217,8 @@ classDiagram
    - **Mídia:** "Vídeo animado" é uma ferramenta de ligar e desligar, separada dos lugares, porque não troca o destino.
    - **Nome do arquivo:** "Fiscal - <assunto>", com o nome da pessoa, o número da votação ou o título, sem barras.
    - **ADR:**
-     - [ADR 0020](../../docs/adr/0020-share-to-social-networks.md) (Proposto) registra a integração com Meta e TikTok sem SDK, o App ID no `Info.plist` e a regra de não usar logos de terceiros;
-     - ela vira Aceito com o ok deste canvas.
+     - [ADR 0020](../../docs/adr/0020-share-to-social-networks.md) (Aceito) registra a integração com Meta e TikTok sem SDK, o App ID no `Info.plist` e a regra de não usar logos de terceiros;
+     - ele virou Aceito com o ok deste canvas.
 3. **Referências:**
    - a pesquisa de 31/10/2026, com as Meta Sharing to Stories e Reels, o TikTok Share Kit e o WhatsApp Link Previews;
    - Spotify Wrapped (cartões 9:16 por slide), Strava (sticker de dados) e Apple Music (escolher o trecho antes);
@@ -242,6 +244,11 @@ FiscalKit/
   Sources/FeatureShare/ShareCardCarousel.swift, ShareArtRail.swift, SharePostBar.swift, ShareModel+Art.swift, ShareModel+Post.swift
   Sources/FeatureShare/ShareVictoryPoster.swift, ShareInvestigationPoster.swift, ShareFormat+Victory.swift   (removidos)
   Sources/FeatureShare/ShareVideoRenderer.swift                (novo) MP4 com AVAssetWriter
+  Sources/FeatureShare/ShareMetaApp.swift, SharePostSheet.swift (novos) App ID da Meta e folha do sistema
+  Sources/FeatureShare/ShareArtwork.swift, ShareFormat.swift, ShareInvestigation.swift, ShareVictory.swift   conteúdo e formatos por assunto
+  Sources/FeatureMine/MineModel+ShareInvite.swift              estado do convite
+  Sources/FeatureCore/Analytics/FiscalEvents.swift             destinos `place` e `highlight`
+  Sources/FiscalDesignSystem/Tokens/ShareStyleTokens.swift     (novo) medidas e cores dos estilos
   Sources/FeatureShare/ShareDelivery.swift                     (novo, iOS) pasteboard, Fotos, folha
   Sources/FeatureShare/ShareCardContent.swift, ShareCardBuilder*.swift   fatos opcionais, assunto seguindo
   Sources/FeatureShare/ShareCardView.swift, SharePoster*.swift zona segura 9:16 e seleção
@@ -263,7 +270,7 @@ FiscalKit/
 Fiscal/Fiscal/Info.plist                                       FiscalMetaAppID, LSApplicationQueriesSchemes, NSPhotoLibraryAddUsageDescription
 Fiscal/Fiscal/Fiscal.entitlements                              applinks:fiscal.byescaleira.com
 site/.well-known/apple-app-site-association                    components com os parâmetros
-docs/adr/0020-share-to-social-networks.md                      (novo, Proposto)
+docs/adr/0020-share-to-social-networks.md                      (novo, Aceito)
 Fiscal/Fiscal/Localizable.xcstrings                            textos em pt-BR
 docs/evidence/FSC-010/, CHANGELOG.md, docs/roadmap.md, spdd/README.md
 ```
@@ -372,7 +379,9 @@ docs/evidence/FSC-010/, CHANGELOG.md, docs/roadmap.md, spdd/README.md
   - geração cancelável, com progresso;
   - a prévia não gera vídeo.
 - **Privacidade e segurança:**
-  - a pasteboard dos Stories expira em 300 s e só leva o cartaz e as cores;
+  - a pasteboard dos Stories expira em 300 s, fica só neste aparelho e só leva o cartaz e as cores;
+  - sair da tela cancela o vídeo em preparo, nada é entregue depois disso e o arquivo temporário é apagado;
+  - links do site com caminho no valor (`/` ou `..`) caem em Hoje;
   - o Fotos é pedido com permissão de só adicionar;
   - nenhum SDK de terceiros;
   - o App ID da Meta é público (não é segredo) e fica no `Info.plist`;

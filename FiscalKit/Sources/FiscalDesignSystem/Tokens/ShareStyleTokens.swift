@@ -25,6 +25,8 @@ extension CGFloat {
     public static let shareArtApproach: CGFloat = 0.25
     public static let shareCarouselShare: CGFloat = 0.72
     public static let shareStudioPreviewShare: CGFloat = 0.56
+    public static let shareCapsuleLabel: CGFloat = 30
+    public static let shareStudioAccessibilityPreview: CGFloat = 420
     public static let shareNeighborScale: CGFloat = 0.92
     public static let shareControlsWidth: CGFloat = 400
     public static let shareNetworkTile: CGFloat = 66

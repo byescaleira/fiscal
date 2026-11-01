@@ -43,10 +43,7 @@
 	<array>
 		<string>instagram-stories</string>
 		<string>facebook-stories</string>
-		<string>instagram</string>
 		<string>tiktok</string>
-		<string>snssdk1233</string>
-		<string>whatsapp</string>
 	</array>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>O Fiscal salva no Fotos o cartão que você quer postar.</string>

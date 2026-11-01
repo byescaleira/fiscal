@@ -127,7 +127,8 @@ public struct ShareDelivery {
         public static var live: ShareDelivery {
             ShareDelivery(
                 writePasteboard: { items, expiration in
-                    UIPasteboard.general.setItems(items, options: [.expirationDate: expiration])
+                    UIPasteboard.general.setItems(
+                        items, options: [.expirationDate: expiration, .localOnly: true])
                 },
                 open: { url in await UIApplication.shared.open(url) },
                 canOpen: { url in UIApplication.shared.canOpenURL(url) },

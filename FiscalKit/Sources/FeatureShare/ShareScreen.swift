@@ -48,14 +48,36 @@ private struct ShareEditor: View {
                 }
             }
             .sharePostSheet($model.postRequest)
-            .onDisappear { model.discardExport() }
+            .onChange(of: model.postRequest) { old, new in
+                if old != nil, new == nil { model.discardExport() }
+            }
+            .onChange(of: model.statusMessage) { _, message in
+                if let message { AccessibilityNotification.Announcement(message).post() }
+            }
+            .onChange(of: model.isExportingVideo) { _, isExporting in
+                if isExporting {
+                    AccessibilityNotification.Announcement(
+                        String(appLocalized: "Preparing the video")
+                    ).post()
+                }
+            }
+            .onDisappear { model.leave() }
             .task(id: model.card) {
                 model.render(scale: displayScale)
             }
     }
 
     @ViewBuilder private var studio: some View {
-        if context.widthClass == .compact {
+        if context.isAccessibilitySize {
+            ScrollView {
+                VStack(spacing: .spaceM) {
+                    ShareCardCarousel()
+                        .frame(height: .shareStudioAccessibilityPreview)
+                    ShareControls()
+                }
+                .padding(.vertical, .spaceM)
+            }
+        } else if context.widthClass == .compact {
             ShareStudioLayout {
                 ShareCardCarousel()
                 ShareControlsPanel()

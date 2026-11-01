@@ -57,7 +57,9 @@ enum DeepLink: Equatable {
         guard url.path().isEmpty || url.path() == "/" else { return nil }
         let items = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems ?? []
         for item in items where siteKeys.contains(item.name) {
-            guard let value = item.value, !value.isEmpty else { return nil }
+            guard let value = item.value, !value.isEmpty, !value.contains("/"),
+                !value.contains(".."), !value.contains("\\")
+            else { return nil }
             return (item.name, value)
         }
         return nil

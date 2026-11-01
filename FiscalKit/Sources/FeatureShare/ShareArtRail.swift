@@ -5,11 +5,8 @@ import SwiftUI
 
 struct ShareArtRail: View {
     @Environment(ShareModel.self) private var model
-    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
-    @Environment(\.liteMode) private var liteMode
+    @ReducesMotion private var reduceMotion
     @Environment(\.appTint) private var tint
-
-    private var reduceMotion: Bool { systemReduceMotion || liteMode.reducesMotion }
 
     var body: some View {
         let current = model.currentCollectionID
@@ -23,7 +20,7 @@ struct ShareArtRail: View {
                     LensBadge()
                 }
             }
-            HStack(spacing: .spaceS) {
+            AdaptiveStack(spacing: .spaceS) {
                 ForEach(model.collections) { collection in
                     let isOn = collection.id == current
                     Button {
@@ -38,7 +35,10 @@ struct ShareArtRail: View {
                                 isOn
                                     ? AnyShapeStyle(tint)
                                     : AnyShapeStyle(tint.opacity(.opacityTint)),
-                                in: .capsule)
+                                in: .capsule
+                            )
+                            .frame(minHeight: .rowHeight)
+                            .contentShape(.rect)
                     }
                     .buttonStyle(.plain)
                     .accessibilityAddTraits(isOn ? .isSelected : [])
