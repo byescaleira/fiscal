@@ -41,11 +41,6 @@ struct ShareModelTests {
                 let card = try #require(model.card)
                 #expect(card.texts.contains(ShareCardBuilder.host))
                 #expect(!card.content.source.isEmpty)
-                if card.content.hasOwnPoster {
-                    #expect(card.artwork == nil, "\(subject)")
-                    #expect(!model.usesArt)
-                    continue
-                }
                 let credit = try #require(card.artwork?.credit, "\(subject)")
                 #expect(card.texts.contains(credit))
                 for part in [work.artist, work.title, work.year] {
@@ -152,7 +147,7 @@ struct ShareModelTests {
         let model = model(.vote(id: "camara-18732026"))
         await model.load()
         #expect(model.rendered == nil)
-        model.render(scale: 1, portraits: nil)
+        model.render(scale: 1)
         let rendered = try #require(model.rendered)
         #expect(!rendered.file.png.isEmpty)
         #expect(rendered.file.fileName == ShareRenderer.fileName(for: try #require(model.content)))

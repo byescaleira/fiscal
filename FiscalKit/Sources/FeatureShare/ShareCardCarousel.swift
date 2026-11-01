@@ -64,7 +64,6 @@ private struct ShareCarouselCard: View {
             Group {
                 if let card {
                     ShareCardView(card: card, code: model.code)
-                        .portraitsStill()
                         .partyMarksStill()
                         .scaleEffect(scale, anchor: .topLeading)
                 }

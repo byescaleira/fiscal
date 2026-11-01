@@ -9,7 +9,7 @@ import Observation
 @MainActor @Observable
 public final class ShareModel {
     public typealias VideoMaker =
-        @MainActor (ShareCard, CGImage?, PortraitArtwork?, (Double) -> Void) async throws -> URL
+        @MainActor (ShareCard, CGImage?, (Double) -> Void) async throws -> URL
 
     public static let neutralCollection = "acervo-historico"
     public static let lastSeries = "paisagens"
@@ -42,7 +42,6 @@ public final class ShareModel {
     @ObservationIgnored private let lensRepository: (any LensRepository)?
     @ObservationIgnored private let follows: (any FollowRepository)?
     @ObservationIgnored var renderScale: CGFloat = 3
-    @ObservationIgnored var renderPortraits: PortraitArtwork?
     @ObservationIgnored let catalog: ArtCatalog?
     @ObservationIgnored private let builder: ShareCardBuilder
     @ObservationIgnored private let now: @Sendable () -> Date
@@ -86,12 +85,12 @@ public final class ShareModel {
     public func card(style: ShareStyle) -> ShareCard? {
         content.map {
             ShareCard(
-                content: $0.applying(selection), artwork: $0.hasOwnPoster ? nil : artwork,
+                content: $0.applying(selection), artwork: artwork,
                 format: format, style: style, showsCode: selection.showsCode)
         }
     }
 
-    public var usesArt: Bool { style == .poster && content?.hasOwnPoster != true }
+    public var usesArt: Bool { style == .poster }
 
     public var facts: [ShareFact] {
         guard let content else { return [] }
@@ -128,11 +127,10 @@ public final class ShareModel {
         return [content.source, ShareCardBuilder.host].joined(separator: " · ")
     }
 
-    public func render(scale: CGFloat, portraits: PortraitArtwork?) {
+    public func render(scale: CGFloat) {
         renderScale = scale
-        renderPortraits = portraits
         rendered = card.flatMap { card in
-            ShareRenderer.render(card, code: code, scale: scale, portraits: portraits)
+            ShareRenderer.render(card, code: code, scale: scale)
                 .flatMap { RenderedCard(file: $0, scale: scale) }
         }
     }
@@ -141,7 +139,10 @@ public final class ShareModel {
         if content == nil { phase = .loading }
         phase = await PublicDataPhase.settle(after: phase, in: requests) {
             let lens = try? await lensRepository?.lens()
-            return (lens: lens, content: try await fetch())
+            guard let content = try await fetch().published else {
+                throw PublicDataError.notFound
+            }
+            return (lens: lens, content: content)
         } apply: { loaded in
             lens = loaded.lens
             content = loaded.content

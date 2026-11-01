@@ -9,7 +9,7 @@ public enum ShareRenderer {
     public static let brand = "Fiscal"
     public static let subjectLimit = 60
     public static let videoScale: CGFloat = 3
-    public static let videoSeconds = 4.0
+    public static let videoSeconds = 5.0
     public static let videoFPS = 30
 
     public static func fileName(for content: ShareCardContent, extension suffix: String = "png")
@@ -28,10 +28,10 @@ public enum ShareRenderer {
     }
 
     public static func render(
-        _ card: ShareCard, code: CGImage?, scale: CGFloat, portraits: PortraitArtwork? = nil
+        _ card: ShareCard, code: CGImage?, scale: CGFloat
     ) -> ShareImage? {
         ShareImage(
-            frame(card, code: code, portraits: portraits),
+            frame(card, code: code),
             size: card.format.size, scale: scale, fileName: fileName(for: card.content))
     }
 
@@ -45,23 +45,20 @@ public enum ShareRenderer {
     }
 
     public static func video(
-        _ card: ShareCard, code: CGImage?, portraits: PortraitArtwork?,
-        progress: (Double) -> Void
+        _ card: ShareCard, code: CGImage?, progress: (Double) -> Void
     ) async throws -> URL {
         try await ShareVideoRenderer.render(
             size: card.format.size, scale: videoScale, seconds: videoSeconds, fps: videoFPS,
             fileName: fileName(for: card.content, extension: "mp4"),
-            frame: { AnyView(frame(card, code: code, portraits: portraits, progress: $0)) },
+            frame: { AnyView(frame(card, code: code, progress: $0)) },
             progress: progress)
     }
 
     public static func frame(
-        _ card: ShareCard, code: CGImage?, portraits: PortraitArtwork?, progress: Double = 1
+        _ card: ShareCard, code: CGImage?, progress: Double = 1
     ) -> some View {
         ShareCardView(card: card, code: code)
             .environment(\.shareProgress, progress)
-            .portraitArtwork(portraits)
-            .portraitsStill()
             .partyMarksStill()
     }
 }

@@ -16,7 +16,7 @@ public struct ShareCardView: View {
         let size = card.format.size
         Group {
             switch card.style {
-            case .poster: poster
+            case .poster: standard
             case .typographic: ShareTypographicView(card: card, code: code)
             case .data: ShareDataView(card: card, code: code)
             }
@@ -26,16 +26,6 @@ public struct ShareCardView: View {
         .foregroundStyle(.white)
         .environment(\.colorScheme, .dark)
         .dynamicTypeSize(.large)
-    }
-
-    @ViewBuilder private var poster: some View {
-        if let victory = card.victory {
-            ShareVictoryPoster(card: card, victory: victory, code: code)
-        } else if let investigation = card.investigation {
-            ShareInvestigationPoster(card: card, investigation: investigation, code: code)
-        } else {
-            standard
-        }
     }
 
     private var standard: some View {
@@ -74,7 +64,8 @@ private struct ShareArtBlock: View {
                     .resizable()
                     .scaledToFill()
                     .frame(width: proxy.size.width, height: proxy.size.height)
-                    .scaleEffect(1 + (1 - ShareMotion.eased(progress)) * .shareArtApproach)
+                    .scaleEffect(1 + (1 - ShareMotion.art(progress)) * .shareArtApproach)
+                    .opacity(ShareMotion.stage(0, progress: progress))
                     .clipped()
             } else {
                 field
@@ -113,6 +104,7 @@ private struct ShareContent: View {
                 ShareCredit(text: artwork.credit, lines: 2)
             }
         }
+        .shareReveal(1)
         .fixedSize(horizontal: false, vertical: true)
         .padding(.top, top)
         .padding(.bottom, .spaceM)

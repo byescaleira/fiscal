@@ -34,7 +34,7 @@ extension ShareModel {
             isPosting = false
             isExportingVideo = false
         }
-        render(scale: renderScale, portraits: renderPortraits)
+        render(scale: renderScale)
         guard let card else {
             postFailed = true
             return
@@ -44,7 +44,7 @@ extension ShareModel {
         if isVideo {
             isExportingVideo = true
             do {
-                file = try await makeVideo(card, code, renderPortraits) { [weak self] value in
+                file = try await makeVideo(card, code) { [weak self] value in
                     self?.exportProgress = value
                 }
             } catch is CancellationError {

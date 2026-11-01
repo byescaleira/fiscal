@@ -69,11 +69,11 @@ struct ShareDuelView: View {
                 ShareDuelSide(
                     side: duel.left, format: format, longest: duel.longestValue,
                     color: card.content.blockColor(party: duel.left.detail),
-                    leading: insets.leading, trailing: .spaceS)
+                    leading: insets.leading, trailing: .spaceS, order: 0)
                 ShareDuelSide(
                     side: duel.right, format: format, longest: duel.longestValue,
                     color: card.content.blockColor(party: duel.right.detail),
-                    leading: .spaceS, trailing: insets.leading)
+                    leading: .spaceS, trailing: insets.leading, order: 1)
             }
             VStack(spacing: .space2XS) {
                 if let criterion = duel.criterion, !criterion.isEmpty {
@@ -96,10 +96,10 @@ struct ShareDuelView: View {
                 }
             }
             .fixedSize(horizontal: false, vertical: true)
+            .shareReveal(4)
             .padding(.horizontal, insets.leading)
             .padding(.vertical, .spaceS)
             .frame(maxWidth: .infinity)
-            .background { ShareBlockField(color: .shareDataField) }
             ShareFooterBlock(card: card, code: code)
             if format == .stories {
                 ShareZoneArt(content: card.content)
@@ -122,6 +122,7 @@ private struct ShareDuelSide: View {
     let color: Color
     let leading: CGFloat
     let trailing: CGFloat
+    let order: Int
 
     var body: some View {
         let size = format.figureSize(
@@ -138,12 +139,13 @@ private struct ShareDuelSide: View {
             ShareFigure(value: side.value, size: size)
                 .fixedSize(horizontal: false, vertical: true)
         }
+        .shareReveal(order + 1)
         .padding(.top, format.textInsets.top)
         .padding(.leading, leading)
         .padding(.trailing, trailing)
         .padding(.bottom, .spaceS)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-        .background { ShareBlockField(color: color) }
+        .background { ShareBlockField(color: color, order: order) }
     }
 }
 

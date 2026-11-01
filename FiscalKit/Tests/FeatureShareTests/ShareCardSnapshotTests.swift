@@ -4,6 +4,7 @@ import FiscalDesignSystem
 import FiscalDomain
 import FiscalResource
 import Foundation
+import SwiftUI
 import Testing
 
 @testable import FeatureShare
@@ -27,6 +28,8 @@ struct ShareCardSnapshotTests {
             ("compare", .compare(slugs: ["kim-kataguiri", "erika-hilton"])),
             ("representatives", .representatives(uf: "sp")),
             ("race", .race(id: "presidente-br")),
+            ("investigation", .investigation(ShareFixtures.investigation)),
+            ("following", .following),
         ]
     }
 
@@ -38,10 +41,17 @@ struct ShareCardSnapshotTests {
         defer { LanguageSetting.shared.language = previousLanguage }
         let folder = URL(fileURLWithPath: try #require(ShareSnapshotFolder.path), isDirectory: true)
         try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
-        for (name, subject) in subjects {
+        let follows = try await ShareFixtures.follows([
+            ShareFixtures.person("ana-souza", "Ana Souza"),
+            ShareFixtures.person("bia-lima", "Bia Lima"),
+            ShareFixtures.person("caio-reis", "Caio Reis"),
+        ])
+        let service = ShowcasePublicData(scenario: .normal, now: now)
+        let highlight = try #require(try await service.highlights()?.items.first?.id)
+        for (name, subject) in subjects + [("highlight", .highlight(id: highlight))] {
             let model = ShareModel(
-                subject: subject, service: ShowcasePublicData(scenario: .normal, now: now),
-                races: ShowcaseLiveResults(scenario: .finished))
+                subject: subject, service: service,
+                races: ShowcaseLiveResults(scenario: .finished), follows: follows)
             await model.load()
             for style in ShareStyle.allCases {
                 model.style = style
@@ -51,6 +61,24 @@ struct ShareCardSnapshotTests {
                         model,
                         to: folder.appending(
                             path: "\(ShareSnapshotFolder.prefix)-\(name)-\(style)-\(format).png"))
+                }
+            }
+            if name == "person" || name == "vote" || name == "compare" {
+                model.format = .stories
+                for style in ShareStyle.allCases {
+                    model.style = style
+                    let card = try #require(model.card)
+                    for percent in [0, 10, 20, 30, 40, 55] {
+                        let frame = ShareRenderer.frame(
+                            card, code: model.code, progress: Double(percent) / 100)
+                        let renderer = ImageRenderer(
+                            content: frame.frame(
+                                width: card.format.size.width, height: card.format.size.height))
+                        let image = try #require(renderer.uiImage?.pngData())
+                        try image.write(
+                            to: folder.appending(
+                                path: "motion-\(name)-\(style)-\(1000 + percent).png"))
+                    }
                 }
             }
             model.style = .poster

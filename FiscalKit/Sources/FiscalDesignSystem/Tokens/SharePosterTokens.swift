@@ -32,9 +32,7 @@ extension CGFloat {
 extension Double {
     public static let opacityPosterTint = 0.32
     public static let opacityPosterSecondary = 0.74
-    public static let opacityPosterQuiet = 0.6
     public static let opacityPosterTrack = 0.18
-    public static let opacityPosterGlow = 0.08
 }
 
 extension Font {

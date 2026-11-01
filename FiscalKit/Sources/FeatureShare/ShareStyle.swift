@@ -25,7 +25,6 @@ public enum ShareStyle: String, CaseIterable, Hashable, Sendable, Identifiable {
 
 extension ShareCardContent {
     public var defaultStyle: ShareStyle {
-        if hasOwnPoster { return .poster }
         switch body {
         case .compare, .race: return .data
         default: return .typographic
@@ -58,7 +57,7 @@ extension ShareFormat {
 
     public var folhaRows: Int { 3 }
 
-    public var folhaRowsWithoutFigure: Int { self == .message ? 4 : 6 }
+    public var folhaRowsWithoutFigure: Int { 6 }
 
     public func safeExtra(beyond margin: CGFloat) -> EdgeInsets {
         let insets = safeInsets

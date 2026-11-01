@@ -29,10 +29,6 @@ struct ShareHero: View {
             ShareVersusHero(faces: faces, rows: rows, format: format)
         case .highlight(let highlight):
             ShareHighlightHero(highlight: highlight, format: format)
-        case .victory(let victory):
-            ShareVictoryHero(victory: victory, format: format)
-        case .investigation(let investigation):
-            ShareInvestigationHero(investigation: investigation, format: format)
         case .people(let faces):
             SharePeopleList(faces: faces, format: format)
         }
@@ -40,11 +36,13 @@ struct ShareHero: View {
 }
 
 struct ShareFigure: View {
+    @Environment(\.shareProgress) private var progress
     let value: String
     let size: CGFloat
 
     var body: some View {
-        Text(verbatim: value)
+        Text(verbatim: ShareMotion.rolled(value, progress: progress))
+            .opacity(ShareMotion.figureOpacity(progress))
             .font(.posterFigure(size))
             .monospacedDigit()
             .lineLimit(1)
@@ -56,7 +54,7 @@ struct ShareTallyHero: View {
     let tally: ShareTally
     let format: ShareFormat
     let size: CGFloat
-    var animates = false
+    var animates = true
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceS) {

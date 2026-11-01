@@ -18,22 +18,30 @@ public struct ShareStatement: Hashable, Sendable {
     public let person: ShareFace?
     public let rows: [Row]
     public let people: [ShareFace]
+    public let note: String?
 
     public init(_ content: ShareCardContent) {
         eyebrow = content.eyebrow
         rows = Self.rows(of: content)
+        note = Self.note(of: content)
         if case .following(let faces) = content.body { people = faces } else { people = [] }
         switch content.body {
         case .person(let metrics):
-            let lead = metrics.first { $0.value != PublicFormat.missing } ?? metrics.first
+            let lead = metrics.first
             phrase = nil
-            figure = lead?.value ?? PublicFormat.missing
+            figure = lead?.value
             caption = lead?.label
             person = content.faces.first
         case .vote(let tally):
-            phrase = Self.hook(of: tally) ?? content.headline
-            figure = "\(tally.yes) × \(tally.no)"
-            caption = String(appLocalized: "Yes × No")
+            if tally.hasCount {
+                phrase = tally.name ?? content.headline
+                figure = "\(tally.yes) × \(tally.no)"
+                caption = String(appLocalized: "Yes × No")
+            } else {
+                phrase = [tally.name, tally.result].compactMap(\.self).joined(separator: ": ")
+                figure = nil
+                caption = content.headline
+            }
             person = nil
         case .expenses(let spending):
             phrase = nil
@@ -43,7 +51,7 @@ public struct ShareStatement: Hashable, Sendable {
         case .race(let race):
             let leader = race.candidates.first
             phrase = content.headline
-            figure = leader?.percent ?? PublicFormat.missing
+            figure = leader?.percent
             caption = leader.map { "\($0.name) · \($0.party)" }
             person = nil
         case .victory(let victory):
@@ -53,11 +61,8 @@ public struct ShareStatement: Hashable, Sendable {
             person = victory.winner
         case .compare(let rows):
             let row = rows.first
-            phrase =
-                content.faces.count == 2
-                ? String(appLocalized: "\(content.faces[0].name) and \(content.faces[1].name)")
-                : content.faces.map(\.name).joined(separator: ", ")
-            figure = row?.values.joined(separator: " × ") ?? PublicFormat.missing
+            phrase = content.faces.map(\.name).joined(separator: " x ")
+            figure = row?.values.joined(separator: " × ")
             caption = row?.label
             person = nil
         case .representatives:
@@ -66,8 +71,9 @@ public struct ShareStatement: Hashable, Sendable {
             caption = nil
             person = nil
         case .highlight(let highlight):
+            let tally = highlight.countedTally
             phrase = highlight.title
-            figure = nil
+            figure = tally.map { "\($0.yes) × \($0.no)" }
             caption = highlight.place.isEmpty ? nil : highlight.place
             person = highlight.person
         case .investigation(let investigation):
@@ -84,19 +90,26 @@ public struct ShareStatement: Hashable, Sendable {
         }
     }
 
-    private static func hook(of tally: ShareTally) -> String? {
-        let name = tally.proposition.components(separatedBy: " · ").first ?? tally.proposition
-        guard !name.isEmpty else { return nil }
-        return tally.result.map { "\(name): \($0)" } ?? name
+    private static func note(of content: ShareCardContent) -> String? {
+        switch content.body {
+        case .expenses(let spending): spending.receipts
+        case .race(let race): race.counted
+        case .highlight(let highlight): highlight.shortUncertainty
+        case .investigation(let investigation): investigation.uncertainty
+        default: nil
+        }
     }
 
     private static func rows(of content: ShareCardContent) -> [Row] {
         switch content.body {
         case .person(let metrics):
-            let lead = metrics.first { $0.value != PublicFormat.missing } ?? metrics.first
-            return metrics.filter { $0 != lead }.map { Row(label: $0.label, value: $0.value) }
+            return metrics.dropFirst().map { Row(label: $0.label, value: $0.value) }
         case .vote(let tally):
-            return [Row(label: String(appLocalized: "Others"), value: tally.others)]
+            guard tally.hasCount else { return [] }
+            return [
+                tally.result.map { Row(label: String(appLocalized: "Result"), value: $0) },
+                tally.relevantOthers.map { Row(label: String(appLocalized: "Others"), value: $0) },
+            ].compactMap(\.self)
         case .expenses(let spending):
             return spending.categories.map { Row(label: $0.name, value: $0.value) }
         case .race(let race):
@@ -109,15 +122,28 @@ public struct ShareStatement: Hashable, Sendable {
             }
         case .representatives(let groups):
             return groups.map { Row(label: $0.title, value: $0.count) }
+        case .highlight(let highlight):
+            return highlight.relevance.map {
+                [Row(label: highlight.relevanceDetail, value: $0)]
+            } ?? []
+        case .victory(let victory):
+            let runner =
+                victory.runnerUp.map {
+                    [Row(label: $0.face.name, value: $0.percent)]
+                } ?? []
+            return runner
+                + victory.ballots.filter { $0.kind != .valid }.map {
+                    Row(label: $0.title, value: $0.percent)
+                }
         case .investigation(let investigation):
             return investigation.numbers.dropFirst().map { Row(label: $0.label, value: $0.value) }
-        case .highlight, .victory, .following:
+        case .following:
             return []
         }
     }
 
     public var texts: [String] {
-        [eyebrow, phrase, figure, caption, person?.name, person?.party].compactMap(\.self)
+        [eyebrow, phrase, figure, caption, note, person?.name, person?.party].compactMap(\.self)
             + rows.flatMap { [$0.label, $0.value] }
             + people.flatMap { [$0.name, $0.party, $0.detail] }
     }
@@ -194,6 +220,7 @@ private struct ShareFolhaHero: View {
                     .font(.posterTitle(format.phraseSize(for: phrase, lines: 5)))
                     .lineLimit(5)
                     .minimumScaleFactor(.posterShrink)
+                    .shareReveal(2)
             }
             if let caption = statement.caption, !caption.isEmpty {
                 Text(verbatim: caption)
@@ -202,9 +229,20 @@ private struct ShareFolhaHero: View {
                     .lineLimit(2)
                     .minimumScaleFactor(.shareTextShrink)
                     .fixedSize(horizontal: false, vertical: true)
+                    .shareReveal(3)
             }
-            ForEach(statement.people) { face in
+            if let note = statement.note, !note.isEmpty {
+                Text(verbatim: note)
+                    .font(.posterLabel)
+                    .foregroundStyle(Color.posterSecondary)
+                    .lineLimit(2)
+                    .minimumScaleFactor(.shareTextShrink)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .shareReveal(4)
+            }
+            ForEach(Array(statement.people.enumerated()), id: \.offset) { index, face in
                 ShareFolhaPerson(face: face)
+                    .shareReveal(2 + index)
             }
             Spacer(minLength: .zero)
         }
@@ -238,7 +276,7 @@ private struct ShareFolhaPerson: View {
         HStack(spacing: .spaceS) {
             SharePartyStripes(party: face.party)
             Text(verbatim: face.name)
-                .font(.posterHeadlineCompact)
+                .font(.posterName)
                 .lineLimit(1)
                 .minimumScaleFactor(.shareTextShrink)
             Spacer(minLength: .zero)

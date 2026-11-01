@@ -23,7 +23,7 @@ extension ShareCardContent {
             if let tally = highlight.tally { return .shares(tally.segments) }
             return highlight.person.map { .faces([$0]) } ?? .none
         case .victory(let victory):
-            return .faces([victory.winner])
+            return .faces([victory.winner] + (victory.runnerUp.map { [$0.face] } ?? []))
         case .representatives:
             return .none
         default:
@@ -62,8 +62,11 @@ private struct ShareZoneFill: View {
             switch content.zoneContent {
             case .faces(let faces):
                 HStack(spacing: .zero) {
-                    ForEach(faces.prefix(2)) { face in
+                    ForEach(Array(faces.enumerated()), id: \.offset) { index, face in
                         PartyStripes(palette: PartyPalette.of(party: face.party))
+                            .scaleEffect(
+                                y: ShareMotion.stage(index + 2, progress: progress),
+                                anchor: .bottom)
                     }
                 }
             case .shares(let segments):
@@ -80,6 +83,7 @@ private struct ShareZoneFill: View {
                 }
             case .none:
                 content.accent
+                    .scaleEffect(y: ShareMotion.stage(2, progress: progress), anchor: .bottom)
             }
         } else {
             Color.clear
@@ -88,12 +92,18 @@ private struct ShareZoneFill: View {
 }
 
 struct ShareBlockField: View {
+    @Environment(\.shareProgress) private var progress
     @Environment(\.shareShowsArt) private var showsArt
     let color: Color
+    var order: Int?
 
     var body: some View {
         if showsArt {
-            color.environment(\.colorScheme, .light)
+            color
+                .environment(\.colorScheme, .light)
+                .scaleEffect(
+                    x: order.map { ShareMotion.stage($0, progress: progress) } ?? 1,
+                    anchor: .leading)
         }
     }
 }
@@ -124,6 +134,7 @@ struct ShareTile: View {
     let leading: CGFloat
     let trailing: CGFloat
     var size: CGFloat = .shareStatSmall
+    var order = 2
 
     var body: some View {
         VStack(alignment: .leading, spacing: .space2XS) {
@@ -136,6 +147,7 @@ struct ShareTile: View {
                 .lineLimit(2)
                 .minimumScaleFactor(.shareTextShrink)
                 .fixedSize(horizontal: false, vertical: true)
+                .shareReveal(order + 1)
         }
         .foregroundStyle(Color.primary)
         .padding(.leading, leading)
@@ -144,9 +156,9 @@ struct ShareTile: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .background {
             switch tone {
-            case .ink: ShareBlockField(color: .shareDataField)
-            case .lead: ShareBlockField(color: color)
-            case .paper: ShareBlockField(color: .retroCream)
+            case .ink: ShareBlockField(color: .shareDataField, order: order)
+            case .lead: ShareBlockField(color: color, order: order)
+            case .paper: ShareBlockField(color: .retroCream, order: order)
             }
         }
         .environment(\.colorScheme, tone == .paper ? .light : .dark)
@@ -158,8 +170,8 @@ struct ShareTileRows: View {
     let color: Color
     let side: CGFloat
     var fills = false
+    var tones: [ShareTile.Tone] = [.ink, .lead, .paper]
     private let perRow = 3
-    private let tones: [ShareTile.Tone] = [.ink, .lead, .paper]
 
     var body: some View {
         VStack(spacing: .zero) {
@@ -170,7 +182,8 @@ struct ShareTileRows: View {
                         ShareTile(
                             fact: fact, tone: tones[(start + index) % tones.count], color: color,
                             leading: index == 0 ? side : .spaceS,
-                            trailing: index == row.count - 1 ? side : .spaceS)
+                            trailing: index == row.count - 1 ? side : .spaceS,
+                            order: 3 + start + index)
                     }
                 }
                 .frame(minHeight: .shareTileHeight, maxHeight: fills ? .infinity : .shareTileHeight)
@@ -182,18 +195,29 @@ struct ShareTileRows: View {
 struct ShareFooterBlock: View {
     let card: ShareCard
     let code: CGImage?
+    var note: String?
 
     var body: some View {
-        ShareFooter(card: card, code: code)
-            .fixedSize(horizontal: false, vertical: true)
-            .padding(.horizontal, card.format.textInsets.leading)
-            .padding(.vertical, .spaceS)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background {
-                ShareBlockField(color: .shareDataField)
+        VStack(alignment: .leading, spacing: .spaceXS) {
+            if let note, !note.isEmpty {
+                Text(verbatim: note)
+                    .font(.posterLabel)
+                    .foregroundStyle(Color.posterSecondary)
+                    .lineLimit(2)
+                    .minimumScaleFactor(.shareTextShrink)
             }
-            .environment(\.colorScheme, .dark)
-            .foregroundStyle(Color.primary)
+            ShareFooter(card: card, code: code)
+        }
+        .shareReveal(7)
+        .fixedSize(horizontal: false, vertical: true)
+        .padding(.horizontal, card.format.textInsets.leading)
+        .padding(.vertical, .spaceS)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background {
+            ShareBlockField(color: .shareDataField, order: 6)
+        }
+        .environment(\.colorScheme, .dark)
+        .foregroundStyle(Color.primary)
     }
 }
 
@@ -230,13 +254,14 @@ struct ShareHeaderBlock: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
+        .shareReveal(1)
         .foregroundStyle(Color.primary)
         .padding(.top, insets.top)
         .padding(.bottom, .spaceS)
         .padding(.horizontal, insets.leading)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background {
-            ShareBlockField(color: color)
+            ShareBlockField(color: color, order: 0)
         }
         .environment(\.colorScheme, .dark)
     }

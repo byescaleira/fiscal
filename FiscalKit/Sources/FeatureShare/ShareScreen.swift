@@ -33,7 +33,6 @@ public struct ShareScreen: View {
 private struct ShareEditor: View {
     @Environment(ShareModel.self) private var model
     @Environment(\.displayScale) private var displayScale
-    @Environment(\.portraitArtwork) private var portraits
     @Environment(\.layoutContext) private var context
 
     var body: some View {
@@ -51,7 +50,7 @@ private struct ShareEditor: View {
             .sharePostSheet($model.postRequest)
             .onDisappear { model.discardExport() }
             .task(id: model.card) {
-                model.render(scale: displayScale, portraits: portraits)
+                model.render(scale: displayScale)
             }
     }
 

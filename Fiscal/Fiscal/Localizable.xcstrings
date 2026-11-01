@@ -15,6 +15,7 @@
       }
     },
     "%@ and %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {

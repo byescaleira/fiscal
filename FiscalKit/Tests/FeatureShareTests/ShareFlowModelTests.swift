@@ -128,13 +128,13 @@ struct ShareFlowModelTests {
             service: ShowcasePublicData(scenario: .normal, now: ShareFixtures.now),
             delivery: delivery(saved: saved), metaAppID: nil, makeVideo: makeVideo)
         await model.load()
-        model.render(scale: 1, portraits: nil)
+        model.render(scale: 1)
         return model
     }
 
     @Test func reelsMakeAVideoAndOpenTheSheetWithoutACaption() async throws {
         let file = try video()
-        let model = await model { _, _, _, progress in
+        let model = await model { _, _, progress in
             progress(0.5)
             return file
         }
@@ -149,7 +149,7 @@ struct ShareFlowModelTests {
     }
 
     @Test func aFailedVideoFallsBackToTheImageAndKeepsTheSelection() async throws {
-        let model = await model { _, _, _, _ in throw VideoFailure() }
+        let model = await model { _, _, _ in throw VideoFailure() }
         let fact = try #require(model.facts.first)
         model.toggle(fact)
         model.choose(.instagramStories)
@@ -160,7 +160,7 @@ struct ShareFlowModelTests {
     }
 
     @Test func aCancelledVideoDeliversNothing() async {
-        let model = await model { _, _, _, _ in throw CancellationError() }
+        let model = await model { _, _, _ in throw CancellationError() }
         model.choose(.tiktok)
         await model.post()
         #expect(model.postRequest == nil)
@@ -171,7 +171,7 @@ struct ShareFlowModelTests {
     }
 
     @Test func theImageChoiceSkipsTheVideo() async throws {
-        let model = await model { _, _, _, _ in
+        let model = await model { _, _, _ in
             Issue.record("the video must not be made")
             throw VideoFailure()
         }
@@ -185,7 +185,7 @@ struct ShareFlowModelTests {
         @Test func tikTokSavesTheVideoAndCleansUp() async throws {
             let file = try video()
             var saved: (file: URL, isVideo: Bool)?
-            let model = await model(saved: { saved = ($0, $1) }, makeVideo: { _, _, _, _ in file })
+            let model = await model(saved: { saved = ($0, $1) }, makeVideo: { _, _, _ in file })
             model.choose(.tiktok)
             await model.post()
             #expect(saved?.file == file)
@@ -207,7 +207,7 @@ struct ShareFlowModelTests {
         #expect(compare.styles == [.data, .typographic, .poster])
         let investigation = ShareFixtures.model(.investigation(ShareFixtures.investigation))
         await investigation.load()
-        #expect(investigation.style == .poster)
+        #expect(investigation.style == .typographic)
     }
 
     @Test func aChosenStyleSurvivesAReload() async {

@@ -80,7 +80,7 @@ struct Pixels {
     init?(card: ShareCard, code: CGImage?, progress: Double = 1) {
         let size = card.format.size
         let renderer = ImageRenderer(
-            content: ShareRenderer.frame(card, code: code, portraits: nil, progress: progress)
+            content: ShareRenderer.frame(card, code: code, progress: progress)
                 .environment(\.shareShowsArt, false)
                 .frame(width: size.width, height: size.height))
         renderer.scale = 1

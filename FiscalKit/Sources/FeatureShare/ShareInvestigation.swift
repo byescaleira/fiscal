@@ -28,12 +28,6 @@ extension ShareCardContent {
         if case .investigation(let investigation) = body { return investigation }
         return nil
     }
-
-    public var hasOwnPoster: Bool { isVictory || investigation != nil }
-}
-
-extension ShareCard {
-    public var investigation: ShareInvestigation? { content.investigation }
 }
 
 extension ShareCardBuilder {

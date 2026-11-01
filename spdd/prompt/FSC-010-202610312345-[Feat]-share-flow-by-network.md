@@ -28,7 +28,7 @@ Definição de pronto:
   - **Dados:** um mosaico em que os blocos são os próprios dados, com o número principal no maior. Em Comparação e na Disputa de dois nomes, o Duelo: duas colunas de mesmo tamanho e peso, com o critério escrito.
 
   Os 8 assuntos desenham nos três estilos e nos três formatos sem cortar texto (`ShareStyleTests.everySubjectFitsEveryStyleAndFormat`).
-- **Given** a pessoa abre Compartilhar **When** a tela aparece **Then** o estilo já escolhido é o Tipográfico, ou Dados em Comparação e Disputa, ou o Pôster nos assuntos que têm pôster próprio (vitória e investigação). O Pôster continua como opção, e a troca não perde a seleção (`ShareFlowModelTests.defaultStyleFollowsTheSubject`).
+- **Given** a pessoa abre Compartilhar **When** a tela aparece **Then** o estilo já escolhido é o Tipográfico, ou Dados em Comparação e Disputa, O Pôster continua como opção, e a troca não perde a seleção (`ShareFlowModelTests.defaultStyleFollowsTheSubject`).
 - **Given** "Onde postar" **When** a pessoa escolhe o destino **Then** o formato e a mídia seguem a tabela (`ShareDestinationTests.mapsEachDestination`):
 
   | Destino | Formato | Mídia | Texto |
@@ -42,16 +42,19 @@ Definição de pronto:
   | WhatsApp, conversa | 1:1 | imagem | sim |
   | WhatsApp Status | 9:16 | vídeo ou imagem | não |
   | Outros | 4:5 | imagem | sim |
-- **Given** um cartão de um assunto com pessoa (usuário em 01/11/2026: "falta um refino no design, mas a cara do byescaleira, do projeto") **When** eles aparecem **Then** trazem a identidade do Fiscal: o nome, a marca do partido e a cor do partido, sem o retrato desenhado (usuário em 01/11/2026: "pode remover a foto do [bonequinho] dos posts"). Só os pôsteres próprios de vitória e de investigação mantêm o retrato. Na Comparação, cada lado tem a cor do próprio partido. Assunto sem pessoa fica no fundo escuro do placar e, na Folha, com a cor do tipo de assunto. A cor do partido é a mesma para todo mundo e nunca vem da Lente (`ShareFlowModelTests.theCardTakesThePartiesOfTheSubject`).
+- **Given** um cartão de um assunto com pessoa (usuário em 01/11/2026: "falta um refino no design, mas a cara do byescaleira, do projeto") **When** eles aparecem **Then** trazem a identidade do Fiscal: o nome, a marca do partido e a cor do partido, sem o retrato desenhado (usuário em 01/11/2026: "pode remover a foto do [bonequinho] dos posts"). Na Comparação, cada lado tem a cor do próprio partido. Assunto sem pessoa fica no fundo escuro do placar e, na Folha, com a cor do tipo de assunto. A cor do partido é a mesma para todo mundo e nunca vem da Lente (`ShareFlowModelTests.theCardTakesThePartiesOfTheSubject`).
+- **Given** qualquer assunto com um dado ausente (usuário em 01/11/2026: "não podemos compartilhar informações vazias, tem que ser dinâmico") **When** o cartão, os chips de "O que entra" e a legenda são montados **Then** o dado não aparece: nenhum "—", nenhuma linha ou bloco vazio. Um número zerado nunca é o número principal. Na comparação, só entra a linha que as duas pessoas têm. Se não sobra nenhum dado ou fonte, a tela diz que não há o que compartilhar e nada é gerado (`ShareContentRulesTests`).
+- **Given** qualquer assunto (usuário: "tudo o que fizemos nele tem que valer para todos os compartilhamentos") **When** ele é desenhado em qualquer estilo e formato **Then** segue o mesmo sistema do perfil: mosaico de ponta a ponta, sem retrato, sem número cortado, com a zona segura preenchida. O Pôster mostra a arte inteira em todo assunto. As notas que explicam o dado (seções apuradas, incerteza, recibos) continuam no cartão.
 - **Given** um perfil com classificação entre colegas **When** o cartão ou a legenda são montados **Then** nenhum texto diz "Melhor que a média", "Pior que a média", "Mais ativo" ou "Menos ativo". No lugar vai o dado, como "Presença · Mediana da Câmara: 90%" (`ShareModelTests.theCardShowsTheMedianInsteadOfAVerdict`). A tela do perfil continua como está.
 - **Given** um formato 9:16 **When** o cartaz é desenhado **Then** nenhum texto, número ou QR fica nos 14% de cima (90 de 640 pt), nos 35% de baixo (224 pt) nem nos 6% de cada lado (22 pt). Fundo e arte podem passar, e contam como arte as faixas de partido e os blocos proporcionais, que não trazem texto nem dado que não esteja também dentro da zona. Um número cortado nunca entra no cartão, porque pode ser lido como outro valor (`ShareSafeAreaTests.ninebysixteenKeepsTheSafeZone`).
 - **Given** um destino de "vídeo ou imagem" **When** a pessoa vê "Onde postar" **Then** um interruptor "Vídeo animado", ligado por padrão, escolhe a mídia. Reels é sempre vídeo, e os destinos só de imagem não mostram o interruptor (`ShareFlowModelTests.theImageChoiceSkipsTheVideo`).
 - **Given** um destino de vídeo e os estilos Tipográfico ou Dados **When** a pessoa toca em postar **Then**:
-  - o app gera um MP4 H.264 de 4 s, 30 fps, 1080×1920, com até 24 Mbps e menos de 50 MB, porque as redes recomprimem o arquivo ao publicar e uma fonte com poucos dados perde nitidez;
-  - todo texto e todo número aparecem certos desde o primeiro quadro, porque qualquer quadro pode virar capa ou ser pausado (`ShareStyleTests.everyFrameShowsTheRealNumbers`). O que se move são as barras e os blocos proporcionais enchendo;
+  - o app gera um MP4 H.264 de 5 s, 30 fps, 1080×1920, com até 24 Mbps e menos de 50 MB, porque as redes recomprimem o arquivo ao publicar e uma fonte com poucos dados perde nitidez;
+  - os fundos e blocos aparecem em sequência, os dados entram em transição e os números rolam rápido até o valor real (usuário em 01/11/2026: "as animações estão muito fraquinhas"; substitui a decisão anterior de manter os números parados);
+  - o primeiro quadro não tem número, porque pode virar capa, e em 55% do vídeo tudo está no valor real e fica parado até o fim (`ShareStyleTests.theVideoSettlesOnTheRealNumbers`);
   - aparece uma barra de progresso ("Preparando o vídeo"), e a geração pode ser cancelada.
 
-  Prova: `ShareVideoTests.writesAFourSecondLoop`. No estilo Pôster, o que se move é uma aproximação lenta da arte.
+  Prova: `ShareVideoTests.writesAFourSecondLoop`. No estilo Pôster, a arte entra com uma aproximação e o bloco de dados sobe.
 - **Given** Reduzir movimento ligado **When** a prévia aparece **Then** ela fica parada no quadro final. O vídeo exportado continua animado, porque é para outra pessoa ver.
 - **Given** o App ID da Meta no `Info.plist` (`FiscalMetaAppID`) e o Instagram instalado **When** a pessoa posta no Instagram Stories **Then** o app abre o Stories com o cartaz:
   - o cartaz vai como `backgroundImage` ou `backgroundVideo`, com as cores de topo e base tiradas do fundo do estilo (`ShareFlowModelTests.storyColorsFollowTheStyle`);
@@ -64,7 +67,7 @@ Definição de pronto:
 - **Given** a legenda **When** a pessoa a vê e edita **Then** ela começa com o fato e traz a fonte, a data e o link `https://fiscal.byescaleira.com/?person=<slug>`, com no máximo 280 caracteres (`ShareCaptionTests.carriesFactSourceAndLink`). Ela nunca leva a Lente, apoio ou adjetivo.
 - **Given** um link `https://fiscal.byescaleira.com/?person=<slug>` (e `vote`, `expenses`, `compare`, `place`, `race`, `highlight`) **When** ele é aberto num iPhone com o Fiscal **Then** o app abre no conteúdo, pelo Associated Domains com a AASA, que passa a aceitar esses parâmetros na raiz (`DeepLinkTests.siteLinksOpenTheContent`). `?place=` e `?highlight=` abrem a tela de compartilhar desse assunto, e `/link` abre o app em Hoje. Sem o app, o site abre. A AASA nova só passa a valer com o site publicado, o que espera o ok do usuário.
 - **Given** a pessoa segue alguém pela primeira vez **When** volta à aba Seguindo **Then** aparece uma linha dispensável "Compartilhe quem você acompanha". Ela abre o assunto novo "Quem eu sigo", que mostra até 6 pessoas com nome, partido e cargo, em ordem alfabética. Nunca há contagem nem ranking (`ShareModelTests.followingCardListsUpToSixAlphabetically`).
-- **Given** qualquer assunto e qualquer Lente **When** o cartaz e a legenda são montados **Then** nenhum texto traz a Lente ou quem a pessoa apoia, o "—" segue no lugar de dado ausente, e o arquivo se chama "Fiscal - <assunto>.png" ou ".mp4" (`ShareModelTests.theCardNeverCarriesWhoTheUserSupports`, já existente e ampliado aos estilos).
+- **Given** qualquer assunto e qualquer Lente **When** o cartaz e a legenda são montados **Then** nenhum texto traz a Lente ou quem a pessoa apoia, dado ausente não aparece, e o arquivo se chama "Fiscal - <assunto>.png" ou ".mp4" (`ShareModelTests.theCardNeverCarriesWhoTheUserSupports`, já existente e ampliado aos estilos).
 - **Given** o fluxo pronto **When** as imagens são redesenhadas (pedido do usuário em 01/11/2026: "vale revisitar as imagens para compartilhar também, esse processo de compartilhamento ele deve ser repensado com um todo") **Then** cada tipo de assunto (pessoa, votação, gastos, disputa, comparação, seguindo) tem composição própria com uma frase-gancho factual, saída de uma crítica honesta das imagens atuais e de um quadro de referências reais; 2 ou 3 direções visuais vão ao iPhone do usuário e a escolhida é a que ele aprovar (roteiro: capturas de cada direção em `docs/evidence/FSC-010/directions/`). Em 01/11/2026, as três direções (A Folha de apuração, B Faixas e blocos, C Duelo) foram ao iPhone, o usuário respondeu "ta ficando bom até" e a recomendação é A como padrão e C em Comparação e Disputa; a direção só vale como aprovada com o ok dele sobre os cartões prontos.
 - **Erro:** falha ao gerar o vídeo cai na imagem, com o aviso "Não deu para gerar o vídeo; vai a imagem." Falha ao salvar no Fotos mostra o motivo. Nenhuma falha perde a seleção feita.
 
@@ -142,7 +145,7 @@ classDiagram
 - **`ShareCaption`** (novo, função pura): monta a legenda com no máximo 280 caracteres.
 - **`ShareVideoRenderer`** (novo):
   - desenha os quadros com o `ImageRenderer` sobre o mesmo view, com `\.shareProgress` de 0 a 1;
-  - grava com `AVAssetWriter` (H.264, 30 fps, 4 s, 1080×1920, até 24 Mbps), usando o pool do `AVAssetWriterInputPixelBufferAdaptor`;
+  - grava com `AVAssetWriter` (H.264, 30 fps, 5 s, 1080×1920, até 24 Mbps), usando o pool do `AVAssetWriterInputPixelBufferAdaptor`;
   - escreve num arquivo temporário e só entrega depois do `finishWriting`.
 - **`ShareDelivery`** (novo, iOS):
   - escreve a pasteboard dos Stories com `UIPasteboard.setItems(_:options:)` e expiração de 300 s, e abre `instagram-stories://share?source_application=<id>` ou `facebook-stories://share`;
@@ -175,8 +178,8 @@ classDiagram
      - nada do SDK da Meta entra no app.
    - **TikTok sem SDK:** a mídia é salva no Fotos (`NSPhotoLibraryAddUsageDescription`: "O Fiscal salva no Fotos o cartão que você quer postar."), e o app abre o TikTok pelo esquema registrado. A existência do esquema é conferida com `canOpenURL` na QA; sem ele, só o aviso.
    - **Vídeo:**
-     - 4 s, para ficar dentro dos 3 a 6 s da pesquisa e do mínimo de 3 s do Reels;
-     - os números não contam: um quadro parado no meio mostraria um valor falso (a miniatura do sistema mostrou 75,3% num valor de 85,7%), e por isso só barras, fio e arte se movem, com a curva do `MotionBudget`;
+     - 5 s, para ficar dentro dos 3 a 6 s da pesquisa e do mínimo de 3 s do Reels, com tempo de leitura depois da animação;
+     - os números rolam, e o risco de um quadro parado no meio mostrar um valor falso (a miniatura do sistema mostrou 75,3% num valor de 85,7%) é contido por um primeiro quadro sem número e por mais de 2 s parados no valor real; data não rola, porque não é contagem;
      - os quadros saem do `ImageRenderer` (só views do SwiftUI, sem retrato Lottie em movimento, com `portraitsStill`);
      - a geração roda fora da main thread, mas o `ImageRenderer` exige a main, então os quadros saem em lotes com `Task.yield`.
    - **Links:**
@@ -278,7 +281,7 @@ docs/evidence/FSC-010/, CHANGELOG.md, docs/roadmap.md, spdd/README.md
 4. **Movimento e vídeo.** Depende de: 3.
    - `\.shareProgress`, a contagem e as barras.
    - `ShareVideoRenderer`, com progresso e cancelamento.
-   - Verificação: `ShareVideoTests` (arquivo de 4 s, 120 quadros, H.264, menos de 50 MB).
+   - Verificação: `ShareVideoTests` (arquivo curto em H.264, com os quadros pedidos, menos de 50 MB).
 5. **Entrega.** Depende de: 2.
    - `ShareDelivery`: pasteboard dos Stories, Fotos e TikTok, e a folha do sistema como alternativa.
    - `Info.plist` e esquemas.
@@ -307,7 +310,9 @@ docs/evidence/FSC-010/, CHANGELOG.md, docs/roadmap.md, spdd/README.md
     - O carrossel dos estilos com os cartões de verdade.
     - Os trilhos "Onde postar" e "O que entra", o trilho de Arte no Pôster, as ferramentas por contexto, a folha de Legenda e o layout de tela larga.
     - Os números parados em todo quadro do vídeo e a mediana no lugar da classificação.
-    - A identidade do Fiscal nos cartões: nome, marca e cor do partido, sem retrato fora dos pôsteres de vitória e investigação.
+    - A identidade do Fiscal nos cartões: nome, marca e cor do partido, sem retrato.
+    - `ShareCardContent.published`: a única porta por onde o conteúdo chega aos cartões, sem dado ausente e com o principal primeiro.
+    - Verificação: `ShareContentRulesTests` e imagens dos 10 assuntos nos 3 estilos e formatos.
     - Verificação: `ShareStyleTests.everyFrameShowsTheRealNumbers`, `ShareModelTests.theCardShowsTheMedianInsteadOfAVerdict`, capturas no simulador e no iPhone, iterando até o ok do usuário.
 9. **Rodar e QA.** Depende de: 1 a 8.2.
    - `scripts/verify.sh --full`.
@@ -352,12 +357,12 @@ docs/evidence/FSC-010/, CHANGELOG.md, docs/roadmap.md, spdd/README.md
 
 - **Funcional:**
   - fonte, data, "Fiscal" e crédito da obra presentes em todo estilo, formato e mídia;
-  - "—" no lugar de dado ausente;
+  - dado ausente não aparece no cartão, na legenda nem nos chips, e o "—" só existe no modelo; sem dado ou sem fonte não há cartão;
   - Lente e apoio nunca no cartaz nem na legenda;
   - as falhas de vídeo e de Fotos não perdem a seleção;
   - a cor nunca indica juízo, a cor de partido é só identidade da pessoa e não muda com a Lente, e os dois lados do Duelo têm o mesmo tamanho e peso.
 - **Desempenho:**
-  - vídeo de 4 s, 120 quadros em 1080×1920, até 24 Mbps e menos de 50 MB;
+  - vídeo de 5 s, 150 quadros em 1080×1920, até 24 Mbps e menos de 50 MB;
   - geração cancelável, com progresso;
   - a prévia não gera vídeo.
 - **Privacidade e segurança:**
@@ -374,6 +379,7 @@ docs/evidence/FSC-010/, CHANGELOG.md, docs/roadmap.md, spdd/README.md
   - o nome do arquivo deixa de ser "Fiscal.png" e passa a ser "Fiscal - <assunto>";
   - os seletores "Stories / Feed / Mensagem" viram destinos;
   - o cartão deixa de trazer a classificação entre colegas, que passa a ser a mediana;
+  - os pôsteres próprios de vitória e de investigação deixam de existir, e os dois assuntos usam o sistema único, com arte;
   - entram o Associated Domains, a permissão de adicionar ao Fotos e os esquemas de outros apps.
 - **Fora do escopo:**
   - SDK da Meta e do TikTok;

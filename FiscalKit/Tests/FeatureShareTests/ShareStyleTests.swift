@@ -106,25 +106,19 @@ struct ShareStyleTests {
                 ShareMetric(label: "Bills", value: "87"),
             ]),
             source: "Source", stamp: "S", link: URL(fileURLWithPath: "/"))
-        let statement = ShareStatement(content)
+        let published = try #require(content.published)
+        let statement = ShareStatement(published)
         #expect(statement.figure == "87")
         #expect(statement.caption == "Bills")
         #expect(statement.person == face)
-        let board = ShareBoard(content)
-        #expect(board.texts.contains(PublicFormat.missing))
+        let board = ShareBoard(published)
         #expect(board.texts.contains("87"))
     }
 
-    @Test func barsFillWithTheProgress() {
-        #expect(ShareMotion.fill(0.5, progress: 1) == 0.5)
-        #expect(ShareMotion.fill(0.5, progress: 0) == 0)
-        #expect(ShareMotion.fill(2, progress: 1) == 1)
-        #expect(ShareMotion.eased(0.5) > 0.5)
-    }
-
-    @Test func everyFrameShowsTheRealNumbers() async throws {
+    @Test func theVideoSettlesOnTheRealNumbers() async throws {
         let subjects: [ShareSubject] = [
             .person(slug: "tabata-amaral"), .compare(slugs: ["kim-kataguiri", "erika-hilton"]),
+            .vote(id: "camara-18732026"),
         ]
         for subject in subjects {
             let model = ShareFixtures.model(subject)
@@ -132,11 +126,26 @@ struct ShareStyleTests {
             model.format = .stories
             for style in [ShareStyle.typographic, .data] {
                 let card = try #require(model.card(style: style))
-                let first = try #require(Pixels(card: card, code: model.code, progress: 0))
+                let settled = try #require(
+                    Pixels(card: card, code: model.code, progress: ShareMotion.settled))
                 let last = try #require(Pixels(card: card, code: model.code, progress: 1))
-                #expect(first.differingRows(from: last) == 0, "\(subject) \(style)")
+                #expect(settled.differingRows(from: last) == 0, "\(subject) \(style)")
             }
         }
+    }
+
+    @Test func numbersRollAndTheFirstFrameHasNone() {
+        #expect(ShareMotion.figureOpacity(0) == 0)
+        #expect(ShareMotion.figureOpacity(ShareMotion.settled) == 1)
+        #expect(ShareMotion.rolled("92%", progress: ShareMotion.settled) == "92%")
+        #expect(ShareMotion.rolled("R$ 1,2 mi", progress: 1) == "R$ 1,2 mi")
+        #expect(ShareMotion.rolled("92%", progress: ShareMotion.rollStart) == "0%")
+        #expect(ShareMotion.rolled("412 × 61", progress: ShareMotion.rollStart) == "0 × 0")
+        #expect(ShareMotion.rolled("1.234", progress: ShareMotion.rollStart) == "0")
+        #expect(ShareMotion.rolled("06/01/2027", progress: ShareMotion.rollStart) == "06/01/2027")
+        #expect(ShareMotion.stage(8, progress: ShareMotion.settled) == 1)
+        #expect(ShareMotion.fill(0.5, progress: ShareMotion.settled) == 0.5)
+        #expect(ShareMotion.fill(0.5, progress: 0) == 0)
     }
 
     @Test func theDuelIsOnlyForTwoSides() async throws {
