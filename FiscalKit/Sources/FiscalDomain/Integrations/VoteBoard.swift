@@ -120,6 +120,7 @@ public enum IntegrationText {
 
 public enum IntegrationLink {
     public static let mine = URL(string: "fiscal://mine")
+    public static let following = URL(string: "fiscal://following")
     public static let votes = URL(string: "fiscal://votes")
     public static let races = URL(string: "fiscal://races")
     public static let today = URL(string: "fiscal://today")

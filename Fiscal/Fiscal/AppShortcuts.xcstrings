@@ -13,6 +13,30 @@
         }
       }
     },
+    "Follow ${target} in ${applicationName}" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Seguir ${target} no ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Follow a politician in ${applicationName}" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Seguir um político no ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
     "How did my deputy vote in ${applicationName}" : {
       "localizations" : {
         "pt-BR" : {
@@ -83,6 +107,55 @@
             "values" : [
               "Ver a apuração no ${applicationName}",
               "Mostrar a apuração no ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Show who I follow in ${applicationName}" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Mostrar quem eu sigo no ${applicationName}",
+              "Abrir Seguindo no ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Unfollow ${target} in ${applicationName}" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Deixar de seguir ${target} no ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Unfollow a politician in ${applicationName}" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Deixar de seguir um político no ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Who I follow in ${applicationName}" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Quem eu sigo no ${applicationName}"
             ]
           }
         }
