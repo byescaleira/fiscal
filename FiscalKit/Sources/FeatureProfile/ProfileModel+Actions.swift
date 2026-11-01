@@ -41,9 +41,12 @@ extension ProfileModel {
         item.ballot.map(ProfileBallot.init)
     }
 
-    public func actionRoute(_ item: ActionItem) -> Route? {
-        guard item.kind == .vote, let ref = item.ref else { return nil }
-        return .vote(id: ref)
+    public func actionRoute(_ item: ActionItem) -> Route {
+        if item.kind == .vote, let ref = item.ref { return .vote(id: ref) }
+        return .content(
+            ContentDetail(
+                action: item, person: nil, method: weightMethod,
+                sourceLine: actionsSourceText))
     }
 
     public func actionAccessibility(_ item: ActionItem) -> String {

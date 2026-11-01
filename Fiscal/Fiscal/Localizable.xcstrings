@@ -6044,6 +6044,16 @@
         }
       }
     },
+    "Highlights change as new facts come in. See the current ones in Today." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os destaques mudam quando surgem fatos novos. Veja os atuais em Hoje."
+          }
+        }
+      }
+    },
     "Highlights of the moment" : {
       "localizations" : {
         "pt-BR" : {
@@ -9097,6 +9107,7 @@
       }
     },
     "Open the Official Page" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -9176,26 +9187,6 @@
         }
       }
     },
-    "Opens the official act" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abre o ato oficial"
-          }
-        }
-      }
-    },
-    "Opens the official receipt" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abre a nota oficial"
-          }
-        }
-      }
-    },
     "Opens the profile" : {
       "localizations" : {
         "pt-BR" : {
@@ -9222,16 +9213,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abre o campo de busca"
-          }
-        }
-      }
-    },
-    "Opens the source" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abre a fonte"
           }
         }
       }
@@ -10767,6 +10748,16 @@
         }
       }
     },
+    "Reference" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Referência"
+          }
+        }
+      }
+    },
     "Region" : {
       "localizations" : {
         "pt-BR" : {
@@ -11559,6 +11550,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ver como votaram os representantes de ${state}"
+          }
+        }
+      }
+    },
+    "See the Official Source" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver a fonte oficial"
           }
         }
       }
@@ -14040,6 +14041,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nem todos votaram igual"
+          }
+        }
+      }
+    },
+    "This Highlight Left the List" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esse destaque saiu da lista"
           }
         }
       }

@@ -153,7 +153,7 @@ struct SourceLinks: View {
         VStack(alignment: .leading, spacing: .spaceHairline) {
             ForEach(refs) { ref in
                 if let url = ref.url {
-                    Link(destination: url) {
+                    ExternalLink(destination: url) {
                         Label {
                             Text(verbatim: ref.name).multilineTextAlignment(.leading)
                         } icon: {
@@ -161,7 +161,6 @@ struct SourceLinks: View {
                         }
                     }
                     .font(.caption)
-                    .accessibilityHint(Text("Opens the source"))
                 } else {
                     Label {
                         Text(verbatim: ref.name)

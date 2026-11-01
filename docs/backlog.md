@@ -16,6 +16,10 @@ O que falta, por prioridade. Itens concluídos saem daqui; o motivo das decisõe
 - **[P1] Capabilities no portal da Apple.** Conferir no App ID `com.byescaleira.fiscal`: App Attest, Push Notifications, iCloud (`iCloud.fiscal`), App Group `group.com.byescaleira` e Background Modes, e o App Group na extensão dos widgets.
 - **[P1] Capturas da loja pelo pipeline.** Gerar as capturas de [app-store/media/](app-store/media/README.md) com `launch.sh` e `compose.py` depois do texto final do site, trocando a SF Pro Rounded do `style.css` pela Bricolage nos títulos ([ADR 0009](adr/0009-bricolage-emphasis-font.md)), conferidas no iPhone físico.
 
+- **[P2] "Como medimos" no cartão "Na sua região agora".** O botão aparece só com o ícone, sem o texto, sobre o fundo escuro. Visto no simulador na `FSC-011`, fora do canvas dela.
+- **[P2] Selo "Pior que a média" cortado em "Pior que a mé...".** No cartão de "Quem Gasta Mais e em Quê", em largura estreita. Rever também se a palavra "pior" cabe na regra de só fatos.
+- **[P3] Cartão "Na sua região agora" com o texto oficial.** O de Hoje já usa o texto simples, e a tela de conteúdo também.
+
 ## Depois da 1.0 ou sem data
 
 - **[P2] Mac: grade do painel.** Hoje e Dinheiro em `CardGrid` com cartões de tamanhos diferentes (herói em duas colunas, métricas pequenas); a lista de origem, as tabelas, o `GroupBox` e o menu Ir entraram na `FSC-008`.

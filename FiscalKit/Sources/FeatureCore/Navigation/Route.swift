@@ -20,4 +20,19 @@ public enum Route: Hashable, Sendable {
     case artists
     case settings
     case share(ShareSubject)
+    case content(ContentDetail)
+    case highlight(id: String)
+}
+
+extension Route {
+    public static func destination(
+        for highlight: Highlight, method: WeightMethod?, sourceLine: String? = nil,
+        isShareable: Bool = false
+    ) -> Route {
+        guard highlight.kind != .vote else { return .vote(id: highlight.route) }
+        return .content(
+            ContentDetail(
+                highlight: highlight, method: method, sourceLine: sourceLine,
+                shareHighlightID: isShareable ? highlight.id : nil))
+    }
 }

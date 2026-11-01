@@ -1,3 +1,4 @@
+import FeatureContent
 import FeatureCore
 import FeatureLens
 import FeatureLiveResults
@@ -84,6 +85,10 @@ struct RouteScreen: View {
             ) {
                 ShareScreen()
             }
+        case .content(let content):
+            ModelHost(ContentDetailModel(content: content)) { ContentDetailScreen() }
+        case .highlight(let id):
+            ModelHost(ContentDetailModel(highlightID: id, service: data)) { ContentDetailScreen() }
         }
     }
 }

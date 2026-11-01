@@ -82,40 +82,30 @@ private struct ProfileProposalRow: View {
     let proposal: Proposal
 
     var body: some View {
-        VStack(alignment: .leading, spacing: .spaceS) {
-            FlowLayout(spacing: .spaceXS) {
-                Text(verbatim: proposal.reference)
-                    .font(.chipLabel)
-                    .monospacedDigit()
-                    .foregroundStyle(.secondary)
-                if let status = profile.proposalStatus(proposal) {
-                    Chip(status, color: .secondary)
-                }
-                ForEach(proposal.themes) { theme in
-                    HStack(spacing: .space2XS) {
-                        Image(systemName: theme.symbol)
-                        Text(verbatim: theme.title)
+        RouteLink(profile.proposalRoute(proposal)) {
+            VStack(alignment: .leading, spacing: .spaceS) {
+                FlowLayout(spacing: .spaceXS) {
+                    Text(verbatim: proposal.reference)
+                        .font(.chipLabel)
+                        .monospacedDigit()
+                        .foregroundStyle(.secondary)
+                    if let status = profile.proposalStatus(proposal) {
+                        Chip(status, color: .secondary)
                     }
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .fixedSize()
+                    ForEach(proposal.themes) { theme in
+                        HStack(spacing: .space2XS) {
+                            Image(systemName: theme.symbol)
+                            Text(verbatim: theme.title)
+                        }
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize()
+                    }
                 }
-            }
-            Text(verbatim: proposal.plainSummary ?? proposal.summary)
-                .font(.headline)
-                .fixedSize(horizontal: false, vertical: true)
-            DisclosureGroup("Official summary") {
-                Text(verbatim: proposal.summary)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .textSelection(.enabled)
-            }
-            .font(.footnote)
-            if let url = proposal.url {
-                Link(destination: url) {
-                    Label("Open the Official Page", systemImage: "arrow.up.right.square")
-                }
-                .font(.footnote)
+                Text(verbatim: proposal.plainSummary ?? proposal.summary)
+                    .font(.headline)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         .padding(.vertical, .space2XS)
@@ -135,10 +125,8 @@ struct ProfileSpeechesSection: View {
                             .foregroundStyle(.secondary)
                         Text(verbatim: speech.summary).font(.subheadline)
                         if let url = speech.url {
-                            Link(destination: url) {
-                                Label("Read the Speech", systemImage: "arrow.up.right.square")
-                            }
-                            .font(.footnote)
+                            ExternalLink("Read the Speech", destination: url)
+                                .font(.footnote)
                         }
                     }
                     .padding(.vertical, .space2XS)

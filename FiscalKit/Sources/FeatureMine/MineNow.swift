@@ -72,12 +72,11 @@ private struct MineHighlightCard: View {
                     .lineLimit(1)
             }
             Button {
-                if let route = mine.route(for: highlight) { open(route, in: section) }
+                open(mine.route(for: highlight), in: section)
             } label: {
                 content.contentShape(.rect)
             }
             .buttonStyle(.plain)
-            .disabled(mine.route(for: highlight) == nil)
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(Text(verbatim: mine.highlightAccessibility(highlight)))
             .accessibilityAddTraits(.isButton)

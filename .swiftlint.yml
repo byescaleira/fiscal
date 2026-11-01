@@ -53,6 +53,13 @@ custom_rules:
     excluded: '.*Package\.swift$'
     severity: error
 
+  external_link_component:
+    name: External link component
+    message: Use ExternalLink, que mostra o ícone e abre dentro do app.
+    regex: '\bLink\(destination:'
+    included: '.*/Sources/(Feature|AppShell)[^/]*/.*\.swift$'
+    severity: error
+
   design_token_spacing:
     name: Design token spacing
     message: Use os tokens de espaçamento do FiscalDesignSystem (.spaceS, .spaceM...).

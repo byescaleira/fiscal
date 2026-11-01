@@ -31,6 +31,7 @@ enum DeepLink: Equatable {
         switch host {
         case "person": path.map { DeepLink.route(.person(slug: $0), in: .following) }
         case "vote": path.map { DeepLink.route(.vote(id: $0), in: .votes) }
+        case "highlight": path.map { DeepLink.route(.highlight(id: $0), in: .today) }
         case "expenses":
             path.map { DeepLink.route(.expenses(slug: $0, year: year(in: url)), in: .money) }
         case "compare": .route(.compare(slugs: slugs(in: url)), in: .search)

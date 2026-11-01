@@ -15,6 +15,8 @@ public struct MineSeat: Identifiable, Hashable, Sendable {
 
     public var id: Level { level }
 
+    public var standsAlone: Bool { vice == nil && elected.isEmpty }
+
     public var title: String {
         switch level {
         case .city: String(appLocalized: "City Hall")

@@ -16,12 +16,11 @@ struct TodayHighlightHero: View {
         VStack(alignment: .leading, spacing: .spaceL) {
             header
             Button {
-                if let route = today.route(for: highlight) { open(route, in: section) }
+                open(today.route(for: highlight), in: section)
             } label: {
                 content.contentShape(.rect)
             }
             .buttonStyle(.plain)
-            .disabled(today.route(for: highlight) == nil)
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(Text(verbatim: today.highlightAccessibility(highlight)))
             .accessibilityAddTraits(.isButton)

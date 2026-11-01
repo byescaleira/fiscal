@@ -78,10 +78,8 @@ private struct AgendaItemRow: View {
                 .lineLimit(1)
             }
             if let url = item.url {
-                Link(destination: url) {
-                    Label("Official page", systemImage: "arrow.up.right.square")
-                        .font(.footnote)
-                }
+                ExternalLink("Official page", destination: url)
+                    .font(.footnote)
             }
         }
         .padding(.leading, .spaceL)

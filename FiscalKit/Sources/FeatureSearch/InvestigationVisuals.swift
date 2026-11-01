@@ -153,7 +153,7 @@ struct ChecksVisual: View {
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceM) {
             ForEach(lines) { line in
-                Link(destination: line.url) {
+                ExternalLink(destination: line.url) {
                     HStack(alignment: .top, spacing: .spaceS) {
                         StatusCircle(
                             line.verdict ?? String(appLocalized: "No label"),

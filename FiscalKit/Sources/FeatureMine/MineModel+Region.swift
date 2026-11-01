@@ -117,12 +117,8 @@ extension MineModel {
             : place?.name ?? representatives?.name ?? ""
     }
 
-    public func route(for highlight: Highlight) -> Route? {
-        switch highlight.kind {
-        case .action: .person(slug: highlight.route)
-        case .vote: .vote(id: highlight.route)
-        case .money, .indicator: nil
-        }
+    public func route(for highlight: Highlight) -> Route {
+        .destination(for: highlight, method: activity.method)
     }
 
     public func highlightAccessibility(_ highlight: Highlight) -> String {

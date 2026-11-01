@@ -86,6 +86,13 @@ extension ProfileModel {
         )
     }
 
+    public func proposalRoute(_ proposal: Proposal) -> Route {
+        .content(
+            ContentDetail(
+                proposal: proposal, status: proposalStatus(proposal), person: nil,
+                sourceLine: sourceText(for: ["proposals"])))
+    }
+
     public func proposalStatus(_ proposal: Proposal) -> String? {
         switch proposal.canBecomeLaw {
         case true?: String(appLocalized: "Can become law")

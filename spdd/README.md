@@ -3,7 +3,7 @@
 As análises, os canvases e as revisões do Fiscal no método SPDD (open-spdd). O processo está na skill `sdd`, `references/process.md`, e, no app Apple, na skill `byescaleira-sdd`, `references/process.md`. A troca do ciclo antigo está no [ADR 0019](../docs/adr/0019-spdd-process.md). `docs/specs/`, `docs/changes/` e `docs/decisions.md` são histórico congelado.
 
 - **Código do projeto:** `FSC`
-- **Próxima sequência:** `FSC-011`
+- **Próxima sequência:** `FSC-015`
 
 ## Pastas
 
@@ -29,6 +29,10 @@ No shell, ponha esses caminhos entre aspas: o zsh trata `[...]` como padrão de 
 | `FSC-007` | [Alertas: destaque do momento e resultado da disputa](prompt/FSC-007-202610291700-[Codify]-notifications.md) | entregue | `feature/spdd-migration` | [#5](https://github.com/byescaleira/fiscal/pull/5) |
 | `FSC-008` | [Fiscal no padrão atual do workspace: dobrável, Mac, visionOS e ferramentas](prompt/FSC-008-202610311530-[Feat]-shell-fold-mac-vision-developer.md) | entregue | `feature/platform-alignment` | [#6](https://github.com/byescaleira/fiscal/pull/6) |
 | `FSC-009` | [Seguir no centro do Fiscal: aba Seguindo](prompt/FSC-009-202610312200-[Feat]-following-tab-and-follow-everywhere.md) | entregue | `feature/following-core` | [#7](https://github.com/byescaleira/fiscal/pull/7) |
-| `FSC-010` | [Compartilhar como fluxo completo, por rede social](prompt/FSC-010-202610312345-[Feat]-share-flow-by-network.md) | em revisão | `feature/share-flow` | [#8](https://github.com/byescaleira/fiscal/pull/8) |
+| `FSC-010` | [Compartilhar como fluxo completo, por rede social](prompt/FSC-010-202610312345-[Feat]-share-flow-by-network.md) | entregue | `feature/share-flow` | [#8](https://github.com/byescaleira/fiscal/pull/8) |
+| `FSC-011` | [Refinos: conteúdo com tela própria, links dentro do app, Quem governa e gráficos](prompt/FSC-011-202611011855-[Feat]-navigation-links-charts-refinements.md) | em andamento | `feature/app-refinements` | — |
+| `FSC-012` | [Fim da Lente e o novo apoio](analysis/FSC-011-202611011850-[Analysis]-feed-profile-and-end-of-lens.md) | rascunho | — | — |
+| `FSC-013` | [Aba Feed e abas reorganizadas](analysis/FSC-011-202611011850-[Analysis]-feed-profile-and-end-of-lens.md) | rascunho | — | — |
+| `FSC-014` | [Nova página do político e compartilhar um item](analysis/FSC-011-202611011850-[Analysis]-feed-profile-and-end-of-lens.md) | rascunho | — | — |
 
 As capacidades que ainda vivem em guias de recurso (atualização obrigatória em [force-update.md](../docs/force-update.md), site e Fiscal na Web em [web.md](../docs/web.md), admin e flags em [admin.md](../docs/admin.md)) ganham um canvas `[Codify]` na primeira mudança da área.

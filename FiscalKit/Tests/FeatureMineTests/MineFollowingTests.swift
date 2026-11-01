@@ -76,6 +76,19 @@ struct MineFollowingTests {
             partyGuidance: nil, approved: true, themes: [])
     }
 
+    @Test func aSeatWithoutViceOrElectedStandsAlone() {
+        let holder = Self.card("a", "Ana")
+        let vice = Self.card("b", "Bia")
+        #expect(
+            MineSeat(level: .city, place: "SP", holder: holder, vice: nil, elected: []).standsAlone)
+        #expect(
+            !MineSeat(level: .city, place: "SP", holder: holder, vice: vice, elected: [])
+                .standsAlone)
+        #expect(
+            !MineSeat(level: .country, place: "BR", holder: holder, vice: nil, elected: [vice])
+                .standsAlone)
+    }
+
     @Test func suggestsRepresentativesAndSupportedNotFollowed() async throws {
         let suite = "following-\(UUID().uuidString)"
         defer { UserDefaults.standard.removePersistentDomain(forName: suite) }

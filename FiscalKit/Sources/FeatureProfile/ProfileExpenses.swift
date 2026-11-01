@@ -179,7 +179,7 @@ private struct ProfileExpenseRow: View {
                 .font(.footnote)
                 .foregroundStyle(.secondary)
             if let url = expense.url {
-                Link(destination: url) {
+                ExternalLink(destination: url) {
                     Label("See the Receipt", systemImage: "doc.text.magnifyingglass")
                 }
                 .font(.footnote)

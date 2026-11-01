@@ -33,6 +33,11 @@ A fase 8 corre em etapas:
 | 8.3.1 | Migração para o SPDD ([ADR 0019](adr/0019-spdd-process.md)): `spdd/` com o código `FSC`, canvases `[Codify]` `FSC-001` a `FSC-007`, specs e mudanças congeladas | entregue na branch `feature/spdd-migration`; [PR #5](https://github.com/byescaleira/fiscal/pull/5) para a `development` |
 | 8.3.2 | [`FSC-008`](../spdd/prompt/FSC-008-202610311530-[Feat]-shell-fold-mac-vision-developer.md): kit 0.7.2, toda aba na dobra do iPhone Duo, receita do Mac e do visionOS, Developer com as ferramentas do kit | entregue (2026-10-31, [PR #6](https://github.com/byescaleira/fiscal/pull/6)) |
 | 8.3.3 | [`FSC-009`](../spdd/prompt/FSC-009-202610312200-[Feat]-following-tab-and-follow-everywhere.md): Seguindo como primeira aba (novidades, quem você segue, sugestões e Sua região), seguir de qualquer linha, Siri e Atalhos, widget "Quem eu sigo" | em revisão, branch `feature/following-core` |
+| 8.3.4 | [`FSC-010`](../spdd/prompt/FSC-010-202610312345-[Feat]-share-flow-by-network.md): compartilhar como fluxo completo, por rede social | entregue ([PR #8](https://github.com/byescaleira/fiscal/pull/8)) |
+| 8.3.5 | [`FSC-011`](../spdd/prompt/FSC-011-202611011855-[Feat]-navigation-links-charts-refinements.md): tela de conteúdo, links dentro do app com ícone, "Quem governa" e gráficos | em andamento |
+| 8.3.6 | `FSC-012`: fim da Lente e a página "Meu apoio", com pessoas e causas, só no aparelho ([análise](../spdd/analysis/FSC-011-202611011850-[Analysis]-feed-profile-and-end-of-lens.md)) | — |
+| 8.3.7 | `FSC-013`: aba Feed como primeira, absorvendo Hoje, com o feed montado no app, e aba Região | — |
+| 8.3.8 | `FSC-014`: nova página do político, com o bonequinho no cabeçalho, e compartilhar um item específico | — |
 | 8.4 | Loja: roteiro de [validation.md](validation.md) no iPhone físico, rótulo de privacidade ([ADR 0017](adr/0017-app-store-privacy-label.md)), capturas, TestFlight e envio para a revisão | — |
 
 - **Lançamento só iOS (iPhone e iPad).** Mac e visionOS compilam no mesmo projeto, mas a receita própria do Mac e o envio dessas plataformas ficam no [backlog](backlog.md).

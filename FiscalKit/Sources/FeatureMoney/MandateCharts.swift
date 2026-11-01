@@ -27,7 +27,10 @@ struct MandateStackChart: View {
             if let focused {
                 ChartCallout(title: focused.title, value: focused.monthly) { EmptyView() }
             }
-            chart
+            VStack(alignment: .leading, spacing: .spaceM) {
+                chart
+                MandateLegend(kinds: kinds)
+            }
         }
         .animation(reduceMotion ? nil : .smooth, value: scrubbed)
         .onAppear {
@@ -57,9 +60,7 @@ struct MandateStackChart: View {
         }
         .chartForegroundStyleScale(
             domain: kinds.map(MandateText.kindTitle),
-            range: kinds.map { kind in
-                ChartPalette.color(at: MandateCost.Kind.allCases.firstIndex(of: kind) ?? 0)
-            }
+            range: kinds.map(MandateText.kindColor)
         )
         .chartXScale(domain: 0...max(peak, 1), range: .plotDimension(endPadding: labelRoom))
         .chartYScale(domain: totals.map(\.title))
@@ -71,10 +72,10 @@ struct MandateStackChart: View {
                     .foregroundStyle(.secondary)
             }
         }
-        .chartLegend(position: .bottom, alignment: .leading, spacing: .spaceM)
+        .chartLegend(.hidden)
         .chartYSelection(value: $scrubbed)
         .sensoryFeedback(.selection, trigger: scrubbed)
-        .frame(height: rowHeight * CGFloat(max(totals.count, 1)) + rowHeight)
+        .frame(height: rowHeight * CGFloat(max(totals.count, 1)))
     }
 
     private func isDimmed(_ segment: MandateSegment) -> Bool {
@@ -83,17 +84,43 @@ struct MandateStackChart: View {
     }
 }
 
+extension MandateText {
+    fileprivate static func kindColor(_ kind: MandateCost.Kind) -> Color {
+        ChartPalette.color(at: MandateCost.Kind.allCases.firstIndex(of: kind) ?? 0)
+    }
+}
+
+private struct MandateLegend: View {
+    let kinds: [MandateCost.Kind]
+
+    var body: some View {
+        FlowLayout(spacing: .spaceS) {
+            ForEach(kinds, id: \.self) { kind in
+                HStack(spacing: .spaceXS) {
+                    Circle()
+                        .fill(MandateText.kindColor(kind))
+                        .frame(width: .spaceS, height: .spaceS)
+                    Text(verbatim: MandateText.kindTitle(kind))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .fixedSize()
+            }
+        }
+        .accessibilityHidden(true)
+    }
+}
+
 struct QuotaStatesChart: View {
     @Environment(MoneyModel.self) private var money
     @ReducesMotion private var reduceMotion
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @ScaledMetric(relativeTo: .caption) private var height: CGFloat = .chartHeight
     @State private var revealed = false
     @State private var scrubbed: String?
     let bars: [QuotaStateBar]
 
     private var color: Color {
-        ChartPalette.color(at: MandateCost.Kind.allCases.firstIndex(of: .quota) ?? 1)
+        MandateText.kindColor(.quota)
     }
 
     private var focused: QuotaStateBar? {
@@ -131,14 +158,7 @@ struct QuotaStatesChart: View {
             .accessibilityValue(bar.value)
         }
         .chartXScale(domain: bars.map(\.code))
-        .chartXAxis {
-            AxisMarks { _ in
-                if !dynamicTypeSize.isAccessibilitySize {
-                    AxisValueLabel(centered: true)
-                        .font(.caption2)
-                }
-            }
-        }
+        .chartXAxis(.hidden)
         .chartYAxis {
             AxisMarks(position: .trailing, values: .automatic(desiredCount: 3)) { value in
                 AxisGridLine()

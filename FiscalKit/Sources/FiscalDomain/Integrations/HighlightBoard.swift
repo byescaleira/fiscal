@@ -81,7 +81,7 @@ public struct HighlightBoard: Hashable, Identifiable, Sendable {
     }
 
     public var url: URL? {
-        IntegrationLink.highlight(kind: kind, route: route)
+        IntegrationLink.highlight(id: id, kind: kind, route: route)
     }
 
     public var accessibilityText: String {

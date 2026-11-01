@@ -69,14 +69,8 @@ private struct SourcesListSection: View {
             ForEach(Array(sources.sources.enumerated()), id: \.element.id) { index, source in
                 let color = index.isMultiple(of: 2) ? tint : Color.companion
                 if let url = source.url {
-                    Link(destination: url) {
-                        HStack(spacing: .spaceS) {
-                            SourceLabel(source: source, color: color)
-                            Image(systemName: "arrow.up.right")
-                                .font(.footnote.weight(.semibold))
-                                .foregroundStyle(.tertiary)
-                                .accessibilityHidden(true)
-                        }
+                    ExternalLink(destination: url) {
+                        SourceLabel(source: source, color: color)
                     }
                 } else {
                     SourceLabel(source: source, color: color)
