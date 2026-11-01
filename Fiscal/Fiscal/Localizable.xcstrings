@@ -2365,6 +2365,17 @@
         }
       }
     },
+    "Ballot" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voto"
+          }
+        }
+      }
+    },
     "Ballot boxes counted: %@" : {
       "localizations" : {
         "pt-BR" : {
@@ -3057,6 +3068,56 @@
         }
       }
     },
+    "Choose a Highlight" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha um destaque"
+          }
+        }
+      }
+    },
+    "Choose a Person" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha uma pessoa"
+          }
+        }
+      }
+    },
+    "Choose a Representative" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha um representante"
+          }
+        }
+      }
+    },
+    "Choose a Vote" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha uma votação"
+          }
+        }
+      }
+    },
+    "Choose an Expense" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha um gasto"
+          }
+        }
+      }
+    },
     "Choose people" : {
       "localizations" : {
         "pt-BR" : {
@@ -3309,6 +3370,16 @@
         }
       }
     },
+    "Congress" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Congresso"
+          }
+        }
+      }
+    },
     "Congress · %@" : {
       "localizations" : {
         "pt-BR" : {
@@ -3385,6 +3456,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Continuar"
+          }
+        }
+      }
+    },
+    "Copy" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar"
           }
         }
       }
@@ -3870,6 +3952,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Distrito Federal"
+          }
+        }
+      }
+    },
+    "Divisions" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Divisões"
           }
         }
       }
@@ -5145,11 +5237,22 @@
       }
     },
     "Flags" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Flags"
+          }
+        }
+      }
+    },
+    "Flat" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plana"
           }
         }
       }
@@ -5184,6 +5287,26 @@
         }
       }
     },
+    "Folded, side by side" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dobrada, lado a lado"
+          }
+        }
+      }
+    },
+    "Folded, stacked" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dobrada, empilhada"
+          }
+        }
+      }
+    },
     "Follow" : {
       "localizations" : {
         "pt-BR" : {
@@ -5200,6 +5323,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Acompanhar %@ na tela de bloqueio"
+          }
+        }
+      }
+    },
+    "Follow Along" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acompanhar"
           }
         }
       }
@@ -5371,6 +5504,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tamanduá-bandeira"
+          }
+        }
+      }
+    },
+    "Go" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ir"
           }
         }
       }
@@ -6541,6 +6685,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Leis aprovadas"
+          }
+        }
+      }
+    },
+    "Layout" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Layout"
+          }
+        }
+      }
+    },
+    "Leading" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Início"
           }
         }
       }
@@ -7898,6 +8062,16 @@
         }
       }
     },
+    "None" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma"
+          }
+        }
+      }
+    },
     "None of the latest votes touched these topics" : {
       "localizations" : {
         "pt-BR" : {
@@ -8054,6 +8228,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nada para compartilhar ainda"
+          }
+        }
+      }
+    },
+    "Nothing was erased" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nada foi apagado"
           }
         }
       }
@@ -8274,6 +8458,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fontes oficiais"
+          }
+        }
+      }
+    },
+    "Official count" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contagem oficial"
           }
         }
       }
@@ -8536,6 +8730,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abrir perfil"
+          }
+        }
+      }
+    },
+    "Open Receipt" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir recibo"
           }
         }
       }
@@ -9466,6 +9671,16 @@
         }
       }
     },
+    "Posture" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Postura"
+          }
+        }
+      }
+    },
     "Prefer not to say" : {
       "localizations" : {
         "pt-BR" : {
@@ -9582,6 +9797,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prévia do visual"
+          }
+        }
+      }
+    },
+    "Preview of your look" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prévia do seu visual"
           }
         }
       }
@@ -10290,6 +10515,7 @@
       }
     },
     "Restore Defaults" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -10426,6 +10652,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Estradas, trânsito e transporte público"
+          }
+        }
+      }
+    },
+    "Role" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cargo"
           }
         }
       }
@@ -11254,6 +11491,16 @@
         }
       }
     },
+    "Size" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamanho"
+          }
+        }
+      }
+    },
     "Skip" : {
       "localizations" : {
         "pt-BR" : {
@@ -11714,6 +11961,17 @@
         }
       }
     },
+    "State Code" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UF"
+          }
+        }
+      }
+    },
     "State Deputy" : {
       "localizations" : {
         "pt-BR" : {
@@ -11960,6 +12218,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tribunal Superior Eleitoral"
+          }
+        }
+      }
+    },
+    "Supplier" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fornecedor"
           }
         }
       }
@@ -12447,6 +12716,16 @@
         }
       }
     },
+    "The highlight or vote you tap on the other half opens here." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O destaque ou a votação que você tocar na outra metade abre aqui."
+          }
+        }
+      }
+    },
     "The house average is %@." : {
       "localizations" : {
         "pt-BR" : {
@@ -12708,6 +12987,26 @@
         }
       }
     },
+    "The person you find on the other half opens here." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A pessoa que você encontrar na outra metade abre aqui."
+          }
+        }
+      }
+    },
+    "The person you tap on the other half opens here." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A pessoa que você tocar na outra metade abre aqui."
+          }
+        }
+      }
+    },
     "The plain summary is Fiscal's rewrite. The official summary is always one tap away." : {
       "localizations" : {
         "pt-BR" : {
@@ -12858,6 +13157,16 @@
         }
       }
     },
+    "The spending you tap on the other half opens here, with the receipts." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O gasto que você tocar na outra metade abre aqui, com os recibos."
+          }
+        }
+      }
+    },
     "The state you chose in Mine. Names in alphabetical order." : {
       "localizations" : {
         "pt-BR" : {
@@ -12914,6 +13223,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O Fiscal ainda não publica a linha do tempo."
+          }
+        }
+      }
+    },
+    "The vote you tap on the other half opens here, with who voted how." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A votação que você tocar na outra metade abre aqui, com quem votou como."
           }
         }
       }
@@ -13387,6 +13706,16 @@
         }
       }
     },
+    "Trailing" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fim"
+          }
+        }
+      }
+    },
     "Transport" : {
       "localizations" : {
         "pt-BR" : {
@@ -13743,6 +14072,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "A versão %1$@ não tem mais suporte. Atualize para a %2$@ ou mais nova. Você ainda pode exportar seus dados."
+          }
+        }
+      }
+    },
+    "Vertical Bar" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Barra vertical"
           }
         }
       }
@@ -14406,6 +14745,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O que as fontes citadas registram, na ordem delas. O Fiscal não classifica nem julga."
+          }
+        }
+      }
+    },
+    "What this window measures now. Fold, rotate or resize it to see the change." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que esta janela mede agora. Dobre, gire ou redimensione para ver a mudança."
           }
         }
       }
@@ -15182,6 +15531,16 @@
         }
       }
     },
+    "Your place stays only on this device. Fiscal only downloads the public data of your region." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu lugar fica só neste aparelho. O Fiscal só baixa os dados públicos da sua região."
+          }
+        }
+      }
+    },
     "Your topics" : {
       "localizations" : {
         "pt-BR" : {
@@ -15578,46 +15937,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“Aprovadas” conta quantas dessas votações terminaram aprovadas."
-          }
-        }
-      }
-    },
-    "Nothing was erased" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nada foi apagado"
-          }
-        }
-      }
-    },
-    "Preview of your look" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prévia do seu visual"
-          }
-        }
-      }
-    },
-    "Official count" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Contagem oficial"
-          }
-        }
-      }
-    },
-    "Your place stays only on this device. Fiscal only downloads the public data of your region." : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seu lugar fica só neste aparelho. O Fiscal só baixa os dados públicos da sua região."
           }
         }
       }
