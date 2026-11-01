@@ -120,19 +120,28 @@ struct ProfileModelTests {
         #expect(ProfileModel.formattedDocument("123") == "123")
     }
 
-    @Test func followsAndUnfollowsOnTheDevice() async throws {
+    @Test func followsThroughTheWindowController() async throws {
         let follows = try FiscalDatabase.open(inMemory: true).repositories.follows
         let model = makeModel("kim-kataguiri", follows: follows)
         #expect(!model.canFollow)
+        #expect(model.followCard == nil)
         await model.load()
         #expect(model.canFollow)
-        #expect(!model.isFollowing)
-        await model.toggleFollow()
-        #expect(model.isFollowing)
+        let card = try #require(model.followCard)
+        let follow = FollowController(follows: follows)
+        model.followChanged(to: await follow.toggle(card))
+        #expect(model.hasJustFollowed)
         #expect(try await follows.followed().map(\.card.name) == ["Kim Kataguiri"])
-        await model.toggleFollow()
-        #expect(!model.isFollowing)
+        model.followChanged(to: await follow.toggle(card))
+        #expect(!model.hasJustFollowed)
         #expect(try await follows.followed().isEmpty)
+    }
+
+    @Test func cannotFollowWithoutTheDatabase() async {
+        let model = makeModel("kim-kataguiri")
+        await model.load()
+        #expect(!model.canFollow)
+        #expect(model.followCard == nil)
     }
 
     @Test func aMissingProfileSaysSo() async {

@@ -91,7 +91,11 @@ private struct BallotRow: View {
 
     var body: some View {
         if let slug = ballot.slug {
-            RouteLink(.person(slug: slug)) { content(slug: slug) }
+            HStack(spacing: .spaceS) {
+                RouteLink(.person(slug: slug)) { content(slug: slug) }
+                FollowButton(slug: slug, name: ballot.name)
+            }
+            .followActions(slug: slug, name: ballot.name)
         } else {
             content(slug: ballot.id)
         }
