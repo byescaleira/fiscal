@@ -7,7 +7,6 @@ public struct ShareDuel: Hashable, Sendable {
         public let value: String
         public let name: String
         public let detail: String
-        public let slug: String?
     }
 
     public struct Row: Hashable, Sendable, Identifiable {
@@ -34,12 +33,8 @@ public struct ShareDuel: Hashable, Sendable {
             guard content.faces.count >= 2, let lead = compared.first else { return nil }
             let faces = content.faces
             hook = nil
-            left = Side(
-                value: lead.values[0], name: faces[0].name, detail: faces[0].party,
-                slug: faces[0].slug)
-            right = Side(
-                value: lead.values[1], name: faces[1].name, detail: faces[1].party,
-                slug: faces[1].slug)
+            left = Side(value: lead.values[0], name: faces[0].name, detail: faces[0].party)
+            right = Side(value: lead.values[1], name: faces[1].name, detail: faces[1].party)
             criterion = lead.label
             self.rows = compared.dropFirst().map {
                 Row(label: $0.label, left: $0.values[0], right: $0.values[1])
@@ -50,9 +45,8 @@ public struct ShareDuel: Hashable, Sendable {
             let first = race.candidates[0]
             let second = race.candidates[1]
             hook = content.headline
-            left = Side(value: first.percent, name: first.name, detail: first.party, slug: nil)
-            right = Side(
-                value: second.percent, name: second.name, detail: second.party, slug: nil)
+            left = Side(value: first.percent, name: first.name, detail: first.party)
+            right = Side(value: second.percent, name: second.name, detail: second.party)
             criterion = race.counted
             rows = []
             shares = [first.share, second.share]
@@ -134,10 +128,6 @@ private struct ShareDuelSide: View {
             .shareDuelFigure, for: String(repeating: "0", count: longest),
             in: (format.safeWidth - .spaceL * 2) / 2)
         VStack(alignment: .leading, spacing: .space2XS) {
-            if let slug = side.slug {
-                PersonPortrait(
-                    slug: slug, name: side.name, party: side.detail, size: .shareDuelPortrait)
-            }
             Spacer(minLength: .zero)
             Text(verbatim: side.name)
                 .font(.posterName)

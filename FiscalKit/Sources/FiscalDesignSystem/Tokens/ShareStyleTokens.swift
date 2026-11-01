@@ -14,15 +14,11 @@ extension CGFloat {
     public static let shareTypeRule: CGFloat = 3
     public static let shareTypeRuleWidth: CGFloat = 40
     public static let shareFolhaHook: CGFloat = 20
-    public static let shareFacePortrait: CGFloat = 48
-    public static let shareHeaderPortrait: CGFloat = 60
     public static let shareStatLead: CGFloat = 72
     public static let shareStatSmall: CGFloat = 20
     public static let shareFolhaFigure: CGFloat = 88
     public static let shareTileHeight: CGFloat = 76
     public static let shareBarRowHeight: CGFloat = 32
-    public static let shareFacePortraitSmall: CGFloat = 26
-    public static let shareDuelPortrait: CGFloat = 46
     public static let shareToolDivider: CGFloat = 24
     public static let shareDuelFigure: CGFloat = 52
     public static let shareDataBarFigure: CGFloat = 16

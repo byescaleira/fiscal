@@ -161,14 +161,7 @@ struct ShareTypographicView: View {
             ShareHeaderBlock(
                 card: card, color: card.content.leadColor,
                 title: statement.figure == nil && statement.people.isEmpty ? nil : statement.phrase,
-                person: statement.person
-            ) {
-                if let person = statement.person {
-                    PersonPortrait(
-                        slug: person.slug, name: person.name, party: person.party,
-                        size: .shareHeaderPortrait)
-                }
-            }
+                person: statement.person)
             ShareFolhaHero(card: card, statement: statement)
             ShareTileRows(
                 facts: facts, color: card.content.leadColor, side: format.textInsets.leading)
@@ -227,16 +220,12 @@ struct ShareFaceLine: View {
     let face: ShareFace
 
     var body: some View {
-        HStack(spacing: .spaceS) {
-            PersonPortrait(
-                slug: face.slug, name: face.name, party: face.party, size: .shareFacePortrait)
-            VStack(alignment: .leading, spacing: .space2XS) {
-                Text(verbatim: face.name)
-                    .font(.posterName)
-                    .lineLimit(1)
-                    .minimumScaleFactor(.shareTextShrink)
-                PartyMark(face.party)
-            }
+        VStack(alignment: .leading, spacing: .space2XS) {
+            Text(verbatim: face.name)
+                .font(.posterName)
+                .lineLimit(1)
+                .minimumScaleFactor(.shareTextShrink)
+            PartyMark(face.party)
         }
         .fixedSize(horizontal: false, vertical: true)
     }
@@ -247,8 +236,7 @@ private struct ShareFolhaPerson: View {
 
     var body: some View {
         HStack(spacing: .spaceS) {
-            PersonPortrait(
-                slug: face.slug, name: face.name, party: face.party, size: .shareFacePortraitSmall)
+            SharePartyStripes(party: face.party)
             Text(verbatim: face.name)
                 .font(.posterHeadlineCompact)
                 .lineLimit(1)

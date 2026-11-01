@@ -197,41 +197,38 @@ struct ShareFooterBlock: View {
     }
 }
 
-struct ShareHeaderBlock<Trailing: View>: View {
+struct ShareHeaderBlock: View {
     let card: ShareCard
     let color: Color
     let title: String?
     let person: ShareFace?
-    @ViewBuilder let trailing: () -> Trailing
 
     var body: some View {
         let insets = card.format.textInsets
-        HStack(alignment: .bottom, spacing: .spaceS) {
-            VStack(alignment: .leading, spacing: .space2XS) {
-                Text(verbatim: card.content.eyebrow)
-                    .font(.posterEyebrow)
-                    .tracking(.posterTracking)
-                    .foregroundStyle(Color.posterSecondary)
+        VStack(alignment: .leading, spacing: .space2XS) {
+            Text(verbatim: card.content.eyebrow)
+                .font(.posterEyebrow)
+                .tracking(.posterTracking)
+                .foregroundStyle(Color.posterSecondary)
+                .lineLimit(1)
+                .minimumScaleFactor(.shareTextShrink)
+                .fixedSize(horizontal: false, vertical: true)
+            if let person {
+                Text(verbatim: person.name)
+                    .font(.posterName)
                     .lineLimit(1)
                     .minimumScaleFactor(.shareTextShrink)
                     .fixedSize(horizontal: false, vertical: true)
-                if let person {
-                    Text(verbatim: person.name)
-                        .font(.posterName)
-                        .lineLimit(1)
-                        .minimumScaleFactor(.shareTextShrink)
-                    PartyMark(person.party)
-                }
-                if let title {
-                    Text(verbatim: title)
-                        .font(.posterTitle(.shareFolhaHook))
-                        .lineLimit(3)
-                        .minimumScaleFactor(.posterShrink)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
+                PartyMark(person.party)
+                    .fixedSize()
             }
-            Spacer(minLength: .zero)
-            trailing()
+            if let title {
+                Text(verbatim: title)
+                    .font(.posterTitle(.shareFolhaHook))
+                    .lineLimit(3)
+                    .minimumScaleFactor(.posterShrink)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
         .foregroundStyle(Color.primary)
         .padding(.top, insets.top)

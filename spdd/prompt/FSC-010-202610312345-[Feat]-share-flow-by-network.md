@@ -42,7 +42,7 @@ Definição de pronto:
   | WhatsApp, conversa | 1:1 | imagem | sim |
   | WhatsApp Status | 9:16 | vídeo ou imagem | não |
   | Outros | 4:5 | imagem | sim |
-- **Given** um cartão de um assunto com pessoa (usuário em 01/11/2026: "falta um refino no design, mas a cara do byescaleira, do projeto") **When** eles aparecem **Then** trazem a identidade do Fiscal, igual à do herói do perfil: o retrato desenhado, a marca do partido e o gradiente do partido. Na Comparação, cada lado tem a cor do próprio partido. Assunto sem pessoa fica no fundo escuro do placar e, na Folha, com a cor do tipo de assunto. A cor do partido é a mesma para todo mundo e nunca vem da Lente (`ShareFlowModelTests.theCardTakesThePartiesOfTheSubject`).
+- **Given** um cartão de um assunto com pessoa (usuário em 01/11/2026: "falta um refino no design, mas a cara do byescaleira, do projeto") **When** eles aparecem **Then** trazem a identidade do Fiscal: o nome, a marca do partido e a cor do partido, sem o retrato desenhado (usuário em 01/11/2026: "pode remover a foto do [bonequinho] dos posts"). Só os pôsteres próprios de vitória e de investigação mantêm o retrato. Na Comparação, cada lado tem a cor do próprio partido. Assunto sem pessoa fica no fundo escuro do placar e, na Folha, com a cor do tipo de assunto. A cor do partido é a mesma para todo mundo e nunca vem da Lente (`ShareFlowModelTests.theCardTakesThePartiesOfTheSubject`).
 - **Given** um perfil com classificação entre colegas **When** o cartão ou a legenda são montados **Then** nenhum texto diz "Melhor que a média", "Pior que a média", "Mais ativo" ou "Menos ativo". No lugar vai o dado, como "Presença · Mediana da Câmara: 90%" (`ShareModelTests.theCardShowsTheMedianInsteadOfAVerdict`). A tela do perfil continua como está.
 - **Given** um formato 9:16 **When** o cartaz é desenhado **Then** nenhum texto, número ou QR fica nos 14% de cima (90 de 640 pt), nos 35% de baixo (224 pt) nem nos 6% de cada lado (22 pt). Fundo e arte podem passar, e contam como arte as faixas de partido e os blocos proporcionais, que não trazem texto nem dado que não esteja também dentro da zona. Um número cortado nunca entra no cartão, porque pode ser lido como outro valor (`ShareSafeAreaTests.ninebysixteenKeepsTheSafeZone`).
 - **Given** um destino de "vídeo ou imagem" **When** a pessoa vê "Onde postar" **Then** um interruptor "Vídeo animado", ligado por padrão, escolhe a mídia. Reels é sempre vídeo, e os destinos só de imagem não mostram o interruptor (`ShareFlowModelTests.theImageChoiceSkipsTheVideo`).
@@ -194,19 +194,19 @@ classDiagram
      - a cor do tipo de assunto identifica o assunto e nunca diz bom ou ruim. A cor de partido só entra como identidade da pessoa, como no resto do app;
      - a faixa inferior da Folha e o × do Duelo ocupam a zona dos botões, para ela não ficar vazia.
    - **Identidade (refino de 01/11/2026):**
-     - crítica: os cartões e o estúdio estavam corretos, mas genéricos, sem o retrato, a marca e o gradiente que identificam o Fiscal; as redes eram blocos cinzas iguais, os títulos das seções sumiam, e a barra de postar era uma faixa cinza;
+     - crítica: os cartões e o estúdio estavam corretos, mas genéricos, sem a marca e a cor que identificam o Fiscal; as redes eram blocos cinzas iguais, os títulos das seções sumiam, e a barra de postar era uma faixa cinza;
      - o carrossel fica direto sobre o fundo da tela, com o cartão escolhido maior. Alternativa descartada: um palco com o gradiente do partido atrás do carrossel, como no Apple Invites (usuário em 01/11/2026: "esse background atrás do carrossel ficou ruim");
      - a arte do Pôster é a primeira seção do painel, com o trilho grande da primeira versão do compartilhar (usuário: "estava muito bom lá no começo [...], tem que ser maior e parecido com o que tinha antes"). Alternativas descartadas: o botão "Arte" abrindo uma folha, escondido no fim do trilho ("precisa se apresentar de uma forma mais clara"), e as miniaturas pequenas;
      - o cartão fica fixo e grande, e os controles rolam num painel cinza separado (usuário: "pode existir um scroll vertical para manter o resultado final grande, desde que seja possível separar esses dois, visualmente falando"). Alternativa descartada: tudo sem rolagem, que encolhia o cartão;
      - as redes viram círculos com o `SymbolBadge`, como a fileira da folha do sistema, e os lugares e fatos usam a cápsula `.bordered` do kit (a mesma do `ChoicePills`);
      - os títulos das seções passam à Bricolage, e o botão de postar fica numa barra de vidro (`safeAreaBar`);
-     - o Dados de uma pessoa é um placar sobre o gradiente do partido, e o Duelo coloca os dois retratos sobre as duas cores;
+     - o Dados de uma pessoa é um placar sobre o gradiente do partido, e o Duelo coloca os dois nomes sobre as duas cores;
      - a frase "A e B" sai do Duelo de Comparação, porque os nomes já estão nos lados.
    - **Distribuição (usuário em 01/11/2026: "ficam uns espaços vazios feios"):**
      - o cartão inteiro é um mosaico de blocos sólidos, de ponta a ponta, com um dado por bloco, a partir de referências vistas em imagem: o Strava Year in Sport (Manual) e os cartões do Spotify Wrapped 2025;
      - a área livre da zona segura leva as faixas do partido (a marca da casa), ou os blocos proporcionais da votação e da disputa, ou a cor do assunto;
      - Pôster: a arte fica inteira e sem véu, e o texto vai para um bloco sólido, como o cartão colecionável do Wrapped;
-     - alternativas descartadas ("parece que piorou"): o número-herói gigante e cortado na faixa ("pode passar alguma informação errada"); o retrato gigante na faixa; os blocos translúcidos em Dados; o painel escuro flutuante no Pôster.
+     - alternativa descartada depois: o retrato no cabeçalho, no Pôster e no Duelo, recusado pelo usuário; alternativas descartadas ("parece que piorou"): o número-herói gigante e cortado na faixa ("pode passar alguma informação errada"); o retrato gigante na faixa; os blocos translúcidos em Dados; o painel escuro flutuante no Pôster.
    - **Classificação no cartão:** a faixa "Melhor" ou "Pior que a média" fica só no perfil, onde vem com o critério. O cartão sai do contexto do app, então leva a mediana (`medianText`).
    - **Botão de postar (usuário em 01/11/2026):** sai do rodapé, onde era grande demais, e vai para a barra superior com fundo. É um pedido dele, acima da regra geral de botão neutro na barra. O rodapé só aparece para o progresso do vídeo e os avisos.
    - **Mídia:** "Vídeo animado" é uma ferramenta de ligar e desligar, separada dos lugares, porque não troca o destino.
@@ -307,7 +307,7 @@ docs/evidence/FSC-010/, CHANGELOG.md, docs/roadmap.md, spdd/README.md
     - O carrossel dos estilos com os cartões de verdade.
     - Os trilhos "Onde postar" e "O que entra", o trilho de Arte no Pôster, as ferramentas por contexto, a folha de Legenda e o layout de tela larga.
     - Os números parados em todo quadro do vídeo e a mediana no lugar da classificação.
-    - A identidade do Fiscal nos cartões: retrato, marca e gradiente do partido.
+    - A identidade do Fiscal nos cartões: nome, marca e cor do partido, sem retrato fora dos pôsteres de vitória e investigação.
     - Verificação: `ShareStyleTests.everyFrameShowsTheRealNumbers`, `ShareModelTests.theCardShowsTheMedianInsteadOfAVerdict`, capturas no simulador e no iPhone, iterando até o ok do usuário.
 9. **Rodar e QA.** Depende de: 1 a 8.2.
    - `scripts/verify.sh --full`.

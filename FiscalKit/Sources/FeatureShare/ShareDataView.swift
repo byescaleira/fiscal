@@ -156,14 +156,7 @@ struct ShareDataView: View {
         return VStack(spacing: .zero) {
             ShareHeaderBlock(
                 card: card, color: .shareDataField,
-                title: board.lead == nil ? board.title : nil, person: board.person
-            ) {
-                if let person = board.person {
-                    PersonPortrait(
-                        slug: person.slug, name: person.name, party: person.party,
-                        size: .shareHeaderPortrait)
-                }
-            }
+                title: board.lead == nil ? board.title : nil, person: board.person)
             if let lead = board.lead {
                 ShareTile(
                     fact: SharePoster.Fact(value: lead, label: board.title ?? ""), tone: .lead,
