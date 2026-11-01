@@ -73,11 +73,7 @@
 
         private func toggle(slug: String, name: String, with follow: FollowController) async {
             let isFollowing = await follow.toggle(slug: slug)
-            let message =
-                isFollowing
-                ? String(appLocalized: "Following \(name)")
-                : String(appLocalized: "Stopped following \(name)")
-            AccessibilityNotification.Announcement(message).post()
+            FollowController.announce(name: name, isFollowing: isFollowing)
         }
     }
 #endif

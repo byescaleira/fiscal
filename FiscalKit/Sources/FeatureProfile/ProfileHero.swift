@@ -113,11 +113,7 @@ private struct ProfileHeroActions: View {
         let isFollowing = await follow.toggle(card)
         profile.followChanged(to: isFollowing)
         session.reload()
-        let message =
-            isFollowing
-            ? String(appLocalized: "Following \(card.name)")
-            : String(appLocalized: "Stopped following \(card.name)")
-        AccessibilityNotification.Announcement(message).post()
+        FollowController.announce(name: card.name, isFollowing: isFollowing)
     }
 }
 

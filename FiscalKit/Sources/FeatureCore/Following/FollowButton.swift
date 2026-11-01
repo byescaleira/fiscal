@@ -92,6 +92,12 @@ enum FollowTarget: Sendable {
             case .card(let card): await follow.toggle(card)
             case .slug(let slug, _): await follow.toggle(slug: slug)
             }
+        FollowController.announce(name: name, isFollowing: isFollowing)
+    }
+}
+
+extension FollowController {
+    public static func announce(name: String, isFollowing: Bool) {
         let message =
             isFollowing
             ? String(appLocalized: "Following \(name)")
