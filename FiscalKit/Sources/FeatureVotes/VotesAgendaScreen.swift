@@ -53,7 +53,12 @@ private struct AgendaLineRow: View {
     private var isInSession: Bool { line.status == .inSession }
 
     var body: some View {
-        Label {
+        AdaptiveRow(spacing: .spaceM) {
+            Image(systemName: isInSession ? "dot.radiowaves.left.and.right" : "calendar")
+                .foregroundStyle(isInSession ? Color.retroTeal : Color.secondary)
+                .symbolEffect(
+                    .variableColor,
+                    isActive: isInSession && !reduceMotion && !MotionBudget.isConstrained)
             VStack(alignment: .leading, spacing: .spaceHairline) {
                 Text(verbatim: votes.agendaLineTitle(line))
                     .font(.rowTitle)
@@ -61,12 +66,6 @@ private struct AgendaLineRow: View {
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
-        } icon: {
-            Image(systemName: isInSession ? "dot.radiowaves.left.and.right" : "calendar")
-                .foregroundStyle(isInSession ? Color.retroTeal : Color.secondary)
-                .symbolEffect(
-                    .variableColor,
-                    isActive: isInSession && !reduceMotion && !MotionBudget.isConstrained)
         }
         .accessibilityElement(children: .combine)
     }
@@ -100,7 +99,9 @@ private struct AgendaHouseRow: View {
     let day: Agenda.HouseDay
 
     var body: some View {
-        Label {
+        AdaptiveRow(spacing: .spaceM) {
+            Image(systemName: "building.columns")
+                .foregroundStyle(.tint)
             VStack(alignment: .leading, spacing: .spaceHairline) {
                 Text(verbatim: day.house.title)
                     .font(.headline)
@@ -116,8 +117,6 @@ private struct AgendaHouseRow: View {
                 .font(.chipLabel)
                 .foregroundStyle(day.inSession ? Color.retroTeal : Color.secondary)
             }
-        } icon: {
-            Image(systemName: "building.columns")
         }
         .accessibilityElement(children: .combine)
     }

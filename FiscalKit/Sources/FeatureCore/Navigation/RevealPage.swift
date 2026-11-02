@@ -47,7 +47,7 @@ final class RevealPageState {
     }
 }
 
-public struct RevealPage<Chapter: Hashable, Content: View, Bar: View>: View {
+public struct RevealPage<Chapter: Hashable & SendableMetatype, Content: View, Bar: View>: View {
     @ReducesMotion private var reduceMotion
     @State private var state = RevealPageState()
     @State private var position = ScrollPosition()
@@ -99,6 +99,7 @@ public struct RevealPage<Chapter: Hashable, Content: View, Bar: View>: View {
         }
         .revealBar(isShown: state.showsBar, height: $state.headerHeight) {
             bar(jump, state.showsBar)
+                .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
         }
         .environment(state)
         .onChange(of: chapters, initial: true) {

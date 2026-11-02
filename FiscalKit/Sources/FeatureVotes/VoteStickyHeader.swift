@@ -15,6 +15,7 @@ struct VoteStickyHeader: View {
                     Text(verbatim: vote.title)
                         .font(.headline)
                         .lineLimit(1)
+                        .minimumScaleFactor(0.6)
                     if let outcome = vote.outcome {
                         Text(verbatim: outcome.title)
                             .font(.footnote)
@@ -41,20 +42,26 @@ struct VoteStickyHeader: View {
 }
 
 struct VoteCompactScore: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let score: String
 
     var body: some View {
         HStack(spacing: .spaceS) {
-            StatusCircle(
-                BallotChoice.yes.title, symbol: BallotChoice.yes.symbol,
-                color: BallotChoice.yes.color)
+            if !dynamicTypeSize.isAccessibilitySize {
+                StatusCircle(
+                    BallotChoice.yes.title, symbol: BallotChoice.yes.symbol,
+                    color: BallotChoice.yes.color)
+            }
             Text(verbatim: score)
                 .font(.amountRow)
                 .monospacedDigit()
                 .lineLimit(1)
                 .fixedSize()
-            StatusCircle(
-                BallotChoice.no.title, symbol: BallotChoice.no.symbol, color: BallotChoice.no.color)
+            if !dynamicTypeSize.isAccessibilitySize {
+                StatusCircle(
+                    BallotChoice.no.title, symbol: BallotChoice.no.symbol,
+                    color: BallotChoice.no.color)
+            }
         }
     }
 }

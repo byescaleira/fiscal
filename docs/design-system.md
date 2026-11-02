@@ -42,3 +42,11 @@ Retratos menores que `.portraitAnimated` são sempre imagem parada.
 ## Animações
 
 Lottie gerada por `scripts/animations.py` (sem fundo, camadas nomeadas pela paleta), embutida em `FiscalResourceAnimation.swift` e tocada por `FiscalAnimationView(_:loops:isStill:)`. Prévia em `scripts/animations-preview.html`.
+
+## Barra ao rolar
+
+Quando algo precisa continuar visível, `View.revealBar` e `ShortcutStrip`, do `byescaleira-kit`, põem uma barra sobre a rolagem. No app, `RevealPage` junta a barra, o herói e os capítulos ([ADR 0024](adr/0024-reveal-bar-following-and-ballots-screens.md)).
+
+- **Onde entra:** página do político, detalhe da votação (proposta e placar), detalhe da corrida (corrida e apurado) e notas (nome, ano com o filtro e total). Essas telas não mostram o título na barra de ferramentas, para não repetir.
+- **Onde não entra:** listas de abas, como Votações e Feed.
+- **Como se comporta:** só muda de opacidade, sem mudar o layout, e os saltos não animam com Reduzir movimento.

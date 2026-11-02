@@ -131,11 +131,11 @@ O manifesto `art-credits.json` vai junto com o app e lista, por obra: autor, @, 
 
 | # | Aba | Ícone | O que é |
 |---|---|---|---|
-| 1 | **Feed** | `newspaper` | O que aconteceu, por data, com o motivo de cada linha: o que fizeram as pessoas que você segue e o que é relevante, com a apuração ao vivo e o destaque do momento no topo ([ADR 0022](adr/0022-feed-first-tab-and-region.md)) |
-| 2 | **Votações** | `checkmark.square` | A pauta do Congresso: o calendário, o placar por partido e por estado, quem votou como e "o que muda para você". Inclui a Live Activity da votação importante |
+| 1 | **Feed** | `person.2` | O que aconteceu, por data, com o motivo de cada linha: o que fizeram as pessoas que você segue e o que é relevante, com a apuração ao vivo e o destaque do momento no topo ([ADR 0022](adr/0022-feed-first-tab-and-region.md)). Pelo filtro Seguindo, abre a tela de quem você segue, com as sugestões ([ADR 0024](adr/0024-reveal-bar-following-and-ballots-screens.md)) |
+| 2 | **Votações** | `checkmark.square` | O que o Congresso votou, com a próxima sessão numa linha que abre a pauta: o placar por partido e por estado, quem votou como e "o que muda para você". Inclui a Live Activity da votação importante |
 | 3 | **Dinheiro** | `brazilianrealsign` | Para onde vai o dinheiro público: cota, salários e benefícios, emendas (inclusive as "emendas Pix"), financiamento de campanha, patrimônio declarado e arrecadação |
-| 4 | **Região** | `map` | Quem você segue, as sugestões e os seus representantes pelo lugar (do vereador ao presidente). Cada perfil tem presença, votos, propostas, gastos e patrimônio |
-| 5 | **Fiscalizar** (proeminente) | `magnifyingglass` | A busca universal: pessoa, partido, projeto, cidade, CNPJ de fornecedor. Também é a porta para Comparar e Eleições. É a aba com `Tab(role: .search)`, que o iOS 26+ mostra destacada, separada das outras na barra de Liquid Glass |
+| 4 | **Região** | `mappin.and.ellipse` | Os seus representantes pelo lugar (do vereador ao presidente). Cada perfil tem presença, votos, propostas, gastos e patrimônio |
+| 5 | **Fiscalizar** (proeminente) | `binoculars` | A busca universal: pessoa, partido, projeto, cidade, CNPJ de fornecedor. Também é a porta para Comparar e Eleições. É a aba com `Tab(role: .search)`, que o iOS 26+ mostra destacada, separada das outras na barra de Liquid Glass |
 
 - **Checagens no perfil** (pedido do usuário em 2026-10-25, no lugar de mostrar posts das redes; piloto só com o Projeto Comprova, decisão do usuário no mesmo dia, depois da [pesquisa de checagens](research/2026-10-25-fact-checks.md)):
   - **Fonte:** o Comprova publica sob CC BY-ND 4.0 (conferido na página de metodologia em 2026-10-25: uso comercial permitido, com crédito, link da licença e sem alterar o conteúdo). A carga lê a API pública do site (`/wp-json/wp/v2/publicacoes`), sem raspar HTML. Lupa, Aos Fatos e a API do Google ficam de fora até haver autorização por escrito.

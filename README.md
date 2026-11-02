@@ -31,8 +31,8 @@ O Fiscal mostra o que os seus representantes fazem com o seu voto: presença, vo
 
 | | |
 | --- | --- |
-| **Feed** | O que aconteceu, por data: votos, propostas, discursos, gastos e checagens de quem você segue e o que é relevante, cada linha com o motivo. No topo, o destaque do momento e a apuração ao vivo nas eleições, com Atividade ao Vivo e widget. |
-| **Região** | Quem você segue, quem governa a sua cidade, o seu estado e o país, as bancadas partido por partido e como os seus deputados e senadores votaram. Os 5.570 municípios. |
+| **Feed** | O que aconteceu, por data: votos, propostas, discursos, gastos e checagens de quem você segue e o que é relevante, cada linha com o motivo. O filtro Seguindo leva à lista de quem você segue e às sugestões. No topo, o destaque do momento e a apuração ao vivo nas eleições, com Atividade ao Vivo e widget. |
+| **Região** | Quem governa a sua cidade, o seu estado e o país, as bancadas partido por partido e como os seus deputados e senadores votaram. Os 5.570 municípios. |
 | **Cada político** | Uma página em capítulos que dependem do cargo e do que existe: como vota, o que propõe, quanto gasta, de onde vem e o que circulou segundo o Projeto Comprova. Dá para compartilhar uma nota, um voto ou uma proposta. |
 | **Votações** | O que foi decidido e o que muda na prática, com o placar por partido. Votações do mesmo projeto no mesmo dia aparecem juntas. |
 | **Dinheiro** | Quanto custa um mandato, estado por estado, contra o salário mínimo, para onde vai a cota parlamentar e quem financia as campanhas. |

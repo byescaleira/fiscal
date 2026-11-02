@@ -66,14 +66,17 @@ struct DayHeader: View {
     let accessibility: String
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
-            Text(verbatim: number)
-                .font(.titleLarge)
-                .monospacedDigit()
-                .foregroundStyle(.primary)
-            Text(verbatim: title)
-                .font(.emphasis(.title3, weight: .semibold))
-                .foregroundStyle(.primary)
+        AdaptiveRow(spacing: .spaceS) {
+            HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
+                Text(verbatim: number)
+                    .font(.titleLarge)
+                    .monospacedDigit()
+                    .foregroundStyle(.primary)
+                    .fixedSize()
+                Text(verbatim: title)
+                    .font(.emphasis(.title3, weight: .semibold))
+                    .foregroundStyle(.primary)
+            }
             Text(verbatim: detail)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)

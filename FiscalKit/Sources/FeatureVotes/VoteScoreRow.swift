@@ -13,7 +13,9 @@ struct VoteScoreRow: View {
             AdaptiveRow(spacing: .spaceS) {
                 Text(verbatim: vote.heading)
                     .font(.headline)
-                Spacer(minLength: .spaceS)
+                if !dynamicTypeSize.isAccessibilitySize {
+                    Spacer(minLength: .spaceS)
+                }
                 VoteOutcomeLabel(outcome: VoteOutcome(vote))
             }
             Text(verbatim: votes.summary(vote))
@@ -49,6 +51,7 @@ struct VoteScoreRow: View {
             }
         }
         .padding(.vertical, .spaceXS)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .alignmentGuide(.listRowSeparatorLeading) { $0[.leading] }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: votes.accessibility(vote)))

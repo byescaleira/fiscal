@@ -45,6 +45,12 @@ Primeira versão, a 1.0.0.
 
 ### Changed
 
+- A barra que aparece ao rolar passou a valer também no detalhe da votação (proposta, placar e atalhos), no detalhe da corrida (corrida e apurado) e nas notas (nome, ano e total) ([FSC-015](spdd/prompt/FSC-015-202611021500-[Feat]-sticky-bar-votes-region-tabs.md)).
+- O detalhe da votação ficou mais curto: placar em círculos, o que muda antes da explicação e a lista de votos em tela própria, com busca e filtros. Votação simbólica diz o que a casa registrou, sem traços.
+- Votações começa pelo que foi votado, com linhas mais curtas. A próxima sessão fica numa linha que abre a pauta, e pauta de data passada não aparece.
+- Região começa pelo lugar. Quem você segue, as sugestões e o convite de compartilhar foram para uma tela própria, aberta pelo filtro Seguindo do Feed, por `fiscal://following`, pelo widget "Quem eu sigo" e pela Siri.
+- Novos símbolos nas abas: duas pessoas no Feed, o pin com um círculo em Região e o binóculo em Fiscalizar.
+
 - Placar das telas acompanha o tamanho de texto do aparelho; o tamanho fixo fica nos widgets, na Live Activity e nos cartões.
 - "Como medimos" e a confirmação de apagar os dados offline viram guias curtos.
 - Toda animação para com Reduzir movimento ou com o Modo econômico (pouca energia ou aparelho quente).

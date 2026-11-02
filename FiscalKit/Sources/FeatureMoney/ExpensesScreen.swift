@@ -63,6 +63,7 @@ private struct ExpensesOverview: View {
         }
         .revealBar(isShown: showsBar) {
             ExpensesStickyHeader()
+                .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
         }
     }
 }
@@ -76,10 +77,12 @@ private struct ExpensesStickyHeader: View {
                 Text(verbatim: expenses.title)
                     .font(.headline)
                     .lineLimit(1)
+                    .minimumScaleFactor(0.6)
                 Text(verbatim: expenses.scopeTitle)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
+                    .minimumScaleFactor(0.6)
             }
             Spacer(minLength: .spaceS)
             Text(verbatim: expenses.total)
