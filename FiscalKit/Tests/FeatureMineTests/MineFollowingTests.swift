@@ -76,6 +76,34 @@ struct MineFollowingTests {
             partyGuidance: nil, approved: true, themes: [])
     }
 
+    @Test func aRegionalHighlightOpensItsContentWithoutShare() throws {
+        let model = try makeModel(follows: nil, suite: "route-\(UUID().uuidString)")
+        let highlight = Highlight(
+            id: "action-1", kind: .action, title: "Fato", subtitle: "", weight: 60,
+            repercussion: nil, impact: 60, route: "a", person: Self.card("a", "Ana"),
+            proposition: nil, date: CalendarDay(Date(timeIntervalSince1970: 1_792_917_720)),
+            url: nil, signals: .none)
+        guard case .content(let content) = model.route(for: highlight) else {
+            Issue.record("A regional highlight must open the content")
+            return
+        }
+        #expect(content.person?.slug == "a")
+        #expect(content.shareHighlightID == nil)
+    }
+
+    @Test func aSeatWithoutViceOrElectedStandsAlone() {
+        let holder = Self.card("a", "Ana")
+        let vice = Self.card("b", "Bia")
+        #expect(
+            MineSeat(level: .city, place: "SP", holder: holder, vice: nil, elected: []).standsAlone)
+        #expect(
+            !MineSeat(level: .city, place: "SP", holder: holder, vice: vice, elected: [])
+                .standsAlone)
+        #expect(
+            !MineSeat(level: .country, place: "BR", holder: holder, vice: nil, elected: [vice])
+                .standsAlone)
+    }
+
     @Test func suggestsRepresentativesAndSupportedNotFollowed() async throws {
         let suite = "following-\(UUID().uuidString)"
         defer { UserDefaults.standard.removePersistentDomain(forName: suite) }

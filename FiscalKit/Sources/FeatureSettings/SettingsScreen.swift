@@ -175,8 +175,8 @@ private struct PrivacySection: View {
         }
         if let url = settings.info.privacyURL {
             Section {
-                Link(destination: url) {
-                    SettingsExternalLabel(
+                ExternalLink(destination: url) {
+                    SettingsLabel(
                         "Privacy Policy", symbol: "doc.text", color: RetroColor.slate.color)
                 }
             }

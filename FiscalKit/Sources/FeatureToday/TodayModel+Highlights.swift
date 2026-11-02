@@ -33,12 +33,9 @@ extension TodayModel {
         return SourceFootnote.text(highlights.sources)
     }
 
-    public func route(for highlight: Highlight) -> Route? {
-        switch highlight.kind {
-        case .action: .person(slug: highlight.route)
-        case .vote: .vote(id: highlight.route)
-        case .money, .indicator: nil
-        }
+    public func route(for highlight: Highlight) -> Route {
+        .destination(
+            for: highlight, method: highlightMethod, sourceLine: highlightSource, isShareable: true)
     }
 
     public func shareSubject(for highlight: Highlight) -> ShareSubject {

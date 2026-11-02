@@ -126,7 +126,7 @@ private struct SourceRow: View {
             String(appLocalized: "Updated \(PublicFormat.updated($0))")
         }
         if let url = source.url {
-            Link(destination: url) {
+            ExternalLink(destination: url) {
                 IconRow(
                     verbatim: source.name, detail: detail, symbol: "building.columns",
                     color: .retroDenim)

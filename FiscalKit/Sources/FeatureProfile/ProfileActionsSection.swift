@@ -36,22 +36,10 @@ private struct ProfileActionLink: View {
 
     var body: some View {
         let label = Text(verbatim: profile.actionAccessibility(item))
-        if let route = profile.actionRoute(item) {
-            RouteLink(route) { ProfileActionRow(item: item) }
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel(label)
-                .accessibilityAddTraits(.isButton)
-        } else if let url = item.url {
-            Link(destination: url) { ProfileActionRow(item: item) }
-                .buttonStyle(.plain)
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel(label)
-                .accessibilityAddTraits(.isLink)
-        } else {
-            ProfileActionRow(item: item)
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel(label)
-        }
+        RouteLink(profile.actionRoute(item)) { ProfileActionRow(item: item) }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(label)
+            .accessibilityAddTraits(.isButton)
     }
 }
 

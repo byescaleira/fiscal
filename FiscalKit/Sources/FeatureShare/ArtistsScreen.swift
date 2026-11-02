@@ -192,11 +192,11 @@ private struct ArtworkCard: View {
             Chip(work.licenseLabel, color: work.isPublicDomain ? .positive : .info)
                 .accessibilityLabel(Text("License: \(work.license)"))
             HStack(spacing: .spaceM) {
-                Link(destination: work.licenseUrl) {
+                ExternalLink(destination: work.licenseUrl) {
                     Label("License", systemImage: "doc.text")
                 }
-                Link(destination: work.sourceUrl) {
-                    Label("Source", systemImage: "arrow.up.right.square")
+                ExternalLink(destination: work.sourceUrl) {
+                    Label("Source", systemImage: "link")
                 }
             }
             .font(.footnote.weight(.semibold))

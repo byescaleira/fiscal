@@ -36,6 +36,7 @@ struct FiscalApp: App {
                 .fiscalSettings(settings)
                 .groupedSurface(.plain)
                 .readsLiteMode()
+                .inAppBrowser()
         }
         #if os(iOS) || os(visionOS)
             .backgroundTask(.appRefresh(OfflineDataCenter.refreshIdentifier)) {
@@ -54,6 +55,7 @@ struct FiscalApp: App {
                     .fiscalSettings(settings)
                     .groupedSurface(.plain)
                     .readsLiteMode()
+                    .inAppBrowser()
             }
         #endif
         #if os(macOS)
@@ -65,6 +67,7 @@ struct FiscalApp: App {
                     .fiscalSettings(settings)
                     .groupedSurface(.plain)
                     .readsLiteMode()
+                    .inAppBrowser()
             }
         #endif
     }

@@ -19,6 +19,46 @@ struct ProfileModelTests {
             slug: slug, service: showcase, follows: follows, lens: lens, now: { Self.instant })
     }
 
+    @Test func aProposalOpensItsContentWithoutRepeatingTheAuthor() async throws {
+        let model = makeModel("tabata-amaral")
+        await model.load()
+        let proposal = try #require(model.recentProposals.first)
+        guard case .content(let content) = model.proposalRoute(proposal) else {
+            Issue.record("A proposal must open the content")
+            return
+        }
+        #expect(content.id == proposal.id)
+        #expect(content.officialSummary != nil || proposal.plainSummary == nil)
+        #expect(content.effect == model.proposalStatus(proposal))
+        #expect(content.stage == nil)
+        #expect(content.person == nil)
+    }
+
+    @Test func anActionOpensTheVoteOrTheContent() async throws {
+        let model = makeModel("tabata-amaral")
+        let vote = Self.action(kind: .vote, ref: "camara-1")
+        #expect(model.actionRoute(vote) == .vote(id: "camara-1"))
+        for item in [
+            Self.action(kind: .proposal, ref: nil), Self.action(kind: .speech, ref: nil),
+            Self.action(kind: .vote, ref: nil),
+        ] {
+            guard case .content(let content) = model.actionRoute(item) else {
+                Issue.record("Without a vote to open, the action must open the content")
+                continue
+            }
+            #expect(content.id == item.id)
+            #expect(content.person == nil)
+        }
+    }
+
+    private static func action(kind: ActionItem.Kind, ref: String?) -> ActionItem {
+        ActionItem(
+            id: "1", kind: kind, title: "Fato", proposition: "PL 1/2026",
+            date: CalendarDay(instant),
+            url: nil, ref: ref, ballot: nil, stage: nil, themes: [], weight: 50, repercussion: nil,
+            impact: 50, signals: .none)
+    }
+
     @Test func loadsTheProfileWithItsNumbersAndActivity() async throws {
         let model = makeModel("tabata-amaral")
         #expect(model.isEmpty)

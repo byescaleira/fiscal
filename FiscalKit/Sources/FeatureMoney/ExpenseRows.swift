@@ -32,20 +32,17 @@ private struct ExpenseRow: View {
 
     var body: some View {
         if let url = line.url {
-            Link(destination: url) {
-                ExpenseRowContent(line: line, opens: true)
-            }
-            .buttonStyle(.plain)
-            .accessibilityHint(Text("Opens the official receipt"))
+            ExternalLink(destination: url) { ExpenseRowContent(line: line) }
+                .buttonStyle(.plain)
+                .foregroundStyle(.primary)
         } else {
-            ExpenseRowContent(line: line, opens: false)
+            ExpenseRowContent(line: line)
         }
     }
 }
 
 private struct ExpenseRowContent: View {
     let line: ExpensesModel.Line
-    let opens: Bool
 
     var body: some View {
         AdaptiveRow(spacing: .spaceM) {
@@ -73,11 +70,6 @@ private struct ExpenseRowContent: View {
                     .font(.body.weight(.semibold))
                     .monospacedDigit()
                     .amountLine()
-                if opens {
-                    Image(systemName: "arrow.up.forward.square")
-                        .foregroundStyle(.tertiary)
-                        .accessibilityHidden(true)
-                }
             }
         }
         .padding(.vertical, .space2XS)

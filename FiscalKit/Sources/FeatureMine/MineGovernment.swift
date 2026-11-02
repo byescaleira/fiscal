@@ -51,6 +51,7 @@ private struct MineSeatCard: View {
         VStack(alignment: .leading, spacing: .spaceL) {
             Chip(seat.kicker, color: .white, shape: .capsule)
                 .environment(\.colorScheme, .dark)
+            if seat.standsAlone { Spacer(minLength: 0) }
             Button {
                 open(.person(slug: seat.holder.slug), in: section)
             } label: {

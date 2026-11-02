@@ -8,13 +8,19 @@ O que falta, por prioridade. Itens concluídos saem daqui; o motivo das decisõe
 - **[P1] Vencedor na Live Activity da apuração.** A regra de vencedor do widget (`RaceBoard.winner`) difere da do app (`Race.winner`) e mostra "ELEITO" a 100% no 1º turno com mais de 2 candidatos: igualar as duas ([FSC-001](../spdd/prompt/FSC-001-202610291700-[Codify]-live-results.md)). O toque já abre `fiscal://races`.
 - **[P1] Rótulo de privacidade e política.** Declarar o rótulo do [ADR 0017](adr/0017-app-store-privacy-label.md) no App Store Connect e listar na política do site as três saídas com os prazos.
 - **[P1] Retratos do app.** Marca visível "Ilustração do Fiscal" nos retratos, e a regra de não gerar cartaz de candidato com retrato nas 72 h antes e nas 24 h depois de uma votação ([brief](brief.md), "Retratos e marcas animados"); hoje nenhuma das duas existe.
-- **[P1] Testes de interface.** `testLaunchShowsFollowingAndOpensSettings` (linha 17, `openSettings`) e `testTodayOpensTheLiveResults` (linha 28, botão da Apuração) falham no simulador do iPhone Duo, também na `development` em 01/11/2026, antes da FSC-010.
+- **[P1] Teste de interface da apuração.** `testTodayOpensTheLiveResults` não acha o botão de Apuração em Hoje. O outro teste antigo voltou a passar na `FSC-011`, ao pular o setup da Lente nos testes. Reescrever na `FSC-013`, que muda a primeira aba.
 - **[P1] App ID da Meta.** Criar o app na Meta e preencher `FiscalMetaAppID` no `Info.plist`. Sem ele, os Stories do Instagram e do Facebook abrem pela folha do sistema ([ADR 0020](adr/0020-share-to-social-networks.md)).
 - **[P1] Publicar a AASA dos links do site.** Com o ok do usuário. Antes disso, os links impressos nos cartões abrem o site, não o app ([docs/web.md](web.md)).
 - **[P1] Apagar a escolha da Lente.** A confirmação "Apagar minha escolha" existe no `LensScreen`, mas nenhum botão a abre; o brief pede o botão.
 - **[P1] Testes do destaque na tela de bloqueio.** `HighlightAlertRule` e `HighlightAlertCenter` não têm testes (peso mínimo, janela de 24 h, ids já mostrados, desligar remove o token); a constituição pede Swift Testing para toda lógica.
 - **[P1] Capabilities no portal da Apple.** Conferir no App ID `com.byescaleira.fiscal`: App Attest, Push Notifications, iCloud (`iCloud.fiscal`), App Group `group.com.byescaleira` e Background Modes, e o App Group na extensão dos widgets.
 - **[P1] Capturas da loja pelo pipeline.** Gerar as capturas de [app-store/media/](app-store/media/README.md) com `launch.sh` e `compose.py` depois do texto final do site, trocando a SF Pro Rounded do `style.css` pela Bricolage nos títulos ([ADR 0009](adr/0009-bricolage-emphasis-font.md)), conferidas no iPhone físico.
+
+- **[P2] "Como medimos" no cartão "Na sua região agora".** O botão aparece só com o ícone, sem o texto, sobre o fundo escuro. Visto no simulador na `FSC-011`, fora do canvas dela.
+- **[P2] Selo "Pior que a média" cortado em "Pior que a mé...".** No cartão de "Quem Gasta Mais e em Quê", em largura estreita. Rever também se a palavra "pior" cabe na regra de só fatos.
+- **[P3] Cartão "Na sua região agora" com o texto oficial.** O de Hoje já usa o texto simples, e a tela de conteúdo também.
+
+- **[P2] Validar o esquema das URLs na publicação.** O servidor repassa o que as fontes mandam. A tela de conteúdo já recusa o que não é `http` ou `https`; os outros pontos do app e `server/internal/publicdata` ainda não. Precisa de deploy, com o ok do usuário.
 
 ## Depois da 1.0 ou sem data
 

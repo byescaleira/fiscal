@@ -133,13 +133,8 @@ public enum IntegrationLink {
         path("vote", id)
     }
 
-    public static func highlight(kind: Highlight.Kind, route: String) -> URL? {
-        let link: URL? =
-            switch kind {
-            case .action: person(route)
-            case .vote: vote(route)
-            case .money, .indicator: nil
-            }
+    public static func highlight(id: String, kind: Highlight.Kind, route: String) -> URL? {
+        let link = kind == .vote ? vote(route) : path("highlight", id)
         return link ?? today
     }
 

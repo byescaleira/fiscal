@@ -13,7 +13,7 @@ let package = Package(
             targets: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureSettings", "AppShell"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/byescaleira/byescaleira-kit.git", from: "0.7.2"),
+        .package(url: "https://github.com/byescaleira/byescaleira-kit.git", from: "0.8.0"),
         .package(url: "https://github.com/airbnb/lottie-spm.git", from: "4.5.0"),
     ],
     targets: [
@@ -66,6 +66,9 @@ let package = Package(
             name: "FeatureMoney",
             dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
         .target(
+            name: "FeatureContent",
+            dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
+        .target(
             name: "FeatureSearch",
             dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
         .target(
@@ -86,7 +89,7 @@ let package = Package(
                 "FiscalDomain", "FiscalData", "FiscalDesignSystem", "FiscalResource", "FeatureCore",
                 "FeatureGuides", "FeatureLiveResults", "FeatureSettings", "FeatureToday",
                 "FeatureMine", "FeatureProfile", "FeatureVotes", "FeatureMoney", "FeatureSearch",
-                "FeatureLens", "FeatureShare", "FeatureMemory",
+                "FeatureLens", "FeatureShare", "FeatureMemory", "FeatureContent",
             ]),
         .testTarget(name: "FiscalDomainTests", dependencies: ["FiscalDomain"]),
         .testTarget(name: "FiscalDataTests", dependencies: ["FiscalDomain", "FiscalData"]),
@@ -119,6 +122,9 @@ let package = Package(
         .testTarget(
             name: "FeatureMoneyTests",
             dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureMoney"]),
+        .testTarget(
+            name: "FeatureContentTests",
+            dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureContent"]),
         .testTarget(
             name: "FeatureSearchTests",
             dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureSearch"]),

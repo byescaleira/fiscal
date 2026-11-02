@@ -2,6 +2,7 @@ import SwiftUI
 
 extension CGFloat {
     public static let chartStripHeight: CGFloat = 28
+    public static let mandateRowHeight: CGFloat = 60
     public static let chartLabelRoom: CGFloat = 104
     public static let chartStemWidth: CGFloat = 3
     public static let chartLineWidth: CGFloat = 2.5

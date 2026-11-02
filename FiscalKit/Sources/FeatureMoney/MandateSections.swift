@@ -62,17 +62,15 @@ private struct MandateActRow: View {
 
     var body: some View {
         if let url = item.url {
-            Link(destination: url) {
-                content(showsLink: true)
-            }
-            .buttonStyle(.plain)
-            .accessibilityHint(Text("Opens the official act"))
+            ExternalLink(destination: url) { content }
+                .buttonStyle(.plain)
+                .foregroundStyle(.primary)
         } else {
-            content(showsLink: false)
+            content
         }
     }
 
-    private func content(showsLink: Bool) -> some View {
+    private var content: some View {
         HStack(spacing: .spaceM) {
             Image(systemName: "text.book.closed")
                 .foregroundStyle(.secondary)
@@ -86,12 +84,6 @@ private struct MandateActRow: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
             Spacer(minLength: .spaceS)
-            if showsLink {
-                Image(systemName: "arrow.up.forward")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.tertiary)
-                    .accessibilityHidden(true)
-            }
         }
         .contentShape(.rect)
         .accessibilityElement(children: .combine)

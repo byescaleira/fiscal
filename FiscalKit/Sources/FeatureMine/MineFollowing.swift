@@ -42,7 +42,7 @@ struct FollowingUpdateRow: View {
             if let route = mine.route(for: update) {
                 RouteLink(route) { label }
             } else if case .check(let check) = update.kind {
-                Link(destination: check.url) { label }
+                ExternalLink(destination: check.url) { label }
                     .foregroundStyle(.primary)
             }
         }

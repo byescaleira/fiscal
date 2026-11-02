@@ -29,6 +29,8 @@ Primeira versão, a 1.0.0.
 - Seguindo é a primeira aba e o app abre nela: as novidades dos últimos 30 dias de quem você segue (votos, gastos e checagens, com a fonte de cada uma e o selo "Novo" até você sair da aba), quem você segue, até oito sugestões entre quem representa o seu lugar e quem você apoia, e Sua região logo abaixo ([FSC-009](spdd/prompt/FSC-009-202610312200-[Feat]-following-tab-and-follow-everywhere.md)).
 - Seguir e deixar de seguir em qualquer linha de pessoa (botão ao lado do nome e menu de contexto), no perfil e nas tabelas do Mac.
 - Siri e Atalhos seguem e deixam de seguir um político sem abrir o app, com o aparelho desbloqueado, e "Quem eu sigo" abre a aba Seguindo.
+- Tela própria para propostas e destaques: o toque em "Destaque do momento", "Na sua região agora" e nas propostas do perfil abre o conteúdo, com o texto simples, a ementa, o estágio, a data e a fonte, e o autor vira um botão à parte.
+- Todo link externo abre dentro do app no iPhone, no iPad e no visionOS, e mostra a seta que avisa que sai para a web.
 - Widget "Quem eu sigo", com as últimas novidades de até seis pessoas seguidas, e o atalho de Seguindo no Hoje com o número de novidades.
 - Compartilhar virou um estúdio: o cartão fica grande no topo, com os estilos Folha, Dados e Pôster num carrossel, e os controles num painel separado: arte, rede e lugar (Instagram, TikTok, Facebook, WhatsApp e outros) e fatos a mostrar ou esconder, com legenda editável e o botão de postar na barra de cima.
 - Vídeo animado de 5 s para Stories, Reels, TikTok e Status: fundos e blocos aparecem em sequência e os números rolam até o valor real, com progresso e cancelamento.

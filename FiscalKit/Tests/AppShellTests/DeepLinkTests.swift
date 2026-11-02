@@ -20,6 +20,7 @@ struct DeepLinkTests {
             "fiscal://vote/camara-2026-1234",
             DeepLink.route(.vote(id: "camara-2026-1234"), in: .votes)
         ),
+        ("fiscal://highlight/action-1", DeepLink.route(.highlight(id: "action-1"), in: .today)),
         (
             "fiscal://compare?slugs=tabata-amaral,kim-kataguiri",
             DeepLink.route(.compare(slugs: ["tabata-amaral", "kim-kataguiri"]), in: .search)
@@ -46,6 +47,7 @@ struct DeepLinkTests {
         ("fiscal://votes", FiscalEvents.DeepLinkKind.section),
         ("fiscal://mine", .section),
         ("fiscal://person/nikolas-ferreira", .person),
+        ("fiscal://highlight/action-1", .highlight),
         ("fiscal://expenses/tabata-amaral?year=2025", .expenses),
         ("fiscal://compare?slugs=tabata-amaral,kim-kataguiri", .compare),
         ("fiscal://race", .unknown),
