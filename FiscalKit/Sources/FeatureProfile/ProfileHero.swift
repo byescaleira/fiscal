@@ -19,11 +19,13 @@ private struct ProfileHeroCard: View {
 
     var body: some View {
         VStack(spacing: .spaceL) {
-            HStack(spacing: .spaceS) {
+            AdaptiveStack(spacing: .spaceS) {
                 PartyMark(person.party)
                 Spacer(minLength: .spaceS)
                 if let status = profile.statusText {
                     Chip(status, color: profile.isInOffice ? .primary : .warning, shape: .capsule)
+                        .lineLimit(1)
+                        .fixedSize()
                 }
             }
             PersonPortrait(

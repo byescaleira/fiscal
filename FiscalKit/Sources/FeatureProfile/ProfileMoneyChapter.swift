@@ -22,7 +22,7 @@ struct ProfileMoneyChapter: View {
                         )
                     }
                     RouteLink(profile.expensesRoute) {
-                        Label("Every Expense", systemImage: "list.bullet.rectangle")
+                        Label("See Every Receipt", systemImage: "list.bullet.rectangle")
                     }
                 } else {
                     Text("No receipts this year")

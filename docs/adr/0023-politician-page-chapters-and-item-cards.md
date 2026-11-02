@@ -16,6 +16,8 @@ A página do político tinha 16 seções numa lista, com traços onde faltava da
 4. Compartilhar ganha uma nota, um mês, o voto de uma pessoa e uma proposta. A nota sempre diz "Uma de N notas de <ano>, total R$ X". O voto traz a proposta. Os cartões seguem sem o bonequinho e usam chaves do site que já existem.
 5. Nota sem CNPJ não vira cartão, porque o cartão circula fora do app e exporia o nome de uma pessoa comum.
 6. As checagens entram na página como "O que circulou sobre <nome>", com aviso de cobertura e crédito, só por data. Sem checagem, não há capítulo nem frase.
+7. O contexto de antes e durante o mandato sai da página, por decisão do usuário ao ver o componente no iPhone. Os arquivos publicados e a Investigação não mudam.
+8. Todo cartão ou linha tem um destino principal, o conteúdo mais importante. Quando ele abre outra tela, a setinha fica à direita, com padding. A pessoa pode ter um botão próprio por cima. Link externo mantém o próprio símbolo, e blocos pequenos em grade ou carrossel ficam sem setinha.
 
 ## Consequências
 

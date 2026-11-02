@@ -32,7 +32,7 @@ fiscal/
 | `FeatureGuides` | `GuideScreen` e páginas dos tutoriais | Domain, DesignSystem, FeatureCore |
 | `FeatureFeed` | Aba Feed: apuração e destaque do momento no topo, lista por data com os filtros Tudo, Seguindo e Relevante, selo de novidades, retrato do widget e os botões de "Meu apoio" e de Ajustes ([ADR 0022](adr/0022-feed-first-tab-and-region.md)) | Domain, DesignSystem, FeatureCore |
 | `FeatureRegion` | Aba Região: quem a pessoa segue, sugestões, lugar de casa, quem governa a cidade, o estado e o país, e bancadas | Domain, DesignSystem, FeatureCore |
-| `FeatureProfile` | Perfil (`Route.person(slug:)`), aberto por qualquer aba | Domain, DesignSystem, FeatureCore |
+| `FeatureProfile` | Perfil (`Route.person(slug:)`), aberto por qualquer aba: capítulos por cargo, cabeçalho fixo com o retrato e notas pela `Route.expenses` | Domain, DesignSystem, FeatureCore |
 | `FeatureVotes` | Aba Votações: recentes, pauta do dia e detalhe (`Route.vote(id:)`) | Domain, DesignSystem, FeatureCore |
 | `FeatureMoney` | Aba Dinheiro e recibos (`Route.expenses`) | Domain, DesignSystem, FeatureCore |
 | `FeatureSearch` | Aba Fiscalizar (`Tab(role: .search)`): busca no índice, Comparar (`Route.compare(slugs:)`), Eleições e investigações | Domain, DesignSystem, FeatureCore |

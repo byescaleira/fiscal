@@ -164,6 +164,7 @@ O manifesto `art-credits.json` vai junto com o app e lista, por obra: autor, @, 
 - **Antes e durante o mandato, para todos:**
   - **Comparação:** para cada político, o mesmo indicador no período antes da posse e durante o mandato, na sua jurisdição (Brasil para presidente e vice; a UF para governador, senador e deputados; o município para prefeito e vereadores, quando houver dado), com a data da posse marcada no gráfico.
   - **Sem causalidade:** o texto diz o que mudou, não que foi por causa do político.
+  - **Onde aparece (decisão do usuário em 2026-11-02):** saiu da página do político, porque o componente não se encaixava no app, embora os dados importem. Segue na Investigação, e repensar a forma dele está no [backlog](backlog.md).
 - **O que cada político está fazendo e o peso disso:**
   - **O que entra:** projetos apresentados, votos, discursos e cargos, todos com o texto oficial (a ementa, sem resumo opinativo).
   - **Como se calcula o peso:** a repercussão (volume nas redes e na imprensa) somada ao impacto social (alcance da medida, tipo de proposição, tema).

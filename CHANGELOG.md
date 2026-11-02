@@ -27,6 +27,10 @@ Primeira versão, a 1.0.0.
 - Página Desenvolvedor com flags em três estados, registro de eventos sem dado pessoal, diagnóstico e a medida da tela.
 - Envio das capturas da loja pela API do App Store Connect (`scripts/store-media.py`).
 - O Feed é a primeira aba e o app abre nele: o que fizeram as pessoas que você segue e o que é relevante, só por data, com os filtros Tudo, Seguindo e Relevante e o motivo de cada linha. No topo, a apuração ao vivo e o destaque do momento. A lista cresce conforme você desce, até os dados de 2023, e diz onde acaba ([FSC-013](spdd/prompt/FSC-013-202611012300-[Feat]-feed-first-tab-and-region.md)).
+- A página do político virou uma rolagem em capítulos que dependem do cargo e do que existe (Como vota, O que propõe, Quanto gasta, De onde vem, O que circulou, Quem é), com um resumo no topo, sem traços, e uma frase dizendo o que a fonte não publica. Ao rolar, um cabeçalho fixo mostra o bonequinho, que faz um gesto neutro por capítulo, e os atalhos ([FSC-014](spdd/prompt/FSC-014-202611020300-[Feat]-politician-page-and-share-an-item.md)).
+- Quanto gasta abre no ano mais recente com gasto, troca de ano e leva a todas as notas. O que circulou mostra as checagens do Projeto Comprova na página, só por data.
+- Compartilhar uma nota, um mês, o voto de uma pessoa ou uma proposta. A nota diz de quantas faz parte e o total do ano, e nota de pessoa física não vira cartão.
+- Cartões e linhas que abrem outra tela mostram a setinha à direita, e o toque principal abre o conteúdo. No Feed, a pessoa abre o próprio perfil.
 - A aba Região guarda quem você segue, até oito sugestões entre quem representa o seu lugar, quem governa e as bancadas ([FSC-009](spdd/prompt/FSC-009-202610312200-[Feat]-following-tab-and-follow-everywhere.md)).
 - Seguir e deixar de seguir em qualquer linha de pessoa (botão ao lado do nome e menu de contexto), no perfil e nas tabelas do Mac.
 - Siri e Atalhos seguem e deixam de seguir um político sem abrir o app, com o aparelho desbloqueado, e "Quem eu sigo" abre a aba Região.

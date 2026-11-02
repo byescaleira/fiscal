@@ -96,6 +96,8 @@ classDiagram
         +summary ProfileSummaryFact[]
         +currentChapter
         +expenseYear
+        +expenseYears
+        +hasFailedSource
         +checks FactCheckList?
         +gaps String[]
         +selectExpenseYear(year)
@@ -167,7 +169,7 @@ classDiagram
 ## Approach
 
 - **Decisões registradas.** O [ADR 0023](../../docs/adr/0023-politician-page-chapters-and-item-cards.md), registra os capítulos, a regra do gesto e os cartões de um item.
-- **Rolagem com capítulos.** Decisão do usuário. Uma rolagem só, em `LazyVStack` com cabeçalho fixo, no lugar de `AdaptiveList`. Os títulos são perguntas ou frases simples, em vez de nomes de base de dados.
+- **Rolagem com capítulos.** Decisão do usuário. Uma rolagem só, em `VStack`, porque o salto precisa da posição de todos os capítulos, com cabeçalho fixo, no lugar de `AdaptiveList`. Os títulos são perguntas ou frases simples, em vez de nomes de base de dados.
 - **Ordem fixa por cargo.** Legislativo: Como vota, O que propõe, Quanto gasta, De onde vem, O que circulou, Quem é. Executivo: De onde vem, O que circulou, Quem é. Nunca por valor, e só com o que existe.
 - **O que entra em cada capítulo.** Como vota: votos e temas. O que propõe: ações, propostas, discursos e comissões. Quanto gasta: cota, salário e notas. De onde vem: eleição, patrimônio, campanhas e trajetória. O que circulou: checagens. Quem é: dados pessoais, contato, cobertura e o que falta.
 - **Bonequinho.** O topo mantém o retrato grande, sem expressão ligada a dado. Ao rolar, `ProfilePortraitChoreography` dá um gesto neutro do molde para cada capítulo, numa tabela que recebe só o capítulo. Assim, o tipo impede o gesto de depender do dado. Só um retrato anima por vez, e o cabeçalho usa o que `PortraitArtView` já faz para pausar fora da tela. Os gestos e a tabela são iterados no iPhone.
@@ -191,15 +193,16 @@ classDiagram
 - `FeatureCore/Portraits/PortraitArtView.swift`: toca o gesto pedido.
 - `FeatureCore/Navigation/ShareSubject.swift`: os quatro casos novos.
 - `FeatureCore/Navigation/RouteLink.swift`, `RouteCard.swift` (novo): `RouteChevron` e `RouteCard`.
+- `FeatureCore/Navigation/ShareItemButton.swift` (novo): o botão e o menu de compartilhar um item.
 - Cartões e linhas que abrem outra tela: `FeatureFeed/FeedRows.swift`, `FeedHighlightHero.swift`; `FeatureRegion/RegionNow.swift`; `FeatureLiveResults/RaceCompactCard.swift`, `RaceWinnerCard.swift`, `RaceHeroCard.swift`; `FeatureMoney/SpendingSections.swift`.
 - `FeatureProfile/`:
   - novos: `ProfileChapter.swift`, `ProfileModel+Chapters.swift`, `ProfileModel+Summary.swift`, `ProfilePortraitChoreography.swift`, `ProfileStickyHeader.swift`, `ProfileChapterViews.swift`, `ProfileMoneyChapter.swift`, `ProfileChecksChapter.swift`;
-  - mudam: `ProfileScreen.swift`, `ProfileHero.swift`, `ProfileModel.swift`, `ProfileModel+Numbers.swift`, `ProfileModel+Activity.swift`, `ProfileModel+History.swift`, `ProfileActivitySections.swift`, `ProfileActionsSection.swift`, `ProfileHistorySections.swift`;
-  - saem: `ProfileExpenses.swift`, `ProfileNumbersExplainer.swift`, e o que sobrar delas vai para os capítulos; `ProfileContextSection.swift` e `ProfileModel+Context.swift`, sem ir para outro lugar.
-- `FeatureMoney/`: `ExpenseRows.swift`, `ExpensesModel.swift`, com compartilhar por nota e por mês.
-- `FeatureShare/`: `ShareModel.swift`, `ShareCardContent.swift`, `ShareCardBuilder+Items.swift` (novo), `ShareContentRules.swift`, `ShareCaption.swift`, `ShareStyle.swift`, `ShareFormat.swift`, `ShareTypographicView.swift`, `ShareDataView.swift`, `SharePoster.swift`, `ShareMotion.swift`.
+  - mudam: `ProfileScreen.swift`, `ProfileHero.swift`, `ProfileModel.swift`, `ProfileModel+Numbers.swift`, `ProfileModel+Activity.swift`, `ProfileModel+History.swift`, `ProfileActivitySections.swift`, `ProfileActionsSection.swift`, `ProfileHistorySections.swift`, com `ProfileInfoRow`;
+  - saem: `ProfileExpenses.swift`, que vira `ProfileMoneyChapter.swift`, `ProfileNumbersExplainer.swift`, e o que sobrar delas vai para os capítulos; `ProfileContextSection.swift` e `ProfileModel+Context.swift`, sem ir para outro lugar.
+- `FeatureMoney/`: `ExpenseRows.swift`, `ExpensesModel.swift`, `ExpensesModel+Records.swift`, `ExpensesTable.swift`, com compartilhar por nota e por mês.
+- `FeatureShare/`: `ShareModel.swift`, `ShareCardContent.swift`, `ShareCardBuilder+Items.swift` (novo), `ShareContentRules.swift`, `ShareCaption.swift`, `ShareRenderer.swift`, `ShareSelection.swift`, `ShareTypographicView.swift`, `ShareDataView.swift`, `SharePoster.swift`.
 - `AppShell/RouteScreen.swift`: se precisar passar um serviço novo ao modelo.
-- `Fiscal/FiscalUITests/`: `ProfileChaptersTests.swift`, novo.
+- `Fiscal/FiscalUITests/`: `ProfileChaptersTests.swift` e `CardDestinationTests.swift`, novos.
 - `Fiscal/Fiscal/Localizable.xcstrings`.
 - Testes: `ProfileModelTests` migra; `ProfileChaptersTests`, `ProfilePortraitChoreographyTests` e `ShareItemCardsTests`, novos; `ShareCardBuilderTests`, `ShareContentRulesTests`, `ShareCardSnapshotTests`, `ExpensesModelTests`.
 - Documentos: `docs/adr/0023-politician-page-chapters-and-item-cards.md`, `docs/adr/README.md`, `docs/brief.md`, `docs/architecture.md`, `docs/validation.md`, `docs/roadmap.md`, `docs/backlog.md`, `README.md`, `CHANGELOG.md`, `spdd/README.md`, `docs/evidence/FSC-014/qa.md`; `site/index.html`, `site/support.html`, `site/llms.txt`, sem publicar.
@@ -222,8 +225,8 @@ classDiagram
    - Cobre: 10, 11, 12. Verificação: `ProfilePortraitChoreographyTests`, e o `ReducesMotion` já existente.
 3. **Tela, cabeçalho e bonequinho.** Depende de: 1, 2.
    - Ver as referências reais antes de desenhar.
-   - `ProfileScreen`: rolagem com o topo, o resumo e os capítulos, com `ScrollViewReader` para os atalhos.
-   - `ProfileStickyHeader`: retrato pequeno, nome, partido, cargo e atalhos em rolagem lateral, com o capítulo atual marcado.
+   - `ProfileScreen`: rolagem com o topo, o resumo e os capítulos, com salto por `ScrollPosition` até a posição medida de cada capítulo.
+   - `ProfileStickyHeader`: em camada sobre a rolagem, que só muda de opacidade, com retrato pequeno, nome, partido, cargo e atalhos em rolagem lateral, com o capítulo atual marcado.
    - Capítulo atual: o último cujo topo passou do cabeçalho, publicado em `currentChapter`.
    - Por ora, os capítulos usam as seções de hoje, adaptadas para fora de `List`.
    - **Parar e mostrar no iPhone, com dados reais, antes da operação 4.**
@@ -248,7 +251,7 @@ classDiagram
    - `ShareCardBuilder+Items`: nota com "Uma de N notas de <ano>, total R$ X", mês, voto e proposta.
    - `ShareContentRules`: sem o fato principal ou sem fonte, não há cartão.
    - Os três corpos novos em Folha, Dados, Pôster, legenda, vídeo e formatos; Duelo não se aplica.
-   - Botões e menu de contexto no perfil e em `ExpensesScreen`; nota sem CNPJ não tem botão.
+   - Botões e menu de contexto no perfil e em `ExpensesScreen`, com o valor abaixo do fornecedor na linha da nota, e o item no menu da tabela do Mac; nota sem CNPJ não tem botão.
    - **Mostrar os cartões no iPhone ao terminar.**
    - Cobre: 17 a 24. Verificação: `ShareItemCardsTests`, `ShareContentRulesTests`, `ShareCardSnapshotTests`, iPhone.
 8. **Sai Durante o mandato.** Depende de: 3.

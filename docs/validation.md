@@ -42,6 +42,13 @@ Build: `____` · Data: `__/__/____`
 - [ ] Sem rede: a tela mostra "Sem conexão. Mostrando os últimos números recebidos."
 - [ ] Voltar o servidor para o TSE real.
 
+### Página do político e cartões de um item
+
+- [ ] Deputado, senador, governador, prefeito e vereador, inclusive quem deixou o cargo: só os capítulos com dado, sem traço, com a frase do que a fonte não publica.
+- [ ] Rolar: o cabeçalho aparece quando o topo sai, o retrato faz um gesto por capítulo e fica parado com Reduzir movimento e pouca energia.
+- [ ] Compartilhar uma nota, um mês, um voto e uma proposta; nota sem CNPJ não tem botão.
+- [ ] Cartão que abre outra tela mostra a setinha; no Feed, a pessoa abre o perfil, e o resto abre o conteúdo.
+
 ### Destaque na tela de bloqueio
 
 - [ ] Com "Destaques de maior peso na tela de bloqueio" ligado (Ajustes › Seus dados e privacidade), o registro do token de push-to-start chega ao servidor (`highlight-registrations.json`).

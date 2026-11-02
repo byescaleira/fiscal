@@ -4846,6 +4846,7 @@
       }
     },
     "Every Expense" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11790,6 +11791,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ver todos os estados e cidades"
+          }
+        }
+      }
+    },
+    "See Every Receipt" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver todas as notas"
           }
         }
       }

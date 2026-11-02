@@ -213,11 +213,7 @@ struct ProfileSalarySection: View {
         if !profile.salaryLines.isEmpty {
             ProfileBlock(title: Text("Salary")) {
                 ForEach(profile.salaryLines) { line in
-                    LabeledContent {
-                        Text(verbatim: line.value).multilineTextAlignment(.trailing)
-                    } label: {
-                        Text(verbatim: line.title)
-                    }
+                    ProfileInfoRow(title: line.title, value: line.value)
                 }
             }
         }

@@ -15,12 +15,8 @@ struct ProfileAssetsSection: View {
                 ForEach(profile.assetDeclarations) { declaration in
                     DisclosureGroup {
                         ForEach(Array(declaration.items.enumerated()), id: \.offset) { _, item in
-                            LabeledContent {
-                                Text(verbatim: profile.money(item.cents)).monospacedDigit()
-                            } label: {
-                                Text(verbatim: item.kind)
-                            }
-                            .font(.subheadline)
+                            ProfileInfoRow(title: item.kind, value: profile.money(item.cents))
+                                .font(.subheadline)
                         }
                     } label: {
                         ProfileYearLine(
@@ -47,12 +43,12 @@ struct ProfileCampaignsSection: View {
                         ProfileYearLine(
                             year: campaign.year, title: profile.campaignDetail(campaign),
                             value: nil)
-                        LabeledContent("Raised") {
-                            Text(verbatim: profile.money(campaign.revenueCents)).monospacedDigit()
-                        }
-                        LabeledContent("Spent") {
-                            Text(verbatim: profile.money(campaign.expenseCents)).monospacedDigit()
-                        }
+                        ProfileInfoRow(
+                            title: String(appLocalized: "Raised"),
+                            value: profile.money(campaign.revenueCents))
+                        ProfileInfoRow(
+                            title: String(appLocalized: "Spent"),
+                            value: profile.money(campaign.expenseCents))
                     }
                     .font(.subheadline)
                     .accessibilityElement(children: .combine)
@@ -122,12 +118,8 @@ struct ProfileAboutSection: View {
         if !profile.aboutLines.isEmpty {
             ProfileBlock(footer: [profile.sourceText]) {
                 ForEach(profile.aboutLines) { line in
-                    LabeledContent {
-                        Text(verbatim: line.value).multilineTextAlignment(.trailing)
-                            .textSelection(.enabled)
-                    } label: {
-                        Text(verbatim: line.title)
-                    }
+                    ProfileInfoRow(title: line.title, value: line.value)
+                        .textSelection(.enabled)
                 }
             }
         }
@@ -136,6 +128,31 @@ struct ProfileAboutSection: View {
                 .font(.footnote)
                 .foregroundStyle(.secondary)
                 .padding(.horizontal, .spaceL)
+        }
+    }
+}
+
+struct ProfileInfoRow: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    let title: String
+    let value: String
+
+    var body: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: .spaceHairline) {
+                Text(verbatim: title).foregroundStyle(.secondary)
+                Text(verbatim: value).monospacedDigit()
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .accessibilityElement(children: .combine)
+        } else {
+            LabeledContent {
+                Text(verbatim: value)
+                    .monospacedDigit()
+                    .multilineTextAlignment(.trailing)
+            } label: {
+                Text(verbatim: title)
+            }
         }
     }
 }
