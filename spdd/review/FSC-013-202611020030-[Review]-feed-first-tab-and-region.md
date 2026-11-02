@@ -31,3 +31,5 @@
 **Fora do escopo:** nada entrou. Sem página do político e sem `ShareSubject` novo.
 
 **Painel de interface e código:** aprovado sem bloqueador. Os cinco "deveria" (alvo de toque do compartilhar, corrida entre `load` e `loadMore`, cabeçalho e filtros no maior tamanho de texto, tour com as abas antigas) foram corrigidos no mesmo commit, junto dos detalhes do widget e do traço de link.
+
+**Depois da revisão:** a re-revisão contra o canvas deu Ready to Merge. O pedido do usuário de manter o link dentro do cartão trouxe o kit 0.8.1, e a revisão de interface desse trecho aprovou, com dois ajustes de acessibilidade já aplicados.
