@@ -82,7 +82,16 @@ classDiagram
     class RouteCard {
         <<view>>
         +route Route
+        +label
+        +padding
+        +cornerRadius
         +content
+    }
+    class CardBackdropButton {
+        <<view>>
+        +cornerRadius
+        +label
+        +action
     }
     class ProfileSummaryFact {
         +id
@@ -153,6 +162,7 @@ classDiagram
         +summary
     }
     RouteCard --> RouteChevron
+    RouteCard --> CardBackdropButton
     ProfileModel --> ProfileChapter
     ProfileModel --> ProfileSummaryFact
     ProfileSummaryFact --> ProfileChapter
@@ -182,7 +192,7 @@ classDiagram
 - **Compartilhar de dentro.** Um botão de ícone no fim da linha e o menu de contexto, nas votações e propostas do perfil e nas notas de `ExpensesScreen`. O topo continua compartilhando a pessoa.
 - **Checagens.** Decisão do usuário: ligar, com o texto do brief e do [canvas FSC-006](FSC-006-202610291700-[Codify]-fact-checks.md). Sai `showsFactChecks`. Sem contagem e sem ordem por veredito: só por data.
 - **Contexto fora da página.** Decisão do usuário: o componente de antes e durante o mandato não se encaixa no app, embora os dados importem. Sai da página, e repensar a forma dele vai para o backlog. `PersonContext`, os arquivos publicados e a Investigação não mudam.
-- **Um destino principal por cartão.** Decisão do usuário: o conteúdo mais importante é o toque principal e, quando ele abre outra tela, a setinha fica à direita do cartão, com padding. `RouteCard` põe o botão principal atrás do conteúdo, com o resto sem toque, e assim a pessoa pode ter um botão próprio por cima sem aninhar botões. Link externo mantém o próprio símbolo. Blocos pequenos em grade ou carrossel, como os rostos da bancada e as eleições passadas, ficam sem setinha, porque nela não há canto direito que caiba.
+- **Um destino principal por cartão.** Decisão do usuário: o conteúdo mais importante é o toque principal e, quando ele abre outra tela, a setinha fica à direita do cartão, com padding. `RouteCard` põe o botão principal atrás do conteúdo, com o resto sem toque, e assim a pessoa pode ter um botão próprio por cima sem aninhar botões. Cartões sem botão próprio por cima usam `RouteChevron` direto. Link externo mantém o próprio símbolo. Blocos pequenos em grade ou carrossel, como os rostos da bancada e as eleições passadas, ficam sem setinha, porque nela não há canto direito que caiba.
 - **Sem apoio.** A página e os cartões não leem o apoio. `support_stays_private` barra.
 - **Fora daqui.** A regra dos cartões de candidato em 72 horas segue no backlog, porque os cartões não têm retrato.
 
@@ -194,17 +204,17 @@ classDiagram
 - `FeatureCore/Navigation/ShareSubject.swift`: os quatro casos novos.
 - `FeatureCore/Navigation/RouteLink.swift`, `RouteCard.swift` (novo): `RouteChevron` e `RouteCard`.
 - `FeatureCore/Navigation/ShareItemButton.swift` (novo): o botão e o menu de compartilhar um item.
-- Cartões e linhas que abrem outra tela: `FeatureFeed/FeedRows.swift`, `FeedHighlightHero.swift`; `FeatureRegion/RegionNow.swift`; `FeatureLiveResults/RaceCompactCard.swift`, `RaceWinnerCard.swift`, `RaceHeroCard.swift`; `FeatureMoney/SpendingSections.swift`.
+- Cartões e linhas que abrem outra tela: `FeatureFeed/FeedRows.swift`, `FeedHighlightHero.swift`; `FeatureRegion/RegionNow.swift`; `FeatureLiveResults/RaceCompactCard.swift`, `RaceWinnerCard.swift`; `FeatureMoney/SpendingSections.swift`.
 - `FeatureProfile/`:
   - novos: `ProfileChapter.swift`, `ProfileModel+Chapters.swift`, `ProfileModel+Summary.swift`, `ProfilePortraitChoreography.swift`, `ProfileStickyHeader.swift`, `ProfileChapterViews.swift`, `ProfileMoneyChapter.swift`, `ProfileChecksChapter.swift`;
-  - mudam: `ProfileScreen.swift`, `ProfileHero.swift`, `ProfileModel.swift`, `ProfileModel+Numbers.swift`, `ProfileModel+Activity.swift`, `ProfileModel+History.swift`, `ProfileActivitySections.swift`, `ProfileActionsSection.swift`, `ProfileHistorySections.swift`, com `ProfileInfoRow`;
+  - mudam: `ProfileScreen.swift`, `ProfileHero.swift`, `ProfileModel.swift`, `ProfileModel+Numbers.swift`, `ProfileModel+Activity.swift`, `ProfileModel+History.swift`, `ProfileActivitySections.swift`, `ProfileActionsSection.swift`, `ProfileHistorySections.swift`, com `ProfileInfoRow`, `ProfileTokens.swift`;
   - saem: `ProfileExpenses.swift`, que vira `ProfileMoneyChapter.swift`, `ProfileNumbersExplainer.swift`, e o que sobrar delas vai para os capítulos; `ProfileContextSection.swift` e `ProfileModel+Context.swift`, sem ir para outro lugar.
 - `FeatureMoney/`: `ExpenseRows.swift`, `ExpensesModel.swift`, `ExpensesModel+Records.swift`, `ExpensesTable.swift`, com compartilhar por nota e por mês.
 - `FeatureShare/`: `ShareModel.swift`, `ShareCardContent.swift`, `ShareCardBuilder+Items.swift` (novo), `ShareContentRules.swift`, `ShareCaption.swift`, `ShareRenderer.swift`, `ShareSelection.swift`, `ShareTypographicView.swift`, `ShareDataView.swift`, `SharePoster.swift`.
 - `AppShell/RouteScreen.swift`: se precisar passar um serviço novo ao modelo.
 - `Fiscal/FiscalUITests/`: `ProfileChaptersTests.swift` e `CardDestinationTests.swift`, novos.
 - `Fiscal/Fiscal/Localizable.xcstrings`.
-- Testes: `ProfileModelTests` migra; `ProfileChaptersTests`, `ProfilePortraitChoreographyTests` e `ShareItemCardsTests`, novos; `ShareCardBuilderTests`, `ShareContentRulesTests`, `ShareCardSnapshotTests`, `ExpensesModelTests`.
+- Testes: `ProfileModelTests` migra; `ProfileChaptersTests`, com `ProfilePortraitChoreographyTests` no mesmo arquivo, e `ShareItemCardsTests`, novos; `ShareCardSnapshotTests`, `ExpensesModelTests`, `PortraitTests`.
 - Documentos: `docs/adr/0023-politician-page-chapters-and-item-cards.md`, `docs/adr/README.md`, `docs/brief.md`, `docs/architecture.md`, `docs/validation.md`, `docs/roadmap.md`, `docs/backlog.md`, `README.md`, `CHANGELOG.md`, `spdd/README.md`, `docs/evidence/FSC-014/qa.md`; `site/index.html`, `site/support.html`, `site/llms.txt`, sem publicar.
 
 ## Operations
@@ -253,14 +263,14 @@ classDiagram
    - Os três corpos novos em Folha, Dados, Pôster, legenda, vídeo e formatos; Duelo não se aplica.
    - Botões e menu de contexto no perfil e em `ExpensesScreen`, com o valor abaixo do fornecedor na linha da nota, e o item no menu da tabela do Mac; nota sem CNPJ não tem botão.
    - **Mostrar os cartões no iPhone ao terminar.**
-   - Cobre: 17 a 24. Verificação: `ShareItemCardsTests`, `ShareContentRulesTests`, `ShareCardSnapshotTests`, iPhone.
+   - Cobre: 17 a 24. Verificação: `ShareItemCardsTests`, `ShareCardSnapshotTests`, iPhone.
 8. **Sai Durante o mandato.** Depende de: 3.
    - Sai `ProfileChapter.term`, e com ele `ProfileContextSection` e `ProfileModel+Context`.
    - `ProfileModel` deixa de ler `context`, indicadores e `selectedIndicatorID`.
    - Item no backlog para repensar o componente.
    - Cobre: 1, 2, 27. Verificação: `ProfileChaptersTests`, com governador e prefeito.
 9. **Um destino principal por cartão.** Depende de: 7.
-   - `RouteChevron`, usado também por `RouteLink`, e `RouteCard(route:) { conteúdo }`.
+   - `RouteChevron`, usado também por `RouteLink`, e `RouteCard(_:label:padding:cornerRadius:) { conteúdo }`, com `CardBackdropButton` atrás do conteúdo.
    - `FeedCard`: conteúdo sem toque e botão principal atrás; retrato e nome em botão próprio com uma pessoa; linha de cada pessoa com várias.
    - Votos e propostas do perfil, com a setinha de volta e compartilhar à parte.
    - Destaque, região, apuração e gastos, onde o cartão abre outra tela e não tem setinha.
