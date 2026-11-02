@@ -2,12 +2,12 @@ import FeatureCore
 import FiscalDomain
 import Foundation
 
-extension MineModel {
-    public var seats: [MineSeat] {
+extension RegionModel {
+    public var seats: [RegionSeat] {
         guard let representatives else { return [] }
         let city = cityRepresentatives?.groups ?? []
         let cityName = place.map { $0.isState ? nil : $0.name } ?? nil
-        let candidates: [MineSeat?] = [
+        let candidates: [RegionSeat?] = [
             cityName.flatMap {
                 Self.seat(.city, place: $0, holder: .mayor, vice: .viceMayor, in: city)
             },
@@ -21,12 +21,12 @@ extension MineModel {
         return candidates.compactMap(\.self)
     }
 
-    public var benches: [MineBench] {
+    public var benches: [RegionBench] {
         guard let representatives else { return [] }
         let stateName = representatives.name
         let city = cityRepresentatives?.groups ?? []
         let councilTitle = place.map { $0.isState ? nil : $0.name } ?? nil
-        let candidates: [MineBench?] = [
+        let candidates: [RegionBench?] = [
             councilTitle.flatMap {
                 Self.bench(
                     .cityCouncilor, title: String(appLocalized: "City Council"), place: $0,
@@ -45,7 +45,7 @@ extension MineModel {
         return candidates.compactMap(\.self)
     }
 
-    public var senate: MineBench? {
+    public var senate: RegionBench? {
         guard let representatives else { return nil }
         return Self.bench(
             .senator, title: House.senado.title, place: representatives.name,
@@ -131,14 +131,14 @@ extension MineModel {
         .compactMap(\.self).joined(separator: " ")
     }
 
-    public func voteAccessibility(_ vote: MineVote) -> String {
+    public func voteAccessibility(_ vote: RegionVote) -> String {
         let board = vote.board
         let text = "\(board.accessibilityText) \(vote.heading): \(vote.countsText)."
         guard let more = SameDayVotes.mark(vote.vote, today: CalendarDay(.now)) else { return text }
         return "\(text) \(more)."
     }
 
-    public func seatAccessibility(_ seat: MineSeat) -> String {
+    public func seatAccessibility(_ seat: RegionSeat) -> String {
         let card = seat.holder
         return [
             seat.title, card.name, card.party, card.officeTitle, mandateText(for: card),
@@ -169,15 +169,15 @@ extension MineModel {
     }
 
     static func seat(
-        _ level: MineSeat.Level, place: String, holder: Office, vice: Office,
+        _ level: RegionSeat.Level, place: String, holder: Office, vice: Office,
         in groups: [RepresentativeGroup]
-    ) -> MineSeat? {
+    ) -> RegionSeat? {
         let holders = groups.filter { $0.office == holder }.flatMap(\.people)
         let vices = groups.filter { $0.office == vice }.flatMap(\.people)
         let sitting = current(holders)
         let elected = awaiting(holders)
         guard let first = sitting.first ?? elected.first else { return nil }
-        return MineSeat(
+        return RegionSeat(
             level: level, place: place, holder: first,
             vice: current(vices).first ?? (sitting.isEmpty ? awaiting(vices).first : nil),
             elected: elected.filter { $0.slug != first.slug })
@@ -185,7 +185,7 @@ extension MineModel {
 
     static func bench(
         _ office: Office, title: String, place: String, in groups: [RepresentativeGroup]
-    ) -> MineBench? {
+    ) -> RegionBench? {
         let matching = groups.filter { $0.office == office }
         let people = matching.flatMap(\.people)
         let sitting = current(people)
@@ -195,7 +195,7 @@ extension MineModel {
         let label =
             matching.first { group in group.people.contains { $0.status != .electedAwaiting } }?
             .title ?? matching.first?.title ?? office.title
-        return MineBench(
+        return RegionBench(
             office: office, title: title, subtitle: "\(label) · \(place)", members: members,
             elected: sitting.isEmpty ? [] : elected)
     }

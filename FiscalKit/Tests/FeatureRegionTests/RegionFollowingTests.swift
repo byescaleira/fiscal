@@ -4,21 +4,21 @@ import FiscalDomain
 import Foundation
 import Testing
 
-@testable import FeatureMine
+@testable import FeatureRegion
 
 @MainActor
 @Suite(.timeLimit(.minutes(1)))
-struct MineFollowingTests {
+struct RegionFollowingTests {
     private let now = Date(timeIntervalSince1970: 1_792_917_720)
 
     private func makeModel(
         code: String? = nil, follows: (any FollowRepository)?,
         service: (any PublicDataService)? = nil
-    ) throws -> MineModel {
+    ) throws -> RegionModel {
         let defaults = try #require(UserDefaults(suiteName: "mine-\(UUID().uuidString)"))
-        let memory = MinePlaceMemory(defaults: defaults)
+        let memory = RegionPlaceMemory(defaults: defaults)
         memory.code = code
-        return MineModel(
+        return RegionModel(
             service: service ?? ShowcasePublicData(scenario: .normal, now: now), follows: follows,
             memory: memory)
     }
@@ -48,12 +48,13 @@ struct MineFollowingTests {
         let holder = Self.card("a", "Ana")
         let vice = Self.card("b", "Bia")
         #expect(
-            MineSeat(level: .city, place: "SP", holder: holder, vice: nil, elected: []).standsAlone)
-        #expect(
-            !MineSeat(level: .city, place: "SP", holder: holder, vice: vice, elected: [])
+            RegionSeat(level: .city, place: "SP", holder: holder, vice: nil, elected: [])
                 .standsAlone)
         #expect(
-            !MineSeat(level: .country, place: "BR", holder: holder, vice: nil, elected: [vice])
+            !RegionSeat(level: .city, place: "SP", holder: holder, vice: vice, elected: [])
+                .standsAlone)
+        #expect(
+            !RegionSeat(level: .country, place: "BR", holder: holder, vice: nil, elected: [vice])
                 .standsAlone)
     }
 
@@ -62,8 +63,8 @@ struct MineFollowingTests {
         let model = try makeModel(code: "sp", follows: follows)
         await model.load()
         let first = try #require(model.suggestions.first)
-        #expect(model.suggestions.count <= MineModel.suggestionLimit)
-        let ranks = model.suggestions.map { MineModel.rank($0.office) }
+        #expect(model.suggestions.count <= RegionModel.suggestionLimit)
+        let ranks = model.suggestions.map { RegionModel.rank($0.office) }
         #expect(ranks == ranks.sorted())
         try await follows.follow(first, at: now)
         await model.load()
@@ -76,10 +77,10 @@ struct MineFollowingTests {
         defer { UserDefaults.standard.removePersistentDomain(forName: invites) }
         let inviteDefaults = try #require(UserDefaults(suiteName: invites))
         let follows = try FiscalDatabase.open(inMemory: true).repositories.follows
-        let memory = MinePlaceMemory(
+        let memory = RegionPlaceMemory(
             defaults: try #require(UserDefaults(suiteName: "mine-\(UUID().uuidString)")))
         let make = {
-            MineModel(
+            RegionModel(
                 service: ShowcasePublicData(scenario: .normal, now: self.now), follows: follows,
                 memory: memory, inviteDefaults: inviteDefaults)
         }
@@ -92,7 +93,7 @@ struct MineFollowingTests {
         #expect(model.followingInviteRoute == .share(.following))
         model.dismissFollowingInvite()
         #expect(!model.showsFollowingInvite)
-        #expect(inviteDefaults.bool(forKey: MineModel.followingInviteKey))
+        #expect(inviteDefaults.bool(forKey: RegionModel.followingInviteKey))
         let reopened = make()
         await reopened.load()
         #expect(!reopened.followed.isEmpty)

@@ -2,9 +2,9 @@ import FeatureContent
 import FeatureCore
 import FeatureLiveResults
 import FeatureMemory
-import FeatureMine
 import FeatureMoney
 import FeatureProfile
+import FeatureRegion
 import FeatureSearch
 import FeatureSettings
 import FeatureShare
@@ -43,7 +43,7 @@ struct RouteScreen: View {
         case .races: LiveResultsScreen()
         case .race(let id): RaceDetailScreen(raceID: id)
         case .roster(let title, let people):
-            MineRosterScreen(roster: MineRoster(title: title, people: people))
+            RegionRosterScreen(roster: RegionRoster(title: title, people: people))
         case .spenders(let title, let spenders, let year):
             ModelHost(MoneyModel(service: data)) {
                 MoneySpendersDestination(title: title, spenders: spenders, year: year)

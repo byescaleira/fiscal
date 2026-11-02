@@ -4,7 +4,7 @@ import Foundation
 import Observation
 
 @MainActor @Observable
-public final class MineModel {
+public final class RegionModel {
     public struct OfficeGroup: Identifiable, Equatable {
         public let office: Office
         public let title: String
@@ -29,7 +29,7 @@ public final class MineModel {
     public private(set) var phase: PublicDataPhase = .idle
     public private(set) var places: [Place] = []
     public private(set) var placesPhase: PublicDataPhase = .idle
-    public private(set) var activity: MineActivity = .empty
+    public private(set) var activity: RegionActivity = .empty
     public private(set) var activityPhase: PublicDataPhase = .idle
     public var query = ""
     public var isChoosingPlace = false
@@ -37,7 +37,7 @@ public final class MineModel {
     public var error: FiscalError?
     @ObservationIgnored let service: (any PublicDataService)?
     @ObservationIgnored let follows: (any FollowRepository)?
-    @ObservationIgnored private let memory: MinePlaceMemory
+    @ObservationIgnored private let memory: RegionPlaceMemory
     @ObservationIgnored private let placeRequests = PublicDataRequests()
     @ObservationIgnored private let placesRequests = PublicDataRequests()
     @ObservationIgnored var searchNames: [String: String] = [:]
@@ -46,7 +46,7 @@ public final class MineModel {
 
     public init(
         service: (any PublicDataService)? = nil, follows: (any FollowRepository)?,
-        memory: MinePlaceMemory = MinePlaceMemory(), inviteDefaults: UserDefaults = .standard
+        memory: RegionPlaceMemory = RegionPlaceMemory(), inviteDefaults: UserDefaults = .standard
     ) {
         self.service = service
         self.follows = follows
@@ -64,14 +64,14 @@ public final class MineModel {
         let city = (cityRepresentatives?.groups ?? []).compactMap { group -> OfficeGroup? in
             let people =
                 group.office == .cityCouncilor
-                ? MineModel.alphabetical(group.people) : MineModel.hall(group.people)
+                ? RegionModel.alphabetical(group.people) : RegionModel.hall(group.people)
             guard !people.isEmpty else { return nil }
             return OfficeGroup(office: group.office, title: group.title, people: people)
         }
         let state = Office.allCases.filter { !$0.isMunicipal }.compactMap {
             office -> OfficeGroup? in
             let matching = representatives.groups.filter { $0.office == office }
-            let people = MineModel.alphabetical(matching.flatMap(\.people))
+            let people = RegionModel.alphabetical(matching.flatMap(\.people))
             guard let first = matching.first, !people.isEmpty else { return nil }
             return OfficeGroup(office: office, title: first.title, people: people)
         }
@@ -197,7 +197,7 @@ public final class MineModel {
     public func loadActivity() async {
         guard let service, let uf = representatives?.uf else { return }
         if activity.isEmpty { activityPhase = .loading }
-        let loader = MineActivityLoader(service: service)
+        let loader = RegionActivityLoader(service: service)
         let found = await loader.load(
             uf: uf, region: regionSlugs, executive: seats.flatMap(\.slugs),
             seats: houseSeats)
@@ -275,7 +275,7 @@ public final class MineModel {
     }
 }
 
-extension MineModel {
+extension RegionModel {
     fileprivate func withGenders(_ list: [FollowedPerson]) async -> [FollowedPerson] {
         guard list.contains(where: { $0.card.gender == nil }),
             let people = try? await service?.people()

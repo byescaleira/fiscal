@@ -1,7 +1,7 @@
 import FiscalDomain
 import Foundation
 
-extension MineModel {
+extension RegionModel {
     public static let resultLimit = 60
 
     public static let capitalCodes: Set<String> = [

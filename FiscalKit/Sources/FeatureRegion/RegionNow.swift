@@ -3,11 +3,11 @@ import FiscalDesignSystem
 import FiscalDomain
 import SwiftUI
 
-struct MineNowSection: View {
-    @Environment(MineModel.self) private var mine
+struct RegionNowSection: View {
+    @Environment(RegionModel.self) private var region
 
     var body: some View {
-        if mine.isLoadingActivity {
+        if region.isLoadingActivity {
             Section {
                 ProgressView("Loading")
                     .frame(maxWidth: .infinity)
@@ -15,11 +15,11 @@ struct MineNowSection: View {
             } header: {
                 Text("In Your Region Now").sectionTitle()
             }
-        } else if !mine.activity.isEmpty {
-            if !mine.activity.highlights.isEmpty {
+        } else if !region.activity.isEmpty {
+            if !region.activity.highlights.isEmpty {
                 Section {
-                    ForEach(mine.activity.highlights) { highlight in
-                        MineHighlightCard(highlight: highlight)
+                    ForEach(region.activity.highlights) { highlight in
+                        RegionHighlightCard(highlight: highlight)
                             .listRowInsets(EdgeInsets())
                             .listRowBackground(Color.clear)
                     }
@@ -27,11 +27,11 @@ struct MineNowSection: View {
                     Text("In Your Region Now").sectionTitle()
                 }
             }
-            if !mine.activity.votes.isEmpty {
+            if !region.activity.votes.isEmpty {
                 Section {
-                    ForEach(mine.activity.votes) { MineVoteRow(vote: $0) }
+                    ForEach(region.activity.votes) { RegionVoteRow(vote: $0) }
                 } header: {
-                    if mine.activity.highlights.isEmpty {
+                    if region.activity.highlights.isEmpty {
                         Text("In Your Region Now").sectionTitle()
                     } else {
                         Text("Recent Votes").sectionTitle()
@@ -41,7 +41,7 @@ struct MineNowSection: View {
                         Text(
                             "Counts only the representatives of this state. Who isn't in the roll call counts as absent."
                         )
-                        if let source = mine.activitySource { Text(verbatim: source) }
+                        if let source = region.activitySource { Text(verbatim: source) }
                     }
                 }
             }
@@ -49,8 +49,8 @@ struct MineNowSection: View {
     }
 }
 
-private struct MineHighlightCard: View {
-    @Environment(MineModel.self) private var mine
+private struct RegionHighlightCard: View {
+    @Environment(RegionModel.self) private var region
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
     @ReducesMotion private var reduceMotion
@@ -61,26 +61,26 @@ private struct MineHighlightCard: View {
         VStack(alignment: .leading, spacing: .spaceL) {
             HStack(spacing: .spaceS) {
                 Chip(
-                    mine.highlightKicker(highlight).uppercased(with: .app), color: .white,
+                    region.highlightKicker(highlight).uppercased(with: .app), color: .white,
                     shape: .capsule
                 )
                 .environment(\.colorScheme, .dark)
                 Spacer(minLength: .spaceS)
-                Label(mine.highlightScope, systemImage: "mappin")
+                Label(region.highlightScope, systemImage: "mappin")
                     .font(.caption.weight(.semibold))
                     .opacity(.opacityStrong)
                     .lineLimit(1)
             }
             Button {
-                open(mine.route(for: highlight), in: section)
+                open(region.route(for: highlight), in: section)
             } label: {
                 content.contentShape(.rect)
             }
             .buttonStyle(.plain)
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel(Text(verbatim: mine.highlightAccessibility(highlight)))
+            .accessibilityLabel(Text(verbatim: region.highlightAccessibility(highlight)))
             .accessibilityAddTraits(.isButton)
-            WeightMethodButton(method: mine.activity.method)
+            WeightMethodButton(method: region.activity.method)
                 .tint(.white)
         }
         .padding(.spaceInset)
@@ -145,11 +145,11 @@ private struct MineHighlightCard: View {
     }
 }
 
-private struct MineVoteRow: View {
-    @Environment(MineModel.self) private var mine
+private struct RegionVoteRow: View {
+    @Environment(RegionModel.self) private var region
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
-    let vote: MineVote
+    let vote: RegionVote
 
     var body: some View {
         let board = vote.board
@@ -193,7 +193,7 @@ private struct MineVoteRow: View {
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(verbatim: mine.voteAccessibility(vote)))
+        .accessibilityLabel(Text(verbatim: region.voteAccessibility(vote)))
         .accessibilityAddTraits(.isButton)
     }
 }

@@ -3,12 +3,12 @@ import FiscalDesignSystem
 import FiscalDomain
 import SwiftUI
 
-public struct MineRosterScreen: View {
+public struct RegionRosterScreen: View {
     @State private var query = ""
     @State private var party: String?
-    let roster: MineRoster
+    let roster: RegionRoster
 
-    public init(roster: MineRoster) {
+    public init(roster: RegionRoster) {
         self.roster = roster
     }
 
@@ -16,9 +16,9 @@ public struct MineRosterScreen: View {
         let people = roster.filtered(query: query, party: party)
         Group {
             #if os(macOS)
-                MineRosterTable(roster: roster, query: query, party: party)
+                RegionRosterTable(roster: roster, query: query, party: party)
                     .overlay {
-                        if people.isEmpty { MineRosterNoMatch(query: $query, party: $party) }
+                        if people.isEmpty { RegionRosterNoMatch(query: $query, party: $party) }
                     }
                     .safeAreaInset(edge: .bottom) {
                         VStack(alignment: .leading, spacing: .spaceXS) {
@@ -36,11 +36,11 @@ public struct MineRosterScreen: View {
                     Group {
                         Section {
                             if people.isEmpty {
-                                MineRosterNoMatch(query: $query, party: $party)
+                                RegionRosterNoMatch(query: $query, party: $party)
                             } else {
                                 ForEach(people) { card in
                                     HStack(spacing: .spaceS) {
-                                        MineRosterRow(card: card)
+                                        RegionRosterRow(card: card)
                                         FollowButton(card)
                                     }
                                 }
@@ -64,13 +64,13 @@ public struct MineRosterScreen: View {
         .sensoryFeedback(.selection, trigger: party)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                MineRosterFilter(roster: roster, party: $party)
+                RegionRosterFilter(roster: roster, party: $party)
             }
         }
     }
 }
 
-private struct MineRosterNoMatch: View {
+private struct RegionRosterNoMatch: View {
     @Binding var query: String
     @Binding var party: String?
 
@@ -87,8 +87,8 @@ private struct MineRosterNoMatch: View {
     }
 }
 
-private struct MineRosterFilter: View {
-    let roster: MineRoster
+private struct RegionRosterFilter: View {
+    let roster: RegionRoster
     @Binding var party: String?
 
     var body: some View {

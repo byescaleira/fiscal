@@ -4,17 +4,17 @@ import FiscalDomain
 import Foundation
 import Testing
 
-@testable import FeatureMine
+@testable import FeatureRegion
 
 @MainActor
-struct MineRosterTests {
+struct RegionRosterTests {
     @Test func theRosterCountsWhoIsShownAndNamesTheParty() {
         let people = ["Ana", "Bia", "Caio"].enumerated().map { index, name in
             PersonCard(
                 slug: name.lowercased(), name: name, office: .federalDeputy, uf: "ba",
                 party: index == 0 ? "PT" : "PSD", photo: nil, status: .inOffice)
         }
-        let roster = MineRoster(title: "Bahia", people: people)
+        let roster = RegionRoster(title: "Bahia", people: people)
         #expect(roster.header(shown: 3) == String(appLocalized: "\(3) people"))
         #expect(roster.header(shown: 1) == String(appLocalized: "\(1) of \(3) people"))
         #expect(roster.scopeTitle(party: nil) == String(appLocalized: "All Parties"))
@@ -34,9 +34,9 @@ struct MineRosterTests {
                 slug: "bia", name: "Bia", office: .federalDeputy, uf: "ba", party: "PT",
                 photo: nil, status: .inOffice),
         ]
-        let roster = MineRoster(title: "Bahia", people: people)
+        let roster = RegionRoster(title: "Bahia", people: people)
         #expect(
-            roster.sorted(query: "", party: nil, by: MineRoster.order).map(\.slug)
+            roster.sorted(query: "", party: nil, by: RegionRoster.order).map(\.slug)
                 == ["alvaro", "bia", "caio"])
         let byParty = [KeyPathComparator(\PersonCard.party, order: .reverse)]
         #expect(
@@ -49,13 +49,13 @@ struct MineRosterTests {
                 $0.localizedStandardCompare($1) != .orderedDescending
             })
         #expect(
-            roster.sorted(query: "", party: "PT", by: MineRoster.order).map(\.slug)
+            roster.sorted(query: "", party: "PT", by: RegionRoster.order).map(\.slug)
                 == ["bia", "caio"])
         #expect(roster.sorted(query: "alv", party: nil, by: byParty).map(\.slug) == ["alvaro"])
     }
 
     @Test func theStateShowsInCapitalsAndTheCountryAsADash() {
-        let roster = MineRoster(title: "Brasil", people: [])
+        let roster = RegionRoster(title: "Brasil", people: [])
         let local = PersonCard(
             slug: "ana", name: "Ana", office: .federalDeputy, uf: "ba", party: "PT", photo: nil,
             status: .inOffice)
@@ -72,7 +72,7 @@ struct MineRosterTests {
                 slug: name.lowercased(), name: name, office: .federalDeputy, uf: "ba",
                 party: "PT", photo: nil, status: .inOffice)
         }
-        let roster = MineRoster(title: "Bahia", people: people)
+        let roster = RegionRoster(title: "Bahia", people: people)
         #expect(roster.profileRoute(for: ["ana"]) == .person(slug: "ana"))
         #expect(roster.profileRoute(for: ["ana", "bia"]) == nil)
         #expect(roster.profileRoute(for: ["caio"]) == nil)
@@ -83,9 +83,9 @@ struct MineRosterTests {
 
     @Test func choosingAPlaceCanStartWithTheSearch() throws {
         let defaults = try #require(UserDefaults(suiteName: "mine-\(UUID().uuidString)"))
-        let model = MineModel(
+        let model = RegionModel(
             service: ShowcasePublicData(scenario: .normal, now: .now), follows: nil,
-            memory: MinePlaceMemory(defaults: defaults))
+            memory: RegionPlaceMemory(defaults: defaults))
         model.choosePlace(searching: true)
         #expect(model.isChoosingPlace)
         #expect(model.startsSearching)

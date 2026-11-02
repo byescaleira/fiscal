@@ -4,17 +4,17 @@ import FiscalDomain
 import SwiftUI
 
 struct FollowingPeopleSection: View {
-    @Environment(MineModel.self) private var mine
+    @Environment(RegionModel.self) private var region
 
     var body: some View {
         Section {
-            ForEach(mine.followedCards) { card in
+            ForEach(region.followedCards) { card in
                 HStack(spacing: .spaceS) {
-                    MineRosterRow(card: card, showsPlace: true)
+                    RegionRosterRow(card: card, showsPlace: true)
                     FollowButton(card)
                 }
             }
-            if mine.showsFollowingInvite {
+            if region.showsFollowingInvite {
                 FollowingShareInviteRow()
             }
         } header: {
@@ -26,20 +26,20 @@ struct FollowingPeopleSection: View {
 }
 
 private struct FollowingShareInviteRow: View {
-    @Environment(MineModel.self) private var mine
+    @Environment(RegionModel.self) private var region
     @Environment(\.appTint) private var tint
     @ReducesMotion private var reduceMotion
 
     var body: some View {
         HStack(spacing: .spaceS) {
-            RouteLink(mine.followingInviteRoute) {
+            RouteLink(region.followingInviteRoute) {
                 IconRow(
                     "Share who you follow",
                     detail: "A card with up to six people you follow, with name, party and office.",
                     symbol: "square.and.arrow.up", color: tint)
             }
             Button("Not Now", systemImage: "xmark") {
-                withAnimation(reduceMotion ? nil : .smooth) { mine.dismissFollowingInvite() }
+                withAnimation(reduceMotion ? nil : .smooth) { region.dismissFollowingInvite() }
             }
             .labelStyle(.iconOnly)
             .font(.footnote.weight(.semibold))
@@ -52,19 +52,19 @@ private struct FollowingShareInviteRow: View {
 }
 
 struct FollowingSuggestionsSection: View {
-    @Environment(MineModel.self) private var mine
+    @Environment(RegionModel.self) private var region
 
     var body: some View {
-        if !mine.suggestions.isEmpty {
+        if !region.suggestions.isEmpty {
             Section {
-                ForEach(mine.suggestions) { card in
+                ForEach(region.suggestions) { card in
                     HStack(spacing: .spaceS) {
-                        MineRosterRow(card: card, showsPlace: true)
+                        RegionRosterRow(card: card, showsPlace: true)
                         FollowButton(card)
                     }
                 }
             } header: {
-                Text(mine.isEmpty ? "Follow Who Represents You" : "Suggestions").sectionTitle()
+                Text(region.isEmpty ? "Follow Who Represents You" : "Suggestions").sectionTitle()
             } footer: {
                 Text("Who represents your place. Tap Follow next to the name.")
             }

@@ -3,41 +3,41 @@ import FiscalDesignSystem
 import FiscalDomain
 import SwiftUI
 
-public struct MineScreen: View {
-    @Environment(MineModel.self) private var mine
+public struct RegionScreen: View {
+    @Environment(RegionModel.self) private var region
     @Environment(SessionModel.self) private var session
 
     public init() {}
 
     public var body: some View {
-        @Bindable var mine = mine
+        @Bindable var region = region
         AdaptiveList {
-            if !mine.isEmpty {
+            if !region.isEmpty {
                 FollowingPeopleSection()
             }
             FollowingSuggestionsSection()
-            MineHeroSection()
-            if mine.hasPlace {
-                MineRegionContent()
+            RegionHeroSection()
+            if region.hasPlace {
+                RegionContent()
             } else {
-                MineInviteSection()
+                RegionInviteSection()
             }
         }
         .emphasisTitle("Region")
-        .toolbar { MineToolbar() }
-        .sheet(isPresented: $mine.isChoosingPlace) {
-            MinePlacePicker().environment(mine)
+        .toolbar { RegionToolbar() }
+        .sheet(isPresented: $region.isChoosingPlace) {
+            RegionPlacePicker().environment(region)
         }
-        .refreshable { await mine.load() }
-        .task(id: session.generation) { await mine.load() }
-        .errorAlert($mine.error)
+        .refreshable { await region.load() }
+        .task(id: session.generation) { await region.load() }
+        .errorAlert($region.error)
     }
 }
 
-private struct MineHeroSection: View {
+private struct RegionHeroSection: View {
     var body: some View {
         Section {
-            MineHeroCard()
+            RegionHeroCard()
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)
         } header: {
@@ -46,36 +46,37 @@ private struct MineHeroSection: View {
     }
 }
 
-private struct MineHeroCard: View {
-    @Environment(MineModel.self) private var mine
+private struct RegionHeroCard: View {
+    @Environment(RegionModel.self) private var region
     @ReducesMotion private var reduceMotion
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceL) {
             VStack(alignment: .leading, spacing: .space2XS) {
-                Text(verbatim: mine.placeKicker)
+                Text(verbatim: region.placeKicker)
                     .font(.chipLabel)
                     .foregroundStyle(.secondary)
                 HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
-                    Text(verbatim: mine.placeTitle)
+                    Text(verbatim: region.placeTitle)
                         .font(.amountHero)
                         .lineLimit(2)
                         .minimumScaleFactor(0.6)
-                    if let uf = mine.ufText { MineStatePlate(uf: uf) }
+                    if let uf = region.ufText { RegionStatePlate(uf: uf) }
                 }
-                Text(verbatim: mine.placeDetail)
+                Text(verbatim: region.placeDetail)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            if mine.hasPlace, mine.phase == .loaded, mine.representativeCount > 0 {
+            if region.hasPlace, region.phase == .loaded, region.representativeCount > 0 {
                 HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
-                    Text(verbatim: mine.countText)
+                    Text(verbatim: region.countText)
                         .font(.scoreboardTitle)
                         .monospacedDigit()
                         .contentTransition(
                             reduceMotion
-                                ? .identity : .numericText(value: Double(mine.representativeCount)))
+                                ? .identity
+                                : .numericText(value: Double(region.representativeCount)))
                     Text("representatives")
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.secondary)
@@ -91,7 +92,7 @@ private struct MineHeroCard: View {
     }
 }
 
-private struct MineStatePlate: View {
+private struct RegionStatePlate: View {
     let uf: String
 
     var body: some View {
@@ -104,19 +105,19 @@ private struct MineStatePlate: View {
     }
 }
 
-private struct MineInviteSection: View {
-    @Environment(MineModel.self) private var mine
+private struct RegionInviteSection: View {
+    @Environment(RegionModel.self) private var region
 
     var body: some View {
         Section {
             Button {
-                mine.choosePlace(searching: true)
+                region.choosePlace(searching: true)
             } label: {
                 IconRow("State or city", symbol: "magnifyingglass", color: .secondary)
             }
             .buttonStyle(.plain)
             Button {
-                mine.choosePlace(searching: false)
+                region.choosePlace(searching: false)
             } label: {
                 IconRow(
                     "See All States and Cities",
@@ -134,21 +135,21 @@ private struct MineInviteSection: View {
     }
 }
 
-private struct MineToolbar: ToolbarContent {
-    @Environment(MineModel.self) private var mine
+private struct RegionToolbar: ToolbarContent {
+    @Environment(RegionModel.self) private var region
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
 
     var body: some ToolbarContent {
         ToolbarItem(placement: .primaryAction) {
             Button {
-                mine.choosePlace(searching: false)
+                region.choosePlace(searching: false)
             } label: {
                 Label("Change Place", systemImage: "mappin.and.ellipse")
             }
             .tint(Color.primary)
         }
-        if let route = mine.shareRoute {
+        if let route = region.shareRoute {
             ToolbarItem(placement: .primaryAction) {
                 Button {
                     open(route, in: section)

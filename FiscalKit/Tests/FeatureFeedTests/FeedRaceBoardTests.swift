@@ -2,7 +2,7 @@ import FiscalDomain
 import Foundation
 import Testing
 
-@testable import FeatureToday
+@testable import FeatureFeed
 
 struct FeedRaceBoardTests {
     @Test func thePresidentialRaceLeadsWhileItIsCounting() throws {

@@ -3,24 +3,24 @@ import FiscalDesignSystem
 import FiscalDomain
 import SwiftUI
 
-struct MineGovernSection: View {
-    @Environment(MineModel.self) private var mine
+struct RegionGovernSection: View {
+    @Environment(RegionModel.self) private var region
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
-        let seats = mine.seats
+        let seats = region.seats
         if !seats.isEmpty {
             Section {
                 Group {
                     if dynamicTypeSize.isAccessibilitySize || seats.count == 1 {
                         VStack(spacing: .spaceL) {
-                            ForEach(seats) { MineSeatCard(seat: $0) }
+                            ForEach(seats) { RegionSeatCard(seat: $0) }
                         }
                         .padding(.horizontal, .railListMargin)
                     } else {
                         EdgeToEdgeRail {
                             ForEach(seats) { seat in
-                                MineSeatCard(seat: seat)
+                                RegionSeatCard(seat: seat)
                                     .containerRelativeFrame(.horizontal) { length, _ in
                                         min(length * .regionCardShare, .cardColumn)
                                     }
@@ -39,13 +39,13 @@ struct MineGovernSection: View {
     }
 }
 
-private struct MineSeatCard: View {
-    @Environment(MineModel.self) private var mine
+private struct RegionSeatCard: View {
+    @Environment(RegionModel.self) private var region
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
     @ReducesMotion private var reduceMotion
     @State private var appeared = false
-    let seat: MineSeat
+    let seat: RegionSeat
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceL) {
@@ -60,11 +60,11 @@ private struct MineSeatCard: View {
             .buttonStyle(.plain)
             .followActions(seat.holder)
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel(Text(verbatim: mine.seatAccessibility(seat)))
+            .accessibilityLabel(Text(verbatim: region.seatAccessibility(seat)))
             .accessibilityAddTraits(.isButton)
             Spacer(minLength: 0)
-            if let vice = seat.vice { MineSeatPerson(card: vice) }
-            ForEach(seat.elected) { MineSeatPerson(card: $0) }
+            if let vice = seat.vice { RegionSeatPerson(card: vice) }
+            ForEach(seat.elected) { RegionSeatPerson(card: $0) }
         }
         .padding(.spaceInset)
         .foregroundStyle(.white)
@@ -108,24 +108,24 @@ private struct MineSeatCard: View {
                 }
             }
             .frame(maxWidth: .infinity)
-            if let action = mine.leadAction(for: card) { MineSeatAction(item: action) }
+            if let action = region.leadAction(for: card) { RegionSeatAction(item: action) }
         }
     }
 
     private var detailLine: String? {
-        let parts = [mine.mandateText(for: seat.holder), mine.status(of: seat.holder)]
+        let parts = [region.mandateText(for: seat.holder), region.status(of: seat.holder)]
             .compactMap(\.self)
         return parts.isEmpty ? nil : parts.joined(separator: " · ")
     }
 }
 
-private struct MineSeatAction: View {
-    @Environment(MineModel.self) private var mine
+private struct RegionSeatAction: View {
+    @Environment(RegionModel.self) private var region
     let item: ActionItem
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceXS) {
-            Text(verbatim: mine.actionKicker(item).uppercased(with: .app))
+            Text(verbatim: region.actionKicker(item).uppercased(with: .app))
                 .font(.chipLabel)
                 .opacity(.opacityStrong)
                 .lineLimit(1)
@@ -151,8 +151,8 @@ private struct MineSeatAction: View {
     }
 }
 
-private struct MineSeatPerson: View {
-    @Environment(MineModel.self) private var mine
+private struct RegionSeatPerson: View {
+    @Environment(RegionModel.self) private var region
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
     let card: PersonCard
@@ -169,7 +169,7 @@ private struct MineSeatPerson: View {
                         .font(.subheadline.weight(.semibold))
                         .lineLimit(1)
                     Text(
-                        verbatim: [card.officeTitle, mine.status(of: card)].compactMap(\.self)
+                        verbatim: [card.officeTitle, region.status(of: card)].compactMap(\.self)
                             .joined(separator: " · ")
                     )
                     .font(.caption)
@@ -186,7 +186,7 @@ private struct MineSeatPerson: View {
         .buttonStyle(.plain)
         .followActions(card)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(verbatim: mine.accessibilityLabel(for: card)))
+        .accessibilityLabel(Text(verbatim: region.accessibilityLabel(for: card)))
         .accessibilityAddTraits(.isButton)
     }
 }

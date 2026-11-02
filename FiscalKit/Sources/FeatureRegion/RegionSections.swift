@@ -3,19 +3,19 @@ import FiscalDesignSystem
 import FiscalDomain
 import SwiftUI
 
-struct MineRegionContent: View {
-    @Environment(MineModel.self) private var mine
+struct RegionContent: View {
+    @Environment(RegionModel.self) private var region
 
     var body: some View {
-        if let error = mine.phase.error, mine.representatives == nil {
-            MineFailureSection(error: error)
-        } else if mine.representatives == nil {
+        if let error = region.phase.error, region.representatives == nil {
+            RegionFailureSection(error: error)
+        } else if region.representatives == nil {
             Section {
                 ProgressView("Loading")
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, .spaceXL)
             }
-        } else if mine.hasNoRepresentatives {
+        } else if region.hasNoRepresentatives {
             Section {
                 IconRow(
                     "No list for this place yet",
@@ -24,17 +24,17 @@ struct MineRegionContent: View {
                     symbol: "list.bullet.rectangle", color: .retroDenim)
             }
         } else {
-            if mine.isOfflineWithData { MineOfflineNotice() }
-            MineGovernSection()
-            ForEach(mine.benches) { MineBenchSection(bench: $0) }
-            if let senate = mine.senate { MineSenateSection(bench: senate) }
-            MineNowSection()
-            MineSourceSection()
+            if region.isOfflineWithData { RegionOfflineNotice() }
+            RegionGovernSection()
+            ForEach(region.benches) { RegionBenchSection(bench: $0) }
+            if let senate = region.senate { RegionSenateSection(bench: senate) }
+            RegionNowSection()
+            RegionSourceSection()
         }
     }
 }
 
-private struct MineOfflineNotice: View {
+private struct RegionOfflineNotice: View {
     var body: some View {
         Section {
             Label {
@@ -49,23 +49,23 @@ private struct MineOfflineNotice: View {
     }
 }
 
-private struct MineSourceSection: View {
-    @Environment(MineModel.self) private var mine
+private struct RegionSourceSection: View {
+    @Environment(RegionModel.self) private var region
 
     var body: some View {
         Section {
         } footer: {
             VStack(alignment: .leading, spacing: .space2XS) {
-                if let note = mine.cityNote { Text(verbatim: note) }
+                if let note = region.cityNote { Text(verbatim: note) }
                 Text("In alphabetical order inside each office. Nobody is ranked.")
-                if let source = mine.sourceText { Text(verbatim: source) }
+                if let source = region.sourceText { Text(verbatim: source) }
             }
         }
     }
 }
 
-private struct MineFailureSection: View {
-    @Environment(MineModel.self) private var mine
+private struct RegionFailureSection: View {
+    @Environment(RegionModel.self) private var region
     let error: PublicDataError
 
     var body: some View {
@@ -81,7 +81,7 @@ private struct MineFailureSection: View {
                 } icon: {
                     Image(systemName: error.symbol).foregroundStyle(Color.retroRust)
                 }
-                Button("Try Again") { Task { await mine.loadPlace() } }
+                Button("Try Again") { Task { await region.loadPlace() } }
                     .buttonStyle(.borderless)
             }
             .padding(.vertical, .spaceXS)
@@ -89,7 +89,7 @@ private struct MineFailureSection: View {
     }
 }
 
-struct MineRosterRow: View {
+struct RegionRosterRow: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let card: PersonCard
     let showsPlace: Bool

@@ -2,7 +2,7 @@ import FeatureCore
 import FiscalDomain
 import Foundation
 
-public struct MineSeat: Identifiable, Hashable, Sendable {
+public struct RegionSeat: Identifiable, Hashable, Sendable {
     public enum Level: String, Hashable, Sendable {
         case city, state, country
     }
@@ -32,7 +32,7 @@ public struct MineSeat: Identifiable, Hashable, Sendable {
     }
 }
 
-public struct MineBench: Identifiable, Hashable, Sendable {
+public struct RegionBench: Identifiable, Hashable, Sendable {
     public struct PartyShare: Identifiable, Hashable, Sendable {
         public let party: String
         public let count: Int
@@ -103,22 +103,22 @@ public struct MineBench: Identifiable, Hashable, Sendable {
     }
 }
 
-public struct MineRoster: Hashable, Sendable {
+public struct RegionRoster: Hashable, Sendable {
     public let title: String
     public let people: [PersonCard]
-    public let parties: [MineBench.PartyShare]
+    public let parties: [RegionBench.PartyShare]
 
     public init(title: String, people: [PersonCard]) {
         self.title = title
         self.people = people
-        parties = MineBench.shares(people)
+        parties = RegionBench.shares(people)
     }
 
     public func filtered(query: String, party: String?) -> [PersonCard] {
-        let term = MineModel.normalized(query)
+        let term = RegionModel.normalized(query)
         return people.filter { card in
             (party == nil || card.party == party)
-                && (term.isEmpty || MineModel.normalized(card.name).contains(term))
+                && (term.isEmpty || RegionModel.normalized(card.name).contains(term))
         }
     }
 
@@ -159,12 +159,12 @@ public struct MineRoster: Hashable, Sendable {
         return String(appLocalized: "\(shown) of \(total) people")
     }
 
-    public func partyOption(_ share: MineBench.PartyShare) -> String {
+    public func partyOption(_ share: RegionBench.PartyShare) -> String {
         "\(share.party) · \(PublicFormat.number(share.count))"
     }
 }
 
-public struct MineVote: Identifiable, Hashable, Sendable {
+public struct RegionVote: Identifiable, Hashable, Sendable {
     public let vote: VoteSummary
     public let counts: [BallotChoice: Int]
 
@@ -213,18 +213,18 @@ public struct MineVote: Identifiable, Hashable, Sendable {
     }
 }
 
-public struct MineActivity: Hashable, Sendable {
+public struct RegionActivity: Hashable, Sendable {
     public var highlights: [Highlight] = []
     public var highlightsAreNational = false
     public var method: WeightMethod?
-    public var votes: [MineVote] = []
+    public var votes: [RegionVote] = []
     public var actions: [String: ActionItem] = [:]
     public var mandates: [String: Profile.Mandate] = [:]
     public var sources: [Source] = []
 
     public init() {}
 
-    public static let empty = MineActivity()
+    public static let empty = RegionActivity()
 
     public var isEmpty: Bool { highlights.isEmpty && votes.isEmpty }
 }

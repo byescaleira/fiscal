@@ -4,30 +4,30 @@ import FiscalDesignSystem
 import FiscalDomain
 import SwiftUI
 
-struct MineBenchSection: View {
-    let bench: MineBench
+struct RegionBenchSection: View {
+    let bench: RegionBench
 
     var body: some View {
         Section {
             VStack(alignment: .leading, spacing: .spaceL) {
-                MineBenchHeader(bench: bench)
-                MineBenchChart(bench: bench)
-                MineBenchLeaders(bench: bench)
+                RegionBenchHeader(bench: bench)
+                RegionBenchChart(bench: bench)
+                RegionBenchLeaders(bench: bench)
             }
             .padding(.vertical, .spaceXS)
             RouteLink(.roster(title: bench.title, people: bench.members)) {
-                MineFacePile(bench: bench)
+                RegionFacePile(bench: bench)
             }
-            MineNextTermLink(bench: bench)
+            RegionNextTermLink(bench: bench)
         } header: {
             Text(verbatim: bench.title).sectionTitle()
         }
     }
 }
 
-private struct MineBenchHeader: View {
+private struct RegionBenchHeader: View {
     @ReducesMotion private var reduceMotion
-    let bench: MineBench
+    let bench: RegionBench
 
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
@@ -46,13 +46,13 @@ private struct MineBenchHeader: View {
     }
 }
 
-private struct MineBenchChart: View {
+private struct RegionBenchChart: View {
     @ReducesMotion private var reduceMotion
     @State private var revealed = false
     @State private var position: Int?
-    let bench: MineBench
+    let bench: RegionBench
 
-    private var selected: MineBench.PartyShare? { position.flatMap(bench.party(at:)) }
+    private var selected: RegionBench.PartyShare? { position.flatMap(bench.party(at:)) }
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceS) {
@@ -104,9 +104,9 @@ private struct MineBenchChart: View {
     }
 }
 
-private struct MineBenchLeaders: View {
+private struct RegionBenchLeaders: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    let bench: MineBench
+    let bench: RegionBench
 
     var body: some View {
         let layout =
@@ -125,9 +125,9 @@ private struct MineBenchLeaders: View {
                 .accessibilityLabel(
                     Text(verbatim: "\(share.party), \(PublicFormat.number(share.count))"))
             }
-            if bench.parties.count > MineBench.leadingLimit {
+            if bench.parties.count > RegionBench.leadingLimit {
                 VStack(alignment: .leading, spacing: .space2XS) {
-                    Text(verbatim: "+\(bench.parties.count - MineBench.leadingLimit)")
+                    Text(verbatim: "+\(bench.parties.count - RegionBench.leadingLimit)")
                         .font(.amountRow)
                         .monospacedDigit()
                         .foregroundStyle(.secondary)
@@ -141,9 +141,9 @@ private struct MineBenchLeaders: View {
     }
 }
 
-private struct MineFacePile: View {
+private struct RegionFacePile: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    let bench: MineBench
+    let bench: RegionBench
 
     var body: some View {
         HStack(spacing: .spaceM) {
@@ -172,8 +172,8 @@ private struct MineFacePile: View {
     }
 }
 
-private struct MineNextTermLink: View {
-    let bench: MineBench
+private struct RegionNextTermLink: View {
+    let bench: RegionBench
 
     var body: some View {
         if !bench.elected.isEmpty {
@@ -194,24 +194,24 @@ private struct MineNextTermLink: View {
     }
 }
 
-struct MineSenateSection: View {
+struct RegionSenateSection: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    let bench: MineBench
+    let bench: RegionBench
 
     var body: some View {
         Section {
             if dynamicTypeSize.isAccessibilitySize {
-                ForEach(bench.members) { MineRosterRow(card: $0) }
+                ForEach(bench.members) { RegionRosterRow(card: $0) }
             } else {
                 LazyVGrid(
                     columns: [GridItem(.adaptive(minimum: .regionMiniCard), spacing: .spaceM)],
                     spacing: .spaceM
                 ) {
-                    ForEach(bench.members) { MineSenatorCard(card: $0) }
+                    ForEach(bench.members) { RegionSenatorCard(card: $0) }
                 }
                 .padding(.vertical, .spaceXS)
             }
-            MineNextTermLink(bench: bench)
+            RegionNextTermLink(bench: bench)
         } header: {
             Text(verbatim: bench.title).sectionTitle()
         } footer: {
@@ -220,7 +220,7 @@ struct MineSenateSection: View {
     }
 }
 
-private struct MineSenatorCard: View {
+private struct RegionSenatorCard: View {
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
     let card: PersonCard

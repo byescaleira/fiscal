@@ -4,15 +4,15 @@ import FiscalDomain
 import Foundation
 import Testing
 
-@testable import FeatureMine
+@testable import FeatureRegion
 
 @MainActor
-struct MineModelTests {
+struct RegionModelTests {
     private let now = Date(timeIntervalSince1970: 1_792_917_720)
 
-    private func makeMemory(_ code: String? = nil) throws -> MinePlaceMemory {
+    private func makeMemory(_ code: String? = nil) throws -> RegionPlaceMemory {
         let defaults = try #require(UserDefaults(suiteName: "mine-\(UUID().uuidString)"))
-        let memory = MinePlaceMemory(defaults: defaults)
+        let memory = RegionPlaceMemory(defaults: defaults)
         memory.code = code
         return memory
     }
@@ -20,8 +20,8 @@ struct MineModelTests {
     private func makeModel(
         _ scenario: PublicDataScenario = .normal, code: String? = nil,
         follows: (any FollowRepository)? = nil
-    ) throws -> MineModel {
-        MineModel(
+    ) throws -> RegionModel {
+        RegionModel(
             service: ShowcasePublicData(scenario: scenario, now: now), follows: follows,
             memory: try makeMemory(code))
     }
@@ -104,8 +104,8 @@ struct MineModelTests {
                 note: nil)
         })
 
-    private func makeRosterModel(code: String? = nil) throws -> MineModel {
-        MineModel(
+    private func makeRosterModel(code: String? = nil) throws -> RegionModel {
+        RegionModel(
             service: ShowcasePublicData(scenario: .normal, now: now, roster: Self.roster),
             follows: nil, memory: try makeMemory(code))
     }
@@ -113,7 +113,7 @@ struct MineModelTests {
     @Test func aCityShowsItsCityHallAndCouncilBeforeTheState() async throws {
         let memory = try makeMemory()
         let service = ShowcasePublicData(scenario: .normal, now: now)
-        let model = MineModel(service: service, follows: nil, memory: memory)
+        let model = RegionModel(service: service, follows: nil, memory: memory)
         await model.choose(Place(code: "1200401", name: "Rio Branco", uf: "ac"))
         #expect(memory.code == "1200401")
         #expect(model.place?.isState == false)
@@ -134,7 +134,7 @@ struct MineModelTests {
         #expect(model.cityNote == nil)
         #expect(model.representativeCount == 23 + 2)
         #expect(model.sourceText != nil)
-        let again = MineModel(service: service, follows: nil, memory: memory)
+        let again = RegionModel(service: service, follows: nil, memory: memory)
         await again.load()
         #expect(again.place?.name == "Rio Branco")
         #expect(again.groups.first?.people.first?.name == "Tião Bocalom")
@@ -249,7 +249,7 @@ struct MineModelTests {
 
     @Test func forgettingThePlaceClearsTheDevice() async throws {
         let memory = try makeMemory("sp")
-        let model = MineModel(
+        let model = RegionModel(
             service: ShowcasePublicData(scenario: .normal, now: now), follows: nil, memory: memory)
         await model.load()
         #expect(!model.groups.isEmpty)

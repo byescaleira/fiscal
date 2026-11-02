@@ -4,7 +4,7 @@ import FiscalDomain
 import Foundation
 import Testing
 
-@testable import FeatureToday
+@testable import FeatureFeed
 
 private struct FollowingService: PublicDataService {
     let base: ShowcasePublicData

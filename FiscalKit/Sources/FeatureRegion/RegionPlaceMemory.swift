@@ -2,7 +2,7 @@ import FiscalDomain
 import Foundation
 
 @MainActor
-public final class MinePlaceMemory {
+public final class RegionPlaceMemory {
     public static let key = HomePlace.mineKey
     private let defaults: UserDefaults
 

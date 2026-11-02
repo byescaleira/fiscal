@@ -51,10 +51,10 @@ let package = Package(
             name: "FeatureLiveResults",
             dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
         .target(
-            name: "FeatureToday",
+            name: "FeatureFeed",
             dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
         .target(
-            name: "FeatureMine",
+            name: "FeatureRegion",
             dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
         .target(
             name: "FeatureProfile",
@@ -87,8 +87,8 @@ let package = Package(
             name: "AppShell",
             dependencies: [
                 "FiscalDomain", "FiscalData", "FiscalDesignSystem", "FiscalResource", "FeatureCore",
-                "FeatureGuides", "FeatureLiveResults", "FeatureSettings", "FeatureToday",
-                "FeatureMine", "FeatureProfile", "FeatureVotes", "FeatureMoney", "FeatureSearch",
+                "FeatureGuides", "FeatureLiveResults", "FeatureSettings", "FeatureFeed",
+                "FeatureRegion", "FeatureProfile", "FeatureVotes", "FeatureMoney", "FeatureSearch",
                 "FeatureSupport", "FeatureShare", "FeatureMemory", "FeatureContent",
             ]),
         .testTarget(name: "FiscalDomainTests", dependencies: ["FiscalDomain"]),
@@ -108,11 +108,11 @@ let package = Package(
             name: "FeatureLiveResultsTests",
             dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureLiveResults"]),
         .testTarget(
-            name: "FeatureTodayTests",
-            dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureToday"]),
+            name: "FeatureFeedTests",
+            dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureFeed"]),
         .testTarget(
-            name: "FeatureMineTests",
-            dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureMine"]),
+            name: "FeatureRegionTests",
+            dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureRegion"]),
         .testTarget(
             name: "FeatureProfileTests",
             dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureProfile"]),

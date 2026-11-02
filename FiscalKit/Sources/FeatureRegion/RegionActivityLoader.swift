@@ -2,7 +2,7 @@ import FeatureCore
 import FiscalDomain
 import Foundation
 
-struct MineActivityLoader: Sendable {
+struct RegionActivityLoader: Sendable {
     static let voteLimit = 3
     static let voteScan = 5
     static let highlightLimit = 2
@@ -11,12 +11,12 @@ struct MineActivityLoader: Sendable {
 
     func load(
         uf: String, region: Set<String>, executive: [String], seats: [House: Int]
-    ) async -> MineActivity {
+    ) async -> RegionActivity {
         async let list = try? service.highlights()
         async let votes = votes(uf: uf, seats: seats)
         async let people = people(executive)
         let (highlights, found, leads) = await (list, votes, people)
-        var activity = MineActivity()
+        var activity = RegionActivity()
         activity.votes = found.map(\.vote)
         activity.actions = leads.actions
         activity.mandates = leads.mandates
@@ -38,7 +38,7 @@ struct MineActivityLoader: Sendable {
     }
 
     private struct Found: Sendable {
-        let vote: MineVote
+        let vote: RegionVote
         let sources: [Source]
     }
 
@@ -55,7 +55,7 @@ struct MineActivityLoader: Sendable {
         }
         return candidates.indices.compactMap { index -> Found? in
             guard let detail = details[index],
-                let vote = MineVote(
+                let vote = RegionVote(
                     detail: detail, uf: uf, seats: seats[detail.vote.house] ?? 0)
             else { return nil }
             return Found(vote: vote, sources: detail.sources)

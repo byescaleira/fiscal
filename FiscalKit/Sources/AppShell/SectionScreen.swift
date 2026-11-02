@@ -1,9 +1,9 @@
 import FeatureCore
+import FeatureFeed
 import FeatureLiveResults
-import FeatureMine
 import FeatureMoney
+import FeatureRegion
 import FeatureSearch
-import FeatureToday
 import FeatureVotes
 import FiscalDomain
 import SwiftUI
@@ -25,8 +25,8 @@ struct SectionScreen: View {
                 FeedScreen { race in RaceHeroCard(race: race, opensDetail: true) }
             }
         case .region:
-            ModelHost(MineModel(service: data, follows: session.repositories.follows)) {
-                MineScreen()
+            ModelHost(RegionModel(service: data, follows: session.repositories.follows)) {
+                RegionScreen()
             }
         case .votes:
             ModelHost(VotesModel(service: data)) { VotesScreen() }

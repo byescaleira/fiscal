@@ -3,26 +3,26 @@ import FiscalDesignSystem
 import FiscalDomain
 import SwiftUI
 
-struct MinePlacePicker: View {
-    @Environment(MineModel.self) private var mine
+struct RegionPlacePicker: View {
+    @Environment(RegionModel.self) private var region
     @Environment(\.dismiss) private var dismiss
     @FocusState private var isSearching: Bool
 
     var body: some View {
-        @Bindable var mine = mine
+        @Bindable var region = region
         NavigationStack {
             List {
                 Group {
-                    if mine.isSearchingPlaces || mine.places.isEmpty {
-                        MinePlaceResults()
+                    if region.isSearchingPlaces || region.places.isEmpty {
+                        RegionPlaceResults()
                     } else {
-                        MineCitySection { isSearching = true }
-                        MineStateSection()
+                        RegionCitySection { isSearching = true }
+                        RegionStateSection()
                     }
-                    if mine.hasPlace {
+                    if region.hasPlace {
                         Section {
                             Button("Forget This Place", role: .destructive) {
-                                mine.forgetPlace()
+                                region.forgetPlace()
                                 dismiss()
                             }
                         } footer: {
@@ -35,7 +35,7 @@ struct MinePlacePicker: View {
                 .surfaceRows()
             }
             .listSurface()
-            .searchable(text: $mine.query, prompt: Text("State or city"))
+            .searchable(text: $region.query, prompt: Text("State or city"))
             .searchFocused($isSearching)
             .navigationTitle("Your Place")
             #if os(iOS)
@@ -47,50 +47,50 @@ struct MinePlacePicker: View {
                         .tint(Color.primary)
                 }
             }
-            .task { await mine.loadPlaces() }
+            .task { await region.loadPlaces() }
             .onAppear {
-                isSearching = mine.startsSearching
-                mine.startsSearching = false
+                isSearching = region.startsSearching
+                region.startsSearching = false
             }
         }
     }
 }
 
-private struct MinePlaceResults: View {
-    @Environment(MineModel.self) private var mine
+private struct RegionPlaceResults: View {
+    @Environment(RegionModel.self) private var region
 
     var body: some View {
         Section {
-            if let error = mine.placesPhase.error, mine.places.isEmpty {
+            if let error = region.placesPhase.error, region.places.isEmpty {
                 VStack(alignment: .leading, spacing: .spaceS) {
                     Label(error.message, systemImage: error.symbol)
-                    Button("Try Again") { Task { await mine.loadPlaces() } }
+                    Button("Try Again") { Task { await region.loadPlaces() } }
                         .buttonStyle(.borderless)
                 }
-            } else if mine.places.isEmpty, mine.placesPhase != .loaded {
+            } else if region.places.isEmpty, region.placesPhase != .loaded {
                 ProgressView("Loading").frame(maxWidth: .infinity)
-            } else if mine.placeResults.isEmpty {
+            } else if region.placeResults.isEmpty {
                 Text(
-                    mine.places.isEmpty
+                    region.places.isEmpty
                         ? LocalizedStringKey("The list of places isn't published yet.")
                         : "No place with that name."
                 )
                 .foregroundStyle(.secondary)
             } else {
-                ForEach(mine.placeResults) { place in
-                    MinePlaceRow(place: place)
+                ForEach(region.placeResults) { place in
+                    RegionPlaceRow(place: place)
                 }
             }
         } header: {
-            Text(mine.isSearchingPlaces ? LocalizedStringKey("States and Cities") : "States")
+            Text(region.isSearchingPlaces ? LocalizedStringKey("States and Cities") : "States")
         } footer: {
             Text("Search runs on this device, over the official list of places from IBGE.")
         }
     }
 }
 
-private struct MineCitySection: View {
-    @Environment(MineModel.self) private var mine
+private struct RegionCitySection: View {
+    @Environment(RegionModel.self) private var region
     let search: () -> Void
 
     var body: some View {
@@ -104,24 +104,26 @@ private struct MineCitySection: View {
             }
             .buttonStyle(.plain)
             .accessibilityHint(Text("Opens the search field"))
-            ForEach(mine.capitals) { place in
-                MinePlaceRow(place: place)
+            ForEach(region.capitals) { place in
+                RegionPlaceRow(place: place)
             }
         } header: {
             Text("Cities")
         } footer: {
-            if !mine.capitals.isEmpty { Text("State capitals first. Search finds any other city.") }
+            if !region.capitals.isEmpty {
+                Text("State capitals first. Search finds any other city.")
+            }
         }
     }
 }
 
-private struct MineStateSection: View {
-    @Environment(MineModel.self) private var mine
+private struct RegionStateSection: View {
+    @Environment(RegionModel.self) private var region
 
     var body: some View {
         Section {
-            ForEach(mine.states) { place in
-                MinePlaceRow(place: place)
+            ForEach(region.states) { place in
+                RegionPlaceRow(place: place)
             }
         } header: {
             Text("States")
@@ -131,13 +133,13 @@ private struct MineStateSection: View {
     }
 }
 
-struct MinePlaceRow: View {
-    @Environment(MineModel.self) private var mine
+struct RegionPlaceRow: View {
+    @Environment(RegionModel.self) private var region
     let place: Place
 
     var body: some View {
         Button {
-            Task { await mine.choose(place) }
+            Task { await region.choose(place) }
         } label: {
             HStack(spacing: .spaceM) {
                 Image(systemName: place.isState ? "map" : "building.2")
@@ -150,12 +152,12 @@ struct MinePlaceRow: View {
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: .spaceHairline) {
                     Text(verbatim: place.name).font(.rowTitle).foregroundStyle(.primary)
-                    Text(verbatim: mine.placeDetail(place))
+                    Text(verbatim: region.placeDetail(place))
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
                 Spacer(minLength: .spaceS)
-                if mine.isChosen(place) {
+                if region.isChosen(place) {
                     Image(systemName: "checkmark")
                         .font(.body.weight(.semibold))
                         .foregroundStyle(.tint)

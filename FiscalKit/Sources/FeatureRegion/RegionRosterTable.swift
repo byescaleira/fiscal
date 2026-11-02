@@ -4,13 +4,13 @@
     import FiscalDomain
     import SwiftUI
 
-    struct MineRosterTable: View {
+    struct RegionRosterTable: View {
         @Environment(\.open) private var open
         @Environment(\.navigationSection) private var section
         @Environment(FollowController.self) private var follow: FollowController?
-        @State private var order = MineRoster.order
+        @State private var order = RegionRoster.order
         @State private var selection: PersonCard.ID?
-        let roster: MineRoster
+        let roster: RegionRoster
         let query: String
         let party: String?
 

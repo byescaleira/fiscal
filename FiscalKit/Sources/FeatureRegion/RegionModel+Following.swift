@@ -2,7 +2,7 @@ import FeatureCore
 import FiscalDomain
 import Foundation
 
-extension MineModel {
+extension RegionModel {
     nonisolated static let suggestionLimit = 8
     nonisolated static let suggestionOrder: [Office] = [
         .president, .governor, .senator, .mayor, .federalDeputy, .stateDeputy, .vicePresident,

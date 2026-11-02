@@ -1,7 +1,7 @@
 import FeatureCore
 import Foundation
 
-extension MineModel {
+extension RegionModel {
     public nonisolated static let followingInviteKey = "fiscal.share.followingInviteDismissed"
 
     public var showsFollowingInvite: Bool { !followed.isEmpty && !isFollowingInviteDismissed }
