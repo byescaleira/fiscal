@@ -63,6 +63,7 @@ classDiagram
         +kind
         +date CalendarDay
         +title
+        +detail
         +reference
         +ballots SupportBallot[]
         +people PersonCard[]
@@ -96,14 +97,16 @@ classDiagram
         relevant
     }
     class FeedSources {
+        +following PersonCard[]
         +activities FollowingFeed.Activity[]
         +actions
         +speeches
         +recent VoteSummary[]
         +highlights HighlightList?
-        +regional Highlight[]
         +digest TodayDigest?
-        +pinnedHighlightID
+        +regionUF
+        +regionName
+        +method
     }
     class FeedTimeline {
         +build(sources) FeedItem[]
@@ -113,15 +116,18 @@ classDiagram
         +items
         +filter
         +liveBoard
-        +lead
+        +highlightLead
+        +notice
         +phase
         +visible
+        +shownCount
         +pageSize
         +isLoadingMore
         +reachedEnd
         +isAtEnd
         +load()
         +loadMore()
+        +followsChanged(to)
     }
     class RegionModel {
         <<MineModel sem as novidades>>
@@ -137,9 +143,9 @@ classDiagram
 
 ## Approach
 
-- **Estrutura registrada.** O [ADR 0022](../../docs/adr/0022-feed-first-tab-and-region.md), em Proposto, registra as abas e corrige o [ADR 0014](../../docs/adr/0014-settings-in-today-toolbar.md) sobre Hoje como primeira aba.
+- **Estrutura registrada.** O [ADR 0022](../../docs/adr/0022-feed-first-tab-and-region.md), Aceito, registra as abas e corrige o [ADR 0014](../../docs/adr/0014-settings-in-today-toolbar.md) sobre Hoje como primeira aba.
 - **Lista por data.** Ordem só por data, e no empate pelo id, para o resultado ser sempre o mesmo e a ordem ser explicável. Decisão do usuário, com os filtros Tudo, Seguindo e Relevante. O peso não ordena a lista; ele só escolhe o destaque do topo, como já faz.
-- **Topo.** Apuração e destaque do momento saem da lista e ficam em cartões grandes, reaproveitando `TodayRaceHero` e `TodayHighlightHero`.
+- **Topo.** Apuração e destaque do momento saem da lista e ficam em cartões grandes, reaproveitando `FeedRaceHero` e `FeedHighlightHero` (antes `TodayRaceHero` e `TodayHighlightHero`).
 - **Eventos do dia.** Decisão do usuário: a pauta fica só em Votações, e os eventos do resumo viram linhas relevantes, com a data do resumo. Voto e apuração já mostrados não se repetem.
 - **Domínio puro.** `FeedTimeline` recebe o que veio da rede e devolve as linhas, como `SupportTimeline`. A junção por votação usa os mesmos ids. `FollowingFeed` continua para o selo e o widget, com seus 30 dias e 50 itens.
 - **Propostas têm limite.** `Proposal` tem só o ano, sem data. Na lista entram as propostas de `actions.json`, que têm data, até 40 por pessoa. Os arquivos por ano entram para votos, discursos e gastos. Inventar uma data seria dado falso.
@@ -154,18 +160,19 @@ classDiagram
 ## Structure
 
 - `FiscalKit/Package.swift`, `FiscalKitTests.xcscheme`: `FeatureFeed` e `FeatureRegion` no lugar de `FeatureToday` e `FeatureMine`, com os testes.
-- `FiscalDomain/PublicData/`: `FeedItem.swift` e `FeedTimeline.swift`, novos; `FollowingUpdate.swift` fica.
+- `FiscalDomain/PublicData/`: `FeedTimeline.swift`, novo, com os tipos do Feed; `FollowingUpdate.swift` fica.
 - `FiscalDomain/Integrations/VoteBoard.swift`: `IntegrationLink.feed`, `IntegrationLink.region`.
 - `FeatureCore/Navigation/`: `AppSection.swift`, `FiscalNavigation.swift`, `Route.swift` (destino de `FeedItem`).
-- `FeatureFeed/`: `FeedModel.swift`, `FeedModel+Following.swift`, `FeedScreen.swift`, `FeedRows.swift`, `FeedFilterBar.swift`, `FeedEndNote.swift`, novos; `TodayRaceBoard.swift`, `TodayRaceHero.swift`, `TodayHighlightHero.swift` e `TodayModel+Highlights.swift` passam a `Feed*`.
+- `FeatureFeed/`: `FeedModel.swift`, `FeedModel+Reading.swift`, `FeedModel+Text.swift`, `FeedScreen.swift` (com a barra, os filtros, o fim e o convite) e `FeedRows.swift`, novos; `TodayRaceBoard.swift`, `TodayRaceHero.swift`, `TodayHighlightHero.swift` e `TodayModel+Highlights.swift` passam a `FeedRaceBoard.swift`, `FeedRaceHero.swift`, `FeedHighlightHero.swift` e `FeedModel+Highlights.swift`.
 - Saem: `TodayScreen.swift`, `TodayModel.swift`, `TodayModel+Text.swift`, `TodayBriefing.swift`, `TodayBriefingSection.swift`, `TodayCongressSection.swift`, `TodayRecentVotesSection.swift`, `TodayFollowingLink.swift`, `TodayComponents.swift`, `TodayHighlightSection.swift`; o que sobrevive vai para `Feed*`.
-- `FeatureRegion/`: os arquivos de `FeatureMine`, com `RegionModel` e `RegionScreen`; `MineFollowing.swift` fica só com quem segue e as sugestões; a leitura de novidades vai para `FeatureFeed`.
+- `FeatureRegion/`: os arquivos de `FeatureMine`, com `RegionModel` e `RegionScreen`; `RegionFollowing.swift` fica só com quem segue e as sugestões; `RegionModel+Local.swift` no lugar de `MineModel+Region.swift`; `MineModel+FollowingText.swift` sai; a leitura de novidades vai para `FeatureFeed`.
 - `FeatureVotes/`: `VotesAgendaSection.swift` segue como lugar único da pauta.
-- `AppShell/`: `SectionScreen.swift`, `MainScreen.swift`, `MacShell.swift`, `DeepLink.swift`, `RouteScreen.swift`, `Integrations/FiscalIntents.swift`.
+- `FeatureLiveResults/RaceHeroCard.swift`: cabeçalho nos tamanhos de acessibilidade e traço de botão.
+- `AppShell/`: `SectionScreen.swift`, `MainScreen.swift`, `MacShell.swift`, `DeepLink.swift`, `RouteScreen.swift`, `FiscalServices.swift`, `Integrations/FiscalIntents.swift`.
 - `Fiscal/FiscalUITests/`: `LaunchTests.swift`, `XCUIApplication+Fiscal.swift`, `LinkAccessibilityTests.swift`.
 - `Fiscal/Fiscal/Localizable.xcstrings`.
 - Testes: `FeedTimelineTests` e `FeedModelTests`, novos; `TodayModelTests`, `TodayBriefingTests` e `TodayModelTextTests` migram ou saem com o código; `MineModelTests` e `MineFollowingTests` migram; `AppSectionTests`, `DeepLinkTests`, `FollowIntentTests`, `IntegrationCenterTests`, `FollowingSnapshotTests`.
-- Documentos: `docs/adr/0022-feed-first-tab-and-region.md`, `docs/adr/README.md`, `docs/brief.md`, `docs/architecture.md`, `docs/validation.md`, `docs/roadmap.md`, `docs/backlog.md`, `docs/app-store/metadata.json`, `README.md`, `CHANGELOG.md`, `spdd/README.md`, `docs/evidence/FSC-013/qa.md`; `site/index.html`, `site/support.html`, `site/llms.txt`, sem publicar.
+- Documentos: `docs/adr/0022-feed-first-tab-and-region.md`, `docs/adr/README.md`, `docs/brief.md`, `docs/architecture.md`, `docs/validation.md`, `docs/roadmap.md`, `docs/backlog.md`, `docs/web.md`, `README.md`, `CHANGELOG.md`, `spdd/README.md`, `docs/evidence/FSC-013/qa.md`; `site/index.html`, `site/support.html`, `site/llms.txt`, sem publicar.
 
 ## Operations
 
@@ -187,15 +194,16 @@ classDiagram
 3. **Abas e tela.** Depende de: 2.
    - Olhar as referências reais antes de desenhar.
    - `AppSection` com `.feed` e `.region`, `DeepLink` com os novos hosts e os antigos, `IntegrationLink`, selo em `MainScreen` e `MacShell`.
+   - `AppSection.SourceGroup` com Acompanhar (Feed), Congresso (Votações, Dinheiro) e Explorar (Região, Fiscalizar), para a lista de origem seguir a ordem das abas e de ⌘1 a ⌘5.
    - `FeedScreen`: topo, filtros, lista preguiçosa com um cartão por tipo, convite, aviso e fim.
    - Barra com o coração e Ajustes.
    - `Route.destination(for: FeedItem)`.
    - **Parar e mostrar no iPhone, com dados reais, antes da operação 4.**
    - Cobre: 1, 2, 3, 5, 6, 7, 9, 11, 12, 16, 19, 22. Verificação: `AppSectionTests`, `DeepLinkTests`, captura, iPhone.
 4. **Região.** Depende de: 3.
-   - `MineScreen` sem as novidades, com o título "Região" e ícone de mapa.
-   - `MineModel` sem `updates`, `missing`, `markSeen` e o retrato.
-   - Cobre: 3, 4. Verificação: `FeatureMineTests`, `FollowIntentTests`, `IntegrationCenterTests`, captura.
+   - `RegionScreen` (antes `MineScreen`) sem as novidades, com o título "Região" e ícone de mapa.
+   - `RegionModel` (antes `MineModel`) sem `updates`, `missing`, `markSeen` e o retrato.
+   - Cobre: 3, 4. Verificação: `FeatureRegionTests`, `FollowIntentTests`, `IntegrationCenterTests`, captura.
 5. **Retirar Hoje e renomear.** Depende de: 3, 4.
    - Remover `TodayModel` e as seções que saíram, levando os testes do que sobrevive.
    - Renomear os targets para `FeatureFeed` e `FeatureRegion`.
@@ -203,9 +211,10 @@ classDiagram
 6. **Acessibilidade e testes de interface.** Depende de: 5.
    - Reescrever `LaunchTests` para o Feed, inclusive o teste da apuração que já falhava.
    - Teste no maior tamanho de texto: linhas com traço de botão e fim alcançável.
+   - `RaceHeroHeader` empilhado nos tamanhos de acessibilidade, sem quebrar palavra, e o cartão de apuração com o traço de botão.
    - Cobre: 1, 20, 21. Verificação: `scripts/ui-test.sh`, captura.
 7. **Documentos e site.** Depende de: 5. `[P]` com 6.
-   - ADR 0022, brief, arquitetura, validação, App Store e `README`.
+   - ADR 0022, brief, arquitetura, validação, web e `README`.
    - `site/*` sem "Hoje" como aba, com `python3 -I scripts/site-i18n.py extract` e `check`.
    - Cobre: Safeguard de documentos. Verificação: `check` do site.
 8. **Fechamento.** Depende de: todas.
