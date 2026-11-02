@@ -167,7 +167,7 @@ classDiagram
 - Saem: `TodayScreen.swift`, `TodayModel.swift`, `TodayModel+Text.swift`, `TodayBriefing.swift`, `TodayBriefingSection.swift`, `TodayCongressSection.swift`, `TodayRecentVotesSection.swift`, `TodayFollowingLink.swift`, `TodayComponents.swift`, `TodayHighlightSection.swift`; o que sobrevive vai para `Feed*`.
 - `FeatureRegion/`: os arquivos de `FeatureMine`, com `RegionModel` e `RegionScreen`; `RegionFollowing.swift` fica só com quem segue e as sugestões; `RegionModel+Local.swift` no lugar de `MineModel+Region.swift`; `MineModel+FollowingText.swift` sai; a leitura de novidades vai para `FeatureFeed`.
 - `FeatureVotes/`: `VotesAgendaSection.swift` segue como lugar único da pauta.
-- `FeatureLiveResults/RaceHeroCard.swift`: cabeçalho nos tamanhos de acessibilidade e traço de botão.
+- `FeatureLiveResults/`: `RaceHeroHeader.swift`, separado de `RaceHeroCard.swift`, com o cabeçalho nos tamanhos de acessibilidade; traço de botão no cartão.
 - `AppShell/`: `SectionScreen.swift`, `MainScreen.swift`, `MacShell.swift`, `DeepLink.swift`, `RouteScreen.swift`, `FiscalServices.swift`, `Integrations/FiscalIntents.swift`.
 - `Fiscal/FiscalUITests/`: `LaunchTests.swift`, `XCUIApplication+Fiscal.swift`, `LinkAccessibilityTests.swift`.
 - `Fiscal/Fiscal/Localizable.xcstrings`.
