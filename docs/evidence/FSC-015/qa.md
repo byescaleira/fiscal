@@ -9,10 +9,10 @@
 | --- | --- | --- | --- | --- |
 | 1 | Barra da votação e atalhos | Rolar e tocar num atalho | passou | `testTheBarKeepsTheScoreAndJumpsToItsPart`, [barra](vote-sticky-header.png), [salto](vote-sticky-parties.png), iPhone |
 | 2 | Barra some no topo, sem pular | Voltar ao topo | passou em parte | `theBarAppearsOnlyAfterTheHeroLeavesAndKnowsWhereAChapterIs`; o usuário viu no iPhone. A ausência de pulo não tem medida automática |
-| 3 | Barra da corrida | Rolar | passou | Simulador, com "Presidente · Brasil" e "87,0% apurado", sem atalhos. Sem teste de interface nem captura versionada |
-| 4 | Barra das notas | Rolar | passou | Simulador, com nome, ano com o filtro e total, sem atalhos. Sem teste de interface nem captura versionada |
+| 3 | Barra da corrida | Rolar | passou em parte | Simulador, com "Presidente · Brasil" e "87,0% apurado", sem atalhos. Sem teste de interface nem captura versionada. O usuário disse "ficou bom" sobre as barras no iPhone |
+| 4 | Barra das notas | Rolar | passou em parte | Simulador, com nome, ano com o filtro e total, sem atalhos. Sem teste de interface nem captura versionada |
 | 5 | Sem barra em Votações e no Feed | Rolar | passou em parte | [Votações](votes-top.png) sem a barra no código e no simulador. As outras abas foram lidas no código |
-| 6 | Página do político igual | Testes da `FSC-014` | passou | `ProfileChaptersTests`, sem mudar os testes; iPhone. No maior tamanho, a barra agora limita o texto, o que é uma melhora, não o mesmo layout |
+| 6 | Página do político igual | Testes da `FSC-014` | passou em parte | `ProfileChaptersTests`, sem mudar os testes; iPhone. Nos tamanhos de acessibilidade, a barra agora limita o texto, então o layout muda neles (exceção registrada em Norms) |
 | 7 | Reduzir movimento | Ligar no simulador e tocar num atalho | passou em parte | No código, a barra e os saltos usam animação nula. Com o ajuste ligado, a barra apareceu; o instante do salto não foi capturado |
 | 8 | Ordem do detalhe | Abrir e rolar | passou | [Topo](vote-top.png), `aNominalVoteHasChaptersAndTheListOfVotes`, simulador. "Quem você apoia" não foi visto com uma escolha, para não expor apoio em captura |
 | 9 | "Ver os 513 votos" | Tocar | passou | `testSeeingEveryVoteOpensTheListWithItsFilters`, [captura](vote-ballots.png), `theRollCallIsAlphabeticalAndSearchable` |
@@ -20,13 +20,13 @@
 | 11 | Votação simbólica | Abrir | passou | `aVoiceVoteHasNoScoreNoDashAndNoListOfVotes`, `testAVoiceVoteSaysWhatTheHouseRecorded`, [captura](vote-symbolic.png), iPhone |
 | 12 | Nominal sem nomes | Modelo | passou em teste | `aNominalVoteWithoutNamesSaysSoAndOffersNoList`; a frase não foi vista na tela |
 | 13 | Mac com a tabela | Abrir no Mac | não executável aqui | O build de macOS passa no `verify --full`; o Mac não abre nesta máquina |
-| 14 | Sim e Não em círculo | Ver o placar | passou | [Topo](vote-top.png), iPhone. VoiceOver ligado não foi usado; o rótulo vem do `StatusCircle` |
+| 14 | Sim e Não em círculo | Ver o placar | passou em parte | [Topo](vote-top.png), iPhone. VoiceOver ligado não foi usado; o rótulo vem do `StatusCircle` |
 | 15 | Resultado na linha | Ver Votações | passou | [Votações](votes-top.png) |
 | 16 | "1 outro voto" e "9 outros votos" | Texto | passou em parte | "9 outros votos" e "3 outros votos" na tela. O singular só está provado pela entrada no catálogo |
-| 17 | "Albuquerque" | Ver em Seus representantes | passou | Simulador, inteiro numa linha |
+| 17 | "Albuquerque" | Ver em Seus representantes | passou em parte | Simulador, inteiro numa linha, em Dynamic Type padrão. Coluna estreita não foi medida |
 | 18 | Bloco de partidos inteiro | Orientação | passou em parte | Vem do código e do teste de orientação; o nome longo real não foi visto na tela |
-| 19 | Linhas de Votações | Abrir a aba | passou | [Votações](votes-top.png): número, resumo em duas linhas, resultado, placar, hora e tema; mais de duas linhas no Duo dobrado e o iPhone, maior, foi visto pelo usuário. A contagem de três linhas por tela não foi medida |
-| 20 | Próxima sessão com itens | Abrir e tocar | passou | `aFutureSessionWithItsAgendaShowsTheDateAndTheCount`, simulador, com fixture em que os itens são da mesma data da sessão |
+| 19 | Linhas de Votações | Abrir a aba | passou em parte | [Votações](votes-top.png): número, resumo em duas linhas, resultado, placar, hora e tema; mais de duas linhas no Duo dobrado e o iPhone, maior, foi visto pelo usuário. A contagem de três linhas por tela não foi medida |
+| 20 | Próxima sessão | Abrir e tocar | passou em parte | Com itens da sessão: `aFutureSessionWithItsAgendaShowsTheDateAndTheCount` e simulador, só com dados de teste, porque a fonte real ainda não traz esse caso. Sem itens: `aPastAgendaNeverLendsItsItemsToTheNextSession`; a linha sem seta não foi vista na tela |
 | 21 | Em sessão | Modelo | passou em teste | `aSessionUnderWaySaysSoWithItsItems`; a linha não foi vista na tela nesse estado |
 | 22 | Pauta vencida | Modelo | passou em teste | `aPastAgendaWithoutSessionsAheadShowsNothing`, `aPastAgendaNeverLendsItsItemsToTheNextSession`, `todaysItemsDoNotCountForASessionOnAnotherDay` |
 | 23 | Tela da pauta | Abrir | passou em parte | Simulador, com temas inteiros e o status em texto. Os dados de teste não trazem link oficial, então ele não foi visto nesta tela |

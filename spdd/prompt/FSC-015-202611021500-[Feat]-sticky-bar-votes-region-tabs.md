@@ -36,9 +36,9 @@
 **Votações**
 
 19. Dada a tela aberta, quando há votações, então ela começa pelo dia mais recente com votação, e cada linha tem número, resumo em até duas linhas, resultado, placar e a linha com hora e tema, cabendo ao menos três linhas numa tela do iPhone.
-20. Dada uma pauta publicada com sessão futura, quando a tela abre, então uma linha no topo diz "Próxima sessão: qua., 04/11" e a quantidade de itens, e tocar abre a pauta em tela própria.
+20. Dada uma pauta publicada com sessão futura, quando a tela abre, então uma linha no topo diz "Próxima sessão: qua., 04/11" e a quantidade de itens, e tocar abre a pauta em tela própria. Quando os itens publicados não são daquela sessão, o que é o normal hoje, porque a fonte só publica os itens da sessão do dia, a linha mostra a data e as casas, sem quantidade e sem seta, e não abre a pauta.
 21. Dada uma sessão em andamento, quando a tela abre, então a mesma linha diz "Em sessão".
-22. Dada uma pauta sem sessão futura nem em andamento, quando a tela abre, então a linha não aparece, e a tela não mostra a pauta vencida.
+22. Dada uma pauta sem sessão futura nem em andamento, quando a tela abre, então a linha não aparece, e a tela não mostra a pauta vencida. Dada uma pauta de data passada com uma sessão futura, a linha mostra só a próxima data, sem os itens antigos.
 23. Dada a tela da pauta, quando abre, então mostra o texto de cada item como hoje, com os temas inteiros, sem corte no meio da palavra, e o link oficial.
 
 **Região, quem você segue e abas**
@@ -53,7 +53,7 @@
 
 **Acessibilidade**
 
-31. Dado o maior tamanho de texto e o VoiceOver, quando as telas novas abrem, então nada corta nem quebra no meio da palavra, os títulos são cabeçalhos, os atalhos são botões com o traço de selecionado, e o fim é alcançável.
+31. Dado o maior tamanho de texto e o VoiceOver, quando as telas novas abrem, então nada corta nem quebra no meio da palavra, os títulos são cabeçalhos, a barra ao rolar limita o próprio texto a `xxxLarge` para não cobrir a tela nem travar a rolagem, a linha de Votações mostra o placar só com os números e mantém o rótulo completo no VoiceOver, os atalhos são botões com o traço de selecionado, e o fim é alcançável.
 32. Dado o Duo aberto, o iPad e o Mac, quando as telas abrem, então ficam em coluna legível, e o que se abre vai ao outro lado, como nas outras abas.
 
 ## Entities
@@ -225,9 +225,9 @@ Nenhum arquivo público nem dado do aparelho muda de formato. `RegionModel` deix
 
 - Zero comentários, zero warnings, Swift Testing e tokens do design system em tudo que é número, cor e fonte; arquivo até 400 linhas e tipo até 250, pela regra do lint, dividindo em vez de abrir exceção.
 - Textos com chave em inglês e tradução em pt-BR no catálogo; plural pelo catálogo; linguagem simples; só fatos, sem opinião.
-- Rótulos curtos nunca quebram no meio da palavra, com `lineLimit(1)` e `fixedSize`; nomes de pessoas e partidos quebram só entre palavras.
+- Rótulos curtos nunca quebram no meio da palavra, com `lineLimit(1)` e `fixedSize`; nomes de pessoas e partidos quebram só entre palavras. Pedido do usuário no iPhone, ao ver "Outros" em duas linhas: vale para as cápsulas de todo o app, inclusive em Memória e Compartilhar, e não só nas telas desta fase.
 - Cartão ou linha que abre outra tela mostra a setinha à direita, e o toque principal abre o conteúdo, como na `FSC-014`. Link externo mantém o próprio símbolo.
-- Dynamic Type até os tamanhos de acessibilidade, Reduzir movimento e VoiceOver; alvo de toque de 44 pt.
+- Dynamic Type até os tamanhos de acessibilidade, Reduzir movimento e VoiceOver; alvo de toque de 44 pt. A exceção é a barra ao rolar, limitada a `xxxLarge`, como as barras do sistema: maior que isso, ela ocupa a tela e impede a rolagem.
 - Layout adaptativo no iPhone, no iPad, no dobrável, no Mac e no visionOS.
 - Peça genérica vai para o kit, com PR e versão próprios.
 - Toda tela testada no simulador antes de ir ao iPhone físico, e entrega com instalação no aparelho, dizendo o que foi entregue.
@@ -242,7 +242,7 @@ Nenhum arquivo público nem dado do aparelho muda de formato. `RegionModel` deix
 - **Só fatos:** nenhuma cor, ordem ou texto novo diz se um voto foi bom ou ruim. Sim e Não mantêm as cores de hoje. **QUEBRA** se a tela sugerir um juízo.
 - **Sem dado inventado:** votação simbólica sem número, traço ou zero; sem "Ver os N votos" quando a casa não publicou nomes; a pauta só com a data que a fonte traz.
 - **Pauta vencida:** nunca aparece como se fosse atual. **QUEBRA** se Votações mostrar pauta de data passada no topo.
-- **Barra só onde ajuda:** só no detalhe da votação, no detalhe da corrida, nas notas e na página do político. **QUEBRA** se entrar em Votações ou no Feed.
+- **Barra só onde ajuda:** só no detalhe da votação, no detalhe da corrida, nas notas e na página do político. **QUEBRA** se entrar em Votações ou no Feed. Nessas telas, o título sai da barra de ferramentas no iOS, para não repetir o que a barra mostra.
 - **Sem pular:** a barra nunca muda o layout da rolagem, nem herda o `refreshable`.
 - **Página do político:** continua igual. **QUEBRA** se um teste de interface da `FSC-014` precisar mudar de comportamento.
 - **Reduzir movimento:** a barra aparece sem deslizar, e os saltos não animam.
