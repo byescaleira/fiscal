@@ -22,6 +22,16 @@ struct LensPrivacyTests {
         #expect(syncedValues.isExcludedFromBackup != true)
     }
 
+    @Test func theSupportModelIsOnlyInTheLocalStore() async throws {
+        let synced = FiscalSchemaV4.cloudModels.map { String(describing: $0) }
+        #expect(!synced.contains("SupportEntity"))
+        #expect(!synced.contains("LensEntity"))
+        #expect(
+            FiscalSchemaV4.deviceModels.map { String(describing: $0) } == [
+                "SupportEntity", "LensEntity",
+            ])
+    }
+
     @Test func theLensModelIsOnlyInTheLocalStore() {
         let synced = FiscalSchemaV2.cloudModels.map { String(describing: $0) }
         #expect(!synced.contains("LensEntity"))

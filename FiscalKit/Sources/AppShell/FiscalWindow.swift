@@ -9,6 +9,7 @@ public struct FiscalWindow {
     public let session: SessionModel
     public let navigation: FiscalNavigation
     public let lens: LensContext
+    public let support: SupportContext
     public let portraits: PortraitStore
     public let liveResults: LiveResultsModel
     public let follow: FollowController
@@ -19,6 +20,7 @@ public struct FiscalWindow {
         session = SessionModel(repositories: repositories, changes: provider.changes)
         navigation = FiscalNavigation()
         lens = LensContext(repository: repositories.lens)
+        support = SupportContext(repository: repositories.support)
         portraits = PortraitStore()
         liveResults = FiscalServices.shared.liveResults()
         follow = FollowController(
@@ -32,6 +34,7 @@ public struct FiscalWindow {
             if let scenario = LensScenario.fromLaunchArguments() {
                 return Repositories(
                     lens: ShowcaseLensRepository(scenario: scenario),
+                    support: repositories.support,
                     follows: repositories.follows, investigations: repositories.investigations)
             }
         #endif
@@ -44,6 +47,7 @@ extension View {
         environment(window.session)
             .environment(window.navigation)
             .environment(window.lens)
+            .environment(window.support)
             .environment(window.liveResults)
             .environment(window.follow)
             .environment(window.followingBadge)

@@ -56,4 +56,18 @@
 
         public func reset() { stored = nil }
     }
+
+    public actor ShowcaseSupportRepository: SupportRepository {
+        private var stored: SupportChoice?
+
+        public init(support: SupportChoice? = nil) {
+            stored = support
+        }
+
+        public func support() -> SupportChoice? { stored }
+
+        public func save(_ support: SupportChoice) { stored = support }
+
+        public func reset() { stored = nil }
+    }
 #endif

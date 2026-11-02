@@ -8,15 +8,16 @@ import Testing
 struct SchemaMigrationTests {
     @Test func theMigrationPlanOpensAnInMemoryStore() throws {
         let container = try ModelContainer(
-            for: Schema(versionedSchema: FiscalSchemaV3.self),
+            for: Schema(versionedSchema: FiscalSchemaV4.self),
             migrationPlan: FiscalMigrationPlan.self,
             configurations: ModelConfiguration(isStoredInMemoryOnly: true))
-        #expect(container.schema.entities.count == FiscalSchemaV3.models.count)
+        #expect(container.schema.entities.count == FiscalSchemaV4.models.count)
     }
 
     @Test func everyShippedVersionKeepsItsOwnClasses() {
         let versions: [[any PersistentModel.Type]] = [
             FiscalSchemaV1.models, FiscalSchemaV2.models, FiscalSchemaV3.models,
+            FiscalSchemaV4.models,
         ]
         let identities = versions.flatMap { $0.map(ObjectIdentifier.init) }
         #expect(Set(identities).count == identities.count)
@@ -32,9 +33,29 @@ struct SchemaMigrationTests {
         try writeSecondVersion(in: directory)
         let repositories = try FiscalDatabase.open(cloudSync: false, directory: directory)
             .repositories
-        #expect(try await repositories.lens.lens()?.supported == ["lula"])
+        let support = try #require(try await repositories.support.support())
+        #expect(support.people == ["lula"])
+        #expect(support.causes == [.health, .taxes])
+        #expect(try await repositories.lens.lens() == nil)
+        #expect(try await repositories.support.support() == support)
         #expect(try await repositories.follows.isFollowing(slug: "tabata-amaral"))
         #expect(try await repositories.investigations?.investigations().isEmpty == true)
+    }
+
+    @Test func savingReplacesTheOldLens() async throws {
+        let repositories = try FiscalDatabase.open(inMemory: true).repositories
+        try await repositories.lens.save(Lens(themes: [.health], supported: ["pessoa-a"]))
+        try await repositories.support.save(SupportChoice(causes: [.taxes]))
+        #expect(try await repositories.lens.lens() == nil)
+        #expect(try await repositories.support.support() == SupportChoice(causes: [.taxes]))
+    }
+
+    @Test func erasingRemovesTheOldLensToo() async throws {
+        let repositories = try FiscalDatabase.open(inMemory: true).repositories
+        try await repositories.lens.save(Lens(themes: [.health], supported: ["pessoa-a"]))
+        try await repositories.support.reset()
+        #expect(try await repositories.support.support() == nil)
+        #expect(try await repositories.lens.lens() == nil)
     }
 
     private func writeSecondVersion(in directory: URL) throws {
@@ -59,7 +80,7 @@ struct SchemaMigrationTests {
         follow.status = PersonStatus.inOffice.rawValue
         context.insert(follow)
         let lens = FiscalSchemaV2.LensEntity(updatedAt: .now)
-        lens.themeKeys = "health,taxes"
+        lens.themeKeys = [Theme.health, .taxes].map(\.rawValue).joined(separator: ",")
         lens.supportedKeys = "lula"
         context.insert(lens)
         try context.save()

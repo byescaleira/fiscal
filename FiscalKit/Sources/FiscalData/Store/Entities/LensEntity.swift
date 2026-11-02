@@ -29,6 +29,12 @@ public class LensEntity {
         updatedAt = date
     }
 
+    var legacySupport: SupportChoice {
+        SupportChoice(
+            people: supportedKeys.split(separator: ",").map(String.init),
+            causes: themeKeys.split(separator: ",").compactMap { Theme(rawValue: String($0)) })
+    }
+
     var lens: Lens {
         Lens(
             themes: themeKeys.split(separator: ",").compactMap { Theme(rawValue: String($0)) },

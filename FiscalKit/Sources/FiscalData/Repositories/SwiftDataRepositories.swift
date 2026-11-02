@@ -17,6 +17,22 @@ struct SwiftDataLensRepository: LensRepository {
     }
 }
 
+struct SwiftDataSupportRepository: SupportRepository {
+    let store: FiscalStore
+
+    func support() async throws -> SupportChoice? {
+        try await store.support()
+    }
+
+    func save(_ support: SupportChoice) async throws {
+        try await store.save(support: support)
+    }
+
+    func reset() async throws {
+        try await store.resetSupport()
+    }
+}
+
 struct SwiftDataFollowRepository: FollowRepository {
     let store: FiscalStore
 
