@@ -90,7 +90,7 @@ public struct MainScreen: View {
                     ) {
                         SectionStack(section: section)
                     }
-                    .badge(section == .following ? badge.count : 0)
+                    .badge(section == .feed ? badge.count : 0)
                 }
             }
             .tabViewStyle(.sidebarAdaptable)

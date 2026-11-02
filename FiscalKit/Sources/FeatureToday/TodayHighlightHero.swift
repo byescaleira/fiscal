@@ -96,15 +96,18 @@ struct TodayHighlightHero: View {
     }
 
     private var footer: some View {
-        let layout =
-            dynamicTypeSize.isAccessibilitySize
-            ? AnyLayout(VStackLayout(alignment: .leading, spacing: .spaceS))
-            : AnyLayout(HStackLayout(alignment: .center, spacing: .spaceS))
-        return layout {
-            TodayHighlightRelevance(weight: highlight.weight, filled: appeared)
-            if !dynamicTypeSize.isAccessibilitySize { Spacer(minLength: .spaceS) }
-            WeightMethodButton(method: today.highlightMethod)
-                .tint(.white)
+        ViewThatFits(in: .horizontal) {
+            HStack(alignment: .center, spacing: .spaceS) {
+                TodayHighlightRelevance(weight: highlight.weight, filled: appeared)
+                Spacer(minLength: .spaceS)
+                WeightMethodButton(method: today.highlightMethod)
+                    .tint(.white)
+            }
+            VStack(alignment: .leading, spacing: .spaceS) {
+                TodayHighlightRelevance(weight: highlight.weight, filled: appeared)
+                WeightMethodButton(method: today.highlightMethod)
+                    .tint(.white)
+            }
         }
     }
 }

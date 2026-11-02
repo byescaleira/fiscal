@@ -25,6 +25,14 @@ public enum Route: Hashable, Sendable {
 }
 
 extension Route {
+    public static func destination(for item: FeedItem) -> Route? {
+        if let id = item.voteID { return .vote(id: id) }
+        if let expenses = item.expenses {
+            return .expenses(slug: expenses.slug, year: expenses.year)
+        }
+        return item.content.map { .content($0) }
+    }
+
     public static func destination(for event: SupportEvent) -> Route? {
         if let id = event.voteID { return .vote(id: id) }
         return event.content.map { .content($0) }

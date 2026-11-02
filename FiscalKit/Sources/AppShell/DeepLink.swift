@@ -10,11 +10,11 @@ enum DeepLink: Equatable {
 
     init(url: URL) {
         if Self.isSite(url) {
-            self = Self.site(url) ?? .section(.today)
+            self = Self.site(url) ?? .section(.feed)
             return
         }
         guard url.scheme == "fiscal", let host = url.host() else {
-            self = .section(.today)
+            self = .section(.feed)
             return
         }
         let path = url.pathComponents.dropFirst().first
@@ -23,15 +23,15 @@ enum DeepLink: Equatable {
         } else if let destination = Self.destination(host: host, path: path, url: url) {
             self = destination
         } else {
-            self = .section(.today)
+            self = .section(.feed)
         }
     }
 
     private static func destination(host: String, path: String?, url: URL) -> DeepLink? {
         switch host {
-        case "person": path.map { DeepLink.route(.person(slug: $0), in: .following) }
+        case "person": path.map { DeepLink.route(.person(slug: $0), in: .region) }
         case "vote": path.map { DeepLink.route(.vote(id: $0), in: .votes) }
-        case "highlight": path.map { DeepLink.route(.highlight(id: $0), in: .today) }
+        case "highlight": path.map { DeepLink.route(.highlight(id: $0), in: .feed) }
         case "expenses":
             path.map { DeepLink.route(.expenses(slug: $0, year: year(in: url)), in: .money) }
         case "compare": .route(.compare(slugs: slugs(in: url)), in: .search)
@@ -43,9 +43,9 @@ enum DeepLink: Equatable {
             path.flatMap(Int.init).map { DeepLink.route(.pastElection(year: $0), in: .search) }
         case "period": path.map { DeepLink.route(.period(id: $0), in: .search) }
         case "study": path.map { DeepLink.route(.studyGuide(id: $0), in: .search) }
-        case "lens", "support": .route(.support, in: .today)
-        case "artists": .route(.artists, in: .today)
-        case "settings": .route(.settings, in: .today)
+        case "lens", "support": .route(.support, in: .feed)
+        case "artists": .route(.artists, in: .feed)
+        case "settings": .route(.settings, in: .feed)
         default: nil
         }
     }
@@ -70,13 +70,13 @@ enum DeepLink: Equatable {
         guard let item = siteItem(in: url) else { return nil }
         let value = item.value
         return switch item.key {
-        case "person": .route(.person(slug: value), in: .following)
+        case "person": .route(.person(slug: value), in: .region)
         case "vote": .route(.vote(id: value), in: .votes)
         case "expenses": expenses(value)
         case "compare": .route(.compare(slugs: slugs(value)), in: .search)
-        case "place": .route(.share(.representatives(uf: value.lowercased())), in: .following)
+        case "place": .route(.share(.representatives(uf: value.lowercased())), in: .region)
         case "race": .route(.race(id: value), in: .search)
-        case "highlight": .route(.share(.highlight(id: value)), in: .today)
+        case "highlight": .route(.share(.highlight(id: value)), in: .feed)
         default: nil
         }
     }
@@ -92,7 +92,11 @@ enum DeepLink: Equatable {
     }
 
     private static func section(host: String) -> AppSection? {
-        host == "mine" ? .following : AppSection(rawValue: host)
+        switch host {
+        case "today", "feed": .feed
+        case "mine", "following", "region": .region
+        default: AppSection(rawValue: host)
+        }
     }
 
     private static func slugs(in url: URL) -> [String] {
@@ -122,7 +126,7 @@ enum DeepLink: Equatable {
         guard let kind = FiscalEvents.DeepLinkKind(rawValue: name), kind != .section else {
             return .unknown
         }
-        return DeepLink(url: url) == .section(.today) ? .unknown : kind
+        return DeepLink(url: url) == .section(.feed) ? .unknown : kind
     }
 
     static func handles(_ url: URL) -> Bool {

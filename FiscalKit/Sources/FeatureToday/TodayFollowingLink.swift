@@ -10,7 +10,7 @@ struct TodayFollowingLink: View {
 
     var body: some View {
         Button {
-            navigation?.selectedSection = .following
+            navigation?.selectedSection = .region
         } label: {
             HStack(spacing: .spaceM) {
                 SymbolBadge("person.2", color: .info, size: .badgeL)

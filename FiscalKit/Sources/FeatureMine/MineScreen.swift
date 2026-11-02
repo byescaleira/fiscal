@@ -6,9 +6,6 @@ import SwiftUI
 public struct MineScreen: View {
     @Environment(MineModel.self) private var mine
     @Environment(SessionModel.self) private var session
-    @Environment(FollowingBadge.self) private var badge: FollowingBadge?
-    @Environment(FiscalNavigation.self) private var navigation: FiscalNavigation?
-    @Environment(\.scenePhase) private var scenePhase
 
     public init() {}
 
@@ -16,7 +13,6 @@ public struct MineScreen: View {
         @Bindable var mine = mine
         AdaptiveList {
             if !mine.isEmpty {
-                FollowingUpdatesSection()
                 FollowingPeopleSection()
             }
             FollowingSuggestionsSection()
@@ -27,19 +23,7 @@ public struct MineScreen: View {
                 MineInviteSection()
             }
         }
-        .emphasisTitle("Following")
-        .onChange(of: mine.newCount, initial: true) { _, count in badge?.count = count }
-        .onChange(of: navigation?.selectedSection) { previous, section in
-            if previous == .following, section != .following { mine.markSeen() }
-        }
-        .onDisappear {
-            if let section = navigation?.selectedSection, section != .following {
-                mine.markSeen()
-            }
-        }
-        .onChange(of: scenePhase) { _, phase in
-            if phase == .background { mine.markSeen() }
-        }
+        .emphasisTitle("Region")
         .toolbar { MineToolbar() }
         .sheet(isPresented: $mine.isChoosingPlace) {
             MinePlacePicker().environment(mine)

@@ -73,7 +73,7 @@ private struct TodayMasthead: View {
     }
 }
 
-private struct TodayToolbar: ToolbarContent {
+struct TodayToolbar: ToolbarContent {
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
 

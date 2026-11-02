@@ -143,7 +143,7 @@ private struct PreviewControls: View {
             HStack(spacing: .spaceM) {
                 ForEach(AppSection.allCases) { section in
                     Image(systemName: section.systemImage)
-                        .foregroundStyle(section == .today ? tint : Color.secondary)
+                        .foregroundStyle(section == .feed ? tint : Color.secondary)
                 }
             }
             .font(.icon(.s))

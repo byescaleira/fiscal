@@ -3626,6 +3626,16 @@
         }
       }
     },
+    "Couldn't load %@. Pull to try again." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não deu para carregar %@. Puxe para tentar de novo."
+          }
+        }
+      }
+    },
     "Couldn't load %@. Tap to try again." : {
       "localizations" : {
         "pt-BR" : {
@@ -4969,6 +4979,16 @@
         }
       }
     },
+    "Explore" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explorar"
+          }
+        }
+      }
+    },
     "Export Data" : {
       "localizations" : {
         "pt-BR" : {
@@ -4985,6 +5005,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Facebook"
+          }
+        }
+      }
+    },
+    "Fact Check" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checagem"
           }
         }
       }
@@ -5626,6 +5656,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Acompanhar na tela de bloqueio"
+          }
+        }
+      }
+    },
+    "Follow people to see what they do here." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siga pessoas para ver aqui o que elas fazem."
+          }
+        }
+      }
+    },
+    "Follow the people who represent you" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siga quem representa você"
           }
         }
       }
@@ -8586,6 +8636,16 @@
         }
       }
     },
+    "Nothing yet from who you follow." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ainda não há nada de quem você segue."
+          }
+        }
+      }
+    },
     "Notifications" : {
       "localizations" : {
         "pt-BR" : {
@@ -10748,6 +10808,16 @@
         }
       }
     },
+    "Relevant" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Relevante"
+          }
+        }
+      }
+    },
     "Reload Data" : {
       "localizations" : {
         "pt-BR" : {
@@ -11452,6 +11522,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ver Notas"
+          }
+        }
+      }
+    },
+    "See Who Represents You" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver quem representa você"
           }
         }
       }
@@ -12294,7 +12374,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gasto"
+            "value" : "Gastos"
           }
         }
       }
@@ -13026,6 +13106,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Obrigado por confiar no Fiscal."
+          }
+        }
+      }
+    },
+    "That is all for now. Follow people to see more facts here." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "É tudo por agora. Siga pessoas para ver mais fatos aqui."
+          }
+        }
+      }
+    },
+    "That is all: the official data here goes back to %lld." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "É tudo: os dados oficiais aqui vão até %lld."
           }
         }
       }
@@ -13809,6 +13909,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "As obras dos cards de compartilhar, com as licenças"
+          }
+        }
+      }
+    },
+    "Their votes, proposals and spending show up here, by date." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votos, propostas e gastos aparecem aqui, por data."
           }
         }
       }
@@ -14892,6 +15002,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Votação do dia"
+          }
+        }
+      }
+    },
+    "Vote: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voto: %@"
           }
         }
       }
@@ -16060,6 +16180,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ontem"
+          }
+        }
+      }
+    },
+    "You follow" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você segue"
           }
         }
       }

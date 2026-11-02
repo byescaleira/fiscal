@@ -15,16 +15,18 @@ struct SectionScreen: View {
     @ViewBuilder var body: some View {
         let data = FiscalServices.shared.publicData()
         switch section {
-        case .today:
+        case .feed:
             let services = FiscalServices.shared
             ModelHost(
                 TodayModel(
                     service: data, races: services.liveResultsService(),
                     follows: services.todayFollows(session.repositories.follows))
             ) {
-                TodayScreen { race in RaceHeroCard(race: race, opensDetail: true) }
+                ModelHost(FeedModel(service: data, follows: session.repositories.follows)) {
+                    FeedScreen { race in RaceHeroCard(race: race, opensDetail: true) }
+                }
             }
-        case .following:
+        case .region:
             ModelHost(MineModel(service: data, follows: session.repositories.follows)) {
                 MineScreen()
             }
