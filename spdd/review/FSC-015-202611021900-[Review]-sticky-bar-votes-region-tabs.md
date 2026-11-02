@@ -44,6 +44,6 @@
 | detalhe | `VoteScoreRow.swift:63` | Linha sem o traço de botão para o VoiceOver, a confirmar | VoiceOver ligado não foi usado |
 | detalhe | `VoteStickyHeader.swift:16` | Título encolhe na barra | Mantido, para não cortar o número da proposta |
 
-## Sincronia pendente
+## Sincronia
 
-As diferenças de estrutura aguardam o ok do usuário no plano do `spdd-sync`: `RevealPage` e modificadores, `AgendaLine`, `VoteCompactScore`, testes novos, `VoteBoard.swift` no lugar de `RepresentativesDigest.swift`, `FiscalEvents`, `SectionScreen`, `PeerBadge`, os dados de teste e os arquivos de Memória e Compartilhar.
+O usuário aprovou o plano do `spdd-sync`, e o canvas foi sincronizado. Cobriu: `RevealPage` e modificadores, `AgendaLine`, `VoteCompactScore`, testes novos, `VoteBoard.swift` no lugar de `RepresentativesDigest.swift`, `FiscalEvents`, `SectionScreen`, `PeerBadge`, os dados de teste e os arquivos de Memória e Compartilhar.

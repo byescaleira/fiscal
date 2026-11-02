@@ -63,7 +63,22 @@ classDiagram
     class RevealBar {
         <<kit>>
         +isShown
+        +height
+        +bar
+    }
+    class RevealPage {
+        <<view>>
+        +chapters
+        +maxWidth
+        +onChapter
+        +refresh
         +content
+        +bar
+    }
+    class RevealPageState {
+        +showsBar
+        +current
+        +headerHeight
     }
     class ShortcutStrip {
         <<kit>>
@@ -101,18 +116,30 @@ classDiagram
     class VotesModel {
         <<existing>>
         +agendaLine
+        +agendaHouses
+        +compactScore(vote)
+    }
+    class AgendaLine {
+        +status
+        +houses
+        +itemCount
     }
     class FollowingModel {
         +followed
         +suggestions
         +showsInvite
-        +toggle(card)
+        +hasPlace
+        +dismissInvite()
+        +load()
     }
     class AppSection {
         <<existing>>
         +systemImage
     }
-    ShortcutStrip --> RevealBar
+    RevealPage --> RevealBar
+    RevealPage --> RevealPageState
+    VotesModel --> AgendaLine
+    FollowingModel --> RegionModel
     VoteDetailModel --> VoteChapter
     Route --> FollowingModel
 ```
@@ -123,13 +150,13 @@ Nenhum arquivo público nem dado do aparelho muda de formato. `RegionModel` deix
 
 - **Decisões registradas.** O [ADR 0024](../../docs/adr/0024-reveal-bar-following-and-ballots-screens.md) registra onde a barra entra, a saída de quem você segue de Região e os votos em tela própria. Ele emenda a decisão 6 do [ADR 0022](../../docs/adr/0022-feed-first-tab-and-region.md).
 - **Barra só onde ajuda.** Decisão do usuário. Entra onde algo precisa continuar visível: no detalhe da votação (proposta e placar), no detalhe da corrida (corrida e apurado), nas notas (pessoa e ano) e na página do político, onde já está. Fica de fora em Votações, no Feed e nas outras abas.
-- **Peça no kit.** Regra do repositório: `RevealBar` e `ShortcutStrip` vão para o `byescaleira-kit`, num PR de lá, com versão nova. O conteúdo de cada barra fica no app. A forma é a aprovada na `FSC-014`: camada sobre a rolagem, que só muda de opacidade, porque inserir no layout fez o conteúdo pular.
+- **Peça no kit.** Regra do repositório: `RevealBar` e `ShortcutStrip` vão para o `byescaleira-kit`, num PR de lá, com versão nova. O conteúdo de cada barra fica no app, e `RevealPage`, em `FeatureCore`, junta a barra, o herói e os capítulos. A forma é a aprovada na `FSC-014`: camada sobre a rolagem, que só muda de opacidade, porque inserir no layout fez o conteúdo pular.
 - **Referências.** FotMob mantém o placar e as abas fixos ao rolar uma partida; Apple Sports mostra o placar como o principal. **O trabalho para na operação 5 para o ok no iPhone.**
 - **Detalhe em rolagem.** Decisão do usuário: os votos vão para tela própria com busca e filtros. Sem eles, a página pode ser a mesma `VStack` da página do político, e o salto mede a posição de cada parte. `ProfileBlock` sobe para `FeatureCore` como `ContentBlock`, para as duas telas usarem o mesmo bloco. No Mac, a tabela continua ao lado.
 - **Votação simbólica.** Sem Sim nem Não, o placar cede lugar ao resultado e à frase, e as partes de votos somem. Nunca traço nem zero.
 - **Círculos.** `StatusCircle`, que o app já usa nas linhas de voto, substitui as cápsulas do placar. O selo da linha de Votações passa a mostrar o texto, sem cápsula.
 - **Votações.** Decisão do usuário: uma linha no topo, com a próxima sessão, abre a pauta em tela própria. Pauta vencida não aparece na tela. As linhas perdem peso: o aviso de outras votações sai da linha e fica só no detalhe, e o resumo vai a duas linhas.
-- **Quem você segue.** Decisão do usuário: tela própria, aberta pelo filtro Seguindo do Feed, com a lista, as sugestões e o convite. `FollowingModel` lê o lugar escolhido pelo mesmo `HomePlace` que Região usa.
+- **Quem você segue.** Decisão do usuário: tela própria, aberta pelo filtro Seguindo do Feed, com a lista, as sugestões e o convite. `FollowingModel` guarda um `RegionModel` interno para o lugar e as sugestões, que lê o mesmo `HomePlace`, em vez de repetir essa lógica.
 - **Links.** `fiscal://following` passa a abrir a tela nova, em vez de Região; `fiscal://mine` e `fiscal://region` seguem em Região. O widget "Quem eu sigo" e a Siri usam o link novo.
 - **Ícones.** `person.2` para o Feed, `mappin.and.ellipse` para Região, pedido do usuário no iPhone, e `binoculars` para Fiscalizar. A busca usa `Tab(role: .search)`; o resultado é visto no iPhone, e o papel da aba não muda sem o ok do usuário.
 - **Medida de posição.** O capítulo atual só publica quando muda, como já é, e as telas novas seguem o mesmo caminho. A revisão da `FSC-014` apontou o custo sem medir; é conferido no iPhone.
@@ -139,22 +166,26 @@ Nenhum arquivo público nem dado do aparelho muda de formato. `RegionModel` deix
 
 - `byescaleira-kit`: `Sources/ByescaleiraUI/Layout/RevealBar.swift`, `ShortcutStrip.swift`, testes, `CHANGELOG`, versão nova.
 - `FiscalKit/Package.swift`: a versão nova do kit.
-- `FeatureCore/`: `Navigation/Route.swift` (os três casos novos), `Navigation/AppSection.swift` (ícones), `Components/ContentBlock.swift` (novo, vindo de `ProfileBlock`).
-- `FiscalDomain/Integrations/`: `IntegrationLink.following`, `RepresentativesDigest.swift`.
+- `FeatureCore/`: `Navigation/Route.swift` (os três casos novos), `Navigation/AppSection.swift` (ícones), `Navigation/RevealPage.swift` (novo), `Components/ContentBlock.swift` (novo, vindo de `ProfileBlock`), `Diagnostics/FiscalEvents.swift` (o tipo de link `following`), `PublicData/PeerBadge.swift`.
+- `FiscalDomain/Integrations/VoteBoard.swift`: `IntegrationLink.following`.
+- `FiscalDesignSystem/`: `PartyMark` (nome longo em várias linhas), `ScoreboardFigure` (escala).
+- `FiscalData/PublicData/Showcase/`: `ShowcaseVotes.swift`, `ShowcasePublicData+Extras.swift`, com a pauta na data da sessão.
 - `FeatureProfile/`: `ProfileScreen.swift`, `ProfileStickyHeader.swift`, `ProfileChapterViews.swift`, sem mudar o comportamento.
 - `FeatureVotes/`:
-  - novos: `VoteChapter.swift`, `VoteStickyHeader.swift`, `VoteBallotsScreen.swift`, `VotesAgendaScreen.swift`;
-  - mudam: `VoteDetailScreen.swift`, `VoteDetailModel.swift`, `VoteDetailModel+Text.swift`, `VoteHeroSection.swift`, `VoteExplainSection.swift`, `VoteSameDaySection.swift`, `VotePartySections.swift`, `VoteBallotsSection.swift`, `VoteScoreRow.swift`, `VotesScreen.swift`, `VotesAgendaSection.swift`, `VotesModel.swift`, `VotesModel+Text.swift`.
-- `FeatureRegion/`: novos `FollowingModel.swift`, `FollowingScreen.swift`; mudam `RegionScreen.swift`, `RegionModel.swift`; saem `RegionFollowing.swift`, `RegionModel+Following.swift`, `RegionModel+ShareInvite.swift`, levados para os novos.
+  - novos: `VoteChapter.swift`, `VoteStickyHeader.swift`, `VoteBallotsScreen.swift`, `VotesAgendaScreen.swift` (no lugar de `VotesAgendaSection.swift`), `VotesModel+Agenda.swift` (com `AgendaLine`);
+  - mudam: `VoteDetailScreen.swift`, `VoteDetailModel.swift`, `VoteDetailModel+Text.swift`, `VoteHeroSection.swift`, `VoteExplainSection.swift`, `VoteSameDaySection.swift`, `VotePartySections.swift`, `VoteBallotsSection.swift`, `VoteScoreRow.swift`, `VotesScreen.swift`, `VotesModel.swift`, `VotesModel+Text.swift`.
+- `FeatureRegion/`: novos `FollowingModel.swift`, `FollowingScreen.swift`; mudam `RegionScreen.swift`, `RegionModel.swift`, `RegionModel+Local.swift`; saem `RegionFollowing.swift`, `RegionModel+Following.swift`, `RegionModel+ShareInvite.swift`, levados para os novos.
 - `FeatureFeed/FeedScreen.swift`: linha "Quem você segue" no filtro Seguindo e o convite.
-- `FeatureLiveResults/RaceDetailScreen.swift`: a barra da corrida.
+- `FeatureLiveResults/RaceDetailScreen.swift`: a barra da corrida; `RaceWinnerCard.swift`: rótulo curto.
+- `FeatureMemory/PastRaceCharts.swift`, `FeatureShare/ArtistsScreen.swift`, `FeatureShare/ShareArtRail.swift`, `FeatureProfile/ProfileChecksChapter.swift`, `FeatureProfile/ProfileActivitySections.swift`: rótulos curtos, pedido do usuário.
+- `FeatureGuides/Tutorial/Tutorial+Start.swift`: símbolos das abas e o texto de Região.
 - `FeatureMoney/ExpensesScreen.swift`: a barra das notas.
-- `AppShell/`: `RouteScreen.swift`, `DeepLink.swift`, `Integrations/FiscalIntents.swift`.
+- `AppShell/`: `RouteScreen.swift`, `SectionScreen.swift`, `DeepLink.swift`, `Integrations/FiscalIntents.swift`.
 - `Fiscal/FiscalWidgets/RepresentativesWidget.swift`.
 - `Fiscal/FiscalUITests/`: `VoteDetailTests.swift`, `FollowingTests.swift`, novos; `LaunchTests.swift`, `ProfileChaptersTests.swift`.
 - `Fiscal/Fiscal/Localizable.xcstrings`.
-- Testes: `VoteDetailModelTests`, `VotesModelTests`, `FollowingModelTests` (novo), `RegionModelTests`, `FollowIntentTests`, `DeepLinkTests`, `AppSectionTests`, `ProfileChaptersTests`.
-- Documentos: `docs/adr/0024-reveal-bar-following-and-ballots-screens.md`, `docs/adr/README.md`, `docs/brief.md`, `docs/architecture.md`, `docs/design-system.md`, `docs/validation.md`, `docs/roadmap.md`, `docs/backlog.md`, `README.md`, `CHANGELOG.md`, `spdd/README.md`, `docs/evidence/FSC-015/qa.md`; `site/index.html`, `site/llms.txt`, sem publicar.
+- Testes: `VoteDetailModelTests`, `VotesModelTests`, `VotesAgendaLineTests` (novo), `RevealPageStateTests` (novo), `FollowingModelTests` (novo), `RegionSeatTests` (novo, no lugar de `RegionFollowingTests`), `RegionModelTests`, `RegionRosterTests`, `FollowIntentTests`, `DeepLinkTests`, `AppSectionTests`, `ProfileChaptersTests`.
+- Documentos: `docs/adr/0024-reveal-bar-following-and-ballots-screens.md`, `docs/adr/README.md`, `docs/adr/0022-feed-first-tab-and-region.md`, `docs/brief.md`, `docs/architecture.md`, `docs/design-system.md`, `docs/validation.md`, `docs/roadmap.md`, `docs/backlog.md`, `README.md`, `CHANGELOG.md`, `spdd/README.md`, `docs/evidence/FSC-015/qa.md`, `spdd/review/`; `site/index.html`, `site/llms.txt`, sem publicar.
 
 ## Operations
 
@@ -182,17 +213,18 @@ Nenhum arquivo público nem dado do aparelho muda de formato. `RegionModel` deix
 5. **Detalhe da votação, na tela.** Depende de: 2, 3, 4.
    - Ver as referências reais antes de desenhar.
    - `VoteDetailOverview`: rolagem na ordem do cenário 8, com `ContentBlock`.
-   - `VoteStickyHeader`: proposta, placar compacto e atalhos.
+   - `RevealPage` em `FeatureCore`, com a barra, o herói e os capítulos, usada também pela página do político.
+   - `VoteStickyHeader` e `VoteCompactScore`: proposta, placar compacto e atalhos.
    - O toque em Por partido abre os votos filtrados; Mac como hoje.
    - **Parar e mostrar no iPhone, com dados reais, antes da operação 6.**
    - Cobre: 1, 2, 8 a 13. Verificação: `VoteDetailTests`, captura com nominal e simbólica, iPhone.
 6. **Votações.** Depende de: 3.
-   - `VotesModel.agendaLine`: próxima sessão, em sessão ou nada, com a quantidade de itens.
+   - `VotesModel.agendaLine`, em `VotesModel+Agenda.swift`: próxima sessão, em sessão ou nada, com a quantidade de itens.
    - `Route.agenda` e `VotesAgendaScreen`, com os itens de hoje e temas inteiros.
    - `VoteScoreRow`: linha mais curta, sem o aviso de outras votações.
    - Cobre: 15, 16, 19 a 23. Verificação: `VotesModelTests`, com pauta vencida, futura e em sessão, captura.
 7. **Quem você segue.**
-   - `FollowingModel`: lista, sugestões e convite, levados de `RegionModel`, com o lugar por `HomePlace`.
+   - `FollowingModel`: lista, sugestões e convite, levados de `RegionModel`, com o lugar por um `RegionModel` interno, que lê o mesmo `HomePlace`.
    - `FollowingScreen` e `Route.following`.
    - Sai de `RegionScreen`.
    - Linha no filtro Seguindo e convite do Feed.
@@ -203,8 +235,8 @@ Nenhum arquivo público nem dado do aparelho muda de formato. `RegionModel` deix
    - Ver no simulador o que o sistema mostra no papel de busca.
    - Cobre: 30. Verificação: `AppSectionTests`, captura.
 9. **Corrida e notas.** Depende de: 1.
-   - `RaceDetailContent` com `RevealBar`: corrida e apurado.
-   - `ExpensesOverview` com `RevealBar`: nome, ano e total, sem sair da lista.
+   - `RaceDetailContent` com `RevealPage`, sem atalhos: corrida e apurado.
+   - `ExpensesOverview` com `revealBar`: nome, ano com o filtro e total, sem sair da lista.
    - **Mostrar Votações, Região, a tela nova, as abas e estas barras no iPhone ao terminar.**
    - Cobre: 3, 4, 5. Verificação: captura, iPhone.
 10. **Acessibilidade e testes de interface.** Depende de: 5 a 9.
