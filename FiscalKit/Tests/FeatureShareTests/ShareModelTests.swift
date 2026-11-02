@@ -21,12 +21,11 @@ struct ShareModelTests {
     }
 
     private func model(
-        _ subject: ShareSubject, scenario: PublicDataScenario = .normal,
-        lens: (any LensRepository)? = nil
+        _ subject: ShareSubject, scenario: PublicDataScenario = .normal
     ) -> ShareModel {
         ShareModel(
             subject: subject, service: ShowcasePublicData(scenario: scenario, now: now),
-            races: ShowcaseLiveResults(scenario: .finished), lens: lens)
+            races: ShowcaseLiveResults(scenario: .finished))
     }
 
     @Test func everyArtCardCarriesTheCreditInEveryFormat() async throws {
@@ -50,57 +49,14 @@ struct ShareModelTests {
         }
     }
 
-    @Test func theCardNeverCarriesWhoTheUserSupports() async throws {
-        var contents: [ShareSubject: ShareCardContent] = [:]
-        let choices = [
-            Lens(themes: [.health, .taxes, .security], supported: ["lula", "tabata-amaral"]),
-            Lens(themes: [.health, .taxes, .security], prefersNotToSay: true),
-        ]
-        for choice in choices {
-            var lens = choice
-            lens.artCollection = "brasil-agora"
-            let repositories = try FiscalDatabase.open(inMemory: true).repositories
-            try await repositories.lens.save(lens)
-            for subject in subjects {
-                let model = model(subject, lens: repositories.lens)
-                await model.load()
-                #expect(model.showsLensBadge)
-                let card = try #require(model.card)
-                for style in ShareStyle.allCases {
-                    let styled = try #require(model.card(style: style))
-                    let text = styled.texts.joined(separator: "\n")
-                    #expect(!text.contains("Lens"))
-                    #expect(!model.caption.contains("Lens"))
-                    #expect(model.caption == ShareCaption.make(card.content))
-                    for slug in lens.supported {
-                        #expect(!styled.accessibilityLabel.contains(slug))
-                        #expect(!model.shareMessage.contains(slug))
-                    }
-                }
-                if let previous = contents[subject] {
-                    #expect(previous == card.content)
-                }
-                contents[subject] = card.content
-            }
-        }
-    }
-
-    @Test func theLensOnlyChangesTheArt() async throws {
-        let repositories = try FiscalDatabase.open(inMemory: true).repositories
-        try await repositories.lens.save(
-            Lens(
-                themes: [.health, .taxes, .security], supported: ["lula"],
-                artCollection: "acervo-historico"))
-        let adapted = model(.person(slug: "lula"), lens: repositories.lens)
-        await adapted.load()
-        let plain = model(.person(slug: "lula"))
-        await plain.load()
-        #expect(adapted.content == plain.content)
-        #expect(adapted.artwork?.work.collection == "acervo-historico")
-        #expect(adapted.collections.first?.id == "acervo-historico")
-        #expect(plain.artwork?.work.collection == ShareModel.neutralCollection)
-        #expect(!plain.showsLensBadge)
-        #expect(adapted.isArtAdapted)
+    @Test func theGalleryOpensInTheDefaultOrder() async throws {
+        let model = model(.person(slug: "lula"))
+        await model.load()
+        let catalog = try #require(model.catalog)
+        #expect(model.collections == catalog.collections)
+        #expect(ShareModel.defaultCollection == "brasil-agora")
+        #expect(model.artwork?.work.collection == ShareModel.defaultCollection)
+        #expect(model.currentCollectionID == ShareModel.defaultCollection)
     }
 
     @Test func pickingAnotherWorkKeepsTheCreditInStep() async throws {

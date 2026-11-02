@@ -43,7 +43,7 @@ enum DeepLink: Equatable {
             path.flatMap(Int.init).map { DeepLink.route(.pastElection(year: $0), in: .search) }
         case "period": path.map { DeepLink.route(.period(id: $0), in: .search) }
         case "study": path.map { DeepLink.route(.studyGuide(id: $0), in: .search) }
-        case "lens": .route(.lens, in: .today)
+        case "lens", "support": .route(.support, in: .today)
         case "artists": .route(.artists, in: .today)
         case "settings": .route(.settings, in: .today)
         default: nil
@@ -118,7 +118,8 @@ enum DeepLink: Equatable {
         }
         guard url.scheme == "fiscal", let host = url.host() else { return .unknown }
         if section(host: host) != nil { return .section }
-        guard let kind = FiscalEvents.DeepLinkKind(rawValue: host), kind != .section else {
+        let name = host == "lens" ? FiscalEvents.DeepLinkKind.support.rawValue : host
+        guard let kind = FiscalEvents.DeepLinkKind(rawValue: name), kind != .section else {
             return .unknown
         }
         return DeepLink(url: url) == .section(.today) ? .unknown : kind

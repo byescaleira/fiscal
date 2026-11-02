@@ -6,7 +6,6 @@ import SwiftUI
 public struct MineScreen: View {
     @Environment(MineModel.self) private var mine
     @Environment(SessionModel.self) private var session
-    @Environment(LensContext.self) private var lens
     @Environment(FollowingBadge.self) private var badge: FollowingBadge?
     @Environment(FiscalNavigation.self) private var navigation: FiscalNavigation?
     @Environment(\.scenePhase) private var scenePhase
@@ -29,7 +28,6 @@ public struct MineScreen: View {
             }
         }
         .emphasisTitle("Following")
-        .task(id: lens.supported) { await mine.loadSupported(lens.supported) }
         .onChange(of: mine.newCount, initial: true) { _, count in badge?.count = count }
         .onChange(of: navigation?.selectedSection) { previous, section in
             if previous == .following, section != .following { mine.markSeen() }

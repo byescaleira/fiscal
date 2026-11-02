@@ -33,13 +33,6 @@ struct TodayModelTextTests {
         #expect(line.contains("TSE"))
     }
 
-    @Test func theLensLineOnlyAppearsWhenSomethingChanges() {
-        #expect(TodayModel.lensLine(nil) == nil)
-        #expect(TodayModel.lensLine(Lens(supported: ["lula"])) == nil)
-        #expect(TodayModel.lensLine(Lens(themes: [.health], supported: ["lula"])) != nil)
-        #expect(TodayModel.lensLine(Lens(prefersNotToSay: true)) == nil)
-    }
-
     @Test func everyKindHasATitleAndSymbol() {
         let kinds: [TodayDigest.Event.Kind] = [.vote, .session, .race, .law]
         #expect(Set(kinds.map(TodayModel.symbol)).count == kinds.count)

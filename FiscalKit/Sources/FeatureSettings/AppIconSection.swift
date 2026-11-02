@@ -35,8 +35,7 @@ private struct AppIconFooter: View {
     var body: some View {
         switch collection {
         case .main: Text("The Amazon at dawn is the main icon. Pick the one you like best.")
-        case .themes: Text("One icon for each Lens palette.")
-        case .fauna: EmptyView()
+        case .themes, .fauna: EmptyView()
         case .parties:
             Text(
                 "Only each party's own colors, with no logo or number, for every party registered with the TSE, in alphabetical order."

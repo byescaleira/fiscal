@@ -3,19 +3,7 @@ import FiscalResource
 import Foundation
 
 extension ShareModel {
-    public var isArtAdapted: Bool {
-        guard let id = lens?.artCollection else { return false }
-        return catalog?.collection(id: id) != nil
-    }
-
-    public var showsLensBadge: Bool { isArtAdapted }
-
-    public var collections: [ArtCollection] {
-        guard let catalog else { return [] }
-        let preferred = preferredCollectionID
-        return catalog.collections.filter { $0.id == preferred }
-            + catalog.collections.filter { $0.id != preferred }
-    }
+    public var collections: [ArtCollection] { catalog?.collections ?? [] }
 
     public var works: [ArtWork] {
         guard let catalog else { return [] }
@@ -35,7 +23,7 @@ extension ShareModel {
     public var selectedWork: ArtWork? {
         guard let catalog else { return nil }
         if let selectedWorkID, let work = catalog.work(id: selectedWorkID) { return work }
-        return catalog.collection(id: preferredCollectionID).flatMap(catalog.leadWork(of:))
+        return catalog.collection(id: Self.defaultCollection).flatMap(catalog.leadWork(of:))
             ?? catalog.works.first
     }
 
@@ -62,12 +50,5 @@ extension ShareModel {
 
     public func show(_ collection: ArtCollection.ID) {
         collectionID = collection
-    }
-
-    private var preferredCollectionID: ArtCollection.ID {
-        let ids = catalog?.collections.map(\.id) ?? []
-        if ids.contains(Self.neutralCollection) { return Self.neutralCollection }
-        if let chosen = lens?.artCollection, ids.contains(chosen) { return chosen }
-        return ids.first ?? Self.neutralCollection
     }
 }

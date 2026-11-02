@@ -24,8 +24,25 @@ public struct WeightMethodButton: View {
             .accessibilityHint(Text("Explains how repercussion and impact are calculated"))
             .sheet(isPresented: $isPresented) {
                 WeightMethodSheet(method: method)
+                    .methodSheetStyle()
             }
         }
+    }
+}
+
+struct MethodSheetStyle: ViewModifier {
+    @Environment(\.appTint) private var tint
+
+    func body(content: Content) -> some View {
+        content
+            .foregroundStyle(Color.primary)
+            .tint(tint)
+    }
+}
+
+extension View {
+    func methodSheetStyle() -> some View {
+        modifier(MethodSheetStyle())
     }
 }
 
@@ -115,7 +132,7 @@ public struct WeightMethodSheet: View {
             ) {
                 EmptyView()
             } content: {
-                WeightFormulaCard(method: method)
+                WeightScroll { WeightFormulaCard(method: method) }
             }
         case 1:
             GuidePage(

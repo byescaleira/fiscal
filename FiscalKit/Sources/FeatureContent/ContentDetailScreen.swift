@@ -12,7 +12,7 @@ public struct ContentDetailScreen: View {
 
     public var body: some View {
         PublicDataContent(
-            phase: model.phase, isEmpty: model.isEmpty, retry: { await model.load() }
+            phase: model.phase, isEmpty: model.isEmpty, retry: model.load
         ) {
             if let content = model.content {
                 ContentDetailPage(content: content)

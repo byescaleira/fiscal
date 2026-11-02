@@ -45,9 +45,9 @@ private struct HouseCard: View {
         VStack(alignment: .leading, spacing: 0) {
             HouseHeader(day: house.day)
                 .padding(.spaceL)
-            ForEach(today.shownItems(house)) { item in
+            ForEach(Array(today.shownItems(house).enumerated()), id: \.offset) { _, agenda in
                 Divider().padding(.leading, .spaceL)
-                AgendaRow(item: item)
+                AgendaRow(agenda: agenda)
             }
             if let more = today.moreOnAgendaText(house) {
                 Divider().padding(.leading, .spaceL)
@@ -118,10 +118,9 @@ private struct SessionStatus: View {
 }
 
 private struct AgendaRow: View {
-    let item: LensOrdered<AgendaItem>
+    let agenda: AgendaItem
 
     var body: some View {
-        let agenda = item.value
         VStack(alignment: .leading, spacing: .space2XS) {
             AdaptiveStack(alignment: .firstTextBaseline, spacing: .spaceS) {
                 Text(verbatim: agenda.proposition)
@@ -138,7 +137,6 @@ private struct AgendaRow: View {
                 .fixedSize(horizontal: false, vertical: true)
             HStack(spacing: .spaceM) {
                 ForEach(agenda.themes.prefix(2), id: \.self) { ThemeTag(theme: $0) }
-                if item.isLensPick { LensPickMark() }
             }
             .padding(.top, .space2XS)
         }

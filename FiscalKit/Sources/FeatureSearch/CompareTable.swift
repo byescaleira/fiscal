@@ -49,13 +49,12 @@ public struct CompareTable: Equatable, Sendable {
         public let title: String
         public let metrics: [Metric]
         public let missing: [String]
-        public let isLensOrdered: Bool
     }
 
     public let columns: [Column]
     public let groups: [Group]
 
-    public init(profiles: [Profile], lens: Lens? = nil) {
+    public init(profiles: [Profile]) {
         var seen: [String: Int] = [:]
         columns = profiles.map { profile in
             let key = profile.party.searchFolded
@@ -73,7 +72,7 @@ public struct CompareTable: Equatable, Sendable {
         }
         groups = [
             Self.office(profiles), Self.money(profiles), Self.election(profiles),
-            Self.themes(profiles, lens: lens),
+            Self.themes(profiles),
         ].filter { !$0.metrics.isEmpty || !$0.missing.isEmpty }
     }
 
@@ -131,20 +130,17 @@ public struct CompareTable: Equatable, Sendable {
             ])
     }
 
-    private static func themes(_ profiles: [Profile], lens: Lens?) -> Group {
+    private static func themes(_ profiles: [Profile]) -> Group {
         let present = Theme.allCases.filter { theme in
             profiles.contains { $0.themes.contains { $0.key == theme } }
         }
-        let chosen = lens?.themes ?? []
-        let ordered = chosen.filter(present.contains) + present.filter { !chosen.contains($0) }
         return Group(
             id: "themes", title: String(appLocalized: "Proposals by topic"),
-            metrics: ordered.map { theme in
+            metrics: present.map { theme in
                 count("theme-\(theme.rawValue)", theme.title, profiles) { profile in
                     profile.themes.first { $0.key == theme }?.proposals
                 }
-            },
-            isLensOrdered: !chosen.isEmpty)
+            })
     }
 
     private static func count(
@@ -179,14 +175,11 @@ public struct CompareTable: Equatable, Sendable {
 }
 
 extension CompareTable.Group {
-    init(
-        id: String, title: String, metrics: [CompareTable.Metric], isLensOrdered: Bool = false
-    ) {
+    init(id: String, title: String, metrics: [CompareTable.Metric]) {
         let published = metrics.filter { $0.values.contains { $0.fraction != nil } }
         self.init(
             id: id, title: title, metrics: published,
-            missing: metrics.filter { !published.contains($0) }.map(\.title),
-            isLensOrdered: isLensOrdered && !published.isEmpty)
+            missing: metrics.filter { !published.contains($0) }.map(\.title))
     }
 }
 

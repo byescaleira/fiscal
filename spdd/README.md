@@ -22,7 +22,7 @@ No shell, ponha esses caminhos entre aspas: o zsh trata `[...]` como padrão de 
 | --- | --- | --- | --- | --- |
 | `FSC-001` | [Apuração ao vivo e Atividade ao Vivo da disputa](prompt/FSC-001-202610291700-[Codify]-live-results.md) | entregue | `feature/spdd-migration` | [#5](https://github.com/byescaleira/fiscal/pull/5) |
 | `FSC-002` | [Dados públicos: arquivos, CDN, cache, erros, pacote offline e carga](prompt/FSC-002-202610291700-[Codify]-public-data-api.md) | entregue | `feature/spdd-migration` | [#5](https://github.com/byescaleira/fiscal/pull/5) |
-| `FSC-003` | [Lente: quem você apoia, temas e visual, só no aparelho](prompt/FSC-003-202610291700-[Codify]-lens.md) | entregue | `feature/spdd-migration` | [#5](https://github.com/byescaleira/fiscal/pull/5) |
+| `FSC-003` | [Lente: quem você apoia, temas e visual, só no aparelho](prompt/FSC-003-202610291700-[Codify]-lens.md) | substituído pela `FSC-012` | `feature/spdd-migration` | [#5](https://github.com/byescaleira/fiscal/pull/5) |
 | `FSC-004` | [Credibilidade: fonte, "—", colegas, peso, "Estimado" e explicações](prompt/FSC-004-202610291700-[Codify]-credibility.md) | entregue | `feature/spdd-migration` | [#5](https://github.com/byescaleira/fiscal/pull/5) |
 | `FSC-005` | [Cartazes de compartilhar, acervo de arte e créditos](prompt/FSC-005-202610291700-[Codify]-share-cards-and-art.md) | entregue | `feature/spdd-migration` | [#5](https://github.com/byescaleira/fiscal/pull/5) |
 | `FSC-006` | [Checagens do Projeto Comprova](prompt/FSC-006-202610291700-[Codify]-fact-checks.md) | entregue | `feature/spdd-migration` | [#5](https://github.com/byescaleira/fiscal/pull/5) |
@@ -30,8 +30,8 @@ No shell, ponha esses caminhos entre aspas: o zsh trata `[...]` como padrão de 
 | `FSC-008` | [Fiscal no padrão atual do workspace: dobrável, Mac, visionOS e ferramentas](prompt/FSC-008-202610311530-[Feat]-shell-fold-mac-vision-developer.md) | entregue | `feature/platform-alignment` | [#6](https://github.com/byescaleira/fiscal/pull/6) |
 | `FSC-009` | [Seguir no centro do Fiscal: aba Seguindo](prompt/FSC-009-202610312200-[Feat]-following-tab-and-follow-everywhere.md) | entregue | `feature/following-core` | [#7](https://github.com/byescaleira/fiscal/pull/7) |
 | `FSC-010` | [Compartilhar como fluxo completo, por rede social](prompt/FSC-010-202610312345-[Feat]-share-flow-by-network.md) | entregue | `feature/share-flow` | [#8](https://github.com/byescaleira/fiscal/pull/8) |
-| `FSC-011` | [Refinos: conteúdo com tela própria, links dentro do app, Quem governa e gráficos](prompt/FSC-011-202611011855-[Feat]-navigation-links-charts-refinements.md) | em revisão | `feature/app-refinements` | [#9](https://github.com/byescaleira/fiscal/pull/9) |
-| `FSC-012` | [Fim da Lente e o novo apoio](analysis/FSC-011-202611011850-[Analysis]-feed-profile-and-end-of-lens.md) | rascunho | — | — |
+| `FSC-011` | [Refinos: conteúdo com tela própria, links dentro do app, Quem governa e gráficos](prompt/FSC-011-202611011855-[Feat]-navigation-links-charts-refinements.md) | entregue | `feature/app-refinements` | [#9](https://github.com/byescaleira/fiscal/pull/9) |
+| `FSC-012` | [Fim da Lente e a página "Meu apoio"](prompt/FSC-012-202611012040-[Feat]-end-of-lens-my-support.md) | em revisão | `feature/end-of-lens` | [#10](https://github.com/byescaleira/fiscal/pull/10) |
 | `FSC-013` | [Aba Feed e abas reorganizadas](analysis/FSC-011-202611011850-[Analysis]-feed-profile-and-end-of-lens.md) | rascunho | — | — |
 | `FSC-014` | [Nova página do político e compartilhar um item](analysis/FSC-011-202611011850-[Analysis]-feed-profile-and-end-of-lens.md) | rascunho | — | — |
 

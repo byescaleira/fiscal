@@ -1,6 +1,5 @@
 import FeatureContent
 import FeatureCore
-import FeatureLens
 import FeatureLiveResults
 import FeatureMemory
 import FeatureMine
@@ -9,6 +8,7 @@ import FeatureProfile
 import FeatureSearch
 import FeatureSettings
 import FeatureShare
+import FeatureSupport
 import FeatureVotes
 import FiscalDesignSystem
 import FiscalDomain
@@ -24,15 +24,14 @@ struct RouteScreen: View {
         case .person(let slug):
             ModelHost(
                 ProfileModel(
-                    slug: slug, service: data, follows: session.repositories.follows,
-                    lens: session.repositories.lens)
+                    slug: slug, service: data, follows: session.repositories.follows)
             ) {
                 ProfileScreen()
             }
         case .vote(let id):
             ModelHost(
                 VoteDetailModel(
-                    id: id, service: data, lens: session.repositories.lens,
+                    id: id, service: data, support: session.repositories.support,
                     homeUF: HomePlace.chosenUF(in: .standard))
             ) {
                 VoteDetailScreen()
@@ -46,7 +45,7 @@ struct RouteScreen: View {
         case .roster(let title, let people):
             MineRosterScreen(roster: MineRoster(title: title, people: people))
         case .spenders(let title, let spenders, let year):
-            ModelHost(MoneyModel(service: data, lens: session.repositories.lens)) {
+            ModelHost(MoneyModel(service: data)) {
                 MoneySpendersDestination(title: title, spenders: spenders, year: year)
             }
         case .awaiting:
@@ -68,11 +67,10 @@ struct RouteScreen: View {
         case .period(let id): ModelHost(PeriodModel(id: id, service: data)) { PeriodScreen() }
         case .studyGuide(let id):
             ModelHost(StudyGuideModel(id: id, service: data)) { StudyGuideScreen() }
-        case .lens: LensDestination()
         case .artists: ArtistsDestination()
         case .settings:
             SettingsScreen(service: data) {
-                LensDestination()
+                SupportDestination()
             } artists: {
                 ArtistsDestination()
             }
@@ -81,10 +79,11 @@ struct RouteScreen: View {
                 ShareModel(
                     subject: subject, service: data,
                     races: FiscalServices.shared.liveResultsService(),
-                    lens: session.repositories.lens, follows: session.repositories.follows)
+                    follows: session.repositories.follows)
             ) {
                 ShareScreen()
             }
+        case .support: SupportDestination()
         case .content(let content):
             ModelHost(ContentDetailModel(content: content)) { ContentDetailScreen() }
         case .highlight(let id):
@@ -93,17 +92,16 @@ struct RouteScreen: View {
     }
 }
 
-private struct LensDestination: View {
-    @Environment(LensContext.self) private var lens
+private struct SupportDestination: View {
+    @Environment(SupportContext.self) private var support
     @Environment(SessionModel.self) private var session
 
     var body: some View {
+        let data = FiscalServices.shared.publicData()
         ModelHost(
-            LensModel(
-                context: lens, service: FiscalServices.shared.publicData(),
-                icons: SystemAppIconSwitcher(), follows: session.repositories.follows)
+            SupportModel(context: support, service: data, follows: session.repositories.follows)
         ) {
-            LensScreen()
+            SupportScreen(service: data, follows: session.repositories.follows)
         }
     }
 }
@@ -130,9 +128,7 @@ private struct AwaitingDestination: View {
 }
 
 private struct ArtistsDestination: View {
-    @Environment(SessionModel.self) private var session
-
     var body: some View {
-        ModelHost(ArtistsModel(lens: session.repositories.lens)) { ArtistsScreen() }
+        ModelHost(ArtistsModel()) { ArtistsScreen() }
     }
 }

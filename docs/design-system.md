@@ -9,7 +9,7 @@ O `FiscalDesignSystem` guarda só o que é do Fiscal:
 | Partidos | `PartyPalette`, `PartyMark`, `PartyBackdrop` |
 | Placar e votos | `ScoreboardFigure`, `TallyBar`, `TallyChart`, `Color+Vote`, `Font.scoreboardNumber`, `Color.scoreboard`, `Color.scoreboardAccent` |
 | Retratos | `PersonPortrait`, `PortraitArtwork`, `.portraitAnimated` (72; só retratos a partir daqui animam) |
-| Lente e compartilhar | `LensPaletteSwatch`, `LensLookTokens`, `Share*Tokens`, `InvestigationTokens`, `ArtSize` |
+| Compartilhar | `Share*Tokens`, `InvestigationTokens`, `ArtSize` |
 | Telas | `MoneyChartTokens`, `MoneyPlaceTokens`, `RegionTokens`, `SettingsTokens`, `ChartSize`, `Size+Columns`, `Typography+Widgets`, `.railTitleMargin` |
 | Comemoração | `CelebrationBurst`, `CelebrationConfetti` |
 

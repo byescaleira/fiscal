@@ -24,7 +24,7 @@ public enum FiscalEvents: Hashable, Sendable {
         case election
         case period
         case study
-        case lens
+        case support
         case artists
         case settings
         case unknown

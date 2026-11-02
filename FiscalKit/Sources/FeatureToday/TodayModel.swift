@@ -7,7 +7,7 @@ import Observation
 public final class TodayModel {
     public struct HouseAgenda: Hashable, Identifiable {
         public let day: Agenda.HouseDay
-        public let items: [LensOrdered<AgendaItem>]
+        public let items: [AgendaItem]
 
         public var id: House { day.house }
     }
@@ -22,11 +22,8 @@ public final class TodayModel {
     public private(set) var races: [Race] = []
     public private(set) var racesOffline = false
     public private(set) var followedCount = 0
-    public private(set) var lens: Lens?
-    public private(set) var hasCheckedLens = false
     public private(set) var phase: PublicDataPhase = .idle
     @ObservationIgnored private let service: (any PublicDataService)?
-    @ObservationIgnored private let lensRepository: (any LensRepository)?
     @ObservationIgnored private let raceService: (any LiveResultsService)?
     @ObservationIgnored private let follows: (any FollowRepository)?
     @ObservationIgnored private let raceInterval: Duration
@@ -34,32 +31,26 @@ public final class TodayModel {
     @ObservationIgnored let now: @Sendable () -> Date
 
     public init(
-        service: (any PublicDataService)?, lens: (any LensRepository)? = nil,
-        races: (any LiveResultsService)? = nil, follows: (any FollowRepository)? = nil,
+        service: (any PublicDataService)?, races: (any LiveResultsService)? = nil,
+        follows: (any FollowRepository)? = nil,
         raceInterval: Duration = .seconds(20), now: @escaping @Sendable () -> Date = { .now }
     ) {
         self.service = service
-        lensRepository = lens
         raceService = races
         self.follows = follows
         self.raceInterval = raceInterval
         self.now = now
     }
 
-    public var mode: TodayBriefing.Mode { TodayBriefing.mode(for: lens) }
+    public var events: [TodayDigest.Event] { digest?.events ?? [] }
 
-    public var showsLensBadge: Bool { lens?.hasChoice == true }
-
-    public var events: [TodayDigest.Event] { ordered(digest?.events ?? []).map(\.value) }
-
-    public var briefing: [LensOrdered<TodayDigest.Event>] {
-        let events = (digest?.events ?? []).filter { liveBoard == nil || $0.kind != .race }
-        return ordered(events)
+    public var briefing: [TodayDigest.Event] {
+        TodayBriefing.events(events, hidesRaces: liveBoard != nil)
     }
 
-    public var lead: LensOrdered<TodayDigest.Event>? { briefing.first }
+    public var lead: TodayDigest.Event? { briefing.first }
 
-    public var others: [LensOrdered<TodayDigest.Event>] { Array(briefing.dropFirst()) }
+    public var others: [TodayDigest.Event] { Array(briefing.dropFirst()) }
 
     public var isEmpty: Bool { digest?.events.isEmpty ?? true }
 
@@ -95,14 +86,11 @@ public final class TodayModel {
     }
 
     public var houses: [HouseAgenda] {
-        (agenda?.houses ?? []).map { day in
-            HouseAgenda(
-                day: day, items: TodayBriefing.order(day.items, mode: mode, themes: \.themes))
-        }
+        (agenda?.houses ?? []).map { HouseAgenda(day: $0, items: $0.items) }
     }
 
     public var recent: [VoteSummary] {
-        let featured = lead.flatMap { leadVote(for: $0.value) }?.id
+        let featured = lead.flatMap(leadVote(for:))?.id
         return Array(recentVotes.filter { $0.id != featured }.prefix(Self.recentLimit))
     }
 
@@ -118,8 +106,6 @@ public final class TodayModel {
 
     public func load() async {
         if digest == nil { phase = .loading }
-        lens = try? await lensRepository?.lens()
-        hasCheckedLens = true
         async let people = loadFollowedCount()
         async let liveRaces: Void = refreshRaces()
         phase = await PublicDataPhase.settle(after: phase, in: requests) {
@@ -158,10 +144,6 @@ public final class TodayModel {
             guard !Task.isCancelled else { return }
             await refreshRaces()
         }
-    }
-
-    private func ordered(_ events: [TodayDigest.Event]) -> [LensOrdered<TodayDigest.Event>] {
-        TodayBriefing.order(events, mode: mode, themes: \.themes)
     }
 
     private func loadFollowedCount() async -> Int {

@@ -77,18 +77,10 @@ private struct CompareGroupSection: View {
                 CompareMetricRow(metric: metric, columns: columns)
             }
         } header: {
-            VStack(alignment: .leading, spacing: .spaceXS) {
-                Text(verbatim: group.title).sectionTitle()
-                if group.isLensOrdered, compare.showsLensBadge {
-                    LensBadge()
-                }
-            }
-            .textCase(nil)
+            Text(verbatim: group.title).sectionTitle()
+                .textCase(nil)
         } footer: {
             VStack(alignment: .leading, spacing: .space2XS) {
-                if group.isLensOrdered {
-                    Text("Your topics come first. The numbers are the same for everyone.")
-                }
                 if group.id == "themes" {
                     Text(
                         "Estimated: each proposal's topic comes from keywords in its official summary and can miss."

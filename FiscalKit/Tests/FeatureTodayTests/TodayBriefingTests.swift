@@ -4,32 +4,20 @@ import Testing
 @testable import FeatureToday
 
 struct TodayBriefingTests {
-    private let topics: [[Theme]] = [
-        [.taxes], [.environment], [.education], [.security], [.social], [.tributes],
-    ]
-
-    @Test func withoutALensTheOrderIsTheDataOrder() {
-        let ordered = TodayBriefing.order(topics, mode: .plain, themes: { $0 })
-        #expect(ordered.map(\.offset) == [0, 1, 2, 3, 4, 5])
-        #expect(ordered.allSatisfy { !$0.isLensPick })
+    private func event(_ kind: TodayDigest.Event.Kind, _ title: String) -> TodayDigest.Event {
+        TodayDigest.Event(kind: kind, title: title, summary: "", themes: [], ref: nil)
     }
 
-    @Test func chosenTopicsComeFirstAndOnlyPromotedItemsAreMarked() {
-        let ordered = TodayBriefing.order(
-            topics, mode: .themes([.education, .taxes]), themes: { $0 })
-        #expect(ordered.map(\.offset) == [2, 0, 1, 3, 4, 5])
-        #expect(ordered.map(\.isLensPick) == [true, false, false, false, false, false])
-        #expect(ordered.count == topics.count)
+    @Test func theOrderIsTheDataOrder() {
+        let events = [event(.session, "a"), event(.race, "b"), event(.vote, "c"), event(.law, "d")]
+        #expect(TodayBriefing.events(events, hidesRaces: false) == events)
     }
 
-    @Test func theModeFollowsTheLens() {
-        #expect(TodayBriefing.mode(for: nil) == .plain)
-        #expect(TodayBriefing.mode(for: Lens(supported: ["lula"])) == .plain)
+    @Test func aLiveBoardOnlyTakesTheRaceOut() {
+        let events = [event(.session, "a"), event(.race, "b"), event(.vote, "c")]
         #expect(
-            TodayBriefing.mode(for: Lens(themes: [.health], supported: ["lula"]))
-                == .themes([.health]))
-        #expect(
-            TodayBriefing.mode(for: Lens(themes: [.health], prefersNotToSay: true))
-                == .themes([.health]))
+            TodayBriefing.events(events, hidesRaces: true) == [
+                event(.session, "a"), event(.vote, "c"),
+            ])
     }
 }

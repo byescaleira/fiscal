@@ -25,19 +25,19 @@ fiscal/
 | Target | Responsabilidade | Depende de |
 | --- | --- | --- |
 | `FiscalDomain` | Valores (`CalendarDay`; `YearMonth`, `GregorianCalendar` e o idioma vêm do `ByescaleiraFoundation`, reexportado, com o pt-BR fixado por `FiscalLanguage.install()`), protocolos de repositório (`LensRepository`, `FollowRepository`), `FiscalError`, `RemoteFlag`; em `PublicData/`, os tipos dos [dados públicos](specs/public-data-api.md) (`PersonCard`, `Profile`, `VoteSummary`, `VoteDetail`, `MoneyOverview`, `TodayDigest`…), `Theme`, `Lens`, `PublicDataService`, `PublicDataError` e `PublicFormat` (centavos em reais, "—" para dado ausente); em `LiveResults/`, `Race` e a Atividade ao Vivo; em `Integrations/`, o que widgets e intents compartilham | `ByescaleiraFoundation` |
-| `FiscalData` | `FiscalDatabase` (SwiftData em duas configurações: `Fiscal` com CloudKit `iCloud.fiscal` para os seguidos e as investigações e `Device`, só no aparelho, para a Lente; [ADR 0004](adr/0004-lens-on-device-store.md)), `FiscalStore` (`@ModelActor`), entidades `@Model`, schema versionado, repositórios, `CloudKitFlagSource`; em `PublicData/`, o `PublicDataClient`, o `PublicDataLayout` (`v2`), o pacote offline e, em Debug, o `ShowcasePublicData` com `-FiscalDataScenario normal\|empty\|offline\|longNames\|unavailable`; em `LiveResults/`, o `LiveResultsClient` e o `AppAttestor` | Domain |
-| `FiscalDesignSystem` | Reexporta `ByescaleiraDesign`, `ByescaleiraCharts`, `ByescaleiraAccessibility` e `ByescaleiraPlatform` e guarda só o que é do Fiscal: partidos, placar, retratos, paletas da Lente e tokens dos cartazes | byescaleira-kit |
+| `FiscalData` | `FiscalDatabase` (SwiftData em duas configurações: `Fiscal` com CloudKit `iCloud.fiscal` para os seguidos e as investigações e `Device`, só no aparelho, para o apoio; [ADR 0004](adr/0004-lens-on-device-store.md)), `FiscalStore` (`@ModelActor`), entidades `@Model`, schema versionado, repositórios, `CloudKitFlagSource`; em `PublicData/`, o `PublicDataClient`, o `PublicDataLayout` (`v2`), o pacote offline e, em Debug, o `ShowcasePublicData` com `-FiscalDataScenario normal\|empty\|offline\|longNames\|unavailable`; em `LiveResults/`, o `LiveResultsClient` e o `AppAttestor` | Domain |
+| `FiscalDesignSystem` | Reexporta `ByescaleiraDesign`, `ByescaleiraCharts`, `ByescaleiraAccessibility` e `ByescaleiraPlatform` e guarda só o que é do Fiscal: partidos, placar, retratos e tokens dos cartazes | byescaleira-kit |
 | `FiscalResource` | Animações Lottie (`FiscalResourceAnimation`), acervo de arte (`art-credits.json`, `Art.xcassets`), mapas do Brasil, molde e traços dos retratos, selo de partido e os dados de teste do showcase | nada |
 | `FeatureCore` | `SessionModel`, navegação (`Route`, `AppSection`, `FiscalNavigation`, `\.open`, `\.close`), `FeatureFlag`/`FeatureFlags`, atualização obrigatória, exportação, explicações no aparelho (`Explain/`), componentes de dados públicos (`SourceFootnote`, `PeerBadge`, `PublicDataContent`), retratos e `FiscalAnimationView`; reexporta o `ByescaleiraUI` | Domain, DesignSystem, Resource, `ByescaleiraUI`, Lottie |
 | `FeatureGuides` | `GuideScreen` e páginas dos tutoriais | Domain, DesignSystem, FeatureCore |
-| `FeatureToday` | Aba Hoje: destaque do momento, resumo do Congresso, votações recentes, card da apuração e os botões da Lente e de Ajustes ([ADR 0014](adr/0014-settings-in-today-toolbar.md)) | Domain, DesignSystem, FeatureCore |
+| `FeatureToday` | Aba Hoje: destaque do momento, resumo do Congresso, votações recentes, card da apuração e os botões de "Meu apoio" e de Ajustes ([ADR 0014](adr/0014-settings-in-today-toolbar.md)) | Domain, DesignSystem, FeatureCore |
 | `FeatureMine` | Aba Região: lugar de casa, quem governa a cidade, o estado e o país, bancadas e seguidos | Domain, DesignSystem, FeatureCore |
 | `FeatureProfile` | Perfil (`Route.person(slug:)`), aberto por qualquer aba | Domain, DesignSystem, FeatureCore |
 | `FeatureVotes` | Aba Votações: recentes, pauta do dia e detalhe (`Route.vote(id:)`) | Domain, DesignSystem, FeatureCore |
 | `FeatureMoney` | Aba Dinheiro e recibos (`Route.expenses`) | Domain, DesignSystem, FeatureCore |
 | `FeatureSearch` | Aba Fiscalizar (`Tab(role: .search)`): busca no índice, Comparar (`Route.compare(slugs:)`), Eleições e investigações | Domain, DesignSystem, FeatureCore |
 | `FeatureMemory` | Memória, em Fiscalizar: eleições desde 1989, períodos da política e guias de estudo (`Route.memory`, `pastElection`, `period`, `studyGuide`) | Domain, DesignSystem, FeatureCore |
-| `FeatureLens` | Lente (`Route.lens`): setup, edição, aparência e "Outra lente" ([`FSC-003`](../spdd/prompt/FSC-003-202610291700-[Codify]-lens.md)) | Domain, DesignSystem, Resource, FeatureCore |
+| `FeatureSupport` | "Meu apoio" (`Route.support`): linha do tempo por data, filtros, editor de pessoas e causas e apagar ([`FSC-012`](../spdd/prompt/FSC-012-202611012040-[Feat]-end-of-lens-my-support.md)) | Domain, DesignSystem, Resource, FeatureCore |
 | `FeatureShare` | Cartazes de compartilhar e galeria de artistas (`Route.artists`) ([`FSC-005`](../spdd/prompt/FSC-005-202610291700-[Codify]-share-cards-and-art.md)) | Domain, DesignSystem, Resource, FeatureCore |
 | `FeatureLiveResults` | Apuração (`Route.races`) e as Atividades ao Vivo da disputa e do destaque ([`FSC-001`](../spdd/prompt/FSC-001-202610291700-[Codify]-live-results.md), [`FSC-007`](../spdd/prompt/FSC-007-202610291700-[Codify]-notifications.md)) | Domain, DesignSystem, FeatureCore |
 | `FeatureSettings` | Ajustes: Seu Fiscal, Aparência, Seus dados e privacidade, Fontes e método, Sobre e Desenvolvedor | Domain, DesignSystem, Resource, FeatureCore |
@@ -72,7 +72,7 @@ TSE ao vivo ─▶ fiscal-api (apuração, App Attest, registros) ─▶ APNs �
 | `fiscal://compare?slugs=<a>,<b>` | Comparar, em Fiscalizar |
 | `fiscal://races` | Apuração, em Fiscalizar |
 | `fiscal://memory`, `election/<ano>`, `period/<id>`, `study/<id>` | Memória, em Fiscalizar |
-| `fiscal://lens`, `fiscal://artists` | Lente e artistas, em Hoje |
+| `fiscal://support` (e o antigo `fiscal://lens`), `fiscal://artists` | "Meu apoio" e artistas, em Hoje |
 | `fiscal://settings` | Ajustes, em Hoje |
 
 Link com host desconhecido abre Hoje.

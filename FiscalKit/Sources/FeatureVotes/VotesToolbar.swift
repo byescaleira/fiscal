@@ -13,7 +13,7 @@ struct VotesToolbar: ToolbarContent {
         }
         FixedToolbarSpacer(placement: .primaryAction)
         ToolbarItem(placement: .primaryAction) {
-            Button("Who You Support", systemImage: "heart") { open(.lens, in: section) }
+            Button("My Support", systemImage: "heart") { open(.support, in: section) }
                 .tint(Color.primary)
         }
     }
@@ -60,20 +60,7 @@ private struct VotesTopicPicker: View {
         @Bindable var votes = votes
         Picker(selection: $votes.theme) {
             Label("All Topics", systemImage: "square.grid.2x2").tag(Theme?.none)
-            if votes.lensThemeChoices.isEmpty {
-                ForEach(votes.otherThemeChoices) { TopicOption(theme: $0).tag(Theme?.some($0)) }
-            } else {
-                Section("In Your Topics") {
-                    ForEach(votes.lensThemeChoices) { TopicOption(theme: $0).tag(Theme?.some($0)) }
-                }
-                if !votes.otherThemeChoices.isEmpty {
-                    Section("Other Topics") {
-                        ForEach(votes.otherThemeChoices) {
-                            TopicOption(theme: $0).tag(Theme?.some($0))
-                        }
-                    }
-                }
-            }
+            ForEach(votes.themeChoices) { TopicOption(theme: $0).tag(Theme?.some($0)) }
         } label: {
             Label("Topic", systemImage: "tag")
         }

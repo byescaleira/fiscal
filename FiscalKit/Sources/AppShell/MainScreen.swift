@@ -1,6 +1,5 @@
 import FeatureCore
 import FeatureGuides
-import FeatureLens
 import FiscalDesignSystem
 import FiscalDomain
 import SwiftUI
@@ -63,8 +62,6 @@ public struct MainScreen: View {
             }
             .modifier(DeepLinks())
             .modifier(UpdateRecommendation())
-            .lensExperience(isReady: launch.isDismissed)
-            .modifier(LensSetupCover())
             .modifier(SystemIntegrations())
             .environment(OfflineDataCenter.shared.model)
             .task(id: launch.isDismissed) {
@@ -124,28 +121,5 @@ private struct FollowSync: ViewModifier {
         content
             .task(id: session.generation) { await follow.reload() }
             .errorAlert($follow.error)
-    }
-}
-
-private struct LensSetupCover: ViewModifier {
-    @Environment(FiscalNavigation.self) private var navigation
-    @Environment(SessionModel.self) private var session
-
-    func body(content: Content) -> some View {
-        @Bindable var navigation = navigation
-        #if os(macOS)
-            content.sheet(isPresented: $navigation.isShowingLensSetup) {
-                flow
-                    .frame(minWidth: .readableColumn, minHeight: .readableColumn)
-                    .interactiveDismissDisabled()
-            }
-        #else
-            content.fullScreenCover(isPresented: $navigation.isShowingLensSetup) { flow }
-        #endif
-    }
-
-    private var flow: some View {
-        LensSetupFlow(
-            service: FiscalServices.shared.publicData(), follows: session.repositories.follows)
     }
 }

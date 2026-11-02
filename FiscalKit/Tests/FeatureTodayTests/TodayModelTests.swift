@@ -12,13 +12,12 @@ struct TodayModelTests {
     private let afterTheResult = Date(timeIntervalSince1970: 1_792_963_200)
 
     private func model(
-        _ scenario: PublicDataScenario = .normal, lens: Lens? = nil,
-        races: RaceScenario? = nil, follows: PublicDataScenario? = nil, clock: Date? = nil
+        _ scenario: PublicDataScenario = .normal, races: RaceScenario? = nil,
+        follows: PublicDataScenario? = nil, clock: Date? = nil
     ) -> TodayModel {
         let today = clock ?? now
         return TodayModel(
             service: ShowcasePublicData(scenario: scenario, now: now),
-            lens: ShowcaseLensRepository(lens: lens),
             races: races.map(ShowcaseLiveResults.init(scenario:)),
             follows: follows.map { ShowcaseFollowRepository(scenario: $0, now: now) },
             raceInterval: .milliseconds(1), now: { today })
@@ -37,56 +36,27 @@ struct TodayModelTests {
         #expect(model.recentSource != nil)
     }
 
-    @Test func theLensOrdersTheDayWithoutHidingAnything() async throws {
-        let repositories = try FiscalDatabase.open(inMemory: true).repositories
-        try await repositories.lens.save(Lens(themes: [.education, .politics, .health]))
-        let model = TodayModel(
-            service: ShowcasePublicData(scenario: .normal, now: now), lens: repositories.lens)
+    @Test func theDayKeepsTheOrderOfTheData() async throws {
+        let service = ShowcasePublicData(scenario: .normal, now: now)
+        let digest = try await service.today()
+        let highlights = try await service.highlights()
+        let model = TodayModel(service: service)
         await model.load()
-        let kinds = model.events.map(\.kind)
-        #expect(kinds == [.session, .race, .vote, .vote])
-        #expect(model.lens?.themes.first == .education)
-        #expect(model.briefing.first?.isLensPick == true)
-        #expect(model.briefing.count == 4)
-    }
-
-    @Test func eachSupportSeesItsTopicsFirstButTheSameFacts() async {
-        let first = model(lens: Lens(themes: [.taxes, .security, .economy], supported: ["lula"]))
-        let second = model(
-            lens: Lens(themes: [.rights, .social, .health], supported: ["tabata-amaral"]))
-        await first.load()
-        await second.load()
-        #expect(first.showsLensBadge)
-        #expect(Set(first.events) == Set(second.events))
-        #expect(first.recentVotes == second.recentVotes)
-    }
-
-    @Test func preferNotToSayShowsTheBadgeWithNeutralTopics() async {
-        let model = model(lens: Lens.suggested(prefersNotToSay: true))
-        await model.load()
-        #expect(model.mode == .themes(Array(Theme.neutralOrder.prefix(Lens.themeRange.upperBound))))
-        #expect(model.showsLensBadge)
-        #expect(model.lensLine != nil)
-    }
-
-    @Test func withoutALensTheInviteShowsAndNothingIsMarked() async {
-        let model = model()
-        await model.load()
-        #expect(model.hasCheckedLens)
-        #expect(model.lens == nil)
-        #expect(!model.showsLensBadge)
-        #expect(model.briefing.allSatisfy { !$0.isLensPick })
+        #expect(model.events == digest.events)
+        #expect(model.briefing == digest.events)
+        #expect(model.lead == digest.events.first)
+        #expect(model.orderedHighlights == highlights?.items ?? [])
     }
 
     @Test func theLeadVoteIsNotRepeatedInRecentVotes() async throws {
         let model = model()
         await model.load()
         let lead = try #require(model.lead)
-        let vote = try #require(model.leadVote(for: lead.value))
+        let vote = try #require(model.leadVote(for: lead))
         #expect(!model.recent.contains(vote))
         #expect(model.recent.count == TodayModel.recentLimit)
-        #expect(model.route(for: lead.value) == .vote(id: vote.id))
-        #expect(model.shareSubject(for: lead.value) == .vote(id: vote.id))
+        #expect(model.route(for: lead) == .vote(id: vote.id))
+        #expect(model.shareSubject(for: lead) == .vote(id: vote.id))
     }
 
     @Test func aLiveRaceTakesTheCardAndLeavesTheSummary() async {
@@ -94,7 +64,7 @@ struct TodayModelTests {
         await model.load()
         #expect(model.liveBoard?.race.id == "presidente-br")
         #expect(model.liveBoard?.others == 6)
-        #expect(!model.briefing.contains { $0.value.kind == .race })
+        #expect(!model.briefing.contains { $0.kind == .race })
         #expect(model.events.contains { $0.kind == .race })
     }
 
@@ -103,7 +73,7 @@ struct TodayModelTests {
             races: .finished, clock: afterTheResult.addingTimeInterval(TodayRaceBoard.winnerWindow))
         await finished.load()
         #expect(finished.liveBoard == nil)
-        #expect(finished.briefing.contains { $0.value.kind == .race })
+        #expect(finished.briefing.contains { $0.kind == .race })
         await finished.watchRaces()
         let quiet = model()
         await quiet.load()

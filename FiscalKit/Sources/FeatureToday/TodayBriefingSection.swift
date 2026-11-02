@@ -9,12 +9,13 @@ struct TodayBriefingSection: View {
     var body: some View {
         TodaySection("Summary of the Day", source: today.digestSource) {
             if let lead = today.lead {
-                TodayLeadCard(item: lead)
+                TodayLeadCard(event: lead)
                 if !today.others.isEmpty {
                     VStack(spacing: 0) {
-                        ForEach(today.others) { item in
-                            TodayEventRow(item: item)
-                            if item.id != today.others.last?.id {
+                        let others = today.others
+                        ForEach(Array(others.enumerated()), id: \.offset) { offset, event in
+                            TodayEventRow(event: event)
+                            if offset < others.count - 1 {
                                 Divider().padding(.leading, .badgeM + .spaceL + .spaceM)
                             }
                         }
@@ -32,10 +33,9 @@ private struct TodayLeadCard: View {
     @Environment(TodayModel.self) private var today
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
-    let item: LensOrdered<TodayDigest.Event>
+    let event: TodayDigest.Event
 
     var body: some View {
-        let event = item.value
         VStack(alignment: .leading, spacing: .spaceM) {
             HStack(alignment: .center, spacing: .spaceS) {
                 EventKicker(event: event)
@@ -49,7 +49,7 @@ private struct TodayLeadCard: View {
                     .font(.body.weight(.semibold))
                 }
             }
-            LeadContent(item: item)
+            LeadContent(event: event)
         }
         .padding(.spaceInset)
         .todayCard()
@@ -58,10 +58,9 @@ private struct TodayLeadCard: View {
 
 private struct LeadContent: View {
     @Environment(TodayModel.self) private var today
-    let item: LensOrdered<TodayDigest.Event>
+    let event: TodayDigest.Event
 
     var body: some View {
-        let event = item.value
         let route = today.route(for: event)
         RouteButton(route: route) {
             VStack(alignment: .leading, spacing: .spaceM) {
@@ -89,18 +88,15 @@ private struct LeadContent: View {
                     }
                     .accessibilityElement(children: .combine)
                 }
-                HStack(spacing: .spaceS) {
-                    if item.isLensPick { LensPickMark() }
-                    Spacer(minLength: 0)
-                    if route != nil {
-                        HStack(spacing: .space2XS) {
-                            Text("See details")
-                            Image(systemName: "chevron.forward")
-                                .accessibilityHidden(true)
-                        }
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.tint)
+                if route != nil {
+                    HStack(spacing: .space2XS) {
+                        Text("See details")
+                        Image(systemName: "chevron.forward")
+                            .accessibilityHidden(true)
                     }
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.tint)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
                 }
             }
         }
@@ -132,10 +128,9 @@ private struct TodayEventRow: View {
     @Environment(TodayModel.self) private var today
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
-    let item: LensOrdered<TodayDigest.Event>
+    let event: TodayDigest.Event
 
     var body: some View {
-        let event = item.value
         let route = today.route(for: event)
         RouteButton(route: route) {
             HStack(alignment: .top, spacing: .spaceM) {
@@ -149,7 +144,6 @@ private struct TodayEventRow: View {
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .lineLimit(3)
-                    if item.isLensPick { LensPickMark().padding(.top, .space2XS) }
                 }
                 Spacer(minLength: 0)
                 if route != nil {

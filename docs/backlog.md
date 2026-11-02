@@ -22,6 +22,8 @@ O que falta, por prioridade. Itens concluídos saem daqui; o motivo das decisõe
 
 - **[P2] Validar o esquema das URLs na publicação.** O servidor repassa o que as fontes mandam. A tela de conteúdo já recusa o que não é `http` ou `https`; os outros pontos do app e `server/internal/publicdata` ainda não. Precisa de deploy, com o ok do usuário.
 
+- **[P2] Arquivos auxiliares do banco do aparelho.** A exclusão do backup marca `-wal` e `-shm` só se já existirem na abertura, e o `groupContainer` do `Device.store` não foi conferido. Vale conferir com o app rodando, porque o apoio mora nesse banco.
+
 ## Depois da 1.0 ou sem data
 
 - **[P2] Mac: grade do painel.** Hoje e Dinheiro em `CardGrid` com cartões de tamanhos diferentes (herói em duas colunas, métricas pequenas); a lista de origem, as tabelas, o `GroupBox` e o menu Ir entraram na `FSC-008`.
@@ -70,13 +72,7 @@ Registradas na migração para o SPDD ([ADR 0019](adr/0019-spdd-process.md)), se
 
 ### Lente ([FSC-003](../spdd/prompt/FSC-003-202610291700-[Codify]-lens.md))
 
-- **[P1] "Outra lente" não reordena nada**: nenhum model lê `LensContext.preview`.
-- **[P2] Paleta, arte e ícone não mudam depois do setup**: `choose(_:)` e `setIcon(_:)` sem tela.
-- **[P2] Erro ao salvar não aparece no setup**, só na `LensScreen`.
-- **[P2] `ProgressView()` circular** no setup, nos temas, nos apoiados e na edição; trocar por barra (regra 5).
-- **[P2] Durações e escalas soltas** no setup, nos temas, na tela e na prévia do visual.
-- **[P3] Textos.** Passo de temas sem "12 + 5"; "Concluído" em vez de "Concluir"; "Mata e ouro" em vez de "Mata e Urucum". Decidir qual vale e registrar no canvas.
-- **[P1] Testes** do limite de 5 apoiados, da sugestão de temas e "Estimado", das falhas de leitura e gravação, dos 450 ms, e dos testes de privacidade na `FiscalSchemaV3`.
+Substituída pela [FSC-012](../spdd/prompt/FSC-012-202611012040-[Feat]-end-of-lens-my-support.md). As divergências daqui deixaram de existir com a retirada da Lente.
 
 ### Credibilidade ([FSC-004](../spdd/prompt/FSC-004-202610291700-[Codify]-credibility.md))
 

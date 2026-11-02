@@ -16,15 +16,20 @@ public enum Route: Hashable, Sendable {
     case pastRace(id: String)
     case period(id: String)
     case studyGuide(id: String)
-    case lens
     case artists
     case settings
     case share(ShareSubject)
     case content(ContentDetail)
     case highlight(id: String)
+    case support
 }
 
 extension Route {
+    public static func destination(for event: SupportEvent) -> Route? {
+        if let id = event.voteID { return .vote(id: id) }
+        return event.content.map { .content($0) }
+    }
+
     public static func destination(
         for highlight: Highlight, method: WeightMethod?, sourceLine: String? = nil,
         isShareable: Bool = false

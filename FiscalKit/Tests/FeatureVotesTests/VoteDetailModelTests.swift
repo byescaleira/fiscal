@@ -41,11 +41,11 @@ struct VoteDetailModelTests {
     private let now = Date(timeIntervalSince1970: 1_792_917_720)
 
     private func loaded(
-        _ id: String = "camara-18732026", lens: Lens? = nil, homeUF: String? = nil
+        _ id: String = "camara-18732026", support: SupportChoice? = nil, homeUF: String? = nil
     ) async -> VoteDetailModel {
         let model = VoteDetailModel(
             id: id, service: ShowcasePublicData(scenario: .normal, now: now),
-            lens: StoredLens(value: lens), homeUF: homeUF)
+            support: ShowcaseSupportRepository(support: support), homeUF: homeUF)
         await model.load()
         return model
     }
@@ -136,15 +136,24 @@ struct VoteDetailModelTests {
         #expect(vote.headline.contains("49"))
     }
 
-    @Test func theLensOnlyMarksTheTopics() async {
-        let vote = await loaded(
-            lens: Lens(themes: [.economy, .health, .security], supported: ["lula"]))
-        #expect(vote.themes == [.economy, .taxes])
-        #expect(vote.showsLensBadge)
-        #expect(vote.yesText == "412")
-        let other = await loaded(
-            lens: Lens(themes: [.health, .security, .culture], supported: ["lula"]))
-        #expect(!other.showsLensBadge)
+    @Test func theTopicsKeepTheOrderOfTheVote() async {
+        let plain = await loaded()
+        let supporting = await loaded(support: SupportChoice(causes: [.health, .taxes]))
+        #expect(plain.themes == plain.vote?.themes)
+        #expect(supporting.themes == plain.themes)
+        #expect(supporting.yesText == plain.yesText)
+    }
+
+    @Test func theBallotsOfWhoYouSupportFollowTheOrderOfTheChoice() async throws {
+        let plain = await loaded()
+        #expect(plain.supportedBallots.isEmpty)
+        #expect(plain.supportedHeadline == nil)
+        let slugs = plain.ballots.compactMap(\.slug)
+        let first = try #require(slugs.first)
+        let last = try #require(slugs.last)
+        let vote = await loaded(support: SupportChoice(people: [last, first]))
+        #expect(vote.supportedBallots.map(\.slug) == [last, first])
+        #expect(vote.ballots.count == plain.ballots.count)
     }
 
     @Test func aBallotWithoutSlugAndAMissingTallyStayHonest() async {

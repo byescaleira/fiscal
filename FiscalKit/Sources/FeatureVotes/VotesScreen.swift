@@ -15,7 +15,6 @@ public struct VotesScreen: View {
         ) {
             AdaptiveList {
                 VotesAgendaSection()
-                VotesHighlightsSection()
                 if votes.showsNoMatch {
                     VotesNoMatchSection()
                 }
@@ -36,31 +35,6 @@ public struct VotesScreen: View {
         .sensoryFeedback(.selection, trigger: votes.theme)
         .refreshable { await votes.load() }
         .task { await votes.load() }
-    }
-}
-
-private struct VotesHighlightsSection: View {
-    @Environment(VotesModel.self) private var votes
-
-    var body: some View {
-        if votes.showsLensBadge, !votes.highlights.isEmpty {
-            Section {
-                ForEach(votes.highlights) { vote in
-                    RouteLink(.vote(id: vote.id)) { VoteHighlightRow(vote: vote) }
-                }
-            } header: {
-                AdaptiveRow(spacing: .spaceS) {
-                    Text("In Your Topics").sectionTitle()
-                    Spacer(minLength: .spaceS)
-                    LensBadge()
-                }
-                .textCase(nil)
-            } footer: {
-                Text(
-                    "Your lens picks which votes come first. The numbers are the same for everyone."
-                )
-            }
-        }
     }
 }
 

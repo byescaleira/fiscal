@@ -19,8 +19,7 @@ struct SectionScreen: View {
             let services = FiscalServices.shared
             ModelHost(
                 TodayModel(
-                    service: data, lens: session.repositories.lens,
-                    races: services.liveResultsService(),
+                    service: data, races: services.liveResultsService(),
                     follows: services.todayFollows(session.repositories.follows))
             ) {
                 TodayScreen { race in RaceHeroCard(race: race, opensDetail: true) }
@@ -30,18 +29,15 @@ struct SectionScreen: View {
                 MineScreen()
             }
         case .votes:
-            ModelHost(VotesModel(service: data, lens: session.repositories.lens)) {
-                VotesScreen()
-            }
+            ModelHost(VotesModel(service: data)) { VotesScreen() }
         case .money:
-            ModelHost(MoneyModel(service: data, lens: session.repositories.lens)) { MoneyScreen() }
+            ModelHost(MoneyModel(service: data)) { MoneyScreen() }
         case .search:
             ModelHost(
                 SearchModel(
                     service: data,
                     board: InvestigationModel(
-                        service: data, lens: session.repositories.lens,
-                        follows: session.repositories.follows,
+                        service: data, follows: session.repositories.follows,
                         repository: session.repositories.investigations,
                         homeUF: HomePlace.chosenUF(in: .standard),
                         usesModel: FiscalServices.shared.usesIntelligence))

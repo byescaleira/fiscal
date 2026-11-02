@@ -10,7 +10,7 @@ Primeira versão, a 1.0.0.
 
 - Seguindo, Hoje, Votações, Dinheiro e Fiscalizar com dados oficiais da Câmara, do Senado, do TSE, do Portal da Transparência e dos municípios.
 - Apuração ao vivo das eleições, com Live Activity e Ilha Dinâmica.
-- Lente: ordem, cores e arte adaptadas ao que importa para a pessoa, com os mesmos fatos para todos e a escolha guardada só no aparelho.
+- Meu apoio: uma página privada com as pessoas e as causas que você escolhe, numa linha do tempo por data, só com fatos, guardada só no aparelho e que pode ser apagada. O resto do app é igual para todo mundo.
 - Cartões de compartilhar com arte brasileira de licença livre e o que circulou sobre cada político segundo o Projeto Comprova.
 - Widgets, atalhos da Siri e busca no Spotlight.
 - Ícone da Amazônia ao amanhecer, com ícones alternativos de temas, fauna e partidos.

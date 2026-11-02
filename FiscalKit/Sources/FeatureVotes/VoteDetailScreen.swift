@@ -96,14 +96,8 @@ private struct VoteSummarySection: View {
                 VoteThemes()
             }
         } header: {
-            AdaptiveRow(spacing: .spaceS) {
-                Text("What Changes").sectionTitle()
-                Spacer(minLength: .spaceS)
-                if vote.showsLensBadge {
-                    LensBadge()
-                }
-            }
-            .textCase(nil)
+            Text("What Changes").sectionTitle()
+                .textCase(nil)
         } footer: {
             VStack(alignment: .leading, spacing: .space2XS) {
                 if vote.plainSummary != nil {
@@ -129,10 +123,6 @@ private struct VoteThemes: View {
                 HStack(spacing: .space2XS) {
                     Image(systemName: theme.symbol)
                     Text(verbatim: theme.title)
-                    if vote.isLensTheme(theme) {
-                        Image(systemName: "heart")
-                            .accessibilityLabel(Text("One of your lens topics"))
-                    }
                 }
                 .font(.chipLabel)
                 .foregroundStyle(tint)

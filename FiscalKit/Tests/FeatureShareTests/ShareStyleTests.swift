@@ -46,12 +46,11 @@ enum ShareFixtures {
 
     @MainActor
     static func model(
-        _ subject: ShareSubject, lens: (any LensRepository)? = nil,
-        follows: (any FollowRepository)? = nil
+        _ subject: ShareSubject, follows: (any FollowRepository)? = nil
     ) -> ShareModel {
         ShareModel(
             subject: subject, service: ShowcasePublicData(scenario: .normal, now: now),
-            races: ShowcaseLiveResults(scenario: .finished), lens: lens, follows: follows)
+            races: ShowcaseLiveResults(scenario: .finished), follows: follows)
     }
 }
 

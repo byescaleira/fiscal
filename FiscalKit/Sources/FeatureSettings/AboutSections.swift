@@ -8,7 +8,7 @@ struct AboutValuesSection: View {
         Section {
             SettingsLabel(
                 "Private by design",
-                detail: "No account to create. Your Lens never leaves this device.",
+                detail: "No account to create. Who you support never leaves this device.",
                 symbol: "lock", color: .retroDenim)
             SettingsLabel(
                 "Your iCloud, your call",

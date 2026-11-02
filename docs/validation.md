@@ -62,12 +62,13 @@ Build: `____` · Data: `__/__/____`
 - [ ] Modo avião e reabrir: Hoje, a cidade de casa, os seguidos e os apoiados abrem do pacote; o resto mostra "Isso não está salvo para uso offline."
 - [ ] `BGAppRefresh`: com o app em segundo plano, forçar a tarefa `com.byescaleira.fiscal.offline-refresh` pelo depurador (`e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.byescaleira.fiscal.offline-refresh"]`) e conferir a data nova do pacote.
 
-### Lente e privacidade
+### Meu apoio e privacidade
 
-- [ ] O setup abre na primeira vez; "Prefiro não dizer" deixa a ordem neutra.
-- [ ] A Lente não aparece no iCloud do segundo aparelho nem volta depois de restaurar um backup; reinstalar pergunta de novo.
+- [ ] A instalação nova abre direto, sem setup e sem pergunta política.
+- [ ] O apoio não aparece no iCloud do segundo aparelho nem volta depois de restaurar um backup.
+- [ ] "Apagar meu apoio" apaga pessoas e causas e mantém quem a pessoa segue.
 - [ ] Nenhum cartaz, notificação, Atividade ao Vivo ou resultado do Spotlight mostra quem a pessoa apoia.
-- [ ] Exportar dados gera o JSON com a Lente e os seguidos.
+- [ ] Exportar dados gera o JSON com o apoio e os seguidos.
 
 ### Explicações no aparelho
 
@@ -77,7 +78,7 @@ Build: `____` · Data: `__/__/____`
 
 ### Interface por plataforma
 
-- [ ] iPhone retrato e paisagem em todas as abas, no perfil, na Apuração, na Lente e no compartilhar.
+- [ ] iPhone retrato e paisagem em todas as abas, no perfil, na Apuração, em "Meu apoio" e no compartilhar.
 - [ ] iPad: barra lateral, inspetor, Split View e Stage Manager; rotação com uma folha aberta.
 - [ ] Tema claro e escuro, cada paleta e cor de destaque; fundo branco ou preto em todas as telas.
 - [ ] Textos em pt-BR sem corte, com nomes longos de político, partido e município (`-FiscalDataScenario longNames`).

@@ -1,8 +1,8 @@
 import Foundation
 import SwiftData
 
-public enum FiscalSchemaV3: VersionedSchema {
-    public static var versionIdentifier: Schema.Version { .init(3, 0, 0) }
+public enum FiscalSchemaV4: VersionedSchema {
+    public static var versionIdentifier: Schema.Version { .init(4, 0, 0) }
     public static var models: [any PersistentModel.Type] {
         cloudModels + deviceModels
     }
@@ -10,16 +10,16 @@ public enum FiscalSchemaV3: VersionedSchema {
         [FollowEntity.self, InvestigationEntity.self]
     }
     public static var deviceModels: [any PersistentModel.Type] {
-        [LensEntity.self]
+        [SupportEntity.self, LensEntity.self]
     }
 }
 
 public enum FiscalMigrationPlan: SchemaMigrationPlan {
     public static var schemas: [any VersionedSchema.Type] {
-        [FiscalSchemaV1.self, FiscalSchemaV2.self, FiscalSchemaV3.self]
+        [FiscalSchemaV1.self, FiscalSchemaV2.self, FiscalSchemaV3.self, FiscalSchemaV4.self]
     }
     public static var stages: [MigrationStage] {
-        [dropStance, addInvestigations]
+        [dropStance, addInvestigations, addSupport]
     }
 
     static let dropStance = MigrationStage.lightweight(
@@ -27,4 +27,7 @@ public enum FiscalMigrationPlan: SchemaMigrationPlan {
 
     static let addInvestigations = MigrationStage.lightweight(
         fromVersion: FiscalSchemaV2.self, toVersion: FiscalSchemaV3.self)
+
+    static let addSupport = MigrationStage.lightweight(
+        fromVersion: FiscalSchemaV3.self, toVersion: FiscalSchemaV4.self)
 }

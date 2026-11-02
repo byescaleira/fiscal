@@ -11,17 +11,29 @@ public actor FiscalStore {
         changeHub.publish(.local)
     }
 
-    public func lens() throws -> Lens? {
-        try lensEntity()?.lens
+    public func support() throws -> SupportChoice? {
+        if let entity = try supportEntity() { return entity.support }
+        guard let legacy = try lensEntity() else { return nil }
+        let support = legacy.legacySupport
+        do {
+            modelContext.insert(SupportEntity(support: support, updatedAt: legacy.updatedAt))
+            try modelContext.delete(model: LensEntity.self)
+            try commit()
+            return support
+        } catch {
+            modelContext.rollback()
+            throw error
+        }
     }
 
-    public func save(_ lens: Lens, at date: Date = .now) throws {
+    public func save(support: SupportChoice, at date: Date = .now) throws {
         do {
-            if let entity = try lensEntity() {
-                entity.update(with: lens, at: date)
+            if let entity = try supportEntity() {
+                entity.update(with: support, at: date)
             } else {
-                modelContext.insert(LensEntity(lens: lens, updatedAt: date))
+                modelContext.insert(SupportEntity(support: support, updatedAt: date))
             }
+            try modelContext.delete(model: LensEntity.self)
             try commit()
         } catch {
             modelContext.rollback()
@@ -29,8 +41,9 @@ public actor FiscalStore {
         }
     }
 
-    public func resetLens() throws {
+    public func resetSupport() throws {
         do {
+            try modelContext.delete(model: SupportEntity.self)
             try modelContext.delete(model: LensEntity.self)
             try commit()
         } catch {
@@ -84,6 +97,13 @@ public actor FiscalStore {
             modelContext.rollback()
             throw error
         }
+    }
+
+    private func supportEntity() throws -> SupportEntity? {
+        var descriptor = FetchDescriptor<SupportEntity>(
+            sortBy: [SortDescriptor(\.updatedAt, order: .reverse)])
+        descriptor.fetchLimit = 1
+        return try modelContext.fetch(descriptor).first
     }
 
     private func lensEntity() throws -> LensEntity? {

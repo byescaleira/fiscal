@@ -47,10 +47,6 @@ private struct MoneyAnswerSection: View {
                     .listRowInsets(EdgeInsets())
                     .listRowBackground(Color.clear)
             }
-        } header: {
-            if money.showsLensBadge {
-                MoneyLensHeader(note: money.lensNote)
-            }
         } footer: {
             Text(verbatim: money.answerSourceLine)
         }
@@ -134,31 +130,6 @@ private struct MoneyAnswerLine: View {
         .padding(.vertical, .spaceS)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(tint.opacity(.opacityFill), in: .rect(cornerRadius: .radiusM))
-    }
-}
-
-private struct MoneyLensHeader: View {
-    @Environment(\.open) private var open
-    @Environment(\.navigationSection) private var section
-    let note: String?
-
-    var body: some View {
-        AdaptiveRow(spacing: .spaceS) {
-            Button {
-                open(.lens, in: section)
-            } label: {
-                LensBadge()
-            }
-            .buttonStyle(.plain)
-            .accessibilityHint(Text("Opens what your lens changes"))
-            if let note {
-                Text(verbatim: note)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .textCase(nil)
-        .padding(.bottom, .spaceS)
     }
 }
 

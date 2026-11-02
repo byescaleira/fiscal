@@ -11,13 +11,12 @@ public final class ShareModel {
     public typealias VideoMaker =
         @MainActor (ShareCard, CGImage?, (Double) -> Void) async throws -> URL
 
-    public static let neutralCollection = "acervo-historico"
+    public static let defaultCollection = "brasil-agora"
     public static let lastSeries = "paisagens"
 
     public let subject: ShareSubject
     public private(set) var phase: PublicDataPhase = .idle
     public private(set) var content: ShareCardContent?
-    public private(set) var lens: Lens?
     public private(set) var code: CGImage?
     public private(set) var rendered: RenderedCard?
     public var format: ShareFormat = ShareDestination.instagramStories.format
@@ -39,7 +38,6 @@ public final class ShareModel {
 
     @ObservationIgnored private let service: (any PublicDataService)?
     @ObservationIgnored private let races: (any LiveResultsService)?
-    @ObservationIgnored private let lensRepository: (any LensRepository)?
     @ObservationIgnored private let follows: (any FollowRepository)?
     @ObservationIgnored var renderScale: CGFloat = 3
     @ObservationIgnored let catalog: ArtCatalog?
@@ -55,8 +53,7 @@ public final class ShareModel {
 
     public init(
         subject: ShareSubject, service: (any PublicDataService)?,
-        races: (any LiveResultsService)? = nil, lens: (any LensRepository)? = nil,
-        follows: (any FollowRepository)? = nil,
+        races: (any LiveResultsService)? = nil, follows: (any FollowRepository)? = nil,
         catalog: ArtCatalog? = try? ArtCatalog.bundled(),
         calendar: Calendar = GregorianCalendar.current,
         now: @escaping @Sendable () -> Date = { .now },
@@ -66,7 +63,6 @@ public final class ShareModel {
         self.subject = subject
         self.service = service
         self.races = races
-        lensRepository = lens
         self.follows = follows
         self.catalog = catalog
         builder = ShareCardBuilder(calendar: calendar)
@@ -138,19 +134,17 @@ public final class ShareModel {
     public func load() async {
         if content == nil { phase = .loading }
         phase = await PublicDataPhase.settle(after: phase, in: requests) {
-            let lens = try? await lensRepository?.lens()
             guard let content = try await fetch().published else {
                 throw PublicDataError.notFound
             }
-            return (lens: lens, content: content)
+            return content
         } apply: { loaded in
-            lens = loaded.lens
-            content = loaded.content
+            content = loaded
             if !didApplyDefaultStyle {
                 didApplyDefaultStyle = true
-                style = loaded.content.defaultStyle
+                style = loaded.defaultStyle
             }
-            code = ShareCode.image(for: loaded.content.link)
+            code = ShareCode.image(for: loaded.link)
             refreshCaption()
         }
     }
