@@ -65,8 +65,6 @@ extension RegionModel {
         return seats
     }
 
-    public var followedCards: [PersonCard] { followed.map(\.card) }
-
     public var isLoadingActivity: Bool { activityPhase == .loading && activity.isEmpty }
 
     public var isOfflineWithData: Bool {

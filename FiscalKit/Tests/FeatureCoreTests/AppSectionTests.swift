@@ -21,6 +21,11 @@ struct AppSectionTests {
         #expect(AppSection.SourceGroup.explore.sections == [.region, .search])
     }
 
+    @Test func feedAndSearchUseTheirTabSymbols() {
+        #expect(AppSection.feed.systemImage == "person.2")
+        #expect(AppSection.search.systemImage == "binoculars")
+    }
+
     @Test func feedIsTheFirstSection() {
         #expect(AppSection.allCases == [.feed, .votes, .money, .region, .search])
         #expect(AppSection.feed.rawValue == "feed")

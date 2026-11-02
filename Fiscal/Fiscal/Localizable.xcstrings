@@ -3337,6 +3337,16 @@
         }
       }
     },
+    "Choose your place" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha seu lugar"
+          }
+        }
+      }
+    },
     "Chosen" : {
       "localizations" : {
         "pt-BR" : {
@@ -9446,6 +9456,7 @@
       }
     },
     "Opens the Region tab in Fiscal, with who you follow." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -9521,6 +9532,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abre o campo de busca"
+          }
+        }
+      }
+    },
+    "Opens who you follow in Fiscal." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre quem você segue no Fiscal."
           }
         }
       }
@@ -13245,6 +13266,16 @@
         }
       }
     },
+    "Suggestions come from who represents your state or city." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As sugestões vêm de quem representa seu estado ou sua cidade."
+          }
+        }
+      }
+    },
     "Summary in plain words, rewritten automatically from the official text by fixed rules; the official text is the source." : {
       "localizations" : {
         "pt-BR" : {
@@ -16540,6 +16571,16 @@
         }
       }
     },
+    "Who represents your place, from the city to the president." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem representa seu lugar, da cidade à Presidência."
+          }
+        }
+      }
+    },
     "Who represents your place. Tap Follow next to the name." : {
       "localizations" : {
         "pt-BR" : {
@@ -16602,6 +16643,7 @@
       }
     },
     "Who you follow and who represents your place." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -16849,6 +16891,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ontem"
+          }
+        }
+      }
+    },
+    "You don't follow anyone yet. Who you follow shows up in the Feed, by date." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você ainda não segue ninguém. Quem você segue aparece no Feed, por data."
           }
         }
       }

@@ -43,6 +43,7 @@ enum DeepLink: Equatable {
             path.flatMap(Int.init).map { DeepLink.route(.pastElection(year: $0), in: .search) }
         case "period": path.map { DeepLink.route(.period(id: $0), in: .search) }
         case "study": path.map { DeepLink.route(.studyGuide(id: $0), in: .search) }
+        case "following": .route(.following, in: .feed)
         case "lens", "support": .route(.support, in: .feed)
         case "artists": .route(.artists, in: .feed)
         case "settings": .route(.settings, in: .feed)
@@ -94,7 +95,7 @@ enum DeepLink: Equatable {
     private static func section(host: String) -> AppSection? {
         switch host {
         case "today", "feed": .feed
-        case "mine", "following", "region": .region
+        case "mine", "region": .region
         default: AppSection(rawValue: host)
         }
     }

@@ -21,8 +21,6 @@ public final class RegionModel {
         public var header: String { "\(title) · \(people.count)" }
     }
 
-    public private(set) var followed: [FollowedPerson] = []
-    public private(set) var hasLoaded = false
     public private(set) var place: Place?
     public private(set) var representatives: PlaceRepresentatives?
     public private(set) var cityRepresentatives: PlaceRepresentatives?
@@ -36,26 +34,17 @@ public final class RegionModel {
     public var startsSearching = false
     public var error: FiscalError?
     @ObservationIgnored let service: (any PublicDataService)?
-    @ObservationIgnored let follows: (any FollowRepository)?
     @ObservationIgnored private let memory: RegionPlaceMemory
     @ObservationIgnored private let placeRequests = PublicDataRequests()
     @ObservationIgnored private let placesRequests = PublicDataRequests()
     @ObservationIgnored var searchNames: [String: String] = [:]
-    @ObservationIgnored let inviteDefaults: UserDefaults
-    var isFollowingInviteDismissed: Bool
 
     public init(
-        service: (any PublicDataService)? = nil, follows: (any FollowRepository)?,
-        memory: RegionPlaceMemory = RegionPlaceMemory(), inviteDefaults: UserDefaults = .standard
+        service: (any PublicDataService)? = nil, memory: RegionPlaceMemory = RegionPlaceMemory()
     ) {
         self.service = service
-        self.follows = follows
         self.memory = memory
-        self.inviteDefaults = inviteDefaults
-        isFollowingInviteDismissed = inviteDefaults.bool(forKey: Self.followingInviteKey)
     }
-
-    public var isEmpty: Bool { followed.isEmpty }
 
     public var hasPlace: Bool { memory.code != nil }
 
@@ -137,11 +126,6 @@ public final class RegionModel {
         return .share(.representatives(uf: uf))
     }
 
-    public func detail(for person: FollowedPerson) -> String {
-        let place = person.card.uf == "br" ? "" : " · \(person.card.uf.uppercased())"
-        return "\(person.card.officeTitle) · \(person.card.party)\(place)"
-    }
-
     public func status(of card: PersonCard) -> String? {
         card.status == .inOffice ? nil : card.status.title
     }
@@ -152,21 +136,7 @@ public final class RegionModel {
     }
 
     public func load() async {
-        await loadFollowed()
         await loadPlace()
-    }
-
-    public func loadFollowed() async {
-        do {
-            let stored = try await follows?.followed() ?? []
-            let list = await withGenders(stored)
-            followed = list.sorted {
-                $0.card.name.localizedStandardCompare($1.card.name) == .orderedAscending
-            }
-            hasLoaded = true
-        } catch is CancellationError {} catch {
-            self.error = error as? FiscalError ?? .onFetch
-        }
     }
 
     public func loadPlace() async {
@@ -272,23 +242,5 @@ public final class RegionModel {
         var seen = Set<String>()
         return people.filter { seen.insert($0.slug).inserted }
             .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
-    }
-}
-
-extension RegionModel {
-    fileprivate func withGenders(_ list: [FollowedPerson]) async -> [FollowedPerson] {
-        guard list.contains(where: { $0.card.gender == nil }),
-            let people = try? await service?.people()
-        else { return list }
-        let genders = Dictionary(
-            people.compactMap { card in card.gender.map { (card.slug, $0) } },
-            uniquingKeysWith: { first, _ in first })
-        return list.map { person in
-            guard person.card.gender == nil, let gender = genders[person.card.slug] else {
-                return person
-            }
-            return FollowedPerson(
-                card: person.card.with(gender: gender), followedAt: person.followedAt)
-        }
     }
 }

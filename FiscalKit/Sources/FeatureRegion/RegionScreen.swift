@@ -12,10 +12,6 @@ public struct RegionScreen: View {
     public var body: some View {
         @Bindable var region = region
         AdaptiveList {
-            if !region.isEmpty {
-                FollowingPeopleSection()
-            }
-            FollowingSuggestionsSection()
             RegionHeroSection()
             if region.hasPlace {
                 RegionContent()

@@ -11,6 +11,7 @@ public enum FiscalEvents: Hashable, Sendable {
 
     public enum DeepLinkKind: String, CaseIterable, Sendable {
         case section
+        case following
         case person
         case vote
         case expenses

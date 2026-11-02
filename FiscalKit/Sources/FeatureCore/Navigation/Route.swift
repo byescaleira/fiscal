@@ -6,6 +6,7 @@ public enum Route: Hashable, Sendable {
     case vote(id: String)
     case voteBallots(id: String, party: String?)
     case agenda
+    case following
     case expenses(slug: String, year: Int)
     case compare(slugs: [String])
     case races
