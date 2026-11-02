@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/byescaleira/byescaleira-kit.git",
       "state" : {
-        "revision" : "7f9b0b4d2370fc1c829a2332802a94e54f53bf6b",
-        "version" : "0.8.0"
+        "revision" : "bf25569b470c970527cf6c4a1284f465bd2f8385",
+        "version" : "0.8.1"
       }
     },
     {

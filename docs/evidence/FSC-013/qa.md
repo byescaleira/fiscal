@@ -18,9 +18,9 @@
 | 9 | Motivo em cada linha; gasto só com o mês | Rolar a lista | passou em teste e em tela para o motivo | [captura](feed-following.png), anterior à correção do mês; `aMonthOfSpendingShowsTheMonthAndNotADay` cobre o mês e o ano. A nova data do gasto não foi vista na tela |
 | 10 | Voto dividido em uma linha | Dados de teste | passou | `FeedTimelineTests`, [captura](feed-following.png) |
 | 11 | Filtros | Tocar em cada um | passou | `followingBringsTheirFactsWithTheReason`, `emptyFilterExplainsWhy`, simulador |
-| 12 | Destino de cada linha | Tocar nas linhas | passou em parte | `Route.destination` coberto em testes; no aparelho, só o que o usuário tocou ao aprovar, sem registro por tipo |
+| 12 | Destino de cada linha; link dentro do cartão | Tocar nas linhas; descer até uma checagem | passou em parte | [captura](feed-fact-check.png) e `testAFactCheckCardIsAsWideAsTheOtherCards`, para a mesma largura; `Route.destination` coberto em testes; no aparelho, só o que o usuário tocou ao aprovar, sem registro por tipo |
 | 13 | Evento sem repetir | Montar a lista | passou | `FeedTimelineTests`, `theRaceEventIsALineOnlyWithoutARaceOnTop`; a linha "Apuração do segundo turno" vista sem apuração no topo |
-| 14 | Ano anterior ao fim | Rolar até o fim | passou em teste | `loadingMoreAddsOlderYearsWithoutRepeatingAndEnds`; a leitura na tela não foi vista |
+| 14 | Ano anterior ao fim, sem mudar nada de lugar | Rolar até 2025 | passou | `loadingMoreAddsOlderYearsWithoutRepeatingAndEnds`, `whatIsOnScreenNeverMovesWhenMoreLoads`, e a lista chegou a 2025 na [captura](feed-fact-check.png) |
 | 15 | Fim em 2023 | Rolar até o fim | passou em teste | `theEndOnlyShowsWhenNothingIsHidden`; a mensagem de 2023 não foi vista na tela |
 | 16 | Sem seguidos | Abrir sem seguir | passou | [captura](feed-invite.png), `withoutFollowingThereAreRelevantLinesAndTheEnd` |
 | 17 | Falha parcial | Serviço com falhas | passou em teste | `aMissingFileIsEmptyAndOnlyFailuresAreMissing`, `aFailureEverywhereReachesTheScreen`; aviso não visto na tela |
@@ -33,11 +33,17 @@
 | 24 | Relevante não lê anos | Rolar no filtro | passou | `theRelevantFilterReadsNoOlderYear`, [captura](feed-end-relevant.png) |
 | 25 | Seguir em outra aba | Seguir e voltar | passou em teste | `followingElsewhereReloadsOnlyWhenTheSetChanged`; não repetido na tela |
 
+## Lacunas aceitas no merge
+
+O usuário aceitou como risco, em 02/11/2026 ("pode fazer os dois merges e seguir para a FSC-014"): Mac, iPad e Duo aberto não vistos; VoiceOver ligado não usado; toque no widget e na Siri não feito; Reduzir movimento sem medir quadro a quadro; aviso de falha parcial, mensagem de 2023, número na aba e seguir em outra aba só em teste.
+
 ## O que os testes acharam
 
 - O cabeçalho da apuração quebrava "Presidente", "turno" e "AO VIVO" no meio no maior tamanho de texto, e o cartão não tinha o traço de botão. Corrigidos.
 - O teste migrado de falha parcial mostrou que quem falhava só em parte não entrava no aviso. Agora qualquer falha entra, e o aviso toma o lugar da mensagem de fim, para o fim não dizer mais do que se sabe.
 - No maior tamanho de texto, o rodapé do destaque alargava o cartão além da coluna, os filtros passavam da tela e os detalhes cortavam. Corrigidos: o rodapé quebra entre palavras, os filtros rolam de lado e o texto não corta.
+- Uma checagem de 2025 aparecia logo depois de janeiro de 2026 e pulava para baixo quando o ano de 2025 carregava. Agora as linhas de um ano ainda não lido esperam esse ano.
+- Item de outro ano aparecia sem o ano. Agora o ano aparece.
 - `testTodayOpensTheLiveResults`, que já falhava, foi reescrito como `testTheFeedOpensTheLiveResults` e passa.
 
 ## Limite conhecido

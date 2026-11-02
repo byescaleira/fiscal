@@ -39,11 +39,15 @@ extension FeedModel {
     }
 
     public func dayText(_ item: FeedItem) -> String {
+        let style = Date.FormatStyle(locale: .app)
+        let date = item.date.date()
         if item.expenses != nil {
-            return item.date.date().formatted(
-                Date.FormatStyle(locale: .app).month(.abbreviated).year())
+            return date.formatted(style.month(.abbreviated).year())
         }
-        return item.date.date().formatted(Date.FormatStyle(locale: .app).day().month(.abbreviated))
+        guard item.date.year == currentYear else {
+            return date.formatted(style.day().month(.abbreviated).year())
+        }
+        return date.formatted(style.day().month(.abbreviated))
     }
 
     public func amount(_ expenses: FeedExpenses) -> String {

@@ -22,10 +22,10 @@
 **Lista**
 
 8. Dadas duas pessoas seguidas e dados recentes, quando o Feed carrega, então a lista traz, da data mais nova para a mais antiga, votos, propostas, discursos, gastos do mês e checagens delas, mais votações recentes, destaques e eventos do dia.
-9. Dada qualquer linha, quando aparece, então diz o tipo, a data, o fato e o motivo: o nome de quem a pessoa segue, o lugar escolhido ou "Relevante". Gasto tem só o mês, então a linha mostra o mês e o ano, nunca um dia.
+9. Dada qualquer linha, quando aparece, então diz o tipo, a data, o fato e o motivo: o nome de quem a pessoa segue, o lugar escolhido ou "Relevante". Gasto tem só o mês, então a linha mostra o mês e o ano, nunca um dia. Fato de outro ano mostra também o ano.
 10. Dada uma votação em que duas pessoas seguidas votaram diferente, quando aparece, então é uma linha só, com o voto de cada uma, sem dizer quem está certa.
 11. Dado o filtro Seguindo ou Relevante, quando a pessoa toca, então só ficam as linhas daquele motivo; sem resultado, explica o motivo em uma frase.
-12. Dada uma linha de voto, quando a pessoa toca, então abre a votação; de gastos, abre os gastos daquele ano; de proposta, discurso, destaque ou evento com conteúdo, abre a tela de conteúdo; de checagem, abre a fonte com `ExternalLink`.
+12. Dada uma linha de voto, quando a pessoa toca, então abre a votação; de gastos, abre os gastos daquele ano; de proposta, discurso, destaque ou evento com conteúdo, abre a tela de conteúdo; de checagem, abre a fonte com `ExternalLink`, com "Ver a fonte" e o símbolo de link externo dentro do cartão, que tem a mesma largura dos outros.
 13. Dado um evento do dia já mostrado como votação ou apuração, quando a lista monta, então ele não se repete; sem apuração no topo, o evento de apuração é uma linha como os outros.
 
 **Continuar ao rolar**
@@ -169,7 +169,7 @@ classDiagram
 - **Eventos do dia.** Decisão do usuário: a pauta fica só em Votações, e os eventos do resumo viram linhas relevantes, com a data do resumo. Voto e apuração já mostrados não se repetem.
 - **Domínio puro.** `FeedTimeline` recebe o que veio da rede e devolve as linhas, como `SupportTimeline`. A junção por votação usa os mesmos ids. `FollowingFeed` continua para o selo e o widget, com seus 30 dias e 50 itens.
 - **Propostas têm limite.** `Proposal` tem só o ano, sem data. Na lista entram as propostas de `actions.json`, que têm data, até 40 por pessoa, limite que vem do servidor. Os arquivos por ano entram para votos, discursos e gastos. Inventar uma data seria dado falso. O gasto mensal usa o dia 1 só para ordenar, e a linha mostra o mês e o ano.
-- **Continuar ao rolar.** O primeiro carregamento lê `actions.json`, as checagens e o ano corrente de cada pessoa. Pedido do usuário ao ver no iPhone: o scroll não precisa ser longo e carrega conforme a demanda. Por isso a lista mostra 20 linhas (`FeedModel.pageSize`) e acrescenta mais 20 a cada chegada ao fim. Só quando o que foi lido acaba é que lê um ano a mais, até 2023 (`FeedModel.firstYear`), em lotes de 6. O filtro Relevante não lê anos, porque eles só trazem linhas de quem a pessoa segue. Os anos mais antigos só acrescentam linhas mais antigas, então nada muda de lugar. As 100 linhas por rodada não são um limite: a lista cresce conforme os anos.
+- **Continuar ao rolar.** O primeiro carregamento lê `actions.json`, as checagens e o ano corrente de cada pessoa. Pedido do usuário ao ver no iPhone: o scroll não precisa ser longo e carrega conforme a demanda. Por isso a lista mostra 20 linhas (`FeedModel.pageSize`) e acrescenta mais 20 a cada chegada ao fim. Só quando o que foi lido acaba é que lê um ano a mais, até 2023 (`FeedModel.firstYear`), em lotes de 6. O filtro Relevante não lê anos, porque eles só trazem linhas de quem a pessoa segue. Checagens e propostas de anos ainda não lidos já chegam no primeiro carregamento, mas só aparecem quando o ano delas é lido; assim os anos mais antigos só acrescentam linhas mais antigas, e nada muda de lugar. As 100 linhas por rodada não são um limite: a lista cresce conforme os anos.
 - **Quem manda no quê.** `FeedModel` fica com o que era de `TodayModel` (apuração, destaques, resumo) e com as novidades de `MineModel` (leitura por pessoa, selo, retrato do widget). `RegionModel` é o resto de `MineModel`. Sem estado duplicado entre as abas.
 - **Pauta e votações recentes.** Saem de Hoje. A pauta já está em Votações. As votações recentes viram linhas do Feed.
 - **Renomear.** `FeatureToday` vira `FeatureFeed` e `FeatureMine` vira `FeatureRegion`, para o nome dizer o que é. Acontece na operação 5, depois da tela aprovada, para o diff da tela ficar legível.
@@ -189,6 +189,7 @@ classDiagram
 - `FeatureVotes/`: `VotesAgendaSection.swift` segue como lugar único da pauta.
 - `FeatureLiveResults/`: `RaceHeroHeader.swift`, separado de `RaceHeroCard.swift`, com o cabeçalho nos tamanhos de acessibilidade; traço de botão no cartão.
 - `AppShell/`: `SectionScreen.swift`, `MainScreen.swift`, `MacShell.swift`, `DeepLink.swift`, `RouteScreen.swift`, `FiscalServices.swift`, `Integrations/FiscalIntents.swift`.
+- `byescaleira-kit` 0.8.1: `ExternalLink(destination:showsSymbol:label:)` e `ExternalLinkSymbol`.
 - `Fiscal/FiscalUITests/`: `LaunchTests.swift`, `XCUIApplication+Fiscal.swift`, `LinkAccessibilityTests.swift`.
 - `Fiscal/Fiscal/Localizable.xcstrings`.
 - Testes: `FeedTimelineTests` e `FeedModelTests`, novos; `TodayModelTests`, `TodayBriefingTests` e `TodayModelTextTests` migram ou saem com o código; `MineModelTests` e `MineFollowingTests` migram; `AppSectionTests`, `DeepLinkTests`, `FollowIntentTests`, `IntegrationCenterTests`, `FollowingSnapshotTests`.
@@ -204,7 +205,7 @@ classDiagram
    - Cobre: 8, 9, 10, 11, 13. Verificação: `FeedTimelineTests`, inclusive voto dividido, empate de data e proposta sem data fora da lista.
 2. **Modelo do Feed.** Depende de: 1.
    - `FeedModel.load()`: seguidos, apuração, destaques, resumo, votações recentes e destaques da região; depois `actions`, checagens e o ano corrente, em lotes de 6.
-   - `visible`: as primeiras `shownCount` linhas do filtro, com `pageSize = 20`; `filter` e `load()` voltam à primeira página.
+   - `visible`: as primeiras `shownCount` linhas do filtro, com `pageSize = 20`, sem as de anos ainda não lidos, salvo no filtro Relevante e ao chegar ao fim; `filter` e `load()` voltam à primeira página.
    - `loadMore()`: mostra mais uma página do que já foi lido; sem nada escondido, um ano por vez até `firstYear = 2023`, até o filtro ganhar linhas; `reachedEnd`, sem repetir; no filtro Relevante, nenhum ano.
    - `isAtEnd`: fim dos dados e nada escondido, e é quem libera a mensagem de fim.
    - Falha parcial em `missing`, com tentar de novo.

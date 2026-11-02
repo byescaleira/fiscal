@@ -11668,6 +11668,16 @@
         }
       }
     },
+    "See the Source" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver a fonte"
+          }
+        }
+      }
+    },
     "See the official data" : {
       "localizations" : {
         "pt-BR" : {

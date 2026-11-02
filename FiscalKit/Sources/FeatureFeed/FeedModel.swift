@@ -40,7 +40,7 @@ public final class FeedModel {
     @ObservationIgnored private var speeches: [String: [Speech]] = [:]
     @ObservationIgnored private var recent: [VoteSummary] = []
     @ObservationIgnored private var digest: TodayDigest?
-    @ObservationIgnored private var oldestYear = 0
+    private var oldestYear = 0
     @ObservationIgnored private var loadGeneration = 0
     @ObservationIgnored private var hidesRaces = false
 
@@ -61,7 +61,13 @@ public final class FeedModel {
         self.publishesSnapshot = publishesSnapshot
     }
 
-    private var matching: [FeedItem] { FeedTimeline.filtered(items, by: filter) }
+    private var matching: [FeedItem] {
+        let found = FeedTimeline.filtered(items, by: filter)
+        guard !reachedEnd, filter != .relevant else { return found }
+        return found.filter { $0.date.year >= oldestYear }
+    }
+
+    var currentYear: Int { CalendarDay(now()).year }
 
     public var visible: [FeedItem] { Array(matching.prefix(shownCount)) }
 
@@ -217,8 +223,8 @@ public final class FeedModel {
             activities += loaded.activities
             missing = Self.merged(missing, loaded.missing)
             for (slug, list) in loaded.speeches { speeches[slug, default: []] += list }
-            rebuild()
             oldestYear = year
+            rebuild()
         }
         reachedEnd = oldestYear <= Self.firstYear
         if matching.count > before { shownCount = shown + Self.pageSize }

@@ -13,7 +13,7 @@ struct FeedCard: View {
                 RouteLink(route, showsChevron: false) { card }
                     .accessibilityAddTraits(.isButton)
             } else if let url = item.url {
-                ExternalLink(destination: url) { card }
+                ExternalLink(destination: url, showsSymbol: false) { card }
                     .buttonStyle(.plain)
                     .foregroundStyle(.primary)
                     .accessibilityAddTraits(.isLink)
@@ -40,11 +40,27 @@ struct FeedCard: View {
                     ForEach(item.ballots) { FeedBallotRow(ballot: $0) }
                 }
             }
+            if Route.destination(for: item) == nil, item.url != nil {
+                FeedSourceLink()
+            }
         }
         .padding(.spaceL)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
         .contentShape(.rect(cornerRadius: .radiusGroup))
+    }
+}
+
+private struct FeedSourceLink: View {
+    @Environment(\.appTint) private var tint
+
+    var body: some View {
+        HStack(spacing: .spaceXS) {
+            Text("See the Source")
+            ExternalLinkSymbol()
+        }
+        .font(.footnote.weight(.semibold))
+        .foregroundStyle(tint)
     }
 }
 
