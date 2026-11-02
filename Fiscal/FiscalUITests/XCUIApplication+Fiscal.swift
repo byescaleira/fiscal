@@ -6,6 +6,7 @@ extension XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments += [
             "-AppleLanguages", "(pt-BR)", "-AppleLocale", "pt_BR", "-FiscalLiveScenario", "close",
+            "-FiscalLensScenario", "none",
         ]
         return app
     }
@@ -16,6 +17,14 @@ extension XCUIApplication {
 
     func waitForSections() -> Bool {
         buttons["Seguindo"].firstMatch.waitForExistence(timeout: 30)
+    }
+
+    func scrollDown(until element: XCUIElement, attempts: Int = 12) -> Bool {
+        for _ in 0..<attempts {
+            if element.exists { return true }
+            swipeUp()
+        }
+        return element.exists
     }
 
     func showToday() {

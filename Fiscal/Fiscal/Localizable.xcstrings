@@ -4451,6 +4451,16 @@
         }
       }
     },
+    "Effect" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Efeito"
+          }
+        }
+      }
+    },
     "Elected" : {
       "localizations" : {
         "pt-BR" : {

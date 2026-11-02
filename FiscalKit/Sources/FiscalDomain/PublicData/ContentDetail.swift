@@ -23,6 +23,7 @@ public struct ContentDetail: Hashable, Identifiable, Sendable {
     public let reference: String?
     public let stage: String?
     public let stageNote: String?
+    public let effect: String?
     public let date: CalendarDay?
     public let url: URL?
     public let person: PersonCard?
@@ -36,7 +37,7 @@ public struct ContentDetail: Hashable, Identifiable, Sendable {
     public init(
         id: String, kind: Kind, title: String, plainSummary: String? = nil,
         officialSummary: String? = nil, reference: String? = nil, stage: String? = nil,
-        stageNote: String? = nil, date: CalendarDay? = nil, url: URL? = nil,
+        stageNote: String? = nil, effect: String? = nil, date: CalendarDay? = nil, url: URL? = nil,
         person: PersonCard? = nil, themes: [Theme] = [], weight: Int? = nil,
         coverage: WeightCoverage? = nil, method: WeightMethod? = nil, sourceLine: String? = nil,
         shareHighlightID: String? = nil
@@ -49,8 +50,9 @@ public struct ContentDetail: Hashable, Identifiable, Sendable {
         self.reference = Self.meaningful(reference, besides: title)
         self.stage = Self.meaningful(stage, besides: title)
         self.stageNote = Self.meaningful(stageNote, besides: title)
+        self.effect = Self.meaningful(effect, besides: title)
         self.date = date
-        self.url = url
+        self.url = url.flatMap(Self.webPage)
         self.person = person
         self.themes = themes
         self.weight = weight
@@ -65,6 +67,13 @@ public struct ContentDetail: Hashable, Identifiable, Sendable {
             text != title
         else { return nil }
         return text
+    }
+
+    private static func webPage(_ url: URL) -> URL? {
+        guard let scheme = url.scheme?.lowercased(), scheme == "http" || scheme == "https",
+            url.host()?.isEmpty == false
+        else { return nil }
+        return url
     }
 
     private static func stage(_ key: String?, in method: WeightMethod?) -> WeightMethod.Value? {
@@ -104,10 +113,10 @@ extension ContentDetail {
             sourceLine: sourceLine)
     }
 
-    public init(proposal: Proposal, status: String?, person: PersonCard?, sourceLine: String?) {
+    public init(proposal: Proposal, effect: String?, person: PersonCard?, sourceLine: String?) {
         self.init(
             id: proposal.id, kind: .proposal, title: proposal.plainSummary ?? proposal.summary,
-            officialSummary: proposal.summary, reference: proposal.reference, stage: status,
+            officialSummary: proposal.summary, reference: proposal.reference, effect: effect,
             url: proposal.url, person: person, themes: proposal.themes, sourceLine: sourceLine)
     }
 }

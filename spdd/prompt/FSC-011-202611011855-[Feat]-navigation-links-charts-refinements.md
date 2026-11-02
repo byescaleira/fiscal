@@ -55,6 +55,7 @@ classDiagram
         +String? reference
         +String? stage
         +String? stageNote
+        +String? effect
         +CalendarDay? date
         +URL? url
         +PersonCard? person
@@ -82,6 +83,8 @@ classDiagram
         +PublicDataPhase phase
         +Fact[] facts
         +Fact[][] factRows
+        +isEmpty Bool
+        +kicker String
         +load()
         +authorRoute Route?
         +shareRoute Route?
@@ -117,12 +120,13 @@ classDiagram
 - **Fora da interceptação.** O `ShareDelivery` usa `UIApplication.shared.open` para abrir Instagram e TikTok, o que continua. Os `Link` dos widgets levam a `fiscal://` e também continuam.
 - **Rota com o conteúdo dentro.** `Route.content(ContentDetail)` carrega o dado, como `.roster` já faz, porque não existe `proposals/{id}.json` e os destaques regionais não estão em `highlights.json`. O dado já carregado evita um pedido a mais.
 - **`Route.highlight(id:)`.** Serve só ao link do widget, que não pode carregar o conteúdo. Consulta `highlights.json` e trata o id que expirou.
-- **Regra única do destino.** `route(for:)` existe igual em `TodayModel` e `MineModel`. Vira um só `Route.destination(for:method:shareable:)` no `FeatureCore`: voto vai à votação, todo o resto vai ao conteúdo. O campo `route` do servidor segue como está, e o cliente deixa de ler `route` como slug. Sem deploy.
+- **Regra única do destino.** `route(for:)` existe igual em `TodayModel` e `MineModel`. Vira um só `Route.destination(for:method:sourceLine:isShareable:)` no `FeatureCore`: voto vai à votação, todo o resto vai ao conteúdo. O campo `route` do servidor segue como está, e o cliente deixa de ler `route` como slug. Sem deploy.
 - **Sem autor repetido.** Vindo do perfil, `person` fica vazio, porque voltar já leva ao perfil. Vindo de Hoje, da região ou do widget, o autor é um botão à parte.
 - **Compartilhar só onde já funciona.** `.highlight(id:)` só acha o que está em `highlights.json`, então só Hoje preenche `shareHighlightID`. Compartilhar uma proposta específica entra na `FSC-014`.
 - **Sem tramitação.** A etapa vem de `method.stages`, com rótulo e nota. Não existe histórico, e a tela não finge um.
 - **Manchete simples.** Nos dados reais, `Highlight.title` é o texto oficial, às vezes enorme, e o cartão de Hoje já mostra `plainSummary`. A manchete da tela é `plainSummary ?? title`; o oficial fica recolhível quando difere. Dinheiro e indicador usam `subtitle` como resumo. Campo igual ao título ou vazio vira ausente.
-- **Blocos de fatos.** Etapa, referência, peso e data, em pares; um bloco sozinho ocupa a linha inteira, para não deixar buraco. O tipo aparece em cima da manchete, e a barra não repete o título no iPhone.
+- **Efeito da proposta.** A proposta do perfil não tem etapa publicada; tem `canBecomeLaw`. "Pode virar lei" vai para um bloco próprio, "Efeito", e nunca para "Estágio".
+- **Blocos de fatos.** Etapa, efeito, referência, peso e data, em pares; um bloco sozinho ocupa a linha inteira, para não deixar buraco. O tipo aparece em cima da manchete, e a barra não repete o título no iPhone.
 - **Target novo.** `FeatureContent` com modelo e tela, seguindo "um target por feature".
 - **Legenda própria no gráfico do mandato.** A legenda do Swift Charts divide a mesma altura fixa da área do gráfico, e a altura atual soma uma linha inteira a mais, a causa provável do espaço estranho. A legenda sai do Chart e vira uma linha abaixo, em `FlowLayout`, com distância em token; a altura do gráfico passa a contar só as barras. A captura confirma a causa.
 - **Cartão sem companhia.** Com `vice` vazio e `elected` vazio, o cartão ganha um `Spacer` acima do titular, além do que já existe abaixo.
@@ -158,9 +162,10 @@ classDiagram
 - `FeatureToday/TodayModel+Highlights.swift`, `TodayHighlightHero.swift`, `TodayHighlightSection.swift`.
 - `FeatureMine/MineModel+Region.swift`, `MineNow.swift`, `MineGovernment.swift`, `MineRegion.swift` (`standsAlone`).
 - `FeatureProfile/ProfileActionsSection.swift`, `ProfileModel+Actions.swift`, `ProfileModel+Activity.swift`, `ProfileActivitySections.swift`.
-- `FeatureMoney/MandateCharts.swift`, com a legenda nova.
+- `FeatureMoney/MandateCharts.swift`, com a legenda nova e `MandateText.kindColor`; `FiscalDesignSystem/Tokens/MoneyChartTokens.swift`, com `mandateRowHeight`.
+- `Fiscal/FiscalUITests/LinkAccessibilityTests.swift`, novo, e `XCUIApplication+Fiscal.swift`, sem o setup da Lente.
 - `Localizable.xcstrings`, `CHANGELOG.md`, `docs/backlog.md`, `docs/roadmap.md`, `spdd/README.md`, `docs/evidence/FSC-011/qa.md`.
-- Testes: `ContentDetailTests`, `ContentDetailModelTests` (com o destino único), `DeepLinkTests`, `MineFollowingTests` e `TodayModelTests`.
+- Testes: `ContentDetailTests`, `ContentDetailModelTests` (com o destino único), `DeepLinkTests`, `MineFollowingTests`, `TodayModelTests` e `ProfileModelTests`.
 
 ## Operations
 
@@ -184,11 +189,11 @@ classDiagram
    - `QuotaStatesChart`: `.chartXAxis(.hidden)`, sem o caso de fonte grande.
    - Cobre: 21, 22. Verificação: captura no simulador; `FeatureMoneyTests`.
 5. **`ContentDetail`.**
-   - O tipo, os três inicializadores e a etapa resolvida por `method.stages`.
+   - O tipo, os três inicializadores, a etapa resolvida por `method.stages` e a URL guardada só com `http` ou `https` e host.
    - `Kind` a partir de `Highlight.Kind` e `ActionItem.Kind`.
    - Cobre: 15. Verificação: `ContentDetailTests`, inclusive campos ausentes.
 6. **Rotas.** Depende de: 5.
-   - `Route.content`, `Route.highlight`, `Route.destination(for:method:shareable:)`.
+   - `Route.content`, `Route.highlight`, `Route.destination(for:method:sourceLine:isShareable:)`.
    - `IntegrationLink.highlight(id:kind:route:)` e `DeepLink` com o host `highlight`.
    - Cobre: 13, 14, 17. Verificação: `ContentDetailModelTests`, `ContentDetailTests`, `DeepLinkTests`.
 7. **Tela de conteúdo.** Depende de: 2, 6.
@@ -223,6 +228,7 @@ classDiagram
 
 - **Esquemas:** só `http` e `https` entram em `SFSafariViewController`. Outro esquema ali derruba o app, e há teste para isso.
 - **Hosts da loja:** `apps.apple.com` e `itunes.apple.com` sempre abrem fora.
+- **URL dos dados públicos:** na tela de conteúdo, a fonte só existe com `http` ou `https` e host; outro esquema vindo de uma fonte faz o botão sumir, sem abrir outro app.
 - **Privacidade:** o navegador não passa dado ao app, sem `SFSafariViewControllerDelegate` que leia URL, sem parâmetro acrescentado à URL e sem rastreio.
 - **Sem dado inventado:** campo ausente some da tela. Nada de traço, de "0" ou de etapa deduzida. Sem histórico de tramitação.
 - **Sem servidor:** nenhuma mudança em `server/`, em `highlights.go` ou nos arquivos publicados; nenhum deploy.

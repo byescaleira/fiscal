@@ -68,11 +68,12 @@ struct ContentDetailTests {
             id: "1", kind: "PL", number: 12, year: 2_026, summary: "Altera a Lei 1",
             plainSummary: "Muda a regra", canBecomeLaw: true, themes: [], url: nil)
         let content = ContentDetail(
-            proposal: proposal, status: "Pode virar lei", person: nil, sourceLine: nil)
+            proposal: proposal, effect: "Pode virar lei", person: nil, sourceLine: nil)
         #expect(content.title == "Muda a regra")
         #expect(content.officialSummary == "Altera a Lei 1")
         #expect(content.reference == "PL 12/2026")
-        #expect(content.stage == "Pode virar lei")
+        #expect(content.effect == "Pode virar lei")
+        #expect(content.stage == nil)
         #expect(content.date == nil)
         #expect(content.person == nil)
     }
@@ -81,9 +82,26 @@ struct ContentDetailTests {
         let proposal = Proposal(
             id: "1", kind: "PL", number: 12, year: 2_026, summary: "Altera a Lei 1",
             plainSummary: nil, canBecomeLaw: nil, themes: [], url: nil)
-        let content = ContentDetail(proposal: proposal, status: nil, person: nil, sourceLine: nil)
+        let content = ContentDetail(proposal: proposal, effect: nil, person: nil, sourceLine: nil)
         #expect(content.title == "Altera a Lei 1")
         #expect(content.officialSummary == nil)
+    }
+
+    @Test(arguments: [
+        "tel:+5561", "sms:123", "instagram://user", "javascript:alert(1)", "https:semhost",
+    ])
+    func onlyWebPagesBecomeTheOfficialSource(link: String) throws {
+        let url = try #require(URL(string: link))
+        let content = ContentDetail(id: "1", kind: .proposal, title: "Fato", url: url)
+        #expect(content.url == nil)
+    }
+
+    @Test(arguments: [
+        "https://www.camara.leg.br/1", "http://www.senado.leg.br", "HTTPS://example.com",
+    ])
+    func webPagesStayAsTheOfficialSource(link: String) throws {
+        let url = try #require(URL(string: link))
+        #expect(ContentDetail(id: "1", kind: .proposal, title: "Fato", url: url).url == url)
     }
 
     @Test func aWidgetOpensTheContentOrTheVote() {

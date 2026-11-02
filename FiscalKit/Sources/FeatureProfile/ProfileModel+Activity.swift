@@ -89,7 +89,7 @@ extension ProfileModel {
     public func proposalRoute(_ proposal: Proposal) -> Route {
         .content(
             ContentDetail(
-                proposal: proposal, status: proposalStatus(proposal), person: nil,
+                proposal: proposal, effect: proposalStatus(proposal), person: nil,
                 sourceLine: sourceText(for: ["proposals"])))
     }
 

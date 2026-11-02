@@ -127,6 +127,7 @@ private struct ContentFactsGrid: View {
 }
 
 private struct ContentFactTile: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let fact: ContentDetailModel.Fact
 
     var body: some View {
@@ -139,7 +140,7 @@ private struct ContentFactTile: View {
             .font(.caption.weight(.semibold))
             .foregroundStyle(.secondary)
             .textCase(.uppercase)
-            .lineLimit(1)
+            .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
             Text(verbatim: fact.value)
                 .font(.headline)
                 .fixedSize(horizontal: false, vertical: true)
@@ -192,7 +193,7 @@ private struct ContentAuthorLink: View {
     let person: PersonCard
 
     var body: some View {
-        RouteLink(.person(slug: person.slug)) {
+        RouteLink(.person(slug: person.slug), showsChevron: false) {
             HStack(spacing: .spaceM) {
                 PersonPortrait(slug: person.slug, name: person.name, party: person.party)
                     .accessibilityHidden(true)
@@ -203,10 +204,16 @@ private struct ContentAuthorLink: View {
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                Image(systemName: "chevron.forward")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+                    .accessibilityHidden(true)
             }
+            .padding(.spaceM)
+            .background(.plainRow, in: .rect(cornerRadius: .radiusM))
+            .contentShape(.rect)
         }
-        .padding(.spaceM)
-        .background(.plainRow, in: .rect(cornerRadius: .radiusM))
         .followActions(person)
     }
 }

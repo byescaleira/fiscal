@@ -7,13 +7,13 @@
 | # | Cenário | Roteiro | Resultado | Evidência |
 | --- | --- | --- | --- | --- |
 | 1 | Link abre dentro do app | Dinheiro > Quanto custa um mandato > Auxílio-moradia; fechar volta à mesma tela | passou | [captura](in-app-browser.png); processo `SafariViewService` em execução, sem MobileSafari |
-| 2 | Link sobre uma folha aberta | Nenhuma folha alcançável neste aparelho tem link externo | não executável aqui | O código apresenta sobre o controlador mais alto; só a leitura confirma |
+| 2 | Link sobre uma folha aberta | Nenhuma folha do app tem link hoje; uma versão temporária, fora do commit, abriu uma folha com `ExternalLink`, tocou nele e fechou o navegador | passou | [folha](probe-sheet.png), [navegador sobre ela](probe-browser-over-sheet.png), `SafariViewService` em execução, sem erro de apresentação; ao fechar, a folha continua aberta |
 | 3 | App Store sai do app | Política: `apps.apple.com` e `itunes.apple.com` | passou nos testes; não visto na tela | `InAppBrowserPolicyTests` no kit |
 | 4 | Outro esquema fica com o sistema | Política: `mailto`, `tel`, `fiscal`, `file`, sem host | passou nos testes; não visto na tela | `InAppBrowserPolicyTests` no kit |
 | 5 | Mac usa o navegador do sistema | Modificador sem efeito no macOS | só build; não visto na tela | `scripts/verify.sh --full` |
 | 6 | Link mostra a seta | Atos do mandato, fonte, Fontes oficiais | passou | [captura](mandate-chart.png), [captura](content-from-profile.png) |
 | 7 | Lint recusa `Link` solto | Regra `external_link_component` | passou | `scripts/lint.sh` com 0 violações depois da troca de todos os pontos |
-| 8 | VoiceOver no link | Rótulo, traço de link e dica | não executado | Falta o teste com VoiceOver ligado |
+| 8 | VoiceOver no link | Rótulo, traço de link e dica | passou em parte | `LinkAccessibilityTests` prova o traço de link e o rótulo. A dica "Abre no navegador" está só no código e no catálogo: o XCUITest não a lê, e o VoiceOver de verdade não rodou |
 | 9 | Destaque abre o conteúdo | Hoje > Destaque do momento | passou | Aprovado no iPhone; manchete em texto simples |
 | 10 | Região abre o conteúdo | Seguindo > Na sua região agora | passou | [cartão](region-card.png), [tela](content-from-region.png) |
 | 11 | Proposta do perfil | Perfil > Propostas | passou | Aprovado no iPhone; `ProfileProposalRow` usa a mesma rota |
@@ -27,14 +27,14 @@
 | 19 | Cartão sem vice centrado | Seguindo > Quem governa, Prefeitura de Boa Vista | passou | [captura](seat-centered.png), aprovado no iPhone |
 | 20 | Cartão com vice igual | Governo do estado, ao lado | passou | [captura](seat-centered.png) |
 | 21 | Gráfico do mandato | Folga acima do nome do cargo e legenda sem corte | passou | [captura](mandate-chart.png), aprovado no iPhone |
-| 22 | Gráfico da cota | Sem siglas; a barra mostra o estado | passou | [captura](quota-chart.png), aprovado no iPhone; VoiceOver não testado |
+| 22 | Gráfico da cota | Sem siglas; a barra mostra o estado; cada estado fica exposto à acessibilidade | passou | [captura](quota-chart.png), aprovado no iPhone; `LinkAccessibilityTests` acha a barra "São Paulo" com o valor. O VoiceOver de verdade não rodou |
 
 **Não verificado:**
-- VoiceOver e fontes de acessibilidade na tela nova.
+- VoiceOver ligado de verdade (a árvore de acessibilidade foi conferida por XCUITest) e fontes de acessibilidade na tela nova.
 - Layout largo: iPad, Duo aberto e Mac na tela. O simulador do iPad não foi usado.
 - visionOS só em build.
 - Toque real no widget da tela inicial.
 
-**Verificação automática:** `scripts/verify.sh --full` passou no commit `6e25955`: lint, build das plataformas, suíte inteira, web, admin, servidor e auditoria. Os testes de interface (`scripts/ui-test.sh`) não rodaram; os dois que já falham na `development` seguem no backlog e são reescritos na `FSC-013`.
+**Verificação automática:** o resultado final está no fim da [revisão](../../../spdd/review/FSC-011-202611012010-[Review]-navigation-links-charts-refinements.md). `scripts/ui-test.sh`: `LinkAccessibilityTests` e `testLaunchShowsFollowingAndOpensSettings` passam, este depois de pular o setup da Lente; `testTodayOpensTheLiveResults` segue falhando por não achar o botão de Apuração e está no backlog.
 
 **Auditoria:** `bin/audit --hook` sem violações.

@@ -61,6 +61,10 @@ public final class ContentDetailModel {
         if let stage = content.stage {
             facts.append(Fact(title: String(appLocalized: "Stage"), value: stage, symbol: "flag"))
         }
+        if let effect = content.effect {
+            facts.append(
+                Fact(title: String(appLocalized: "Effect"), value: effect, symbol: "scroll"))
+        }
         if let reference = content.reference {
             facts.append(
                 Fact(
