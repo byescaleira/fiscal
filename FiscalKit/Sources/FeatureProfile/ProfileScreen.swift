@@ -72,6 +72,7 @@ private struct ProfilePage: View {
             .frame(maxWidth: .readableColumn)
             .frame(maxWidth: .infinity)
         }
+        .refreshable { await profile.load() }
         .scrollPosition($position)
         .onScrollGeometryChange(for: CGFloat.self) {
             $0.contentOffset.y + $0.contentInsets.top
@@ -97,7 +98,6 @@ private struct ProfilePage: View {
                 .accessibilityHidden(!showsHeader)
                 .animation(reduceMotion ? nil : .snappy, value: showsHeader)
         }
-        .refreshable { await profile.load() }
         .onChange(of: tops) { profile.moveCurrentChapter(tops: tops, line: line + .spaceHairline) }
         .onChange(of: headerHeight) {
             profile.moveCurrentChapter(tops: tops, line: line + .spaceHairline)

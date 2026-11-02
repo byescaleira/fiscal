@@ -61,6 +61,7 @@ private struct ProfileChapterShortcuts: View {
                 .padding(.horizontal, .spaceL)
             }
             .scrollIndicators(.hidden)
+            .scrollBounceBehavior(.basedOnSize, axes: .vertical)
             .onChange(of: profile.currentChapter) { _, chapter in
                 guard let chapter else { return }
                 withAnimation(.snappy) { proxy.scrollTo(chapter, anchor: .center) }
