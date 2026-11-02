@@ -193,6 +193,7 @@
       }
     },
     "%@ in receipts" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -203,6 +204,7 @@
       }
     },
     "%@ in receipts · %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -532,6 +534,7 @@
       }
     },
     "%@%@ · %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -1284,6 +1287,7 @@
       }
     },
     "%lld updates from who you follow" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -3637,6 +3641,7 @@
       }
     },
     "Couldn't load %@. Tap to try again." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -3667,6 +3672,7 @@
       }
     },
     "Couldn't load the summary of the day" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -4585,6 +4591,7 @@
       }
     },
     "Election count" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -5681,6 +5688,7 @@
       }
     },
     "Follow who represents you" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -5783,6 +5791,7 @@
       }
     },
     "From the official sources, newest first. Nobody is ranked." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -6605,6 +6614,7 @@
       }
     },
     "In session" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7245,6 +7255,7 @@
       }
     },
     "Loading the summary of the day" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7699,6 +7710,7 @@
       }
     },
     "More on the agenda: %lld" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7873,6 +7885,7 @@
       }
     },
     "New" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7893,6 +7906,7 @@
       }
     },
     "New law" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7913,6 +7927,7 @@
       }
     },
     "Next session not scheduled yet" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7933,6 +7948,7 @@
       }
     },
     "Next session: %@ at %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7983,6 +7999,7 @@
       }
     },
     "No agenda published today" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -8052,6 +8069,16 @@
         }
       }
     },
+    "No connection. Showing the last facts received." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem conexão. Mostrando os últimos fatos recebidos."
+          }
+        }
+      }
+    },
     "No connection. Showing the last numbers received." : {
       "localizations" : {
         "pt-BR" : {
@@ -8063,6 +8090,7 @@
       }
     },
     "No connection. Showing the last summary received." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -8073,6 +8101,7 @@
       }
     },
     "No data right now" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -8113,6 +8142,7 @@
       }
     },
     "No floor votes yet" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -8335,6 +8365,7 @@
       }
     },
     "No session now" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -8577,6 +8608,7 @@
       }
     },
     "Nothing new in the last 30 days" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -8587,6 +8619,7 @@
       }
     },
     "Nothing new yet" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -9090,6 +9123,7 @@
       }
     },
     "Open Following and tap Follow next to your representatives." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -10799,6 +10833,7 @@
       }
     },
     "Relevance orders what is happening; it never rates it." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11477,6 +11512,7 @@
       }
     },
     "See Agenda" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11487,6 +11523,7 @@
       }
     },
     "See All" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11547,6 +11584,7 @@
       }
     },
     "See details" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11697,6 +11735,7 @@
       }
     },
     "Session" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11707,6 +11746,7 @@
       }
     },
     "Sessions and the bills up for a vote show up here once the houses publish them." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -12816,6 +12856,7 @@
       }
     },
     "Summary of the Day" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -13452,6 +13493,7 @@
       }
     },
     "The latest votes of the Chamber and the Senate show up here, with the full count." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -14736,6 +14778,7 @@
       }
     },
     "Updates" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -15037,6 +15080,7 @@
       }
     },
     "Voted %@ · %@ · %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -15047,6 +15091,7 @@
       }
     },
     "Voted %@ · %@ · %@ · %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -15197,6 +15242,7 @@
       }
     },
     "Votes, sessions and new laws show up here as they happen." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -15207,6 +15253,7 @@
       }
     },
     "Votes, spending and fact checks of who you follow show up here." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -15217,6 +15264,7 @@
       }
     },
     "Votes, spending and fact checks, newest first." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -16357,6 +16405,7 @@
       }
     },
     "agenda of %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -16677,6 +16726,7 @@
       }
     },
     "votes up to %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {

@@ -17,6 +17,8 @@ O que falta, por prioridade. Itens concluídos saem daqui; o motivo das decisõe
 
 - **[P2] "Como medimos" no cartão "Na sua região agora".** O botão aparece só com o ícone, sem o texto, sobre o fundo escuro. Visto no simulador na `FSC-011`, fora do canvas dela.
 - **[P2] Selo "Pior que a média" cortado em "Pior que a mé...".** No cartão de "Quem Gasta Mais e em Quê", em largura estreita. Rever também se a palavra "pior" cabe na regra de só fatos.
+- **[P3] Duo dobrado: espaço acima dos filtros do Feed.** Ao rolar para cima, o sistema devolve a área da barra de navegação e os filtros fixos descem 58 pt, com um espaço branco acima ([QA da `FSC-013`](evidence/FSC-013/qa.md)).
+- **[P2] Capturas do README e da loja.** `01-hoje.png` e as outras ainda mostram as abas antigas; refazer antes da publicação.
 - **[P3] Cartão "Na sua região agora" com o texto oficial.** O do Feed já usa o texto simples, e a tela de conteúdo também.
 
 - **[P2] Validar o esquema das URLs na publicação.** O servidor repassa o que as fontes mandam. A tela de conteúdo já recusa o que não é `http` ou `https`; os outros pontos do app e `server/internal/publicdata` ainda não. Precisa de deploy, com o ok do usuário.
