@@ -60,12 +60,7 @@ private struct ArtistsHero: View {
 
     var body: some View {
         VStack(spacing: .spaceS) {
-            HStack(spacing: .spaceS) {
-                Chip("COLLECTION", color: tint, shape: .capsule)
-                if artists.showsLensBadge {
-                    LensBadge()
-                }
-            }
+            Chip("COLLECTION", color: tint, shape: .capsule)
             Text(artists.workCount, format: .number)
                 .font(.amountHero)
                 .contentTransition(.numericText(value: Double(artists.workCount)))

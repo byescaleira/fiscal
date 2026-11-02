@@ -4,44 +4,42 @@ import FiscalDomain
 import FiscalResource
 import SwiftUI
 
-public struct SettingsScreen<LensDestination: View, ArtistsDestination: View>: View {
+public struct SettingsScreen<SupportDestination: View, ArtistsDestination: View>: View {
     private let service: (any PublicDataService)?
-    private let destinations: SettingsDestinations<LensDestination, ArtistsDestination>?
+    private let destinations: SettingsDestinations<SupportDestination, ArtistsDestination>?
 
     public init(
-        service: (any PublicDataService)?, @ViewBuilder lens: () -> LensDestination,
+        service: (any PublicDataService)?, @ViewBuilder support: () -> SupportDestination,
         @ViewBuilder artists: () -> ArtistsDestination
     ) {
         self.service = service
-        destinations = SettingsDestinations(lens: lens(), artists: artists())
+        destinations = SettingsDestinations(support: support(), artists: artists())
     }
 
     public var body: some View {
         ModelHost(SourcesModel(service: service)) {
-            ModelHost(SettingsLensModel(service: service)) {
-                SettingsContent(destinations: destinations)
-            }
+            SettingsContent(destinations: destinations)
         }
     }
 }
 
-extension SettingsScreen where LensDestination == EmptyView, ArtistsDestination == EmptyView {
+extension SettingsScreen where SupportDestination == EmptyView, ArtistsDestination == EmptyView {
     public init() {
         service = nil
         destinations = nil
     }
 }
 
-struct SettingsDestinations<Lens: View, Artists: View> {
-    let lens: Lens
+struct SettingsDestinations<Support: View, Artists: View> {
+    let support: Support
     let artists: Artists
 }
 
-private struct SettingsContent<Lens: View, Artists: View>: View {
+private struct SettingsContent<Support: View, Artists: View>: View {
     @Environment(SettingsModel.self) private var settings
     @Environment(SourcesModel.self) private var sources
     @Environment(\.featureFlags) private var flags
-    let destinations: SettingsDestinations<Lens, Artists>?
+    let destinations: SettingsDestinations<Support, Artists>?
 
     var body: some View {
         Group {
@@ -70,20 +68,16 @@ private struct SettingsContent<Lens: View, Artists: View>: View {
     }
 }
 
-private struct SettingsYourFiscalSection<Lens: View, Artists: View>: View {
-    @Environment(LensContext.self) private var lens: LensContext?
-    @Environment(SessionModel.self) private var session: SessionModel?
-    @Environment(SettingsLensModel.self) private var lensModel
-    let destinations: SettingsDestinations<Lens, Artists>
+private struct SettingsYourFiscalSection<Support: View, Artists: View>: View {
+    let destinations: SettingsDestinations<Support, Artists>
 
     var body: some View {
         Section {
-            if lens != nil {
-                DisclosureLink {
-                    destinations.lens
-                } label: {
-                    SettingsLensCard(summary: lensModel.summary(for: lens?.saved))
-                }
+            SettingsRow(
+                "My Support", detail: "People and causes, only on this device", symbol: "heart",
+                color: RetroColor.cherry.color
+            ) {
+                destinations.support
             }
             SettingsRow(
                 "Artists", detail: "The works behind the share cards, with their licenses",
@@ -92,14 +86,7 @@ private struct SettingsYourFiscalSection<Lens: View, Artists: View>: View {
                 destinations.artists
             }
         } footer: {
-            Text(
-                "Who you support, your topics and your look stay on this device, outside iCloud and backups."
-            )
-        }
-        .task { await lensModel.load(lens) }
-        .task(id: lens?.saved?.supported) {
-            await lensModel.loadFaces(
-                for: lens?.saved?.supported ?? [], follows: session?.repositories.follows)
+            Text("People and causes stay on this device, outside iCloud and backups.")
         }
     }
 }
@@ -169,7 +156,7 @@ private struct PrivacySection: View {
                     "Your investigations sync through your own iCloud account. Who you support never leaves this device.",
                 symbol: "magnifyingglass", color: .retroPlum)
             SettingsLabel(
-                "The Lens stays here",
+                "My Support stays here",
                 detail: "Who you support never goes to a server, a log or a share card.",
                 symbol: "lock", color: .retroDenim)
         }

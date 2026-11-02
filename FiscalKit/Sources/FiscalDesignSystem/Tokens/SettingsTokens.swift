@@ -7,7 +7,6 @@ extension CGFloat {
     public static let iconTileRadius: CGFloat = 19
     public static let themeCanvasWidth: CGFloat = 240
     public static let themeCanvasHeight: CGFloat = 400
-    public static let lensCardArtHeight: CGFloat = 84
     public static let artistCardWidth: CGFloat = 220
     public static let artistCardHeight: CGFloat = 300
 }

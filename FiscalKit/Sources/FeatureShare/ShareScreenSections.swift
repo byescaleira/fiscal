@@ -235,15 +235,15 @@ private struct ShareNote: View {
                 )
             } else if model.isVictory {
                 Text(
-                    "The card carries the official TSE numbers and the time of the file. Your Lens never goes into the image."
+                    "The card carries the official TSE numbers and the time of the file. Who you support never goes into the image."
                 )
             } else if model.usesArt {
                 Text(
-                    "The card carries the official source, the date and the art credit. Your Lens never goes into the image."
+                    "The card carries the official source, the date and the art credit. Who you support never goes into the image."
                 )
             } else {
                 Text(
-                    "The card carries the official source and the date. Your Lens never goes into the image."
+                    "The card carries the official source and the date. Who you support never goes into the image."
                 )
             }
         }

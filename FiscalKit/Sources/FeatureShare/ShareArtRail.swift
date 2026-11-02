@@ -11,15 +11,9 @@ struct ShareArtRail: View {
     var body: some View {
         let current = model.currentCollectionID
         VStack(alignment: .leading, spacing: .spaceM) {
-            HStack {
-                Text("Art")
-                    .sectionTitle()
-                    .accessibilityAddTraits(.isHeader)
-                Spacer()
-                if model.showsLensBadge {
-                    LensBadge()
-                }
-            }
+            Text("Art")
+                .sectionTitle()
+                .accessibilityAddTraits(.isHeader)
             AdaptiveStack(spacing: .spaceS) {
                 ForEach(model.collections) { collection in
                     let isOn = collection.id == current

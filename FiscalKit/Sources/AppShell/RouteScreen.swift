@@ -17,7 +17,6 @@ import SwiftUI
 
 struct RouteScreen: View {
     @Environment(SessionModel.self) private var session
-    @Environment(SupportContext.self) private var support
     let route: Route
 
     @ViewBuilder var body: some View {
@@ -73,7 +72,7 @@ struct RouteScreen: View {
         case .artists: ArtistsDestination()
         case .settings:
             SettingsScreen(service: data) {
-                LensDestination()
+                SupportDestination()
             } artists: {
                 ArtistsDestination()
             }
@@ -82,17 +81,11 @@ struct RouteScreen: View {
                 ShareModel(
                     subject: subject, service: data,
                     races: FiscalServices.shared.liveResultsService(),
-                    lens: session.repositories.lens, follows: session.repositories.follows)
+                    follows: session.repositories.follows)
             ) {
                 ShareScreen()
             }
-        case .support:
-            ModelHost(
-                SupportModel(
-                    context: support, service: data, follows: session.repositories.follows)
-            ) {
-                SupportScreen(service: data, follows: session.repositories.follows)
-            }
+        case .support: SupportDestination()
         case .content(let content):
             ModelHost(ContentDetailModel(content: content)) { ContentDetailScreen() }
         case .highlight(let id):
@@ -112,6 +105,20 @@ private struct LensDestination: View {
                 icons: SystemAppIconSwitcher(), follows: session.repositories.follows)
         ) {
             LensScreen()
+        }
+    }
+}
+
+private struct SupportDestination: View {
+    @Environment(SupportContext.self) private var support
+    @Environment(SessionModel.self) private var session
+
+    var body: some View {
+        let data = FiscalServices.shared.publicData()
+        ModelHost(
+            SupportModel(context: support, service: data, follows: session.repositories.follows)
+        ) {
+            SupportScreen(service: data, follows: session.repositories.follows)
         }
     }
 }
@@ -138,9 +145,7 @@ private struct AwaitingDestination: View {
 }
 
 private struct ArtistsDestination: View {
-    @Environment(SessionModel.self) private var session
-
     var body: some View {
-        ModelHost(ArtistsModel(lens: session.repositories.lens)) { ArtistsScreen() }
+        ModelHost(ArtistsModel()) { ArtistsScreen() }
     }
 }

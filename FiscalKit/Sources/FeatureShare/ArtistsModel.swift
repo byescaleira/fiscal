@@ -19,17 +19,13 @@ public enum GalleryKind: Hashable, Sendable {
 public final class ArtistsModel {
     public private(set) var hasLoaded = false
     public private(set) var catalog: ArtCatalog?
-    public private(set) var lens: Lens?
     public private(set) var shownCollections: [GalleryKind: ArtCollection.ID] = [:]
 
     @ObservationIgnored private let loader: @Sendable () throws -> ArtCatalog
-    @ObservationIgnored private let lensRepository: (any LensRepository)?
 
     public init(
-        lens: (any LensRepository)? = nil,
         loader: @escaping @Sendable () throws -> ArtCatalog = { try ArtCatalog.bundled() }
     ) {
-        lensRepository = lens
         self.loader = loader
     }
 
@@ -39,19 +35,7 @@ public final class ArtistsModel {
 
     public var artistCount: Int { Set(catalog?.works.map(\.artist) ?? []).count }
 
-    public var isAdapted: Bool {
-        guard let id = lens?.artCollection else { return false }
-        return catalog?.collection(id: id) != nil
-    }
-
-    public var showsLensBadge: Bool { isAdapted }
-
-    public var collections: [ArtCollection] {
-        guard let catalog else { return [] }
-        let chosen = isAdapted ? lens?.artCollection : nil
-        return catalog.collections.filter { $0.id == chosen }
-            + catalog.collections.filter { $0.id != chosen }
-    }
+    public var collections: [ArtCollection] { catalog?.collections ?? [] }
 
     public var openLicense: [GallerySection] { sections { !$0.isPublicDomain } }
 
@@ -75,7 +59,6 @@ public final class ArtistsModel {
 
     public func load() async {
         catalog = try? loader()
-        lens = try? await lensRepository?.lens()
         hasLoaded = true
     }
 
