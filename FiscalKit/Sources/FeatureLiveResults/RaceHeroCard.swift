@@ -34,6 +34,7 @@ public struct RaceHeroCard: View {
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(Text(verbatim: summary.accessibilityLabel))
                 .accessibilityHint(Text("Shows every candidate and the blank and null votes"))
+                .accessibilityAddTraits(.isButton)
             } else {
                 RaceHeroBody(summary: summary, showsChevron: false)
                     .accessibilityElement(children: .combine)
@@ -94,44 +95,76 @@ struct RaceHeroHeader: View {
     @ReducesMotion private var reduceMotion
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let summary: RaceSummary
 
     var body: some View {
-        HStack(alignment: .center, spacing: .spaceS) {
-            HStack(spacing: .spaceXS) {
-                StatusCircle(summary.statusText, symbol: summary.statusSymbol, color: .white)
-                    .symbolEffect(
-                        .pulse,
-                        isActive: !reduceMotion && !MotionBudget.isConstrained
-                            && summary.isCounting
-                    )
-                    .accessibilityHidden(true)
-                Text(verbatim: summary.statusKicker)
-                    .font(.chipLabel)
-                    .accessibilityLabel(Text(verbatim: summary.statusText))
+        if dynamicTypeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: .spaceS) {
+                HStack(alignment: .center, spacing: .spaceS) {
+                    statusCircle
+                    Spacer(minLength: .spaceS)
+                    actions
+                }
+                kicker
+                title
             }
-            VStack(alignment: .leading, spacing: 0) {
-                Text(verbatim: summary.title)
-                    .font(.subheadline.weight(.bold))
-                    .lineLimit(2)
-                Text(verbatim: summary.roundText)
-                    .font(.caption.weight(.medium))
-                    .opacity(.opacityStrong)
+        } else {
+            HStack(alignment: .center, spacing: .spaceS) {
+                HStack(spacing: .spaceXS) {
+                    statusCircle
+                    kicker
+                }
+                title
+                Spacer(minLength: .spaceS)
+                actions
             }
-            .accessibilityElement(children: .combine)
-            Spacer(minLength: .spaceS)
-            if let results, results.showsFollow(summary.race) {
-                RaceHeroFollow(race: summary.race)
-            }
-            Button("Share", systemImage: "square.and.arrow.up") {
-                open(.share(.race(id: summary.race.id)), in: section)
-            }
-            .labelStyle(.iconOnly)
-            .font(.body.weight(.semibold))
-            .buttonStyle(.plain)
-            .frame(width: .badgeL, height: .badgeL)
-            .background(.white.opacity(.opacityTint), in: .circle)
         }
+    }
+
+    private var statusCircle: some View {
+        StatusCircle(summary.statusText, symbol: summary.statusSymbol, color: .white)
+            .symbolEffect(
+                .pulse,
+                isActive: !reduceMotion && !MotionBudget.isConstrained && summary.isCounting
+            )
+            .accessibilityHidden(true)
+    }
+
+    private var kicker: some View {
+        Text(verbatim: summary.statusKicker)
+            .font(.chipLabel)
+            .lineLimit(1)
+            .fixedSize()
+            .accessibilityLabel(Text(verbatim: summary.statusText))
+    }
+
+    private var title: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text(verbatim: summary.title)
+                .font(.subheadline.weight(.bold))
+                .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
+                .fixedSize(horizontal: false, vertical: true)
+            Text(verbatim: summary.roundText)
+                .font(.caption.weight(.medium))
+                .opacity(.opacityStrong)
+        }
+        .accessibilityElement(children: .combine)
+    }
+
+    @ViewBuilder private var actions: some View {
+        if let results, results.showsFollow(summary.race) {
+            RaceHeroFollow(race: summary.race)
+        }
+        Button("Share", systemImage: "square.and.arrow.up") {
+            open(.share(.race(id: summary.race.id)), in: section)
+        }
+        .labelStyle(.iconOnly)
+        .font(.body.weight(.semibold))
+        .dynamicTypeSize(...DynamicTypeSize.xxLarge)
+        .buttonStyle(.plain)
+        .frame(width: .badgeL, height: .badgeL)
+        .background(.white.opacity(.opacityTint), in: .circle)
     }
 }
 
@@ -152,6 +185,7 @@ private struct RaceHeroFollow: View {
             .contentTransition(.symbolEffect(.replace))
         }
         .font(.body.weight(.semibold))
+        .dynamicTypeSize(...DynamicTypeSize.xxLarge)
         .buttonStyle(.plain)
         .frame(width: .badgeL, height: .badgeL)
         .background(.white.opacity(following ? .opacitySoft : .opacityTint), in: .circle)
