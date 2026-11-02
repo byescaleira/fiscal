@@ -21,6 +21,7 @@ final class ProfileChaptersTests: XCTestCase {
 
     @MainActor func testShortcutsAppearOnScrollAndJumpToTheirChapter() {
         let app = launched("tabata-amaral")
+        XCTAssertTrue(app.images["Ilustração de Tabata Amaral"].firstMatch.exists)
         capture(app, "profile-top")
         let shortcut = app.buttons["Quanto gasta"]
         for _ in 0..<4 where !shortcut.isHittable { app.swipeUp() }
@@ -30,7 +31,8 @@ final class ProfileChaptersTests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Quanto gasta"].waitForExistence(timeout: 10))
         let every = app.buttons["Ver todas as notas"]
         XCTAssertTrue(every.waitForExistence(timeout: 10))
-        for _ in 0..<6 where !every.isHittable { app.swipeUp() }
+        _ = XCTWaiter.wait(for: [XCTestExpectation(description: "jump settles")], timeout: 2)
+        for _ in 0..<8 where !every.isHittable { app.swipeUp(velocity: .slow) }
         XCTAssertTrue(every.isHittable)
         capture(app, "profile-money")
     }

@@ -48,6 +48,7 @@ struct ProfileStickyHeader: View {
 private struct ProfileChapterShortcuts: View {
     @Environment(ProfileModel.self) private var profile
     @Environment(\.appTint) private var tint
+    @ReducesMotion private var reduceMotion
     let select: (ProfileChapter) -> Void
 
     var body: some View {
@@ -64,7 +65,9 @@ private struct ProfileChapterShortcuts: View {
             .scrollBounceBehavior(.basedOnSize, axes: .vertical)
             .onChange(of: profile.currentChapter) { _, chapter in
                 guard let chapter else { return }
-                withAnimation(.snappy) { proxy.scrollTo(chapter, anchor: .center) }
+                withAnimation(reduceMotion ? nil : .snappy) {
+                    proxy.scrollTo(chapter, anchor: .center)
+                }
             }
         }
     }

@@ -19,7 +19,7 @@
 | 10 | Gesto só pelo capítulo | Tabela | passou em teste | `everyChapterHasOneFixedGesture`; a função recebe só o capítulo |
 | 11 | Reduzir movimento | Ligar no simulador e rolar | passou em parte | Com o ajuste ligado, duas capturas do retrato com 4 s de diferença ficaram idênticas; `aSmallPortraitPlaysAskedGestureOnlyWhenItMayAnimate`. Pouca energia só por código |
 | 12 | Sem expressões de juízo | Ler o código | passou em revisão de código | Só `wave` ao seguir |
-| 13 | Ilustração do Fiscal | Abrir o perfil | passou | `ProfileChaptersTests`, [captura](profile-top.png). VoiceOver ligado não foi usado; o rótulo vem de `PersonPortrait` |
+| 13 | Ilustração do Fiscal | Abrir o perfil | passou em parte | `testShortcutsAppearOnScrollAndJumpToTheirChapter` acha o texto e o rótulo "Ilustração de Tabata Amaral", [captura](profile-top.png). VoiceOver ligado não foi usado |
 | 14 | Quanto gasta | Abrir o capítulo | passou | [captura](profile-money.png), `everyExpenseOpensTheFullListOfTheSelectedYear` |
 | 15 | Gasto só em 2025 | Serviço de teste | passou em teste | `theSpendingStartsAtTheLatestYearWithExpensesAndCanChange`; a troca de ano não foi usada na tela |
 | 16 | Cota no resumo leva ao capítulo | Tocar no fato | passou | Simulador |
@@ -29,16 +29,16 @@
 | 20 | Cartão de voto | Compartilhar um voto | passou | `aPersonVoteCarriesTheProposalAndNoJudgement`, `testShareButtonsSayWhatTheyShareAndOpenTheCard`, [captura](share-ballot.png) |
 | 21 | Cartão de proposta | Compartilhar uma proposta | passou | `aProposalLinksToThePersonAndShowsOnlyTheYear`, [cartões](cards-all-styles.jpg) |
 | 22 | Campo ausente | Montar sem o fato ou a fonte | passou em teste | `aCardWithoutItsMainFactOrSourceDoesNotExist` |
-| 23 | Sem bonequinho e sem apoio | Ver os cartões | passou | [cartões](cards-all-styles.jpg); a regra `support_stays_private` no lint |
+| 23 | Sem bonequinho e sem apoio | Ver os cartões | passou em parte | Sem bonequinho nas [capturas](cards-all-styles.jpg). Sem apoio só pela regra `support_stays_private` no lint, sem teste próprio dos cartões novos |
 | 24 | Links | Conferir a chave | passou em teste | `ShareItemCardsTests` |
 | 25 | O que circulou | Abrir com checagens | passou | `checksComeByDateWithoutCountOrVerdictOrderAndOnlyWhenThereAreAny`, simulador |
 | 26 | Sem checagens | Deputado estadual | passou em teste | O mesmo teste |
 | 27 | Sem contexto na página | Governador | passou | `testAGovernorOnlySeesTheChaptersWithData` |
 | 28 | Maior tamanho de texto e VoiceOver | XXXL no simulador | passou em parte | `testTheEndIsReachableAtTheLargestTextSize`, [topo](profile-largest-top.png), [votos](profile-largest-votes.png), [fim](profile-largest-end.png). Um e-mail longo quebra por não caber na linha. VoiceOver ligado não foi usado |
-| 29 | Duo aberto, iPad e Mac | Abrir | não executável aqui | Só o Duo dobrado foi visto. Não há simulador de iPad, e o app do Mac só abre assinado. O build do Mac e do visionOS roda no `verify --full` |
+| 29 | Duo aberto, iPad e Mac | Abrir | não executável aqui | Sem prova na tela: só o Duo dobrado foi visto. Não há simulador de iPad, e o app do Mac só abre assinado. O `verify --full` só prova que o Mac e o visionOS compilam. Declarado no PR |
 | 30 | Setinha e toque no Feed | Tocar no cartão | passou | `testTheRestOfAFeedCardOpensItsContent`, [Feed](feed.png), [destino](card-content-vote.png) |
 | 31 | Pessoa no cartão | Tocar na pessoa | passou | `testAPersonInAFeedCardOpensTheirProfile`, [destino](card-person-profile.png). Testada a linha de várias pessoas; o retrato de uma pessoa só é o mesmo tipo de botão, sem teste próprio |
-| 32 | Fonte externa | Cartão de checagem | passou em teste | `testAFactCheckCardIsAsWideAsTheOtherCards`; o toque no navegador não foi feito |
+| 32 | Fonte externa | Cartão de checagem | passou em parte | No código, esse ramo não usa `RouteCard` e mantém "Ver a fonte" com o símbolo. `testAFactCheckCardIsAsWideAsTheOtherCards` só prova a largura. Nenhum teste confere a ausência da setinha, e o toque no navegador não foi feito |
 | 33 | Linha de voto e proposta | Ver no perfil | passou em parte | Voto no simulador; proposta com o mesmo código, sem conferência visual |
 | 34 | Destaque, região e apuração | Ver | passou em parte | Destaque e apuração ao vivo no simulador. Cartão compacto, cartão de eleito, cartões de "Região agora" e "Quem gasta mais" sem conferência visual |
 | 35 | VoiceOver nos cartões | Ler os rótulos | passou em teste | `CardDestinationTests` acha os botões pelo rótulo. VoiceOver ligado não foi usado |

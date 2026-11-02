@@ -33,8 +33,11 @@ struct FeedCard: View {
                 content
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.spaceL)
-                    .accessibilityElement(children: .ignore)
-                    .accessibilityLabel(Text(verbatim: feed.accessibility(item)))
+                    .background {
+                        Color.clear
+                            .accessibilityElement()
+                            .accessibilityLabel(Text(verbatim: feed.accessibility(item)))
+                    }
             }
         }
         .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
