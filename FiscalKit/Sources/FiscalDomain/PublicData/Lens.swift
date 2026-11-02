@@ -152,6 +152,8 @@ extension Lens {
 }
 
 extension Theme {
+    public static var causeChoices: [Theme] { neutralOrder }
+
     public static var setupChoices: [Theme] {
         [
             .health, .education, .security, .economy, .taxes, .environment,

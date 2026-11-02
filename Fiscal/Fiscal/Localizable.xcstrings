@@ -2,7 +2,24 @@
   "sourceLanguage" : "pt-BR",
   "strings" : {
     "%@" : {
-      "shouldTranslate" : false
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        }
+      }
+    },
+    "%@ Showing the %lld most recent." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Mostrando as %lld mais recentes."
+          }
+        }
+      }
     },
     "%@ against %@ peers in the same office and house in %@" : {
       "localizations" : {
@@ -997,6 +1014,16 @@
         }
       }
     },
+    "%lld of %lld" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld de %lld"
+          }
+        }
+      }
+    },
     "%lld of %lld answered" : {
       "localizations" : {
         "pt-BR" : {
@@ -1454,6 +1481,16 @@
         }
       }
     },
+    "A cause is a topic, not a position. Fiscal shows the facts tagged with it." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Causa é um assunto, não uma posição. O Fiscal mostra os fatos marcados com ela."
+          }
+        }
+      }
+    },
     "A constitutional amendment needs three fifths of the seats voting yes, not just more yes than no." : {
       "localizations" : {
         "pt-BR" : {
@@ -1822,7 +1859,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Todos"
+            "value" : "Tudo"
           }
         }
       }
@@ -2044,6 +2081,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Outra lente"
+          }
+        }
+      }
+    },
+    "Anyone you add is also followed. Removing them from here does not unfollow." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem você adiciona também passa a ser seguido. Tirar daqui não deixa de seguir."
           }
         }
       }
@@ -2999,6 +3046,16 @@
         }
       }
     },
+    "Causes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Causas"
+          }
+        }
+      }
+    },
     "Ceará" : {
       "localizations" : {
         "pt-BR" : {
@@ -3181,6 +3238,16 @@
         }
       }
     },
+    "Choose People and Causes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolher pessoas e causas"
+          }
+        }
+      }
+    },
     "Choose a Highlight" : {
       "localizations" : {
         "pt-BR" : {
@@ -3237,6 +3304,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Escolher pessoas"
+          }
+        }
+      }
+    },
+    "Choose people and causes to see their votes and proposals by date. It stays on this device, and it changes nothing else in the app." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha pessoas e causas para ver votos e propostas por data. Fica só neste aparelho e não muda mais nada no app."
           }
         }
       }
@@ -4008,6 +4085,16 @@
         }
       }
     },
+    "Delete My Support" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar meu apoio"
+          }
+        }
+      }
+    },
     "Delete Offline Data" : {
       "localizations" : {
         "pt-BR" : {
@@ -4054,6 +4141,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apagar sua lente?"
+          }
+        }
+      }
+    },
+    "Delete your support?" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar seu apoio?"
           }
         }
       }
@@ -5552,6 +5649,16 @@
         }
       }
     },
+    "Follow What You Support" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acompanhe o que você apoia"
+          }
+        }
+      }
+    },
     "Follow Who Represents You" : {
       "localizations" : {
         "pt-BR" : {
@@ -5709,6 +5816,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Das fontes oficiais, da mais recente para a mais antiga. Ninguém é ranqueado."
+          }
+        }
+      }
+    },
+    "From the official sources, newest first. Recent activity, not the full history." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das fontes oficiais, do mais novo para o mais antigo. Atividade recente, não o histórico completo."
           }
         }
       }
@@ -6804,6 +6921,16 @@
         }
       }
     },
+    "Keep It" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manter"
+          }
+        }
+      }
+    },
     "Keep My Lens" : {
       "localizations" : {
         "pt-BR" : {
@@ -7699,6 +7826,16 @@
         }
       }
     },
+    "My Support" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meu apoio"
+          }
+        }
+      }
+    },
     "NO" : {
       "localizations" : {
         "pt-BR" : {
@@ -8239,6 +8376,16 @@
         }
       }
     },
+    "No recent vote or proposal is tagged %@." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma votação ou proposta recente está marcada com %@."
+          }
+        }
+      }
+    },
     "No representative from %@ appears in this roll call." : {
       "localizations" : {
         "pt-BR" : {
@@ -8557,6 +8704,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nada de novo ainda"
+          }
+        }
+      }
+    },
+    "Nothing recent from %@." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nada recente de %@."
+          }
+        }
+      }
+    },
+    "Nothing recent from the official sources yet." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ainda não há nada recente nas fontes oficiais."
           }
         }
       }
@@ -12077,6 +12244,16 @@
         }
       }
     },
+    "Some sources did not answer. Pull to try again." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algumas fontes não responderam. Puxe para tentar de novo."
+          }
+        }
+      }
+    },
     "Some state assemblies don't publish attendance, votes or expenses as open data." : {
       "localizations" : {
         "pt-BR" : {
@@ -13606,6 +13783,16 @@
         }
       }
     },
+    "The people and causes you chose leave this device for good. Whoever you follow stays followed." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As pessoas e as causas que você escolheu saem deste aparelho de vez. Quem você segue continua seguido."
+          }
+        }
+      }
+    },
     "The person you find on the other half opens here." : {
       "localizations" : {
         "pt-BR" : {
@@ -13772,6 +13959,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "A simulação fica no cache compartilhado, então atalhos e widgets também a veem. Builds de desenvolvimento nunca bloqueiam de verdade."
+          }
+        }
+      }
+    },
+    "The source does not publish votes for %@." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A fonte não publica votos de %@."
           }
         }
       }
@@ -15792,6 +15989,7 @@
       }
     },
     "Who You Support" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {

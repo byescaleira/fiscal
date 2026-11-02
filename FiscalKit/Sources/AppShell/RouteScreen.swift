@@ -9,6 +9,7 @@ import FeatureProfile
 import FeatureSearch
 import FeatureSettings
 import FeatureShare
+import FeatureSupport
 import FeatureVotes
 import FiscalDesignSystem
 import FiscalDomain
@@ -16,6 +17,7 @@ import SwiftUI
 
 struct RouteScreen: View {
     @Environment(SessionModel.self) private var session
+    @Environment(SupportContext.self) private var support
     let route: Route
 
     @ViewBuilder var body: some View {
@@ -84,6 +86,13 @@ struct RouteScreen: View {
                     lens: session.repositories.lens, follows: session.repositories.follows)
             ) {
                 ShareScreen()
+            }
+        case .support:
+            ModelHost(
+                SupportModel(
+                    context: support, service: data, follows: session.repositories.follows)
+            ) {
+                SupportScreen(service: data, follows: session.repositories.follows)
             }
         case .content(let content):
             ModelHost(ContentDetailModel(content: content)) { ContentDetailScreen() }

@@ -64,7 +64,6 @@ public struct MainScreen: View {
             .modifier(DeepLinks())
             .modifier(UpdateRecommendation())
             .lensExperience(isReady: launch.isDismissed)
-            .modifier(LensSetupCover())
             .modifier(SystemIntegrations())
             .environment(OfflineDataCenter.shared.model)
             .task(id: launch.isDismissed) {
