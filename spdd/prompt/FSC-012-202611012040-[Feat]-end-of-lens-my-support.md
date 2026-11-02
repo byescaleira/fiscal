@@ -124,7 +124,7 @@ Saem `Lens`, `LensRepository`, `LensContext`, `LensBadge`, `LensFaces`, `LensPal
 ## Approach
 
 - **Vocabulário.** "Lente" some do app, dos textos e dos tipos. Fica só `LensEntity`, como dado antigo a ler uma vez. Em tela: "Meu apoio", "pessoas" e "causas".
-- **Apoio não ordena nada.** Com a Lente sai toda ordem por tema ou por apoiado, e cada tela volta à ordem padrão. A única tela de voto que usa o apoio é "Como quem você apoia votou", que mostra fato e não muda a ordem de nada ([ADR 0021](../../docs/adr/0021-end-of-lens-support-on-device.md)).
+- **Apoio não ordena nada.** Com a Lente sai toda ordem por tema ou por apoiado, e cada tela volta à ordem padrão. A prova é estrutural: os modelos deixam de receber o apoio, e a regra `support_stays_private` impede que voltem a receber. A única tela de voto que usa o apoio é "Como quem você apoia votou", que mostra fato e não muda a ordem de nada ([ADR 0021](../../docs/adr/0021-end-of-lens-support-on-device.md)).
 - **Causa é assunto.** O app só diz "marcado com Saúde". Nunca "a favor de", "contra", percentual, alinhamento ou comparação. Esse é o limite que mantém a página nos fatos.
 - **Linha do tempo no domínio.** `SupportTimeline` é uma função pura, testável, que recebe o que veio da rede. Ordena por data, e no empate pelo id, para o resultado ser sempre o mesmo. Duas fontes da mesma votação viram uma linha: o id da votação é `ActionItem.ref`, `PersonVote.voteId`, `VoteSummary.id` ou `Highlight.route`.
 - **Fontes, sem servidor novo.** Para cada pessoa, `actions.json` e os votos do ano corrente. Para cada causa, `votes/recent.json` e `highlights.json`, filtrados por `themes`. Até 5 pessoas e o cache atual limitam os pedidos.
@@ -143,7 +143,7 @@ Saem `Lens`, `LensRepository`, `LensContext`, `LensBadge`, `LensFaces`, `LensPal
 - `FiscalKit/Package.swift` e o `FiscalKitTests.xcscheme`: `FeatureSupport` e `FeatureSupportTests` no lugar de `FeatureLens` e `FeatureLensTests`.
 
 **Domínio e banco**
-- `FiscalDomain/PublicData/`: `SupportChoice.swift`, `SupportTimeline.swift`, novos; `Lens.swift` sai, com `Theme` e `FollowedPerson` em arquivos próprios; `SupportThemes.swift` sai.
+- `FiscalDomain/PublicData/`: `SupportChoice.swift`, `SupportTimeline.swift`, `Theme+Choices.swift`, `FollowedPerson.swift`, novos; `Lens.swift` e `SupportThemes.swift` saem.
 - `FiscalDomain/Repositories/`: `SupportRepository.swift` no lugar de `LensRepository.swift`; `Repositories.swift`.
 - `FiscalData/Store/`: `Entities/SupportEntity.swift`, novo; `LensEntity.swift` fica como dado antigo; `Schema/FiscalSchema.swift` com a V4; `Schema/FiscalSchemaV3.swift`, novo, congelado; `FiscalStore.swift`, `FiscalDatabase.swift`, `SwiftDataRepositories.swift`.
 - `FiscalData/PublicData/Showcase/`: `ShowcaseSupport.swift` no lugar de `ShowcaseLens.swift`.
@@ -162,9 +162,11 @@ Saem `Lens`, `LensRepository`, `LensContext`, `LensBadge`, `LensFaces`, `LensPal
 - `FeatureSearch/`: `SearchModel.swift`, `ThemesSection.swift`, `InvestigationSuggestion.swift`, `InvestigationModel.swift`, `CompareModel.swift`, `CompareScreen.swift`, `CompareTable.swift`.
 - `FeatureMine/`: `MineScreen.swift`, `MineModel+Following.swift`, `MineFollowing.swift`.
 - `FeatureShare/`: `ShareModel.swift`, `ShareModel+Art.swift`, `ShareArtRail.swift`, `ArtistsModel.swift`, `ArtistsScreen.swift`.
-- `FeatureSettings/`: `SettingsScreen.swift`, `AppIconSection.swift`; saem `SettingsLensCard.swift`, `LensSummary.swift` e `SettingsLensModel.swift`.
+- `FeatureSettings/`: `SettingsScreen.swift`, `AboutSections.swift`, `AppIconSection.swift`; saem `SettingsLensCard.swift`, `LensSummary.swift` e `SettingsLensModel.swift`.
 - `FiscalDesignSystem/`: saem `LensPaletteSwatch.swift` e `Tokens/LensLookTokens.swift`; `SettingsTokens.swift`.
-- `Fiscal/FiscalUITests/`: `XCUIApplication+Fiscal.swift`.
+- `.swiftlint.yml`: regra `support_stays_private`.
+- `Fiscal/FiscalUITests/`: `XCUIApplication+Fiscal.swift` e o teste de abertura direta.
+- `FiscalData/PublicData/Showcase/ShowcaseSupport.swift`: `SupportScenario`, chave `FiscalSupportScenario`.
 - `Fiscal/Fiscal/Localizable.xcstrings`.
 
 **Testes**
@@ -205,7 +207,7 @@ Saem `Lens`, `LensRepository`, `LensContext`, `LensBadge`, `LensFaces`, `LensPal
    - **Parar e mostrar no iPhone, com dados reais, antes da operação 6.**
    - Cobre: 6, 7, 8, 9, 13, 14, 15, 16, 17, 18, 19. Verificação: `SupportModelTests`, `SupportEditorModelTests`, `DeepLinkTests`, captura, iPhone.
 6. **Retirar de Hoje e Votações.** Depende de: 5.
-   - `TodayBriefing` e `TodayModel`: ordem padrão e sem marca; `orderedHighlights` vira `highlights.items`.
+   - `TodayBriefing` fica como função pura da ordem dos dados, e `TodayModel` sem marca; `orderedHighlights` vira `highlights.items`.
    - `VotesModel`: ordem padrão; `VoteDetailModel` sem `showsLensBadge`, com `supportedBallots` lendo `SupportContext`.
    - Cobre: 2, 3. Verificação: `TodayModelTests`, `TodayBriefingTests`, `TodayModelTextTests`, `VotesModelTests`, `VoteDetailModelTests`.
 7. **Retirar de Dinheiro, Perfil, Fiscalizar e Seguindo.** Depende de: 5. `[P]` com 6.
@@ -223,7 +225,7 @@ Saem `Lens`, `LensRepository`, `LensContext`, `LensBadge`, `LensFaces`, `LensPal
    - Target `FeatureLens`, `LensContext`, `Lens`, paletas, setup, `LensExperience`, `LensSetupCover` e `ShowcaseLens`.
    - `FiscalUITests`: sem o argumento da Lente; teste de que a instalação nova abre direto.
    - Catálogo sem "lente", com `scripts/strings.sh` e os textos novos.
-   - Cobre: 1, 3, 21. Verificação: `scripts/lint.sh`, busca por `Lens` e "lente" (só `LensEntity` e os testes de migração podem sobrar), `SupportPrivacyTests`, `IntegrationCenterTests`, `scripts/ui-test.sh`.
+   - Cobre: 1, 3, 21. Verificação: `scripts/lint.sh`, busca por `Lens` e "lente" (só `LensEntity`, os esquemas antigos, os testes de migração e o host `lens` do `DeepLink` podem sobrar), `SupportPrivacyTests`, `IntegrationCenterTests`, `scripts/ui-test.sh`.
 10. **Documentos e site.** Depende de: 9. `[P]`.
     - ADR 0021, brief, arquitetura, design, validação, App Store, `README`.
     - `site/*`: fora a seção da Lente, entra "Meu apoio", com a promessa de apagar agora verdadeira; `python3 -I scripts/site-i18n.py extract` e `check`.
@@ -251,7 +253,7 @@ Saem `Lens`, `LensRepository`, `LensContext`, `LensBadge`, `LensFaces`, `LensPal
 ## Safeguards
 
 - **Só fatos:** nada de "a favor", "contra", "alinhado", percentual, nota, ranking, cor de bom ou ruim, ou comparação entre apoiados. A expressão do bonequinho nunca depende de dado.
-- **Neutralidade:** o apoio não muda ordem, filtro ou destaque fora da página. Com os mesmos dados, as telas ficam iguais com e sem apoio, e há teste para isso. **QUEBRA** se o Feed futuro usar o apoio.
+- **Neutralidade:** o apoio não muda ordem, filtro ou destaque fora da página. Os modelos das outras telas não recebem o apoio, e a regra de lint `support_stays_private` recusa `SupportContext`, `SupportChoice`, `SupportRepository` e `repositories.support` em qualquer feature, fora de `FeatureSupport`, `VoteDetailModel`, da exportação e da montagem no `AppShell`. **QUEBRA** se o Feed futuro usar o apoio.
 - **Privacidade:** apoio e causas ficam só em `Device.store`, com `cloudKitDatabase: .none` e fora do backup. Nunca vão para servidor, iCloud, telemetria, notificação, Spotlight, widget, Siri, atalho ou cartaz. O único caminho de saída é a exportação pedida pela pessoa.
 - **Apagar:** "Apagar meu apoio" apaga de verdade e não mexe em quem a pessoa segue. Sem confirmação, nada some.
 - **Abertura:** nenhuma tela obrigatória nem pergunta política ao abrir.

@@ -22,7 +22,7 @@ No shell, ponha esses caminhos entre aspas: o zsh trata `[...]` como padrão de 
 | --- | --- | --- | --- | --- |
 | `FSC-001` | [Apuração ao vivo e Atividade ao Vivo da disputa](prompt/FSC-001-202610291700-[Codify]-live-results.md) | entregue | `feature/spdd-migration` | [#5](https://github.com/byescaleira/fiscal/pull/5) |
 | `FSC-002` | [Dados públicos: arquivos, CDN, cache, erros, pacote offline e carga](prompt/FSC-002-202610291700-[Codify]-public-data-api.md) | entregue | `feature/spdd-migration` | [#5](https://github.com/byescaleira/fiscal/pull/5) |
-| `FSC-003` | [Lente: quem você apoia, temas e visual, só no aparelho](prompt/FSC-003-202610291700-[Codify]-lens.md) | entregue | `feature/spdd-migration` | [#5](https://github.com/byescaleira/fiscal/pull/5) |
+| `FSC-003` | [Lente: quem você apoia, temas e visual, só no aparelho](prompt/FSC-003-202610291700-[Codify]-lens.md) | substituído pela `FSC-012` | `feature/spdd-migration` | [#5](https://github.com/byescaleira/fiscal/pull/5) |
 | `FSC-004` | [Credibilidade: fonte, "—", colegas, peso, "Estimado" e explicações](prompt/FSC-004-202610291700-[Codify]-credibility.md) | entregue | `feature/spdd-migration` | [#5](https://github.com/byescaleira/fiscal/pull/5) |
 | `FSC-005` | [Cartazes de compartilhar, acervo de arte e créditos](prompt/FSC-005-202610291700-[Codify]-share-cards-and-art.md) | entregue | `feature/spdd-migration` | [#5](https://github.com/byescaleira/fiscal/pull/5) |
 | `FSC-006` | [Checagens do Projeto Comprova](prompt/FSC-006-202610291700-[Codify]-fact-checks.md) | entregue | `feature/spdd-migration` | [#5](https://github.com/byescaleira/fiscal/pull/5) |

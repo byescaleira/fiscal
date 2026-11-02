@@ -70,13 +70,7 @@ Registradas na migração para o SPDD ([ADR 0019](adr/0019-spdd-process.md)), se
 
 ### Lente ([FSC-003](../spdd/prompt/FSC-003-202610291700-[Codify]-lens.md))
 
-- **[P1] "Outra lente" não reordena nada**: nenhum model lê `LensContext.preview`.
-- **[P2] Paleta, arte e ícone não mudam depois do setup**: `choose(_:)` e `setIcon(_:)` sem tela.
-- **[P2] Erro ao salvar não aparece no setup**, só na `LensScreen`.
-- **[P2] `ProgressView()` circular** no setup, nos temas, nos apoiados e na edição; trocar por barra (regra 5).
-- **[P2] Durações e escalas soltas** no setup, nos temas, na tela e na prévia do visual.
-- **[P3] Textos.** Passo de temas sem "12 + 5"; "Concluído" em vez de "Concluir"; "Mata e ouro" em vez de "Mata e Urucum". Decidir qual vale e registrar no canvas.
-- **[P1] Testes** do limite de 5 apoiados, da sugestão de temas e "Estimado", das falhas de leitura e gravação, dos 450 ms, e dos testes de privacidade na `FiscalSchemaV3`.
+Substituída pela [FSC-012](../spdd/prompt/FSC-012-202611012040-[Feat]-end-of-lens-my-support.md). As divergências daqui deixaram de existir com a retirada da Lente.
 
 ### Credibilidade ([FSC-004](../spdd/prompt/FSC-004-202610291700-[Codify]-credibility.md))
 
