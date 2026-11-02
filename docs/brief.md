@@ -131,10 +131,10 @@ O manifesto `art-credits.json` vai junto com o app e lista, por obra: autor, @, 
 
 | # | Aba | Ícone | O que é |
 |---|---|---|---|
-| 1 | **Hoje** | `newspaper` | O resumo do dia: votações, como votaram os seus representantes, eventos ao vivo (apuração, votação importante, CPI) e "o que muda para você" |
-| 2 | **Meus** | `person.2` | Os seus representantes pelo endereço (do vereador ao presidente) e quem você segue. Cada perfil tem presença, votos, propostas, gastos e patrimônio |
-| 3 | **Votações** | `checkmark.square` | A pauta do Congresso: o calendário, o placar por partido e por estado, quem votou como e "o que muda para você". Inclui a Live Activity da votação importante |
-| 4 | **Dinheiro** | `brazilianrealsign` | Para onde vai o dinheiro público: cota, salários e benefícios, emendas (inclusive as "emendas Pix"), financiamento de campanha, patrimônio declarado e arrecadação |
+| 1 | **Feed** | `newspaper` | O que aconteceu, por data, com o motivo de cada linha: o que fizeram as pessoas que você segue e o que é relevante, com a apuração ao vivo e o destaque do momento no topo ([ADR 0022](adr/0022-feed-first-tab-and-region.md)) |
+| 2 | **Votações** | `checkmark.square` | A pauta do Congresso: o calendário, o placar por partido e por estado, quem votou como e "o que muda para você". Inclui a Live Activity da votação importante |
+| 3 | **Dinheiro** | `brazilianrealsign` | Para onde vai o dinheiro público: cota, salários e benefícios, emendas (inclusive as "emendas Pix"), financiamento de campanha, patrimônio declarado e arrecadação |
+| 4 | **Região** | `map` | Quem você segue, as sugestões e os seus representantes pelo lugar (do vereador ao presidente). Cada perfil tem presença, votos, propostas, gastos e patrimônio |
 | 5 | **Fiscalizar** (proeminente) | `magnifyingglass` | A busca universal: pessoa, partido, projeto, cidade, CNPJ de fornecedor. Também é a porta para Comparar e Eleições. É a aba com `Tab(role: .search)`, que o iOS 26+ mostra destacada, separada das outras na barra de Liquid Glass |
 
 - **Checagens no perfil** (pedido do usuário em 2026-10-25, no lugar de mostrar posts das redes; piloto só com o Projeto Comprova, decisão do usuário no mesmo dia, depois da [pesquisa de checagens](research/2026-10-25-fact-checks.md)):
@@ -151,13 +151,13 @@ O manifesto `art-credits.json` vai junto com o app e lista, por obra: autor, @, 
     - sem contagem de "mentiras" nem ranking;
     - um aviso de cobertura: a lista mostra só o que a agência escolheu checar, e ausência de checagem não quer dizer nada sobre a pessoa;
   - **Nome:** a seção não usa "Fato ou Fake", que é marca da seção do g1.
-- **Ajustes** saem da barra de abas e viram um botão na toolbar de Hoje, ao lado do coração de "Meu apoio".
-- **Eleições** (apuração ao vivo, resultados e propostas de governo) aparecem em Hoje durante o período eleitoral e ficam sempre acessíveis em Fiscalizar.
+- **Ajustes** saem da barra de abas e viram um botão na toolbar do Feed, ao lado do coração de "Meu apoio".
+- **Eleições** (apuração ao vivo, resultados e propostas de governo) aparecem no topo do Feed durante o período eleitoral e ficam sempre acessíveis em Fiscalizar.
 - **Recomendação de aba proeminente:** usar Fiscalizar porque é o padrão nativo (`role: .search`) e o verbo que dá nome ao app. A alternativa, um "Ao vivo" central, só faz sentido em dia de evento e ficaria vazia no resto do ano.
 
 ## Destaque do momento, antes e durante o mandato, e o peso do que cada um faz (pedido do usuário em 2026-10-25)
 
-- **Destaque do momento na aba Hoje, sempre presente:** o assunto, o número de dinheiro ou o dado de maior peso agora. Não precisa ser do dia: "momento" depende do peso e de quanto se fala do assunto. Um exemplo é a alta do preço da gasolina com a série histórica. Quando não houver nada novo, fica o de maior peso recente, e a seção nunca some.
+- **Destaque do momento no topo do Feed, sempre presente:** o assunto, o número de dinheiro ou o dado de maior peso agora. Não precisa ser do dia: "momento" depende do peso e de quanto se fala do assunto. Um exemplo é a alta do preço da gasolina com a série histórica. Quando não houver nada novo, fica o de maior peso recente, e a seção nunca some.
 - **Preços e bens de consumo com base histórica:**
   - **Fontes:** gasolina, diesel, etanol e GLP pela ANP, e a cesta e os itens do IPCA pelo IBGE (SIDRA), por UF e no Brasil.
   - **Na tela:** sempre com a série longa.
@@ -208,7 +208,7 @@ O manifesto `art-credits.json` vai junto com o app e lista, por obra: autor, @, 
 
 ## Arquitetura
 
-- **App:** SwiftUI e o pacote `FiscalKit`, com um target por aba (`FeatureToday`, `FeatureMine`, `FeatureVotes`, `FeatureMoney`, `FeatureSearch`), mais `FeatureSupport` (a página "Meu apoio") e `FeatureLiveResults`.
+- **App:** SwiftUI e o pacote `FiscalKit`, com um target por aba (`FeatureFeed`, `FeatureRegion`, `FeatureVotes`, `FeatureMoney`, `FeatureSearch`), mais `FeatureSupport` (a página "Meu apoio") e `FeatureLiveResults`.
 - **Servidor** (`server/`, Go, na VPS):
   - carga diária dos arquivos oficiais da Câmara, do Senado e do TSE;
   - a API `/api/v1` mapeada na pesquisa;

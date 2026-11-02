@@ -30,8 +30,8 @@ fiscal/
 | `FiscalResource` | Animações Lottie (`FiscalResourceAnimation`), acervo de arte (`art-credits.json`, `Art.xcassets`), mapas do Brasil, molde e traços dos retratos, selo de partido e os dados de teste do showcase | nada |
 | `FeatureCore` | `SessionModel`, navegação (`Route`, `AppSection`, `FiscalNavigation`, `\.open`, `\.close`), `FeatureFlag`/`FeatureFlags`, atualização obrigatória, exportação, explicações no aparelho (`Explain/`), componentes de dados públicos (`SourceFootnote`, `PeerBadge`, `PublicDataContent`), retratos e `FiscalAnimationView`; reexporta o `ByescaleiraUI` | Domain, DesignSystem, Resource, `ByescaleiraUI`, Lottie |
 | `FeatureGuides` | `GuideScreen` e páginas dos tutoriais | Domain, DesignSystem, FeatureCore |
-| `FeatureToday` | Aba Hoje: destaque do momento, resumo do Congresso, votações recentes, card da apuração e os botões de "Meu apoio" e de Ajustes ([ADR 0014](adr/0014-settings-in-today-toolbar.md)) | Domain, DesignSystem, FeatureCore |
-| `FeatureMine` | Aba Região: lugar de casa, quem governa a cidade, o estado e o país, bancadas e seguidos | Domain, DesignSystem, FeatureCore |
+| `FeatureFeed` | Aba Feed: apuração e destaque do momento no topo, lista por data com os filtros Tudo, Seguindo e Relevante, selo de novidades, retrato do widget e os botões de "Meu apoio" e de Ajustes ([ADR 0022](adr/0022-feed-first-tab-and-region.md)) | Domain, DesignSystem, FeatureCore |
+| `FeatureRegion` | Aba Região: quem a pessoa segue, sugestões, lugar de casa, quem governa a cidade, o estado e o país, e bancadas | Domain, DesignSystem, FeatureCore |
 | `FeatureProfile` | Perfil (`Route.person(slug:)`), aberto por qualquer aba | Domain, DesignSystem, FeatureCore |
 | `FeatureVotes` | Aba Votações: recentes, pauta do dia e detalhe (`Route.vote(id:)`) | Domain, DesignSystem, FeatureCore |
 | `FeatureMoney` | Aba Dinheiro e recibos (`Route.expenses`) | Domain, DesignSystem, FeatureCore |
@@ -65,17 +65,18 @@ TSE ao vivo ─▶ fiscal-api (apuração, App Attest, registros) ─▶ APNs �
 
 | Link | Abre |
 | --- | --- |
-| `fiscal://today`, `mine`, `votes`, `money`, `search` | A aba (Hoje, Região, Votações, Dinheiro, Fiscalizar) |
+| `fiscal://feed`, `votes`, `money`, `region`, `search` | A aba (Feed, Votações, Dinheiro, Região, Fiscalizar) |
+| `fiscal://today`, `mine`, `following` | Apelidos antigos: Feed, Região e Região |
 | `fiscal://person/<slug>` | Perfil, na aba Região |
 | `fiscal://vote/<id>` | Votação, na aba Votações |
 | `fiscal://expenses/<slug>?year=<ano>` | Recibos, na aba Dinheiro |
 | `fiscal://compare?slugs=<a>,<b>` | Comparar, em Fiscalizar |
 | `fiscal://races` | Apuração, em Fiscalizar |
 | `fiscal://memory`, `election/<ano>`, `period/<id>`, `study/<id>` | Memória, em Fiscalizar |
-| `fiscal://support` (e o antigo `fiscal://lens`), `fiscal://artists` | "Meu apoio" e artistas, em Hoje |
-| `fiscal://settings` | Ajustes, em Hoje |
+| `fiscal://support` (e o antigo `fiscal://lens`), `fiscal://artists` | "Meu apoio" e artistas, no Feed |
+| `fiscal://settings` | Ajustes, no Feed |
 
-Link com host desconhecido abre Hoje.
+Link com host desconhecido abre o Feed.
 
 ## Receita: nova feature
 

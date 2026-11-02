@@ -8,7 +8,6 @@ O que falta, por prioridade. Itens concluídos saem daqui; o motivo das decisõe
 - **[P1] Vencedor na Live Activity da apuração.** A regra de vencedor do widget (`RaceBoard.winner`) difere da do app (`Race.winner`) e mostra "ELEITO" a 100% no 1º turno com mais de 2 candidatos: igualar as duas ([FSC-001](../spdd/prompt/FSC-001-202610291700-[Codify]-live-results.md)). O toque já abre `fiscal://races`.
 - **[P1] Rótulo de privacidade e política.** Declarar o rótulo do [ADR 0017](adr/0017-app-store-privacy-label.md) no App Store Connect e listar na política do site as três saídas com os prazos.
 - **[P1] Retratos do app.** Marca visível "Ilustração do Fiscal" nos retratos, e a regra de não gerar cartaz de candidato com retrato nas 72 h antes e nas 24 h depois de uma votação ([brief](brief.md), "Retratos e marcas animados"); hoje nenhuma das duas existe.
-- **[P1] Teste de interface da apuração.** `testTodayOpensTheLiveResults` não acha o botão de Apuração em Hoje. O outro teste antigo voltou a passar na `FSC-011`, ao pular o setup da Lente nos testes. Reescrever na `FSC-013`, que muda a primeira aba.
 - **[P1] App ID da Meta.** Criar o app na Meta e preencher `FiscalMetaAppID` no `Info.plist`. Sem ele, os Stories do Instagram e do Facebook abrem pela folha do sistema ([ADR 0020](adr/0020-share-to-social-networks.md)).
 - **[P1] Publicar a AASA dos links do site.** Com o ok do usuário. Antes disso, os links impressos nos cartões abrem o site, não o app ([docs/web.md](web.md)).
 - **[P1] Apagar a escolha da Lente.** A confirmação "Apagar minha escolha" existe no `LensScreen`, mas nenhum botão a abre; o brief pede o botão.
@@ -18,7 +17,7 @@ O que falta, por prioridade. Itens concluídos saem daqui; o motivo das decisõe
 
 - **[P2] "Como medimos" no cartão "Na sua região agora".** O botão aparece só com o ícone, sem o texto, sobre o fundo escuro. Visto no simulador na `FSC-011`, fora do canvas dela.
 - **[P2] Selo "Pior que a média" cortado em "Pior que a mé...".** No cartão de "Quem Gasta Mais e em Quê", em largura estreita. Rever também se a palavra "pior" cabe na regra de só fatos.
-- **[P3] Cartão "Na sua região agora" com o texto oficial.** O de Hoje já usa o texto simples, e a tela de conteúdo também.
+- **[P3] Cartão "Na sua região agora" com o texto oficial.** O do Feed já usa o texto simples, e a tela de conteúdo também.
 
 - **[P2] Validar o esquema das URLs na publicação.** O servidor repassa o que as fontes mandam. A tela de conteúdo já recusa o que não é `http` ou `https`; os outros pontos do app e `server/internal/publicdata` ainda não. Precisa de deploy, com o ok do usuário.
 
@@ -26,7 +25,7 @@ O que falta, por prioridade. Itens concluídos saem daqui; o motivo das decisõe
 
 ## Depois da 1.0 ou sem data
 
-- **[P2] Mac: grade do painel.** Hoje e Dinheiro em `CardGrid` com cartões de tamanhos diferentes (herói em duas colunas, métricas pequenas); a lista de origem, as tabelas, o `GroupBox` e o menu Ir entraram na `FSC-008`.
+- **[P2] Mac: grade do painel.** Dinheiro em `CardGrid` com cartões de tamanhos diferentes (herói em duas colunas, métricas pequenas); a lista de origem, as tabelas, o `GroupBox` e o menu Ir entraram na `FSC-008`.
 - **[P2] Capturas do iPhone Duo.** Aberto, meio aberto em pé e deitado e AX no simulador, com a postura trocada à mão no Device Hub (puladas na `FSC-008` a pedido do usuário; a lógica está coberta pelo `FoldNavigationTests`).
 - **[P3] Workspace: `asc.py` mais estrito.** Aceitar só URLs da API da Apple no `call` e no `links.next`, e trocar os `assert` do DER por saída com erro (no template do workspace, revisão de segurança da `FSC-008`).
 - **[P2] Alvos `FiscalMock`, `FiscalPreview` e `FiscalAudit`.** Dados falsos compartilhados, prévias por tela e a auditoria do pacote (migração, prévia e volume), para o `scripts/audit.sh` deixar de pular.
