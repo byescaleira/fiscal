@@ -17,6 +17,7 @@ O que falta, por prioridade. Itens concluídos saem daqui; o motivo das decisõe
 
 - **[P2] "Como medimos" no cartão "Na sua região agora".** O botão aparece só com o ícone, sem o texto, sobre o fundo escuro. Visto no simulador na `FSC-011`, fora do canvas dela.
 - **[P2] Selo "Pior que a média" cortado em "Pior que a mé...".** No cartão de "Quem Gasta Mais e em Quê", em largura estreita. Rever também se a palavra "pior" cabe na regra de só fatos.
+- **[P2] Repensar o antes e durante o mandato.** Saiu da página do político na [FSC-014](../spdd/prompt/FSC-014-202611020300-[Feat]-politician-page-and-share-an-item.md), porque o usuário achou que o componente não se encaixa no app, embora os dados importem. Os arquivos seguem publicados e a Investigação segue lendo. Falta uma forma nova.
 - **[P2] Barra que aparece no topo ao rolar em outras telas.** O usuário pediu em 2026-11-02 mais uso do cabeçalho da página do político (`ProfileStickyHeader`, [FSC-014](../spdd/prompt/FSC-014-202611020300-[Feat]-politician-page-and-share-an-item.md)), só onde algo precise continuar visível. Levantar as telas e, se valer para outro app, levar a peça genérica para o `byescaleira-kit`.
 - **[P3] Duo dobrado: espaço acima dos filtros do Feed.** Ao rolar para cima, o sistema devolve a área da barra de navegação e os filtros fixos descem 58 pt, com um espaço branco acima ([QA da `FSC-013`](evidence/FSC-013/qa.md)).
 - **[P2] Capturas do README e da loja.** `01-hoje.png` e as outras ainda mostram as abas antigas; refazer antes da publicação.

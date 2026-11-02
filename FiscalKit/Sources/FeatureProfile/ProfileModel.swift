@@ -13,8 +13,6 @@ public final class ProfileModel {
     public private(set) var expenses: ExpenseList?
     public private(set) var actions: ActionList?
     public private(set) var weightMethod: WeightMethod?
-    public private(set) var context: PersonContext?
-    public var selectedIndicatorID: String?
     public private(set) var checks: FactCheckList?
     public private(set) var selectedExpenseYear: Int?
     public private(set) var hasFailedSource = false
@@ -144,10 +142,7 @@ public final class ProfileModel {
         async let actions = Self.fetch(true) { try await service.actions(slug: slug) }
         async let method = Self.fetch(true) { try await service.weightMethod() }
         async let checks = Self.fetch(true) { try await service.checks(slug: slug) }
-        async let context = Self.fetch(true) {
-            try await Self.context(for: profile, service: service)
-        }
-        let loaded = await (votes, proposals, speeches, expenses, context)
+        let loaded = await (votes, proposals, speeches, expenses)
         let extras = await (actions, method, checks)
         self.votes = loaded.0.value
         self.proposals = loaded.1.value
@@ -156,10 +151,9 @@ public final class ProfileModel {
         self.actions = extras.0.value ?? nil
         weightMethod = extras.1.value ?? nil
         self.checks = extras.2.value ?? nil
-        self.context = loaded.4.value ?? nil
         hasFailedSource =
             loaded.0.failed || loaded.1.failed || loaded.2.failed || loaded.3.failed
-            || loaded.4.failed || extras.0.failed || extras.2.failed
+            || extras.0.failed || extras.2.failed
     }
 
     nonisolated private static func fetch<Value: Sendable>(

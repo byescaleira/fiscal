@@ -7,7 +7,6 @@ public enum ProfilePortraitChoreography {
         case .proposals: .browRaise
         case .money: .lookAround
         case .origin: .settle
-        case .term: .lookAround
         case .checks: .doubleBlink
         case .about: .tilt
         }

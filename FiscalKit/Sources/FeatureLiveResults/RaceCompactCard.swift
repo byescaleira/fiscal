@@ -10,21 +10,25 @@ struct RaceCompactCard: View {
     var body: some View {
         let summary = RaceSummary(race: race)
         RouteLink(.race(id: race.id), showsChevron: false) {
-            VStack(alignment: .leading, spacing: .spaceM) {
-                RaceCompactHeader(summary: summary)
-                if summary.isDuel {
-                    RaceDuel(summary: summary)
-                } else {
-                    RaceStandings(
-                        contenders: summary.compactContenders, cut: summary.majorityCut,
-                        showsVotes: false)
-                    if let hidden = summary.hiddenText {
-                        Text(verbatim: hidden)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+            HStack(spacing: .spaceM) {
+                VStack(alignment: .leading, spacing: .spaceM) {
+                    RaceCompactHeader(summary: summary)
+                    if summary.isDuel {
+                        RaceDuel(summary: summary)
+                    } else {
+                        RaceStandings(
+                            contenders: summary.compactContenders, cut: summary.majorityCut,
+                            showsVotes: false)
+                        if let hidden = summary.hiddenText {
+                            Text(verbatim: hidden)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
                     }
+                    RaceCompactFooter(summary: summary)
                 }
-                RaceCompactFooter(summary: summary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                RouteChevron()
             }
             .padding(.spaceL)
             .frame(maxWidth: .infinity, alignment: .leading)

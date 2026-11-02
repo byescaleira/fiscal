@@ -80,10 +80,11 @@ struct ProfileChaptersTests {
         #expect(model.facts.allSatisfy { $0.value != PublicFormat.missing })
     }
 
-    @Test func aGovernorComesBeforeTheEconomicContextAndHasNoCongressChapters() async {
+    @Test func aGovernorHasNoCongressChaptersAndNoContextChapter() async {
         let model = await loaded("tarcisio-de-freitas")
         #expect(model.chapters.first == .origin)
         #expect(model.chapters.contains(.about))
+        #expect(ProfileChapter.order(for: .governor) == [.origin, .checks, .about])
         for chapter in [ProfileChapter.votes, .proposals, .money] {
             #expect(!model.chapters.contains(chapter))
         }
@@ -194,7 +195,7 @@ struct ProfilePortraitChoreographyTests {
     @Test func everyChapterHasOneFixedGesture() {
         let gestures = ProfileChapter.allCases.map(ProfilePortraitChoreography.gesture)
         #expect(
-            gestures == [.tilt, .browRaise, .lookAround, .settle, .lookAround, .doubleBlink, .tilt])
+            gestures == [.tilt, .browRaise, .lookAround, .settle, .doubleBlink, .tilt])
     }
 
     @Test func neighbourChaptersPlayDifferentGestures() {

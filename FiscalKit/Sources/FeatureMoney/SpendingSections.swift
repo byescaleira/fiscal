@@ -102,7 +102,11 @@ private struct SpenderCard: View {
             Button {
                 open(.person(slug: spender.person.slug), in: section)
             } label: {
-                identity.contentShape(.rect)
+                HStack(spacing: .spaceM) {
+                    identity.frame(maxWidth: .infinity, alignment: .leading)
+                    RouteChevron()
+                }
+                .contentShape(.rect)
             }
             .buttonStyle(.plain)
             .accessibilityElement(children: .ignore)

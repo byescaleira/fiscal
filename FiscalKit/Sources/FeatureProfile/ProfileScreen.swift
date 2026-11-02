@@ -21,12 +21,7 @@ public struct ProfileScreen: View {
         .navigationTitle(profile.title)
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Color.clear.frame(width: .spaceHairline, height: .spaceHairline)
-                    .accessibilityHidden(true)
-                }
-            }
+            .toolbar(removing: .title)
         #endif
         .task(id: session.generation) { await profile.load() }
         .errorAlert($profile.error)

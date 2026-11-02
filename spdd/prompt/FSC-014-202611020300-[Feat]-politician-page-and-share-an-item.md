@@ -8,8 +8,8 @@
 
 **Capítulos e o que existe**
 
-1. Dada uma deputada federal com todos os dados, quando a página abre, então os capítulos são, nessa ordem, Como vota, O que propõe, Quanto gasta, De onde vem, Durante o mandato, O que circulou e Quem é, e nenhum traço aparece.
-2. Dado um governador sem votos, propostas nem cota nas fontes, quando a página abre, então os capítulos são De onde vem, Durante o mandato, O que circulou (se houver) e Quem é, e a pessoa vem antes do contexto econômico.
+1. Dada uma deputada federal com todos os dados, quando a página abre, então os capítulos são, nessa ordem, Como vota, O que propõe, Quanto gasta, De onde vem, O que circulou e Quem é, e nenhum traço aparece.
+2. Dado um governador sem votos, propostas nem cota nas fontes, quando a página abre, então os capítulos são De onde vem, O que circulou (se houver) e Quem é.
 3. Dadas duas pessoas do mesmo cargo com valores diferentes, quando as páginas abrem, então a ordem dos capítulos é a mesma, porque depende só do cargo e de existir dado.
 4. Dado um capítulo sem nenhum dado, quando a página monta, então ele e o atalho dele não existem.
 5. Dado o resumo do topo, quando a página abre, então mostra até 4 fatos que existem, cada um numa frase simples com a fonte, e tocar em um leva ao capítulo dele; sem fatos, o resumo não aparece.
@@ -49,9 +49,18 @@
 
 **Acabamento e acessibilidade**
 
-27. Dado o gráfico de contexto, quando aparece, então "Posse" não fica em cima dos rótulos dos anos.
+27. Dada a página de qualquer cargo, quando abre, então o contexto de indicadores ("Durante o mandato") não aparece nela; os arquivos publicados e a Investigação continuam como estão.
 28. Dado o maior tamanho de texto e o VoiceOver, quando a página abre, então nada corta nem quebra no meio da palavra, os títulos de capítulo são cabeçalhos, os atalhos são botões com o traço de selecionado, e compartilhar diz o que compartilha.
 29. Dado o Duo aberto, o iPad e o Mac, quando a página abre, então fica em coluna legível, e o que se abre vai ao outro lado, como nas outras abas.
+
+**Um destino principal por cartão**
+
+30. Dado um cartão do Feed que abre uma votação, as notas ou um conteúdo, quando aparece, então tem a setinha à direita, centralizada na altura, com padding, e tocar em qualquer parte dele abre esse destino.
+31. Dado esse cartão com uma pessoa só no topo, quando a pessoa toca no retrato ou no nome, então abre o perfil; em cartão com várias pessoas, cada linha de pessoa abre o perfil dela.
+32. Dado um cartão que abre uma fonte externa, quando aparece, então não tem setinha e mantém "Ver a fonte" com o símbolo de link externo; sem destino, nem setinha nem toque.
+33. Dada uma linha de voto ou de proposta no perfil, quando aparece, então tem a setinha à direita e o botão de compartilhar separado dela, sem cortar o texto.
+34. Dados os cartões de destaque, de região e de apuração que abrem outra tela, quando aparecem, então seguem a mesma regra.
+35. Dado o VoiceOver, quando lê um desses cartões, então o destino principal é um botão com o resumo do cartão, e a pessoa é outro botão, que diz que abre o perfil.
 
 ## Entities
 
@@ -63,10 +72,17 @@ classDiagram
         proposals
         money
         origin
-        term
         checks
         about
         +title
+    }
+    class RouteChevron {
+        <<view>>
+    }
+    class RouteCard {
+        <<view>>
+        +route Route
+        +content
     }
     class ProfileSummaryFact {
         +id
@@ -134,6 +150,7 @@ classDiagram
         +reference
         +summary
     }
+    RouteCard --> RouteChevron
     ProfileModel --> ProfileChapter
     ProfileModel --> ProfileSummaryFact
     ProfileSummaryFact --> ProfileChapter
@@ -151,8 +168,8 @@ classDiagram
 
 - **Decisões registradas.** O [ADR 0023](../../docs/adr/0023-politician-page-chapters-and-item-cards.md), registra os capítulos, a regra do gesto e os cartões de um item.
 - **Rolagem com capítulos.** Decisão do usuário. Uma rolagem só, em `LazyVStack` com cabeçalho fixo, no lugar de `AdaptiveList`. Os títulos são perguntas ou frases simples, em vez de nomes de base de dados.
-- **Ordem fixa por cargo.** Legislativo: Como vota, O que propõe, Quanto gasta, De onde vem, Durante o mandato, O que circulou, Quem é. Executivo: De onde vem, Durante o mandato, O que circulou, Quem é. Nunca por valor, e só com o que existe.
-- **O que entra em cada capítulo.** Como vota: votos e temas. O que propõe: ações, propostas, discursos e comissões. Quanto gasta: cota, salário e notas. De onde vem: eleição, patrimônio, campanhas e trajetória. Durante o mandato: o contexto de hoje, com o aviso "Contexto, não causa". O que circulou: checagens. Quem é: dados pessoais, contato, cobertura e o que falta.
+- **Ordem fixa por cargo.** Legislativo: Como vota, O que propõe, Quanto gasta, De onde vem, O que circulou, Quem é. Executivo: De onde vem, O que circulou, Quem é. Nunca por valor, e só com o que existe.
+- **O que entra em cada capítulo.** Como vota: votos e temas. O que propõe: ações, propostas, discursos e comissões. Quanto gasta: cota, salário e notas. De onde vem: eleição, patrimônio, campanhas e trajetória. O que circulou: checagens. Quem é: dados pessoais, contato, cobertura e o que falta.
 - **Bonequinho.** O topo mantém o retrato grande, sem expressão ligada a dado. Ao rolar, `ProfilePortraitChoreography` dá um gesto neutro do molde para cada capítulo, numa tabela que recebe só o capítulo. Assim, o tipo impede o gesto de depender do dado. Só um retrato anima por vez, e o cabeçalho usa o que `PortraitArtView` já faz para pausar fora da tela. Os gestos e a tabela são iterados no iPhone.
 - **Referências antes de desenhar.** Ver perfis reais em imagens do App Store (como Strava, Apple Sports e Threads) e iterar até o ok. **O trabalho para na operação 3 para esse ok.**
 - **Só o que existe.** `facts` deixa de mostrar valor ausente. O resumo escolhe até 4 fatos numa ordem fixa por cargo. A frase do fim usa `coverage` e o cargo, e some a nota sobre o traço.
@@ -162,6 +179,8 @@ classDiagram
 - **Cartões novos.** `ShareSubject` ganha quatro casos, e `ShareCardContent.Body` ganha três; o mês reaproveita `.expenses`. Cada estilo de cartão da `FSC-010` aprende os três corpos novos, com a Folha como padrão e sem Duelo. Os links reaproveitam chaves do site, e por isso nem o servidor nem a AASA mudam.
 - **Compartilhar de dentro.** Um botão de ícone no fim da linha e o menu de contexto, nas votações e propostas do perfil e nas notas de `ExpensesScreen`. O topo continua compartilhando a pessoa.
 - **Checagens.** Decisão do usuário: ligar, com o texto do brief e do [canvas FSC-006](FSC-006-202610291700-[Codify]-fact-checks.md). Sai `showsFactChecks`. Sem contagem e sem ordem por veredito: só por data.
+- **Contexto fora da página.** Decisão do usuário: o componente de antes e durante o mandato não se encaixa no app, embora os dados importem. Sai da página, e repensar a forma dele vai para o backlog. `PersonContext`, os arquivos publicados e a Investigação não mudam.
+- **Um destino principal por cartão.** Decisão do usuário: o conteúdo mais importante é o toque principal e, quando ele abre outra tela, a setinha fica à direita do cartão, com padding. `RouteCard` põe o botão principal atrás do conteúdo, com o resto sem toque, e assim a pessoa pode ter um botão próprio por cima sem aninhar botões. Link externo mantém o próprio símbolo. Blocos pequenos em grade ou carrossel, como os rostos da bancada e as eleições passadas, ficam sem setinha, porque nela não há canto direito que caiba.
 - **Sem apoio.** A página e os cartões não leem o apoio. `support_stays_private` barra.
 - **Fora daqui.** A regra dos cartões de candidato em 72 horas segue no backlog, porque os cartões não têm retrato.
 
@@ -171,10 +190,12 @@ classDiagram
 - `FiscalDesignSystem/Components/PortraitArtwork.swift`, `PersonPortrait.swift`: `PortraitGesture` público e `PortraitRequest.gesture`.
 - `FeatureCore/Portraits/PortraitArtView.swift`: toca o gesto pedido.
 - `FeatureCore/Navigation/ShareSubject.swift`: os quatro casos novos.
+- `FeatureCore/Navigation/RouteLink.swift`, `RouteCard.swift` (novo): `RouteChevron` e `RouteCard`.
+- Cartões e linhas que abrem outra tela: `FeatureFeed/FeedRows.swift`, `FeedHighlightHero.swift`; `FeatureRegion/RegionNow.swift`; `FeatureLiveResults/RaceCompactCard.swift`, `RaceWinnerCard.swift`, `RaceHeroCard.swift`; `FeatureMoney/SpendingSections.swift`.
 - `FeatureProfile/`:
   - novos: `ProfileChapter.swift`, `ProfileModel+Chapters.swift`, `ProfileModel+Summary.swift`, `ProfilePortraitChoreography.swift`, `ProfileStickyHeader.swift`, `ProfileChapterViews.swift`, `ProfileMoneyChapter.swift`, `ProfileChecksChapter.swift`;
-  - mudam: `ProfileScreen.swift`, `ProfileHero.swift`, `ProfileModel.swift`, `ProfileModel+Numbers.swift`, `ProfileModel+Activity.swift`, `ProfileModel+History.swift`, `ProfileActivitySections.swift`, `ProfileActionsSection.swift`, `ProfileHistorySections.swift`, `ProfileContextSection.swift`;
-  - saem: `ProfileExpenses.swift`, `ProfileNumbersExplainer.swift`, e o que sobrar delas vai para os capítulos.
+  - mudam: `ProfileScreen.swift`, `ProfileHero.swift`, `ProfileModel.swift`, `ProfileModel+Numbers.swift`, `ProfileModel+Activity.swift`, `ProfileModel+History.swift`, `ProfileActivitySections.swift`, `ProfileActionsSection.swift`, `ProfileHistorySections.swift`;
+  - saem: `ProfileExpenses.swift`, `ProfileNumbersExplainer.swift`, e o que sobrar delas vai para os capítulos; `ProfileContextSection.swift` e `ProfileModel+Context.swift`, sem ir para outro lugar.
 - `FeatureMoney/`: `ExpenseRows.swift`, `ExpensesModel.swift`, com compartilhar por nota e por mês.
 - `FeatureShare/`: `ShareModel.swift`, `ShareCardContent.swift`, `ShareCardBuilder+Items.swift` (novo), `ShareContentRules.swift`, `ShareCaption.swift`, `ShareStyle.swift`, `ShareFormat.swift`, `ShareTypographicView.swift`, `ShareDataView.swift`, `SharePoster.swift`, `ShareMotion.swift`.
 - `AppShell/RouteScreen.swift`: se precisar passar um serviço novo ao modelo.
@@ -214,8 +235,7 @@ classDiagram
 5. **Só o que existe e acabamento.** Depende de: 3.
    - Capítulos com frases simples, sem traço e sem a nota do traço.
    - A frase do fim, com `gaps`.
-   - Legenda do gráfico de contexto sem sobrepor os anos.
-   - Cobre: 1 a 4, 6, 7, 27. Verificação: `ProfileChaptersTests`, captura com governador e prefeito.
+   - Cobre: 1 a 4, 6, 7. Verificação: `ProfileChaptersTests`, captura com governador e prefeito.
 6. **Checagens e marca do retrato.** Depende de: 3.
    - `checks` carregadas em `load()`, com falha sem derrubar a página.
    - `ProfileChecksChapter`, com título, aviso, selo como veio, data, `ExternalLink` e crédito.
@@ -231,15 +251,28 @@ classDiagram
    - Botões e menu de contexto no perfil e em `ExpensesScreen`; nota sem CNPJ não tem botão.
    - **Mostrar os cartões no iPhone ao terminar.**
    - Cobre: 17 a 24. Verificação: `ShareItemCardsTests`, `ShareContentRulesTests`, `ShareCardSnapshotTests`, iPhone.
-8. **Acessibilidade e testes de interface.** Depende de: 3 a 7.
+8. **Sai Durante o mandato.** Depende de: 3.
+   - Sai `ProfileChapter.term`, e com ele `ProfileContextSection` e `ProfileModel+Context`.
+   - `ProfileModel` deixa de ler `context`, indicadores e `selectedIndicatorID`.
+   - Item no backlog para repensar o componente.
+   - Cobre: 1, 2, 27. Verificação: `ProfileChaptersTests`, com governador e prefeito.
+9. **Um destino principal por cartão.** Depende de: 7.
+   - `RouteChevron`, usado também por `RouteLink`, e `RouteCard(route:) { conteúdo }`.
+   - `FeedCard`: conteúdo sem toque e botão principal atrás; retrato e nome em botão próprio com uma pessoa; linha de cada pessoa com várias.
+   - Votos e propostas do perfil, com a setinha de volta e compartilhar à parte.
+   - Destaque, região, apuração e gastos, onde o cartão abre outra tela e não tem setinha.
+   - **Mostrar no iPhone ao terminar.**
+   - Cobre: 30 a 35. Verificação: teste de interface com a pessoa e o conteúdo, captura em largura estreita e no maior tamanho de texto, iPhone.
+10. **Acessibilidade e testes de interface.** Depende de: 3 a 9.
    - `ProfileChaptersTests`: atalhos como botões, capítulos como cabeçalhos, "Ilustração do Fiscal", maior tamanho de texto com o fim alcançável.
    - Roteiro com Reduzir movimento e leitura com VoiceOver, sempre que for possível nesta máquina.
    - Cobre: 11, 13, 28, 29. Verificação: `scripts/ui-test.sh`, captura.
-9. **Documentos e site.** Depende de: 7. `[P]` com 8.
-   - ADR 0023, brief, arquitetura, validação, `README`, backlog (checagens no perfil e marca do retrato).
+11. **Documentos e site.** Depende de: 9. `[P]` com 10.
+   - ADR 0023, brief (o contexto saiu da página), arquitetura, validação, `README`, backlog (checagens no perfil e marca do retrato).
+   - O cartão "Contexto, não causa" de `site/index.html` deixa de prometer os indicadores na página.
    - `site/*` com o que passou a existir, e `python3 -I scripts/site-i18n.py extract` e `check`.
    - Cobre: Safeguard de documentos. Verificação: `check` do site.
-10. **Fechamento.** Depende de: todas.
+12. **Fechamento.** Depende de: todas.
     - `scripts/strings.sh`, `CHANGELOG`, roadmap e índice.
     - QA em `docs/evidence/FSC-014/qa.md`, dizendo o que não foi visto.
     - `scripts/verify.sh --full`, revisão em uma rodada (`spec-reviewer`, interface e código), PR para a `development` e build no iPhone.
@@ -270,6 +303,8 @@ classDiagram
 - **Ausência de checagem não diz nada:** sem capítulo e sem frase quando não há checagem.
 - **Pessoa comum:** nota sem CNPJ nunca vira cartão. **QUEBRA** se o nome de uma pessoa física sair num cartão.
 - **Contexto no cartão:** nota sempre com "Uma de N" e o total do ano; voto sempre com a proposta. Sem fonte, sem cartão.
+- **Contexto:** sair da página não apaga nada. Sem mudança em `PersonContext`, nos arquivos publicados ou na Investigação. **QUEBRA** se um dado publicado sumir.
+- **Um destino principal:** todo cartão que abre outra tela mostra a setinha, e todo toque fora de um botão próprio abre o destino principal. Sem botão dentro de botão. Link externo nunca usa a setinha. **QUEBRA** se a pessoa ficar sem como abrir o conteúdo principal ou se o VoiceOver perder um dos destinos.
 - **Cartões:** sem o bonequinho, sem apoio e sem dado ausente, com uma ação por cartão.
 - **Neutralidade:** a página e os cartões não leem o apoio, e `support_stays_private` barra.
 - **Sem servidor:** nenhuma mudança em `server/`, nem deploy, chave nova do site ou AASA.

@@ -72,8 +72,6 @@ extension ProfileModel {
         case .origin:
             return !facts(in: .origin).isEmpty || !assetDeclarations.isEmpty
                 || !campaigns.isEmpty || !timeline.isEmpty
-        case .term:
-            return hasContext
         case .checks:
             return !checkItems.isEmpty
         case .about:

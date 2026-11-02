@@ -2,7 +2,7 @@ import FiscalDomain
 import Foundation
 
 public enum ProfileChapter: String, CaseIterable, Identifiable, Sendable {
-    case votes, proposals, money, origin, term, checks, about
+    case votes, proposals, money, origin, checks, about
 
     public var id: String { rawValue }
 
@@ -12,14 +12,13 @@ public enum ProfileChapter: String, CaseIterable, Identifiable, Sendable {
         case .proposals: String(appLocalized: "What They Propose")
         case .money: String(appLocalized: "What They Spend")
         case .origin: String(appLocalized: "Where They Come From")
-        case .term: String(appLocalized: "During the Term")
         case .checks: String(appLocalized: "What Circulated")
         case .about: String(appLocalized: "Who They Are")
         }
     }
 
     public static func order(for office: Office) -> [ProfileChapter] {
-        office.isLegislative ? allCases : [.origin, .term, .checks, .about]
+        office.isLegislative ? allCases : [.origin, .checks, .about]
     }
 }
 

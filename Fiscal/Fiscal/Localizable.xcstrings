@@ -366,6 +366,7 @@
       }
     },
     "%@ since taking office" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -524,6 +525,7 @@
       }
     },
     "%@ · until %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -2605,6 +2607,7 @@
       }
     },
     "Before · %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -3604,6 +3607,7 @@
       }
     },
     "Context, not cause" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -4243,6 +4247,7 @@
       }
     },
     "During the Term" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -4253,6 +4258,7 @@
       }
     },
     "During the term" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -4263,6 +4269,7 @@
       }
     },
     "During the term · %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -4273,6 +4280,7 @@
       }
     },
     "During the term, %@ %@ changed %@." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -4283,6 +4291,7 @@
       }
     },
     "During the term, %@ %@ went from %@ to %@ (%@)." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -6723,6 +6732,7 @@
       }
     },
     "In the %lld months before, %@." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "variations" : {
@@ -7103,6 +7113,7 @@
       }
     },
     "Latest" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -9885,6 +9896,7 @@
       }
     },
     "Period" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -10525,6 +10537,7 @@
       }
     },
     "Prices, jobs and these indicators move for many reasons: the economy, other governments, the whole Congress. They show what happened during the term, not what this person caused." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -12308,6 +12321,7 @@
       }
     },
     "Shows this indicator in the chart" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -14250,6 +14264,7 @@
       }
     },
     "The term starts at the month before taking office and runs to the latest month published; before is the same number of months ahead of it." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -14441,6 +14456,7 @@
       }
     },
     "There's no data for the %lld months before." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "variations" : {
@@ -14701,6 +14717,7 @@
       }
     },
     "Took office" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -14711,6 +14728,7 @@
       }
     },
     "Took office · %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -16893,6 +16911,7 @@
       }
     },
     "before %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {

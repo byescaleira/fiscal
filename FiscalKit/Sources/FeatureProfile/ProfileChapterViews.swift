@@ -35,8 +35,6 @@ struct ProfileChapterView: View {
             ProfileAssetsSection()
             ProfileCampaignsSection()
             ProfileTimelineSection()
-        case .term:
-            ProfileContextSection()
         case .checks:
             ProfileChecksChapter()
         case .about:

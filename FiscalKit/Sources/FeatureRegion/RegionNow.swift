@@ -74,7 +74,11 @@ private struct RegionHighlightCard: View {
             Button {
                 open(region.route(for: highlight), in: section)
             } label: {
-                content.contentShape(.rect)
+                HStack(spacing: .spaceM) {
+                    content.frame(maxWidth: .infinity, alignment: .leading)
+                    RouteChevron(isOnDarkCard: true)
+                }
+                .contentShape(.rect)
             }
             .buttonStyle(.plain)
             .accessibilityElement(children: .ignore)
@@ -153,9 +157,7 @@ private struct RegionVoteRow: View {
 
     var body: some View {
         let board = vote.board
-        Button {
-            open(.vote(id: vote.id), in: section)
-        } label: {
+        RouteLink(.vote(id: vote.id)) {
             VStack(alignment: .leading, spacing: .spaceS) {
                 HStack(spacing: .spaceS) {
                     Text(verbatim: board.eyebrow)
@@ -189,9 +191,7 @@ private struct RegionVoteRow: View {
                 }
             }
             .padding(.vertical, .spaceXS)
-            .contentShape(.rect)
         }
-        .buttonStyle(.plain)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: region.voteAccessibility(vote)))
         .accessibilityAddTraits(.isButton)

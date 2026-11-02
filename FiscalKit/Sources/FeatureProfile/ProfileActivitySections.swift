@@ -14,13 +14,11 @@ struct ProfileVotesSection: View {
             ) {
                 ForEach(profile.recentVotes) { vote in
                     let share = profile.shareRoute(for: vote)
-                    HStack(alignment: .top, spacing: .spaceS) {
-                        RouteLink(.vote(id: vote.voteId), showsChevron: false) {
-                            ProfileVoteRow(vote: vote)
-                        }
-                        .accessibilityLabel(Text(verbatim: profile.voteAccessibility(vote)))
-                        ShareItemButton(share, label: Text("Share the vote on \(vote.heading)"))
+                    RouteLink(.vote(id: vote.voteId)) {
+                        ProfileVoteRow(vote: vote)
                     }
+                    .accessibilityLabel(Text(verbatim: profile.voteAccessibility(vote)))
+                    .profileRowShare(share, label: Text("Share the vote on \(vote.heading)"))
                     .shareItemMenu(share, label: Text("Share This Vote"))
                 }
             }
@@ -46,12 +44,15 @@ private struct ProfileVoteRow: View {
                 .font(.subheadline)
                 .multilineTextAlignment(.leading)
                 .fixedSize(horizontal: false, vertical: true)
-            if let guidance = profile.guidanceText(vote) {
-                Text(verbatim: guidance).font(.caption).foregroundStyle(.tertiary)
+            HStack {
+                if let guidance = profile.guidanceText(vote) {
+                    Text(verbatim: guidance).font(.caption).foregroundStyle(.tertiary)
+                }
+                Spacer(minLength: .badgeL)
             }
+            .frame(minHeight: .badgeL)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .contentShape(.rect)
     }
 }
 
@@ -69,11 +70,9 @@ struct ProfileProposalsSection: View {
             ) {
                 ForEach(profile.recentProposals) { proposal in
                     let share = profile.shareRoute(for: proposal)
-                    HStack(alignment: .top, spacing: .spaceS) {
-                        ProfileProposalRow(proposal: proposal)
-                        ShareItemButton(share, label: Text("Share \(proposal.reference)"))
-                    }
-                    .shareItemMenu(share, label: Text("Share This Proposal"))
+                    ProfileProposalRow(proposal: proposal)
+                        .profileRowShare(share, label: Text("Share \(proposal.reference)"))
+                        .shareItemMenu(share, label: Text("Share This Proposal"))
                 }
             }
         }
@@ -85,7 +84,7 @@ private struct ProfileProposalRow: View {
     let proposal: Proposal
 
     var body: some View {
-        RouteLink(profile.proposalRoute(proposal), showsChevron: false) {
+        RouteLink(profile.proposalRoute(proposal)) {
             VStack(alignment: .leading, spacing: .spaceS) {
                 FlowLayout(spacing: .spaceXS) {
                     Text(verbatim: proposal.reference)
@@ -109,9 +108,9 @@ private struct ProfileProposalRow: View {
                     .font(.headline)
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: .badgeL)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .contentShape(.rect)
         }
     }
 }
@@ -138,6 +137,15 @@ struct ProfileSpeechesSection: View {
                     }
                 }
             }
+        }
+    }
+}
+
+extension View {
+    fileprivate func profileRowShare(_ route: Route, label: Text) -> some View {
+        overlay(alignment: .bottomTrailing) {
+            ShareItemButton(route, label: label)
+                .padding(.trailing, .spaceXL)
         }
     }
 }

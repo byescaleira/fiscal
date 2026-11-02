@@ -18,7 +18,11 @@ struct FeedHighlightHero: View {
             Button {
                 open(feed.route(for: highlight), in: section)
             } label: {
-                content.contentShape(.rect)
+                HStack(spacing: .spaceM) {
+                    content.frame(maxWidth: .infinity, alignment: .leading)
+                    RouteChevron(isOnDarkCard: true)
+                }
+                .contentShape(.rect)
             }
             .buttonStyle(.plain)
             .accessibilityElement(children: .ignore)
