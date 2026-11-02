@@ -28,6 +28,7 @@ public struct VoteDetailScreen: View {
         .navigationTitle(vote.title)
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar(removing: .title)
         #endif
         .toolbar { VoteDetailToolbar() }
         .task { await vote.load() }
