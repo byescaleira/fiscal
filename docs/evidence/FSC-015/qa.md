@@ -40,6 +40,8 @@
 | 31 | Maior tamanho e VoiceOver | Rolar até o fim | passou em parte | `testTheEndIsReachableAtTheLargestTextSize` no detalhe e em quem você segue, [fim](vote-largest-end.png). VoiceOver ligado não foi usado |
 | 32 | Duo aberto, iPad e Mac | Abrir | não executável aqui | Vistas só com o Duo dobrado e o iPhone físico. Os builds passam |
 
+**Verificação:** `scripts/verify.sh --full` passou, e `scripts/ui-test.sh` passou nos 23 testes, com o simulador acima. Mac, iPad e Duo aberto só tiveram build.
+
 **Defeito achado no QA:** no maior tamanho de texto, a barra crescia até ocupar a tela, cortava o título e impedia a rolagem. A barra agora limita o texto a `xxxLarge`, e `testTheEndIsReachableAtTheLargestTextSize` cobre isso. A linha de Votações, o título do dia ("Onte-m") e a linha da pauta também foram corrigidos nesse tamanho.
 
 **Fora do canvas, no backlog:** no maior tamanho, a corrida corta o nome e o gráfico mensal sobrepõe os meses. Os dados publicados estão parados em 28/10.
