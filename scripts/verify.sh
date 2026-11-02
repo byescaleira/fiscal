@@ -81,6 +81,7 @@ case "$mode" in
     admin
     server --deep
     step python3 -I scripts/art.py check
+    step python3 -I scripts/portrait-check.py
     step scripts/audit.sh
     ;;
   *)
