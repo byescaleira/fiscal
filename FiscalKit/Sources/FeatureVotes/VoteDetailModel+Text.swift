@@ -23,8 +23,8 @@ extension VoteDetailModel {
 
     public var noValue: Double { Double(vote?.no ?? 0) }
 
-    public var othersText: String {
-        String(appLocalized: "\(PublicFormat.number(vote?.others)) other votes")
+    public var othersText: String? {
+        vote?.others.map { String(appLocalized: "\($0) other votes") }
     }
 
     public var quorumText: String {

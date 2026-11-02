@@ -9,7 +9,7 @@ struct ProfileMoneyChapter: View {
 
     var body: some View {
         if profile.hasExpenses || !profile.expenseYears.isEmpty {
-            ProfileBlock(
+            ContentBlock(
                 title: Text(verbatim: profile.expensesSectionTitle),
                 footer: [profile.sourceText(for: ["expenses"])]
             ) {

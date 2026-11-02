@@ -80,18 +80,9 @@ private struct ProfilePage: View {
         } action: {
             pageTop = $0
         }
-        .overlay(alignment: .top) {
+        .revealBar(isShown: showsHeader, height: $headerHeight) {
             ProfileStickyHeader(select: jump)
-                .onGeometryChange(for: CGFloat.self) {
-                    $0.size.height
-                } action: {
-                    headerHeight = $0
-                }
                 .portraitsStill(!showsHeader)
-                .opacity(showsHeader ? 1 : 0)
-                .allowsHitTesting(showsHeader)
-                .accessibilityHidden(!showsHeader)
-                .animation(reduceMotion ? nil : .snappy, value: showsHeader)
         }
         .onChange(of: tops) { profile.moveCurrentChapter(tops: tops, line: line + .spaceHairline) }
         .onChange(of: headerHeight) {
@@ -131,7 +122,7 @@ private struct ProfileSummary: View {
 
     var body: some View {
         if !profile.summary.isEmpty {
-            ProfileBlock {
+            ContentBlock {
                 ForEach(profile.summary) { fact in
                     Button {
                         select(fact.chapter)

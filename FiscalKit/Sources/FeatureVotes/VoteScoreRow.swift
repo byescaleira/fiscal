@@ -43,7 +43,7 @@ struct ScoreLine: View {
     let vote: VoteSummary
     let yes: String
     let no: String
-    let others: String
+    let others: String?
 
     var body: some View {
         let outcome = VoteOutcome(vote)
@@ -111,21 +111,24 @@ private struct SideLabelStyle: LabelStyle {
 
 struct OutcomeCenter: View {
     let outcome: VoteOutcome
-    let others: String
+    let others: String?
 
     var body: some View {
         VStack(spacing: .space2XS) {
-            Label(outcome.title, systemImage: outcome.symbol)
-                .font(.chipLabel)
-                .foregroundStyle(outcome.color)
-                .padding(.horizontal, .spaceS)
-                .padding(.vertical, .space2XS)
-                .background(outcome.color.opacity(.opacityTint), in: .capsule)
-                .lineLimit(1)
-            Text(verbatim: others)
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-                .monospacedDigit()
+            HStack(spacing: .space2XS) {
+                Image(systemName: outcome.symbol)
+                Text(verbatim: outcome.title)
+                    .lineLimit(1)
+            }
+            .font(.chipLabel)
+            .foregroundStyle(outcome.color)
+            .accessibilityElement(children: .combine)
+            if let others {
+                Text(verbatim: others)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .monospacedDigit()
+            }
         }
         .fixedSize()
     }

@@ -116,15 +116,7 @@ private struct HeroSide: View {
         VStack(spacing: .space2XS) {
             ScoreboardFigure(value, numeric: numeric)
                 .foregroundStyle(isDimmed ? BoardStyle.secondary : BoardStyle.primary)
-            Label(choice.title, systemImage: choice.symbol)
-                .font(.chipLabel)
-                .textCase(.uppercase)
-                .lineLimit(1)
-                .fixedSize()
-                .foregroundStyle(BoardStyle.primary)
-                .padding(.horizontal, .spaceS)
-                .padding(.vertical, .space2XS)
-                .background(BoardStyle.track, in: .capsule)
+            StatusCircle(choice.title, symbol: choice.symbol, color: BoardStyle.primary)
         }
         .frame(maxWidth: .infinity)
     }
@@ -147,9 +139,11 @@ private struct HeroCenter: View {
             Text(verbatim: vote.quorumText)
                 .font(.caption2.weight(.semibold))
                 .foregroundStyle(BoardStyle.secondary)
-            Text(verbatim: vote.othersText)
-                .font(.caption2)
-                .foregroundStyle(BoardStyle.secondary)
+            if let others = vote.othersText {
+                Text(verbatim: others)
+                    .font(.caption2)
+                    .foregroundStyle(BoardStyle.secondary)
+            }
         }
         .foregroundStyle(BoardStyle.primary)
         .multilineTextAlignment(.center)

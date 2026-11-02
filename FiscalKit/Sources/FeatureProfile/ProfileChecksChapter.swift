@@ -8,7 +8,7 @@ struct ProfileChecksChapter: View {
 
     var body: some View {
         if !profile.checkItems.isEmpty {
-            ProfileBlock(footer: [profile.checksSourceText]) {
+            ContentBlock(footer: [profile.checksSourceText]) {
                 IconRow(
                     "Only what the agency chose to check",
                     detail:

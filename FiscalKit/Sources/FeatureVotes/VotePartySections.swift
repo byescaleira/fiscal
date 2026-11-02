@@ -16,7 +16,7 @@ struct VoteGuidanceSection: View {
                     VStack(alignment: .leading, spacing: .spaceS) {
                         BallotChip(group.guidance, choice: group.choice)
                         FlowLayout(spacing: .spaceXS) {
-                            ForEach(group.parties, id: \.self) { PartyMark($0) }
+                            ForEach(group.parties, id: \.self) { PartyMark($0, wraps: true) }
                         }
                     }
                     .padding(.vertical, .space2XS)

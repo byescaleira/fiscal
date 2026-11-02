@@ -111,7 +111,8 @@ private struct BallotRow: View {
                 }
             }
             Spacer(minLength: .spaceS)
-            BallotMark(text: ballot.vote, choice: BallotChoice(vote: ballot.vote))
+            BallotMark(
+                text: ballot.vote, choice: BallotChoice(vote: ballot.vote), showsKnownText: false)
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: vote.ballotAccessibility(ballot)))
@@ -145,14 +146,17 @@ struct BallotMark: View {
     @ScaledMetric(relativeTo: .caption) private var diameter: CGFloat = .badgeS
     let text: String
     let choice: BallotChoice?
+    var showsKnownText = true
 
     var body: some View {
         let color = choice?.color ?? .secondary
         HStack(spacing: .spaceS) {
-            Text(verbatim: text)
-                .font(.chipLabel)
-                .foregroundStyle(color)
-                .lineLimit(1)
+            if showsKnownText || choice == nil {
+                Text(verbatim: text)
+                    .font(.chipLabel)
+                    .foregroundStyle(color)
+                    .lineLimit(1)
+            }
             Image(systemName: choice?.symbol ?? "circle.dotted")
                 .font(.chipLabel)
                 .foregroundStyle(color)

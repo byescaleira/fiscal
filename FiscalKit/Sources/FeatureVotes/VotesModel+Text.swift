@@ -42,8 +42,8 @@ extension VotesModel {
 
     public func noText(_ vote: VoteSummary) -> String { PublicFormat.number(vote.no) }
 
-    public func othersText(_ vote: VoteSummary) -> String {
-        String(appLocalized: "\(PublicFormat.number(vote.others)) other")
+    public func othersText(_ vote: VoteSummary) -> String? {
+        vote.others.map { String(appLocalized: "\($0) other votes") }
     }
 
     public func accessibility(_ vote: VoteSummary) -> String {

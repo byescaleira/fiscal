@@ -44,3 +44,4 @@ Cada decisão que molda o Fiscal além de uma única mudança ganha um registro 
 | [0021](0021-end-of-lens-support-on-device.md) | O fim da Lente: apoio só no aparelho, sem efeito na ordem das telas | Aceito |
 | [0022](0022-feed-first-tab-and-region.md) | O Feed é a primeira aba, e a Região guarda o lugar e quem a pessoa segue | Aceito |
 | [0023](0023-politician-page-chapters-and-item-cards.md) | A página do político em capítulos, gesto sem dado e cartões de um item | Aceito |
+| [0024](0024-reveal-bar-following-and-ballots-screens.md) | A barra ao rolar, quem você segue no Feed e os votos em tela própria | Aceito |

@@ -8,7 +8,7 @@ struct ProfileAssetsSection: View {
 
     var body: some View {
         if !profile.assetDeclarations.isEmpty {
-            ProfileBlock(
+            ContentBlock(
                 title: Text("Declared Assets"),
                 footer: [profile.assetsNote, profile.sourceText(for: ["assets"])]
             ) {
@@ -35,7 +35,7 @@ struct ProfileCampaignsSection: View {
 
     var body: some View {
         if !profile.campaigns.isEmpty {
-            ProfileBlock(
+            ContentBlock(
                 title: Text("Campaigns"), footer: [profile.sourceText(for: ["campaigns"])]
             ) {
                 ForEach(Array(profile.campaigns.enumerated()), id: \.offset) { _, campaign in
@@ -63,7 +63,7 @@ struct ProfileTimelineSection: View {
 
     var body: some View {
         if !profile.timeline.isEmpty {
-            ProfileBlock(title: Text("Career"), footer: [profile.sourceText(for: ["timeline"])]) {
+            ContentBlock(title: Text("Career"), footer: [profile.sourceText(for: ["timeline"])]) {
                 ForEach(Array(profile.timeline.enumerated()), id: \.offset) { _, career in
                     HStack(alignment: .top, spacing: .spaceM) {
                         Text(verbatim: String(career.year))
@@ -95,7 +95,7 @@ struct ProfileCommitteesSection: View {
 
     var body: some View {
         if !profile.committees.isEmpty {
-            ProfileBlock(title: Text("Committees"), footer: [profile.sourceText(for: ["votes"])]) {
+            ContentBlock(title: Text("Committees"), footer: [profile.sourceText(for: ["votes"])]) {
                 ForEach(Array(profile.committees.enumerated()), id: \.offset) { _, committee in
                     VStack(alignment: .leading, spacing: .space2XS) {
                         Text(verbatim: committee.name).font(.rowTitle)
@@ -116,7 +116,7 @@ struct ProfileAboutSection: View {
 
     var body: some View {
         if !profile.aboutLines.isEmpty {
-            ProfileBlock(footer: [profile.sourceText]) {
+            ContentBlock(footer: [profile.sourceText]) {
                 ForEach(profile.aboutLines) { line in
                     ProfileInfoRow(title: line.title, value: line.value)
                         .textSelection(.enabled)
@@ -124,7 +124,7 @@ struct ProfileAboutSection: View {
             }
         }
         if !profile.gaps.isEmpty {
-            ProfileFooter(lines: profile.gaps)
+            ContentFooter(lines: profile.gaps)
                 .font(.footnote)
                 .foregroundStyle(.secondary)
                 .padding(.horizontal, .spaceL)
