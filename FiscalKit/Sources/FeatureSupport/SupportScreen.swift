@@ -26,7 +26,7 @@ public struct SupportScreen: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .navigationTitle("My Support")
+        .emphasisTitle("My Support")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button("Choose People and Causes", systemImage: "slider.horizontal.3") {

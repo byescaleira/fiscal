@@ -33,11 +33,22 @@ struct SupportEditorModelTests {
         #expect(editor.chosen == [card])
     }
 
-    @Test func savingFollowsWhoWasAddedAndRemovingKeepsFollowing() async throws {
+    @Test func supportingDoesNotFollowByItself() async throws {
+        let (editor, context, follows) = try await makeEditor()
+        let card = try #require(editor.people.first)
+        editor.toggle(card)
+        #expect(!editor.alsoFollow)
+        await editor.save()
+        #expect(context.choice.people == [card.slug])
+        #expect(try await follows.isFollowing(slug: card.slug) == false)
+    }
+
+    @Test func alsoFollowFollowsWhoWasAddedAndRemovingKeepsFollowing() async throws {
         let (editor, context, follows) = try await makeEditor()
         let card = try #require(editor.people.first)
         editor.toggle(card)
         editor.toggle(.health)
+        editor.alsoFollow = true
         await editor.save()
         #expect(editor.isFinished)
         #expect(context.choice.people == [card.slug])

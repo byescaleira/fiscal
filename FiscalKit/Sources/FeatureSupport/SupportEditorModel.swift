@@ -12,6 +12,7 @@ public final class SupportEditorModel {
     public private(set) var isSaving = false
     public private(set) var isFinished = false
     public var query = ""
+    public var alsoFollow = false
     @ObservationIgnored private let context: SupportContext
     @ObservationIgnored private let service: (any PublicDataService)?
     @ObservationIgnored private let follows: (any FollowRepository)?
@@ -61,7 +62,7 @@ public final class SupportEditorModel {
         for card in cards { known[card.slug] = card }
     }
 
-    public func canAdd(_ card: PersonCard) -> Bool { draft.canAddPerson }
+    public var canAddPerson: Bool { draft.canAddPerson }
 
     public func canToggle(_ cause: Theme) -> Bool {
         draft.contains(cause) || draft.canAddCause
@@ -81,8 +82,10 @@ public final class SupportEditorModel {
         defer { isSaving = false }
         let previous = context.choice.people
         guard await context.save(draft) else { return }
-        let added = chosen.filter { !previous.contains($0.slug) }
-        await SupportedPeople.follow(added, in: follows)
+        if alsoFollow {
+            let added = chosen.filter { !previous.contains($0.slug) }
+            await SupportedPeople.follow(added, in: follows)
+        }
         isFinished = true
     }
 

@@ -55,13 +55,19 @@ private struct SupportPeopleSection: View {
                         .labelStyle(.iconOnly)
                         .buttonStyle(.plain)
                         .foregroundStyle(.secondary)
+                        .frame(minWidth: .badgeL, minHeight: .badgeL)
+                        .contentShape(.rect)
                 }
             }
             ForEach(editor.results) { SupportPersonChoice(card: $0, isSelected: false) }
+            Toggle("Also Follow", isOn: $editor.alsoFollow)
+                .font(.subheadline.weight(.semibold))
         } header: {
             SupportEditorHeader(title: "People", count: editor.peopleCount)
         } footer: {
-            Text("Anyone you add is also followed. Removing them from here does not unfollow.")
+            Text(
+                "Support stays on this device. People you follow can go to your iCloud and Spotlight, so following is your choice. Removing someone here does not unfollow."
+            )
         }
     }
 }
@@ -90,9 +96,10 @@ private struct SupportPersonChoice: View {
                 SelectionMark(isSelected: isSelected)
             }
             .contentShape(.rect)
+            .privacySensitive()
         }
         .buttonStyle(.plain)
-        .disabled(!isSelected && !editor.canAdd(card))
+        .disabled(!isSelected && !editor.canAddPerson)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
@@ -136,6 +143,7 @@ private struct SupportCauseChoice: View {
                 SelectionMark(isSelected: isSelected)
             }
             .contentShape(.rect)
+            .privacySensitive()
         }
         .buttonStyle(.plain)
         .disabled(!editor.canToggle(cause))

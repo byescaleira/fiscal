@@ -3,8 +3,25 @@ import FiscalData
 import FiscalDomain
 import Testing
 
+private actor FailingSupport: SupportRepository {
+    private(set) var resets = 0
+
+    func support() async throws -> SupportChoice? { throw FiscalError.onFetch }
+    func save(_ support: SupportChoice) async throws { throw FiscalError.onSave }
+    func reset() async throws { resets += 1 }
+}
+
 @MainActor
 struct SupportContextTests {
+    @Test func aFailedReadReportsAndErasesNothing() async {
+        let repository = FailingSupport()
+        let context = SupportContext(repository: repository)
+        await context.load()
+        #expect(context.error == .onFetch)
+        #expect(!context.hasLoaded)
+        #expect(await repository.resets == 0)
+    }
+
     @Test func savesAndErasesTheChoice() async throws {
         let repository = try FiscalDatabase.open(inMemory: true).repositories.support
         let context = SupportContext(repository: repository)

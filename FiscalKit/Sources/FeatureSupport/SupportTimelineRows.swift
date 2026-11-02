@@ -53,6 +53,7 @@ private struct SupportFilterChip: View {
                 isSelected ? AnyShapeStyle(tint) : AnyShapeStyle(.plainRow), in: .capsule
             )
             .contentShape(.capsule)
+            .privacySensitive()
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
@@ -61,6 +62,7 @@ private struct SupportFilterChip: View {
 
 struct SupportEventRow: View {
     @Environment(SupportModel.self) private var model
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let event: SupportEvent
 
     var body: some View {
@@ -73,50 +75,80 @@ struct SupportEventRow: View {
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: model.accessibility(event)))
+        .accessibilityAddTraits(Route.destination(for: event) == nil ? [] : .isButton)
+        .privacySensitive()
     }
 
-    private var content: some View {
-        HStack(alignment: .top, spacing: .spaceM) {
-            SupportDayColumn(day: event.date)
+    @ViewBuilder private var content: some View {
+        if dynamicTypeSize.isAccessibilitySize {
             VStack(alignment: .leading, spacing: .spaceS) {
-                Text(verbatim: model.kicker(event))
-                    .font(.caption.weight(.semibold))
+                SupportDayColumn(day: event.date, isInline: true)
+                details
+            }
+            .padding(.vertical, .space2XS)
+        } else {
+            HStack(alignment: .top, spacing: .spaceM) {
+                SupportDayColumn(day: event.date, isInline: false)
+                details
+            }
+            .padding(.vertical, .space2XS)
+        }
+    }
+
+    private var details: some View {
+        VStack(alignment: .leading, spacing: .spaceS) {
+            Text(verbatim: model.kicker(event))
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+            Text(verbatim: event.title)
+                .font(.subheadline.weight(.semibold))
+                .lineLimit(4)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+            ForEach(event.ballots) { SupportBallotLine(ballot: $0) }
+            ForEach(event.people) { SupportPersonLine(card: $0) }
+            if let causes = model.causesLine(event) {
+                Text(verbatim: causes)
+                    .font(.caption)
                     .foregroundStyle(.secondary)
-                Text(verbatim: event.title)
-                    .font(.subheadline.weight(.semibold))
-                    .lineLimit(4)
-                    .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
-                ForEach(event.ballots) { SupportBallotLine(ballot: $0) }
-                ForEach(event.people) { SupportPersonLine(card: $0) }
-                if let causes = model.causesLine(event) {
-                    Text(verbatim: causes)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
             }
         }
-        .padding(.vertical, .space2XS)
     }
 }
 
 private struct SupportDayColumn: View {
     let day: CalendarDay
+    let isInline: Bool
 
     var body: some View {
-        VStack(spacing: .spaceHairline) {
-            Text(verbatim: day.date().formatted(.dateTime.weekday(.abbreviated).locale(.app)))
-                .font(.caption2.weight(.semibold))
-                .foregroundStyle(.secondary)
-                .textCase(.uppercase)
-                .lineLimit(1)
-                .fixedSize()
-            Text(verbatim: day.date().formatted(.dateTime.day().locale(.app)))
-                .font(.emphasis(.title3, weight: .bold))
-                .monospacedDigit()
+        if isInline {
+            HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
+                dayNumber
+                weekday
+            }
+        } else {
+            VStack(spacing: .spaceHairline) {
+                weekday
+                dayNumber
+            }
+            .frame(minWidth: .badgeL)
         }
-        .frame(minWidth: .badgeL)
+    }
+
+    private var weekday: some View {
+        Text(verbatim: day.date().formatted(.dateTime.weekday(.abbreviated).locale(.app)))
+            .font(.caption2.weight(.semibold))
+            .foregroundStyle(.secondary)
+            .textCase(.uppercase)
+            .lineLimit(1)
+            .fixedSize()
+    }
+
+    private var dayNumber: some View {
+        Text(verbatim: day.date().formatted(.dateTime.day().locale(.app)))
+            .font(.emphasis(.title3, weight: .bold))
+            .monospacedDigit()
     }
 }
 

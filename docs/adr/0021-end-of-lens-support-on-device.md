@@ -14,7 +14,7 @@ A Lente juntava quem a pessoa apoia, os temas, a ordem das telas, a arte, a pale
 1. A Lente deixa de existir. O apoio vira uma escolha opcional de até 5 pessoas e até 5 causas, mostrada só na página "Meu apoio".
 2. O apoio não muda a ordem, o filtro nem o destaque de nenhuma outra tela. A única outra tela que o usa é a da votação, em "Como quem você apoia votou", que mostra fato.
 3. Causa é assunto, não posição. O app nunca diz que alguém votou a favor ou contra uma causa, não calcula alinhamento e não compara apoiados.
-4. Pessoas e causas seguem em `Device.store`, sem CloudKit e fora do backup. Nunca vão para servidor, telemetria, notificação, Spotlight, widget, Siri ou cartaz. Só saem na exportação pedida pela pessoa.
+4. Pessoas e causas seguem em `Device.store`, sem CloudKit e fora do backup. Nunca vão para servidor, telemetria, notificação, Spotlight, widget, Siri ou cartaz. Só saem na exportação pedida pela pessoa. Apoiar não segue: seguidos vão ao iCloud e ao Spotlight, então seguir é uma escolha à parte, com o interruptor "Também seguir" no editor, desligado por padrão e com o aviso.
 5. A `FiscalSchemaV4` é leve: acrescenta `SupportEntity` e mantém `LensEntity`. Na primeira leitura, o `FiscalStore` copia apoiados e temas e apaga a linha antiga. `LensEntity` sai do esquema numa versão futura.
 6. O app abre sem setup. A cor de destaque e o ícone ficam só em Aparência.
 

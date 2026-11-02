@@ -15,7 +15,7 @@ struct VoteSupportSection: View {
                         .font(.headline)
                         .padding(.vertical, .space2XS)
                 }
-                ForEach(ballots) { BallotRow(ballot: $0, size: .badgeL) }
+                ForEach(ballots) { BallotRow(ballot: $0, size: .badgeL).privacySensitive() }
             } header: {
                 Text("How the people you support voted").sectionTitle()
                     .textCase(nil)

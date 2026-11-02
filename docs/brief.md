@@ -23,7 +23,7 @@ O Fiscal mostra o que os seus representantes fazem com o seu voto, a partir do q
 - **O que mostra:** uma linha do tempo por data, com filtros de pessoa e de causa: votos, propostas, discursos e destaques, com fonte. Uma votação em que duas pessoas apoiadas votaram diferente é uma linha só, com o voto de cada uma.
 - **Causa é assunto, não posição:** o app nunca diz que alguém votou a favor ou contra uma causa, não calcula alinhamento, não dá nota e não compara apoiados.
 - **Votações:** a tela da votação continua mostrando "como quem você apoia votou". É fato, e só a pessoa vê.
-- **Apoiar e seguir são separados:** seguir é acompanhar qualquer pessoa. Quem é apoiado passa a ser seguido; deixar de apoiar não deixa de seguir.
+- **Apoiar e seguir são separados:** seguir é acompanhar qualquer pessoa, e seguidos vão ao iCloud e ao Spotlight. Apoiar não segue, a menos que a pessoa ligue "Também seguir" no editor, com esse aviso; deixar de apoiar não deixa de seguir.
 - **Privacidade:** apoio político é dado sensível pela LGPD (art. 5º, II). Fica só no aparelho, num banco separado, fora do iCloud e do backup. Não vai para servidor, telemetria, notificação, Spotlight, widget, Siri nem cartaz. Só sai na exportação que a pessoa pede. "Apagar meu apoio" apaga de verdade, e quem a pessoa segue continua seguido.
 - **Notificações não são personalizadas** (decisão do usuário em 2026-10-25): são por feature, iguais para todo mundo, e o apoio nunca vira alerta.
 - **Visual:** a cor de destaque e o ícone ficam em Aparência e nunca vêm da cor do partido de alguém, porque isso viraria material de campanha.

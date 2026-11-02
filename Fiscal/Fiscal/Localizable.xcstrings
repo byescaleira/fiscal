@@ -1970,6 +1970,16 @@
         }
       }
     },
+    "Also Follow" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Também seguir"
+          }
+        }
+      }
+    },
     "Amapá" : {
       "localizations" : {
         "pt-BR" : {
@@ -2061,6 +2071,7 @@
       }
     },
     "Anyone you add is also followed. Removing them from here does not unfollow." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -12751,6 +12762,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fornecedor"
+          }
+        }
+      }
+    },
+    "Support stays on this device. People you follow can go to your iCloud and Spotlight, so following is your choice. Removing someone here does not unfollow." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O apoio fica neste aparelho. Quem você segue pode ir ao seu iCloud e ao Spotlight, então seguir é escolha sua. Tirar alguém daqui não deixa de seguir."
           }
         }
       }

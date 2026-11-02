@@ -19,8 +19,8 @@
 
 7. Dado o coração na barra de Hoje ou de Votações, ou a linha "Meu apoio" em Ajustes, quando a pessoa toca, então abre a página.
 8. Dada a página sem escolha, quando abre, então explica em uma frase o que ela faz, diz que fica só neste aparelho e oferece "Escolher pessoas e causas".
-9. Dado o editor, quando a pessoa busca e marca até 5 pessoas e até 5 causas, então a sexta opção fica desabilitada com o contador "5 de 5", sem mínimo, e cada pessoa marcada passa a ser seguida.
-10. Dada a Pessoa A desmarcada no editor, quando salva, então ela sai do apoio e continua seguida.
+9. Dado o editor, quando a pessoa busca e marca até 5 pessoas e até 5 causas, então a sexta opção fica desabilitada com o contador "5 de 5", sem mínimo. Marcar não segue ninguém. Com o interruptor "Também seguir", desligado por padrão e com o aviso de que seguidos vão ao iCloud e ao Spotlight, quem foi adicionado passa a ser seguido.
+10. Dada a Pessoa A seguida e desmarcada no editor, quando salva, então ela sai do apoio e continua seguida.
 11. Dadas as pessoas A e B e a causa Saúde, quando a página carrega, então a linha do tempo mostra, da data mais nova para a mais antiga, as ações, as propostas e os votos delas e as votações e os destaques marcados com Saúde.
 12. Dada uma votação em que A votou Sim e B votou Não, quando aparece, então é uma linha só, com a votação e o voto de cada uma, sem dizer quem está certa, sem percentual e sem comparar as duas.
 13. Dado o filtro da Pessoa A ou da causa Saúde, quando a pessoa toca nele, então a linha do tempo mostra só o que tem essa pessoa ou esse tema; sem resultado, explica o motivo em linguagem simples.
@@ -133,9 +133,9 @@ Saem `Lens`, `LensRepository`, `LensContext`, `LensBadge`, `LensFaces`, `LensPal
 - **Banco sem etapa de cópia na migração.** Uma etapa personalizada no `ModelContainer` com CloudKit traz risco para quem segue pessoas. A `FiscalSchemaV4` é leve: acrescenta `SupportEntity` e mantém `LensEntity`. Na primeira leitura sem `SupportEntity`, `FiscalStore` copia apoiados e temas e apaga a linha antiga, na mesma gravação. Desvio da análise, que previa uma etapa com cópia.
 - **Paleta.** A análise previa levar a paleta para a cor de destaque. As 8 paletas não têm par exato nas cores do kit, e a 1.0 não saiu na loja. A paleta some, e vale a cor de destaque já escolhida.
 - **Comparar e sugestões.** `SearchModel.comparesFirst`, os temas de Fiscalizar e a pergunta sugerida por apoiado saem. As sugestões de quem seguir usam só quem representa o lugar da pessoa.
-- **Seguir.** Apoiar segue, em sentido único, como hoje.
+- **Seguir é escolha.** A revisão de segurança mostrou que seguir automaticamente tirava quem a pessoa apoia do aparelho, porque seguidos vão ao iCloud e ao Spotlight, contra a promessa. Decisão do usuário: apoiar não segue; o editor tem o interruptor "Também seguir", desligado por padrão e com o aviso. Muda a análise, que previa seguir sempre.
 - **Design.** Antes de desenhar a página, ver 2 ou 3 referências reais de linha do tempo e de acompanhamento em imagens do App Store, e iterar no iPhone até o ok. **O trabalho para na operação 5 para esse ok.**
-- **Documentos.** O [ADR 0021](../../docs/adr/0021-end-of-lens-support-on-device.md), em Proposto, substitui o 0004 na parte da Lente e o trecho do 0014 sobre ela. O `FSC-003` passa a "substituído" no índice, sem edição no canvas.
+- **Documentos.** O [ADR 0021](../../docs/adr/0021-end-of-lens-support-on-device.md), aceito com este canvas, substitui o 0004 na parte da Lente e o trecho do 0014 sobre ela. O `FSC-003` passa a "substituído" no índice, sem edição no canvas.
 - **Fora daqui.** A primeira aba não muda; o coração continua em Hoje e Votações até a `FSC-013`.
 
 ## Structure
@@ -151,7 +151,10 @@ Saem `Lens`, `LensRepository`, `LensContext`, `LensBadge`, `LensFaces`, `LensPal
 **Página**
 - `FeatureCore/Identity/`: `SupportContext.swift` no lugar de `LensContext.swift`; `SupportedPeople.swift` fica; saem `LensBadge.swift` e `LensFaces.swift`.
 - `FeatureCore/Navigation/`: `Route.swift`, `FiscalNavigation.swift`; `FeatureCore/Export/DataArchive.swift`, `DataExportModel.swift`.
-- `FeatureSupport/`, novo: `SupportModel.swift`, `SupportScreen.swift`, `SupportTimelineRows.swift`, `SupportEditor.swift`, `SupportEditorModel.swift`, `SupportEraseGuide.swift`.
+- `FeatureSupport/`, novo: `SupportModel.swift`, `SupportScreen.swift` (com a confirmação de apagar), `SupportTimelineRows.swift`, `SupportEditor.swift`, `SupportEditorModel.swift`.
+- `FeatureCore/PublicData/WeightMethodSheet.swift`, `PeerBadge.swift`: as folhas de método não herdam a cor do cartão escuro, e a primeira página rola (pedido do usuário).
+- `FiscalKit/Sources/AppShell/SectionScreen.swift`, `FeatureCore/.../FiscalEvents.swift`: o evento `support` do deep link, só com o tipo do link.
+- `FeatureContent/ContentDetailScreen.swift`, `FeatureShare/ShareScreenSections.swift`: repetição do carregamento e texto sobre cartaz.
 - `AppShell/`: `RouteScreen.swift`, `DeepLink.swift`, `MainScreen.swift`, `FiscalWindow.swift`, `Update/UpdateRecommendation.swift`, `LensExperience` e `LensSetupCover` saem.
 
 **Retirada**
@@ -190,12 +193,12 @@ Saem `Lens`, `LensRepository`, `LensContext`, `LensBadge`, `LensFaces`, `LensPal
    - `FiscalStore.support()`: sem `SupportEntity` e com `LensEntity`, copia apoiados e temas, apaga a linha antiga e grava tudo de uma vez; erro na leitura não apaga nada.
    - Cobre: 20, 23. Verificação: `SchemaMigrationTests`, `DeviceStoreTests`, `SupportPrivacyTests`.
 3. **Linha do tempo.** Depende de: 1. `[P]` com 2.
-   - `SupportTimeline.build(choice:cards:actions:votes:recent:highlights:)`: junta por id da votação, marca as causas por interseção de `themes`, ordena por data e id, corta em 100.
+   - `SupportTimeline.build(_:from: SupportSources)`: junta por id da votação, marca as causas por interseção de `themes`, ordena por data e id, corta em 100.
    - `filtered(_:by:)` e o motivo de lista vazia.
    - `SupportEvent.destination`: voto para `.vote`; o resto para `.content`, sem `shareHighlightID`.
    - Cobre: 11 a 16. Verificação: `SupportTimelineTests`, inclusive voto dividido, data igual, sem voto no cargo e o limite.
 4. **Contexto e exportação.** Depende de: 2.
-   - `SupportContext` com `load`, `save` e `erase`; `save` segue quem foi marcado, por `SupportedPeople.follow`.
+   - `SupportContext` com `load`, `save` e `erase`; só o editor segue, por `SupportedPeople.follow`, e só com "Também seguir" ligado.
    - `DataArchive.support` no lugar de `lens`.
    - Cobre: 9, 10, 18, 22. Verificação: `SupportContextTests`, `DataExportModelTests`.
 5. **Página e editor.** Depende de: 3, 4.
@@ -254,7 +257,7 @@ Saem `Lens`, `LensRepository`, `LensContext`, `LensBadge`, `LensFaces`, `LensPal
 
 - **Só fatos:** nada de "a favor", "contra", "alinhado", percentual, nota, ranking, cor de bom ou ruim, ou comparação entre apoiados. A expressão do bonequinho nunca depende de dado.
 - **Neutralidade:** o apoio não muda ordem, filtro ou destaque fora da página. Os modelos das outras telas não recebem o apoio, e a regra de lint `support_stays_private` recusa `SupportContext`, `SupportChoice`, `SupportRepository` e `repositories.support` em qualquer feature, fora de `FeatureSupport`, `VoteDetailModel`, da exportação e da montagem no `AppShell`. **QUEBRA** se o Feed futuro usar o apoio.
-- **Privacidade:** apoio e causas ficam só em `Device.store`, com `cloudKitDatabase: .none` e fora do backup. Nunca vão para servidor, iCloud, telemetria, notificação, Spotlight, widget, Siri, atalho ou cartaz. O único caminho de saída é a exportação pedida pela pessoa.
+- **Privacidade:** apoio e causas ficam só em `Device.store`, com `cloudKitDatabase: .none` e fora do backup. Nunca vão para servidor, iCloud, telemetria, notificação, Spotlight, widget, Siri, atalho ou cartaz. Os caminhos de saída são a exportação pedida pela pessoa e o "Também seguir", ligado por ela com o aviso. Apoiar nunca segue sozinho. **QUEBRA** se o editor seguir sem o interruptor ligado.
 - **Apagar:** "Apagar meu apoio" apaga de verdade e não mexe em quem a pessoa segue. Sem confirmação, nada some.
 - **Abertura:** nenhuma tela obrigatória nem pergunta política ao abrir.
 - **Limites:** até 5 pessoas, até 5 causas, até 100 linhas na página.

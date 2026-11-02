@@ -23,4 +23,25 @@ final class LinkAccessibilityTests: XCTestCase {
             .firstMatch
         XCTAssertTrue(app.scrollDown(until: quotaBar))
     }
+
+    @MainActor func testMySupportRowsAreButtonsAtTheLargestTextSize() {
+        let app = XCUIApplication.fiscal()
+        app.launchArguments += [
+            "-FiscalDataScenario", "normal",
+            "-FiscalSupportScenario", "people=tabata-amaral;causes=saude",
+            "-fiscal.developer.openURL", "fiscal://support",
+            "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL",
+        ]
+        app.launch()
+        XCTAssertTrue(app.waitForSections())
+        let delete = app.buttons["Apagar meu apoio"]
+        let row = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Votação"))
+            .firstMatch
+        XCTAssertTrue(row.waitForExistence(timeout: 15))
+        let shot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        shot.name = "my-support-largest-text"
+        shot.lifetime = .keepAlways
+        add(shot)
+        XCTAssertTrue(app.scrollDown(until: delete, attempts: 30))
+    }
 }

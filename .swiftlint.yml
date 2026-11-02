@@ -56,8 +56,8 @@ custom_rules:
   support_stays_private:
     name: Support stays private
     message: O apoio só pode ser lido em Meu apoio e na tela da votação (ADR 0021). Nenhuma outra tela muda por causa dele.
-    regex: '\b(SupportContext|SupportChoice|SupportRepository)\b|repositories\.support'
-    included: '.*/Sources/(Feature|AppShell)[^/]*/.*\.swift$'
+    regex: '\b(SupportContext|SupportChoice|SupportRepository|SupportEntity)\b|repositories\.support'
+    included: '.*/(Sources/(Feature|AppShell)[^/]*|Fiscal/(Fiscal|Shared|FiscalWidgets))/.*\.swift$'
     excluded: '.*/Sources/(FeatureSupport/.*|FeatureVotes/VoteDetailModel|FeatureCore/Identity/SupportContext|FeatureCore/Export/(DataArchive|DataExportModel)|AppShell/(RouteScreen|FiscalWindow))(\.swift)?$'
     severity: error
 
