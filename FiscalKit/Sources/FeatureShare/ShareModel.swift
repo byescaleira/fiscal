@@ -172,6 +172,34 @@ public final class ShareModel {
             async let profile = service.profile(slug: slug)
             async let list = service.expenses(slug: slug, year: year)
             return builder.expenses(try await profile, list: try await list, year: year)
+        case .expense(let slug, let year, let id):
+            async let profile = service.profile(slug: slug)
+            async let list = service.expenses(slug: slug, year: year)
+            guard let card = builder.expense(try await profile, list: try await list, id: id)
+            else { throw PublicDataError.notFound }
+            return card
+        case .expenseMonth(let slug, let year, let month):
+            async let profile = service.profile(slug: slug)
+            async let list = service.expenses(slug: slug, year: year)
+            guard
+                let card = builder.expenseMonth(
+                    try await profile, list: try await list, year: year, month: month)
+            else { throw PublicDataError.notFound }
+            return card
+        case .personVote(let slug, let year, let voteID):
+            async let profile = service.profile(slug: slug)
+            async let list = service.votes(slug: slug, year: year)
+            guard let vote = try await list.items.first(where: { $0.voteId == voteID }) else {
+                throw PublicDataError.notFound
+            }
+            return builder.personVote(try await profile, vote: vote)
+        case .proposal(let slug, let year, let id):
+            async let profile = service.profile(slug: slug)
+            async let list = service.proposals(slug: slug, year: year)
+            guard let proposal = try await list.items.first(where: { $0.id == id }) else {
+                throw PublicDataError.notFound
+            }
+            return builder.proposal(try await profile, proposal: proposal)
         case .compare(let slugs):
             guard !slugs.isEmpty else { throw PublicDataError.notFound }
             var profiles: [Profile] = []

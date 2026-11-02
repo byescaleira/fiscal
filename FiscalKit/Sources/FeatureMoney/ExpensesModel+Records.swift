@@ -36,6 +36,13 @@ extension ExpensesModel {
             }
     }
 
+    public func shareRoute(forRecords ids: Set<Record.ID>) -> Route? {
+        guard ids.count == 1, let id = ids.first,
+            let expense = list?.items.first(where: { $0.id == id })
+        else { return nil }
+        return shareRoute(for: Self.line(expense))
+    }
+
     public func records(sortedBy order: [KeyPathComparator<Record>]) -> [Record] {
         records.sorted(
             using: order + [

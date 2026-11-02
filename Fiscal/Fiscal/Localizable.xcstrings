@@ -7011,6 +7011,16 @@
         }
       }
     },
+    "Kind of expense" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipo de gasto"
+          }
+        }
+      }
+    },
     "Kind: %@" : {
       "localizations" : {
         "pt-BR" : {
@@ -9146,6 +9156,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Na tela de bloqueio (Live Activity) só entra destaque com peso %1$lld ou mais, de um fato de até %2$lld horas depois do fim do dia dele (horário de Brasília), uma vez por aparelho e por até 8 horas."
+          }
+        }
+      }
+    },
+    "One of %lld receipts from %@, total %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma de %#@receipts@ de %2$@, total %3$@"
+          },
+          "substitutions" : {
+            "receipts" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%lld nota"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%lld notas"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -11983,6 +12025,16 @@
         }
       }
     },
+    "Share %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartilhar %@"
+          }
+        }
+      }
+    },
     "Share Fiscal with a friend" : {
       "localizations" : {
         "pt-BR" : {
@@ -12010,6 +12062,56 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Compartilhar meus representantes"
+          }
+        }
+      }
+    },
+    "Share This Proposal" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartilhar esta proposta"
+          }
+        }
+      }
+    },
+    "Share This Receipt" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartilhar esta nota"
+          }
+        }
+      }
+    },
+    "Share This Vote" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartilhar este voto"
+          }
+        }
+      }
+    },
+    "Share the receipt from %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartilhar a nota de %@"
+          }
+        }
+      }
+    },
+    "Share the vote on %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartilhar o voto em %@"
           }
         }
       }
@@ -15358,6 +15460,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Votou %@"
+          }
+        }
+      }
+    },
+    "Voted %@ on %@: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votou %1$@ em %2$@: %3$@"
           }
         }
       }

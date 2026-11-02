@@ -33,6 +33,24 @@ struct ShareCardSnapshotTests {
         ]
     }
 
+    private func itemSubjects(
+        from service: ShowcasePublicData
+    ) async throws -> [(String, ShareSubject)] {
+        let slug = "tabata-amaral"
+        let list = try await service.expenses(slug: slug, year: 2026)
+        let receipt = try #require(list.items.first { $0.isCompany })
+        let votes = try await service.votes(slug: slug, year: 2026)
+        let proposals = try await service.proposals(slug: slug, year: 2026)
+        let vote = try #require(votes.items.first)
+        let proposal = try #require(proposals.items.first)
+        return [
+            ("receipt", .expense(slug: slug, year: 2026, id: receipt.id)),
+            ("month", .expenseMonth(slug: slug, year: 2026, month: receipt.month)),
+            ("ballot", .personVote(slug: slug, year: 2026, voteID: vote.voteId)),
+            ("proposal", .proposal(slug: slug, year: 2026, id: proposal.id)),
+        ]
+    }
+
     @Test(.enabled(if: ShareSnapshotFolder.path != nil)) func rendersEveryCardToDisk() async throws
     {
         EmphasisFont.register()
@@ -48,7 +66,8 @@ struct ShareCardSnapshotTests {
         ])
         let service = ShowcasePublicData(scenario: .normal, now: now)
         let highlight = try #require(try await service.highlights()?.items.first?.id)
-        for (name, subject) in subjects + [("highlight", .highlight(id: highlight))] {
+        let items = try await itemSubjects(from: service)
+        for (name, subject) in subjects + items + [("highlight", .highlight(id: highlight))] {
             let model = ShareModel(
                 subject: subject, service: service,
                 races: ShowcaseLiveResults(scenario: .finished), follows: follows)

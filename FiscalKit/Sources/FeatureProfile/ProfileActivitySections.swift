@@ -13,10 +13,15 @@ struct ProfileVotesSection: View {
                 footer: [profile.votesTotalText, profile.sourceText(for: ["votes"])]
             ) {
                 ForEach(profile.recentVotes) { vote in
-                    RouteLink(.vote(id: vote.voteId)) {
-                        ProfileVoteRow(vote: vote)
+                    let share = profile.shareRoute(for: vote)
+                    HStack(alignment: .top, spacing: .spaceS) {
+                        RouteLink(.vote(id: vote.voteId), showsChevron: false) {
+                            ProfileVoteRow(vote: vote)
+                        }
+                        .accessibilityLabel(Text(verbatim: profile.voteAccessibility(vote)))
+                        ShareItemButton(share, label: Text("Share the vote on \(vote.heading)"))
                     }
-                    .accessibilityLabel(Text(verbatim: profile.voteAccessibility(vote)))
+                    .shareItemMenu(share, label: Text("Share This Vote"))
                 }
             }
         }
@@ -28,26 +33,25 @@ private struct ProfileVoteRow: View {
     let vote: PersonVote
 
     var body: some View {
-        HStack(alignment: .top, spacing: .spaceM) {
-            Text(verbatim: profile.shortDay(vote.date))
-                .font(.caption.weight(.bold))
-                .monospacedDigit()
-                .foregroundStyle(.secondary)
-                .frame(width: .badgeL, alignment: .leading)
-            VStack(alignment: .leading, spacing: .space2XS) {
-                Text(verbatim: vote.heading)
+        VStack(alignment: .leading, spacing: .spaceXS) {
+            AdaptiveRow(spacing: .spaceS) {
+                Text(verbatim: "\(profile.shortDay(vote.date)) · \(vote.heading)")
                     .font(.caption.weight(.semibold))
+                    .monospacedDigit()
                     .foregroundStyle(.secondary)
-                Text(verbatim: vote.summary)
-                    .font(.subheadline)
-                    .lineLimit(3)
-                if let guidance = profile.guidanceText(vote) {
-                    Text(verbatim: guidance).font(.caption).foregroundStyle(.tertiary)
-                }
+                Spacer(minLength: 0)
+                BallotChip(ballot: profile.ballot(vote))
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            BallotChip(ballot: profile.ballot(vote))
+            Text(verbatim: vote.summary)
+                .font(.subheadline)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+            if let guidance = profile.guidanceText(vote) {
+                Text(verbatim: guidance).font(.caption).foregroundStyle(.tertiary)
+            }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(.rect)
     }
 }
 
@@ -64,7 +68,12 @@ struct ProfileProposalsSection: View {
                 ]
             ) {
                 ForEach(profile.recentProposals) { proposal in
-                    ProfileProposalRow(proposal: proposal)
+                    let share = profile.shareRoute(for: proposal)
+                    HStack(alignment: .top, spacing: .spaceS) {
+                        ProfileProposalRow(proposal: proposal)
+                        ShareItemButton(share, label: Text("Share \(proposal.reference)"))
+                    }
+                    .shareItemMenu(share, label: Text("Share This Proposal"))
                 }
             }
         }
@@ -76,7 +85,7 @@ private struct ProfileProposalRow: View {
     let proposal: Proposal
 
     var body: some View {
-        RouteLink(profile.proposalRoute(proposal)) {
+        RouteLink(profile.proposalRoute(proposal), showsChevron: false) {
             VStack(alignment: .leading, spacing: .spaceS) {
                 FlowLayout(spacing: .spaceXS) {
                     Text(verbatim: proposal.reference)
@@ -101,6 +110,8 @@ private struct ProfileProposalRow: View {
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(.rect)
         }
     }
 }

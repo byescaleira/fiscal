@@ -86,6 +86,12 @@ extension ShareCardContent.Body {
             return .investigation(investigation.withPublishedNumbers)
         case .following(let faces):
             return faces.isEmpty ? nil : self
+        case .receipt(let receipt):
+            return receipt.amount.isMeaningful && !receipt.supplier.isEmpty ? self : nil
+        case .ballot(let ballot):
+            return ballot.vote.isEmpty || ballot.proposition.isEmpty ? nil : self
+        case .proposal(let proposal):
+            return proposal.reference.isEmpty || proposal.summary.isEmpty ? nil : self
         }
     }
 }

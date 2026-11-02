@@ -78,6 +78,14 @@ extension ProfileModel {
         )
     }
 
+    public func shareRoute(for vote: PersonVote) -> Route {
+        .share(.personVote(slug: slug, year: year, voteID: vote.voteId))
+    }
+
+    public func shareRoute(for proposal: Proposal) -> Route {
+        .share(.proposal(slug: slug, year: year, id: proposal.id))
+    }
+
     public func proposalRoute(_ proposal: Proposal) -> Route {
         .content(
             ContentDetail(

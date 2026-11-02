@@ -128,6 +128,30 @@ public struct SharePoster: Hashable, Sendable {
             facts = []
             note = nil
             person = nil
+        case .receipt(let receipt):
+            headline = receipt.supplier
+            hero = .figure(value: receipt.amount, caption: receipt.context)
+            facts = [
+                Fact(value: receipt.category, label: String(appLocalized: "Kind of expense")),
+                Fact(value: receipt.period, label: String(appLocalized: "Month")),
+            ]
+            note = nil
+            person = content.faces.first
+        case .ballot(let ballot):
+            headline = ballot.summary
+            hero = .figure(value: ballot.vote, caption: ballot.proposition)
+            facts = [
+                Fact(value: ballot.date, label: String(appLocalized: "Date")),
+                ballot.result.map { Fact(value: $0, label: String(appLocalized: "Result")) },
+            ].compactMap(\.self)
+            note = nil
+            person = content.faces.first
+        case .proposal(let proposal):
+            headline = proposal.summary
+            hero = .place(proposal.reference)
+            facts = []
+            note = nil
+            person = content.faces.first
         }
     }
 

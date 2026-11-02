@@ -111,6 +111,36 @@ public struct ShareBoard: Hashable, Sendable {
             person = nil
             layout = .people(faces)
             note = nil
+        case .receipt(let receipt):
+            title = receipt.supplier
+            lead = receipt.amount
+            person = content.faces.first
+            layout = .cells([
+                SharePoster.Fact(
+                    value: receipt.category, label: String(appLocalized: "Kind of expense")),
+                SharePoster.Fact(value: receipt.period, label: String(appLocalized: "Month")),
+            ])
+            note = receipt.context
+        case .ballot(let ballot):
+            title = ballot.summary
+            lead = ballot.vote
+            person = content.faces.first
+            layout = .cells(
+                [
+                    SharePoster.Fact(
+                        value: ballot.proposition, label: String(appLocalized: "Proposal")),
+                    SharePoster.Fact(value: ballot.date, label: String(appLocalized: "Date")),
+                    ballot.result.map {
+                        SharePoster.Fact(value: $0, label: String(appLocalized: "Result"))
+                    },
+                ].compactMap(\.self))
+            note = nil
+        case .proposal(let proposal):
+            title = proposal.summary
+            lead = proposal.reference
+            person = content.faces.first
+            layout = .cells([])
+            note = nil
         }
     }
 
