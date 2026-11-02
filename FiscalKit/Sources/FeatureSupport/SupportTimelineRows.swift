@@ -7,7 +7,7 @@ struct SupportFilterRail: View {
     @Environment(SupportModel.self) private var model
 
     var body: some View {
-        EdgeToEdgeRail(.padded(.spaceInset), snaps: false) {
+        EdgeToEdgeRail(snaps: false) {
             SupportFilterChip(filter: .all)
             ForEach(model.cards) { card in
                 SupportFilterChip(filter: .person(card.slug), card: card)

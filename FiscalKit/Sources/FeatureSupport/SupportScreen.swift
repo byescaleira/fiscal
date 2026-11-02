@@ -87,6 +87,9 @@ private struct SupportTimelineContent: View {
                     .listRowInsets(EdgeInsets())
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
+            }
+            .railSection()
+            Section {
                 if model.hasGaps {
                     Label(
                         "Some sources did not answer. Pull to try again.", systemImage: "wifi.slash"

@@ -87,6 +87,7 @@ public struct PeerMethodButton: View {
             .accessibilityHint(Text("Explains how each number is compared with peers"))
             .sheet(isPresented: $isPresented) {
                 PeerMethodSheet(items: items)
+                    .methodSheetStyle()
             }
         }
     }
