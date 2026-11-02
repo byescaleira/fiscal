@@ -18,7 +18,7 @@ Pedidos do usuário em 02/11/2026, ao ver o app no iPhone:
 - **Não falta desenho.** As 2.356 pessoas publicadas (`index/people.json` e `places/<uf>.json`) têm traços no app, inclusive as 1.668 que aparecem como eleitas em alguma das listas.
 - **O problema é a regra.** O app só usa os traços se o partido gravado neles for igual ao partido do dado que chegou. Se não for, desenha o rosto neutro.
 - **Quantos:** 246 pessoas nas listas por estado (240 eleitas e 6 em mandato) e 8 no índice geral.
-- **Por que varia:** o partido da mesma pessoa muda de um arquivo para outro. São 264 pessoas com partidos diferentes entre o índice e as listas. Riedel é PSDB e "em mandato" no índice, e PP e "eleito" na lista de MS. Os traços dizem PP, então ele aparece desenhado numa tela e genérico em outra. O mesmo acontece com Arthur Henrique, visto com o rosto neutro no cartão de Região e desenhado em outra lista.
+- **Por que varia:** o partido da mesma pessoa muda de um arquivo para outro. São 264 pessoas com partidos diferentes entre o índice e as listas. Riedel é PSDB e "em mandato" no índice, e PP e "eleito" na lista de MS. Os traços dizem PP, então ele aparece desenhado numa tela e genérico em outra.
 - **A regra protegia contra quê:** contra usar o rosto de uma pessoa em outra de mesmo identificador. Medido hoje: nenhum dos 2.356 identificadores publicados tem nome diferente do gravado nos traços. Só 2 têm outro estado (`flavio-bolsonaro` e `rosangela-moro`), e são as mesmas pessoas. A roupa e o fundo já usam o partido que chega, não o dos traços.
 
 **Cartões escuros no modo claro**

@@ -10,7 +10,7 @@
 
 1. Dado Eduardo Riedel com o partido PSDB num dado e PP nos traços, quando o retrato aparece, então é o desenho dele, com a roupa e o fundo na cor do PSDB.
 2. Dado o mesmo Riedel com o partido PP, quando o retrato aparece, então é o mesmo rosto, na cor do PP.
-3. Dado Arthur Henrique no cartão de Região, quando aparece, então é o desenho dele, e não o rosto neutro.
+3. Dado Arthur Henrique no cartão de Região, com os dados publicados, quando aparece, então é o desenho dele. Nos dados de teste, os prefeitos têm outro identificador e continuam com o rosto neutro, o que não é o caso real.
 4. Dado alguém sem traços, quando o retrato aparece, então é o rosto neutro, na cor do partido que o dado traz.
 5. Dadas as 2.356 pessoas publicadas, quando o script de conferência roda, então todas têm traços e o mesmo nome neles, e o resultado diz quantas foram lidas.
 6. Dado um identificador com outro nome nos traços, quando o script roda, então ele falha e aponta o identificador, o nome no dado e o nome nos traços.
