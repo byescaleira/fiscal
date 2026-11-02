@@ -6,7 +6,6 @@ struct UpdateRecommendation: ViewModifier {
     @Environment(AppUpdateModel.self) private var update: AppUpdateModel?
     @Environment(FiscalNavigation.self) private var navigation
     @Environment(LaunchProgress.self) private var launch
-    @Environment(LensContext.self) private var lens
 
     func body(content: Content) -> some View {
         if let update {
@@ -27,7 +26,7 @@ struct UpdateRecommendation: ViewModifier {
     }
 
     private var isFree: Bool {
-        launch.isDismissed && navigation.isFree && !lens.needsSetup
+        launch.isDismissed && navigation.isFree
     }
 
     private func dismissed() {

@@ -75,9 +75,6 @@ let package = Package(
             name: "FeatureMemory",
             dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
         .target(
-            name: "FeatureLens",
-            dependencies: ["FiscalDomain", "FiscalDesignSystem", "FiscalResource", "FeatureCore"]),
-        .target(
             name: "FeatureSupport",
             dependencies: ["FiscalDomain", "FiscalDesignSystem", "FiscalResource", "FeatureCore"]),
         .target(
@@ -92,8 +89,7 @@ let package = Package(
                 "FiscalDomain", "FiscalData", "FiscalDesignSystem", "FiscalResource", "FeatureCore",
                 "FeatureGuides", "FeatureLiveResults", "FeatureSettings", "FeatureToday",
                 "FeatureMine", "FeatureProfile", "FeatureVotes", "FeatureMoney", "FeatureSearch",
-                "FeatureLens", "FeatureShare", "FeatureMemory", "FeatureContent",
-                "FeatureSupport",
+                "FeatureSupport", "FeatureShare", "FeatureMemory", "FeatureContent",
             ]),
         .testTarget(name: "FiscalDomainTests", dependencies: ["FiscalDomain"]),
         .testTarget(name: "FiscalDataTests", dependencies: ["FiscalDomain", "FiscalData"]),
@@ -138,12 +134,6 @@ let package = Package(
         .testTarget(
             name: "FeatureSupportTests",
             dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureSupport"]),
-        .testTarget(
-            name: "FeatureLensTests",
-            dependencies: [
-                "FiscalDomain", "FiscalData", "FiscalDesignSystem", "FiscalResource", "FeatureCore",
-                "FeatureLens",
-            ]),
         .testTarget(
             name: "FeatureShareTests",
             dependencies: [

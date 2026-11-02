@@ -3,6 +3,12 @@ import Testing
 @testable import FiscalDomain
 
 struct SupportChoiceTests {
+    @Test func everyThemeIsOfferedOnceAsACause() {
+        #expect(Set(Theme.causeChoices) == Set(Theme.allCases))
+        #expect(Theme.causeChoices.count == Theme.allCases.count)
+        #expect(Theme.allCases.allSatisfy { !$0.coverage.isEmpty })
+    }
+
     @Test func keepsAtMostFivePeopleAndFiveCausesWithoutRepeating() {
         let choice = SupportChoice(
             people: ["a", "a", "b", "c", "d", "e", "f"],

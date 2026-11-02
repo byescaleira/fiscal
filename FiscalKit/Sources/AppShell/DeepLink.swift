@@ -118,7 +118,8 @@ enum DeepLink: Equatable {
         }
         guard url.scheme == "fiscal", let host = url.host() else { return .unknown }
         if section(host: host) != nil { return .section }
-        guard let kind = FiscalEvents.DeepLinkKind(rawValue: host), kind != .section else {
+        let name = host == "lens" ? FiscalEvents.DeepLinkKind.support.rawValue : host
+        guard let kind = FiscalEvents.DeepLinkKind(rawValue: name), kind != .section else {
             return .unknown
         }
         return DeepLink(url: url) == .section(.today) ? .unknown : kind

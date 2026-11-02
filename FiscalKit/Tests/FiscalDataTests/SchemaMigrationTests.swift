@@ -25,10 +25,7 @@ struct SchemaMigrationTests {
     }
 
     @Test func aSecondVersionStoreOpensWithTheCurrentSchema() async throws {
-        let directory = FileManager.default.temporaryDirectory
-            .appending(
-                path: "SchemaMigrationTests-\(UUID().uuidString)", directoryHint: .isDirectory)
-        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let directory = try makeDirectory()
         defer { try? FileManager.default.removeItem(at: directory) }
         try writeSecondVersion(in: directory)
         let repositories = try FiscalDatabase.open(cloudSync: false, directory: directory)
@@ -36,26 +33,40 @@ struct SchemaMigrationTests {
         let support = try #require(try await repositories.support.support())
         #expect(support.people == ["lula"])
         #expect(support.causes == [.health, .taxes])
-        #expect(try await repositories.lens.lens() == nil)
         #expect(try await repositories.support.support() == support)
         #expect(try await repositories.follows.isFollowing(slug: "tabata-amaral"))
         #expect(try await repositories.investigations?.investigations().isEmpty == true)
     }
 
-    @Test func savingReplacesTheOldLens() async throws {
-        let repositories = try FiscalDatabase.open(inMemory: true).repositories
-        try await repositories.lens.save(Lens(themes: [.health], supported: ["pessoa-a"]))
+    @Test func savingReplacesTheOldRow() async throws {
+        let directory = try makeDirectory()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        try writeSecondVersion(in: directory)
+        let repositories = try FiscalDatabase.open(cloudSync: false, directory: directory)
+            .repositories
         try await repositories.support.save(SupportChoice(causes: [.taxes]))
-        #expect(try await repositories.lens.lens() == nil)
         #expect(try await repositories.support.support() == SupportChoice(causes: [.taxes]))
-    }
-
-    @Test func erasingRemovesTheOldLensToo() async throws {
-        let repositories = try FiscalDatabase.open(inMemory: true).repositories
-        try await repositories.lens.save(Lens(themes: [.health], supported: ["pessoa-a"]))
         try await repositories.support.reset()
         #expect(try await repositories.support.support() == nil)
-        #expect(try await repositories.lens.lens() == nil)
+    }
+
+    @Test func erasingRemovesTheOldRowToo() async throws {
+        let directory = try makeDirectory()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        try writeSecondVersion(in: directory)
+        let repositories = try FiscalDatabase.open(cloudSync: false, directory: directory)
+            .repositories
+        try await repositories.support.reset()
+        #expect(try await repositories.support.support() == nil)
+        #expect(try await repositories.follows.isFollowing(slug: "tabata-amaral"))
+    }
+
+    private func makeDirectory() throws -> URL {
+        let directory = FileManager.default.temporaryDirectory
+            .appending(
+                path: "SchemaMigrationTests-\(UUID().uuidString)", directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        return directory
     }
 
     private func writeSecondVersion(in directory: URL) throws {

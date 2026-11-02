@@ -51,6 +51,8 @@ struct DeepLinkTests {
         ("fiscal://highlight/action-1", .highlight),
         ("fiscal://expenses/tabata-amaral?year=2025", .expenses),
         ("fiscal://compare?slugs=tabata-amaral,kim-kataguiri", .compare),
+        ("fiscal://support", .support),
+        ("fiscal://lens", .support),
         ("fiscal://race", .unknown),
         ("fiscal://items/new", .unknown),
         ("https://example.com/person/nikolas-ferreira", .unknown),

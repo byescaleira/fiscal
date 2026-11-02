@@ -6,7 +6,6 @@ extension XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments += [
             "-AppleLanguages", "(pt-BR)", "-AppleLocale", "pt_BR", "-FiscalLiveScenario", "close",
-            "-FiscalLensScenario", "none",
         ]
         return app
     }

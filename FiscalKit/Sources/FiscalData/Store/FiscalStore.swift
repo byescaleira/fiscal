@@ -11,34 +11,6 @@ public actor FiscalStore {
         changeHub.publish(.local)
     }
 
-    public func lens() throws -> Lens? {
-        try lensEntity()?.lens
-    }
-
-    public func save(_ lens: Lens, at date: Date = .now) throws {
-        do {
-            if let entity = try lensEntity() {
-                entity.update(with: lens, at: date)
-            } else {
-                modelContext.insert(LensEntity(lens: lens, updatedAt: date))
-            }
-            try commit()
-        } catch {
-            modelContext.rollback()
-            throw error
-        }
-    }
-
-    public func resetLens() throws {
-        do {
-            try modelContext.delete(model: LensEntity.self)
-            try commit()
-        } catch {
-            modelContext.rollback()
-            throw error
-        }
-    }
-
     public func support() throws -> SupportChoice? {
         if let entity = try supportEntity() { return entity.support }
         guard let legacy = try lensEntity() else { return nil }

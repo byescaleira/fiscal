@@ -8,7 +8,6 @@ import SwiftUI
 public struct FiscalWindow {
     public let session: SessionModel
     public let navigation: FiscalNavigation
-    public let lens: LensContext
     public let support: SupportContext
     public let portraits: PortraitStore
     public let liveResults: LiveResultsModel
@@ -19,7 +18,6 @@ public struct FiscalWindow {
         let repositories = Self.repositories(provider.repositories)
         session = SessionModel(repositories: repositories, changes: provider.changes)
         navigation = FiscalNavigation()
-        lens = LensContext(repository: repositories.lens)
         support = SupportContext(repository: repositories.support)
         portraits = PortraitStore()
         liveResults = FiscalServices.shared.liveResults()
@@ -31,10 +29,9 @@ public struct FiscalWindow {
 
     private static func repositories(_ repositories: Repositories) -> Repositories {
         #if DEBUG
-            if let scenario = LensScenario.fromLaunchArguments() {
+            if let scenario = SupportScenario.fromLaunchArguments() {
                 return Repositories(
-                    lens: ShowcaseLensRepository(scenario: scenario),
-                    support: repositories.support,
+                    support: ShowcaseSupportRepository(scenario: scenario),
                     follows: repositories.follows, investigations: repositories.investigations)
             }
         #endif
@@ -46,7 +43,6 @@ extension View {
     public func fiscalWindow(_ window: FiscalWindow) -> some View {
         environment(window.session)
             .environment(window.navigation)
-            .environment(window.lens)
             .environment(window.support)
             .environment(window.liveResults)
             .environment(window.follow)

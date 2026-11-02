@@ -676,6 +676,7 @@
       }
     },
     "%@: %@ actions" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -1083,6 +1084,7 @@
       }
     },
     "%lld of %lld people chosen" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -1113,6 +1115,7 @@
       }
     },
     "%lld of %lld topics chosen" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -1302,6 +1305,7 @@
       }
     },
     "%lld works" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "variations" : {
@@ -1583,6 +1587,7 @@
       }
     },
     "A new iPhone or a reinstall asks for it again." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -1755,6 +1760,7 @@
       }
     },
     "Add a topic" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -1790,16 +1796,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Adicionar peça"
-          }
-        }
-      }
-    },
-    "Adds this topic to your lens" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Adiciona este tema aos seus temas"
           }
         }
       }
@@ -2075,16 +2071,6 @@
         }
       }
     },
-    "Another lens" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Outra lente"
-          }
-        }
-      }
-    },
     "Anyone you add is also followed. Removing them from here does not unfollow." : {
       "localizations" : {
         "pt-BR" : {
@@ -2216,6 +2202,7 @@
       }
     },
     "Art: %@ · %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -2256,6 +2243,7 @@
       }
     },
     "Artwork: %@, by %@, %@. %@." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -2266,6 +2254,7 @@
       }
     },
     "Artworks from the Fiscal collection, all in the public domain" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -2466,6 +2455,7 @@
       }
     },
     "Back" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -2476,6 +2466,7 @@
       }
     },
     "Back to Mine" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -2886,16 +2877,6 @@
         }
       }
     },
-    "By Your Lens" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pela sua lente"
-          }
-        }
-      }
-    },
     "By kind of expense" : {
       "localizations" : {
         "pt-BR" : {
@@ -2937,6 +2918,7 @@
       }
     },
     "Calculated from %@ recent actions of %@. Estimated: each action's topic comes from keywords in its official summary and can miss." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -2947,6 +2929,7 @@
       }
     },
     "Calculated from the proposals and speeches of %@. Estimated: each one's topic comes from keywords in its official summary and can miss." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -3088,6 +3071,7 @@
       }
     },
     "Cerrado" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -3159,6 +3143,7 @@
       }
     },
     "Change Topics" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -3169,6 +3154,7 @@
       }
     },
     "Change Who You Support" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -3319,6 +3305,7 @@
       }
     },
     "Choose who you support, your topics and your look. It takes about a minute." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -3501,6 +3488,7 @@
       }
     },
     "Colors and art for the app and your cards. Charts, scoreboards and politicians keep their own colors." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -4076,6 +4064,7 @@
       }
     },
     "Delete My Choice" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -4131,16 +4120,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apagar as preferências?"
-          }
-        }
-      }
-    },
-    "Delete your lens?" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apagar sua lente?"
           }
         }
       }
@@ -4931,6 +4910,7 @@
       }
     },
     "Example: a floor vote on %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -5294,6 +5274,7 @@
       }
     },
     "First: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -5304,6 +5285,7 @@
       }
     },
     "First: %@. The facts are the same for everyone." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -5314,6 +5296,7 @@
       }
     },
     "First: %@…" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -5335,6 +5318,7 @@
       "shouldTranslate" : false
     },
     "Fiscal adapts the order, the highlights, the colors and the art. The facts are the same for everyone." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -5487,6 +5471,7 @@
       }
     },
     "Fiscal stays neutral: topics in the order the data comes." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -5730,21 +5715,12 @@
       }
     },
     "For a moment, see what stands out in the neutral order or for those who support someone else. Nothing is saved and the numbers do not change." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Por um momento, veja o que se destaca na ordem neutra ou para quem apoia outra pessoa. Nada é salvo e os números não mudam."
-          }
-        }
-      }
-    },
-    "For who you support" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Por quem você apoia"
           }
         }
       }
@@ -5760,6 +5736,7 @@
       }
     },
     "Forest and gold" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -6583,6 +6560,7 @@
       }
     },
     "In Your Topics" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -6701,6 +6679,7 @@
       }
     },
     "In the order the data comes. Put first what matters to you, from 3 to 5 topics." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -6931,16 +6910,6 @@
         }
       }
     },
-    "Keep My Lens" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Manter minha lente"
-          }
-        }
-      }
-    },
     "Keep Offline Data" : {
       "localizations" : {
         "pt-BR" : {
@@ -7082,6 +7051,7 @@
       }
     },
     "Latest votes on %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7177,16 +7147,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "mediana da Câmara Legislativa: %@"
-          }
-        }
-      }
-    },
-    "Lens" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quem você apoia"
           }
         }
       }
@@ -7644,6 +7604,7 @@
       }
     },
     "Mirrored pairs side by side. Never taken from the color of a party." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7785,6 +7746,7 @@
       }
     },
     "Move Down" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7795,6 +7757,7 @@
       }
     },
     "Move Up" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7832,6 +7795,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Meu apoio"
+          }
+        }
+      }
+    },
+    "My Support stays here" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meu apoio fica aqui"
           }
         }
       }
@@ -7907,6 +7880,7 @@
       }
     },
     "Neutral order" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7917,6 +7891,7 @@
       }
     },
     "Neutral order for a moment. Nothing is saved." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7927,6 +7902,7 @@
       }
     },
     "Neutral, without supporting anyone" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7937,6 +7913,7 @@
       }
     },
     "Neutral: topics in the order the data comes." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -8056,7 +8033,7 @@
         }
       }
     },
-    "No account to create. Your Lens never leaves this device." : {
+    "No account to create. Who you support never leaves this device." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -8226,16 +8203,6 @@
         }
       }
     },
-    "No lens yet" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Você ainda não escolheu quem apoia"
-          }
-        }
-      }
-    },
     "No list for this place yet" : {
       "localizations" : {
         "pt-BR" : {
@@ -8287,6 +8254,7 @@
       }
     },
     "No one with that name" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -8357,6 +8325,7 @@
       }
     },
     "No recent actions of the people you support yet. Choose from 3 to 5 topics." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -8679,6 +8648,7 @@
       }
     },
     "Nothing is hidden: the others stay one tap away." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -9119,32 +9089,13 @@
         }
       }
     },
-    "One icon for each Lens palette." : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Um ícone para cada paleta."
-          }
-        }
-      }
-    },
     "One icon for each palette, or the Amazon at dawn." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Um ícone para cada paleta, ou a Amazônia ao amanhecer."
-          }
-        }
-      }
-    },
-    "One of your lens topics" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Um dos temas da sua lente"
           }
         }
       }
@@ -9180,6 +9131,7 @@
       }
     },
     "Only on this iPhone" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -9199,7 +9151,18 @@
         }
       }
     },
+    "Only who you support and who was on this roll call. Who you support stays on this device." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Só quem você apoia e estava nesta votação. Quem você apoia fica neste aparelho."
+          }
+        }
+      }
+    },
     "Only who you support and who was on this roll call. Who you support stays on this iPhone." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -9394,27 +9357,8 @@
         }
       }
     },
-    "Opens what your lens changes" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abre o que a sua lente muda"
-          }
-        }
-      }
-    },
-    "Opens your Lens" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abre quem você apoia"
-          }
-        }
-      }
-    },
     "Ordered by how often each topic shows up in the latest votes of the Chamber and the Senate. Tap a topic to see its votes." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -9467,6 +9411,7 @@
       }
     },
     "Ordered by what the people you support do the most. Reorder or remove as you like. %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -9507,6 +9452,7 @@
       }
     },
     "Other Topics" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -9628,6 +9574,7 @@
       }
     },
     "Pairs with %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -9638,6 +9585,7 @@
       }
     },
     "Palette" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -9813,6 +9761,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pessoas"
+          }
+        }
+      }
+    },
+    "People and causes stay on this device, outside iCloud and backups." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pessoas e causas ficam neste aparelho, fora do iCloud e do backup."
+          }
+        }
+      }
+    },
+    "People and causes, only on this device" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pessoas e causas, só neste aparelho"
           }
         }
       }
@@ -10293,6 +10261,7 @@
       }
     },
     "Prefer not to say" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -10424,6 +10393,7 @@
       }
     },
     "Preview of your look" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -10775,6 +10745,7 @@
       }
     },
     "Reading what they did" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -10876,6 +10847,7 @@
       }
     },
     "Recent votes in your themes: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11026,6 +10998,7 @@
       }
     },
     "Remove" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11046,6 +11019,7 @@
       }
     },
     "Remove a topic to add another. Up to 5." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11076,6 +11050,7 @@
       }
     },
     "Removes this person from who you support" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -12655,6 +12630,7 @@
       }
     },
     "Start · 1 min" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -12836,6 +12812,7 @@
       }
     },
     "Step %lld of %lld" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -12927,6 +12904,7 @@
       }
     },
     "Suggested" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -12947,6 +12925,7 @@
       }
     },
     "Suggested to start" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -13008,6 +12987,7 @@
       }
     },
     "Supporting is not following: in Following you follow anyone. The people you support are also followed, and their topics and actions come first." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -13332,16 +13312,6 @@
         }
       }
     },
-    "The Lens stays here" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sua escolha fica aqui"
-          }
-        }
-      }
-    },
     "The TSE results for this year aren't published by Fiscal yet." : {
       "localizations" : {
         "pt-BR" : {
@@ -13402,7 +13372,7 @@
         }
       }
     },
-    "The card carries the official TSE numbers and the time of the file. Your Lens never goes into the image." : {
+    "The card carries the official TSE numbers and the time of the file. Who you support never goes into the image." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -13412,22 +13382,22 @@
         }
       }
     },
-    "The card carries the official source and the date. Your Lens never goes into the image." : {
+    "The card carries the official source and the date. Who you support never goes into the image." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O cartão leva a fonte oficial e a data. Sua Lente nunca entra na imagem."
+            "value" : "O card leva a fonte oficial e a data. Quem você apoia nunca vai para a imagem."
           }
         }
       }
     },
-    "The card carries the official source, the date and the art credit. Your Lens never goes into the image." : {
+    "The card carries the official source, the date and the art credit. Who you support never goes into the image." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O card leva a fonte oficial, a data e o crédito da arte. Sua Lente nunca vai para a imagem."
+            "value" : "O card leva a fonte oficial, a data e o crédito da arte. Quem você apoia nunca vai para a imagem."
           }
         }
       }
@@ -13619,16 +13589,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "As últimas votações da Câmara e do Senado aparecem aqui, com o placar completo."
-          }
-        }
-      }
-    },
-    "The lens is never sent in requests, logs, notifications, shared cards or Spotlight." : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A lente nunca vai em requisições, registros, notificações, cards compartilhados nem no Spotlight."
           }
         }
       }
@@ -13874,6 +13834,7 @@
       }
     },
     "The same facts for everyone, in the order that matters to you." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -14135,11 +14096,22 @@
       }
     },
     "Themes from the proposals and speeches, in the order the data comes. The numbers are the same for everyone." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Temas das propostas e dos discursos, na ordem em que os dados chegam. Os números são os mesmos para todo mundo."
+          }
+        }
+      }
+    },
+    "Themes from the proposals and speeches, the most frequent first. The numbers are the same for everyone." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temas das propostas e dos discursos, os mais frequentes primeiro. Os números são os mesmos para todo mundo."
           }
         }
       }
@@ -14233,6 +14205,7 @@
       }
     },
     "These topics come first in Today, Votes and Money, in this order. Drag, or touch and hold to move or remove. Nothing is hidden." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -14484,6 +14457,7 @@
       }
     },
     "Topics in the order the data comes, no one first." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -14785,6 +14759,7 @@
       }
     },
     "Up to 5 politicians, from city councilor to president. Fiscal puts first what they do. The facts are the same for everyone." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -15698,6 +15673,7 @@
       }
     },
     "What stands out for those who support someone else. Nothing is saved." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -15758,6 +15734,7 @@
       }
     },
     "What your representatives do with your vote" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -16000,6 +15977,7 @@
       }
     },
     "Who do you support?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -16071,6 +16049,7 @@
       }
     },
     "Who represents your place and who you support. Tap Follow next to the name." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -16091,6 +16070,16 @@
         }
       }
     },
+    "Who represents your place. Tap Follow next to the name." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem representa o seu lugar. Toque em Seguir ao lado do nome."
+          }
+        }
+      }
+    },
     "Who represents your state, with a tap to each profile." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -16103,6 +16092,7 @@
       }
     },
     "Who supports %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -16184,6 +16174,7 @@
       }
     },
     "Who you support" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -16204,6 +16195,7 @@
       }
     },
     "Who you support stays only on this iPhone. It does not go to any server, it is not in iCloud, backups, notifications or shared images, and Fiscal does not know who it is." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -16214,6 +16206,7 @@
       }
     },
     "Who you support, your topics and your look leave this iPhone for good. Then Fiscal asks for them again." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -16224,6 +16217,7 @@
       }
     },
     "Who you support, your topics and your look stay on this device, outside iCloud and backups." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -16294,6 +16288,7 @@
       }
     },
     "Works by Brazilian artists in the public domain or under a free licence, always with credit." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -16434,6 +16429,7 @@
       }
     },
     "You support" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -16444,6 +16440,7 @@
       }
     },
     "You support: %@ of %lld" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -16464,21 +16461,12 @@
       }
     },
     "Your Fiscal" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Seu Fiscal"
-          }
-        }
-      }
-    },
-    "Your Lens" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sua Lente"
           }
         }
       }
@@ -16584,47 +16572,8 @@
         }
       }
     },
-    "Your lens" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quem você apoia"
-          }
-        }
-      }
-    },
-    "Your lens picks which votes come first. The numbers are the same for everyone." : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sua lente escolhe quais votações aparecem primeiro. Os números são os mesmos para todo mundo."
-          }
-        }
-      }
-    },
-    "Your lens puts your themes first. The numbers are the same for everyone." : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sua lente põe os seus temas primeiro. Os números são os mesmos para todo mundo."
-          }
-        }
-      }
-    },
-    "Your lens shows %@ first." : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sua lente mostra %@ primeiro."
-          }
-        }
-      }
-    },
     "Your look" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -16645,6 +16594,7 @@
       }
     },
     "Your topics" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -16655,6 +16605,7 @@
       }
     },
     "Your topics come first. The numbers are the same for everyone." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {

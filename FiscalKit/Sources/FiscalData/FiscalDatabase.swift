@@ -60,7 +60,6 @@ public struct FiscalDatabase: RepositoryProvider {
 
     public var repositories: Repositories {
         Repositories(
-            lens: SwiftDataLensRepository(store: store),
             support: SwiftDataSupportRepository(store: store),
             follows: SwiftDataFollowRepository(store: store),
             investigations: SwiftDataInvestigationRepository(

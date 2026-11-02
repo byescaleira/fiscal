@@ -1,22 +1,6 @@
 import FiscalDomain
 import Foundation
 
-struct SwiftDataLensRepository: LensRepository {
-    let store: FiscalStore
-
-    func lens() async throws -> Lens? {
-        try await store.lens()
-    }
-
-    func save(_ lens: Lens) async throws {
-        try await store.save(lens)
-    }
-
-    func reset() async throws {
-        try await store.resetLens()
-    }
-}
-
 struct SwiftDataSupportRepository: SupportRepository {
     let store: FiscalStore
 

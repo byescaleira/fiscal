@@ -11,7 +11,6 @@ public final class FiscalNavigation {
     public var panes: [AppSection: [Route]] = [:]
     public var inspectorPath: [Route] = []
     public var guide: Guide?
-    public var isShowingLensSetup = false
     public init() {}
 
     public struct Inspector: Identifiable, Equatable {
@@ -96,7 +95,7 @@ public final class FiscalNavigation {
     }
 
     public var isFree: Bool {
-        guide == nil && !isShowingLensSetup
+        guide == nil
     }
 
     public var openRoutes: [Route] {

@@ -1,6 +1,5 @@
 import FeatureContent
 import FeatureCore
-import FeatureLens
 import FeatureLiveResults
 import FeatureMemory
 import FeatureMine
@@ -68,7 +67,6 @@ struct RouteScreen: View {
         case .period(let id): ModelHost(PeriodModel(id: id, service: data)) { PeriodScreen() }
         case .studyGuide(let id):
             ModelHost(StudyGuideModel(id: id, service: data)) { StudyGuideScreen() }
-        case .lens: LensDestination()
         case .artists: ArtistsDestination()
         case .settings:
             SettingsScreen(service: data) {
@@ -90,21 +88,6 @@ struct RouteScreen: View {
             ModelHost(ContentDetailModel(content: content)) { ContentDetailScreen() }
         case .highlight(let id):
             ModelHost(ContentDetailModel(highlightID: id, service: data)) { ContentDetailScreen() }
-        }
-    }
-}
-
-private struct LensDestination: View {
-    @Environment(LensContext.self) private var lens
-    @Environment(SessionModel.self) private var session
-
-    var body: some View {
-        ModelHost(
-            LensModel(
-                context: lens, service: FiscalServices.shared.publicData(),
-                icons: SystemAppIconSwitcher(), follows: session.repositories.follows)
-        ) {
-            LensScreen()
         }
     }
 }

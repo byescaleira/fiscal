@@ -19,6 +19,15 @@ final class LaunchTests: XCTestCase {
         #endif
     }
 
+    @MainActor func testANewInstallOpensStraightOnTheFirstTab() {
+        let app = XCUIApplication.fiscal()
+        app.launch()
+        XCTAssertTrue(app.waitForSections())
+        XCTAssertTrue(app.buttons["Seguindo"].firstMatch.isHittable)
+        XCTAssertFalse(app.buttons["Escolher pessoas e causas"].exists)
+        XCTAssertFalse(app.navigationBars["Meu apoio"].exists)
+    }
+
     @MainActor func testTodayOpensTheLiveResults() {
         let app = XCUIApplication.fiscal()
         app.launch()

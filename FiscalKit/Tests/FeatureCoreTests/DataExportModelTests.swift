@@ -4,12 +4,6 @@ import FiscalDomain
 import Foundation
 import Testing
 
-private struct FailingLens: LensRepository {
-    func lens() async throws -> Lens? { throw FiscalError.onFetch }
-    func save(_ lens: Lens) async throws {}
-    func reset() async throws {}
-}
-
 private struct FailingSupport: SupportRepository {
     func support() async throws -> SupportChoice? { throw FiscalError.onFetch }
     func save(_ support: SupportChoice) async throws {}
@@ -42,8 +36,7 @@ struct DataExportModelTests {
     @Test func aFailedReadReportsTheError() async throws {
         let follows = try FiscalDatabase.open(inMemory: true).repositories.follows
         let export = DataExportModel(
-            repositories: Repositories(
-                lens: FailingLens(), support: FailingSupport(), follows: follows))
+            repositories: Repositories(support: FailingSupport(), follows: follows))
         await export.prepare()
         #expect(export.archive == nil)
         #expect(!export.isExporting)

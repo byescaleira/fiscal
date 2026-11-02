@@ -13,18 +13,15 @@ struct DeviceStoreTests {
         slug: "nikolas-ferreira", name: "Nikolas Ferreira", office: .federalDeputy, uf: "mg",
         party: "PL", photo: URL(string: "https://example.test/nikolas.jpg"), status: .inOffice)
 
-    @Test func savesAndReplacesTheLens() async throws {
-        let lens = try FiscalDatabase.open(inMemory: true).repositories.lens
-        #expect(try await lens.lens() == nil)
-        try await lens.save(Lens(themes: [.health, .taxes, .security], supported: ["lula"]))
-        try await lens.save(
-            Lens(themes: [.education, .environment, .rights], artCollection: "academia"))
-        let saved = try #require(try await lens.lens())
-        #expect(saved.themes == [.education, .environment, .rights])
-        #expect(saved.supported.isEmpty)
-        #expect(saved.artCollection == "academia")
-        try await lens.reset()
-        #expect(try await lens.lens() == nil)
+    @Test func savesAndReplacesTheSupport() async throws {
+        let support = try FiscalDatabase.open(inMemory: true).repositories.support
+        #expect(try await support.support() == nil)
+        try await support.save(SupportChoice(people: ["pessoa-a"], causes: [.health, .taxes]))
+        let next = SupportChoice(causes: [.education, .environment, .rights])
+        try await support.save(next)
+        #expect(try await support.support() == next)
+        try await support.reset()
+        #expect(try await support.support() == nil)
     }
 
     @Test func followsOncePerPersonInAlphabeticalOrder() async throws {
@@ -51,21 +48,24 @@ struct DeviceStoreTests {
         do {
             let repositories = try FiscalDatabase.open(cloudSync: false, directory: directory)
                 .repositories
-            try await repositories.lens.save(Lens(themes: [.health, .taxes, .security]))
+            try await repositories.support.save(
+                SupportChoice(causes: [.health, .taxes, .security]))
             try await repositories.follows.follow(tabata, at: .now)
         }
         let reopened = try FiscalDatabase.open(cloudSync: false, directory: directory).repositories
-        #expect(try await reopened.lens.lens()?.themes == [.health, .taxes, .security])
+        #expect(try await reopened.support.support()?.causes == [.health, .taxes, .security])
         #expect(try await reopened.follows.followed().map(\.card.slug) == ["tabata-amaral"])
         let files = try FileManager.default.contentsOfDirectory(atPath: directory.path())
         #expect(files.contains("Device.store"))
         #expect(files.contains("Fiscal.store"))
     }
 
-    @Test func theLensNeverJoinsTheSyncedStore() {
-        let synced = FiscalSchemaV2.cloudModels.map { String(describing: $0) }
-        let device = FiscalSchemaV2.deviceModels.map { String(describing: $0) }
+    @Test func theSupportNeverJoinsTheSyncedStore() {
+        let synced = FiscalSchemaV4.cloudModels.map { String(describing: $0) }
+        let device = FiscalSchemaV4.deviceModels.map { String(describing: $0) }
+        #expect(device.contains("SupportEntity"))
         #expect(device.contains("LensEntity"))
+        #expect(!synced.contains("SupportEntity"))
         #expect(!synced.contains("LensEntity"))
         #expect(synced.contains("FollowEntity"))
     }

@@ -16,7 +16,6 @@ public enum Route: Hashable, Sendable {
     case pastRace(id: String)
     case period(id: String)
     case studyGuide(id: String)
-    case lens
     case artists
     case settings
     case share(ShareSubject)
