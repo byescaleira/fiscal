@@ -6,6 +6,7 @@ import Observation
 @MainActor @Observable
 public final class FeedModel {
     public nonisolated static let firstYear = 2023
+    public nonisolated static let pageSize = 20
     nonisolated static let concurrentReads = 6
 
     public private(set) var items: [FeedItem] = []
@@ -17,7 +18,10 @@ public final class FeedModel {
     public private(set) var reachedEnd = false
     public private(set) var hasLoaded = false
     public private(set) var seenVersion = 0
-    public var filter: FeedFilter = .all
+    public private(set) var shownCount = FeedModel.pageSize
+    public var filter: FeedFilter = .all {
+        didSet { shownCount = Self.pageSize }
+    }
     @ObservationIgnored private let service: (any PublicDataService)?
     @ObservationIgnored private let follows: (any FollowRepository)?
     @ObservationIgnored private let seenStore: FollowingSeenStore
@@ -45,7 +49,14 @@ public final class FeedModel {
         self.now = now
     }
 
-    public var visible: [FeedItem] { FeedTimeline.filtered(items, by: filter) }
+    private var matching: [FeedItem] { FeedTimeline.filtered(items, by: filter) }
+
+    public var visible: [FeedItem] { Array(matching.prefix(shownCount)) }
+
+    public var isAtEnd: Bool {
+        guard matching.count <= shownCount else { return false }
+        return reachedEnd || filter == .relevant
+    }
 
     public var isEmpty: Bool { items.isEmpty }
 
@@ -67,6 +78,9 @@ public final class FeedModel {
 
     public var endMessage: String {
         guard followed.isEmpty else {
+            if filter == .relevant {
+                return String(appLocalized: "These are the most recent relevant facts.")
+            }
             return String(
                 appLocalized: "That is all: the official data here goes back to \(Self.firstYear).")
         }
@@ -124,27 +138,33 @@ public final class FeedModel {
             oldestYear = year
             reachedEnd = people.isEmpty || year <= Self.firstYear
             hasLoaded = true
+            shownCount = Self.pageSize
             rebuild()
         }
     }
 
     public func loadMore() async {
-        guard !isLoadingMore, !reachedEnd, hasLoaded, let service else { return }
+        guard hasLoaded else { return }
+        let shown = shownCount
+        if matching.count > shown {
+            shownCount = shown + Self.pageSize
+            return
+        }
+        guard !isLoadingMore, !reachedEnd, filter != .relevant, let service else { return }
         isLoadingMore = true
         defer { isLoadingMore = false }
         var year = oldestYear
-        var grew = false
-        while !grew, year > Self.firstYear {
+        let before = matching.count
+        while matching.count == before, year > Self.firstYear {
             year -= 1
             let loaded = await Self.read(followed, years: [year], first: false, from: service)
             activities += loaded.activities
             for (slug, list) in loaded.speeches { speeches[slug, default: []] += list }
-            let before = items.count
             rebuild()
-            grew = items.count > before
             oldestYear = year
         }
         reachedEnd = oldestYear <= Self.firstYear
+        if matching.count > before { shownCount = shown + Self.pageSize }
     }
 
     public func markSeen() {

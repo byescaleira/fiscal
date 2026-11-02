@@ -30,11 +30,13 @@
 
 **Continuar ao rolar**
 
-14. Dadas pessoas seguidas, quando a lista chega perto do fim, então carrega o ano anterior, em lotes de 6 pessoas, sem repetir linha e sem mudar a posição do que já estava na tela.
+14. Dadas pessoas seguidas e tudo o que já foi lido na tela, quando a lista chega ao fim, então carrega o ano anterior, em lotes de 6 pessoas, sem repetir linha e sem mudar a posição do que já estava na tela.
 15. Dado o ano de 2023 já carregado, quando a lista chega ao fim, então aparece a mensagem de que os dados vão até 2023.
 16. Dado quem não segue ninguém, quando abre, então vê os relevantes e um cartão convidando a seguir; ao chegar ao fim, a mensagem diz que seguir pessoas traz mais fatos.
 17. Dada uma falha em algumas pessoas ou fontes, quando carrega, então o resto aparece e um aviso oferece tentar de novo; sem nada, o erro de rede padrão.
 18. Dada a lista aberta, quando novos dados chegam, então ela só muda ao abrir de novo ou ao puxar a tela.
+23. Dadas 50 linhas já lidas, quando o Feed abre, então a lista mostra 20; ao chegar ao fim, mostra mais 20, sem nova leitura da rede; trocar de filtro volta às 20 primeiras daquele filtro.
+24. Dado o filtro Relevante, quando a lista chega ao fim, então nenhum ano é lido, porque os anos antigos só trazem fatos de quem a pessoa segue, e uma mensagem diz que esses são os relevantes mais recentes.
 
 **Selo e acessibilidade**
 
@@ -112,8 +114,11 @@ classDiagram
         +liveBoard
         +lead
         +phase
+        +visible
+        +pageSize
         +isLoadingMore
         +reachedEnd
+        +isAtEnd
         +load()
         +loadMore()
     }
@@ -137,7 +142,7 @@ classDiagram
 - **Eventos do dia.** Decisão do usuário: a pauta fica só em Votações, e os eventos do resumo viram linhas relevantes, com a data do resumo. Voto e apuração já mostrados não se repetem.
 - **Domínio puro.** `FeedTimeline` recebe o que veio da rede e devolve as linhas, como `SupportTimeline`. A junção por votação usa os mesmos ids. `FollowingFeed` continua para o selo e o widget, com seus 30 dias e 50 itens.
 - **Propostas têm limite.** `Proposal` tem só o ano, sem data. Na lista entram as propostas de `actions.json`, que têm data, até 40 por pessoa. Os arquivos por ano entram para votos, discursos e gastos. Inventar uma data seria dado falso.
-- **Continuar ao rolar.** O primeiro carregamento lê `actions.json`, as checagens e o ano corrente de cada pessoa. Cada volta ao fim lê um ano a mais, até 2023 (`FeedModel.firstYear`), em lotes de 6. Os anos mais antigos só acrescentam linhas mais antigas, então nada muda de lugar. As 100 linhas por rodada não são um limite: a lista cresce conforme os anos.
+- **Continuar ao rolar.** O primeiro carregamento lê `actions.json`, as checagens e o ano corrente de cada pessoa. Pedido do usuário ao ver no iPhone: o scroll não precisa ser longo e carrega conforme a demanda. Por isso a lista mostra 20 linhas (`FeedModel.pageSize`) e acrescenta mais 20 a cada chegada ao fim. Só quando o que foi lido acaba é que lê um ano a mais, até 2023 (`FeedModel.firstYear`), em lotes de 6. O filtro Relevante não lê anos, porque eles só trazem linhas de quem a pessoa segue. Os anos mais antigos só acrescentam linhas mais antigas, então nada muda de lugar. As 100 linhas por rodada não são um limite: a lista cresce conforme os anos.
 - **Quem manda no quê.** `FeedModel` fica com o que era de `TodayModel` (apuração, destaques, resumo) e com as novidades de `MineModel` (leitura por pessoa, selo, retrato do widget). `RegionModel` é o resto de `MineModel`. Sem estado duplicado entre as abas.
 - **Pauta e votações recentes.** Saem de Hoje. A pauta já está em Votações. As votações recentes viram linhas do Feed.
 - **Renomear.** `FeatureToday` vira `FeatureFeed` e `FeatureMine` vira `FeatureRegion`, para o nome dizer o que é. Acontece na operação 5, depois da tela aprovada, para o diff da tela ficar legível.
@@ -171,10 +176,12 @@ classDiagram
    - Cobre: 8, 9, 10, 11, 13. Verificação: `FeedTimelineTests`, inclusive voto dividido, empate de data e proposta sem data fora da lista.
 2. **Modelo do Feed.** Depende de: 1.
    - `FeedModel.load()`: seguidos, apuração, destaques, resumo, votações recentes e destaques da região; depois `actions`, checagens e o ano corrente, em lotes de 6.
-   - `loadMore()`: um ano por vez até `firstYear = 2023`; `reachedEnd`, sem repetir.
+   - `visible`: as primeiras `shownCount` linhas do filtro, com `pageSize = 20`; `filter` e `load()` voltam à primeira página.
+   - `loadMore()`: mostra mais uma página do que já foi lido; sem nada escondido, um ano por vez até `firstYear = 2023`, até o filtro ganhar linhas; `reachedEnd`, sem repetir; no filtro Relevante, nenhum ano.
+   - `isAtEnd`: fim dos dados e nada escondido, e é quem libera a mensagem de fim.
    - Falha parcial em `missing`, com tentar de novo.
    - `newCount`, `markSeen` e o retrato do widget, como em `MineModel`.
-   - Cobre: 14 a 19. Verificação: `FeedModelTests`, com o cenário indisponível, sem seguidos e o fim.
+   - Cobre: 14 a 19, 23, 24. Verificação: `FeedModelTests`, com o cenário indisponível, sem seguidos, o fim e as páginas.
 3. **Abas e tela.** Depende de: 2.
    - Olhar as referências reais antes de desenhar.
    - `AppSection` com `.feed` e `.region`, `DeepLink` com os novos hosts e os antigos, `IntegrationLink`, selo em `MainScreen` e `MacShell`.
@@ -226,7 +233,7 @@ classDiagram
 - **Neutralidade:** o Feed não lê o apoio, e `support_stays_private` barra.
 - **Sem dado inventado:** o que não tem data não entra na lista. Nada de traço, zero ou linha vazia.
 - **Fim honesto:** nunca fingir que há mais. O fim diz até onde vão os dados.
-- **Limites:** lotes de 6 pessoas, um ano por vez, até 2023. Sem carregar anos antigos antes de a pessoa chegar ao fim.
+- **Limites:** 20 linhas por página, lotes de 6 pessoas, um ano por vez, até 2023. Sem carregar anos antigos antes de a pessoa chegar ao fim do que já foi lido.
 - **Sem servidor:** nenhuma mudança em `server/`, nem deploy.
 - **Sem banco novo:** nenhuma mudança de esquema.
 - **Compatibilidade:** `fiscal://today`, `following`, `mine`, `person`, `vote`, `highlight`, `support` e os links do site continuam abrindo. O widget continua atualizando.

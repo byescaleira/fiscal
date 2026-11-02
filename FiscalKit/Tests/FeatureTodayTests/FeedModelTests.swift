@@ -60,7 +60,7 @@ struct FeedModelTests {
         let first = model.items.map(\.id)
         #expect(!model.reachedEnd)
         var turns = 0
-        while !model.reachedEnd, turns < 10 {
+        while !model.reachedEnd, turns < 40 {
             await model.loadMore()
             turns += 1
         }
@@ -68,6 +68,50 @@ struct FeedModelTests {
         let ids = model.items.map(\.id)
         #expect(Set(ids).count == ids.count)
         #expect(Set(first).isSubset(of: Set(ids)))
+    }
+
+    @Test func theListShowsOnePageAtATime() async throws {
+        let model = try await makeModel(following: ["tabata-amaral"])
+        await model.load()
+        try #require(model.items.count > FeedModel.pageSize)
+        #expect(model.visible.map(\.id) == model.items.prefix(FeedModel.pageSize).map(\.id))
+        let total = model.items.count
+        await model.loadMore()
+        #expect(model.items.count == total)
+        #expect(model.visible.count == min(total, FeedModel.pageSize * 2))
+        #expect(!model.isAtEnd)
+        model.filter = .following
+        model.filter = .all
+        #expect(model.visible.count == FeedModel.pageSize)
+    }
+
+    @Test func theEndOnlyShowsWhenNothingIsHidden() async throws {
+        let model = try await makeModel(following: ["tabata-amaral"])
+        await model.load()
+        var turns = 0
+        while !model.isAtEnd, turns < 40 {
+            await model.loadMore()
+            turns += 1
+        }
+        #expect(model.isAtEnd)
+        #expect(model.reachedEnd)
+        #expect(model.visible.count == model.items.count)
+    }
+
+    @Test func theRelevantFilterReadsNoOlderYear() async throws {
+        let model = try await makeModel(following: ["tabata-amaral"])
+        await model.load()
+        let total = model.items.count
+        model.filter = .relevant
+        var turns = 0
+        while !model.isAtEnd, turns < 40 {
+            await model.loadMore()
+            turns += 1
+        }
+        #expect(model.isAtEnd)
+        #expect(!model.reachedEnd)
+        #expect(model.items.count == total)
+        #expect(model.endMessage.isEmpty == false)
     }
 
     @Test func aFailureEverywhereReachesTheScreen() async throws {

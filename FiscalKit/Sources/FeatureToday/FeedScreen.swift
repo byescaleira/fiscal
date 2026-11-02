@@ -145,7 +145,7 @@ private struct FeedEnd: View {
             ProgressView()
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, .spaceL)
-        } else if feed.reachedEnd, !feed.visible.isEmpty {
+        } else if feed.isAtEnd, !feed.visible.isEmpty {
             FeedMessage(symbol: "checkmark.circle", text: feed.endMessage)
         }
     }

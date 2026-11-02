@@ -14072,6 +14072,16 @@
         }
       }
     },
+    "These are the most recent relevant facts." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esses são os fatos relevantes mais recentes."
+          }
+        }
+      }
+    },
     "These pieces don't connect yet. Add a person or a vote." : {
       "localizations" : {
         "pt-BR" : {
