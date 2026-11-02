@@ -72,7 +72,7 @@ private struct SupportTimelineContent: View {
 
     var body: some View {
         PublicDataContent(
-            phase: model.phase, isEmpty: model.isEmpty, retry: { await model.load() }
+            phase: model.phase, isEmpty: model.isEmpty, retry: model.load
         ) {
             list
         } empty: {
