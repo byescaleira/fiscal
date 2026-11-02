@@ -51,7 +51,7 @@ if len(data['review']['notes']) > 4000:
 
 Em inglês, curtas, respondendo o que o revisor precisa para testar sem perguntar:
 
-- O app não pede conta, cadastro nem login; a Lente fica só no aparelho.
+- O app não pede conta, cadastro nem login; o apoio, opcional, fica só no aparelho.
 - O app é gratuito: sem assinatura, compra no app, anúncio ou paywall.
 - O que sai do aparelho e por quanto tempo: token da Atividade ao Vivo da apuração, token de push-to-start do destaque e a chave do App Attest ([ADR 0017](../adr/0017-app-store-privacy-label.md)), coerente com o rótulo de privacidade.
 - Por que o app roda em segundo plano: `fetch` para o pacote offline ([ADR 0015](../adr/0015-background-fetch-offline-pack.md)) e `remote-notification` para a sincronização do iCloud. Não há pedido de permissão de notificações: os alertas são Atividades ao Vivo.

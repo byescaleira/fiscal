@@ -44,7 +44,7 @@ O Fiscal mostra o que os seus representantes fazem com o seu voto: presença, vo
 - **Fato, não opinião.** O Fiscal não toma partido e não dá nota a ninguém. Todo número tem fonte e data.
 - **A mesma régua para todos.** Comparações sempre com colegas do mesmo cargo e da mesma casa, com o método publicado no app ("Como medimos").
 - **Incerteza explicada.** Quando algo é estimado, o app diz por quê e o que falta para ter certeza.
-- **Privacidade.** Sem conta. A Lente (os temas e as pessoas que você apoia) fica só no aparelho. A Apple Intelligence escreve as explicações no próprio aparelho, só a partir dos fatos oficiais.
+- **Privacidade.** Sem conta. O que você apoia, pessoas e causas, fica só no aparelho. A Apple Intelligence escreve as explicações no próprio aparelho, só a partir dos fatos oficiais.
 
 ## De onde vêm os dados
 

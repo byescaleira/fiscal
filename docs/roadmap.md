@@ -1,6 +1,6 @@
 # Roadmap
 
-O que o Fiscal vai ganhar, por fase, até a 1.0. A visão, os públicos, a Lente e as 5 abas estão no [brief](brief.md). Cada fase vira uma ou mais mudanças em [spdd/](../spdd/README.md), cada uma com análise, canvas e ID `FSC-<NNN>` próprios ([ADR 0019](adr/0019-spdd-process.md)). As mudanças de antes do SPDD estão no histórico congelado em [changes/archive/](changes/README.md); os pré-requisitos técnicos ficam no [backlog](backlog.md).
+O que o Fiscal vai ganhar, por fase, até a 1.0. A visão, os públicos, "Meu apoio" e as abas estão no [brief](brief.md). Cada fase vira uma ou mais mudanças em [spdd/](../spdd/README.md), cada uma com análise, canvas e ID `FSC-<NNN>` próprios ([ADR 0019](adr/0019-spdd-process.md)). As mudanças de antes do SPDD estão no histórico congelado em [changes/archive/](changes/README.md); os pré-requisitos técnicos ficam no [backlog](backlog.md).
 
 ## Como dimensionar
 
@@ -35,7 +35,7 @@ A fase 8 corre em etapas:
 | 8.3.3 | [`FSC-009`](../spdd/prompt/FSC-009-202610312200-[Feat]-following-tab-and-follow-everywhere.md): Seguindo como primeira aba (novidades, quem você segue, sugestões e Sua região), seguir de qualquer linha, Siri e Atalhos, widget "Quem eu sigo" | em revisão, branch `feature/following-core` |
 | 8.3.4 | [`FSC-010`](../spdd/prompt/FSC-010-202610312345-[Feat]-share-flow-by-network.md): compartilhar como fluxo completo, por rede social | entregue ([PR #8](https://github.com/byescaleira/fiscal/pull/8)) |
 | 8.3.5 | [`FSC-011`](../spdd/prompt/FSC-011-202611011855-[Feat]-navigation-links-charts-refinements.md): tela de conteúdo, links dentro do app com ícone, "Quem governa" e gráficos | entregue ([PR #9](https://github.com/byescaleira/fiscal/pull/9)) |
-| 8.3.6 | `FSC-012`: fim da Lente e a página "Meu apoio", com pessoas e causas, só no aparelho ([análise](../spdd/analysis/FSC-011-202611011850-[Analysis]-feed-profile-and-end-of-lens.md)) | — |
+| 8.3.6 | `FSC-012`: fim da Lente e a página "Meu apoio", com pessoas e causas, só no aparelho ([canvas](../spdd/prompt/FSC-012-202611012040-[Feat]-end-of-lens-my-support.md)) | em andamento |
 | 8.3.7 | `FSC-013`: aba Feed como primeira, absorvendo Hoje, com o feed montado no app, e aba Região | — |
 | 8.3.8 | `FSC-014`: nova página do político, com o bonequinho no cabeçalho, e compartilhar um item específico | — |
 | 8.4 | Loja: roteiro de [validation.md](validation.md) no iPhone físico, rótulo de privacidade ([ADR 0017](adr/0017-app-store-privacy-label.md)), capturas, TestFlight e envio para a revisão | — |
@@ -55,9 +55,9 @@ Correto no HIG não basta: a seção não pode parecer genérica.
 
 ## Critério de pronto da 1.0
 
-- Uma pessoa de qualquer lado instala, escolhe a Lente em menos de um minuto e, na primeira tela, vê o que os seus representantes fizeram nos temas dela, com fonte e data.
+- Uma pessoa de qualquer lado instala, abre o app e, na primeira tela, vê o que os seus representantes fizeram, com fonte e data.
 - Os 513 deputados, os 81 senadores e o presidente com perfil completo; Live Activity para apuração e para votação importante.
-- Zero dado pessoal no servidor; a Lente só no aparelho.
+- Zero dado pessoal no servidor; o apoio só no aparelho.
 - VoiceOver, Dynamic Type nos tamanhos de acessibilidade e Reduzir movimento em todas as telas, no iPhone e no iPad.
 
 ## Depois da 1.0

@@ -16,83 +16,30 @@ O Fiscal mostra o que os seus representantes fazem com o seu voto, a partir do q
   - viram uma enciclopédia neutra que ninguém abre duas vezes.
 - O Brasil está dividido em dois públicos grandes, com prioridades diferentes, e os dois querem fiscalizar. A direita costuma olhar para gasto público, impostos, segurança, corrupção e liberdade. A esquerda costuma olhar para desigualdade, programas sociais, meio ambiente, direitos e serviços públicos. Os dois olham para corrupção, privilégios de político e emendas.
 
-## A Lente pelo apoio (decisão do usuário em 2026-10-26; substitui o lado)
+## Meu apoio (decisão do usuário em 2026-11-01; substitui a Lente, [ADR 0021](adr/0021-end-of-lens-support-on-device.md))
 
-- **Sai o lado:** a régua esquerda/centro/direita deixa de existir. A Lente passa a ser **quem a pessoa apoia**: de 1 a 5 políticos de qualquer cargo, do vereador ao presidente, escolhidos por busca com foto e tag, ou "Prefiro não dizer", que é uma escolha legítima e deixa o app neutro.
-- **O que o apoio muda:**
-  - **Temas:** vêm primeiro os temas em que os apoiados mais atuam, tirados dos projetos, votos e discursos deles.
-  - **Hoje e Destaque do momento:** priorizam o que eles fizeram.
-  - **Votações:** mostram "como quem você apoia votou".
-- **O que continua igual:**
-  - **Fatos:** os mesmos para todos.
-  - **Outra lente:** mostra o que se destaca para quem apoia outras pessoas, para não virar bolha.
-  - **Nunca qualifica:** o app não dá nota nem ranking a ninguém.
-- **Apoiar e seguir são separados:** seguir, na aba Meus, é acompanhar qualquer pessoa, inclusive quem a pessoa não apoia. Apoiar define a Lente, e quem é apoiado passa a ser seguido automaticamente.
-- **Privacidade:** apoio político é dado sensível pela LGPD (art. 5º, II). Fica só no aparelho: não vai para servidor, iCloud, backup, notificação, Spotlight nem imagem compartilhada.
-- **Visual:** paleta, arte e ícone não vêm da cor do partido do apoiado, porque isso viraria material de campanha. A pessoa escolhe em Aparência.
-- O texto abaixo, sobre o lado, fica como histórico.
+- **Sai a Lente:** o app é igual para todo mundo. Nenhuma tela muda de ordem, filtro ou destaque por causa do apoio, e o app abre sem setup nem pergunta política.
+- **O que é:** uma página privada, "Meu apoio", com até 5 pessoas de qualquer cargo e até 5 causas, tudo opcional.
+- **O que mostra:** uma linha do tempo por data, com filtros de pessoa e de causa: votos, propostas, discursos e destaques, com fonte. Uma votação em que duas pessoas apoiadas votaram diferente é uma linha só, com o voto de cada uma.
+- **Causa é assunto, não posição:** o app nunca diz que alguém votou a favor ou contra uma causa, não calcula alinhamento, não dá nota e não compara apoiados.
+- **Votações:** a tela da votação continua mostrando "como quem você apoia votou". É fato, e só a pessoa vê.
+- **Apoiar e seguir são separados:** seguir é acompanhar qualquer pessoa. Quem é apoiado passa a ser seguido; deixar de apoiar não deixa de seguir.
+- **Privacidade:** apoio político é dado sensível pela LGPD (art. 5º, II). Fica só no aparelho, num banco separado, fora do iCloud e do backup. Não vai para servidor, telemetria, notificação, Spotlight, widget, Siri nem cartaz. Só sai na exportação que a pessoa pede. "Apagar meu apoio" apaga de verdade, e quem a pessoa segue continua seguido.
+- **Notificações não são personalizadas** (decisão do usuário em 2026-10-25): são por feature, iguais para todo mundo, e o apoio nunca vira alerta.
+- **Visual:** a cor de destaque e o ícone ficam em Aparência e nunca vêm da cor do partido de alguém, porque isso viraria material de campanha.
 
-## A ideia: o app se adapta ao seu lado, os fatos são os mesmos
-
-O Brasil está polarizado, e o Fiscal assume isso de frente: **o app se adapta ao lado da pessoa, e deixa isso claro o tempo todo** (decisão do usuário em 2026-10-25). Quem se vê à direita, à esquerda ou no centro, ou quem prefere ser imparcial, abre um app que parece feito para si, com os mesmos dados oficiais por baixo.
-
-### O lado é o primeiro passo do setup
-
-1. **"De que lado você está?"** É a primeira tela, grande e direta, com seis opções do mesmo tamanho e com o mesmo peso:
-   - Direita
-   - Centro-direita
-   - Centro
-   - Centro-esquerda
-   - Esquerda
-   - **Imparcial**
-
-   **Centro** é uma lente própria, com os temas que costumam importar a quem se vê no centro. **Imparcial** é para quem quer ver os dois lados equilibrados:
-   - os destaques alternam entre os temas dos dois públicos;
-   - as comparações aparecem lado a lado;
-   - a paleta e a arte são neutras;
-   - a "Outra lente" fica sempre aberta.
-
-   Embaixo, o app explica que adapta o que mostra primeiro, as cores, a arte e os destaques, e que os números são os mesmos para todo mundo. Um aviso de privacidade, em destaque e com ícone de cadeado, diz com estas palavras: **"Sua escolha fica só neste iPhone. Ela não vai para nenhum servidor, não entra no iCloud nem em backup, não é compartilhada e o Fiscal não sabe qual é."** "Prefiro não dizer" existe, menor, e funciona como Imparcial.
-2. **"O que mais importa para você?"** Uma grade de 12 temas, já pré-marcada com os temas que costumam importar para aquele lado. A pessoa ajusta: de 3 a 5 temas.
-3. **"O seu visual."** Coleção de arte, paleta e ícone sugeridos para o lado, com prévia real, e a possibilidade de trocar.
-
-### O que se adapta ao lado (e fica visível)
-
-| Adapta ao lado | Nunca muda |
-|---|---|
-| A ordem e os destaques de Hoje, de Votações e de Dinheiro: primeiro o que importa para aquele lado | Os números, os votos, os gastos e as fontes |
-| As votações em destaque e as comparações sugeridas | O acesso a tudo: qualquer dado está a um toque |
-| O resumo do perfil ("nos seus temas, ele votou assim") | A ordem dos candidatos e dos políticos (por voto ou alfabética) |
-| A paleta do app, a coleção de arte, o ícone e os cards de compartilhar | A cor de cada candidato (a do partido) e a ausência de nota ou ranking |
-| O tom dos textos de apoio (o que chama atenção), sem adjetivo sobre ninguém | O texto oficial, sempre ao lado do resumo |
-
-**Clareza:**
-- Um selo fixo no topo de Hoje e de cada lista mostra a lente ativa ("Lente: Direita"). Um toque abre o que ela muda e a opção de trocar.
-- Todo card e todo destaque que mudou por causa da lente leva uma marca discreta ("pela sua lente").
-- Na loja e no setup, o app diz com todas as letras que se adapta ao lado de quem usa.
-
-- **Outra lente:** em qualquer votação ou perfil, um botão mostra o mesmo fato pelos temas do outro público. É o recurso de ponte do app: entender por que o outro lado se importa com aquela votação.
-- **Privacidade (inegociável):** o lado, os temas e as escolhas visuais ficam **só neste aparelho**:
-  - num banco local separado, **fora do CloudKit e do iCloud**, com o arquivo marcado como excluído do backup (`isExcludedFromBackup`);
-  - nunca vão em requisição ao servidor, em log, em telemetria, em analytics, no `TipKit` ou em notificação;
-  - nunca aparecem num card de compartilhar nem em metadados de imagem exportada;
-  - trocar de iPhone ou reinstalar o app pede a escolha de novo, e o app avisa disso no setup;
-  - o selo "Lente: …" e o aviso do cadeado repetem a regra em Ajustes › Lente, com um botão "Apagar minha escolha";
-  - na App Store, o rótulo de privacidade é o do [ADR 0017](adr/0017-app-store-privacy-label.md), sem dado sobre a Lente. Nunca vão para o servidor, nunca entram em telemetria e nunca saem no backup do servidor. Opinião política é dado pessoal sensível na LGPD (art. 5º, II, e art. 11).
-  - Notificações não são personalizadas (decisão do usuário em 2026-10-25): são por feature, iguais para todo mundo, por canal de broadcast do APNs, e só quando há necessidade ou variação significativa dos dados. A Lente nunca vira alerta, então nada da Lente sai do aparelho.
-
-## Aparência pela Lente
+## Aparência
 
 O app tem a cara da pessoa; os dados continuam com a cara dos fatos.
 
 - **Paletas:** cada uma tem cor de destaque, fundo dos cards e um par de cores para o compartilhamento. Há paletas inspiradas no imaginário de cada público, sempre em pares espelhados, paletas neutras e paletas tiradas das obras dos artistas parceiros, com crédito. Nenhuma paleta se apresenta como "a neutra", e o verde-amarelo não fica sem contraparte, porque os dois campos disputam essas cores. O posicionamento sugere uma paleta, mas qualquer pessoa pode escolher qualquer uma.
 - **Bandeira e brasões:** nunca recoloridos, com inscrição ou usados como produto (Lei 5.700/1971; Lei 9.279/1996, art. 191).
-- **Símbolos:** um conjunto de SF Symbols por tema e por estilo, usado nos chips da Lente e nos cards. Sem logotipo oficial de partido, que é marca registrada; os ícones de partido usam símbolos genéricos desenhados pelo Fiscal (ver "Ícone do app").
+- **Símbolos:** um conjunto de SF Symbols por tema e por estilo, usado nos chips e nos cards. Sem logotipo oficial de partido, que é marca registrada; os ícones de partido usam símbolos genéricos desenhados pelo Fiscal (ver "Ícone do app").
 - **Ícone do app** (pedido do usuário em 2026-10-25: "design do ícone seguindo a identidade do projeto"; escolhido por ele no iPhone no mesmo dia, depois de sete rodadas em `docs/changes/archive/2026-10-29-app-1.0/icon/`):
   - **Principal:** a Amazônia ao amanhecer com o mapa do Brasil em vidro por cima. A estrela do template saiu.
   - **Alternativos, em Ajustes › Aparência › Ícone do app:**
     - Amazônia de dia e Amazônia com rio;
-    - Temas: um por paleta da Lente (8);
+    - Temas: um por cor (8);
     - Fauna do Brasil (6);
     - Partidos (30, todos os registrados no TSE, em ordem alfabética), atrás da flag `partyIcons`, desligada por padrão.
   - **Ícones de partido** (decisão do usuário, que aceitou o risco da regra 5.2.1 da App Store sobre propriedade intelectual de terceiros):
@@ -107,7 +54,7 @@ O app tem a cara da pessoa; os dados continuam com a cara dos fatos.
     - anima em loop com piscar, respiração, leve giro de cabeça e expressões;
     - a roupa e o fundo usam a cor do partido (`PartyPalette`).
   - **Mesmas regras para todos:**
-    - o mesmo esqueleto, as mesmas expressões e o mesmo ritmo para todo mundo, inclusive pela Lente;
+    - o mesmo esqueleto, as mesmas expressões e o mesmo ritmo para todo mundo, sem depender de quem a pessoa apoia;
     - as expressões são neutras ou simpáticas (piscar, sorriso leve, aceno), sem raiva, choro ou deboche;
     - a expressão nunca muda conforme o dado (gasto, falta, voto);
     - nada de balão de fala nem frase que a pessoa não disse;
@@ -133,7 +80,7 @@ A parte social é o principal canal de crescimento: o Fiscal vira o lugar de ond
   - o dado com a fonte oficial e a data;
   - a arte de um artista, com nome e @, e a licença;
   - o QR code ou link para o perfil no app.
-- **A arte segue a Lente:** a pessoa escolhe a coleção de artistas que combina com ela. O dado não muda.
+- **A arte é escolha do cartaz:** a pessoa escolhe a obra na galeria, em cada cartaz. O dado não muda.
 - **Galeria de artistas** dentro do app: quem é cada artista, as obras, a licença e o link para o portfólio. Crédito sempre visível, inclusive na imagem exportada, sem como remover.
 - **Sem montagem enganosa:** o card nunca coloca palavra na boca de político e nunca recorta o placar. O dado sai inteiro ou não sai.
 
@@ -173,19 +120,19 @@ O manifesto `art-credits.json` vai junto com o app e lista, por obra: autor, @, 
 
 ## Princípios (herdados da pesquisa, com o que muda)
 
-1. **Mesmo fato para todo mundo.** A Lente ordena; ela não filtra nem reescreve.
+1. **Mesmo fato para todo mundo.** A mesma ordem, os mesmos filtros e os mesmos textos, com ou sem apoio.
 2. **Fonte e data em cada bloco.** "—" quando o dado não existe, nunca 0.
-3. **Sem nota nem ranking.** Cada candidato e cada partido têm sempre a mesma cor (a do próprio partido, `PartyPalette`), igual para todo mundo; a Lente e a aparência nunca mudam a cor de um candidato. Decisão do usuário em 2026-10-25, depois de ver a Live Activity.
+3. **Sem nota nem ranking.** Cada candidato e cada partido têm sempre a mesma cor (a do próprio partido, `PartyPalette`), igual para todo mundo; o apoio e a aparência nunca mudam a cor de um candidato. Decisão do usuário em 2026-10-25, depois de ver a Live Activity.
 4. **Linguagem simples.** A ementa oficial vira "o que muda para você", sempre com o texto original a um toque.
-5. **Privacidade como recurso.** Sem conta para usar o app; seguir e a Lente ficam no aparelho; o iCloud é opcional.
+5. **Privacidade como recurso.** Sem conta para usar o app; o apoio fica só no aparelho, e seguir pode sincronizar pelo iCloud privado; o iCloud é opcional.
 6. **Nativo Apple.** Live Activities, widgets, App Intents com a Siri, Spotlight, Apple Intelligence no aparelho, VoiceOver nos gráficos e layouts para iPad, Mac e visionOS.
 
 ## As 5 abas
 
 | # | Aba | Ícone | O que é |
 |---|---|---|---|
-| 1 | **Hoje** | `newspaper` | O resumo do dia pela Lente: votações nos seus temas, como votaram os seus representantes, eventos ao vivo (apuração, votação importante, CPI) e "o que muda para você" |
-| 2 | **Meus** | `person.2` | Os seus representantes pelo endereço (do vereador ao presidente) e quem você segue. Cada perfil tem o resumo pela Lente, presença, votos, propostas, gastos e patrimônio |
+| 1 | **Hoje** | `newspaper` | O resumo do dia: votações, como votaram os seus representantes, eventos ao vivo (apuração, votação importante, CPI) e "o que muda para você" |
+| 2 | **Meus** | `person.2` | Os seus representantes pelo endereço (do vereador ao presidente) e quem você segue. Cada perfil tem presença, votos, propostas, gastos e patrimônio |
 | 3 | **Votações** | `checkmark.square` | A pauta do Congresso: o calendário, o placar por partido e por estado, quem votou como e "o que muda para você". Inclui a Live Activity da votação importante |
 | 4 | **Dinheiro** | `brazilianrealsign` | Para onde vai o dinheiro público: cota, salários e benefícios, emendas (inclusive as "emendas Pix"), financiamento de campanha, patrimônio declarado e arrecadação |
 | 5 | **Fiscalizar** (proeminente) | `magnifyingglass` | A busca universal: pessoa, partido, projeto, cidade, CNPJ de fornecedor. Também é a porta para Comparar e Eleições. É a aba com `Tab(role: .search)`, que o iOS 26+ mostra destacada, separada das outras na barra de Liquid Glass |
@@ -204,7 +151,7 @@ O manifesto `art-credits.json` vai junto com o app e lista, por obra: autor, @, 
     - sem contagem de "mentiras" nem ranking;
     - um aviso de cobertura: a lista mostra só o que a agência escolheu checar, e ausência de checagem não quer dizer nada sobre a pessoa;
   - **Nome:** a seção não usa "Fato ou Fake", que é marca da seção do g1.
-- **Ajustes** saem da barra de abas e viram um botão na toolbar de Hoje, onde a pessoa também edita a Lente.
+- **Ajustes** saem da barra de abas e viram um botão na toolbar de Hoje, ao lado do coração de "Meu apoio".
 - **Eleições** (apuração ao vivo, resultados e propostas de governo) aparecem em Hoje durante o período eleitoral e ficam sempre acessíveis em Fiscalizar.
 - **Recomendação de aba proeminente:** usar Fiscalizar porque é o padrão nativo (`role: .search`) e o verbo que dá nome ao app. A alternativa, um "Ao vivo" central, só faz sentido em dia de evento e ficaria vazia no resto do ano.
 
@@ -230,7 +177,7 @@ O manifesto `art-credits.json` vai junto com o app e lista, por obra: autor, @, 
 ## Credibilidade: só fatos (pedido do usuário em 2026-10-26)
 
 - **Só fatos:** o app mostra números oficiais e textos oficiais como vieram. Nada de opinião, adjetivo de valor ou causa atribuída.
-- **Quando houver estimativa, dizer o motivo:** tudo que não é número oficial (peso das ações, repercussão, temas pelo apoio, explicação gerada) mostra ao lado, em uma linha, por que é estimado e o que ficou sem medir. Exemplo: "Repercussão medida só pela Wikipédia; notícias indisponíveis nesta carga".
+- **Quando houver estimativa, dizer o motivo:** tudo que não é número oficial (peso das ações, repercussão, explicação gerada) mostra ao lado, em uma linha, por que é estimado e o que ficou sem medir. Exemplo: "Repercussão medida só pela Wikipédia; notícias indisponíveis nesta carga".
 - **Sinal ausente não conta como zero:** se uma fonte de repercussão falhar, a fórmula usa só os sinais medidos e avisa quais faltaram.
 - **Compartilhar é o motor:** dados bem trabalhados e bem interpretados, em cards bonitos, fazem as pessoas compartilharem. O social e o design são o que atrai.
 
@@ -253,29 +200,29 @@ O manifesto `art-credits.json` vai junto com o app e lista, por obra: autor, @, 
 
 | Categoria | O que o Fiscal leva |
 |---|---|
-| Social Impact | Fiscalização para os dois públicos, a Lente com a ponte "Outra lente" e dados oficiais sem viés |
+| Social Impact | Fiscalização para todos os públicos, com os mesmos fatos para todo mundo e dados oficiais sem viés |
 | Visuals and Graphics | Coleções de artistas brasileiros dos dois lados, com crédito, e cards compartilháveis com dado e arte |
 | Interaction | Live Activity da apuração e de votações, App Intents ("Siri, como meu deputado votou hoje?"), widgets interativos e Spotlight |
 | Inclusivity | VoiceOver nos gráficos (Audio Graphs), Dynamic Type até os tamanhos de acessibilidade, linguagem simples, leitura em voz alta e Reduzir movimento |
-| Innovation | Resumo de projetos com o Foundation Models, no aparelho e sem enviar nada, sempre ao lado do texto oficial; Lente privada no aparelho |
+| Innovation | Resumo de projetos com o Foundation Models, no aparelho e sem enviar nada, sempre ao lado do texto oficial; apoio privado no aparelho |
 
 ## Arquitetura
 
-- **App:** SwiftUI e o pacote `FiscalKit`, com um target por aba (`FeatureToday`, `FeatureMine`, `FeatureVotes`, `FeatureMoney`, `FeatureSearch`), mais `FeatureLens` (onboarding e edição da Lente) e `FeatureLiveResults`.
+- **App:** SwiftUI e o pacote `FiscalKit`, com um target por aba (`FeatureToday`, `FeatureMine`, `FeatureVotes`, `FeatureMoney`, `FeatureSearch`), mais `FeatureSupport` (a página "Meu apoio") e `FeatureLiveResults`.
 - **Servidor** (`server/`, Go, na VPS):
   - carga diária dos arquivos oficiais da Câmara, do Senado e do TSE;
   - a API `/api/v1` mapeada na pesquisa;
   - o push das Live Activities.
   - Nenhum dado da pessoa: só tokens de push anônimos.
-- **Dados no aparelho:** SwiftData com a Lente, quem a pessoa segue e o cache das últimas respostas. O CloudKit privado é opcional.
+- **Dados no aparelho:** SwiftData com o apoio, quem a pessoa segue e o cache das últimas respostas. O CloudKit privado é opcional.
 
 ## Riscos
 
 | Risco | Como tratar |
 |---|---|
-| Parecer de um lado | O app adapta a apresentação ao lado de cada pessoa e diz isso às claras; por baixo, mesmo fato para todos, sem adjetivo, e "Outra lente" a um toque |
+| Parecer de um lado | O app é igual para todo mundo: mesmo fato, mesma ordem, sem adjetivo |
 | Lei eleitoral em ano de eleição | Sem pesquisa, sem projeção, sem enquete e sem recomendação de voto; no 2º turno, candidatos em ordem de voto ou alfabética |
-| LGPD (opinião política) | A Lente só no aparelho, com consentimento explícito para o posicionamento e "Prefiro não dizer" |
+| LGPD (opinião política) | O apoio é opcional, fica só no aparelho e pode ser apagado a qualquer momento |
 | Revisão da App Store | Fonte em cada tela, sem se apresentar como app do governo, sem brasão |
 | Fontes instáveis | Carga que para e avisa em vez de gravar dado errado; "—" e a data da última carga |
 | Retrato desenhado ser lido como deboche ou propaganda | Mesmo esqueleto, expressões e ritmo para todos, sem expressão ligada a dado, marca "Ilustração do Fiscal" e nome sempre visível; retrato fora dos cards perto da votação |
