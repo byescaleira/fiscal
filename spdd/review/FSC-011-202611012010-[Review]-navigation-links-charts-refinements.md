@@ -29,7 +29,7 @@
 | crítica | Cenário 22 | Leitura de cada estado sem prova | Corrigido: `LinkAccessibilityTests` acha a barra "São Paulo" com o valor. O VoiceOver ligado não rodou |
 | importante | `ContentDetail`, `ProfileModel+Activity` | "Pode virar lei" aparecia como "Estágio" | Corrigido: bloco próprio, "Efeito", e o canvas atualizado |
 | importante | `Route.destination` | Assinatura diferente do canvas | Canvas sincronizado |
-| importante | `spdd/README.md` | Linha sem PR | Preenchida neste commit |
+| importante | `spdd/README.md` | Linha sem PR | Preenchida com o PR #9 |
 | informativa | Structure, Entities | `kindColor`, `mandateRowHeight`, `isEmpty` e `kicker` fora do canvas | Canvas sincronizado |
 
 ## Achados do painel
