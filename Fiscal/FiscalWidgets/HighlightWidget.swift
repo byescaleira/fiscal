@@ -57,7 +57,7 @@ struct HighlightWidget: Widget {
         StaticConfiguration(kind: "fiscal.highlight", provider: HighlightProvider()) { entry in
             HighlightWidgetView(entry: entry)
                 .containerBackground(for: .widget) { Color.plainBackground }
-                .widgetURL(entry.state.value?.lead.url ?? IntegrationLink.today)
+                .widgetURL(entry.state.value?.lead.url ?? IntegrationLink.feed)
         }
         .configurationDisplayName("Highlight of the Moment")
         .description("What weighs most in politics now, with the official text and who did it.")

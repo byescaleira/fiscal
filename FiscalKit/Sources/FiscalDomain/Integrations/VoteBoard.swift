@@ -119,11 +119,10 @@ public enum IntegrationText {
 }
 
 public enum IntegrationLink {
-    public static let mine = URL(string: "fiscal://mine")
-    public static let following = URL(string: "fiscal://following")
+    public static let feed = URL(string: "fiscal://feed")
+    public static let region = URL(string: "fiscal://region")
     public static let votes = URL(string: "fiscal://votes")
     public static let races = URL(string: "fiscal://races")
-    public static let today = URL(string: "fiscal://today")
 
     public static func person(_ slug: String) -> URL? {
         path("person", slug)
@@ -135,7 +134,7 @@ public enum IntegrationLink {
 
     public static func highlight(id: String, kind: Highlight.Kind, route: String) -> URL? {
         let link = kind == .vote ? vote(route) : path("highlight", id)
-        return link ?? today
+        return link ?? feed
     }
 
     private static func path(_ host: String, _ value: String) -> URL? {

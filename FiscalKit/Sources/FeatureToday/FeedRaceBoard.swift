@@ -1,7 +1,7 @@
 import FiscalDomain
 import Foundation
 
-public struct TodayRaceBoard: Hashable, Sendable {
+public struct FeedRaceBoard: Hashable, Sendable {
     public struct Side: Hashable, Sendable, Identifiable {
         public let candidate: RaceCandidate
         public let index: Int

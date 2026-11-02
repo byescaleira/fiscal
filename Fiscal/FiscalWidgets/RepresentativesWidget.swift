@@ -40,8 +40,8 @@ struct RepresentativesEntry: TimelineEntry {
 
     var url: URL? {
         switch content {
-        case .place: IntegrationLink.mine
-        case .following: IntegrationLink.following
+        case .place: IntegrationLink.region
+        case .following: IntegrationLink.region
         }
     }
 

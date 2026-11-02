@@ -5,7 +5,6 @@ import SwiftUI
 
 public struct FeedScreen<RaceHero: View>: View {
     @Environment(FeedModel.self) private var feed
-    @Environment(TodayModel.self) private var today
     @Environment(SessionModel.self) private var session
     @Environment(FiscalNavigation.self) private var navigation: FiscalNavigation?
     @Environment(FollowingBadge.self) private var badge: FollowingBadge?
@@ -20,13 +19,13 @@ public struct FeedScreen<RaceHero: View>: View {
     public var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: .spaceL, pinnedViews: .sectionHeaders) {
-                if let board = today.liveBoard {
-                    TodayRaceHero(board: board) { raceHero(board.race) }
+                if let board = feed.liveBoard {
+                    FeedRaceHero(board: board) { raceHero(board.race) }
                         .transition(.opacity)
                         .zIndex(1)
                 }
-                if let lead = today.highlightLead {
-                    TodayHighlightHero(highlight: lead)
+                if let lead = feed.highlightLead {
+                    FeedHighlightHero(highlight: lead)
                         .zIndex(1)
                 }
                 Section {
@@ -42,18 +41,11 @@ public struct FeedScreen<RaceHero: View>: View {
         }
         .background(.plainBackground)
         .emphasisTitle("Feed")
-        .toolbar { TodayToolbar() }
-        .refreshable {
-            await today.load()
-            await feed.load()
-        }
-        .task {
-            await today.watchRaces()
-        }
+        .toolbar { FeedToolbar() }
+        .refreshable { await feed.load() }
         .task(id: session.generation) {
-            async let top: Void = today.load()
             await feed.load()
-            await top
+            await feed.watchRaces()
         }
         .onChange(of: feed.newCount, initial: true) { _, count in badge?.count = count }
         .onChange(of: follow?.followed) { _, slugs in
@@ -65,6 +57,29 @@ public struct FeedScreen<RaceHero: View>: View {
         }
         .onChange(of: scenePhase) { _, phase in
             if phase == .background { feed.markSeen() }
+        }
+    }
+}
+
+private struct FeedToolbar: ToolbarContent {
+    @Environment(\.open) private var open
+    @Environment(\.navigationSection) private var section
+
+    var body: some ToolbarContent {
+        ToolbarItem(placement: .primaryAction) {
+            Button("My Support", systemImage: "heart") { open(.support, in: section) }
+                .tint(Color.primary)
+        }
+        FixedToolbarSpacer(placement: .primaryAction)
+        ToolbarItem(placement: .primaryAction) {
+            #if os(macOS)
+                SettingsLink {
+                    Label("Settings", systemImage: "gearshape")
+                }
+            #else
+                Button("Settings", systemImage: "gearshape") { open(.settings, in: section) }
+                    .tint(Color.primary)
+            #endif
         }
     }
 }
@@ -121,6 +136,9 @@ private struct FeedList: View {
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, .spaceXL)
         } else {
+            if let notice = feed.notice {
+                FeedMessage(symbol: notice.symbol, text: notice.text)
+            }
             if feed.followsNobody { FeedFollowInvite() }
             if !feed.missing.isEmpty {
                 FeedMessage(symbol: "wifi.slash", text: feed.missingText)

@@ -2,16 +2,8 @@ import FeatureCore
 import FiscalDomain
 import Foundation
 
-extension TodayModel {
-    public static let highlightSecondaryLimit = 3
-
-    public var orderedHighlights: [Highlight] { highlights?.items ?? [] }
-
-    public var highlightLead: Highlight? { orderedHighlights.first }
-
-    public var highlightOthers: [Highlight] {
-        Array(orderedHighlights.dropFirst().prefix(Self.highlightSecondaryLimit))
-    }
+extension FeedModel {
+    public var highlightLead: Highlight? { highlights?.items.first }
 
     public var highlightMethod: WeightMethod? { highlights?.method }
 
@@ -37,7 +29,9 @@ extension TodayModel {
             case .money: String(appLocalized: "Money")
             case .indicator: String(appLocalized: "Indicator")
             }
-        return "\(kind) · \(Self.shortDate(highlight.date.date()))"
+        let date = highlight.date.date().formatted(
+            Date.FormatStyle(locale: .app).day(.twoDigits).month(.twoDigits))
+        return "\(kind) · \(date)"
     }
 
     public func highlightAccessibility(_ highlight: Highlight) -> String {
@@ -55,9 +49,9 @@ extension TodayModel {
         .compactMap(\.self).joined(separator: " ")
     }
 
-    public func highlightHeroKicker(_ highlight: Highlight) -> String {
+    public func highlightHeroOverline(_ highlight: Highlight) -> String {
         [highlightKicker(highlight), highlightStage(highlight)].compactMap(\.self)
-            .filter { !$0.isEmpty }.joined(separator: " · ")
+            .filter { !$0.isEmpty }.joined(separator: " · ").uppercased(with: .app)
     }
 
     public func highlightReference(_ highlight: Highlight) -> String? {
@@ -75,6 +69,10 @@ extension TodayModel {
         String(
             appLocalized:
                 "Author: \(person.name), \(person.party), \(person.officeTitle), \(person.uf)")
+    }
+
+    public func authorLine(_ person: PersonCard) -> String {
+        "\(person.officeTitle) · \(person.uf.uppercased(with: .app))"
     }
 
     public func highlightStage(_ highlight: Highlight) -> String? {

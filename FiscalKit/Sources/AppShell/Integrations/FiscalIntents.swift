@@ -148,7 +148,7 @@ public struct OpenFollowingIntent: AppIntent {
     @MainActor
     public func perform() async throws -> some IntentResult {
         try IntentWorkspace.ensureOpen()
-        FiscalServices.shared.pendingURL = IntegrationLink.following
+        FiscalServices.shared.pendingURL = IntegrationLink.region
         return .result()
     }
 }

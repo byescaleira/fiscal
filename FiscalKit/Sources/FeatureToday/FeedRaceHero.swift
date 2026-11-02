@@ -1,9 +1,9 @@
 import FeatureCore
 import SwiftUI
 
-struct TodayRaceHero<Content: View>: View {
+struct FeedRaceHero<Content: View>: View {
     @Environment(PortraitStore.self) private var portraits: PortraitStore?
-    let board: TodayRaceBoard
+    let board: FeedRaceBoard
     @ViewBuilder let content: () -> Content
 
     var body: some View {

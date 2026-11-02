@@ -18,13 +18,11 @@ struct SectionScreen: View {
         case .feed:
             let services = FiscalServices.shared
             ModelHost(
-                TodayModel(
+                FeedModel(
                     service: data, races: services.liveResultsService(),
-                    follows: services.todayFollows(session.repositories.follows))
+                    follows: services.feedFollows(session.repositories.follows))
             ) {
-                ModelHost(FeedModel(service: data, follows: session.repositories.follows)) {
-                    FeedScreen { race in RaceHeroCard(race: race, opensDetail: true) }
-                }
+                FeedScreen { race in RaceHeroCard(race: race, opensDetail: true) }
             }
         case .region:
             ModelHost(MineModel(service: data, follows: session.repositories.follows)) {

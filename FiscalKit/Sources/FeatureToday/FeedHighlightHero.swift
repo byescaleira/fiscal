@@ -3,8 +3,8 @@ import FiscalDesignSystem
 import FiscalDomain
 import SwiftUI
 
-struct TodayHighlightHero: View {
-    @Environment(TodayModel.self) private var today
+struct FeedHighlightHero: View {
+    @Environment(FeedModel.self) private var feed
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
     @ReducesMotion private var reduceMotion
@@ -16,16 +16,16 @@ struct TodayHighlightHero: View {
         VStack(alignment: .leading, spacing: .spaceL) {
             header
             Button {
-                open(today.route(for: highlight), in: section)
+                open(feed.route(for: highlight), in: section)
             } label: {
                 content.contentShape(.rect)
             }
             .buttonStyle(.plain)
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel(Text(verbatim: today.highlightAccessibility(highlight)))
+            .accessibilityLabel(Text(verbatim: feed.highlightAccessibility(highlight)))
             .accessibilityAddTraits(.isButton)
             if let person = highlight.person {
-                TodayHighlightAuthor(person: person)
+                FeedHighlightAuthor(person: person)
             }
             footer
         }
@@ -36,7 +36,7 @@ struct TodayHighlightHero: View {
         .clipShape(.rect(cornerRadius: .radiusGroup))
         .contextMenu {
             Button("Share", systemImage: "square.and.arrow.up") {
-                open(.share(today.shareSubject(for: highlight)), in: section)
+                open(.share(feed.shareSubject(for: highlight)), in: section)
             }
         }
         .onAppear {
@@ -50,20 +50,20 @@ struct TodayHighlightHero: View {
         if let party = highlight.person?.party, !party.isEmpty {
             PartyBackdrop(party: party)
         } else {
-            TodayHighlightBackdrop(slot: today.highlightThemeSlot(highlight))
+            FeedHighlightBackdrop(slot: feed.highlightThemeSlot(highlight))
         }
     }
 
     private var header: some View {
         HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
-            Text(verbatim: today.highlightHeroOverline(highlight))
+            Text(verbatim: feed.highlightHeroOverline(highlight))
                 .font(.chipLabel)
                 .tracking(.spaceHairline / 4)
                 .opacity(.opacityStrong)
                 .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: .spaceS)
             Button("Share", systemImage: "square.and.arrow.up") {
-                open(.share(today.shareSubject(for: highlight)), in: section)
+                open(.share(feed.shareSubject(for: highlight)), in: section)
             }
             .labelStyle(.iconOnly)
             .buttonStyle(.borderless)
@@ -85,9 +85,9 @@ struct TodayHighlightHero: View {
                     .lineLimit(2)
             }
             if let tally = highlight.tally {
-                TodayHighlightScore(tally: tally, large: false)
+                FeedHighlightScore(tally: tally, large: false)
             }
-            if let reference = today.highlightReference(highlight) {
+            if let reference = feed.highlightReference(highlight) {
                 Text(verbatim: reference)
                     .font(.footnote.weight(.semibold))
                     .opacity(.opacityStrong)
@@ -98,22 +98,22 @@ struct TodayHighlightHero: View {
     private var footer: some View {
         ViewThatFits(in: .horizontal) {
             HStack(alignment: .center, spacing: .spaceS) {
-                TodayHighlightRelevance(weight: highlight.weight, filled: appeared)
+                FeedHighlightRelevance(weight: highlight.weight, filled: appeared)
                 Spacer(minLength: .spaceS)
-                WeightMethodButton(method: today.highlightMethod)
+                WeightMethodButton(method: feed.highlightMethod)
                     .tint(.white)
             }
             VStack(alignment: .leading, spacing: .spaceS) {
-                TodayHighlightRelevance(weight: highlight.weight, filled: appeared)
-                WeightMethodButton(method: today.highlightMethod)
+                FeedHighlightRelevance(weight: highlight.weight, filled: appeared)
+                WeightMethodButton(method: feed.highlightMethod)
                     .tint(.white)
             }
         }
     }
 }
 
-private struct TodayHighlightAuthor: View {
-    @Environment(TodayModel.self) private var today
+private struct FeedHighlightAuthor: View {
+    @Environment(FeedModel.self) private var feed
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -137,7 +137,7 @@ private struct TodayHighlightAuthor: View {
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(verbatim: today.highlightAuthorAccessibility(person)))
+        .accessibilityLabel(Text(verbatim: feed.highlightAuthorAccessibility(person)))
         .accessibilityHint(Text("Opens the profile"))
         .accessibilityAddTraits(.isButton)
         .followActions(person)
@@ -156,7 +156,7 @@ private struct TodayHighlightAuthor: View {
                             .white.opacity(.opacitySoft), lineWidth: .spaceHairline / 2)
                     }
             }
-            Text(verbatim: today.authorLine(person))
+            Text(verbatim: feed.authorLine(person))
                 .font(.footnote)
                 .opacity(.opacityStrong)
                 .fixedSize(horizontal: false, vertical: true)
@@ -165,7 +165,7 @@ private struct TodayHighlightAuthor: View {
     }
 }
 
-private struct TodayHighlightRelevance: View {
+private struct FeedHighlightRelevance: View {
     let weight: Int
     let filled: Bool
 
@@ -205,7 +205,7 @@ extension Relevance {
     }
 }
 
-private struct TodayHighlightScore: View {
+private struct FeedHighlightScore: View {
     let tally: HighlightTally
     let large: Bool
 
@@ -257,7 +257,7 @@ private struct TodayHighlightScore: View {
     }
 }
 
-private struct TodayHighlightBackdrop: View {
+private struct FeedHighlightBackdrop: View {
     let slot: Int?
 
     var body: some View {

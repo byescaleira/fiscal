@@ -92,6 +92,6 @@ struct FollowIntentTests {
         let blocked = try Self.releaseStore(.required)
         #expect(throws: UpdateRequiredError.self) { try FollowIntentWriter.live(store: blocked) }
         #expect(throws: UpdateRequiredError.self) { try IntentWorkspace.ensureOpen(store: blocked) }
-        #expect(IntegrationLink.following == URL(string: "fiscal://following"))
+        #expect(IntegrationLink.region == URL(string: "fiscal://region"))
     }
 }

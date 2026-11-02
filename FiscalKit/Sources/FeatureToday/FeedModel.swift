@@ -19,11 +19,16 @@ public final class FeedModel {
     public private(set) var reachedEnd = false
     public private(set) var hasLoaded = false
     public private(set) var seenVersion = 0
+    public private(set) var races: [Race] = []
+    public private(set) var racesOffline = false
+    public private(set) var highlights: HighlightList?
     public private(set) var shownCount = FeedModel.pageSize
     public var filter: FeedFilter = .all {
         didSet { shownCount = Self.pageSize }
     }
     @ObservationIgnored private let service: (any PublicDataService)?
+    @ObservationIgnored private let raceService: (any LiveResultsService)?
+    @ObservationIgnored private let raceInterval: Duration
     @ObservationIgnored private let follows: (any FollowRepository)?
     @ObservationIgnored private let seenStore: FollowingSeenStore
     @ObservationIgnored private let regionUF: () -> String?
@@ -34,17 +39,19 @@ public final class FeedModel {
     @ObservationIgnored private var actions: [String: ActionList] = [:]
     @ObservationIgnored private var speeches: [String: [Speech]] = [:]
     @ObservationIgnored private var recent: [VoteSummary] = []
-    @ObservationIgnored private var highlights: HighlightList?
     @ObservationIgnored private var digest: TodayDigest?
     @ObservationIgnored private var oldestYear = 0
 
     public init(
-        service: (any PublicDataService)?, follows: (any FollowRepository)?,
+        service: (any PublicDataService)?, races: (any LiveResultsService)? = nil,
+        follows: (any FollowRepository)?, raceInterval: Duration = .seconds(20),
         seen: FollowingSeenStore = FollowingSeenStore(),
         regionUF: @escaping () -> String? = { HomePlace.chosenUF(in: .standard) },
         now: @escaping () -> Date = Date.init, publishesSnapshot: Bool = true
     ) {
         self.service = service
+        raceService = races
+        self.raceInterval = raceInterval
         self.follows = follows
         seenStore = seen
         self.regionUF = regionUF
@@ -72,6 +79,22 @@ public final class FeedModel {
     public var newCount: Int {
         _ = seenVersion
         return FollowingFeed.newCount(updates, seen: lastSeen)
+    }
+
+    public var liveBoard: FeedRaceBoard? {
+        guard let race = FeedRaceBoard.featured(in: races, now: now()) else { return nil }
+        let others = races.filter { !$0.final && $0.id != race.id }.count
+        return FeedRaceBoard(race: race, others: others, isStale: racesOffline)
+    }
+
+    public var notice: (text: String, symbol: String)? {
+        guard hasLoaded, let error = phase.error else { return nil }
+        return error == .offline
+            ? (
+                String(appLocalized: "No connection. Showing the last facts received."),
+                "wifi.slash"
+            )
+            : (error.message, error.symbol)
     }
 
     public var missingText: String {
@@ -104,6 +127,7 @@ public final class FeedModel {
 
     public func load() async {
         if items.isEmpty { phase = .loading }
+        async let liveRaces: Void = refreshRaces()
         let years = FollowingFeed.years(for: CalendarDay(now()))
         let year = years.min() ?? Self.firstYear
         phase = await PublicDataPhase.settle(after: phase, in: requests) { [self] in
@@ -137,15 +161,35 @@ public final class FeedModel {
             activities = loaded.activities
             actions = loaded.actions
             speeches = loaded.speeches
-            digest = page.digest
-            recent = page.recent ?? []
-            highlights = page.highlights
+            if let value = page.digest { digest = value }
+            if let value = page.recent { recent = value }
+            if let value = page.highlights { highlights = value }
             oldestYear = year
             reachedEnd = people.isEmpty || year <= Self.firstYear
             hasLoaded = true
             shownCount = Self.pageSize
             rebuild()
             publishSnapshot()
+        }
+        await liveRaces
+    }
+
+    public func refreshRaces() async {
+        guard let raceService else { return }
+        do {
+            races = try await raceService.races()
+            racesOffline = false
+        } catch is CancellationError {} catch {
+            racesOffline = true
+        }
+    }
+
+    public func watchRaces() async {
+        guard raceService != nil else { return }
+        while !Task.isCancelled, liveBoard?.race.final == false {
+            try? await Task.sleep(for: raceInterval)
+            guard !Task.isCancelled else { return }
+            await refreshRaces()
         }
     }
 
