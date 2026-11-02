@@ -31,6 +31,17 @@ struct FeedTopAndDatesTests {
         #expect(!model.dayText(item).hasPrefix("1 "))
     }
 
+    @Test func aCardThatOpensTheSourceSaysSo() throws {
+        let model = raceModel()
+        let day = try #require(CalendarDay(year: 2_026, month: 5, day: 20))
+        let check = FeedItem(
+            id: "a", kind: .check, date: day, title: "Fato", reason: .relevant,
+            url: URL(string: "https://example.com"))
+        let plain = FeedItem(id: "b", kind: .event, date: day, title: "Fato", reason: .relevant)
+        #expect(model.accessibility(check).contains("See the Source"))
+        #expect(!model.accessibility(plain).contains("See the Source"))
+    }
+
     @Test func aFactFromAnotherYearShowsTheYear() throws {
         let model = raceModel()
         let thisYear = FeedItem(

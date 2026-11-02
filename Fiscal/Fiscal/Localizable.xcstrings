@@ -9239,6 +9239,16 @@
         }
       }
     },
+    "Opens in the browser" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre no navegador"
+          }
+        }
+      }
+    },
     "Opens the Following tab in Fiscal, with the latest from who you follow." : {
       "extractionState" : "stale",
       "localizations" : {

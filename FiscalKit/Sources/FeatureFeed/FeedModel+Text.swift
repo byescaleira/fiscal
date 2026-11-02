@@ -67,13 +67,18 @@ extension FeedModel {
         String(appLocalized: "Vote: \(ballotText(ballot))")
     }
 
+    private func sourceText(_ item: FeedItem) -> String? {
+        guard Route.destination(for: item) == nil, item.url != nil else { return nil }
+        return String(appLocalized: "See the Source")
+    }
+
     public func accessibility(_ item: FeedItem) -> String {
         let title = item.expenses == nil ? item.title : expensesTitle(item)
         let parts =
             [reasonText(item), dayText(item), kicker(item), title]
             + item.people.map(\.name)
             + item.ballots.map { "\($0.person.name): \(ballotText($0))" }
-            + [item.expenses.map(amount), item.detail].compactMap(\.self)
+            + [item.expenses.map(amount), item.detail, sourceText(item)].compactMap(\.self)
         return parts.joined(separator: ". ")
     }
 }

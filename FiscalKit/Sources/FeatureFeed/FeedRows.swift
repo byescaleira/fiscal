@@ -23,6 +23,11 @@ struct FeedCard: View {
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: feed.accessibility(item)))
+        .accessibilityHint(opensSource ? Text("Opens in the browser") : Text(verbatim: ""))
+    }
+
+    private var opensSource: Bool {
+        Route.destination(for: item) == nil && item.url != nil
     }
 
     private var card: some View {
@@ -40,7 +45,7 @@ struct FeedCard: View {
                     ForEach(item.ballots) { FeedBallotRow(ballot: $0) }
                 }
             }
-            if Route.destination(for: item) == nil, item.url != nil {
+            if opensSource {
                 FeedSourceLink()
             }
         }
