@@ -8,6 +8,19 @@ extension ProfileModel {
         return ProfileChapter.order(for: profile.office).filter(hasContent)
     }
 
+    public func title(of chapter: ProfileChapter) -> String {
+        guard chapter == .checks, let name = profile?.name else { return chapter.title }
+        return String(appLocalized: "What Circulated About \(name)")
+    }
+
+    public var checksSourceText: String? {
+        checks.flatMap { SourceFootnote.text($0.sources, calendar: calendar) }
+    }
+
+    public func checkCredit(_ check: FactCheck) -> String {
+        "\(check.publisher) · \(check.license)"
+    }
+
     public func facts(in chapter: ProfileChapter) -> [NumberTile] {
         facts.filter { Self.chapter(ofFact: $0.id) == chapter }
     }
@@ -54,7 +67,8 @@ extension ProfileModel {
             return !facts(in: .proposals).isEmpty || !actionItems.isEmpty
                 || !recentProposals.isEmpty || !recentSpeeches.isEmpty || !committees.isEmpty
         case .money:
-            return !facts(in: .money).isEmpty || hasExpenses || profile.salary != nil
+            return !facts(in: .money).isEmpty || hasExpenses || !expenseYears.isEmpty
+                || profile.salary != nil
         case .origin:
             return !facts(in: .origin).isEmpty || !assetDeclarations.isEmpty
                 || !campaigns.isEmpty || !timeline.isEmpty

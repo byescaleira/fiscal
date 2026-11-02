@@ -93,7 +93,11 @@ struct ProfileChaptersTests {
     @Test func theOrderDependsOnTheOfficeNotOnTheValues() async {
         let first = await loaded("tabata-amaral")
         let second = await loaded("kim-kataguiri")
-        #expect(first.chapters == second.chapters)
+        for model in [first, second] {
+            #expect(
+                model.chapters
+                    == ProfileChapter.order(for: .federalDeputy).filter(model.chapters.contains))
+        }
         #expect(ProfileChapter.order(for: .governor) == ProfileChapter.order(for: .mayor))
         #expect(
             ProfileChapter.order(for: .senator) == ProfileChapter.order(for: .cityCouncilor))
@@ -148,6 +152,31 @@ struct ProfileChaptersTests {
         await model.selectExpenseYear(2024)
         #expect(model.expenseYear == 2024)
         #expect(model.expenses?.items.allSatisfy { $0.year == 2024 } == true)
+    }
+
+    @Test func everyExpenseOpensTheFullListOfTheSelectedYear() async {
+        let service = OnlyPastExpenses(
+            base: showcase, years: [Self.year(2025, quota: 200)], failing: false)
+        let model = ProfileModel(slug: "tabata-amaral", service: service, now: { Self.instant })
+        await model.load()
+        #expect(model.expensesRoute == .expenses(slug: "tabata-amaral", year: 2025))
+        await model.selectExpenseYear(2024)
+        #expect(model.expensesRoute == .expenses(slug: "tabata-amaral", year: 2024))
+    }
+
+    @Test func checksComeByDateWithoutCountOrVerdictOrderAndOnlyWhenThereAreAny() async {
+        let model = await loaded("lula")
+        let dates = model.checkItems.map(\.date)
+        #expect(!dates.isEmpty)
+        #expect(dates == dates.sorted(by: >))
+        #expect(model.chapters.contains(.checks))
+        #expect(model.title(of: .checks).contains("Lula"))
+        #expect(model.checksSourceText != nil)
+        let credit = model.checkItems.first.map(model.checkCredit)
+        #expect(credit == "Projeto Comprova · CC BY-ND 4.0")
+        let none = await loaded("eduardo-suplicy")
+        #expect(none.checkItems.isEmpty)
+        #expect(!none.chapters.contains(.checks))
     }
 
     @Test func theCurrentChapterIsTheLastOnePastTheLine() {

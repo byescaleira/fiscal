@@ -4,28 +4,74 @@ import FiscalDesignSystem
 import FiscalDomain
 import SwiftUI
 
-struct ProfileExpensesSection: View {
+struct ProfileMoneyChapter: View {
     @Environment(ProfileModel.self) private var profile
 
     var body: some View {
-        if profile.hasExpenses {
+        if profile.hasExpenses || !profile.expenseYears.isEmpty {
             ProfileBlock(
                 title: Text(verbatim: profile.expensesSectionTitle),
                 footer: [profile.sourceText(for: ["expenses"])]
             ) {
-                ProfileExpensesSummary()
-                if !profile.categoryLines.isEmpty {
-                    RankedBarChart(
-                        String(appLocalized: "By kind of expense"),
-                        bars: profile.categoryLines.enumerated().map { $1.ranked(slot: $0) }
-                    )
+                if profile.hasExpenses {
+                    ProfileExpensesSummary()
+                    if !profile.categoryLines.isEmpty {
+                        RankedBarChart(
+                            String(appLocalized: "By kind of expense"),
+                            bars: profile.categoryLines.enumerated().map { $1.ranked(slot: $0) }
+                        )
+                    }
+                    RouteLink(profile.expensesRoute) {
+                        Label("Every Expense", systemImage: "list.bullet.rectangle")
+                    }
+                } else {
+                    Text("No receipts this year")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
                 }
-                DisclosureLink {
-                    ProfileExpensesScreen().environment(profile)
-                } label: {
-                    Label("Every Expense", systemImage: "list.bullet.rectangle")
-                }
+            } accessory: {
+                ProfileExpenseYearMenu()
             }
+        }
+    }
+}
+
+private struct ProfileExpenseYearMenu: View {
+    @Environment(ProfileModel.self) private var profile
+
+    var body: some View {
+        if profile.expenseYears.count > 1 {
+            Menu {
+                Picker(
+                    "Year",
+                    selection: Binding(
+                        get: { profile.expenseYear },
+                        set: { year in Task { await profile.selectExpenseYear(year) } })
+                ) {
+                    ForEach(profile.expenseYears, id: \.self) { year in
+                        Text(verbatim: String(year)).tag(year)
+                    }
+                }
+                .pickerStyle(.inline)
+            } label: {
+                HStack(spacing: .spaceXS) {
+                    Text(verbatim: profile.yearText)
+                        .lineLimit(1)
+                        .fixedSize()
+                    Image(systemName: "chevron.up.chevron.down")
+                        .imageScale(.small)
+                        .accessibilityHidden(true)
+                }
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Color.primary)
+                .frame(minHeight: .badgeL)
+            }
+            .menuStyle(.button)
+            .buttonStyle(.plain)
+            .tint(Color.primary)
+            .accessibilityLabel(Text("Year"))
+            .accessibilityValue(Text(verbatim: profile.yearText))
+            .sensoryFeedback(.selection, trigger: profile.expenseYear)
         }
     }
 }
@@ -126,62 +172,5 @@ extension ProfileModel.CategoryLine {
         RankedBar(
             id: id, title: category, value: fraction, valueText: value,
             details: [shareText, receiptsText], color: ChartPalette.color(at: slot))
-    }
-}
-
-struct ProfileExpensesScreen: View {
-    @Environment(ProfileModel.self) private var profile
-
-    var body: some View {
-        List {
-            Group {
-                Section {
-                    ForEach(profile.expenseItems) { expense in
-                        ProfileExpenseRow(expense: expense)
-                    }
-                } header: {
-                    Text(verbatim: profile.expensesTotal)
-                        .font(.amountTitle)
-                        .monospacedDigit()
-                        .foregroundStyle(.primary)
-                        .textCase(nil)
-                } footer: {
-                    ProfileFooter(lines: [profile.sourceText(for: ["expenses"])])
-                }
-            }
-            .surfaceRows()
-        }
-        .listSurface()
-        .navigationTitle(Text(verbatim: profile.expensesScreenTitle))
-        #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-        #endif
-    }
-}
-
-private struct ProfileExpenseRow: View {
-    @Environment(ProfileModel.self) private var profile
-    let expense: Expense
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: .space2XS) {
-            AdaptiveRow(spacing: .spaceS) {
-                Text(verbatim: expense.supplier).font(.rowTitle)
-                Spacer(minLength: .spaceS)
-                Text(verbatim: profile.money(expense.cents))
-                    .font(.body.weight(.semibold))
-                    .monospacedDigit()
-            }
-            Text(verbatim: profile.expenseDetail(expense))
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-            if let url = expense.url {
-                ExternalLink(destination: url) {
-                    Label("See the Receipt", systemImage: "doc.text.magnifyingglass")
-                }
-                .font(.footnote)
-            }
-        }
-        .padding(.vertical, .space2XS)
     }
 }

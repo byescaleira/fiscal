@@ -4,11 +4,12 @@ import FiscalDomain
 import SwiftUI
 
 struct ProfileChapterView: View {
+    @Environment(ProfileModel.self) private var profile
     let chapter: ProfileChapter
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceL) {
-            Text(verbatim: chapter.title)
+            Text(verbatim: profile.title(of: chapter))
                 .font(.titleMedium)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.isHeader)
@@ -28,7 +29,7 @@ struct ProfileChapterView: View {
             ProfileSpeechesSection()
             ProfileCommitteesSection()
         case .money:
-            ProfileExpensesSection()
+            ProfileMoneyChapter()
             ProfileSalarySection()
         case .origin:
             ProfileAssetsSection()
@@ -37,7 +38,7 @@ struct ProfileChapterView: View {
         case .term:
             ProfileContextSection()
         case .checks:
-            EmptyView()
+            ProfileChecksChapter()
         case .about:
             ProfileAboutSection()
         }

@@ -31,6 +31,9 @@ private struct ProfileHeroCard: View {
                 expression: profile.hasJustFollowed ? .wave : nil
             )
             .overlay(Circle().strokeBorder(.white, lineWidth: .space2XS))
+            Text("Fiscal Illustration")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
             VStack(spacing: .spaceXS) {
                 Text(verbatim: person.name)
                     .font(.titleLarge)

@@ -128,11 +128,6 @@ struct ProfileModelTests {
             ProfileBallot.tallied.map(\.symbol) == ["checkmark", "xmark", "minus", "circle.dashed"])
     }
 
-    @Test func formatsTheSupplierDocument() {
-        #expect(ProfileModel.formattedDocument("12345678000190") == "12.345.678/0001-90")
-        #expect(ProfileModel.formattedDocument("123") == "123")
-    }
-
     @Test func followsThroughTheWindowController() async throws {
         let follows = try FiscalDatabase.open(inMemory: true).repositories.follows
         let model = makeModel("kim-kataguiri", follows: follows)

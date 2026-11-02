@@ -4960,6 +4960,7 @@
       }
     },
     "Expenses in %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -5366,6 +5367,16 @@
         }
       },
       "shouldTranslate" : false
+    },
+    "Fiscal Illustration" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ilustração do Fiscal"
+          }
+        }
+      }
     },
     "Fiscal adapts the order, the highlights, the colors and the art. The facts are the same for everyone." : {
       "extractionState" : "stale",
@@ -9190,6 +9201,16 @@
         }
       }
     },
+    "Only what the agency chose to check" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Só o que a agência escolheu checar"
+          }
+        }
+      }
+    },
     "Only who you support and who was on this roll call. Who you support stays on this device." : {
       "localizations" : {
         "pt-BR" : {
@@ -11780,6 +11801,7 @@
       }
     },
     "See the Receipt" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -14145,6 +14167,16 @@
         }
       }
     },
+    "The verdict applies to the content that circulated, not to the person. Not being on this list says nothing about anyone." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O veredito vale para o conteúdo que circulou, não para a pessoa. Não estar nesta lista não diz nada sobre ninguém."
+          }
+        }
+      }
+    },
     "The vote you tap on the other half opens here, with who voted how." : {
       "localizations" : {
         "pt-BR" : {
@@ -15692,6 +15724,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O que circulou"
+          }
+        }
+      }
+    },
+    "What Circulated About %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que circulou sobre %@"
           }
         }
       }
