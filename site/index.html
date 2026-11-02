@@ -78,10 +78,10 @@
 <p class="screen-note">A mesma lista e os mesmos números para todo mundo.</p>
 <div class="tabbar">
 <div class="tabbar-pill">
-<span><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4M9 15l2 2 4-4"/></svg>Hoje</span>
-<span><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M12 11v7M6 18c0 1.7 2.7 3 6 3s6-1.3 6-3"/></svg>Região</span>
+<span><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Feed</span>
 <span class="selected"><svg viewBox="0 0 24 24"><path d="M4 6l1.5 1.5L8 5M11 6h9M4 13l1.5 1.5L8 12M11 13h9M11 20h9"/></svg>Votações</span>
 <span><svg viewBox="0 0 24 24"><path d="M3 9l9-5 9 5M5 9v9M9.5 9v9M14.5 9v9M19 9v9M3 21h18"/></svg>Dinheiro</span>
+<span><svg viewBox="0 0 24 24"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14"/></svg>Região</span>
 </div>
 <span class="tabbar-solo"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg></span>
 </div>
@@ -106,20 +106,20 @@
 </div>
 
 <div class="tabs" role="tablist" aria-label="Abas do Fiscal">
-<button role="tab" id="tab-hoje" aria-controls="panel-hoje" aria-selected="true" style="--accent: var(--tint)">Hoje</button>
-<button role="tab" id="tab-regiao" aria-controls="panel-regiao" aria-selected="false" tabindex="-1" style="--accent: var(--denim)">Região</button>
+<button role="tab" id="tab-feed" aria-controls="panel-feed" aria-selected="true" style="--accent: var(--tint)">Feed</button>
 <button role="tab" id="tab-votacoes" aria-controls="panel-votacoes" aria-selected="false" tabindex="-1" style="--accent: var(--olive)">Votações</button>
 <button role="tab" id="tab-dinheiro" aria-controls="panel-dinheiro" aria-selected="false" tabindex="-1" style="--accent: var(--teal)">Dinheiro</button>
+<button role="tab" id="tab-regiao" aria-controls="panel-regiao" aria-selected="false" tabindex="-1" style="--accent: var(--denim)">Região</button>
 <button role="tab" id="tab-fiscalizar" aria-controls="panel-fiscalizar" aria-selected="false" tabindex="-1" style="--accent: var(--plum)">Fiscalizar</button>
 </div>
 
-<div class="panel" role="tabpanel" id="panel-hoje" aria-labelledby="tab-hoje" style="--accent: var(--tint)">
+<div class="panel" role="tabpanel" id="panel-feed" aria-labelledby="tab-feed" style="--accent: var(--tint)">
 <div>
-<h3>O que importa hoje, na primeira tela.</h3>
-<p class="lead">O destaque do momento, o resumo do dia no Congresso e as votações que acabaram de acontecer. Nas eleições, a apuração ao vivo.</p>
+<h3>O que aconteceu, na primeira tela.</h3>
+<p class="lead">O que fizeram as pessoas que você segue e o que é relevante, por data, com o motivo de cada linha. No topo, o destaque do momento e, nas eleições, a apuração ao vivo.</p>
 <ul class="points">
 <li>Destaque escolhido pela mesma regra para todos os políticos e temas</li>
-<li>Resumo do dia no Congresso, em linguagem simples</li>
+<li>A ordem é só a data: nenhum algoritmo decide o que você vê</li>
 <li>Widget e Atividade ao Vivo durante a apuração</li>
 </ul>
 </div>
@@ -127,8 +127,8 @@
 <p class="media-caption">Segunda-feira, 26 de outubro</p>
 <div class="group">
 <div class="row item"><span class="badge" style="--badge: var(--tint)"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.4 5.9.9-4.3 4.1 1 5.9L12 16.5 6.8 19.3l1-5.9-4.3-4.1 5.9-.9z"/></svg></span><div><strong>Destaque do momento</strong><span>O que mais repercute e mais atinge a vida das pessoas</span></div></div>
-<div class="row item"><span class="badge" style="--badge: var(--denim)"><svg viewBox="0 0 24 24"><path d="M3 9l9-5 9 5M5 9v9M9.5 9v9M14.5 9v9M19 9v9M3 21h18"/></svg></span><div><strong>Resumo do dia</strong><span>A pauta e as decisões da Câmara e do Senado</span></div></div>
-<div class="row item"><span class="badge" style="--badge: var(--olive)"><svg viewBox="0 0 24 24"><path d="M4 6l1.5 1.5L8 5M11 6h9M4 13l1.5 1.5L8 12M11 13h9M11 20h9"/></svg></span><div><strong>Votações de hoje</strong><span>Com o placar por partido</span></div></div>
+<div class="row item"><span class="badge" style="--badge: var(--denim)"><svg viewBox="0 0 24 24"><path d="M3 9l9-5 9 5M5 9v9M9.5 9v9M14.5 9v9M19 9v9M3 21h18"/></svg></span><div><strong>Quem você segue</strong><span>Votos, propostas, discursos, gastos e checagens</span></div></div>
+<div class="row item"><span class="badge" style="--badge: var(--olive)"><svg viewBox="0 0 24 24"><path d="M4 6l1.5 1.5L8 5M11 6h9M4 13l1.5 1.5L8 12M11 13h9M11 20h9"/></svg></span><div><strong>Relevante</strong><span>Votações recentes e o que acontece no Congresso</span></div></div>
 </div>
 </div>
 </div>

@@ -21,7 +21,7 @@ public struct ContentDetailScreen: View {
             EmptyStateView(
                 title: "This Highlight Left the List",
                 description:
-                    "Highlights change as new facts come in. See the current ones in Today."
+                    "Highlights change as new facts come in. See the current ones in the Feed."
             ) {
                 IconRow("Official sources", symbol: "building.columns", color: .retroDenim)
             }

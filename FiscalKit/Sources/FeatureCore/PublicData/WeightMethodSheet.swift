@@ -3,6 +3,7 @@ import FiscalDomain
 import SwiftUI
 
 public struct WeightMethodButton: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var isPresented = false
     private let method: WeightMethod?
 
@@ -17,8 +18,8 @@ public struct WeightMethodButton: View {
             } label: {
                 Label("How We Measure", systemImage: "info.circle")
                     .font(.footnote.weight(.semibold))
-                    .lineLimit(1)
-                    .fixedSize()
+                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
+                    .fixedSize(horizontal: !dynamicTypeSize.isAccessibilitySize, vertical: true)
             }
             .buttonStyle(.borderless)
             .accessibilityHint(Text("Explains how repercussion and impact are calculated"))

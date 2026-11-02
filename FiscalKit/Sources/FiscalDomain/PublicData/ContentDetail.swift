@@ -2,7 +2,7 @@ import Foundation
 
 public struct ContentDetail: Hashable, Identifiable, Sendable {
     public enum Kind: String, Hashable, Sendable {
-        case proposal, vote, speech, money, indicator
+        case proposal, vote, speech, money, indicator, event
 
         public var title: String {
             switch self {
@@ -11,6 +11,7 @@ public struct ContentDetail: Hashable, Identifiable, Sendable {
             case .speech: String(appLocalized: "Speech")
             case .money: String(appLocalized: "Money")
             case .indicator: String(appLocalized: "Indicator")
+            case .event: String(appLocalized: "Today in Congress")
             }
         }
     }

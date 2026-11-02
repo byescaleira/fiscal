@@ -17,12 +17,13 @@ struct AppSectionTests {
     @Test func sourceGroupsCoverEverySectionOnceInOrder() {
         let grouped = AppSection.SourceGroup.allCases.flatMap(\.sections)
         #expect(grouped == AppSection.allCases)
-        #expect(AppSection.SourceGroup.followAlong.sections == [.following, .today])
+        #expect(AppSection.SourceGroup.followAlong.sections == [.feed])
+        #expect(AppSection.SourceGroup.explore.sections == [.region, .search])
     }
 
-    @Test func followingIsTheFirstSection() {
-        #expect(AppSection.allCases.first == .following)
-        #expect(AppSection.following.rawValue == "following")
+    @Test func feedIsTheFirstSection() {
+        #expect(AppSection.allCases == [.feed, .votes, .money, .region, .search])
+        #expect(AppSection.feed.rawValue == "feed")
     }
 
     @Test func shortcutsFollowTheSectionOrder() {

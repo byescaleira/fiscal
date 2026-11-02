@@ -7,24 +7,24 @@ extension Guide {
             TutorialPage(
                 animation: .launch, title: "Welcome to Fiscal",
                 message:
-                    "Everything starts on the Following tab, with the latest from who you follow. Settings, in the Today toolbar, keeps the choices that are yours."
+                    "Everything starts on the Feed, with what happened and the latest from who you follow. Settings, in the Feed toolbar, keeps the choices that are yours."
             ),
             TutorialPage(
                 animation: .done, title: "Five Tabs",
                 message: "Each tab keeps its own place, so you can switch without losing your way.",
                 steps: [
                     GuideStep(
-                        "person.2", color: .retroTeal, title: "Following",
-                        detail: "What's new from who you follow, and who represents your region."),
-                    GuideStep(
-                        "newspaper", color: .retroOrange, title: "Today",
-                        detail: "The day's votes, sessions and live count."),
+                        "newspaper", color: .retroOrange, title: "Feed",
+                        detail: "What happened, by date, with the live count on top."),
                     GuideStep(
                         "checkmark.square", color: .retroDenim, title: "Votes",
                         detail: "Floor votes and who voted how."),
                     GuideStep(
                         "brazilianrealsign", color: .retroOlive, title: "Money",
                         detail: "Where public money goes."),
+                    GuideStep(
+                        "map", color: .retroTeal, title: "Region",
+                        detail: "Who you follow and who represents your place."),
                     GuideStep(
                         "magnifyingglass", color: .retroPlum, title: "Search",
                         detail: "Find anyone, compare and follow elections."),

@@ -193,6 +193,7 @@
       }
     },
     "%@ in receipts" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -203,6 +204,7 @@
       }
     },
     "%@ in receipts · %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -532,6 +534,7 @@
       }
     },
     "%@%@ · %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -1284,6 +1287,7 @@
       }
     },
     "%lld updates from who you follow" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -3626,7 +3630,18 @@
         }
       }
     },
+    "Couldn't load %@. Pull to try again." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não deu para carregar %@. Puxe para tentar de novo."
+          }
+        }
+      }
+    },
     "Couldn't load %@. Tap to try again." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -3657,6 +3672,7 @@
       }
     },
     "Couldn't load the summary of the day" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -4575,6 +4591,7 @@
       }
     },
     "Election count" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -4835,7 +4852,18 @@
         }
       }
     },
+    "Everything starts on the Feed, with what happened and the latest from who you follow. Settings, in the Feed toolbar, keeps the choices that are yours." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tudo começa no Feed, com o que aconteceu e as novidades de quem você segue. Os Ajustes, na barra de cima do Feed, guardam as escolhas que são suas."
+          }
+        }
+      }
+    },
     "Everything starts on the Following tab, with the latest from who you follow. Settings, in the Today toolbar, keeps the choices that are yours." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -4969,6 +4997,16 @@
         }
       }
     },
+    "Explore" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explorar"
+          }
+        }
+      }
+    },
     "Export Data" : {
       "localizations" : {
         "pt-BR" : {
@@ -4985,6 +5023,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Facebook"
+          }
+        }
+      }
+    },
+    "Fact Check" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checagem"
           }
         }
       }
@@ -5630,7 +5678,28 @@
         }
       }
     },
+    "Follow people to see what they do here." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siga pessoas para ver aqui o que elas fazem."
+          }
+        }
+      }
+    },
+    "Follow the people who represent you" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siga quem representa você"
+          }
+        }
+      }
+    },
     "Follow who represents you" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -5733,6 +5802,7 @@
       }
     },
     "From the official sources, newest first. Nobody is ranked." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -6094,11 +6164,22 @@
       }
     },
     "Highlights change as new facts come in. See the current ones in Today." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Os destaques mudam quando surgem fatos novos. Veja os atuais em Hoje."
+          }
+        }
+      }
+    },
+    "Highlights change as new facts come in. See the current ones in the Feed." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os destaques mudam quando surgem fatos novos. Veja os atuais no Feed."
           }
         }
       }
@@ -6555,6 +6636,7 @@
       }
     },
     "In session" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7195,6 +7277,7 @@
       }
     },
     "Loading the summary of the day" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7649,6 +7732,7 @@
       }
     },
     "More on the agenda: %lld" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7823,6 +7907,7 @@
       }
     },
     "New" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7843,6 +7928,7 @@
       }
     },
     "New law" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7863,6 +7949,7 @@
       }
     },
     "Next session not scheduled yet" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7883,6 +7970,7 @@
       }
     },
     "Next session: %@ at %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7933,6 +8021,7 @@
       }
     },
     "No agenda published today" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -8002,6 +8091,16 @@
         }
       }
     },
+    "No connection. Showing the last facts received." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem conexão. Mostrando os últimos fatos recebidos."
+          }
+        }
+      }
+    },
     "No connection. Showing the last numbers received." : {
       "localizations" : {
         "pt-BR" : {
@@ -8013,6 +8112,7 @@
       }
     },
     "No connection. Showing the last summary received." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -8023,6 +8123,7 @@
       }
     },
     "No data right now" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -8063,6 +8164,7 @@
       }
     },
     "No floor votes yet" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -8285,6 +8387,7 @@
       }
     },
     "No session now" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -8527,6 +8630,7 @@
       }
     },
     "Nothing new in the last 30 days" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -8537,6 +8641,7 @@
       }
     },
     "Nothing new yet" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -8582,6 +8687,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nada foi apagado"
+          }
+        }
+      }
+    },
+    "Nothing yet from who you follow." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ainda não há nada de quem você segue."
           }
         }
       }
@@ -9030,6 +9145,7 @@
       }
     },
     "Open Following and tap Follow next to your representatives." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -9123,12 +9239,33 @@
         }
       }
     },
+    "Opens in the browser" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre no navegador"
+          }
+        }
+      }
+    },
     "Opens the Following tab in Fiscal, with the latest from who you follow." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abre a aba Seguindo no Fiscal, com as novidades de quem você segue."
+          }
+        }
+      }
+    },
+    "Opens the Region tab in Fiscal, with who you follow." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre a aba Região no Fiscal, com quem você segue."
           }
         }
       }
@@ -9729,6 +9866,7 @@
       }
     },
     "Pick your state in Fiscal, in the Following tab." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -9740,6 +9878,16 @@
     },
     "Pick your state in Fiscal, in the Mine tab." : {
       "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha seu estado no Fiscal, na aba Região."
+          }
+        }
+      }
+    },
+    "Pick your state in Fiscal, in the Region tab." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -10739,11 +10887,22 @@
       }
     },
     "Relevance orders what is happening; it never rates it." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "A relevância ordena o que acontece; ela nunca avalia."
+          }
+        }
+      }
+    },
+    "Relevant" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Relevante"
           }
         }
       }
@@ -11407,6 +11566,7 @@
       }
     },
     "See Agenda" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11417,6 +11577,7 @@
       }
     },
     "See All" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11456,6 +11617,16 @@
         }
       }
     },
+    "See Who Represents You" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver quem representa você"
+          }
+        }
+      }
+    },
     "See all %lld people of %@" : {
       "localizations" : {
         "pt-BR" : {
@@ -11467,6 +11638,7 @@
       }
     },
     "See details" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11502,6 +11674,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ver a nota"
+          }
+        }
+      }
+    },
+    "See the Source" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver a fonte"
           }
         }
       }
@@ -11617,6 +11799,7 @@
       }
     },
     "Session" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11627,6 +11810,7 @@
       }
     },
     "Sessions and the bills up for a vote show up here once the houses publish them." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -12294,7 +12478,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gasto"
+            "value" : "Gastos"
           }
         }
       }
@@ -12736,6 +12920,7 @@
       }
     },
     "Summary of the Day" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -13030,6 +13215,26 @@
         }
       }
     },
+    "That is all for now. Follow people to see more facts here." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "É tudo por agora. Siga pessoas para ver mais fatos aqui."
+          }
+        }
+      }
+    },
+    "That is all: the official data here goes back to %lld." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "É tudo: os dados oficiais aqui vão até %lld."
+          }
+        }
+      }
+    },
     "That's why this vote has no list of names." : {
       "localizations" : {
         "pt-BR" : {
@@ -13191,6 +13396,7 @@
       }
     },
     "The day's votes, sessions and live count." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -13226,6 +13432,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "A Receita Federal ainda não fechou um ano completo."
+          }
+        }
+      }
+    },
+    "The feed, your region and your people, ready without a connection" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Feed, sua região e suas pessoas, prontos sem conexão"
           }
         }
       }
@@ -13352,6 +13568,7 @@
       }
     },
     "The latest votes of the Chamber and the Senate show up here, with the full count." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -13713,6 +13930,7 @@
       }
     },
     "The state you chose in Following. Names in alphabetical order." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -13724,6 +13942,16 @@
     },
     "The state you chose in Mine. Names in alphabetical order." : {
       "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O estado que você escolheu em Região. Nomes em ordem alfabética."
+          }
+        }
+      }
+    },
+    "The state you chose in Region. Names in alphabetical order." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -13809,6 +14037,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "As obras dos cards de compartilhar, com as licenças"
+          }
+        }
+      }
+    },
+    "Their votes, proposals and spending show up here, by date." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votos, propostas e gastos aparecem aqui, por data."
           }
         }
       }
@@ -13958,6 +14196,16 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "These are the most recent relevant facts." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esses são os fatos relevantes mais recentes."
           }
         }
       }
@@ -14164,6 +14412,7 @@
       }
     },
     "Today, your region and your people, ready without a connection" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -14616,6 +14865,7 @@
       }
     },
     "Updates" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -14896,6 +15146,16 @@
         }
       }
     },
+    "Vote: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voto: %@"
+          }
+        }
+      }
+    },
     "Voted %@" : {
       "localizations" : {
         "pt-BR" : {
@@ -14907,6 +15167,7 @@
       }
     },
     "Voted %@ · %@ · %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -14917,6 +15178,7 @@
       }
     },
     "Voted %@ · %@ · %@ · %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -15067,6 +15329,7 @@
       }
     },
     "Votes, sessions and new laws show up here as they happen." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -15077,6 +15340,7 @@
       }
     },
     "Votes, spending and fact checks of who you follow show up here." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -15087,6 +15351,7 @@
       }
     },
     "Votes, spending and fact checks, newest first." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -15408,6 +15673,16 @@
         }
       }
     },
+    "What happened, by date, with the live count on top." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que aconteceu, por data, com a apuração ao vivo no topo."
+          }
+        }
+      }
+    },
     "What happens when a signal is missing, and how highlights and alerts work." : {
       "localizations" : {
         "pt-BR" : {
@@ -15511,6 +15786,7 @@
       }
     },
     "What's new from who you follow, and who represents your region." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -15822,6 +16098,16 @@
         }
       }
     },
+    "Who you follow and who represents your place." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem você segue e quem representa o seu lugar."
+          }
+        }
+      }
+    },
     "Who you follow and your investigations sync through your own iCloud account. The change applies the next time you open Fiscal." : {
       "localizations" : {
         "pt-BR" : {
@@ -16064,6 +16350,16 @@
         }
       }
     },
+    "You follow" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você segue"
+          }
+        }
+      }
+    },
     "Your Data Stays Yours" : {
       "localizations" : {
         "pt-BR" : {
@@ -16217,6 +16513,7 @@
       }
     },
     "agenda of %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -16537,6 +16834,7 @@
       }
     },
     "votes up to %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {

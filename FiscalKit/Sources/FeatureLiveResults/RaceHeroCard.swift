@@ -34,6 +34,7 @@ public struct RaceHeroCard: View {
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(Text(verbatim: summary.accessibilityLabel))
                 .accessibilityHint(Text("Shows every candidate and the blank and null votes"))
+                .accessibilityAddTraits(.isButton)
             } else {
                 RaceHeroBody(summary: summary, showsChevron: false)
                     .accessibilityElement(children: .combine)
@@ -86,79 +87,6 @@ private struct RaceHeroBackground: View {
             Color.scoreboard.opacity(.opacitySoft)
         }
         .accessibilityHidden(true)
-    }
-}
-
-struct RaceHeroHeader: View {
-    @Environment(LiveResultsModel.self) private var results: LiveResultsModel?
-    @ReducesMotion private var reduceMotion
-    @Environment(\.open) private var open
-    @Environment(\.navigationSection) private var section
-    let summary: RaceSummary
-
-    var body: some View {
-        HStack(alignment: .center, spacing: .spaceS) {
-            HStack(spacing: .spaceXS) {
-                StatusCircle(summary.statusText, symbol: summary.statusSymbol, color: .white)
-                    .symbolEffect(
-                        .pulse,
-                        isActive: !reduceMotion && !MotionBudget.isConstrained
-                            && summary.isCounting
-                    )
-                    .accessibilityHidden(true)
-                Text(verbatim: summary.statusKicker)
-                    .font(.chipLabel)
-                    .accessibilityLabel(Text(verbatim: summary.statusText))
-            }
-            VStack(alignment: .leading, spacing: 0) {
-                Text(verbatim: summary.title)
-                    .font(.subheadline.weight(.bold))
-                    .lineLimit(2)
-                Text(verbatim: summary.roundText)
-                    .font(.caption.weight(.medium))
-                    .opacity(.opacityStrong)
-            }
-            .accessibilityElement(children: .combine)
-            Spacer(minLength: .spaceS)
-            if let results, results.showsFollow(summary.race) {
-                RaceHeroFollow(race: summary.race)
-            }
-            Button("Share", systemImage: "square.and.arrow.up") {
-                open(.share(.race(id: summary.race.id)), in: section)
-            }
-            .labelStyle(.iconOnly)
-            .font(.body.weight(.semibold))
-            .buttonStyle(.plain)
-            .frame(width: .badgeL, height: .badgeL)
-            .background(.white.opacity(.opacityTint), in: .circle)
-        }
-    }
-}
-
-private struct RaceHeroFollow: View {
-    @Environment(LiveResultsModel.self) private var results
-    let race: Race
-
-    var body: some View {
-        let following = results.isFollowing(race)
-        Button {
-            Task { await results.toggle(race) }
-        } label: {
-            Label(
-                following ? "Stop Following" : "Follow on Lock Screen",
-                systemImage: following ? "lock.slash" : "lock.iphone"
-            )
-            .labelStyle(.iconOnly)
-            .contentTransition(.symbolEffect(.replace))
-        }
-        .font(.body.weight(.semibold))
-        .buttonStyle(.plain)
-        .frame(width: .badgeL, height: .badgeL)
-        .background(.white.opacity(following ? .opacitySoft : .opacityTint), in: .circle)
-        .disabled(!results.canToggle(race))
-        .sensoryFeedback(.selection, trigger: following)
-        .accessibilityLabel(Text(verbatim: results.followLabel(race)))
-        .accessibilityHint("Shows the count on the Lock Screen and in the Dynamic Island.")
     }
 }
 

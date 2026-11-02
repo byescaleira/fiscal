@@ -74,7 +74,7 @@ public final class FiscalServices {
         isOn(.intelligence)
     }
 
-    func todayFollows(_ repository: any FollowRepository) -> any FollowRepository {
+    func feedFollows(_ repository: any FollowRepository) -> any FollowRepository {
         #if DEBUG
             if let showcase = ShowcaseFollowRepository.fromLaunchArguments() { return showcase }
         #endif

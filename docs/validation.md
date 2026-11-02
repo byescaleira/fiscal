@@ -57,9 +57,9 @@ Build: `____` · Data: `__/__/____`
 
 ### Dados públicos e pacote offline
 
-- [ ] Primeira abertura com rede: Hoje, Região, Votações, Dinheiro e Fiscalizar carregam da CDN (`dados.fiscal.byescaleira.com`), com fonte e data em cada bloco.
+- [ ] Primeira abertura com rede: Feed, Votações, Dinheiro, Região e Fiscalizar carregam da CDN (`dados.fiscal.byescaleira.com`), com fonte e data em cada bloco.
 - [ ] Ajustes › Seus dados e privacidade › Dados offline mostra o pacote baixado e o tamanho.
-- [ ] Modo avião e reabrir: Hoje, a cidade de casa, os seguidos e os apoiados abrem do pacote; o resto mostra "Isso não está salvo para uso offline."
+- [ ] Modo avião e reabrir: o Feed, a cidade de casa, os seguidos e os apoiados abrem do pacote; o resto mostra "Isso não está salvo para uso offline."
 - [ ] `BGAppRefresh`: com o app em segundo plano, forçar a tarefa `com.byescaleira.fiscal.offline-refresh` pelo depurador (`e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.byescaleira.fiscal.offline-refresh"]`) e conferir a data nova do pacote.
 
 ### Meu apoio e privacidade

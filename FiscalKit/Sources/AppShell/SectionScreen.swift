@@ -1,9 +1,9 @@
 import FeatureCore
+import FeatureFeed
 import FeatureLiveResults
-import FeatureMine
 import FeatureMoney
+import FeatureRegion
 import FeatureSearch
-import FeatureToday
 import FeatureVotes
 import FiscalDomain
 import SwiftUI
@@ -15,18 +15,18 @@ struct SectionScreen: View {
     @ViewBuilder var body: some View {
         let data = FiscalServices.shared.publicData()
         switch section {
-        case .today:
+        case .feed:
             let services = FiscalServices.shared
             ModelHost(
-                TodayModel(
+                FeedModel(
                     service: data, races: services.liveResultsService(),
-                    follows: services.todayFollows(session.repositories.follows))
+                    follows: services.feedFollows(session.repositories.follows))
             ) {
-                TodayScreen { race in RaceHeroCard(race: race, opensDetail: true) }
+                FeedScreen { race in RaceHeroCard(race: race, opensDetail: true) }
             }
-        case .following:
-            ModelHost(MineModel(service: data, follows: session.repositories.follows)) {
-                MineScreen()
+        case .region:
+            ModelHost(RegionModel(service: data, follows: session.repositories.follows)) {
+                RegionScreen()
             }
         case .votes:
             ModelHost(VotesModel(service: data)) { VotesScreen() }

@@ -14,7 +14,7 @@ import SwiftUI
                         Section(group.title) {
                             ForEach(group.sections) { section in
                                 Label(section.title, systemImage: section.systemImage)
-                                    .badge(section == .following ? badge.count : 0)
+                                    .badge(section == .feed ? badge.count : 0)
                                     .tag(section)
                             }
                         }

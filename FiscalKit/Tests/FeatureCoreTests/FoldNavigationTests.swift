@@ -53,8 +53,8 @@ struct FoldNavigationTests {
         navigation.fit(.folded(.vertical))
         #expect(navigation.layout == .folded(.vertical))
         #expect(navigation.layout.routeComesFirst)
-        navigation.open(.person(slug: "a"), in: .today)
-        #expect(navigation.panes[.today] == [.person(slug: "a")])
+        navigation.open(.person(slug: "a"), in: .feed)
+        #expect(navigation.panes[.feed] == [.person(slug: "a")])
     }
 
     @Test func foldingMovesStacksToTheRoutePaneAndBack() {
@@ -87,8 +87,8 @@ struct FoldNavigationTests {
         let navigation = FiscalNavigation()
         navigation.fit(.folded(.horizontal, accessibility: true))
         #expect(navigation.layout == .stack)
-        navigation.open(.person(slug: "a"), in: .following)
-        #expect(navigation.paths[.following] == [.person(slug: "a")])
+        navigation.open(.person(slug: "a"), in: .region)
+        #expect(navigation.paths[.region] == [.person(slug: "a")])
         navigation.fit(.flat(width: 1024, accessibility: true))
         #expect(navigation.layout == .stack)
     }
@@ -108,7 +108,7 @@ struct FoldNavigationTests {
     @Test func openRoutesListsStacksPanesAndTheInspector() {
         let navigation = FiscalNavigation()
         navigation.fit(.folded(.horizontal))
-        navigation.open(.person(slug: "a"), in: .today)
+        navigation.open(.person(slug: "a"), in: .feed)
         navigation.fit(.flat(width: 1024))
         navigation.open(.vote(id: "v1"), in: .votes)
         #expect(Set(navigation.openRoutes) == [.person(slug: "a"), .vote(id: "v1")])
