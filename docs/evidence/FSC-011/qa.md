@@ -29,6 +29,8 @@
 | 21 | Gráfico do mandato | Folga acima do nome do cargo e legenda sem corte | passou | [captura](mandate-chart.png), aprovado no iPhone |
 | 22 | Gráfico da cota | Sem siglas; a barra mostra o estado; cada estado fica exposto à acessibilidade | passou | [captura](quota-chart.png), aprovado no iPhone; `LinkAccessibilityTests` acha a barra "São Paulo" com o valor. O VoiceOver de verdade não rodou |
 
+**Lacuna aceita no merge:** o usuário pediu o merge em 01/11/2026 sem o teste com o VoiceOver ligado. A dica "Abre no navegador" segue sem prova no aparelho.
+
 **Não verificado:**
 - VoiceOver ligado de verdade (a árvore de acessibilidade foi conferida por XCUITest) e fontes de acessibilidade na tela nova.
 - Layout largo: iPad, Duo aberto e Mac na tela. O simulador do iPad não foi usado.

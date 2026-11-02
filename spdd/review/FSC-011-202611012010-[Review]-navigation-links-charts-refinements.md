@@ -57,7 +57,7 @@
 
 ## Portão de merge
 
-Nenhum defeito de código aberto. **Resta uma lacuna de prova:** a dica "Abre no navegador" e a leitura com o VoiceOver ligado, que só o aparelho físico mostra. O merge espera o ok do usuário.
+Nenhum defeito de código aberto. **Resta uma lacuna de prova:** a dica "Abre no navegador" e a leitura com o VoiceOver ligado, que só o aparelho físico mostra. O usuário pediu o merge sem esse teste, e a lacuna fica registrada na QA.
 
 ## Verificação depois das correções
 
