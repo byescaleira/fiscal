@@ -49,7 +49,7 @@
 27. Dada uma pessoa sem lugar escolhido, quando abre a tela, então as sugestões não aparecem, e um convite leva a escolher o lugar em Região.
 28. Dado alguém que não segue ninguém, quando o Feed abre, então o convite leva a essa tela.
 29. Dados `fiscal://region`, o widget do lugar e os links de pessoa, quando abertos, então seguem como hoje; `fiscal://following`, o widget "Quem eu sigo" e a Siri abrem a tela nova.
-30. Dadas as abas, quando aparecem, então Feed usa duas pessoas e Fiscalizar usa o binóculo, inclusive no destaque da busca, se o sistema aceitar; se não aceitar, o usuário vê o resultado no iPhone antes de qualquer troca.
+30. Dadas as abas, quando aparecem, então Feed usa duas pessoas, Região usa o pin com o círculo embaixo e Fiscalizar usa o binóculo, inclusive no destaque da busca, se o sistema aceitar; se não aceitar, o usuário vê o resultado no iPhone antes de qualquer troca.
 
 **Acessibilidade**
 
@@ -131,7 +131,7 @@ Nenhum arquivo público nem dado do aparelho muda de formato. `RegionModel` deix
 - **Votações.** Decisão do usuário: uma linha no topo, com a próxima sessão, abre a pauta em tela própria. Pauta vencida não aparece na tela. As linhas perdem peso: o aviso de outras votações sai da linha e fica só no detalhe, e o resumo vai a duas linhas.
 - **Quem você segue.** Decisão do usuário: tela própria, aberta pelo filtro Seguindo do Feed, com a lista, as sugestões e o convite. `FollowingModel` lê o lugar escolhido pelo mesmo `HomePlace` que Região usa.
 - **Links.** `fiscal://following` passa a abrir a tela nova, em vez de Região; `fiscal://mine` e `fiscal://region` seguem em Região. O widget "Quem eu sigo" e a Siri usam o link novo.
-- **Ícones.** `person.2` para o Feed e `binoculars` para Fiscalizar. A busca usa `Tab(role: .search)`; o resultado é visto no iPhone, e o papel da aba não muda sem o ok do usuário.
+- **Ícones.** `person.2` para o Feed, `mappin.and.ellipse` para Região, pedido do usuário no iPhone, e `binoculars` para Fiscalizar. A busca usa `Tab(role: .search)`; o resultado é visto no iPhone, e o papel da aba não muda sem o ok do usuário.
 - **Medida de posição.** O capítulo atual só publica quando muda, como já é, e as telas novas seguem o mesmo caminho. A revisão da `FSC-014` apontou o custo sem medir; é conferido no iPhone.
 - **Fora daqui.** Telas de Dinheiro e Fiscalizar, além das notas, ficam como estão.
 
@@ -199,7 +199,7 @@ Nenhum arquivo público nem dado do aparelho muda de formato. `RegionModel` deix
    - `IntegrationLink.following`, `DeepLink`, widget e Siri.
    - Cobre: 24 a 29. Verificação: `FollowingModelTests`, `RegionModelTests`, `DeepLinkTests`, `FollowIntentTests`, `FollowingTests`.
 8. **Ícones das abas.** `[P]` com 7.
-   - `AppSection.systemImage`: `person.2` e `binoculars`.
+   - `AppSection.systemImage`: `person.2`, `mappin.and.ellipse` e `binoculars`.
    - Ver no simulador o que o sistema mostra no papel de busca.
    - Cobre: 30. Verificação: `AppSectionTests`, captura.
 9. **Corrida e notas.** Depende de: 1.

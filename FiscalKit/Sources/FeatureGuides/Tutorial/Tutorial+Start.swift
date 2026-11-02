@@ -23,7 +23,7 @@ extension Guide {
                         "brazilianrealsign", color: .retroOlive, title: "Money",
                         detail: "Where public money goes."),
                     GuideStep(
-                        "map", color: .retroTeal, title: "Region",
+                        "mappin.and.ellipse", color: .retroTeal, title: "Region",
                         detail: "Who represents your place, from the city to the president."),
                     GuideStep(
                         "binoculars", color: .retroPlum, title: "Search",
