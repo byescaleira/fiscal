@@ -3,22 +3,17 @@ import FiscalDesignSystem
 import FiscalDomain
 import SwiftUI
 
-struct ProfileHeroSection: View {
+struct ProfileHero: View {
     @Environment(ProfileModel.self) private var profile
 
     var body: some View {
-        Section {
-        } header: {
-            if let person = profile.profile {
-                ProfileHero(person: person)
-                    .listRowInsets(EdgeInsets())
-                    .textCase(nil)
-            }
+        if let person = profile.profile {
+            ProfileHeroCard(person: person)
         }
     }
 }
 
-private struct ProfileHero: View {
+private struct ProfileHeroCard: View {
     @Environment(ProfileModel.self) private var profile
     let person: Profile
 
@@ -54,9 +49,6 @@ private struct ProfileHero: View {
             .multilineTextAlignment(.center)
             .accessibilityElement(children: .combine)
             ProfileHeroActions()
-            if let vote = profile.lastVote {
-                ProfileLastVote(vote: vote)
-            }
         }
         .foregroundStyle(.primary)
         .padding(.spaceXL)
@@ -65,7 +57,6 @@ private struct ProfileHero: View {
             PartyBackdrop(party: person.party).clipShape(.rect(cornerRadius: .radiusGroup))
         }
         .environment(\.colorScheme, .dark)
-        .padding(.bottom, .spaceS)
     }
 }
 
@@ -117,35 +108,6 @@ private struct ProfileHeroActions: View {
         profile.followChanged(to: isFollowing)
         session.reload()
         FollowController.announce(name: card.name, isFollowing: isFollowing)
-    }
-}
-
-private struct ProfileLastVote: View {
-    @Environment(ProfileModel.self) private var profile
-    let vote: PersonVote
-
-    var body: some View {
-        HStack(alignment: .center, spacing: .spaceM) {
-            Capsule()
-                .fill(.white)
-                .frame(width: .space2XS)
-                .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: .space2XS) {
-                if let text = profile.lastVoteText {
-                    Text(verbatim: text).font(.caption.weight(.semibold)).foregroundStyle(
-                        .secondary)
-                }
-                Text(verbatim: vote.summary)
-                    .font(.footnote)
-                    .lineLimit(2)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            BallotChip(ballot: profile.ballot(vote))
-        }
-        .padding(.spaceM)
-        .fixedSize(horizontal: false, vertical: true)
-        .background(Color.white.opacity(.opacityFill), in: .rect(cornerRadius: .radiusM))
-        .accessibilityElement(children: .combine)
     }
 }
 

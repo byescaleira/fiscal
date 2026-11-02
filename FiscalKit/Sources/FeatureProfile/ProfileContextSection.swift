@@ -9,27 +9,26 @@ struct ProfileContextSection: View {
 
     var body: some View {
         if profile.hasContext, let item = profile.selectedContext {
-            Section {
+            ProfileBlock(
+                footer: [profile.contextFootnote, profile.contextSourceText]
+            ) {
                 IconRow(
                     "Context, not cause",
                     detail:
                         "Prices, jobs and these indicators move for many reasons: the economy, other governments, the whole Congress. They show what happened during the term, not what this person caused.",
                     symbol: "info.circle", color: .retroDenim)
                 ProfileContextSummary(item: item)
-                ProfileContextChart(item: item)
-                    .id(item.id)
+                VStack(alignment: .leading, spacing: .spaceXS) {
+                    ProfileContextChart(item: item)
+                        .id(item.id)
+                    Text(verbatim: profile.mandateStartLabel)
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                }
+                ProfileContextMenu()
                 ForEach(profile.contextItems.filter { $0.id != item.id }) { other in
                     ProfileContextRow(item: other)
                 }
-            } header: {
-                AdaptiveStack(spacing: .spaceS) {
-                    Text("Before and During the Term").sectionTitle()
-                    Spacer(minLength: 0)
-                    ProfileContextMenu()
-                }
-                .textCase(nil)
-            } footer: {
-                ProfileFooter(lines: [profile.contextFootnote, profile.contextSourceText])
             }
         }
     }
@@ -95,7 +94,6 @@ private struct ProfileContextSummary: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
-        .padding(.vertical, .space2XS)
         .accessibilityElement(children: .combine)
     }
 }
@@ -129,8 +127,7 @@ private struct ProfileContextChart: View {
             if let first = points.first?.date, let start = profile.mandateStartDate,
                 let last = points.last?.date
             {
-                ContextBands(
-                    first: first, start: start, last: last, startLabel: profile.mandateStartLabel)
+                ContextBands(first: first, start: start, last: last)
             }
             ForEach(points) { point in
                 LineMark(
@@ -178,7 +175,6 @@ private struct ContextBands: ChartContent {
     let first: Date
     let start: Date
     let last: Date
-    let startLabel: String
 
     var body: some ChartContent {
         RectangleMark(xStart: .value("Start", first), xEnd: .value("Took office", start))
@@ -195,14 +191,6 @@ private struct ContextBands: ChartContent {
         RuleMark(x: .value("Took office", start))
             .foregroundStyle(.secondary)
             .lineStyle(.chartAverage)
-            .annotation(
-                position: .bottom, alignment: .center, spacing: .space2XS,
-                overflowResolution: .init(x: .fit(to: .chart), y: .disabled)
-            ) {
-                Text(verbatim: startLabel)
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(.secondary)
-            }
     }
 }
 

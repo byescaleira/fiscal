@@ -8,18 +8,16 @@ struct ProfileVotesSection: View {
 
     var body: some View {
         if !profile.recentVotes.isEmpty {
-            Section {
+            ProfileBlock(
+                title: Text("Recent Votes"),
+                footer: [profile.votesTotalText, profile.sourceText(for: ["votes"])]
+            ) {
                 ForEach(profile.recentVotes) { vote in
                     RouteLink(.vote(id: vote.voteId)) {
                         ProfileVoteRow(vote: vote)
                     }
                     .accessibilityLabel(Text(verbatim: profile.voteAccessibility(vote)))
                 }
-            } header: {
-                Text("Recent Votes").sectionTitle()
-            } footer: {
-                ProfileFooter(
-                    lines: [profile.votesTotalText, profile.sourceText(for: ["votes"])])
             }
         }
     }
@@ -50,7 +48,6 @@ private struct ProfileVoteRow: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             BallotChip(ballot: profile.ballot(vote))
         }
-        .padding(.vertical, .space2XS)
     }
 }
 
@@ -59,19 +56,16 @@ struct ProfileProposalsSection: View {
 
     var body: some View {
         if !profile.recentProposals.isEmpty {
-            Section {
+            ProfileBlock(
+                title: Text("Proposals"),
+                footer: [
+                    profile.proposalsTotalText, profile.plainSummaryNote,
+                    profile.sourceText(for: ["proposals"]),
+                ]
+            ) {
                 ForEach(profile.recentProposals) { proposal in
                     ProfileProposalRow(proposal: proposal)
                 }
-            } header: {
-                Text("Proposals").sectionTitle()
-            } footer: {
-                ProfileFooter(
-                    lines: [
-                        profile.proposalsTotalText,
-                        profile.plainSummaryNote,
-                        profile.sourceText(for: ["proposals"]),
-                    ])
             }
         }
     }
@@ -108,7 +102,6 @@ private struct ProfileProposalRow: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
-        .padding(.vertical, .space2XS)
     }
 }
 
@@ -117,7 +110,10 @@ struct ProfileSpeechesSection: View {
 
     var body: some View {
         if !profile.recentSpeeches.isEmpty {
-            Section {
+            ProfileBlock(
+                title: Text("Speeches"),
+                footer: [profile.speechesTotalText, profile.sourceText(for: ["speeches"])]
+            ) {
                 ForEach(Array(profile.recentSpeeches.enumerated()), id: \.offset) { _, speech in
                     VStack(alignment: .leading, spacing: .space2XS) {
                         Text(verbatim: "\(SourceFootnote.day(speech.date)) · \(speech.kind)")
@@ -129,13 +125,7 @@ struct ProfileSpeechesSection: View {
                                 .font(.footnote)
                         }
                     }
-                    .padding(.vertical, .space2XS)
                 }
-            } header: {
-                Text("Speeches").sectionTitle()
-            } footer: {
-                ProfileFooter(
-                    lines: [profile.speechesTotalText, profile.sourceText(for: ["speeches"])])
             }
         }
     }

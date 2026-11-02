@@ -9,24 +9,22 @@ struct ProfileExpensesSection: View {
 
     var body: some View {
         if profile.hasExpenses {
-            Section {
+            ProfileBlock(
+                title: Text(verbatim: profile.expensesSectionTitle),
+                footer: [profile.sourceText(for: ["expenses"])]
+            ) {
                 ProfileExpensesSummary()
                 if !profile.categoryLines.isEmpty {
                     RankedBarChart(
                         String(appLocalized: "By kind of expense"),
                         bars: profile.categoryLines.enumerated().map { $1.ranked(slot: $0) }
                     )
-                    .padding(.vertical, .spaceXS)
                 }
                 DisclosureLink {
                     ProfileExpensesScreen().environment(profile)
                 } label: {
                     Label("Every Expense", systemImage: "list.bullet.rectangle")
                 }
-            } header: {
-                Text(verbatim: profile.expensesSectionTitle).sectionTitle()
-            } footer: {
-                ProfileFooter(lines: [profile.sourceText(for: ["expenses"])])
             }
         }
     }
@@ -51,7 +49,6 @@ private struct ProfileExpensesSummary: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
-        .padding(.vertical, .space2XS)
     }
 }
 

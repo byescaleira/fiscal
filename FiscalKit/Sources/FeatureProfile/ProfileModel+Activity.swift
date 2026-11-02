@@ -33,14 +33,6 @@ extension ProfileModel {
         Array((votes?.items ?? []).sorted { $0.date > $1.date }.prefix(Self.recentLimit))
     }
 
-    public var lastVote: PersonVote? { recentVotes.first }
-
-    public var lastVoteText: String? {
-        guard let vote = lastVote else { return nil }
-        return String(
-            appLocalized: "Last vote · \(vote.proposition) · \(shortDay(vote.date))")
-    }
-
     public func ballot(_ vote: PersonVote) -> ProfileBallot { ProfileBallot(vote.vote) }
 
     public func shortDay(_ day: CalendarDay) -> String {
@@ -140,7 +132,7 @@ extension ProfileModel {
         return Double(values.reduce(0, +)) / Double(values.count) / 100
     }
 
-    public var yearText: String { String(year) }
+    public var yearText: String { String(expenseYear) }
 
     public var expensesSectionTitle: String {
         String(appLocalized: "Office Allowance in \(yearText)")

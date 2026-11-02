@@ -8,23 +8,17 @@ struct ProfileActionsSection: View {
 
     var body: some View {
         if !profile.actionItems.isEmpty {
-            Section {
+            ProfileBlock(
+                title: Text("What They're Doing"),
+                footer: [
+                    profile.actionsRuleText, profile.actionsTotalText, profile.actionsSourceText,
+                ]
+            ) {
                 ForEach(profile.actionItems) { item in
                     ProfileActionLink(item: item)
                 }
-            } header: {
-                AdaptiveStack(spacing: .spaceS) {
-                    Text("What They're Doing").sectionTitle()
-                    Spacer(minLength: 0)
-                    WeightMethodButton(method: profile.weightMethod)
-                }
-                .textCase(nil)
-            } footer: {
-                ProfileFooter(
-                    lines: [
-                        profile.actionsRuleText, profile.actionsTotalText,
-                        profile.actionsSourceText,
-                    ])
+            } accessory: {
+                WeightMethodButton(method: profile.weightMethod)
             }
         }
     }
@@ -74,6 +68,5 @@ private struct ProfileActionRow: View {
                 repercussion: item.repercussion, impact: item.impact,
                 isTest: item.signals.isTest, coverage: item.coverage)
         }
-        .padding(.vertical, .space2XS)
     }
 }

@@ -70,12 +70,11 @@ struct ProfileModelTests {
                 "attendance", "proposals", "laws", "speeches", "votes", "quota", "assets",
                 "campaign", "election",
             ])
-        #expect(model.facts.allSatisfy { !$0.isMissing && $0.source != nil })
+        #expect(model.facts.allSatisfy { $0.value != PublicFormat.missing && $0.source != nil })
         #expect(model.facts.first?.fraction != nil)
         #expect(model.mandateText?.contains("2023") == true)
         #expect(!model.recentVotes.isEmpty)
         #expect(model.recentVotes == model.recentVotes.sorted { $0.date > $1.date })
-        #expect(model.lastVoteText != nil)
         #expect(model.recentProposals.count == 3)
         #expect(model.recentSpeeches.count == 2)
         #expect(model.hasExpenses)
@@ -91,21 +90,19 @@ struct ProfileModelTests {
         #expect(model.shareRoute == .share(.person(slug: "tabata-amaral")))
         #expect(model.sourceText(for: ["votes"])?.contains("Câmara dos Deputados") == true)
         #expect(model.sourceText(for: ["assets"])?.contains("Tribunal Superior Eleitoral") == true)
-        #expect(!model.showsFactChecks)
     }
 
-    @Test func aStateDeputyWithoutAssemblyDataShowsDashesAndSaysWhy() async {
+    @Test func aStateDeputyWithoutAssemblyDataShowsNoDashAndSaysWhy() async {
         let model = makeModel("eduardo-suplicy")
         await model.load()
         let tiles = Dictionary(uniqueKeysWithValues: model.facts.map { ($0.id, $0) })
-        #expect(tiles["attendance"]?.value == "—")
-        #expect(tiles["attendance"]?.caption != nil)
-        #expect(tiles["quota"]?.value == "—")
-        #expect(tiles["assets"]?.isMissing == false)
+        #expect(tiles["attendance"] == nil)
+        #expect(tiles["quota"] == nil)
+        #expect(tiles["assets"] != nil)
         #expect(model.votes == nil)
         #expect(model.recentVotes.isEmpty)
         #expect(!model.hasExpenses)
-        #expect(model.coverageLines.contains { $0.status == .notPublished })
+        #expect(model.gaps.count == 1)
         #expect(!model.assetDeclarations.isEmpty)
         #expect(model.aboutLines.contains { $0.id == "birth" })
         #expect(!model.aboutLines.contains { $0.id == "salary" })
