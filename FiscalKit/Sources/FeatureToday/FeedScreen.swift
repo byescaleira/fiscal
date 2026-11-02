@@ -9,6 +9,7 @@ public struct FeedScreen<RaceHero: View>: View {
     @Environment(SessionModel.self) private var session
     @Environment(FiscalNavigation.self) private var navigation: FiscalNavigation?
     @Environment(FollowingBadge.self) private var badge: FollowingBadge?
+    @Environment(FollowController.self) private var follow: FollowController?
     @Environment(\.scenePhase) private var scenePhase
     private let raceHero: (Race) -> RaceHero
 
@@ -55,6 +56,10 @@ public struct FeedScreen<RaceHero: View>: View {
             await top
         }
         .onChange(of: feed.newCount, initial: true) { _, count in badge?.count = count }
+        .onChange(of: follow?.followed) { _, slugs in
+            guard let slugs else { return }
+            Task { await feed.followsChanged(to: slugs) }
+        }
         .onChange(of: navigation?.selectedSection) { previous, section in
             if previous == .feed, section != .feed { feed.markSeen() }
         }

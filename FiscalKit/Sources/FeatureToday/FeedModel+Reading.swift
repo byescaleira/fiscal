@@ -49,12 +49,10 @@ extension FeedModel {
     nonisolated private static func read(
         _ person: PersonCard, years: [Int], first: Bool, from service: any PublicDataService
     ) async -> PersonRead {
-        var attempts = 0
         var failures = 0
         var activities: [FollowingFeed.Activity] = []
         var speeches: [Speech] = []
         func attempt<Value: Sendable>(_ load: () async throws -> Value) async -> Value? {
-            attempts += 1
             do {
                 return try await load()
             } catch PublicDataError.notFound {
@@ -81,6 +79,6 @@ extension FeedModel {
         }
         return PersonRead(
             person: person, activities: activities, actions: actions.flatMap(\.self),
-            speeches: speeches, failed: attempts > 0 && failures == attempts)
+            speeches: speeches, failed: failures > 0)
     }
 }

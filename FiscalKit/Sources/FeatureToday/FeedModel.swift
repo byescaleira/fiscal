@@ -2,6 +2,7 @@ import FeatureCore
 import FiscalDomain
 import Foundation
 import Observation
+import WidgetKit
 
 @MainActor @Observable
 public final class FeedModel {
@@ -27,6 +28,7 @@ public final class FeedModel {
     @ObservationIgnored private let seenStore: FollowingSeenStore
     @ObservationIgnored private let regionUF: () -> String?
     @ObservationIgnored private let now: () -> Date
+    @ObservationIgnored private let publishesSnapshot: Bool
     @ObservationIgnored private let requests = PublicDataRequests()
     @ObservationIgnored private var activities: [FollowingFeed.Activity] = []
     @ObservationIgnored private var actions: [String: ActionList] = [:]
@@ -40,13 +42,14 @@ public final class FeedModel {
         service: (any PublicDataService)?, follows: (any FollowRepository)?,
         seen: FollowingSeenStore = FollowingSeenStore(),
         regionUF: @escaping () -> String? = { HomePlace.chosenUF(in: .standard) },
-        now: @escaping () -> Date = Date.init
+        now: @escaping () -> Date = Date.init, publishesSnapshot: Bool = true
     ) {
         self.service = service
         self.follows = follows
         seenStore = seen
         self.regionUF = regionUF
         self.now = now
+        self.publishesSnapshot = publishesSnapshot
     }
 
     private var matching: [FeedItem] { FeedTimeline.filtered(items, by: filter) }
@@ -77,6 +80,7 @@ public final class FeedModel {
     }
 
     public var endMessage: String {
+        guard missing.isEmpty else { return missingText }
         guard followed.isEmpty else {
             if filter == .relevant {
                 return String(appLocalized: "These are the most recent relevant facts.")
@@ -100,7 +104,8 @@ public final class FeedModel {
 
     public func load() async {
         if items.isEmpty { phase = .loading }
-        let year = Calendar.current.component(.year, from: now())
+        let years = FollowingFeed.years(for: CalendarDay(now()))
+        let year = years.min() ?? Self.firstYear
         phase = await PublicDataPhase.settle(after: phase, in: requests) { [self] in
             guard let service else { throw PublicDataError.unavailable }
             let following = (try? await follows?.followed()) ?? []
@@ -108,7 +113,7 @@ public final class FeedModel {
             async let digest = service.today()
             async let recent = service.recentVotes()
             async let highlights = service.highlights()
-            let loaded = await Self.read(people, years: [year], first: true, from: service)
+            let loaded = await Self.read(people, years: years, first: true, from: service)
             let page = Page(
                 digest: try? await digest, recent: try? await recent,
                 highlights: (try? await highlights) ?? nil)
@@ -140,6 +145,7 @@ public final class FeedModel {
             hasLoaded = true
             shownCount = Self.pageSize
             rebuild()
+            publishSnapshot()
         }
     }
 
@@ -159,12 +165,24 @@ public final class FeedModel {
             year -= 1
             let loaded = await Self.read(followed, years: [year], first: false, from: service)
             activities += loaded.activities
+            missing = Self.merged(missing, loaded.missing)
             for (slug, list) in loaded.speeches { speeches[slug, default: []] += list }
             rebuild()
             oldestYear = year
         }
         reachedEnd = oldestYear <= Self.firstYear
         if matching.count > before { shownCount = shown + Self.pageSize }
+    }
+
+    private static func merged(_ current: [PersonCard], _ new: [PersonCard]) -> [PersonCard] {
+        let known = Set(current.map(\.slug))
+        return (current + new.filter { !known.contains($0.slug) })
+            .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+    }
+
+    public func followsChanged(to slugs: Set<String>) async {
+        guard hasLoaded, Set(followed.map(\.slug)) != slugs else { return }
+        await load()
     }
 
     public func markSeen() {
@@ -177,6 +195,13 @@ public final class FeedModel {
 
     private func lastSeen(_ slug: String) -> Date? {
         seenStore.seen(slug) ?? followedAt[slug]
+    }
+
+    private func publishSnapshot() {
+        guard publishesSnapshot else { return }
+        let snapshot = FollowingSnapshot.make(followed: followed, updates: updates, at: now())
+        try? snapshot.write()
+        WidgetCenter.shared.reloadTimelines(ofKind: FollowingWidget.kind)
     }
 
     private func rebuild() {

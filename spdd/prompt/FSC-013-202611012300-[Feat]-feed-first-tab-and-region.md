@@ -33,10 +33,11 @@
 14. Dadas pessoas seguidas e tudo o que já foi lido na tela, quando a lista chega ao fim, então carrega o ano anterior, em lotes de 6 pessoas, sem repetir linha e sem mudar a posição do que já estava na tela.
 15. Dado o ano de 2023 já carregado, quando a lista chega ao fim, então aparece a mensagem de que os dados vão até 2023.
 16. Dado quem não segue ninguém, quando abre, então vê os relevantes e um cartão convidando a seguir; ao chegar ao fim, a mensagem diz que seguir pessoas traz mais fatos.
-17. Dada uma falha em algumas pessoas ou fontes, quando carrega, então o resto aparece e um aviso oferece tentar de novo; sem nada, o erro de rede padrão.
+17. Dada uma falha em algumas pessoas ou fontes, em qualquer ano lido, quando carrega, então o resto aparece e um aviso oferece tentar de novo, também no lugar da mensagem de fim; sem nada, o erro de rede padrão.
 18. Dada a lista aberta, quando novos dados chegam, então ela só muda ao abrir de novo ou ao puxar a tela.
 23. Dadas 50 linhas já lidas, quando o Feed abre, então a lista mostra 20; ao chegar ao fim, mostra mais 20, sem nova leitura da rede; trocar de filtro volta às 20 primeiras daquele filtro.
 24. Dado o filtro Relevante, quando a lista chega ao fim, então nenhum ano é lido, porque os anos antigos só trazem fatos de quem a pessoa segue, e uma mensagem diz que esses são os relevantes mais recentes.
+25. Dado seguir ou deixar de seguir alguém em outra aba, quando a pessoa volta ao Feed, então as linhas dessa pessoa já entraram ou saíram da lista, sem precisar puxar a tela.
 
 **Selo e acessibilidade**
 
@@ -180,8 +181,9 @@ classDiagram
    - `loadMore()`: mostra mais uma página do que já foi lido; sem nada escondido, um ano por vez até `firstYear = 2023`, até o filtro ganhar linhas; `reachedEnd`, sem repetir; no filtro Relevante, nenhum ano.
    - `isAtEnd`: fim dos dados e nada escondido, e é quem libera a mensagem de fim.
    - Falha parcial em `missing`, com tentar de novo.
-   - `newCount`, `markSeen` e o retrato do widget, como em `MineModel`.
-   - Cobre: 14 a 19, 23, 24. Verificação: `FeedModelTests`, com o cenário indisponível, sem seguidos, o fim e as páginas.
+   - `newCount`, `markSeen` e o retrato do widget, como em `MineModel`; em janeiro, o primeiro carregamento também lê o ano anterior, como `FollowingFeed.years`.
+   - `followsChanged(to:)`: recarrega quando o conjunto de seguidos mudou.
+   - Cobre: 14 a 19, 23, 24, 25. Verificação: `FeedModelTests`, com o cenário indisponível, sem seguidos, o fim e as páginas.
 3. **Abas e tela.** Depende de: 2.
    - Olhar as referências reais antes de desenhar.
    - `AppSection` com `.feed` e `.region`, `DeepLink` com os novos hosts e os antigos, `IntegrationLink`, selo em `MainScreen` e `MacShell`.

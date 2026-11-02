@@ -35,17 +35,9 @@ public final class MineModel {
     public var isChoosingPlace = false
     public var startsSearching = false
     public var error: FiscalError?
-    public internal(set) var updates: [FollowingUpdate] = []
-    public internal(set) var updatesPhase: PublicDataPhase = .idle
-    public internal(set) var missing: [PersonCard] = []
-    var seenVersion = 0
     @ObservationIgnored let service: (any PublicDataService)?
     @ObservationIgnored let follows: (any FollowRepository)?
     @ObservationIgnored private let memory: MinePlaceMemory
-    @ObservationIgnored let seenStore: FollowingSeenStore
-    @ObservationIgnored let now: @Sendable () -> Date
-    @ObservationIgnored let publishesSnapshot: Bool
-    @ObservationIgnored let updateRequests = PublicDataRequests()
     @ObservationIgnored private let placeRequests = PublicDataRequests()
     @ObservationIgnored private let placesRequests = PublicDataRequests()
     @ObservationIgnored var searchNames: [String: String] = [:]
@@ -54,17 +46,11 @@ public final class MineModel {
 
     public init(
         service: (any PublicDataService)? = nil, follows: (any FollowRepository)?,
-        memory: MinePlaceMemory = MinePlaceMemory(),
-        seen: FollowingSeenStore = FollowingSeenStore(),
-        now: @escaping @Sendable () -> Date = { .now }, publishesSnapshot: Bool = true,
-        inviteDefaults: UserDefaults = .standard
+        memory: MinePlaceMemory = MinePlaceMemory(), inviteDefaults: UserDefaults = .standard
     ) {
         self.service = service
         self.follows = follows
         self.memory = memory
-        seenStore = seen
-        self.now = now
-        self.publishesSnapshot = publishesSnapshot
         self.inviteDefaults = inviteDefaults
         isFollowingInviteDismissed = inviteDefaults.bool(forKey: Self.followingInviteKey)
     }
@@ -167,9 +153,7 @@ public final class MineModel {
 
     public func load() async {
         await loadFollowed()
-        async let updates: Void = loadUpdates()
-        async let place: Void = loadPlace()
-        _ = await (updates, place)
+        await loadPlace()
     }
 
     public func loadFollowed() async {
