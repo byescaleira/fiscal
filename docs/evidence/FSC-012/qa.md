@@ -34,6 +34,8 @@
 - A faixa de filtros corre até a borda da tela.
 - As folhas "Como medimos" e do método de comparação não herdam mais texto branco dos cartões escuros; a primeira página rola em telas pequenas. [Captura](method-sheet.png).
 
+**Lacuna aceita no merge:** o usuário pediu o merge em 01/11/2026 sem relatar o resultado do VoiceOver, de Hoje, do Perfil, de Fiscalizar, de Compartilhar, de "Também seguir", do voto dividido e de apagar no aparelho.
+
 **Não verificado:**
 - VoiceOver ligado de verdade na página.
 - Layout largo: iPad, Duo aberto e Mac na tela. O visionOS só em build.
