@@ -132,6 +132,8 @@ struct WinnerTileMap: View {
                         Text("\(item.states) states").foregroundStyle(.secondary)
                     }
                     .font(.caption)
+                    .lineLimit(1)
+                    .fixedSize()
                     .padding(.horizontal, .spaceS)
                     .padding(.vertical, .space2XS)
                     .background(.plainBackground, in: .capsule)

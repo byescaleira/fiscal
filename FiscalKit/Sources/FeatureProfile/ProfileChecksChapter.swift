@@ -31,6 +31,8 @@ private struct ProfileCheckRow: View {
             AdaptiveRow(spacing: .spaceS) {
                 if let verdict = check.verdict {
                     Chip(verdict, color: .secondary)
+                        .lineLimit(1)
+                        .fixedSize()
                 }
                 Text(verbatim: SourceFootnote.day(check.date))
                     .font(.caption)

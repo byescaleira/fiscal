@@ -169,6 +169,8 @@ private struct VoteThemes: View {
                     Text(verbatim: theme.title)
                 }
                 .font(.chipLabel)
+                .lineLimit(1)
+                .fixedSize()
                 .foregroundStyle(tint)
                 .padding(.horizontal, .spaceM)
                 .padding(.vertical, .spaceXS)

@@ -64,6 +64,8 @@ struct RaceWinnerCard: View {
                 .scaleEffect(appeared ? 1 : 0.6)
                 .opacity(appeared ? 1 : 0)
                 Chip("ELECTED", color: .white, shape: .capsule)
+                    .lineLimit(1)
+                    .fixedSize()
                     .environment(\.colorScheme, .dark)
                 Text(verbatim: winner.candidate.name)
                     .font(.emphasis(.title, weight: .heavy))

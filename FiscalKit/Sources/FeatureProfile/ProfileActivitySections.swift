@@ -93,6 +93,8 @@ private struct ProfileProposalRow: View {
                         .foregroundStyle(.secondary)
                     if let status = profile.proposalStatus(proposal) {
                         Chip(status, color: .secondary)
+                            .lineLimit(1)
+                            .fixedSize()
                     }
                     ForEach(proposal.themes) { theme in
                         HStack(spacing: .space2XS) {

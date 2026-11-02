@@ -47,6 +47,8 @@ public struct RelevanceBadge: View {
 
     public var body: some View {
         Chip(relevance.title, color: color)
+            .lineLimit(1)
+            .fixedSize()
             .accessibilityLabel(Text(verbatim: relevance.title))
     }
 }

@@ -207,6 +207,8 @@ private struct BallotFilterPill: View {
                     .monospacedDigit()
                     .opacity(isSelected ? 1 : .opacitySoft * 2)
             }
+            .lineLimit(1)
+            .fixedSize()
             .foregroundStyle(isSelected ? AnyShapeStyle(.white) : AnyShapeStyle(color))
             .padding(.horizontal, .spaceM)
             .padding(.vertical, .spaceS)
