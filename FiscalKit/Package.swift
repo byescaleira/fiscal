@@ -13,7 +13,7 @@ let package = Package(
             targets: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureSettings", "AppShell"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/byescaleira/byescaleira-kit.git", from: "0.8.1"),
+        .package(url: "https://github.com/byescaleira/byescaleira-kit.git", from: "0.9.0"),
         .package(url: "https://github.com/airbnb/lottie-spm.git", from: "4.5.0"),
     ],
     targets: [

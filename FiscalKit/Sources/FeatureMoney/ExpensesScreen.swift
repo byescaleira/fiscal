@@ -30,6 +30,9 @@ public struct ExpensesScreen: View {
             .navigationSubtitle(expenses.scopeTitle)
         #endif
         .toolbarTitleDisplayMode(.inline)
+        #if os(iOS)
+            .toolbar(removing: .title)
+        #endif
         .toolbar { ExpensesToolbar() }
         .sensoryFeedback(.selection, trigger: expenses.categoryFilter)
         .sensoryFeedback(.selection, trigger: expenses.year)
@@ -40,10 +43,13 @@ public struct ExpensesScreen: View {
 
 private struct ExpensesOverview: View {
     @Environment(ExpensesModel.self) private var expenses
+    @State private var showsBar = false
 
     var body: some View {
         AdaptiveList {
             ExpensesHeroSection()
+                .onAppear { showsBar = false }
+                .onDisappear { showsBar = true }
             ExpensesMonthsSection()
             ExpensesYearsSection()
             ExpensesCategoriesSection()
@@ -55,6 +61,41 @@ private struct ExpensesOverview: View {
                 }
             #endif
         }
+        .revealBar(isShown: showsBar) {
+            ExpensesStickyHeader()
+                .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+        }
+    }
+}
+
+private struct ExpensesStickyHeader: View {
+    @Environment(ExpensesModel.self) private var expenses
+
+    var body: some View {
+        AdaptiveRow(spacing: .spaceM) {
+            VStack(alignment: .leading, spacing: .spaceHairline) {
+                Text(verbatim: expenses.title)
+                    .font(.headline)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                Text(verbatim: expenses.scopeTitle)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+            }
+            Spacer(minLength: .spaceS)
+            Text(verbatim: expenses.total)
+                .font(.amountRow)
+                .monospacedDigit()
+                .lineLimit(1)
+                .fixedSize()
+        }
+        .padding(.horizontal, .spaceL)
+        .padding(.vertical, .spaceS)
+        .frame(maxWidth: .readableColumn, alignment: .leading)
+        .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .combine)
     }
 }
 

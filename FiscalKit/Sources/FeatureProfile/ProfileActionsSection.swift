@@ -8,7 +8,7 @@ struct ProfileActionsSection: View {
 
     var body: some View {
         if !profile.actionItems.isEmpty {
-            ProfileBlock(
+            ContentBlock(
                 title: Text("What They're Doing"),
                 footer: [
                     profile.actionsRuleText, profile.actionsTotalText, profile.actionsSourceText,

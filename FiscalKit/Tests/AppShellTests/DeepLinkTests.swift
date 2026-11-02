@@ -10,7 +10,7 @@ struct DeepLinkTests {
         ("fiscal://today", DeepLink.section(.feed)),
         ("fiscal://region", DeepLink.section(.region)),
         ("fiscal://mine", DeepLink.section(.region)),
-        ("fiscal://following", DeepLink.section(.region)),
+        ("fiscal://following", DeepLink.route(.following, in: .feed)),
         ("fiscal://votes", DeepLink.section(.votes)),
         ("fiscal://money", DeepLink.section(.money)),
         ("fiscal://search", DeepLink.section(.search)),

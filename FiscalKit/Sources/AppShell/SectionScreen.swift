@@ -25,7 +25,7 @@ struct SectionScreen: View {
                 FeedScreen { race in RaceHeroCard(race: race, opensDetail: true) }
             }
         case .region:
-            ModelHost(RegionModel(service: data, follows: session.repositories.follows)) {
+            ModelHost(RegionModel(service: data)) {
                 RegionScreen()
             }
         case .votes:

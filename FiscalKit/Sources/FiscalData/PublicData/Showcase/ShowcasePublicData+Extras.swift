@@ -55,7 +55,13 @@
             if let real: Agenda = real(PublicDataPath.agenda),
                 real.houses.contains(where: { !$0.items.isEmpty })
             {
-                return Agenda(date: CalendarDay(now, calendar: calendar), houses: real.houses)
+                let next = ShowcaseVotes.nextSession(now: now)
+                return Agenda(
+                    date: CalendarDay(next, calendar: calendar),
+                    houses: real.houses.map {
+                        Agenda.HouseDay(
+                            house: $0.house, inSession: false, nextSession: next, items: $0.items)
+                    })
             }
             return ShowcaseVotes.agenda(now: now, empty: isEmpty)
         }

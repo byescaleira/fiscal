@@ -85,8 +85,9 @@ public final class VoteDetailModel {
 
     public init(
         id: String, service: (any PublicDataService)?, support: (any SupportRepository)? = nil,
-        homeUF: String? = nil
+        homeUF: String? = nil, party: String? = nil
     ) {
+        self.party = party
         self.id = id
         self.service = service
         supportRepository = support

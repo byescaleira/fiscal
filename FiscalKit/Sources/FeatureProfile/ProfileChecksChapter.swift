@@ -8,7 +8,7 @@ struct ProfileChecksChapter: View {
 
     var body: some View {
         if !profile.checkItems.isEmpty {
-            ProfileBlock(footer: [profile.checksSourceText]) {
+            ContentBlock(footer: [profile.checksSourceText]) {
                 IconRow(
                     "Only what the agency chose to check",
                     detail:
@@ -31,6 +31,8 @@ private struct ProfileCheckRow: View {
             AdaptiveRow(spacing: .spaceS) {
                 if let verdict = check.verdict {
                     Chip(verdict, color: .secondary)
+                        .lineLimit(1)
+                        .fixedSize()
                 }
                 Text(verbatim: SourceFootnote.day(check.date))
                     .font(.caption)

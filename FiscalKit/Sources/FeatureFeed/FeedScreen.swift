@@ -154,6 +154,7 @@ private struct FeedList: View {
                 FeedMessage(symbol: notice.symbol, text: notice.text)
             }
             if feed.followsNobody { FeedFollowInvite() }
+            if feed.filter == .following, !feed.followed.isEmpty { FeedFollowingRow() }
             if !feed.missing.isEmpty {
                 FeedMessage(symbol: "wifi.slash", text: feed.missingText)
             }
@@ -205,8 +206,28 @@ private struct FeedMessage: View {
     }
 }
 
+private struct FeedFollowingRow: View {
+    @Environment(FeedModel.self) private var feed
+
+    var body: some View {
+        RouteLink(.following) {
+            HStack(spacing: .spaceS) {
+                Label("Who You Follow", systemImage: "person.2")
+                    .font(.rowTitle)
+                Spacer(minLength: .spaceS)
+                Text(verbatim: PublicFormat.number(feed.followed.count))
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .monospacedDigit()
+            }
+        }
+        .padding(.spaceL)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
+    }
+}
+
 private struct FeedFollowInvite: View {
-    @Environment(FiscalNavigation.self) private var navigation: FiscalNavigation?
     @Environment(\.appTint) private var tint
 
     var body: some View {
@@ -218,11 +239,11 @@ private struct FeedFollowInvite: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
-            Button("See Who Represents You", systemImage: "map") {
-                navigation?.selectedSection = .region
+            RouteLink(.following, showsChevron: false) {
+                Label("See Who Represents You", systemImage: "person.2")
             }
             .font(.subheadline.weight(.semibold))
-            .tint(tint)
+            .foregroundStyle(tint)
         }
         .padding(.spaceL)
         .frame(maxWidth: .infinity, alignment: .leading)

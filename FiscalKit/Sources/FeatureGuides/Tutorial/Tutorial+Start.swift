@@ -14,7 +14,7 @@ extension Guide {
                 message: "Each tab keeps its own place, so you can switch without losing your way.",
                 steps: [
                     GuideStep(
-                        "newspaper", color: .retroOrange, title: "Feed",
+                        "person.2", color: .retroOrange, title: "Feed",
                         detail: "What happened, by date, with the live count on top."),
                     GuideStep(
                         "checkmark.square", color: .retroDenim, title: "Votes",
@@ -23,10 +23,10 @@ extension Guide {
                         "brazilianrealsign", color: .retroOlive, title: "Money",
                         detail: "Where public money goes."),
                     GuideStep(
-                        "map", color: .retroTeal, title: "Region",
-                        detail: "Who you follow and who represents your place."),
+                        "mappin.and.ellipse", color: .retroTeal, title: "Region",
+                        detail: "Who represents your place, from the city to the president."),
                     GuideStep(
-                        "magnifyingglass", color: .retroPlum, title: "Search",
+                        "binoculars", color: .retroPlum, title: "Search",
                         detail: "Find anyone, compare and follow elections."),
                 ]),
         ]

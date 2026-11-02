@@ -84,7 +84,7 @@ struct RegionRosterTests {
     @Test func choosingAPlaceCanStartWithTheSearch() throws {
         let defaults = try #require(UserDefaults(suiteName: "mine-\(UUID().uuidString)"))
         let model = RegionModel(
-            service: ShowcasePublicData(scenario: .normal, now: .now), follows: nil,
+            service: ShowcasePublicData(scenario: .normal, now: .now),
             memory: RegionPlaceMemory(defaults: defaults))
         model.choosePlace(searching: true)
         #expect(model.isChoosingPlace)

@@ -8,7 +8,7 @@ struct ProfileVotesSection: View {
 
     var body: some View {
         if !profile.recentVotes.isEmpty {
-            ProfileBlock(
+            ContentBlock(
                 title: Text("Recent Votes"),
                 footer: [profile.votesTotalText, profile.sourceText(for: ["votes"])]
             ) {
@@ -61,7 +61,7 @@ struct ProfileProposalsSection: View {
 
     var body: some View {
         if !profile.recentProposals.isEmpty {
-            ProfileBlock(
+            ContentBlock(
                 title: Text("Proposals"),
                 footer: [
                     profile.proposalsTotalText, profile.plainSummaryNote,
@@ -93,6 +93,8 @@ private struct ProfileProposalRow: View {
                         .foregroundStyle(.secondary)
                     if let status = profile.proposalStatus(proposal) {
                         Chip(status, color: .secondary)
+                            .lineLimit(1)
+                            .fixedSize()
                     }
                     ForEach(proposal.themes) { theme in
                         HStack(spacing: .space2XS) {
@@ -120,7 +122,7 @@ struct ProfileSpeechesSection: View {
 
     var body: some View {
         if !profile.recentSpeeches.isEmpty {
-            ProfileBlock(
+            ContentBlock(
                 title: Text("Speeches"),
                 footer: [profile.speechesTotalText, profile.sourceText(for: ["speeches"])]
             ) {
@@ -146,18 +148,6 @@ extension View {
         overlay(alignment: .bottomTrailing) {
             ShareItemButton(route, label: label)
                 .padding(.trailing, .spaceXL)
-        }
-    }
-}
-
-struct ProfileFooter: View {
-    let lines: [String?]
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: .space2XS) {
-            ForEach(Array(lines.compactMap(\.self).enumerated()), id: \.offset) { _, line in
-                Text(verbatim: line)
-            }
         }
     }
 }

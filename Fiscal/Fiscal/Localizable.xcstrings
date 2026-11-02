@@ -336,6 +336,7 @@
       }
     },
     "%@ other" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -346,6 +347,7 @@
       }
     },
     "%@ other votes" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -770,6 +772,28 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "Nenhuma abstenção"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld agenda items" : {
+      "localizations" : {
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld item na pauta"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld itens na pauta"
                 }
               }
             }
@@ -1813,6 +1837,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Contra o partido"
+          }
+        }
+      }
+    },
+    "Agenda" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pauta"
           }
         }
       }
@@ -3299,6 +3333,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Escolha pessoas e causas para ver votos e propostas por data. Fica só neste aparelho e não muda mais nada no app."
+          }
+        }
+      }
+    },
+    "Choose your place" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha seu lugar"
           }
         }
       }
@@ -6712,7 +6756,6 @@
       }
     },
     "In session" : {
-      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -8120,6 +8163,16 @@
         }
       }
     },
+    "No agenda right now" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem pauta agora"
+          }
+        }
+      }
+    },
     "No artworks yet" : {
       "localizations" : {
         "pt-BR" : {
@@ -9403,6 +9456,7 @@
       }
     },
     "Opens the Region tab in Fiscal, with who you follow." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -9478,6 +9532,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abre o campo de busca"
+          }
+        }
+      }
+    },
+    "Opens who you follow in Fiscal." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre quem você segue no Fiscal."
           }
         }
       }
@@ -11856,6 +11920,28 @@
         }
       }
     },
+    "See the %lld votes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ver o %lld voto"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ver os %lld votos"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "See the Official Source" : {
       "localizations" : {
         "pt-BR" : {
@@ -13180,6 +13266,16 @@
         }
       }
     },
+    "Suggestions come from who represents your state or city." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As sugestões vêm de quem representa seu estado ou sua cidade."
+          }
+        }
+      }
+    },
     "Summary in plain words, rewritten automatically from the official text by fixed rules; the official text is the source." : {
       "localizations" : {
         "pt-BR" : {
@@ -13577,6 +13673,16 @@
         }
       }
     },
+    "The agenda shows up here when the houses publish the next session." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A pauta aparece aqui quando as casas publicam a próxima sessão."
+          }
+        }
+      }
+    },
     "The allowance by state isn't published yet, so this block shows Brazil and doesn't follow the state picked." : {
       "localizations" : {
         "pt-BR" : {
@@ -13754,6 +13860,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "A média da casa é de %@."
+          }
+        }
+      }
+    },
+    "The house didn't publish who voted how." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A casa não publicou quem votou como."
           }
         }
       }
@@ -15422,6 +15538,16 @@
         }
       }
     },
+    "Voice vote: the house recorded the result, without each person's vote" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votação simbólica: a casa registrou o resultado, sem o voto de cada pessoa"
+          }
+        }
+      }
+    },
     "Vote" : {
       "localizations" : {
         "pt-BR" : {
@@ -16364,6 +16490,16 @@
         }
       }
     },
+    "Who Voted" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem votou"
+          }
+        }
+      }
+    },
     "Who You Follow" : {
       "localizations" : {
         "pt-BR" : {
@@ -16435,6 +16571,16 @@
         }
       }
     },
+    "Who represents your place, from the city to the president." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem representa seu lugar, da cidade à Presidência."
+          }
+        }
+      }
+    },
     "Who represents your place. Tap Follow next to the name." : {
       "localizations" : {
         "pt-BR" : {
@@ -16497,6 +16643,7 @@
       }
     },
     "Who you follow and who represents your place." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -16744,6 +16891,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ontem"
+          }
+        }
+      }
+    },
+    "You don't follow anyone yet. Who you follow shows up in the Feed, by date." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você ainda não segue ninguém. Quem você segue aparece no Feed, por data."
           }
         }
       }

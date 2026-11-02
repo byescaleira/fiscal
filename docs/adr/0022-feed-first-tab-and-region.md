@@ -4,6 +4,7 @@
 - **Data:** 2026-11-01
 - **Mudança:** [FSC-013](../../spdd/prompt/FSC-013-202611012300-[Feat]-feed-first-tab-and-region.md)
 - **Corrige:** o [ADR 0014](0014-settings-in-today-toolbar.md) e o brief, que tinham Hoje como primeira aba
+- **Emendado por:** [ADR 0024](0024-reveal-bar-following-and-ballots-screens.md), que tira quem a pessoa segue e as sugestões da aba Região (decisão 6)
 
 ## Contexto
 

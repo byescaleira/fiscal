@@ -17,8 +17,7 @@ extension VotesModel {
         {
             return String(appLocalized: "Yesterday")
         }
-        return date.formatted(Date.FormatStyle(locale: .app).weekday(.wide)).capitalized(
-            with: .app)
+        return Self.sentenceCased(date.formatted(Date.FormatStyle(locale: .app).weekday(.wide)))
     }
 
     public func dayMonth(_ day: Day) -> String {
@@ -38,19 +37,19 @@ extension VotesModel {
 
     public func summary(_ vote: VoteSummary) -> String { vote.plainSummary ?? vote.summary }
 
-    public func yesText(_ vote: VoteSummary) -> String { PublicFormat.number(vote.yes) }
+    public func compactScore(_ vote: VoteSummary) -> String? {
+        guard vote.yes != nil || vote.no != nil else { return nil }
+        return "\(PublicFormat.number(vote.yes)) × \(PublicFormat.number(vote.no))"
+    }
 
-    public func noText(_ vote: VoteSummary) -> String { PublicFormat.number(vote.no) }
-
-    public func othersText(_ vote: VoteSummary) -> String {
-        String(appLocalized: "\(PublicFormat.number(vote.others)) other")
+    public func othersText(_ vote: VoteSummary) -> String? {
+        vote.others.map { String(appLocalized: "\($0) other votes") }
     }
 
     public func accessibility(_ vote: VoteSummary) -> String {
         [
             vote.heading, summary(vote), VoteOutcome(vote).title,
             VoteTally.label(vote.tally), vote.house.title, vote.time,
-            SameDayVotes.mark(vote, today: CalendarDay(now())),
         ]
         .compactMap(\.self).filter { !$0.isEmpty }.joined(separator: ". ")
     }
@@ -76,8 +75,8 @@ extension VotesModel {
     }
 
     public var agendaWeekday: String {
-        (agenda?.date.date() ?? now()).formatted(Date.FormatStyle(locale: .app).weekday(.wide))
-            .capitalized(with: .app)
+        Self.sentenceCased(
+            (agenda?.date.date() ?? now()).formatted(Date.FormatStyle(locale: .app).weekday(.wide)))
     }
 
     public func agendaStatus(_ day: Agenda.HouseDay) -> String {
@@ -91,6 +90,24 @@ extension VotesModel {
         return String(appLocalized: "Next session: \(text)")
     }
 
+    public func agendaLineTitle(_ line: AgendaLine) -> String {
+        switch line.status {
+        case .inSession:
+            return String(appLocalized: "In session")
+        case .next(let date):
+            let text = date.formatted(
+                Date.FormatStyle(locale: .app).weekday(.abbreviated).day(.twoDigits)
+                    .month(.twoDigits))
+            return String(appLocalized: "Next session: \(text)")
+        }
+    }
+
+    public func agendaLineDetail(_ line: AgendaLine) -> String {
+        let houses = line.houses.map(Self.shortHouse).formatted(.list(type: .and).locale(.app))
+        guard line.itemCount > 0 else { return houses }
+        return "\(houses) · \(String(appLocalized: "\(line.itemCount) agenda items"))"
+    }
+
     public var agendaSource: String {
         String(appLocalized: "Source: Chamber and Senate agendas · as published today")
     }
@@ -102,6 +119,10 @@ extension VotesModel {
     public var emptyFilterText: String {
         guard let theme else { return String(appLocalized: "No vote in this house lately.") }
         return String(appLocalized: "No recent vote about \(theme.title) with these filters.")
+    }
+
+    private static func sentenceCased(_ text: String) -> String {
+        text.prefix(1).uppercased(with: .app) + text.dropFirst()
     }
 
     static func shortHouse(_ house: House) -> String {

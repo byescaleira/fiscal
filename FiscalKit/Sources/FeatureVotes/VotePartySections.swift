@@ -7,7 +7,15 @@ struct VoteGuidanceSection: View {
     @Environment(VoteDetailModel.self) private var vote
 
     var body: some View {
-        Section {
+        ContentBlock(
+            title: Text("Party Guidance"),
+            footer: [
+                String(
+                    appLocalized:
+                        "What each party's leader asked the bench to vote. Parties in alphabetical order."
+                )
+            ]
+        ) {
             if vote.guidanceGroups.isEmpty {
                 Label("No party guidance was published for this vote.", systemImage: "minus")
                     .foregroundStyle(.secondary)
@@ -16,17 +24,12 @@ struct VoteGuidanceSection: View {
                     VStack(alignment: .leading, spacing: .spaceS) {
                         BallotChip(group.guidance, choice: group.choice)
                         FlowLayout(spacing: .spaceXS) {
-                            ForEach(group.parties, id: \.self) { PartyMark($0) }
+                            ForEach(group.parties, id: \.self) { PartyMark($0, wraps: true) }
                         }
                     }
-                    .padding(.vertical, .space2XS)
                     .accessibilityElement(children: .combine)
                 }
             }
-        } header: {
-            Text("Party Guidance").sectionTitle()
-        } footer: {
-            Text("What each party's leader asked the bench to vote. Parties in alphabetical order.")
         }
     }
 }
@@ -35,22 +38,22 @@ struct VotePartySection: View {
     @Environment(VoteDetailModel.self) private var vote
 
     var body: some View {
-        if !vote.partyRows.isEmpty {
-            Section {
+        VStack(alignment: .leading, spacing: .spaceS) {
+            ContentBlock(title: Text("By Party")) {
                 ForEach(Array(vote.partyRows.enumerated()), id: \.element.id) { index, row in
                     PartyTallyRow(row: row, index: index)
                 }
-            } header: {
-                Text("By Party").sectionTitle()
-            } footer: {
-                VStack(alignment: .leading, spacing: .space2XS) {
-                    PartyLegend()
-                    Text(
-                        "Ordered by the size of each bench in this vote. Tap a party to see its names."
-                    )
-                    Text(verbatim: vote.sourceText)
-                }
             }
+            VStack(alignment: .leading, spacing: .space2XS) {
+                PartyLegend()
+                Text(
+                    "Ordered by the size of each bench in this vote. Tap a party to see its names."
+                )
+                Text(verbatim: vote.sourceText)
+            }
+            .font(.footnote)
+            .foregroundStyle(.secondary)
+            .padding(.horizontal, .spaceL)
         }
     }
 }
@@ -58,13 +61,19 @@ struct VotePartySection: View {
 private struct PartyTallyRow: View {
     @Environment(VoteDetailModel.self) private var vote
     @Environment(\.appTint) private var tint
+    @Environment(\.open) private var open
+    @Environment(\.navigationSection) private var section
     let row: VoteDetailModel.PartyRow
     let index: Int
 
     var body: some View {
         let isSelected = vote.party == row.party
         Button {
-            vote.select(party: row.party)
+            #if os(macOS)
+                vote.select(party: row.party)
+            #else
+                if let route = vote.ballotsRoute(party: row.party) { open(route, in: section) }
+            #endif
         } label: {
             VStack(alignment: .leading, spacing: .spaceS) {
                 AdaptiveRow(spacing: .spaceS) {
@@ -80,7 +89,6 @@ private struct PartyTallyRow: View {
                 TallyChart(
                     segments: segments, height: .barHeight, fill: widthShare, order: index)
             }
-            .padding(.vertical, .space2XS)
             .contentShape(.rect)
         }
         .buttonStyle(.plain)

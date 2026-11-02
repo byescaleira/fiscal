@@ -18,44 +18,20 @@ struct RegionModelTests {
     }
 
     private func makeModel(
-        _ scenario: PublicDataScenario = .normal, code: String? = nil,
-        follows: (any FollowRepository)? = nil
+        _ scenario: PublicDataScenario = .normal, code: String? = nil
     ) throws -> RegionModel {
         RegionModel(
-            service: ShowcasePublicData(scenario: scenario, now: now), follows: follows,
+            service: ShowcasePublicData(scenario: scenario, now: now),
             memory: try makeMemory(code))
     }
 
     @Test func startsEmptyAndHonest() async throws {
-        let follows = try FiscalDatabase.open(inMemory: true).repositories.follows
-        let model = try makeModel(follows: follows)
-        #expect(!model.hasLoaded)
+        let model = try makeModel()
         await model.load()
-        #expect(model.hasLoaded)
-        #expect(model.isEmpty)
         #expect(!model.hasPlace)
         #expect(model.phase == .idle)
         #expect(model.groups.isEmpty)
         #expect(model.shareRoute == nil)
-    }
-
-    @Test func listsWhoTheProfileFollowsInAlphabeticalOrder() async throws {
-        let follows = try FiscalDatabase.open(inMemory: true).repositories.follows
-        try await follows.follow(
-            PersonCard(
-                slug: "lula", name: "Lula", office: .president, uf: "br", party: "PT", photo: nil,
-                status: .inOffice), at: .now)
-        try await follows.follow(
-            PersonCard(
-                slug: "damares-alves", name: "Damares Alves", office: .senator, uf: "df",
-                party: "REPUBLICANOS", photo: nil, status: .inOffice), at: .now)
-        let model = try makeModel(follows: follows)
-        await model.load()
-        #expect(model.followed.map(\.card.slug) == ["damares-alves", "lula"])
-        let president = try #require(model.followed.last)
-        #expect(!model.detail(for: president).contains("BR"))
-        #expect(
-            model.detail(for: try #require(model.followed.first)).hasSuffix("REPUBLICANOS · DF"))
     }
 
     @Test func choosingAStateGroupsItsRepresentativesAlphabetically() async throws {
@@ -107,13 +83,13 @@ struct RegionModelTests {
     private func makeRosterModel(code: String? = nil) throws -> RegionModel {
         RegionModel(
             service: ShowcasePublicData(scenario: .normal, now: now, roster: Self.roster),
-            follows: nil, memory: try makeMemory(code))
+            memory: try makeMemory(code))
     }
 
     @Test func aCityShowsItsCityHallAndCouncilBeforeTheState() async throws {
         let memory = try makeMemory()
         let service = ShowcasePublicData(scenario: .normal, now: now)
-        let model = RegionModel(service: service, follows: nil, memory: memory)
+        let model = RegionModel(service: service, memory: memory)
         await model.choose(Place(code: "1200401", name: "Rio Branco", uf: "ac"))
         #expect(memory.code == "1200401")
         #expect(model.place?.isState == false)
@@ -134,7 +110,7 @@ struct RegionModelTests {
         #expect(model.cityNote == nil)
         #expect(model.representativeCount == 23 + 2)
         #expect(model.sourceText != nil)
-        let again = RegionModel(service: service, follows: nil, memory: memory)
+        let again = RegionModel(service: service, memory: memory)
         await again.load()
         #expect(again.place?.name == "Rio Branco")
         #expect(again.groups.first?.people.first?.name == "Tião Bocalom")
@@ -217,19 +193,6 @@ struct RegionModelTests {
         #expect(empty.cityRepresentatives == nil)
     }
 
-    @Test func offlineKeepsWhoYouFollow() async throws {
-        let follows = try FiscalDatabase.open(inMemory: true).repositories.follows
-        try await follows.follow(
-            PersonCard(
-                slug: "lula", name: "Lula", office: .president, uf: "br", party: "PT", photo: nil,
-                status: .inOffice), at: .now)
-        let model = try makeModel(.offline, code: "sp", follows: follows)
-        await model.load()
-        #expect(model.phase == .failed(.offline))
-        #expect(model.followed.count == 1)
-        #expect(model.groups.isEmpty)
-    }
-
     @Test func anEmptyLoadSaysNothingIsPublished() async throws {
         let model = try makeModel(.empty, code: "sp")
         await model.load()
@@ -250,7 +213,7 @@ struct RegionModelTests {
     @Test func forgettingThePlaceClearsTheDevice() async throws {
         let memory = try makeMemory("sp")
         let model = RegionModel(
-            service: ShowcasePublicData(scenario: .normal, now: now), follows: nil, memory: memory)
+            service: ShowcasePublicData(scenario: .normal, now: now), memory: memory)
         await model.load()
         #expect(!model.groups.isEmpty)
         model.forgetPlace()

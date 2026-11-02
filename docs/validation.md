@@ -69,6 +69,14 @@ Build: `____` · Data: `__/__/____`
 - [ ] Modo avião e reabrir: o Feed, a cidade de casa, os seguidos e os apoiados abrem do pacote; o resto mostra "Isso não está salvo para uso offline."
 - [ ] `BGAppRefresh`: com o app em segundo plano, forçar a tarefa `com.byescaleira.fiscal.offline-refresh` pelo depurador (`e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.byescaleira.fiscal.offline-refresh"]`) e conferir a data nova do pacote.
 
+### Barra ao rolar e telas novas
+
+- [ ] Votação, corrida, notas e político: ao rolar, a barra aparece sem o conteúdo pular, e some ao voltar ao topo; o puxar para atualizar continua funcionando.
+- [ ] Com Reduzir movimento, a barra aparece sem deslizar, e os atalhos saltam sem animar.
+- [ ] Votações em dia com sessão e em dia sem sessão: a linha diz "Em sessão" ou a próxima data, e a pauta de data passada não aparece.
+- [ ] Filtro Seguindo, widget "Quem eu sigo" e Siri abrem a tela de quem você segue; seguir e deixar de seguir nela mudam o Feed.
+- [ ] Mac, iPad e Duo aberto: a coluna fica legível, e o que se abre vai ao outro lado.
+
 ### Meu apoio e privacidade
 
 - [ ] A instalação nova abre direto, sem setup e sem pergunta política.

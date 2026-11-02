@@ -43,56 +43,6 @@ struct ProfileChapterView: View {
     }
 }
 
-struct ProfileBlock<Content: View, Accessory: View>: View {
-    private let title: Text?
-    private let footer: [String?]
-    private let accessory: Accessory
-    private let content: Content
-
-    init(
-        title: Text? = nil, footer: [String?] = [], @ViewBuilder content: () -> Content,
-        @ViewBuilder accessory: () -> Accessory = { EmptyView() }
-    ) {
-        self.title = title
-        self.footer = footer
-        self.content = content()
-        self.accessory = accessory()
-    }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: .spaceS) {
-            if let title {
-                AdaptiveStack(spacing: .spaceS) {
-                    title
-                        .sectionTitle()
-                        .fixedSize(horizontal: false, vertical: true)
-                        .accessibilityAddTraits(.isHeader)
-                    Spacer(minLength: 0)
-                    accessory
-                }
-            }
-            VStack(alignment: .leading, spacing: 0) {
-                Group(subviews: content) { rows in
-                    ForEach(Array(rows.enumerated()), id: \.element.id) { index, row in
-                        if index > 0 { Divider() }
-                        row.padding(.vertical, .spaceM)
-                    }
-                }
-            }
-            .padding(.horizontal, .spaceL)
-            .padding(.vertical, .spaceXS)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
-            if footer.contains(where: { $0 != nil }) {
-                ProfileFooter(lines: footer)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .padding(.horizontal, .spaceL)
-            }
-        }
-    }
-}
-
 struct ProfileFactGrid: View {
     @Environment(ProfileModel.self) private var profile
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -179,7 +129,7 @@ struct ProfileThemesSection: View {
 
     var body: some View {
         if !profile.themeLines.isEmpty {
-            ProfileBlock(title: Text("Themes"), footer: [profile.themeFootnote]) {
+            ContentBlock(title: Text("Themes"), footer: [profile.themeFootnote]) {
                 ForEach(profile.themeLines) { line in
                     HStack(spacing: .spaceM) {
                         Image(systemName: line.theme.symbol)
@@ -211,7 +161,7 @@ struct ProfileSalarySection: View {
 
     var body: some View {
         if !profile.salaryLines.isEmpty {
-            ProfileBlock(title: Text("Salary")) {
+            ContentBlock(title: Text("Salary")) {
                 ForEach(profile.salaryLines) { line in
                     ProfileInfoRow(title: line.title, value: line.value)
                 }

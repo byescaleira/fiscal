@@ -3,7 +3,7 @@
 As análises, os canvases e as revisões do Fiscal no método SPDD (open-spdd). O processo está na skill `sdd`, `references/process.md`, e, no app Apple, na skill `byescaleira-sdd`, `references/process.md`. A troca do ciclo antigo está no [ADR 0019](../docs/adr/0019-spdd-process.md). `docs/specs/`, `docs/changes/` e `docs/decisions.md` são histórico congelado.
 
 - **Código do projeto:** `FSC`
-- **Próxima sequência:** `FSC-015`
+- **Próxima sequência:** `FSC-016`
 
 ## Pastas
 
@@ -34,5 +34,6 @@ No shell, ponha esses caminhos entre aspas: o zsh trata `[...]` como padrão de 
 | `FSC-012` | [Fim da Lente e a página "Meu apoio"](prompt/FSC-012-202611012040-[Feat]-end-of-lens-my-support.md) | entregue | `feature/end-of-lens` | [#10](https://github.com/byescaleira/fiscal/pull/10) |
 | `FSC-013` | [Feed como primeira aba e a aba Região](prompt/FSC-013-202611012300-[Feat]-feed-first-tab-and-region.md) | entregue | `feature/feed` | [#11](https://github.com/byescaleira/fiscal/pull/11) |
 | `FSC-014` | [Nova página do político e compartilhar um item](prompt/FSC-014-202611020300-[Feat]-politician-page-and-share-an-item.md) | entregue | `feature/politician-page` | [#12](https://github.com/byescaleira/fiscal/pull/12) |
+| `FSC-015` | [Barra do topo, votações, região e ícones das abas](prompt/FSC-015-202611021500-[Feat]-sticky-bar-votes-region-tabs.md) | entregue | `feature/sticky-bar-and-screens` | [#13](https://github.com/byescaleira/fiscal/pull/13) |
 
 As capacidades que ainda vivem em guias de recurso (atualização obrigatória em [force-update.md](../docs/force-update.md), site e Fiscal na Web em [web.md](../docs/web.md), admin e flags em [admin.md](../docs/admin.md)) ganham um canvas `[Codify]` na primeira mudança da área.

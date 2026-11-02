@@ -13,44 +13,92 @@ public struct VoteDetailScreen: View {
         PublicDataContent(
             phase: vote.phase, isEmpty: vote.isEmpty, retry: { await vote.load() }
         ) {
-            Group {
-                #if os(macOS)
-                    VSplitView {
-                        VoteDetailOverview()
-                        VoteBallotsTable()
-                    }
-                #else
+            #if os(macOS)
+                VSplitView {
                     VoteDetailOverview()
-                #endif
-            }
-            .searchable(text: $vote.searchText, prompt: Text("Name, party or state"))
+                    VoteBallotsTable()
+                }
+                .searchable(text: $vote.searchText, prompt: Text("Name, party or state"))
+            #else
+                VoteDetailOverview()
+            #endif
         } empty: {
             VoteDetailEmptyState()
         }
         .navigationTitle(vote.title)
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar(removing: .title)
         #endif
         .toolbar { VoteDetailToolbar() }
-        .refreshable { await vote.load() }
         .task { await vote.load() }
     }
 }
 
 private struct VoteDetailOverview: View {
+    @Environment(VoteDetailModel.self) private var vote
+    @State private var current: VoteChapter?
+
     var body: some View {
-        AdaptiveList {
-            VoteHeroSection()
-            VoteExplainSection()
-            VoteSummarySection()
-            VoteSameDaySection()
-            VoteSupportSection()
-            VoteRepresentativesSection()
-            VoteGuidanceSection()
-            VotePartySection()
-            #if !os(macOS)
-                VoteBallotsSection()
-            #endif
+        RevealPage(
+            chapters: vote.chapters,
+            onChapter: { current = $0 },
+            refresh: { await vote.load() },
+            content: { _ in
+                VoteHeroSection().revealHero()
+                VoteSummarySection().revealChapter(VoteChapter.change)
+                VoteExplainSection()
+                VoteSameDaySection()
+                if vote.hasNames, vote.hasPeopleToFollow {
+                    VStack(alignment: .leading, spacing: .space2XL) {
+                        VoteSupportSection()
+                        VoteRepresentativesSection()
+                    }
+                    .revealChapter(VoteChapter.ballots)
+                }
+                if vote.showsParties {
+                    VStack(alignment: .leading, spacing: .space2XL) {
+                        VotePartySection()
+                        VoteGuidanceSection()
+                    }
+                    .revealChapter(VoteChapter.parties)
+                } else if vote.hasScore {
+                    VoteGuidanceSection()
+                }
+                #if !os(macOS)
+                    VoteBallotsLink(
+                        chapter: vote.hasPeopleToFollow ? nil : VoteChapter.ballots)
+                #endif
+            },
+            bar: { jump, _ in
+                VoteStickyHeader(current: current, select: jump)
+            })
+    }
+}
+
+private struct VoteBallotsLink: View {
+    @Environment(VoteDetailModel.self) private var vote
+    let chapter: VoteChapter?
+
+    var body: some View {
+        if let route = vote.ballotsRoute {
+            ContentBlock {
+                RouteLink(route) {
+                    Label {
+                        Text(verbatim: vote.ballotsLinkTitle)
+                    } icon: {
+                        Image(systemName: "person.3")
+                    }
+                    .font(.rowTitle)
+                }
+            }
+            .revealChapter(chapter ?? VoteChapter.ballots, isActive: chapter != nil)
+        } else if let text = vote.noNamesText {
+            ContentBlock {
+                Text(verbatim: text)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
         }
     }
 }
@@ -74,12 +122,23 @@ private struct VoteDetailToolbar: ToolbarContent {
 private struct VoteSummarySection: View {
     @Environment(VoteDetailModel.self) private var vote
 
+    private var footer: [String?] {
+        [
+            vote.plainSummary == nil
+                ? nil
+                : String(
+                    appLocalized:
+                        "Summary in plain words, rewritten automatically from the official text by fixed rules; the official text is the source."
+                ),
+            vote.kindText,
+        ]
+    }
+
     var body: some View {
-        Section {
+        ContentBlock(title: Text("What Changes"), footer: footer) {
             if let plain = vote.plainSummary {
                 Text(verbatim: plain)
                     .font(.emphasis(.title3, weight: .semibold))
-                    .padding(.vertical, .space2XS)
                 DisclosureGroup {
                     Text(verbatim: vote.officialSummary)
                         .font(.callout)
@@ -94,20 +153,6 @@ private struct VoteSummarySection: View {
             }
             if !vote.themes.isEmpty {
                 VoteThemes()
-            }
-        } header: {
-            Text("What Changes").sectionTitle()
-                .textCase(nil)
-        } footer: {
-            VStack(alignment: .leading, spacing: .space2XS) {
-                if vote.plainSummary != nil {
-                    Text(
-                        "Summary in plain words, rewritten automatically from the official text by fixed rules; the official text is the source."
-                    )
-                }
-                if let kind = vote.kindText {
-                    Text(verbatim: kind)
-                }
             }
         }
     }
@@ -125,6 +170,8 @@ private struct VoteThemes: View {
                     Text(verbatim: theme.title)
                 }
                 .font(.chipLabel)
+                .lineLimit(1)
+                .fixedSize()
                 .foregroundStyle(tint)
                 .padding(.horizontal, .spaceM)
                 .padding(.vertical, .spaceXS)
@@ -132,11 +179,10 @@ private struct VoteThemes: View {
                 .accessibilityElement(children: .combine)
             }
         }
-        .padding(.vertical, .space2XS)
     }
 }
 
-private struct VoteDetailEmptyState: View {
+struct VoteDetailEmptyState: View {
     var body: some View {
         EmptyStateView(
             title: "Vote not loaded",

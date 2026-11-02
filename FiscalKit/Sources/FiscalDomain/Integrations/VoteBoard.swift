@@ -121,6 +121,7 @@ public enum IntegrationText {
 public enum IntegrationLink {
     public static let feed = URL(string: "fiscal://feed")
     public static let region = URL(string: "fiscal://region")
+    public static let following = URL(string: "fiscal://following")
     public static let votes = URL(string: "fiscal://votes")
     public static let races = URL(string: "fiscal://races")
 

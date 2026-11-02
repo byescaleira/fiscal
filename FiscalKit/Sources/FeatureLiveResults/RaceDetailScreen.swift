@@ -26,8 +26,8 @@ public struct RaceDetailScreen: View {
         .navigationTitle(Text(verbatim: results.detailTitle(for: raceID)))
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar(removing: .title)
         #endif
-        .refreshable { await results.refresh() }
         .task { await results.loadDetail(id: raceID) }
     }
 }
@@ -53,9 +53,12 @@ private struct RaceDetailContent: View {
     let summary: RaceSummary
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: .spaceXL) {
-                RaceHeroCard(race: summary.race, opensDetail: false)
+        RevealPage(
+            chapters: [String](),
+            maxWidth: .readableColumn * 2,
+            refresh: { await results.refresh() },
+            content: { _ in
+                RaceHeroCard(race: summary.race, opensDetail: false).revealHero()
                 CardGrid(minimumWidth: .cardColumn, spacing: .spaceXL) {
                     RaceCandidatesSection(summary: summary)
                     RaceBallotsSection(summary: summary)
@@ -67,12 +70,39 @@ private struct RaceDetailContent: View {
                         .foregroundStyle(.secondary)
                         .padding(.horizontal, .spaceXS)
                 }
+            },
+            bar: { _, _ in
+                RaceStickyHeader(summary: summary)
+            })
+    }
+}
+
+private struct RaceStickyHeader: View {
+    @Environment(LiveResultsModel.self) private var results
+    let summary: RaceSummary
+
+    var body: some View {
+        AdaptiveRow(spacing: .spaceM) {
+            Text(verbatim: results.detailTitle(for: summary.race.id))
+                .font(.headline)
+                .lineLimit(1)
+            Spacer(minLength: .spaceS)
+            HStack(alignment: .firstTextBaseline, spacing: .space2XS) {
+                Text(verbatim: summary.countedText)
+                    .font(.amountRow)
+                    .monospacedDigit()
+                Text(summary.race.final ? "TSE" : "counted")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
-            .padding(.horizontal, .spaceL)
-            .padding(.bottom, .space2XL)
-            .frame(maxWidth: .readableColumn * 2)
-            .frame(maxWidth: .infinity)
+            .lineLimit(1)
+            .fixedSize()
         }
+        .padding(.horizontal, .spaceL)
+        .padding(.vertical, .spaceS)
+        .frame(maxWidth: .readableColumn * 2, alignment: .leading)
+        .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .combine)
     }
 }
 

@@ -36,6 +36,20 @@ struct RouteScreen: View {
             ) {
                 VoteDetailScreen()
             }
+        case .voteBallots(let id, let party):
+            ModelHost(VoteDetailModel(id: id, service: data, party: party)) {
+                VoteBallotsScreen()
+            }
+        case .agenda:
+            ModelHost(VotesModel(service: data)) { VotesAgendaScreen() }
+        case .following:
+            ModelHost(
+                FollowingModel(
+                    service: data,
+                    follows: FiscalServices.shared.feedFollows(session.repositories.follows))
+            ) {
+                FollowingScreen()
+            }
         case .expenses(let slug, let year):
             ModelHost(ExpensesModel(slug: slug, year: year, service: data)) { ExpensesScreen() }
         case .compare(let slugs):

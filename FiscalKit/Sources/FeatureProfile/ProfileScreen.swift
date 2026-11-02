@@ -30,80 +30,24 @@ public struct ProfileScreen: View {
 
 private struct ProfilePage: View {
     @Environment(ProfileModel.self) private var profile
-    @ReducesMotion private var reduceMotion
-    @State private var position = ScrollPosition()
-    @State private var offset: CGFloat = 0
-    @State private var pageTop: CGFloat = 0
-    @State private var heroBottom = CGFloat.infinity
-    @State private var headerHeight = CGFloat.profileStickyHeaderEstimate
-    @State private var tops: [ProfileChapter: CGFloat] = [:]
-
-    private var showsHeader: Bool { heroBottom - pageTop < headerHeight }
-
-    private var line: CGFloat { pageTop + headerHeight + .spaceL }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: .space2XL) {
-                ProfileHero()
-                    .onGeometryChange(for: CGFloat.self) {
-                        $0.frame(in: .global).maxY
-                    } action: {
-                        heroBottom = $0
-                    }
+        RevealPage(
+            chapters: profile.chapters,
+            onChapter: { profile.moveCurrentChapter(to: $0) },
+            refresh: { await profile.load() },
+            content: { jump in
+                ProfileHero().revealHero()
                 ProfileFailureNotice()
                 ProfileSummary(select: jump)
                 ForEach(profile.chapters) { chapter in
-                    ProfileChapterView(chapter: chapter)
-                        .onGeometryChange(for: CGFloat.self) {
-                            $0.frame(in: .global).minY
-                        } action: {
-                            tops[chapter] = $0
-                        }
+                    ProfileChapterView(chapter: chapter).revealChapter(chapter)
                 }
-            }
-            .padding(.horizontal, .spaceL)
-            .padding(.bottom, .space2XL)
-            .frame(maxWidth: .readableColumn)
-            .frame(maxWidth: .infinity)
-        }
-        .refreshable { await profile.load() }
-        .scrollPosition($position)
-        .onScrollGeometryChange(for: CGFloat.self) {
-            $0.contentOffset.y + $0.contentInsets.top
-        } action: { _, value in
-            offset = value
-        }
-        .background(.plainBackground)
-        .onGeometryChange(for: CGFloat.self) {
-            $0.frame(in: .global).minY
-        } action: {
-            pageTop = $0
-        }
-        .overlay(alignment: .top) {
-            ProfileStickyHeader(select: jump)
-                .onGeometryChange(for: CGFloat.self) {
-                    $0.size.height
-                } action: {
-                    headerHeight = $0
-                }
-                .portraitsStill(!showsHeader)
-                .opacity(showsHeader ? 1 : 0)
-                .allowsHitTesting(showsHeader)
-                .accessibilityHidden(!showsHeader)
-                .animation(reduceMotion ? nil : .snappy, value: showsHeader)
-        }
-        .onChange(of: tops) { profile.moveCurrentChapter(tops: tops, line: line + .spaceHairline) }
-        .onChange(of: headerHeight) {
-            profile.moveCurrentChapter(tops: tops, line: line + .spaceHairline)
-        }
-    }
-
-    private func jump(to chapter: ProfileChapter) {
-        guard let top = tops[chapter] else { return }
-        withAnimation(reduceMotion ? nil : .snappy) {
-            position.scrollTo(y: offset + top - line)
-        }
+            },
+            bar: { jump, isShown in
+                ProfileStickyHeader(select: jump)
+                    .portraitsStill(!isShown)
+            })
     }
 }
 
@@ -131,7 +75,7 @@ private struct ProfileSummary: View {
 
     var body: some View {
         if !profile.summary.isEmpty {
-            ProfileBlock {
+            ContentBlock {
                 ForEach(profile.summary) { fact in
                     Button {
                         select(fact.chapter)

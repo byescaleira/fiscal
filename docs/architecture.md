@@ -31,9 +31,9 @@ fiscal/
 | `FeatureCore` | `SessionModel`, navegação (`Route`, `AppSection`, `FiscalNavigation`, `\.open`, `\.close`), `FeatureFlag`/`FeatureFlags`, atualização obrigatória, exportação, explicações no aparelho (`Explain/`), componentes de dados públicos (`SourceFootnote`, `PeerBadge`, `PublicDataContent`), retratos e `FiscalAnimationView`; reexporta o `ByescaleiraUI` | Domain, DesignSystem, Resource, `ByescaleiraUI`, Lottie |
 | `FeatureGuides` | `GuideScreen` e páginas dos tutoriais | Domain, DesignSystem, FeatureCore |
 | `FeatureFeed` | Aba Feed: apuração e destaque do momento no topo, lista por data com os filtros Tudo, Seguindo e Relevante, selo de novidades, retrato do widget e os botões de "Meu apoio" e de Ajustes ([ADR 0022](adr/0022-feed-first-tab-and-region.md)) | Domain, DesignSystem, FeatureCore |
-| `FeatureRegion` | Aba Região: quem a pessoa segue, sugestões, lugar de casa, quem governa a cidade, o estado e o país, e bancadas | Domain, DesignSystem, FeatureCore |
+| `FeatureRegion` | Aba Região: lugar de casa, quem governa a cidade, o estado e o país, e bancadas. Também a tela de quem a pessoa segue (`Route.following`), com sugestões e convite de compartilhar ([ADR 0024](adr/0024-reveal-bar-following-and-ballots-screens.md)) | Domain, DesignSystem, FeatureCore |
 | `FeatureProfile` | Perfil (`Route.person(slug:)`), aberto por qualquer aba: capítulos por cargo, cabeçalho fixo com o retrato e notas pela `Route.expenses` | Domain, DesignSystem, FeatureCore |
-| `FeatureVotes` | Aba Votações: recentes, pauta do dia e detalhe (`Route.vote(id:)`) | Domain, DesignSystem, FeatureCore |
+| `FeatureVotes` | Aba Votações: recentes, linha da próxima sessão, pauta (`Route.agenda`), detalhe (`Route.vote(id:)`) e lista de votos (`Route.voteBallots`) | Domain, DesignSystem, FeatureCore |
 | `FeatureMoney` | Aba Dinheiro e recibos (`Route.expenses`) | Domain, DesignSystem, FeatureCore |
 | `FeatureSearch` | Aba Fiscalizar (`Tab(role: .search)`): busca no índice, Comparar (`Route.compare(slugs:)`), Eleições e investigações | Domain, DesignSystem, FeatureCore |
 | `FeatureMemory` | Memória, em Fiscalizar: eleições desde 1989, períodos da política e guias de estudo (`Route.memory`, `pastElection`, `period`, `studyGuide`) | Domain, DesignSystem, FeatureCore |
@@ -66,7 +66,8 @@ TSE ao vivo ─▶ fiscal-api (apuração, App Attest, registros) ─▶ APNs �
 | Link | Abre |
 | --- | --- |
 | `fiscal://feed`, `votes`, `money`, `region`, `search` | A aba (Feed, Votações, Dinheiro, Região, Fiscalizar) |
-| `fiscal://today`, `mine`, `following` | Apelidos antigos: Feed, Região e Região |
+| `fiscal://today`, `mine` | Apelidos antigos: Feed e Região |
+| `fiscal://following` | Quem você segue, no Feed |
 | `fiscal://person/<slug>` | Perfil, na aba Região |
 | `fiscal://vote/<id>` | Votação, na aba Votações |
 | `fiscal://expenses/<slug>?year=<ano>` | Recibos, na aba Dinheiro |

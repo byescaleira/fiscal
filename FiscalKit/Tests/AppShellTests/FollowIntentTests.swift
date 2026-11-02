@@ -93,5 +93,6 @@ struct FollowIntentTests {
         #expect(throws: UpdateRequiredError.self) { try FollowIntentWriter.live(store: blocked) }
         #expect(throws: UpdateRequiredError.self) { try IntentWorkspace.ensureOpen(store: blocked) }
         #expect(IntegrationLink.region == URL(string: "fiscal://region"))
+        #expect(IntegrationLink.following == URL(string: "fiscal://following"))
     }
 }

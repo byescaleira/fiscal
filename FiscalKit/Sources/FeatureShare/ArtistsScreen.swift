@@ -135,6 +135,8 @@ private struct GalleryChips: View {
                         Text(verbatim: section.collection.name)
                             .font(.subheadline.weight(.semibold))
                     }
+                    .lineLimit(1)
+                    .fixedSize()
                     .foregroundStyle(isOn ? AnyShapeStyle(.white) : AnyShapeStyle(tint))
                     .padding(.horizontal, .spaceM)
                     .padding(.vertical, .spaceS)

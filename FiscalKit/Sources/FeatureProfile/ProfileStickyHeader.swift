@@ -35,61 +35,12 @@ struct ProfileStickyHeader: View {
                 }
                 .padding(.horizontal, .spaceL)
             }
-            ProfileChapterShortcuts(select: select)
+            ShortcutStrip(
+                items: profile.chapters.map { .init(id: $0, title: $0.title) },
+                current: profile.currentChapter, select: select)
         }
         .padding(.vertical, .spaceS)
         .frame(maxWidth: .readableColumn, alignment: .leading)
         .frame(maxWidth: .infinity)
-        .background(.bar, ignoresSafeAreaEdges: .top)
-        .overlay(alignment: .bottom) { Divider() }
-    }
-}
-
-private struct ProfileChapterShortcuts: View {
-    @Environment(ProfileModel.self) private var profile
-    @Environment(\.appTint) private var tint
-    @ReducesMotion private var reduceMotion
-    let select: (ProfileChapter) -> Void
-
-    var body: some View {
-        ScrollViewReader { proxy in
-            ScrollView(.horizontal) {
-                HStack(spacing: .spaceS) {
-                    ForEach(profile.chapters) { chapter in
-                        shortcut(chapter).id(chapter)
-                    }
-                }
-                .padding(.horizontal, .spaceL)
-            }
-            .scrollIndicators(.hidden)
-            .scrollBounceBehavior(.basedOnSize, axes: .vertical)
-            .onChange(of: profile.currentChapter) { _, chapter in
-                guard let chapter else { return }
-                withAnimation(reduceMotion ? nil : .snappy) {
-                    proxy.scrollTo(chapter, anchor: .center)
-                }
-            }
-        }
-    }
-
-    private func shortcut(_ chapter: ProfileChapter) -> some View {
-        let isCurrent = profile.currentChapter == chapter
-        return Button {
-            select(chapter)
-        } label: {
-            Text(verbatim: chapter.title)
-                .font(.subheadline.weight(.semibold))
-                .lineLimit(1)
-                .fixedSize()
-                .foregroundStyle(isCurrent ? AnyShapeStyle(.white) : AnyShapeStyle(.primary))
-                .padding(.horizontal, .spaceM)
-                .frame(minHeight: .badgeL)
-                .background(
-                    isCurrent ? AnyShapeStyle(tint) : AnyShapeStyle(.plainRow), in: .capsule
-                )
-                .contentShape(.capsule)
-        }
-        .buttonStyle(.plain)
-        .accessibilityAddTraits(isCurrent ? .isSelected : [])
     }
 }

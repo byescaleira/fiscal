@@ -22,6 +22,8 @@ struct ShareArtRail: View {
                     } label: {
                         Text(verbatim: collection.name)
                             .font(.subheadline.weight(.semibold))
+                            .lineLimit(1)
+                            .fixedSize()
                             .foregroundStyle(isOn ? AnyShapeStyle(.white) : AnyShapeStyle(tint))
                             .padding(.horizontal, .spaceM)
                             .padding(.vertical, .spaceS)

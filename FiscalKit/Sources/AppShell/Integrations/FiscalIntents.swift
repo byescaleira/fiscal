@@ -139,7 +139,7 @@ public struct UnfollowPersonIntent: AppIntent {
 public struct OpenFollowingIntent: AppIntent {
     public static var title: LocalizedStringResource { "Show Who I Follow" }
     public static var description: IntentDescription {
-        IntentDescription("Opens the Region tab in Fiscal, with who you follow.")
+        IntentDescription("Opens who you follow in Fiscal.")
     }
     public static var supportedModes: IntentModes { .foreground }
 
@@ -148,7 +148,7 @@ public struct OpenFollowingIntent: AppIntent {
     @MainActor
     public func perform() async throws -> some IntentResult {
         try IntentWorkspace.ensureOpen()
-        FiscalServices.shared.pendingURL = IntegrationLink.region
+        FiscalServices.shared.pendingURL = IntegrationLink.following
         return .result()
     }
 }
