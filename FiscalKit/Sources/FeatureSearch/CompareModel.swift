@@ -10,24 +10,18 @@ public final class CompareModel {
     public private(set) var slugs: [String]
     public private(set) var profiles: [Profile] = []
     public private(set) var people: [PersonCard] = []
-    public private(set) var lens: Lens?
     public private(set) var phase: PublicDataPhase = .idle
     public var isPicking = false
     public var pickerQuery = ""
     @ObservationIgnored private var index = SearchIndex()
     @ObservationIgnored private let service: (any PublicDataService)?
-    @ObservationIgnored private let lensRepository: (any LensRepository)?
     @ObservationIgnored private let requests = PublicDataRequests()
 
-    public init(
-        slugs: [String], service: (any PublicDataService)? = nil,
-        lens: (any LensRepository)? = nil
-    ) {
+    public init(slugs: [String], service: (any PublicDataService)? = nil) {
         var unique: [String] = []
         for slug in slugs where !unique.contains(slug) { unique.append(slug) }
         self.slugs = Array(unique.prefix(Self.range.upperBound))
         self.service = service
-        lensRepository = lens
         phase = self.slugs.count >= Self.range.lowerBound ? .idle : .loaded
     }
 
@@ -35,15 +29,13 @@ public final class CompareModel {
 
     public var isEmpty: Bool { !canCompare || profiles.count < Self.range.lowerBound }
 
-    public var table: CompareTable { CompareTable(profiles: profiles, lens: lens) }
+    public var table: CompareTable { CompareTable(profiles: profiles) }
 
     public var peerItems: [PeerMethodItem] {
         profiles.compactMap { profile in
             profile.classification.map { PeerMethodItem(name: profile.name, classification: $0) }
         }
     }
-
-    public var showsLensBadge: Bool { !(lens?.themes.isEmpty ?? true) }
 
     public var sourceLine: String? { SourceLine.text(profiles.flatMap(\.sources)) }
 
@@ -99,7 +91,6 @@ public final class CompareModel {
     }
 
     public func load() async {
-        lens = try? await lensRepository?.lens()
         guard canCompare else {
             profiles = []
             phase = .loaded

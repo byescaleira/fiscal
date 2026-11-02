@@ -38,7 +38,6 @@ public final class MineModel {
     public internal(set) var updates: [FollowingUpdate] = []
     public internal(set) var updatesPhase: PublicDataPhase = .idle
     public internal(set) var missing: [PersonCard] = []
-    public internal(set) var supportedCards: [PersonCard] = []
     var seenVersion = 0
     @ObservationIgnored let service: (any PublicDataService)?
     @ObservationIgnored let follows: (any FollowRepository)?

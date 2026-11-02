@@ -26,8 +26,7 @@ struct RouteScreen: View {
         case .person(let slug):
             ModelHost(
                 ProfileModel(
-                    slug: slug, service: data, follows: session.repositories.follows,
-                    lens: session.repositories.lens)
+                    slug: slug, service: data, follows: session.repositories.follows)
             ) {
                 ProfileScreen()
             }
@@ -48,7 +47,7 @@ struct RouteScreen: View {
         case .roster(let title, let people):
             MineRosterScreen(roster: MineRoster(title: title, people: people))
         case .spenders(let title, let spenders, let year):
-            ModelHost(MoneyModel(service: data, lens: session.repositories.lens)) {
+            ModelHost(MoneyModel(service: data)) {
                 MoneySpendersDestination(title: title, spenders: spenders, year: year)
             }
         case .awaiting:

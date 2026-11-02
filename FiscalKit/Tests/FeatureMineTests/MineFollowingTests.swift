@@ -104,7 +104,7 @@ struct MineFollowingTests {
                 .standsAlone)
     }
 
-    @Test func suggestsRepresentativesAndSupportedNotFollowed() async throws {
+    @Test func suggestsRepresentativesNotFollowed() async throws {
         let suite = "following-\(UUID().uuidString)"
         defer { UserDefaults.standard.removePersistentDomain(forName: suite) }
         let follows = try FiscalDatabase.open(inMemory: true).repositories.follows

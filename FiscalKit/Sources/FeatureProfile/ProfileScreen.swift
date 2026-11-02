@@ -18,7 +18,7 @@ public struct ProfileScreen: View {
                 ProfileHeroSection()
                 ProfileNumbersSection()
                 ProfileActionsSection()
-                ProfileLensSection()
+                ProfileThemesSection()
                 ProfileContextSection()
                 ProfileVotesSection()
                 ProfileProposalsSection()
@@ -119,33 +119,20 @@ private struct NumberTileView: View {
     }
 }
 
-struct ProfileLensSection: View {
+struct ProfileThemesSection: View {
     @Environment(ProfileModel.self) private var profile
-    @Environment(\.appTint) private var tint
 
     var body: some View {
         if !profile.themeLines.isEmpty {
             Section {
-                if let headline = profile.lensVotesHeadline {
-                    VStack(alignment: .leading, spacing: .spaceS) {
-                        Text(verbatim: headline).font(.headline)
-                        FlowLayout(spacing: .spaceXS) {
-                            ForEach(profile.lensBallots) { item in
-                                BallotCountChip(item: item)
-                            }
-                        }
-                    }
-                    .padding(.vertical, .space2XS)
-                    .accessibilityElement(children: .combine)
-                }
                 ForEach(profile.themeLines) { line in
                     HStack(spacing: .spaceM) {
                         Image(systemName: line.theme.symbol)
                             .font(.icon(.s, weight: .medium))
-                            .foregroundStyle(line.isLensTheme ? tint : .secondary)
+                            .foregroundStyle(.secondary)
                             .frame(width: .badgeM, height: .badgeM)
                             .background(
-                                (line.isLensTheme ? tint : .secondary).opacity(.opacityTint),
+                                Color.secondary.opacity(.opacityTint),
                                 in: .rect(cornerRadius: .radiusS)
                             )
                             .accessibilityHidden(true)
@@ -156,38 +143,15 @@ struct ProfileLensSection: View {
                                 .foregroundStyle(.secondary)
                         }
                         Spacer(minLength: .spaceS)
-                        if line.isLensTheme {
-                            Image(systemName: "heart")
-                                .foregroundStyle(tint)
-                                .accessibilityLabel(Text("For who you support"))
-                        }
                     }
                     .accessibilityElement(children: .combine)
                 }
             } header: {
-                AdaptiveStack(spacing: .spaceS) {
-                    Text(profile.lensThemes.isEmpty ? LocalizedStringKey("Themes") : "By Your Lens")
-                        .sectionTitle()
-                    Spacer(minLength: 0)
-                    if profile.showsLensBadge { LensBadge() }
-                }
-                .textCase(nil)
+                Text("Themes").sectionTitle()
+                    .textCase(nil)
             } footer: {
-                Text(verbatim: profile.lensFootnote)
+                Text(verbatim: profile.themeFootnote)
             }
-        }
-    }
-}
-
-private struct BallotCountChip: View {
-    let item: ProfileModel.BallotCount
-
-    var body: some View {
-        HStack(spacing: .space2XS) {
-            BallotChip(ballot: item.ballot)
-            Text(verbatim: PublicFormat.number(item.count))
-                .font(.headline)
-                .monospacedDigit()
         }
     }
 }

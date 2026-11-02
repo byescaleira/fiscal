@@ -19,29 +19,6 @@ public final class MoneyModel {
             case .revenue: String(appLocalized: "What the Country Collects")
             }
         }
-
-        public var themes: [Theme] {
-            switch self {
-            case .quota, .mandate: [.taxes]
-            case .campaigns: [.politics]
-            case .revenue: [.economy, .taxes]
-            }
-        }
-
-        func rank(in lens: Lens) -> Int {
-            themes.map(lens.rank(of:)).min() ?? lens.themes.count
-        }
-
-        public static func order(for lens: Lens?) -> [Section] {
-            guard let lens, !lens.themes.isEmpty else { return allCases }
-            return allCases.enumerated()
-                .sorted { lhs, rhs in
-                    (lhs.element.rank(in: lens), lhs.offset) < (
-                        rhs.element.rank(in: lens), rhs.offset
-                    )
-                }
-                .map(\.element)
-        }
     }
 
     public struct Answer: Equatable, Sendable {
@@ -60,20 +37,17 @@ public final class MoneyModel {
     public private(set) var places: MoneyPlaces?
     public private(set) var scope: String
     public private(set) var homeUF: String?
-    public private(set) var lens: Lens?
     public private(set) var phase: PublicDataPhase = .idle
     @ObservationIgnored private var followsHome = true
     @ObservationIgnored private let service: (any PublicDataService)?
-    @ObservationIgnored private let lensRepository: (any LensRepository)?
     @ObservationIgnored private let home: @MainActor () -> String?
     @ObservationIgnored private let requests = PublicDataRequests()
 
     public init(
-        service: (any PublicDataService)?, lens: (any LensRepository)? = nil,
+        service: (any PublicDataService)?,
         home: @escaping @MainActor () -> String? = { HomePlace.chosenUF(in: .standard) }
     ) {
         self.service = service
-        lensRepository = lens
         self.home = home
         let uf = home()
         homeUF = uf
@@ -89,16 +63,7 @@ public final class MoneyModel {
 
     public var isStale: Bool { phase.error != nil && !isEmpty }
 
-    public var sections: [Section] { Section.order(for: lens) }
-
-    public var showsLensBadge: Bool { lens?.hasChoice == true }
-
-    public var lensNote: String? {
-        guard showsLensBadge, let first = sections.first, sections != Section.allCases else {
-            return nil
-        }
-        return String(appLocalized: "Your lens shows \(first.title) first.")
-    }
+    public var sections: [Section] { Section.allCases }
 
     public var states: [String] {
         let published = (places?.places ?? []).filter { !$0.isCountry }.map(\.uf)
@@ -167,14 +132,12 @@ public final class MoneyModel {
         refreshHome()
         if overview == nil { phase = .loading }
         phase = await PublicDataPhase.settle(after: phase, in: requests) {
-            let lens = try? await lensRepository?.lens()
             guard let service else { throw PublicDataError.unavailable }
             let overview = try await service.money()
             return MoneyPage(
-                lens: lens, overview: overview, mandate: try? await service.mandateCost(),
+                overview: overview, mandate: try? await service.mandateCost(),
                 places: try? await service.moneyPlaces())
         } apply: { page in
-            lens = page.lens
             overview = page.overview
             mandate = page.mandate
             places = page.places
@@ -183,7 +146,6 @@ public final class MoneyModel {
 }
 
 private struct MoneyPage {
-    let lens: Lens?
     let overview: MoneyOverview
     let mandate: MandateCost?
     let places: MoneyPlaces?

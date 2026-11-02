@@ -8,7 +8,6 @@ public final class ProfileModel {
     public let slug: String
     public let showsFactChecks = false
     public private(set) var profile: Profile?
-    public private(set) var lens: Lens?
     public private(set) var votes: PublicList<PersonVote>?
     public private(set) var proposals: PublicList<Proposal>?
     public private(set) var speeches: PublicList<Speech>?
@@ -22,20 +21,18 @@ public final class ProfileModel {
     public var error: FiscalError?
     @ObservationIgnored private let service: (any PublicDataService)?
     @ObservationIgnored private let follows: (any FollowRepository)?
-    @ObservationIgnored private let lensRepository: (any LensRepository)?
     @ObservationIgnored private let requests = PublicDataRequests()
     @ObservationIgnored private let now: @Sendable () -> Date
     @ObservationIgnored let calendar: Calendar
 
     public init(
         slug: String, service: (any PublicDataService)?, follows: (any FollowRepository)? = nil,
-        lens: (any LensRepository)? = nil, now: @escaping @Sendable () -> Date = { .now },
+        now: @escaping @Sendable () -> Date = { .now },
         calendar: Calendar = GregorianCalendar.current
     ) {
         self.slug = slug
         self.service = service
         self.follows = follows
-        lensRepository = lens
         self.now = now
         self.calendar = calendar
     }
@@ -89,12 +86,9 @@ public final class ProfileModel {
         if profile == nil { phase = .loading }
         phase = await PublicDataPhase.settle(after: phase, in: requests) {
             guard let service else { throw PublicDataError.unavailable }
-            let profile = try await service.profile(slug: slug)
-            let lens = try? await lensRepository?.lens()
-            return ProfileHeader(profile: profile, lens: lens)
-        } apply: { header in
-            profile = header.profile
-            lens = header.lens
+            return try await service.profile(slug: slug)
+        } apply: { loaded in
+            profile = loaded
         }
         await loadActivity()
     }
@@ -144,9 +138,4 @@ public final class ProfileModel {
         guard wanted else { return nil }
         return try? await work()
     }
-}
-
-private struct ProfileHeader {
-    let profile: Profile
-    let lens: Lens?
 }

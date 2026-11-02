@@ -10,26 +10,23 @@ public final class SearchModel {
     public var query = ""
     public var tokens: [SearchToken] = []
     public private(set) var phase: PublicDataPhase = .idle
-    public private(set) var lens: Lens?
     public private(set) var recents: [String] = []
     public private(set) var sources: [Source] = []
     public private(set) var updatedAt: Date?
     public private(set) var recentVotes: [VoteSummary]?
     @ObservationIgnored private var index = SearchIndex()
     @ObservationIgnored private let service: (any PublicDataService)?
-    @ObservationIgnored private let lensRepository: (any LensRepository)?
     @ObservationIgnored private let recentStore: (any RecentSearchStore)?
     @ObservationIgnored public let board: InvestigationModel
     @ObservationIgnored private let requests = PublicDataRequests()
     private var revision = 0
 
     public init(
-        service: (any PublicDataService)?, lens: (any LensRepository)? = nil,
+        service: (any PublicDataService)?,
         recents: (any RecentSearchStore)? = DeviceRecentSearches(),
         board: InvestigationModel? = nil
     ) {
         self.service = service
-        lensRepository = lens
         recentStore = recents
         self.board = board ?? InvestigationModel(service: service, legacy: nil, usesModel: false)
     }
@@ -46,16 +43,7 @@ public final class SearchModel {
         return !index.isEmpty
     }
 
-    public var isLensAdapted: Bool { !(lens?.themes.isEmpty ?? true) }
-
-    public var showsLensBadge: Bool { isLensAdapted }
-
-    public var comparesFirst: Bool { lens?.prefersNotToSay ?? false }
-
-    public var themes: [Theme] {
-        guard let lens, !lens.themes.isEmpty else { return Self.defaultThemes }
-        return lens.themes
-    }
+    public var themes: [Theme] { Self.defaultThemes }
 
     public var sourceLine: String? { SourceLine.text(sources, updatedAt: updatedAt) }
 
@@ -112,7 +100,6 @@ public final class SearchModel {
     }
 
     public func load() async {
-        lens = try? await lensRepository?.lens()
         recents = recentStore?.load() ?? []
         guard index.isEmpty else { return }
         phase = .loading

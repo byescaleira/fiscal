@@ -163,8 +163,7 @@ struct FollowingSuggestionsSection: View {
             } header: {
                 Text(mine.isEmpty ? "Follow Who Represents You" : "Suggestions").sectionTitle()
             } footer: {
-                Text(
-                    "Who represents your place and who you support. Tap Follow next to the name.")
+                Text("Who represents your place. Tap Follow next to the name.")
             }
         }
     }

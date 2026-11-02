@@ -33,7 +33,7 @@ extension MineModel {
             )
         }
         .map(\.element)
-        let pool = (supportedCards + representatives).filter {
+        let pool = representatives.filter {
             !followedSlugs.contains($0.slug) && included.insert($0.slug).inserted
         }
         return Array(pool.prefix(Self.suggestionLimit))
@@ -54,10 +54,6 @@ extension MineModel {
     }
 
     public var hasNoUpdates: Bool { updatesPhase == .loaded && updates.isEmpty }
-
-    public func loadSupported(_ slugs: [String]) async {
-        supportedCards = await SupportedPeople.cards(for: slugs, service: service, follows: follows)
-    }
 
     public func loadUpdates() async {
         let people = followed.map(\.card)

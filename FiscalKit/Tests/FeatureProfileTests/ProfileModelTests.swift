@@ -12,11 +12,9 @@ struct ProfileModelTests {
     private let showcase = ShowcasePublicData(scenario: .normal, now: instant)
 
     private func makeModel(
-        _ slug: String, lens: (any LensRepository)? = nil,
-        follows: (any FollowRepository)? = nil
+        _ slug: String, follows: (any FollowRepository)? = nil
     ) -> ProfileModel {
-        ProfileModel(
-            slug: slug, service: showcase, follows: follows, lens: lens, now: { Self.instant })
+        ProfileModel(slug: slug, service: showcase, follows: follows, now: { Self.instant })
     }
 
     @Test func aProposalOpensItsContentWithoutRepeatingTheAuthor() async throws {
@@ -113,36 +111,14 @@ struct ProfileModelTests {
         #expect(!model.aboutLines.contains { $0.id == "salary" })
     }
 
-    @Test func theLensPutsItsThemesFirstAndMarksThem() async throws {
-        let lens = try FiscalDatabase.open(inMemory: true).repositories.lens
-        let probe = makeModel("tabata-amaral")
-        await probe.load()
-        let dataOrder = probe.themeLines.map(\.theme)
-        let last = try #require(dataOrder.last)
-        try await lens.save(Lens(themes: [last, .taxes, .economy], supported: ["lula"]))
-        let model = makeModel("tabata-amaral", lens: lens)
+    @Test func theThemesComeByHowManyActionsTheyHave() async throws {
+        let model = makeModel("tabata-amaral")
         await model.load()
-        #expect(model.showsLensBadge)
-        #expect(model.isLensAdapted)
-        #expect(model.themeLines.first?.theme == last)
-        #expect(model.themeLines.first?.isLensTheme == true)
-        #expect(Set(model.themeLines.map(\.theme)) == Set(dataOrder))
-        #expect(model.lensBallots.map(\.count).reduce(0, +) == model.lensVotes.count)
-        let themes = model.lensThemes
-        #expect(model.lensVotes.allSatisfy { vote in vote.themes.contains { themes.contains($0) } })
-    }
-
-    @Test func theImpartialLensKeepsTheDataOrder() async throws {
-        let lens = try FiscalDatabase.open(inMemory: true).repositories.lens
-        try await lens.save(Lens(prefersNotToSay: true))
-        let model = makeModel("kim-kataguiri", lens: lens)
-        await model.load()
-        let probe = makeModel("kim-kataguiri")
-        await probe.load()
-        #expect(!model.showsLensBadge)
-        #expect(!model.isLensAdapted)
-        #expect(model.themeLines.map(\.theme) == probe.themeLines.map(\.theme))
-        #expect(model.lensBallots.isEmpty)
+        let profile = try #require(model.profile)
+        let actions = model.themeLines.map(\.actions)
+        #expect(!actions.isEmpty)
+        #expect(actions == actions.sorted(by: >))
+        #expect(Set(model.themeLines.map(\.theme)) == Set(profile.themes.map(\.key)))
     }
 
     @Test func readsEveryBallot() {

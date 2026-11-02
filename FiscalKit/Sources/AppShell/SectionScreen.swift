@@ -31,14 +31,13 @@ struct SectionScreen: View {
         case .votes:
             ModelHost(VotesModel(service: data)) { VotesScreen() }
         case .money:
-            ModelHost(MoneyModel(service: data, lens: session.repositories.lens)) { MoneyScreen() }
+            ModelHost(MoneyModel(service: data)) { MoneyScreen() }
         case .search:
             ModelHost(
                 SearchModel(
                     service: data,
                     board: InvestigationModel(
-                        service: data, lens: session.repositories.lens,
-                        follows: session.repositories.follows,
+                        service: data, follows: session.repositories.follows,
                         repository: session.repositories.investigations,
                         homeUF: HomePlace.chosenUF(in: .standard),
                         usesModel: FiscalServices.shared.usesIntelligence))

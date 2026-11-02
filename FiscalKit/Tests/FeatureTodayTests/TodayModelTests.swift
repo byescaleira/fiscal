@@ -12,7 +12,8 @@ struct TodayModelTests {
     private let afterTheResult = Date(timeIntervalSince1970: 1_792_963_200)
 
     private func model(
-        _ scenario: PublicDataScenario = .normal, races: RaceScenario? = nil, follows: PublicDataScenario? = nil, clock: Date? = nil
+        _ scenario: PublicDataScenario = .normal, races: RaceScenario? = nil,
+        follows: PublicDataScenario? = nil, clock: Date? = nil
     ) -> TodayModel {
         let today = clock ?? now
         return TodayModel(

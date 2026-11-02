@@ -10,14 +10,9 @@ struct MoneyModelTests {
     private let now = Date(timeIntervalSince1970: 1_792_917_720)
 
     private func loaded(
-        _ scenario: PublicDataScenario = .normal, lens: Lens? = nil
+        _ scenario: PublicDataScenario = .normal
     ) async throws -> MoneyModel {
-        let repositories = try FiscalDatabase.open(inMemory: true).repositories
-        if let lens {
-            try await repositories.lens.save(lens)
-        }
-        let model = MoneyModel(
-            service: ShowcasePublicData(scenario: scenario, now: now), lens: repositories.lens)
+        let model = MoneyModel(service: ShowcasePublicData(scenario: scenario, now: now))
         await model.load()
         return model
     }
@@ -73,32 +68,9 @@ struct MoneyModelTests {
         #expect(empty.answer == nil)
     }
 
-    @Test func withoutALensTheOrderIsTheSameForEveryone() async throws {
+    @Test func theSectionsKeepTheDefaultOrder() async throws {
         let model = try await loaded()
-        #expect(model.lens == nil)
         #expect(model.sections == MoneyModel.Section.allCases)
-        #expect(model.lensNote == nil)
-    }
-
-    @Test func theLensOnlyReordersTheSections() async throws {
-        let right = try await loaded(
-            lens: Lens(themes: [.taxes, .health, .economy], supported: ["lula"]))
-        let left = try await loaded(
-            lens: Lens(themes: [.politics, .health, .economy], supported: ["tabata-amaral"]))
-        #expect(right.sections.first == .mandate)
-        #expect(left.sections.first == .campaigns)
-        #expect(Set(right.sections) == Set(left.sections))
-        #expect(right.answer == left.answer)
-        #expect(right.categories == left.categories)
-        #expect(left.lensNote != nil)
-    }
-
-    @Test func aLensWithoutMoneyTopicsKeepsTheDefaultOrder() async throws {
-        let undisclosed = try await loaded(
-            lens: Lens(themes: [.health, .education, .security], prefersNotToSay: true))
-        #expect(undisclosed.sections == MoneyModel.Section.allCases)
-        #expect(undisclosed.lensNote == nil)
-        #expect(undisclosed.lens?.prefersNotToSay == true)
     }
 
     @Test func reportsAnOutage() async throws {
