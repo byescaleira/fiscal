@@ -10,6 +10,7 @@ public struct FeedScreen<RaceHero: View>: View {
     @Environment(FollowingBadge.self) private var badge: FollowingBadge?
     @Environment(FollowController.self) private var follow: FollowController?
     @Environment(\.scenePhase) private var scenePhase
+    @ReducesMotion private var reduceMotion
     private let raceHero: (Race) -> RaceHero
 
     public init(@ViewBuilder raceHero: @escaping (Race) -> RaceHero) {
@@ -21,7 +22,7 @@ public struct FeedScreen<RaceHero: View>: View {
             LazyVStack(alignment: .leading, spacing: .spaceL, pinnedViews: .sectionHeaders) {
                 if let board = feed.liveBoard {
                     FeedRaceHero(board: board) { raceHero(board.race) }
-                        .transition(.opacity)
+                        .transition(reduceMotion ? .identity : .opacity)
                         .zIndex(1)
                 }
                 if let lead = feed.highlightLead {
@@ -85,6 +86,25 @@ private struct FeedToolbar: ToolbarContent {
 }
 
 private struct FeedFilterBar: View {
+    var body: some View {
+        ViewThatFits(in: .horizontal) {
+            FeedFilterChips()
+            ScrollView(.horizontal) {
+                FeedFilterChips()
+            }
+            .scrollIndicators(.hidden)
+            .scrollClipDisabled()
+        }
+        .padding(.vertical, .spaceS)
+        .background(alignment: .bottom) {
+            Rectangle()
+                .fill(.plainBackground)
+                .padding(.top, -.medallion)
+        }
+    }
+}
+
+private struct FeedFilterChips: View {
     @Environment(FeedModel.self) private var feed
     @Environment(\.appTint) private var tint
 
@@ -113,14 +133,8 @@ private struct FeedFilterBar: View {
                 .buttonStyle(.plain)
                 .accessibilityAddTraits(isSelected ? .isSelected : [])
             }
-            Spacer(minLength: 0)
         }
-        .padding(.vertical, .spaceS)
-        .background(alignment: .bottom) {
-            Rectangle()
-                .fill(.plainBackground)
-                .padding(.top, -.medallion)
-        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 

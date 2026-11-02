@@ -16,6 +16,7 @@ struct FeedCard: View {
                 ExternalLink(destination: url) { card }
                     .buttonStyle(.plain)
                     .foregroundStyle(.primary)
+                    .accessibilityAddTraits(.isLink)
             } else {
                 card
             }
@@ -50,38 +51,65 @@ struct FeedCard: View {
 private struct FeedCardHeader: View {
     @Environment(FeedModel.self) private var feed
     @Environment(\.appTint) private var tint
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let item: FeedItem
 
+    private var person: PersonCard? {
+        item.ballots.count <= 1 ? item.involved.first : nil
+    }
+
     var body: some View {
-        HStack(spacing: .spaceS) {
-            if let person = item.involved.first, item.ballots.count <= 1 {
-                PersonPortrait(
-                    slug: person.slug, name: person.name, party: person.party, size: .badgeM)
+        if dynamicTypeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: .spaceXS) {
+                badge
+                if let person { name(person) }
+                reason
+                day
+            }
+        } else {
+            HStack(spacing: .spaceS) {
+                badge
                 VStack(alignment: .leading, spacing: .spaceHairline) {
-                    Text(verbatim: person.name)
-                        .font(.subheadline.weight(.semibold))
-                        .lineLimit(1)
+                    if let person { name(person) }
                     reason
                 }
-            } else {
-                SymbolBadge(
-                    feed.symbol(item), color: item.isFollowing ? tint : .secondary, size: .badgeM)
-                reason
+                Spacer(minLength: .spaceS)
+                day
             }
-            Spacer(minLength: .spaceS)
-            Text(verbatim: feed.dayText(item))
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
-                .fixedSize()
         }
+    }
+
+    @ViewBuilder private var badge: some View {
+        if let person {
+            PersonPortrait(
+                slug: person.slug, name: person.name, party: person.party, size: .badgeM)
+        } else {
+            SymbolBadge(
+                feed.symbol(item), color: item.isFollowing ? tint : .secondary, size: .badgeM)
+        }
+    }
+
+    private func name(_ person: PersonCard) -> some View {
+        Text(verbatim: person.name)
+            .font(.subheadline.weight(.semibold))
+            .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
+            .fixedSize(horizontal: false, vertical: true)
     }
 
     private var reason: some View {
         Text(verbatim: feed.reasonText(item))
             .font(.caption.weight(.semibold))
             .foregroundStyle(item.isFollowing ? AnyShapeStyle(tint) : AnyShapeStyle(.secondary))
+            .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
+            .fixedSize(horizontal: false, vertical: true)
+    }
+
+    private var day: some View {
+        Text(verbatim: feed.dayText(item))
+            .font(.caption)
+            .foregroundStyle(.secondary)
             .lineLimit(1)
+            .fixedSize()
     }
 }
 
@@ -104,7 +132,7 @@ private struct FeedFactBody: View {
                 Text(verbatim: detail)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
-                    .lineLimit(3)
+                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 3)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }

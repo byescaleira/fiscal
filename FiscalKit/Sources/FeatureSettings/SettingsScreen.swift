@@ -186,7 +186,7 @@ private struct SettingsDataSection: View {
             if let offline {
                 SettingsRow(
                     "Offline Data",
-                    detail: "Today, your region and your people, ready without a connection",
+                    detail: "The feed, your region and your people, ready without a connection",
                     symbol: "arrow.down.circle", color: .retroMustard,
                     value: offline.summary.isEmpty ? nil : offline.sizeText
                 ) {

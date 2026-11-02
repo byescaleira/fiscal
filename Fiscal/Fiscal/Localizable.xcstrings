@@ -4852,7 +4852,18 @@
         }
       }
     },
+    "Everything starts on the Feed, with what happened and the latest from who you follow. Settings, in the Feed toolbar, keeps the choices that are yours." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tudo começa no Feed, com o que aconteceu e as novidades de quem você segue. Os Ajustes, na barra de cima do Feed, guardam as escolhas que são suas."
+          }
+        }
+      }
+    },
     "Everything starts on the Following tab, with the latest from who you follow. Settings, in the Today toolbar, keeps the choices that are yours." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -6153,11 +6164,22 @@
       }
     },
     "Highlights change as new facts come in. See the current ones in Today." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Os destaques mudam quando surgem fatos novos. Veja os atuais em Hoje."
+          }
+        }
+      }
+    },
+    "Highlights change as new facts come in. See the current ones in the Feed." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os destaques mudam quando surgem fatos novos. Veja os atuais no Feed."
           }
         }
       }
@@ -9218,11 +9240,22 @@
       }
     },
     "Opens the Following tab in Fiscal, with the latest from who you follow." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abre a aba Seguindo no Fiscal, com as novidades de quem você segue."
+          }
+        }
+      }
+    },
+    "Opens the Region tab in Fiscal, with who you follow." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre a aba Região no Fiscal, com quem você segue."
           }
         }
       }
@@ -9823,6 +9856,7 @@
       }
     },
     "Pick your state in Fiscal, in the Following tab." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -9834,6 +9868,16 @@
     },
     "Pick your state in Fiscal, in the Mine tab." : {
       "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha seu estado no Fiscal, na aba Região."
+          }
+        }
+      }
+    },
+    "Pick your state in Fiscal, in the Region tab." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -13332,6 +13376,7 @@
       }
     },
     "The day's votes, sessions and live count." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -13367,6 +13412,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "A Receita Federal ainda não fechou um ano completo."
+          }
+        }
+      }
+    },
+    "The feed, your region and your people, ready without a connection" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Feed, sua região e suas pessoas, prontos sem conexão"
           }
         }
       }
@@ -13855,6 +13910,7 @@
       }
     },
     "The state you chose in Following. Names in alphabetical order." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -13866,6 +13922,16 @@
     },
     "The state you chose in Mine. Names in alphabetical order." : {
       "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O estado que você escolheu em Região. Nomes em ordem alfabética."
+          }
+        }
+      }
+    },
+    "The state you chose in Region. Names in alphabetical order." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -14326,6 +14392,7 @@
       }
     },
     "Today, your region and your people, ready without a connection" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -15586,6 +15653,16 @@
         }
       }
     },
+    "What happened, by date, with the live count on top." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que aconteceu, por data, com a apuração ao vivo no topo."
+          }
+        }
+      }
+    },
     "What happens when a signal is missing, and how highlights and alerts work." : {
       "localizations" : {
         "pt-BR" : {
@@ -15689,6 +15766,7 @@
       }
     },
     "What's new from who you follow, and who represents your region." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -15996,6 +16074,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quem você segue"
+          }
+        }
+      }
+    },
+    "Who you follow and who represents your place." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem você segue e quem representa o seu lugar."
           }
         }
       }

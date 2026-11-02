@@ -233,6 +233,16 @@ struct FeedModelTests {
             regionUF: { nil }, now: { today }, publishesSnapshot: false)
     }
 
+    @Test func aMonthOfSpendingShowsTheMonthAndNotADay() throws {
+        let model = raceModel()
+        let day = try #require(CalendarDay(year: 2_026, month: 11, day: 1))
+        let item = FeedItem(
+            id: "x", kind: .expenses, date: day, title: "", reason: .relevant,
+            expenses: FeedExpenses(slug: "a", year: 2_026, month: 11, cents: 100))
+        #expect(model.dayText(item).contains("2026"))
+        #expect(!model.dayText(item).hasPrefix("1 "))
+    }
+
     @Test func aLiveRaceTakesTheTop() async {
         let model = raceModel(.close)
         await model.load()

@@ -17,16 +17,16 @@
 **Topo**
 
 6. Dada uma apuração ao vivo, quando o Feed abre, então o cartão dela vem primeiro; sem apuração, ele não aparece e não deixa espaço.
-7. Dado um destaque do momento, quando o Feed abre, então o cartão grande vem em seguida, e esse destaque não se repete na lista.
+7. Dado um destaque do momento, quando o Feed abre, então o cartão grande vem em seguida, e esse destaque não se repete na lista; a exceção é a votação de quem a pessoa segue, cuja linha fica porque traz o voto dessa pessoa, que o destaque não mostra.
 
 **Lista**
 
 8. Dadas duas pessoas seguidas e dados recentes, quando o Feed carrega, então a lista traz, da data mais nova para a mais antiga, votos, propostas, discursos, gastos do mês e checagens delas, mais votações recentes, destaques e eventos do dia.
-9. Dada qualquer linha, quando aparece, então diz o tipo, a data, o fato e o motivo: o nome de quem a pessoa segue, o lugar escolhido ou "Relevante".
+9. Dada qualquer linha, quando aparece, então diz o tipo, a data, o fato e o motivo: o nome de quem a pessoa segue, o lugar escolhido ou "Relevante". Gasto tem só o mês, então a linha mostra o mês e o ano, nunca um dia.
 10. Dada uma votação em que duas pessoas seguidas votaram diferente, quando aparece, então é uma linha só, com o voto de cada uma, sem dizer quem está certa.
 11. Dado o filtro Seguindo ou Relevante, quando a pessoa toca, então só ficam as linhas daquele motivo; sem resultado, explica o motivo em uma frase.
 12. Dada uma linha de voto, quando a pessoa toca, então abre a votação; de gastos, abre os gastos daquele ano; de proposta, discurso, destaque ou evento com conteúdo, abre a tela de conteúdo; de checagem, abre a fonte com `ExternalLink`.
-13. Dado um evento do dia já mostrado como votação ou apuração, quando a lista monta, então ele não se repete.
+13. Dado um evento do dia já mostrado como votação ou apuração, quando a lista monta, então ele não se repete; sem apuração no topo, o evento de apuração é uma linha como os outros.
 
 **Continuar ao rolar**
 
@@ -74,7 +74,7 @@ classDiagram
         +content ContentDetail?
         +url
     }
-    class FeedKind {
+    class FeedItemKind {
         <<enumeration>>
         vote
         proposal
@@ -83,6 +83,17 @@ classDiagram
         check
         event
         highlight
+    }
+    class FeedExpenses {
+        +slug
+        +year
+        +month
+        +cents
+    }
+    class FeedRaceBoard {
+        +race
+        +others
+        +isStale
     }
     class FeedReason {
         <<enumeration>>
@@ -107,6 +118,7 @@ classDiagram
         +regionUF
         +regionName
         +method
+        +hidesRaces
     }
     class FeedTimeline {
         +build(sources) FeedItem[]
@@ -125,6 +137,12 @@ classDiagram
         +isLoadingMore
         +reachedEnd
         +isAtEnd
+        +followed
+        +missing
+        +followsNobody
+        +updates
+        +newCount
+        +markSeen()
         +load()
         +loadMore()
         +followsChanged(to)
@@ -132,7 +150,9 @@ classDiagram
     class RegionModel {
         <<MineModel sem as novidades>>
     }
-    FeedItem --> FeedKind
+    FeedItem --> FeedItemKind
+    FeedItem --> FeedExpenses
+    FeedModel --> FeedRaceBoard
     FeedItem --> FeedReason
     FeedTimeline --> FeedItem
     FeedModel --> FeedTimeline
@@ -148,7 +168,7 @@ classDiagram
 - **Topo.** Apuração e destaque do momento saem da lista e ficam em cartões grandes, reaproveitando `FeedRaceHero` e `FeedHighlightHero` (antes `TodayRaceHero` e `TodayHighlightHero`).
 - **Eventos do dia.** Decisão do usuário: a pauta fica só em Votações, e os eventos do resumo viram linhas relevantes, com a data do resumo. Voto e apuração já mostrados não se repetem.
 - **Domínio puro.** `FeedTimeline` recebe o que veio da rede e devolve as linhas, como `SupportTimeline`. A junção por votação usa os mesmos ids. `FollowingFeed` continua para o selo e o widget, com seus 30 dias e 50 itens.
-- **Propostas têm limite.** `Proposal` tem só o ano, sem data. Na lista entram as propostas de `actions.json`, que têm data, até 40 por pessoa. Os arquivos por ano entram para votos, discursos e gastos. Inventar uma data seria dado falso.
+- **Propostas têm limite.** `Proposal` tem só o ano, sem data. Na lista entram as propostas de `actions.json`, que têm data, até 40 por pessoa, limite que vem do servidor. Os arquivos por ano entram para votos, discursos e gastos. Inventar uma data seria dado falso. O gasto mensal usa o dia 1 só para ordenar, e a linha mostra o mês e o ano.
 - **Continuar ao rolar.** O primeiro carregamento lê `actions.json`, as checagens e o ano corrente de cada pessoa. Pedido do usuário ao ver no iPhone: o scroll não precisa ser longo e carrega conforme a demanda. Por isso a lista mostra 20 linhas (`FeedModel.pageSize`) e acrescenta mais 20 a cada chegada ao fim. Só quando o que foi lido acaba é que lê um ano a mais, até 2023 (`FeedModel.firstYear`), em lotes de 6. O filtro Relevante não lê anos, porque eles só trazem linhas de quem a pessoa segue. Os anos mais antigos só acrescentam linhas mais antigas, então nada muda de lugar. As 100 linhas por rodada não são um limite: a lista cresce conforme os anos.
 - **Quem manda no quê.** `FeedModel` fica com o que era de `TodayModel` (apuração, destaques, resumo) e com as novidades de `MineModel` (leitura por pessoa, selo, retrato do widget). `RegionModel` é o resto de `MineModel`. Sem estado duplicado entre as abas.
 - **Pauta e votações recentes.** Saem de Hoje. A pauta já está em Votações. As votações recentes viram linhas do Feed.
@@ -177,9 +197,9 @@ classDiagram
 ## Operations
 
 1. **Domínio do Feed.**
-   - `FeedItem`, `FeedKind`, `FeedReason`, `FeedFilter`, `FeedSources`.
+   - `FeedItem`, `FeedItem.Kind`, `FeedExpenses`, `FeedReason`, `FeedFilter`, `FeedSources`.
    - `FeedTimeline.build(_ sources: FeedSources) -> [FeedItem]`: junta por id, marca o motivo (seguido vence região, e região vence relevante), tira o destaque do topo, ordena por data e id.
-   - Eventos do resumo só entram quando não apontam para votação ou apuração já presentes.
+   - Eventos do resumo só entram quando não apontam para votação ou apuração já presentes; `hidesRaces` diz se há apuração no topo.
    - `filtered(_:by:)`.
    - Cobre: 8, 9, 10, 11, 13. Verificação: `FeedTimelineTests`, inclusive voto dividido, empate de data e proposta sem data fora da lista.
 2. **Modelo do Feed.** Depende de: 1.

@@ -101,6 +101,22 @@ struct FeedTimelineTests {
         #expect(items.map(\.id) == ["action-other"])
     }
 
+    @Test func aLeadVoteOfSomeoneFollowedKeepsTheirBallotInTheList() {
+        let list = HighlightList(
+            generatedAt: Date(timeIntervalSince1970: 1_792_917_720),
+            items: [Self.highlight("vote-1", kind: .vote, route: "1")], method: nil, sources: [])
+        let followed = FeedTimeline.build(
+            FeedSources(
+                activities: [
+                    Self.activity(ana, votes: [Self.vote("1", on: "2026-10-27", ballot: "Sim")])
+                ], recent: [Self.recent("1", on: "2026-10-27")], highlights: list))
+        #expect(followed.map(\.voteID) == ["1"])
+        #expect(followed.first?.ballots.count == 1)
+        let general = FeedTimeline.build(
+            FeedSources(recent: [Self.recent("1", on: "2026-10-27")], highlights: list))
+        #expect(general.isEmpty)
+    }
+
     @Test func filtersKeepOnlyThatReason() {
         let items = FeedTimeline.build(
             FeedSources(
@@ -112,6 +128,19 @@ struct FeedTimelineTests {
         #expect(FeedTimeline.filtered(items, by: .all).count == 2)
         #expect(FeedTimeline.filtered(items, by: .following).map(\.voteID) == ["1"])
         #expect(FeedTimeline.filtered(items, by: .relevant).map(\.voteID) == ["2"])
+    }
+
+    @Test func theRaceEventIsALineOnlyWithoutARaceOnTop() {
+        let digest = TodayDigest(
+            date: Self.day("2026-10-28"),
+            events: [
+                TodayDigest.Event(
+                    kind: .race, title: "Apuração", summary: "", themes: [], ref: "br")
+            ], sources: [])
+        #expect(FeedTimeline.build(FeedSources(digest: digest, hidesRaces: true)).isEmpty)
+        let items = FeedTimeline.build(FeedSources(digest: digest))
+        #expect(items.map(\.title) == ["Apuração"])
+        #expect(items.first?.content != nil)
     }
 
     @Test func theDailyEventsBecomeLinesAndTheRaceDoesNot() {
@@ -126,7 +155,8 @@ struct FeedTimelineTests {
                     kind: .vote, title: "Votação", summary: "", themes: [], ref: "2"),
             ], sources: [])
         let items = FeedTimeline.build(
-            FeedSources(recent: [Self.recent("2", on: "2026-10-28")], digest: digest))
+            FeedSources(
+                recent: [Self.recent("2", on: "2026-10-28")], digest: digest, hidesRaces: true))
         #expect(items.count == 2)
         #expect(items.contains { $0.kind == .event && $0.content != nil })
         #expect(items.filter { $0.voteID == "2" }.count == 1)

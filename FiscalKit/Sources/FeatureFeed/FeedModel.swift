@@ -41,6 +41,8 @@ public final class FeedModel {
     @ObservationIgnored private var recent: [VoteSummary] = []
     @ObservationIgnored private var digest: TodayDigest?
     @ObservationIgnored private var oldestYear = 0
+    @ObservationIgnored private var loadGeneration = 0
+    @ObservationIgnored private var hidesRaces = false
 
     public init(
         service: (any PublicDataService)?, races: (any LiveResultsService)? = nil,
@@ -127,6 +129,7 @@ public final class FeedModel {
 
     public func load() async {
         if items.isEmpty { phase = .loading }
+        loadGeneration += 1
         async let liveRaces: Void = refreshRaces()
         let years = FollowingFeed.years(for: CalendarDay(now()))
         let year = years.min() ?? Self.firstYear
@@ -179,6 +182,7 @@ public final class FeedModel {
         do {
             races = try await raceService.races()
             racesOffline = false
+            if hasLoaded, hidesRaces != (liveBoard != nil) { rebuild() }
         } catch is CancellationError {} catch {
             racesOffline = true
         }
@@ -203,11 +207,13 @@ public final class FeedModel {
         guard !isLoadingMore, !reachedEnd, filter != .relevant, let service else { return }
         isLoadingMore = true
         defer { isLoadingMore = false }
+        let generation = loadGeneration
         var year = oldestYear
         let before = matching.count
         while matching.count == before, year > Self.firstYear {
             year -= 1
             let loaded = await Self.read(followed, years: [year], first: false, from: service)
+            guard generation == loadGeneration else { return }
             activities += loaded.activities
             missing = Self.merged(missing, loaded.missing)
             for (slug, list) in loaded.speeches { speeches[slug, default: []] += list }
@@ -250,11 +256,13 @@ public final class FeedModel {
 
     private func rebuild() {
         let uf = regionUF()
+        hidesRaces = liveBoard != nil
         items = FeedTimeline.build(
             FeedSources(
                 following: followed, activities: activities, actions: actions, speeches: speeches,
                 recent: recent, highlights: highlights, digest: digest, regionUF: uf,
-                regionName: uf.map(HomePlace.name(of:)), method: highlights?.method))
+                regionName: uf.map(HomePlace.name(of:)), method: highlights?.method,
+                hidesRaces: hidesRaces))
     }
 
     private struct Page: Sendable {

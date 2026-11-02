@@ -78,7 +78,7 @@ enum IntegrationError: Error, CustomLocalizedStringResourceConvertible {
     var localizedStringResource: LocalizedStringResource {
         switch self {
         case .unavailable: "Fiscal couldn't reach the public data now. Try again in a moment."
-        case .noState: "Pick your state in Fiscal, in the Following tab."
+        case .noState: "Pick your state in Fiscal, in the Region tab."
         }
     }
 }

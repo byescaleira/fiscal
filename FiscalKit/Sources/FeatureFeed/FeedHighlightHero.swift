@@ -69,6 +69,8 @@ struct FeedHighlightHero: View {
             .buttonStyle(.borderless)
             .tint(.white)
             .font(.body.weight(.semibold))
+            .frame(width: .badgeL, height: .badgeL)
+            .contentShape(.circle)
         }
     }
 
@@ -82,7 +84,7 @@ struct FeedHighlightHero: View {
                 Text(verbatim: highlight.title)
                     .font(.footnote)
                     .opacity(.opacityStrong)
-                    .lineLimit(2)
+                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
             }
             if let tally = highlight.tally {
                 FeedHighlightScore(tally: tally, large: false)
@@ -166,32 +168,50 @@ private struct FeedHighlightAuthor: View {
 }
 
 private struct FeedHighlightRelevance: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let weight: Int
     let filled: Bool
 
     var body: some View {
         let relevance = Relevance(weight: weight)
-        HStack(spacing: .spaceXS) {
-            StatusCircle(relevance.title, symbol: relevance.symbol, color: .white)
-                .accessibilityHidden(true)
-            Text(verbatim: relevance.title)
-                .font(.caption.weight(.semibold))
-                .lineLimit(1)
-                .fixedSize()
-            HStack(spacing: .spaceHairline) {
-                ForEach(0..<Relevance.segments, id: \.self) { index in
-                    Capsule()
-                        .fill(
-                            .white.opacity(
-                                filled && Double(index) < relevance.filledSegments
-                                    ? 1 : .opacityTint)
-                        )
-                        .frame(width: .spaceM, height: .space2XS)
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: .spaceXS) {
+                    StatusCircle(relevance.title, symbol: relevance.symbol, color: .white)
+                        .accessibilityHidden(true)
+                    Text(verbatim: relevance.title)
+                        .font(.caption.weight(.semibold))
+                        .fixedSize(horizontal: false, vertical: true)
+                    segments(relevance)
+                }
+            } else {
+                HStack(spacing: .spaceXS) {
+                    StatusCircle(relevance.title, symbol: relevance.symbol, color: .white)
+                        .accessibilityHidden(true)
+                    Text(verbatim: relevance.title)
+                        .font(.caption.weight(.semibold))
+                        .lineLimit(1)
+                        .fixedSize()
+                    segments(relevance)
                 }
             }
-            .accessibilityHidden(true)
         }
         .accessibilityElement(children: .combine)
+    }
+
+    private func segments(_ relevance: Relevance) -> some View {
+        HStack(spacing: .spaceHairline) {
+            ForEach(0..<Relevance.segments, id: \.self) { index in
+                Capsule()
+                    .fill(
+                        .white.opacity(
+                            filled && Double(index) < relevance.filledSegments
+                                ? 1 : .opacityTint)
+                    )
+                    .frame(width: .spaceM, height: .space2XS)
+            }
+        }
+        .accessibilityHidden(true)
     }
 }
 

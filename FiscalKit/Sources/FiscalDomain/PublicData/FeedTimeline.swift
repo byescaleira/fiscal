@@ -100,12 +100,14 @@ public struct FeedSources: Sendable {
     public let regionUF: String?
     public let regionName: String?
     public let method: WeightMethod?
+    public let hidesRaces: Bool
 
     public init(
         following: [PersonCard] = [], activities: [FollowingFeed.Activity] = [],
         actions: [String: ActionList] = [:], speeches: [String: [Speech]] = [:],
         recent: [VoteSummary] = [], highlights: HighlightList? = nil, digest: TodayDigest? = nil,
-        regionUF: String? = nil, regionName: String? = nil, method: WeightMethod? = nil
+        regionUF: String? = nil, regionName: String? = nil, method: WeightMethod? = nil,
+        hidesRaces: Bool = false
     ) {
         self.following = following
         self.activities = activities
@@ -117,6 +119,7 @@ public struct FeedSources: Sendable {
         self.regionUF = regionUF
         self.regionName = regionName
         self.method = method
+        self.hidesRaces = hidesRaces
     }
 }
 
@@ -133,7 +136,7 @@ public enum FeedTimeline {
         for item in sources.highlights?.items ?? [] where item.id != pinned {
             builder.add(item, reason: reason(of: item, in: sources))
         }
-        if let digest = sources.digest { builder.add(digest) }
+        if let digest = sources.digest { builder.add(digest, hidesRaces: sources.hidesRaces) }
         if let lead = sources.highlights?.items.first { builder.remove(lead) }
         return builder.items
     }
@@ -266,10 +269,10 @@ public enum FeedTimeline {
                     themes: item.themes ?? [], content: content))
         }
 
-        mutating func add(_ digest: TodayDigest) {
+        mutating func add(_ digest: TodayDigest, hidesRaces: Bool) {
             for event in digest.events {
                 switch event.kind {
-                case .race: continue
+                case .race where hidesRaces: continue
                 case .vote:
                     guard let ref = event.ref else { continue }
                     merge(
@@ -278,7 +281,7 @@ public enum FeedTimeline {
                             title: event.title,
                             detail: event.summary, reason: .relevant, themes: event.themes,
                             voteID: ref))
-                case .session, .law:
+                case .race, .session, .law:
                     let id = "event-\(digest.date)-\(event.title.prefix(32))"
                     merge(
                         FeedItem(
