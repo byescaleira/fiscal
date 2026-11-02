@@ -31,7 +31,7 @@ No shell, ponha esses caminhos entre aspas: o zsh trata `[...]` como padrão de 
 | `FSC-009` | [Seguir no centro do Fiscal: aba Seguindo](prompt/FSC-009-202610312200-[Feat]-following-tab-and-follow-everywhere.md) | entregue | `feature/following-core` | [#7](https://github.com/byescaleira/fiscal/pull/7) |
 | `FSC-010` | [Compartilhar como fluxo completo, por rede social](prompt/FSC-010-202610312345-[Feat]-share-flow-by-network.md) | entregue | `feature/share-flow` | [#8](https://github.com/byescaleira/fiscal/pull/8) |
 | `FSC-011` | [Refinos: conteúdo com tela própria, links dentro do app, Quem governa e gráficos](prompt/FSC-011-202611011855-[Feat]-navigation-links-charts-refinements.md) | entregue | `feature/app-refinements` | [#9](https://github.com/byescaleira/fiscal/pull/9) |
-| `FSC-012` | [Fim da Lente e a página "Meu apoio"](prompt/FSC-012-202611012040-[Feat]-end-of-lens-my-support.md) | em andamento | `feature/end-of-lens` | — |
+| `FSC-012` | [Fim da Lente e a página "Meu apoio"](prompt/FSC-012-202611012040-[Feat]-end-of-lens-my-support.md) | em revisão | `feature/end-of-lens` | [#10](https://github.com/byescaleira/fiscal/pull/10) |
 | `FSC-013` | [Aba Feed e abas reorganizadas](analysis/FSC-011-202611011850-[Analysis]-feed-profile-and-end-of-lens.md) | rascunho | — | — |
 | `FSC-014` | [Nova página do político e compartilhar um item](analysis/FSC-011-202611011850-[Analysis]-feed-profile-and-end-of-lens.md) | rascunho | — | — |
 
