@@ -48,7 +48,7 @@ public final class VotesModel {
         self.now = now
     }
 
-    public var isEmpty: Bool { votes.isEmpty && agendaHouses.isEmpty }
+    public var isEmpty: Bool { votes.isEmpty && agendaLine == nil }
 
     public var hasFilter: Bool { activeFilterCount > 0 }
 
@@ -77,10 +77,6 @@ public final class VotesModel {
     public var themeChoices: [Theme] {
         let used = Set(votes.flatMap(\.themes))
         return Theme.allCases.filter(used.contains)
-    }
-
-    public var agendaHouses: [Agenda.HouseDay] {
-        agenda?.houses.filter { $0.inSession || !$0.items.isEmpty } ?? []
     }
 
     public var isAgendaToday: Bool {

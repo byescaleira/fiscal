@@ -40,8 +40,7 @@ struct VoteStickyHeader: View {
     }
 }
 
-private struct VoteCompactScore: View {
-    @Environment(VoteDetailModel.self) private var vote
+struct VoteCompactScore: View {
     let score: String
 
     var body: some View {

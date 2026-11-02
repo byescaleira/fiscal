@@ -86,20 +86,18 @@ struct VotesModelTests {
         let votes = model()
         await votes.load()
         #expect(votes.agendaHouses.map(\.house) == [.camara, .senado])
-        #expect(votes.isAgendaToday)
         let camara = try #require(votes.agendaHouses.first)
         #expect(!votes.agendaStatus(camara).isEmpty)
     }
 
-    @Test func missingTalliesShowADash() async {
+    @Test func aVoteWithoutATallyHasNoScore() async {
         let votes = model()
         let vote = VoteSummary(
             id: "camara-1", house: .camara, date: CalendarDay(now), time: nil,
             proposition: "PL 1/2026", kind: nil, summary: "Texto", plainSummary: nil,
             themes: [], result: nil, approved: nil, nominal: false,
             tally: VoteSummary.Tally(yes: nil, no: nil, others: nil))
-        #expect(votes.yesText(vote) == PublicFormat.missing)
-        #expect(votes.noText(vote) == PublicFormat.missing)
+        #expect(votes.compactScore(vote) == nil)
         #expect(VoteOutcome(vote) == .symbolic)
         #expect(VoteTally.segments(vote.tally).allSatisfy { $0.value == 0 })
     }

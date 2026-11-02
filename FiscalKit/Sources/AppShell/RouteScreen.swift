@@ -40,6 +40,8 @@ struct RouteScreen: View {
             ModelHost(VoteDetailModel(id: id, service: data, party: party)) {
                 VoteBallotsScreen()
             }
+        case .agenda:
+            ModelHost(VotesModel(service: data)) { VotesAgendaScreen() }
         case .expenses(let slug, let year):
             ModelHost(ExpensesModel(slug: slug, year: year, service: data)) { ExpensesScreen() }
         case .compare(let slugs):

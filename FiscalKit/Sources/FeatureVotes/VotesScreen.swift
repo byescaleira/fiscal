@@ -14,7 +14,9 @@ public struct VotesScreen: View {
             phase: votes.phase, isEmpty: votes.isEmpty, retry: { await votes.load() }
         ) {
             AdaptiveList {
-                VotesAgendaSection()
+                if let line = votes.agendaLine {
+                    VotesAgendaLine(line: line)
+                }
                 if votes.showsNoMatch {
                     VotesNoMatchSection()
                 }

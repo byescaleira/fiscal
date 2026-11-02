@@ -779,6 +779,28 @@
         }
       }
     },
+    "%lld agenda items" : {
+      "localizations" : {
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld item na pauta"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld itens na pauta"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld cards" : {
       "localizations" : {
         "pt-BR" : {
@@ -1815,6 +1837,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Contra o partido"
+          }
+        }
+      }
+    },
+    "Agenda" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pauta"
           }
         }
       }
@@ -6714,7 +6746,6 @@
       }
     },
     "In session" : {
-      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -8118,6 +8149,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nenhuma pauta publicada hoje"
+          }
+        }
+      }
+    },
+    "No agenda right now" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem pauta agora"
           }
         }
       }
@@ -13597,6 +13638,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "A cor de destaque aparece nos botões, nas abas e nos chips de tema. Votos, gráficos e partidos mantêm as próprias cores."
+          }
+        }
+      }
+    },
+    "The agenda shows up here when the houses publish the next session." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A pauta aparece aqui quando as casas publicam a próxima sessão."
           }
         }
       }
