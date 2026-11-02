@@ -87,6 +87,21 @@ public struct ShareStatement: Hashable, Sendable {
             figure = nil
             caption = nil
             person = nil
+        case .receipt(let receipt):
+            phrase = receipt.supplier
+            figure = receipt.amount
+            caption = receipt.context
+            person = content.faces.first
+        case .ballot(let ballot):
+            phrase = ballot.summary
+            figure = ballot.vote
+            caption = ballot.proposition
+            person = content.faces.first
+        case .proposal(let proposal):
+            phrase = proposal.summary
+            figure = nil
+            caption = proposal.reference
+            person = content.faces.first
         }
     }
 
@@ -137,8 +152,18 @@ public struct ShareStatement: Hashable, Sendable {
                 }
         case .investigation(let investigation):
             return investigation.numbers.dropFirst().map { Row(label: $0.label, value: $0.value) }
-        case .following:
+        case .following, .proposal:
             return []
+        case .receipt(let receipt):
+            return [
+                Row(label: String(appLocalized: "Kind of expense"), value: receipt.category),
+                Row(label: String(appLocalized: "Month"), value: receipt.period),
+            ]
+        case .ballot(let ballot):
+            return [
+                Row(label: String(appLocalized: "Date"), value: ballot.date),
+                ballot.result.map { Row(label: String(appLocalized: "Result"), value: $0) },
+            ].compactMap(\.self)
         }
     }
 
@@ -162,9 +187,9 @@ extension ShareCardContent {
 
     var accent: Color {
         switch body {
-        case .vote, .highlight: .retroTeal
-        case .person, .representatives: .retroDenim
-        case .expenses: .retroMustard
+        case .vote, .highlight, .ballot: .retroTeal
+        case .person, .representatives, .proposal: .retroDenim
+        case .expenses, .receipt: .retroMustard
         case .compare, .investigation: .retroPlum
         case .race, .victory: .retroOrange
         case .following: .retroOlive

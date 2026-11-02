@@ -33,14 +33,6 @@ extension ProfileModel {
         Array((votes?.items ?? []).sorted { $0.date > $1.date }.prefix(Self.recentLimit))
     }
 
-    public var lastVote: PersonVote? { recentVotes.first }
-
-    public var lastVoteText: String? {
-        guard let vote = lastVote else { return nil }
-        return String(
-            appLocalized: "Last vote · \(vote.proposition) · \(shortDay(vote.date))")
-    }
-
     public func ballot(_ vote: PersonVote) -> ProfileBallot { ProfileBallot(vote.vote) }
 
     public func shortDay(_ day: CalendarDay) -> String {
@@ -84,6 +76,14 @@ extension ProfileModel {
             appLocalized:
                 "The plain summary is Fiscal's rewrite. The official summary is always one tap away."
         )
+    }
+
+    public func shareRoute(for vote: PersonVote) -> Route {
+        .share(.personVote(slug: slug, year: year, voteID: vote.voteId))
+    }
+
+    public func shareRoute(for proposal: Proposal) -> Route {
+        .share(.proposal(slug: slug, year: year, id: proposal.id))
     }
 
     public func proposalRoute(_ proposal: Proposal) -> Route {
@@ -140,13 +140,13 @@ extension ProfileModel {
         return Double(values.reduce(0, +)) / Double(values.count) / 100
     }
 
-    public var yearText: String { String(year) }
+    public var yearText: String { String(expenseYear) }
 
     public var expensesSectionTitle: String {
         String(appLocalized: "Office Allowance in \(yearText)")
     }
 
-    public var expensesScreenTitle: String { String(appLocalized: "Expenses in \(yearText)") }
+    public var expensesRoute: Route { .expenses(slug: slug, year: expenseYear) }
 
     public var expenseHeadline: String? {
         guard let top = monthBars.first(where: { $0.month == highlightedMonth }) else {
@@ -162,30 +162,6 @@ extension ProfileModel {
                 category: $0.category, value: PublicFormat.compactMoney(cents: $0.cents),
                 fraction: Double($0.cents) / Double(expenses.totalCents), count: $0.count)
         }
-    }
-
-    public var expenseItems: [Expense] {
-        (expenses?.items ?? []).sorted { ($0.month, $0.cents) > ($1.month, $1.cents) }
-    }
-
-    public func expenseDetail(_ expense: Expense) -> String {
-        let month =
-            fullMonthSymbols.indices.contains(expense.month - 1)
-            ? fullMonthSymbols[expense.month - 1] : String(expense.month)
-        return [expense.category, month, expense.document.map(Self.formattedDocument)]
-            .compactMap(\.self).joined(separator: " · ")
-    }
-
-    public static func formattedDocument(_ document: String) -> String {
-        let digits = Array(document.filter(\.isNumber))
-        guard digits.count == 14 else { return document }
-        let text = String(digits)
-        func part(_ from: Int, _ to: Int) -> Substring {
-            text[
-                text.index(
-                    text.startIndex, offsetBy: from)..<text.index(text.startIndex, offsetBy: to)]
-        }
-        return "\(part(0, 2)).\(part(2, 5)).\(part(5, 8))/\(part(8, 12))-\(part(12, 14))"
     }
 
     private var monthSymbols: [String] {

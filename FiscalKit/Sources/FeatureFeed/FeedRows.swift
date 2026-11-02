@@ -10,49 +10,66 @@ struct FeedCard: View {
     var body: some View {
         Group {
             if let route = Route.destination(for: item) {
-                RouteLink(route, showsChevron: false) { card }
-                    .accessibilityAddTraits(.isButton)
+                RouteCard(
+                    route, label: Text(verbatim: feed.accessibility(item)), padding: .spaceL,
+                    cornerRadius: .radiusGroup
+                ) {
+                    content
+                }
             } else if let url = item.url {
-                ExternalLink(destination: url, showsSymbol: false) { card }
-                    .buttonStyle(.plain)
-                    .foregroundStyle(.primary)
-                    .accessibilityAddTraits(.isLink)
+                content
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.spaceL)
+                    .background {
+                        ExternalLink(destination: url, showsSymbol: false) {
+                            Color.clear.contentShape(.rect(cornerRadius: .radiusGroup))
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(Text(verbatim: feed.accessibility(item)))
+                        .accessibilityHint(Text("Opens in the browser"))
+                        .accessibilityAddTraits(.isLink)
+                    }
             } else {
-                card
+                content
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.spaceL)
+                    .background {
+                        Color.clear
+                            .accessibilityElement()
+                            .accessibilityLabel(Text(verbatim: feed.accessibility(item)))
+                    }
             }
         }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(verbatim: feed.accessibility(item)))
-        .accessibilityHint(opensSource ? Text("Opens in the browser") : Text(verbatim: ""))
+        .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
     }
 
-    private var opensSource: Bool {
-        Route.destination(for: item) == nil && item.url != nil
-    }
-
-    private var card: some View {
+    private var content: some View {
         VStack(alignment: .leading, spacing: .spaceM) {
             FeedCardHeader(item: item)
-            if let expenses = item.expenses {
-                FeedExpensesBody(item: item, expenses: expenses)
-            } else {
-                FeedFactBody(item: item)
+            Group {
+                if let expenses = item.expenses {
+                    FeedExpensesBody(item: item, expenses: expenses)
+                } else {
+                    FeedFactBody(item: item)
+                }
             }
+            .allowsHitTesting(false)
+            .accessibilityHidden(true)
             if item.ballots.count == 1, let ballot = item.ballots.first {
                 FeedSoleBallot(ballot: ballot)
+                    .allowsHitTesting(false)
+                    .accessibilityHidden(true)
             } else if !item.ballots.isEmpty {
-                VStack(spacing: .spaceS) {
+                VStack(spacing: .spaceXS) {
                     ForEach(item.ballots) { FeedBallotRow(ballot: $0) }
                 }
             }
-            if opensSource {
+            if Route.destination(for: item) == nil, item.url != nil {
                 FeedSourceLink()
+                    .allowsHitTesting(false)
+                    .accessibilityHidden(true)
             }
         }
-        .padding(.spaceL)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
-        .contentShape(.rect(cornerRadius: .radiusGroup))
     }
 }
 
@@ -73,6 +90,8 @@ private struct FeedCardHeader: View {
     @Environment(FeedModel.self) private var feed
     @Environment(\.appTint) private var tint
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.open) private var open
+    @Environment(\.navigationSection) private var section
     let item: FeedItem
 
     private var person: PersonCard? {
@@ -82,10 +101,45 @@ private struct FeedCardHeader: View {
     var body: some View {
         if dynamicTypeSize.isAccessibilitySize {
             VStack(alignment: .leading, spacing: .spaceXS) {
+                who
+                day.allowsHitTesting(false).accessibilityHidden(true)
+            }
+        } else {
+            HStack(spacing: .spaceS) {
+                who
+                Spacer(minLength: .spaceS)
+                day.allowsHitTesting(false).accessibilityHidden(true)
+            }
+        }
+    }
+
+    @ViewBuilder private var who: some View {
+        if let person {
+            Button {
+                open(.person(slug: person.slug), in: section)
+            } label: {
+                identity(person)
+                    .frame(minHeight: .badgeL)
+                    .contentShape(.rect)
+            }
+            .buttonStyle(.plain)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text(verbatim: person.name))
+            .accessibilityHint(Text("Opens the profile"))
+            .accessibilityAddTraits(.isButton)
+        } else {
+            identity(nil)
+                .allowsHitTesting(false)
+                .accessibilityHidden(true)
+        }
+    }
+
+    @ViewBuilder private func identity(_ person: PersonCard?) -> some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: .spaceXS) {
                 badge
                 if let person { name(person) }
                 reason
-                day
             }
         } else {
             HStack(spacing: .spaceS) {
@@ -94,8 +148,6 @@ private struct FeedCardHeader: View {
                     if let person { name(person) }
                     reason
                 }
-                Spacer(minLength: .spaceS)
-                day
             }
         }
     }
@@ -195,21 +247,34 @@ private struct FeedSoleBallot: View {
 
 private struct FeedBallotRow: View {
     @Environment(FeedModel.self) private var feed
+    @Environment(\.open) private var open
+    @Environment(\.navigationSection) private var section
     let ballot: SupportBallot
 
     var body: some View {
-        HStack(spacing: .spaceS) {
-            PersonPortrait(
-                slug: ballot.person.slug, name: ballot.person.name, party: ballot.person.party,
-                size: .badgeS)
-            Text(verbatim: ballot.person.name)
-                .font(.footnote)
-                .lineLimit(1)
-            Spacer(minLength: .spaceS)
-            Text(verbatim: feed.ballotText(ballot))
-                .font(.footnote.weight(.semibold))
-                .lineLimit(1)
-                .fixedSize()
+        Button {
+            open(.person(slug: ballot.person.slug), in: section)
+        } label: {
+            HStack(spacing: .spaceS) {
+                PersonPortrait(
+                    slug: ballot.person.slug, name: ballot.person.name, party: ballot.person.party,
+                    size: .badgeS)
+                Text(verbatim: ballot.person.name)
+                    .font(.footnote)
+                    .lineLimit(1)
+                Spacer(minLength: .spaceS)
+                Text(verbatim: feed.ballotText(ballot))
+                    .font(.footnote.weight(.semibold))
+                    .lineLimit(1)
+                    .fixedSize()
+            }
+            .frame(minHeight: .badgeL)
+            .contentShape(.rect)
         }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(verbatim: "\(ballot.person.name): \(feed.ballotText(ballot))"))
+        .accessibilityHint(Text("Opens the profile"))
+        .accessibilityAddTraits(.isButton)
     }
 }

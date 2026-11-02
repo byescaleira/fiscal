@@ -36,8 +36,9 @@ A fase 8 corre em etapas:
 | 8.3.4 | [`FSC-010`](../spdd/prompt/FSC-010-202610312345-[Feat]-share-flow-by-network.md): compartilhar como fluxo completo, por rede social | entregue ([PR #8](https://github.com/byescaleira/fiscal/pull/8)) |
 | 8.3.5 | [`FSC-011`](../spdd/prompt/FSC-011-202611011855-[Feat]-navigation-links-charts-refinements.md): tela de conteúdo, links dentro do app com ícone, "Quem governa" e gráficos | entregue ([PR #9](https://github.com/byescaleira/fiscal/pull/9)) |
 | 8.3.6 | `FSC-012`: fim da Lente e a página "Meu apoio", com pessoas e causas, só no aparelho ([canvas](../spdd/prompt/FSC-012-202611012040-[Feat]-end-of-lens-my-support.md)) | entregue ([PR #10](https://github.com/byescaleira/fiscal/pull/10)) |
-| 8.3.7 | `FSC-013`: aba Feed como primeira, absorvendo Hoje, com o feed montado no app, e aba Região ([canvas](../spdd/prompt/FSC-013-202611012300-[Feat]-feed-first-tab-and-region.md)) | em andamento |
-| 8.3.8 | `FSC-014`: nova página do político, com o bonequinho no cabeçalho, e compartilhar um item específico | — |
+| 8.3.7 | `FSC-013`: aba Feed como primeira, absorvendo Hoje, com o feed montado no app, e aba Região ([canvas](../spdd/prompt/FSC-013-202611012300-[Feat]-feed-first-tab-and-region.md)) | entregue ([PR #11](https://github.com/byescaleira/fiscal/pull/11)) |
+| 8.3.8 | `FSC-014`: nova página do político, com o bonequinho no cabeçalho, compartilhar um item específico e um destino principal por cartão ([canvas](../spdd/prompt/FSC-014-202611020300-[Feat]-politician-page-and-share-an-item.md)) | entregue ([PR #12](https://github.com/byescaleira/fiscal/pull/12)) |
+| 8.3.9 | `FSC-015`: a barra que aparece no topo ao rolar, nas telas em que algo precisa continuar visível | a seguir, aprovada pelo usuário em 2026-11-02 |
 | 8.4 | Loja: roteiro de [validation.md](validation.md) no iPhone físico, rótulo de privacidade ([ADR 0017](adr/0017-app-store-privacy-label.md)), capturas, TestFlight e envio para a revisão | — |
 
 - **Lançamento só iOS (iPhone e iPad).** Mac e visionOS compilam no mesmo projeto, mas a receita própria do Mac e o envio dessas plataformas ficam no [backlog](backlog.md).

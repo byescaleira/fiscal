@@ -7,7 +7,7 @@ O que falta, por prioridade. Itens concluídos saem daqui; o motivo das decisõe
 - **[P1] Live Activity da apuração ponta a ponta.** Etapas abertas da [`live-results`](changes/archive/2026-10-29-live-results/tasks.md): conferir a chave APNs em `/opt/fiscal-api/secrets/apns.p8` e a conta no Xcode (usuário), rodar o servidor em modo de simulação, iniciar a Live Activity no iPhone físico e receber os pushes de atualização e de fim.
 - **[P1] Vencedor na Live Activity da apuração.** A regra de vencedor do widget (`RaceBoard.winner`) difere da do app (`Race.winner`) e mostra "ELEITO" a 100% no 1º turno com mais de 2 candidatos: igualar as duas ([FSC-001](../spdd/prompt/FSC-001-202610291700-[Codify]-live-results.md)). O toque já abre `fiscal://races`.
 - **[P1] Rótulo de privacidade e política.** Declarar o rótulo do [ADR 0017](adr/0017-app-store-privacy-label.md) no App Store Connect e listar na política do site as três saídas com os prazos.
-- **[P1] Retratos do app.** Marca visível "Ilustração do Fiscal" nos retratos, e a regra de não gerar cartaz de candidato com retrato nas 72 h antes e nas 24 h depois de uma votação ([brief](brief.md), "Retratos e marcas animados"); hoje nenhuma das duas existe.
+- **[P1] Retratos do app.** A marca "Ilustração do Fiscal" entrou no retrato grande do perfil na [FSC-014](../spdd/prompt/FSC-014-202611020300-[Feat]-politician-page-and-share-an-item.md). Faltam a marca nos outros retratos grandes e a regra de não gerar cartaz de candidato com retrato nas 72 h antes e nas 24 h depois de uma votação ([brief](brief.md), "Retratos e marcas animados").
 - **[P1] App ID da Meta.** Criar o app na Meta e preencher `FiscalMetaAppID` no `Info.plist`. Sem ele, os Stories do Instagram e do Facebook abrem pela folha do sistema ([ADR 0020](adr/0020-share-to-social-networks.md)).
 - **[P1] Publicar a AASA dos links do site.** Com o ok do usuário. Antes disso, os links impressos nos cartões abrem o site, não o app ([docs/web.md](web.md)).
 - **[P1] Apagar a escolha da Lente.** A confirmação "Apagar minha escolha" existe no `LensScreen`, mas nenhum botão a abre; o brief pede o botão.
@@ -17,6 +17,8 @@ O que falta, por prioridade. Itens concluídos saem daqui; o motivo das decisõe
 
 - **[P2] "Como medimos" no cartão "Na sua região agora".** O botão aparece só com o ícone, sem o texto, sobre o fundo escuro. Visto no simulador na `FSC-011`, fora do canvas dela.
 - **[P2] Selo "Pior que a média" cortado em "Pior que a mé...".** No cartão de "Quem Gasta Mais e em Quê", em largura estreita. Rever também se a palavra "pior" cabe na regra de só fatos.
+- **[P2] Repensar o antes e durante o mandato.** Saiu da página do político na [FSC-014](../spdd/prompt/FSC-014-202611020300-[Feat]-politician-page-and-share-an-item.md), porque o usuário achou que o componente não se encaixa no app, embora os dados importem. Os arquivos seguem publicados e a Investigação segue lendo. Falta uma forma nova.
+- **[P1] `FSC-015`: barra que aparece no topo ao rolar em outras telas.** O usuário aprovou em 2026-11-02 como a fase seguinte à [FSC-014](../spdd/prompt/FSC-014-202611020300-[Feat]-politician-page-and-share-an-item.md), antes do guia de UX da web. Usa o cabeçalho da página do político (`ProfileStickyHeader`) só onde algo precise continuar visível. Candidatas: detalhe da votação, notas de um político e detalhe de uma corrida. Se valer para outro app, a peça genérica vai para o `byescaleira-kit`.
 - **[P3] Duo dobrado: espaço acima dos filtros do Feed.** Ao rolar para cima, o sistema devolve a área da barra de navegação e os filtros fixos descem 58 pt, com um espaço branco acima ([QA da `FSC-013`](evidence/FSC-013/qa.md)).
 - **[P2] Capturas do README e da loja.** `01-hoje.png` e as outras ainda mostram as abas antigas; refazer antes da publicação.
 - **[P3] Cartão "Na sua região agora" com o texto oficial.** O do Feed já usa o texto simples, e a tela de conteúdo também.
@@ -33,7 +35,6 @@ O que falta, por prioridade. Itens concluídos saem daqui; o motivo das decisõe
 - **[P2] Alvos `FiscalMock`, `FiscalPreview` e `FiscalAudit`.** Dados falsos compartilhados, prévias por tela e a auditoria do pacote (migração, prévia e volume), para o `scripts/audit.sh` deixar de pular.
 - **[P2] Contrato do Fiscal na Web.** Resumo cifrado, ponte e pareamento por QR numa mudança própria ([ADR 0016](adr/0016-web-companion-after-1-0.md)).
 - **[P2] Branch `feature/news-webngrams`.** Quatro commits fora da `development` que trocam a repercussão da API DOC do GDELT pelos arquivos Web NGrams; decidir entre integrar numa mudança própria ou descartar. Recomendado: manter a branch até a decisão.
-- **[P2] Checagens no perfil.** A seção do perfil está desligada (`showsFactChecks = false`); ligar com o título "O que circulou sobre <nome>", o aviso de cobertura e o crédito por item, como no brief ([FSC-006](../spdd/prompt/FSC-006-202610291700-[Codify]-fact-checks.md)).
 - **[P2] Alertas por tema nas votações e emendas no Dinheiro.** O que ficou da fase 5 e da fase 6 do roadmap.
 - **[P2] Broadcast do APNs.** Trocar o push por token do destaque pelos canais de broadcast quando o volume pedir ([ADR 0002](adr/0002-static-first-server.md)); vale para a apuração e o destaque ([FSC-001](../spdd/prompt/FSC-001-202610291700-[Codify]-live-results.md), [FSC-007](../spdd/prompt/FSC-007-202610291700-[Codify]-notifications.md)).
 - **[P2] `scripts/ui-test.sh`.** O destino padrão (`iPad Pro 13-inch (M5)`, `OS=27.0`) não existe mais nesta máquina; escolher um iPad disponível como o `scripts/test.sh` faz com o iPhone.
@@ -100,7 +101,7 @@ Substituída pela [FSC-012](../spdd/prompt/FSC-012-202611012040-[Feat]-end-of-le
 - **[P2] Pergunta some quando a leitura de `checks.json` falha**, sem frase de falha.
 - **[P3] `possibleHomonym` pelo conjunto das checagens** e descarte de id ≤ 0 e data ilegível; registrar ou ajustar.
 - **[P3] Contagem `checks` em `index/facts.json` sem uso no app.**
-- **[P2] Testes** da investigação de checagens e da ausência da seção no perfil.
+- **[P2] Testes** da investigação de checagens.
 
 ### Alertas ([FSC-007](../spdd/prompt/FSC-007-202610291700-[Codify]-notifications.md))
 

@@ -46,6 +46,18 @@ public enum ShareCaption {
         case .following(let faces):
             let names = faces.map { "\($0.name) (\($0.party))" }.joined(separator: ", ")
             return joined(content.headline, names)
+        case .receipt(let receipt):
+            return joined(
+                person(content),
+                "\(receipt.supplier), \(receipt.amount). \(receipt.context)")
+        case .ballot(let ballot):
+            return joined(
+                person(content),
+                String(
+                    appLocalized:
+                        "Voted \(ballot.vote) on \(ballot.proposition): \(ballot.summary)"))
+        case .proposal(let proposal):
+            return joined(person(content), "\(proposal.reference): \(proposal.summary)")
         }
     }
 

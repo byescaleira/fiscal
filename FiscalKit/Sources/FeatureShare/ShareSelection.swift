@@ -74,7 +74,9 @@ extension ShareCardContent {
         case .compare(let rows): rows.map { ShareFact.row($0.label) }
         case .expenses(let spending): spending.categories.isEmpty ? [] : [.largestCategory]
         case .highlight(let highlight): highlight.weight.isEmpty ? [] : [.weight]
-        case .vote, .race, .representatives, .victory, .investigation, .following: []
+        case .vote, .race, .representatives, .victory, .investigation, .following, .receipt,
+            .ballot, .proposal:
+            []
         }
     }
 

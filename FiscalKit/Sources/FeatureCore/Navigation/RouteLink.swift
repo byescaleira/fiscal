@@ -21,10 +21,7 @@ public struct RouteLink<Label: View>: View {
             if showsChevron {
                 HStack(spacing: .spaceM) {
                     label.frame(maxWidth: .infinity, alignment: .leading)
-                    Image(systemName: "chevron.forward")
-                        .font(.footnote.weight(.semibold))
-                        .foregroundStyle(.tertiary)
-                        .accessibilityHidden(true)
+                    RouteChevron()
                 }
                 .contentShape(.rect)
             } else {

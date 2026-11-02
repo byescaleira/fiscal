@@ -14,145 +14,162 @@ public struct ProfileScreen: View {
         PublicDataContent(
             phase: profile.phase, isEmpty: profile.isEmpty, retry: { await profile.load() }
         ) {
-            AdaptiveList {
-                ProfileHeroSection()
-                ProfileNumbersSection()
-                ProfileActionsSection()
-                ProfileThemesSection()
-                ProfileContextSection()
-                ProfileVotesSection()
-                ProfileProposalsSection()
-                ProfileSpeechesSection()
-                ProfileExpensesSection()
-                ProfileAssetsSection()
-                ProfileCampaignsSection()
-                ProfileTimelineSection()
-                ProfileCommitteesSection()
-                ProfileFactChecksSection()
-                ProfileCoverageSection()
-                ProfileAboutSection()
-            }
+            ProfilePage()
         } empty: {
             ProfileEmptyState()
         }
         .navigationTitle(profile.title)
         #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar(removing: .title)
         #endif
-        .refreshable { await profile.load() }
         .task(id: session.generation) { await profile.load() }
         .errorAlert($profile.error)
     }
 }
 
-struct ProfileNumbersSection: View {
+private struct ProfilePage: View {
     @Environment(ProfileModel.self) private var profile
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
-    var body: some View {
-        Section {
-            LazyVGrid(
-                columns: Array(
-                    repeating: GridItem(.flexible(), spacing: .spaceS, alignment: .top),
-                    count: dynamicTypeSize.isAccessibilitySize ? 1 : 2),
-                spacing: .spaceS
-            ) {
-                ForEach(profile.facts) { NumberTileView(tile: $0) }
-            }
-            .listRowInsets(EdgeInsets())
-            .listRowBackground(Color.clear)
-            if profile.classification != nil {
-                PeerMethodButton(classification: profile.classification)
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-            }
-            ProfileNumbersExplainer()
-        } header: {
-            Text("Term in Numbers").sectionTitle()
-        } footer: {
-            Text(verbatim: profile.numbersFootnote)
-        }
-    }
-}
-
-private struct NumberTileView: View {
     @ReducesMotion private var reduceMotion
-    @State private var filled = false
-    let tile: ProfileModel.NumberTile
+    @State private var position = ScrollPosition()
+    @State private var offset: CGFloat = 0
+    @State private var pageTop: CGFloat = 0
+    @State private var heroBottom = CGFloat.infinity
+    @State private var headerHeight = CGFloat.profileStickyHeaderEstimate
+    @State private var tops: [ProfileChapter: CGFloat] = [:]
+
+    private var showsHeader: Bool { heroBottom - pageTop < headerHeight }
+
+    private var line: CGFloat { pageTop + headerHeight + .spaceL }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: .spaceXS) {
-            Label(tile.title, systemImage: tile.symbol)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
-                .textCase(.uppercase)
-            Text(verbatim: tile.value)
-                .font(.amountTitle)
-                .monospacedDigit()
-                .foregroundStyle(tile.isMissing ? .tertiary : .primary)
-                .amountLine()
-            if let fraction = tile.fraction {
-                ProgressBar(value: filled ? fraction : 0, color: .retroTeal)
-                    .animation(reduceMotion ? nil : .chartReveal(0), value: filled)
-                    .onAppear { filled = true }
+        ScrollView {
+            VStack(alignment: .leading, spacing: .space2XL) {
+                ProfileHero()
+                    .onGeometryChange(for: CGFloat.self) {
+                        $0.frame(in: .global).maxY
+                    } action: {
+                        heroBottom = $0
+                    }
+                ProfileFailureNotice()
+                ProfileSummary(select: jump)
+                ForEach(profile.chapters) { chapter in
+                    ProfileChapterView(chapter: chapter)
+                        .onGeometryChange(for: CGFloat.self) {
+                            $0.frame(in: .global).minY
+                        } action: {
+                            tops[chapter] = $0
+                        }
+                }
             }
-            if let caption = tile.caption {
-                Text(verbatim: caption).font(.caption).foregroundStyle(.secondary)
-            }
-            if let peer = tile.peer {
-                PeerBadge(band: peer.band)
-                Text(verbatim: peer.detail)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            Spacer(minLength: 0)
-            if let source = tile.source {
-                Text(verbatim: source).font(.caption2).foregroundStyle(.tertiary)
-            }
+            .padding(.horizontal, .spaceL)
+            .padding(.bottom, .space2XL)
+            .frame(maxWidth: .readableColumn)
+            .frame(maxWidth: .infinity)
         }
-        .padding(.spaceM)
-        .frame(maxWidth: .infinity, minHeight: .profileTileMinHeight, alignment: .topLeading)
-        .background(.plainRow, in: .rect(cornerRadius: .radiusM))
-        .accessibilityElement(children: .combine)
+        .refreshable { await profile.load() }
+        .scrollPosition($position)
+        .onScrollGeometryChange(for: CGFloat.self) {
+            $0.contentOffset.y + $0.contentInsets.top
+        } action: { _, value in
+            offset = value
+        }
+        .background(.plainBackground)
+        .onGeometryChange(for: CGFloat.self) {
+            $0.frame(in: .global).minY
+        } action: {
+            pageTop = $0
+        }
+        .overlay(alignment: .top) {
+            ProfileStickyHeader(select: jump)
+                .onGeometryChange(for: CGFloat.self) {
+                    $0.size.height
+                } action: {
+                    headerHeight = $0
+                }
+                .portraitsStill(!showsHeader)
+                .opacity(showsHeader ? 1 : 0)
+                .allowsHitTesting(showsHeader)
+                .accessibilityHidden(!showsHeader)
+                .animation(reduceMotion ? nil : .snappy, value: showsHeader)
+        }
+        .onChange(of: tops) { profile.moveCurrentChapter(tops: tops, line: line + .spaceHairline) }
+        .onChange(of: headerHeight) {
+            profile.moveCurrentChapter(tops: tops, line: line + .spaceHairline)
+        }
+    }
+
+    private func jump(to chapter: ProfileChapter) {
+        guard let top = tops[chapter] else { return }
+        withAnimation(reduceMotion ? nil : .snappy) {
+            position.scrollTo(y: offset + top - line)
+        }
     }
 }
 
-struct ProfileThemesSection: View {
+private struct ProfileFailureNotice: View {
     @Environment(ProfileModel.self) private var profile
 
     var body: some View {
-        if !profile.themeLines.isEmpty {
-            Section {
-                ForEach(profile.themeLines) { line in
-                    HStack(spacing: .spaceM) {
-                        Image(systemName: line.theme.symbol)
-                            .font(.icon(.s, weight: .medium))
-                            .foregroundStyle(.secondary)
-                            .frame(width: .badgeM, height: .badgeM)
-                            .background(
-                                Color.secondary.opacity(.opacityTint),
-                                in: .rect(cornerRadius: .radiusS)
-                            )
-                            .accessibilityHidden(true)
-                        VStack(alignment: .leading, spacing: .spaceHairline) {
-                            Text(verbatim: line.theme.title).font(.rowTitle)
-                            Text(verbatim: profile.themeDetail(line))
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
-                        }
-                        Spacer(minLength: .spaceS)
+        if profile.hasFailedSource {
+            VStack(alignment: .leading, spacing: .spaceS) {
+                Label("Some sources didn't load", systemImage: "wifi.slash")
+                    .font(.subheadline.weight(.semibold))
+                Button("Try Again") { Task { await profile.load() } }
+                    .font(.subheadline)
+            }
+            .padding(.spaceL)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
+        }
+    }
+}
+
+private struct ProfileSummary: View {
+    @Environment(ProfileModel.self) private var profile
+    let select: (ProfileChapter) -> Void
+
+    var body: some View {
+        if !profile.summary.isEmpty {
+            ProfileBlock {
+                ForEach(profile.summary) { fact in
+                    Button {
+                        select(fact.chapter)
+                    } label: {
+                        ProfileSummaryRow(fact: fact)
                     }
-                    .accessibilityElement(children: .combine)
+                    .buttonStyle(.plain)
+                    .accessibilityHint(Text("Goes to \(fact.chapter.title)"))
                 }
-            } header: {
-                Text("Themes").sectionTitle()
-                    .textCase(nil)
-            } footer: {
-                Text(verbatim: profile.themeFootnote)
+                if let explanation = profile.numbersExplanation {
+                    ExplainerCard(explanation)
+                }
             }
         }
+    }
+}
+
+private struct ProfileSummaryRow: View {
+    let fact: ProfileSummaryFact
+
+    var body: some View {
+        HStack(spacing: .spaceM) {
+            VStack(alignment: .leading, spacing: .spaceHairline) {
+                Text(verbatim: fact.text)
+                    .font(.rowTitle)
+                    .foregroundStyle(.primary)
+                    .fixedSize(horizontal: false, vertical: true)
+                if let source = fact.source {
+                    Text(verbatim: source).font(.caption).foregroundStyle(.secondary)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            Image(systemName: "arrow.down")
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.tertiary)
+                .accessibilityHidden(true)
+        }
+        .contentShape(.rect)
     }
 }
 

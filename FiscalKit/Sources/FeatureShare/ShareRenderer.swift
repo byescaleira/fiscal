@@ -76,6 +76,9 @@ extension ShareCardContent {
         case .highlight(let highlight): highlight.title
         case .investigation(let investigation): investigation.question
         case .following: String(appLocalized: "Who I follow")
+        case .receipt(let receipt): receipt.supplier
+        case .ballot(let ballot): ballot.proposition
+        case .proposal(let proposal): proposal.reference
         }
     }
 }

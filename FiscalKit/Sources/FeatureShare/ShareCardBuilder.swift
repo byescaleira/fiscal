@@ -104,6 +104,10 @@ public struct ShareCardBuilder: Sendable {
     }
 
     func spending(_ list: ExpenseList, year: Int) -> ShareSpending {
+        spending(list, period: String(year))
+    }
+
+    func spending(_ list: ExpenseList, period: String) -> ShareSpending {
         let sorted = list.byCategory.sorted { $0.cents > $1.cents }
         let shown = sorted.count > 4 ? Array(sorted.prefix(3)) : sorted
         let rest = sorted.dropFirst(shown.count).reduce(0) { $0 + $1.cents }
@@ -121,7 +125,7 @@ public struct ShareCardBuilder: Sendable {
         }
         return ShareSpending(
             total: PublicFormat.money(cents: list.totalCents),
-            caption: String(appLocalized: "Office allowance spending in \(String(year))"),
+            caption: String(appLocalized: "Office allowance spending in \(period)"),
             receipts: String(appLocalized: "Receipts: \(PublicFormat.number(list.items.count))"),
             categories: categories)
     }

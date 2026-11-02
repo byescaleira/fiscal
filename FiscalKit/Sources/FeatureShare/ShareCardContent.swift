@@ -13,6 +13,9 @@ public struct ShareCardContent: Hashable, Sendable {
         case victory(ShareVictory)
         case investigation(ShareInvestigation)
         case following([ShareFace])
+        case receipt(ShareReceipt)
+        case ballot(ShareBallot)
+        case proposal(ShareProposal)
     }
 
     public let eyebrow: String

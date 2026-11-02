@@ -8,6 +8,8 @@
     struct ExpensesTable: View {
         @Environment(ExpensesModel.self) private var expenses
         @Environment(\.openURL) private var openURL
+        @Environment(\.open) private var open
+        @Environment(\.navigationSection) private var section
         @State private var order: [KeyPathComparator<ExpensesModel.Record>] = ExpensesModel
             .recordOrder
         @State private var selection = Set<ExpensesModel.Record.ID>()
@@ -39,6 +41,11 @@
                 if !urls.isEmpty {
                     Button("Open Receipt", systemImage: "arrow.up.forward.square") {
                         openReceipts(ids)
+                    }
+                }
+                if let route = expenses.shareRoute(forRecords: ids) {
+                    Button("Share This Receipt", systemImage: "square.and.arrow.up") {
+                        open(route, in: section)
                     }
                 }
                 Button("Copy", systemImage: "doc.on.doc") { copy(ids) }

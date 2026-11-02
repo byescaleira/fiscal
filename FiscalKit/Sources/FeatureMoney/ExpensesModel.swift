@@ -57,6 +57,14 @@ public final class ExpensesModel {
 
     public var shareRoute: Route { .share(.expenses(slug: slug, year: year)) }
 
+    public func shareRoute(for line: Line) -> Route? {
+        line.isCompany ? .share(.expense(slug: slug, year: year, id: line.id)) : nil
+    }
+
+    public func shareRoute(forMonth month: Int) -> Route {
+        .share(.expenseMonth(slug: slug, year: year, month: month))
+    }
+
     public var header: Header? {
         guard let profile else { return nil }
         let place = profile.uf == "br" ? nil : profile.uf.uppercased()
@@ -250,7 +258,7 @@ public final class ExpensesModel {
             kind: MoneyKind.category(expense.category),
             document: document.map { String(appLocalized: "CNPJ \($0)") }
                 ?? String(appLocalized: "Individual"),
-            isCompany: document != nil, value: PublicFormat.money(cents: expense.cents),
+            isCompany: expense.isCompany, value: PublicFormat.money(cents: expense.cents),
             url: expense.url)
     }
 }

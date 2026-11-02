@@ -17,7 +17,10 @@ struct RaceWinnerCard: View {
             RaceHeroHeader(summary: summary)
             if opensDetail, results != nil {
                 RouteLink(.race(id: summary.race.id), showsChevron: false) {
-                    content.contentShape(.rect)
+                    content
+                        .frame(maxWidth: .infinity)
+                        .overlay(alignment: .trailing) { RouteChevron(isOnDarkCard: true) }
+                        .contentShape(.rect)
                 }
                 .buttonStyle(.plain)
             } else {

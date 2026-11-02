@@ -4,22 +4,28 @@ public enum PortraitExpression: String, Sendable, Hashable, CaseIterable {
     case wave, thumbsUp, nodYes, shakeNo, smile, celebrate, think, sad
 }
 
+public enum PortraitGesture: String, Sendable, Hashable, CaseIterable {
+    case lookAround, tilt, browRaise, doubleBlink, settle
+}
+
 public struct PortraitRequest: Sendable, Hashable {
     public let slug: String
     public let party: String
     public let isStill: Bool
     public let expression: PortraitExpression?
     public let allowsGestures: Bool
+    public let gesture: PortraitGesture?
 
     public init(
         slug: String, party: String, isStill: Bool, expression: PortraitExpression? = nil,
-        allowsGestures: Bool = false
+        allowsGestures: Bool = false, gesture: PortraitGesture? = nil
     ) {
         self.slug = slug
         self.party = party
         self.isStill = isStill
         self.expression = expression
         self.allowsGestures = allowsGestures
+        self.gesture = gesture
     }
 }
 
