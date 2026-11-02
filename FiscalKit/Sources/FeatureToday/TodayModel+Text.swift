@@ -2,8 +2,6 @@ import FiscalDomain
 import Foundation
 
 extension TodayModel {
-    public var lensLine: String? { Self.lensLine(lens) }
-
     public var dateLine: String {
         Self.dateLine(digest?.date ?? agenda?.date ?? CalendarDay(now()))
     }
@@ -46,7 +44,7 @@ extension TodayModel {
             ? error.title : String(appLocalized: "Couldn't load the summary of the day")
     }
 
-    public func shownItems(_ house: HouseAgenda) -> [LensOrdered<AgendaItem>] {
+    public func shownItems(_ house: HouseAgenda) -> [AgendaItem] {
         Array(house.items.prefix(Self.agendaLimit))
     }
 
@@ -138,16 +136,6 @@ extension TodayModel {
         case .session: "building.columns"
         case .race: "checkmark.seal"
         case .law: "doc.text"
-        }
-    }
-
-    nonisolated public static func lensLine(_ lens: Lens?) -> String? {
-        switch TodayBriefing.mode(for: lens) {
-        case .plain: return nil
-        case .themes(let themes):
-            let list = themes.map(\.title).formatted(.list(type: .and).locale(.app))
-            return String(
-                appLocalized: "First: \(list). The facts are the same for everyone.")
         }
     }
 

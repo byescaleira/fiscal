@@ -5,7 +5,6 @@ import SwiftUI
 
 struct VoteScoreRow: View {
     @Environment(VotesModel.self) private var votes
-    @Environment(\.appTint) private var tint
     let vote: VoteSummary
 
     var body: some View {
@@ -14,10 +13,10 @@ struct VoteScoreRow: View {
                 Text(verbatim: votes.houseLine(vote))
                     .font(.caption2.weight(.bold))
                     .foregroundStyle(.secondary)
-                if let theme = votes.lensTheme(of: vote) {
+                if let theme = vote.themes.first {
                     Label(theme.title, systemImage: theme.symbol)
                         .font(.caption2.weight(.semibold))
-                        .foregroundStyle(votes.isLensTheme(theme) ? tint : .secondary)
+                        .foregroundStyle(.secondary)
                         .lineLimit(1)
                 }
             }
@@ -129,32 +128,5 @@ struct OutcomeCenter: View {
                 .monospacedDigit()
         }
         .fixedSize()
-    }
-}
-
-struct VoteHighlightRow: View {
-    @Environment(VotesModel.self) private var votes
-    @Environment(\.appTint) private var tint
-    let vote: VoteSummary
-
-    var body: some View {
-        let outcome = VoteOutcome(vote)
-        AdaptiveRow(spacing: .spaceM) {
-            if let theme = votes.lensTheme(of: vote) {
-                SymbolBadge(theme.symbol, color: tint, size: .badgeM)
-            }
-            VStack(alignment: .leading, spacing: .space2XS) {
-                Text(verbatim: vote.heading).font(.headline)
-                Text(verbatim: votes.summary(vote))
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(2)
-                Label(outcome.title, systemImage: outcome.symbol)
-                    .font(.chipLabel)
-                    .foregroundStyle(outcome.color)
-                SameDayVotesMark(vote: vote, now: votes.now())
-            }
-        }
-        .accessibilityElement(children: .combine)
     }
 }

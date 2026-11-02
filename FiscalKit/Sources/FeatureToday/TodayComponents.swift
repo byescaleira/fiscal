@@ -69,17 +69,6 @@ extension View {
     }
 }
 
-struct LensPickMark: View {
-    @Environment(\.appTint) private var tint
-
-    var body: some View {
-        Label("For who you support", systemImage: "heart")
-            .font(.chipLabel)
-            .foregroundStyle(tint)
-            .labelStyle(.titleAndIcon)
-    }
-}
-
 struct ThemeTag: View {
     @Environment(\.appTint) private var tint
     let theme: Theme

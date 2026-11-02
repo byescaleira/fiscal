@@ -17,15 +17,11 @@ struct VoteSupportSection: View {
                 }
                 ForEach(ballots) { BallotRow(ballot: $0, size: .badgeL) }
             } header: {
-                AdaptiveRow(spacing: .spaceS) {
-                    Text("How the people you support voted").sectionTitle()
-                    Spacer(minLength: .spaceS)
-                    LensBadge()
-                }
-                .textCase(nil)
+                Text("How the people you support voted").sectionTitle()
+                    .textCase(nil)
             } footer: {
                 Text(
-                    "Only who you support and who was on this roll call. Who you support stays on this iPhone."
+                    "Only who you support and who was on this roll call. Who you support stays on this device."
                 )
             }
         }

@@ -60,20 +60,7 @@ private struct VotesTopicPicker: View {
         @Bindable var votes = votes
         Picker(selection: $votes.theme) {
             Label("All Topics", systemImage: "square.grid.2x2").tag(Theme?.none)
-            if votes.lensThemeChoices.isEmpty {
-                ForEach(votes.otherThemeChoices) { TopicOption(theme: $0).tag(Theme?.some($0)) }
-            } else {
-                Section("In Your Topics") {
-                    ForEach(votes.lensThemeChoices) { TopicOption(theme: $0).tag(Theme?.some($0)) }
-                }
-                if !votes.otherThemeChoices.isEmpty {
-                    Section("Other Topics") {
-                        ForEach(votes.otherThemeChoices) {
-                            TopicOption(theme: $0).tag(Theme?.some($0))
-                        }
-                    }
-                }
-            }
+            ForEach(votes.themeChoices) { TopicOption(theme: $0).tag(Theme?.some($0)) }
         } label: {
             Label("Topic", systemImage: "tag")
         }

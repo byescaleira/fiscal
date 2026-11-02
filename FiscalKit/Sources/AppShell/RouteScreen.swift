@@ -34,7 +34,7 @@ struct RouteScreen: View {
         case .vote(let id):
             ModelHost(
                 VoteDetailModel(
-                    id: id, service: data, lens: session.repositories.lens,
+                    id: id, service: data, support: session.repositories.support,
                     homeUF: HomePlace.chosenUF(in: .standard))
             ) {
                 VoteDetailScreen()
