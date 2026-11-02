@@ -336,6 +336,7 @@
       }
     },
     "%@ other" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -346,6 +347,7 @@
       }
     },
     "%@ other votes" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -11856,6 +11858,28 @@
         }
       }
     },
+    "See the %lld votes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ver o %lld voto"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ver os %lld votos"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "See the Official Source" : {
       "localizations" : {
         "pt-BR" : {
@@ -13758,6 +13782,16 @@
         }
       }
     },
+    "The house didn't publish who voted how." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A casa não publicou quem votou como."
+          }
+        }
+      }
+    },
     "The house doesn't publish the office allowance spending for this term." : {
       "localizations" : {
         "pt-BR" : {
@@ -15422,6 +15456,16 @@
         }
       }
     },
+    "Voice vote: the house recorded the result, without each person's vote" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votação simbólica: a casa registrou o resultado, sem o voto de cada pessoa"
+          }
+        }
+      }
+    },
     "Vote" : {
       "localizations" : {
         "pt-BR" : {
@@ -16360,6 +16404,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quem é"
+          }
+        }
+      }
+    },
+    "Who Voted" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem votou"
           }
         }
       }

@@ -8,20 +8,12 @@ struct VoteSameDaySection: View {
 
     var body: some View {
         if !vote.sameDayVotes.isEmpty {
-            Section {
+            ContentBlock(
+                title: Text("Other Votes on This Bill That Day"), footer: [vote.sameDayFooter]
+            ) {
                 ForEach(vote.sameDayVotes) { item in
                     RouteLink(.vote(id: item.id)) { SameDayVoteRow(item: item) }
                 }
-            } header: {
-                Label {
-                    Text("Other Votes on This Bill That Day")
-                } icon: {
-                    Image(systemName: SameDayVotes.symbol)
-                }
-                .sectionTitle()
-                .textCase(nil)
-            } footer: {
-                Text(verbatim: vote.sameDayFooter)
             }
         }
     }

@@ -9,20 +9,20 @@ struct VoteSupportSection: View {
     var body: some View {
         let ballots = vote.supportedBallots
         if !ballots.isEmpty {
-            Section {
+            ContentBlock(
+                title: Text("How the people you support voted"),
+                footer: [
+                    String(
+                        appLocalized:
+                            "Only who you support and who was on this roll call. Who you support stays on this device."
+                    )
+                ]
+            ) {
                 if let headline = vote.supportedHeadline {
                     Text(verbatim: headline)
                         .font(.headline)
-                        .padding(.vertical, .space2XS)
                 }
                 ForEach(ballots) { BallotRow(ballot: $0, size: .badgeL).privacySensitive() }
-            } header: {
-                Text("How the people you support voted").sectionTitle()
-                    .textCase(nil)
-            } footer: {
-                Text(
-                    "Only who you support and who was on this roll call. Who you support stays on this device."
-                )
             }
         }
     }
@@ -33,7 +33,13 @@ struct VoteRepresentativesSection: View {
 
     var body: some View {
         if let people = vote.representatives {
-            Section {
+            ContentBlock(
+                title: Text(verbatim: vote.representativesTitle),
+                footer: [
+                    String(
+                        appLocalized: "The state you chose in Region. Names in alphabetical order.")
+                ]
+            ) {
                 if people.isEmpty {
                     Label(
                         "None of your state's representatives is on this roll call.",
@@ -43,10 +49,6 @@ struct VoteRepresentativesSection: View {
                 } else {
                     ForEach(people) { BallotRow(ballot: $0, size: .badgeL) }
                 }
-            } header: {
-                Text(verbatim: vote.representativesTitle).sectionTitle()
-            } footer: {
-                Text("The state you chose in Region. Names in alphabetical order.")
             }
         }
     }

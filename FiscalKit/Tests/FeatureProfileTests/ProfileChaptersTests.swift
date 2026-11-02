@@ -179,16 +179,6 @@ struct ProfileChaptersTests {
         #expect(none.checkItems.isEmpty)
         #expect(!none.chapters.contains(.checks))
     }
-
-    @Test func theCurrentChapterIsTheLastOnePastTheLine() {
-        let order = ProfileChapter.allCases
-        #expect(ProfileModel.chapter(in: order, tops: [:], line: 100) == nil)
-        #expect(ProfileModel.chapter(in: order, tops: [.votes: 150], line: 100) == nil)
-        #expect(
-            ProfileModel.chapter(
-                in: order, tops: [.votes: 40, .proposals: 100, .money: 400], line: 100)
-                == .proposals)
-    }
 }
 
 struct ProfilePortraitChoreographyTests {

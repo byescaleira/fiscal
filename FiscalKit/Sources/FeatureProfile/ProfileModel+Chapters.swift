@@ -25,15 +25,8 @@ extension ProfileModel {
         facts.filter { Self.chapter(ofFact: $0.id) == chapter }
     }
 
-    public func moveCurrentChapter(tops: [ProfileChapter: CGFloat], line: CGFloat) {
-        let next = Self.chapter(in: chapters, tops: tops, line: line)
-        if next != currentChapter { currentChapter = next }
-    }
-
-    static func chapter(
-        in order: [ProfileChapter], tops: [ProfileChapter: CGFloat], line: CGFloat
-    ) -> ProfileChapter? {
-        order.last { chapter in tops[chapter].map { $0 <= line } ?? false }
+    public func moveCurrentChapter(to chapter: ProfileChapter?) {
+        if chapter != currentChapter { currentChapter = chapter }
     }
 
     public var gaps: [String] {

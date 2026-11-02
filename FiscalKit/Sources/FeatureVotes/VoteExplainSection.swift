@@ -12,8 +12,8 @@ struct VoteExplainSection: View {
     @Environment(VoteDetailModel.self) private var vote
 
     var body: some View {
-        if let explanation = vote.explanation, !explanation.isEmpty {
-            Section {
+        if vote.hasScore, let explanation = vote.explanation, !explanation.isEmpty {
+            ContentBlock {
                 ExplainerCard(explanation)
             }
         }
