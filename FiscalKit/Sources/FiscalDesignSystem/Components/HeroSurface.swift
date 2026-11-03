@@ -1,0 +1,84 @@
+import SwiftUI
+
+public enum HeroTone: Hashable, Sendable {
+    case party(String)
+    case parties(String, String)
+    case vote
+    case colors([Color])
+
+    public var tints: [Color] {
+        switch self {
+        case .party(let party):
+            let palette = PartyPalette.of(party: party)
+            return [palette.primary, palette.secondary]
+        case .parties(let first, let second):
+            return [
+                PartyPalette.of(party: first, fallback: 0).primary,
+                PartyPalette.of(party: second, fallback: 1).primary,
+            ]
+        case .vote:
+            return [.voteYes, .voteNo]
+        case .colors(let colors):
+            return colors
+        }
+    }
+}
+
+public struct HeroInk: Sendable {
+    private let isDark: Bool
+
+    public init(_ colorScheme: ColorScheme) {
+        isDark = colorScheme == .dark
+    }
+
+    public var primary: Color { isDark ? .white : .primary }
+
+    public var secondary: Color {
+        isDark ? .white.opacity(.opacityStrong) : .primary.opacity(.opacityStrong)
+    }
+
+    public var dimmed: Color {
+        isDark ? .white.opacity(.opacitySoft) : .primary.opacity(.opacityStrong)
+    }
+
+    public var track: Color {
+        isDark ? .white.opacity(.opacityTint) : .secondary.opacity(.opacityTint)
+    }
+
+    public func signal(_ color: Color) -> Color { isDark ? .white : color }
+}
+
+public struct HeroSurface<Dark: View>: View {
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.colorSchemeContrast) private var contrast
+    private let tone: HeroTone
+    private let cornerRadius: CGFloat
+    private let dark: Dark
+
+    public init(
+        _ tone: HeroTone, cornerRadius: CGFloat = .radiusGroup, @ViewBuilder dark: () -> Dark
+    ) {
+        self.tone = tone
+        self.cornerRadius = cornerRadius
+        self.dark = dark()
+    }
+
+    public var body: some View {
+        if colorScheme == .dark {
+            dark
+        } else if contrast == .increased {
+            Color.plainRow
+                .overlay {
+                    RoundedRectangle(cornerRadius: cornerRadius)
+                        .strokeBorder(.primary, lineWidth: .spaceHairline)
+                }
+        } else {
+            ZStack {
+                Color.plainRow
+                LinearGradient(
+                    colors: tone.tints.map { $0.opacity(.opacityTint) },
+                    startPoint: .topLeading, endPoint: .bottomTrailing)
+            }
+        }
+    }
+}

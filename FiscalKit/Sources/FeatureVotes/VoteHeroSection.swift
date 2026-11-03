@@ -7,20 +7,15 @@ extension CGFloat {
     fileprivate static let voteHeroFigureScale: CGFloat = 0.7
 }
 
-enum BoardStyle {
-    static let primary = Color.white
-    static let secondary = Color.white.opacity(.opacityStrong)
-    static let dimmed = Color.white.opacity(.opacitySoft)
-    static let track = Color.white.opacity(.opacityTint)
-}
-
 struct VoteHeroSection: View {
     @Environment(VoteDetailModel.self) private var vote
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceS) {
             VoteScoreboard()
-                .background { VoteBoardBackground() }
+                .background {
+                    HeroSurface(.vote) { VoteBoardBackground() }
+                }
                 .clipShape(.rect(cornerRadius: .radiusGroup))
             ContentFooter(lines: [vote.sourceText])
                 .font(.footnote)
@@ -44,16 +39,17 @@ private struct VoteBoardBackground: View {
 private struct VoteScoreboard: View {
     @Environment(VoteDetailModel.self) private var vote
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         let outcome = vote.outcome ?? .pending
+        let ink = HeroInk(colorScheme)
         VStack(spacing: .spaceM) {
             VStack(spacing: .space2XS) {
-                Chip(vote.heroCaption, color: BoardStyle.primary, shape: .capsule)
-                    .environment(\.colorScheme, .dark)
+                Chip(vote.heroCaption, color: ink.primary, shape: .capsule)
                 Text(verbatim: vote.title)
                     .font(.titleMedium)
-                    .foregroundStyle(BoardStyle.primary)
+                    .foregroundStyle(ink.primary)
             }
             .multilineTextAlignment(.center)
             if vote.hasScore {
@@ -80,14 +76,16 @@ private struct VoteScoreboard: View {
                         segments: [
                             TallyChart.Segment(
                                 id: "yes", title: BallotChoice.yes.title,
-                                value: Double(tally.yes ?? 0), color: BoardStyle.primary),
+                                value: Double(tally.yes ?? 0),
+                                color: ink.signal(BallotChoice.yes.color)),
                             TallyChart.Segment(
                                 id: "no", title: BallotChoice.no.title,
                                 value: Double(tally.no ?? 0),
-                                color: BoardStyle.dimmed),
+                                color: colorScheme == .dark
+                                    ? ink.dimmed : BallotChoice.no.color),
                             TallyChart.Segment(
                                 id: "others", title: String(appLocalized: "Others"),
-                                value: Double(tally.others ?? 0), color: BoardStyle.track,
+                                value: Double(tally.others ?? 0), color: ink.track,
                                 dashed: true),
                         ], height: .spaceS)
                 }
@@ -108,12 +106,14 @@ private struct HeroSide: View {
     let value: String
     let numeric: Double
     var isDimmed = false
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
+        let ink = HeroInk(colorScheme)
         VStack(spacing: .space2XS) {
             ScoreboardFigure(value, numeric: numeric, scale: .voteHeroFigureScale)
-                .foregroundStyle(isDimmed ? BoardStyle.secondary : BoardStyle.primary)
-            StatusCircle(choice.title, symbol: choice.symbol, color: BoardStyle.primary)
+                .foregroundStyle(isDimmed ? ink.secondary : ink.primary)
+            StatusCircle(choice.title, symbol: choice.symbol, color: ink.signal(choice.color))
         }
         .frame(maxWidth: .infinity)
     }
@@ -121,9 +121,11 @@ private struct HeroSide: View {
 
 private struct HeroNoScore: View {
     @Environment(VoteDetailModel.self) private var vote
+    @Environment(\.colorScheme) private var colorScheme
     let outcome: VoteOutcome
 
     var body: some View {
+        let ink = HeroInk(colorScheme)
         VStack(spacing: .spaceS) {
             Image(systemName: outcome.symbol)
                 .font(.icon(.l, weight: .semibold))
@@ -132,10 +134,10 @@ private struct HeroNoScore: View {
                 .textCase(.uppercase)
             Text(verbatim: vote.symbolicText ?? vote.headline)
                 .font(.subheadline)
-                .foregroundStyle(BoardStyle.secondary)
+                .foregroundStyle(ink.secondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
-        .foregroundStyle(BoardStyle.primary)
+        .foregroundStyle(ink.primary)
         .multilineTextAlignment(.center)
         .frame(maxWidth: .infinity)
     }
@@ -143,6 +145,7 @@ private struct HeroNoScore: View {
 
 private struct HeroCenter: View {
     @ReducesMotion private var reduceMotion
+    @Environment(\.colorScheme) private var colorScheme
     @State private var hasAppeared = false
     let outcome: VoteOutcome
 
@@ -156,7 +159,7 @@ private struct HeroCenter: View {
                 .textCase(.uppercase)
                 .lineLimit(1)
         }
-        .foregroundStyle(BoardStyle.primary)
+        .foregroundStyle(HeroInk(colorScheme).signal(outcome.color))
         .fixedSize()
         .onAppear { if !reduceMotion { hasAppeared = true } }
     }
@@ -164,6 +167,7 @@ private struct HeroCenter: View {
 
 private struct HeroRule: View {
     @Environment(VoteDetailModel.self) private var vote
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         VStack(spacing: .space2XS) {
@@ -174,7 +178,7 @@ private struct HeroRule: View {
                     .font(.caption)
             }
         }
-        .foregroundStyle(BoardStyle.secondary)
+        .foregroundStyle(HeroInk(colorScheme).secondary)
         .multilineTextAlignment(.center)
         .fixedSize(horizontal: false, vertical: true)
     }
@@ -182,19 +186,21 @@ private struct HeroRule: View {
 
 private struct HeroLastLine: View {
     @Environment(VoteDetailModel.self) private var vote
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
+        let ink = HeroInk(colorScheme)
         HStack(spacing: .spaceS) {
             Capsule()
-                .fill(BoardStyle.primary)
+                .fill(ink.primary)
                 .frame(width: .space2XS)
             VStack(alignment: .leading, spacing: 0) {
                 Text(verbatim: vote.headline)
                     .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(BoardStyle.primary)
+                    .foregroundStyle(ink.primary)
                 Text(verbatim: vote.votersText)
                     .font(.caption2.weight(.medium))
-                    .foregroundStyle(BoardStyle.secondary)
+                    .foregroundStyle(ink.secondary)
             }
             Spacer(minLength: 0)
         }
