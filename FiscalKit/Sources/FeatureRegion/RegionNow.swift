@@ -53,6 +53,7 @@ private struct RegionHighlightCard: View {
     @Environment(RegionModel.self) private var region
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
+    @Environment(\.colorScheme) private var colorScheme
     @ReducesMotion private var reduceMotion
     @State private var appeared = false
     let highlight: Highlight
@@ -75,7 +76,7 @@ private struct RegionHighlightCard: View {
             } label: {
                 HStack(spacing: .spaceM) {
                     content.frame(maxWidth: .infinity, alignment: .leading)
-                    RouteChevron(isOnHero: true)
+                    RouteChevron(isOnDarkCard: colorScheme == .dark)
                 }
                 .contentShape(.rect)
             }

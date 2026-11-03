@@ -49,7 +49,8 @@ private struct RegionSeatCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceL) {
-            Chip(seat.kicker, color: .heroInk, shape: .capsule)
+            Chip(seat.kicker, color: .white, shape: .capsule)
+                .environment(\.colorScheme, .dark)
             if seat.standsAlone { Spacer(minLength: 0) }
             Button {
                 open(.person(slug: seat.holder.slug), in: section)
@@ -66,11 +67,9 @@ private struct RegionSeatCard: View {
             ForEach(seat.elected) { RegionSeatPerson(card: $0) }
         }
         .padding(.spaceInset)
-        .foregroundStyle(.heroInk)
+        .foregroundStyle(.white)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background {
-            HeroSurface(.party(seat.holder.party)) { PartyBackdrop(party: seat.holder.party) }
-        }
+        .background { PartyBackdrop(party: seat.holder.party) }
         .clipShape(.rect(cornerRadius: .radiusGroup))
         .onAppear {
             withAnimation(reduceMotion ? nil : .spring(duration: 0.8, bounce: 0.3)) {
@@ -148,7 +147,7 @@ private struct RegionSeatAction: View {
         }
         .padding(.spaceM)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.heroInk.opacity(.opacityFill), in: .rect(cornerRadius: .radiusM))
+        .background(.white.opacity(.opacityFill), in: .rect(cornerRadius: .radiusM))
     }
 }
 
@@ -181,7 +180,7 @@ private struct RegionSeatPerson: View {
                 PartyMark(card.party)
             }
             .padding(.spaceS)
-            .background(.heroInk.opacity(.opacityTint), in: .rect(cornerRadius: .radiusM))
+            .background(.white.opacity(.opacityTint), in: .rect(cornerRadius: .radiusM))
             .contentShape(.rect)
         }
         .buttonStyle(.plain)

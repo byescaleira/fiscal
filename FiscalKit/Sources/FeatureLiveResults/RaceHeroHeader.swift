@@ -36,7 +36,7 @@ struct RaceHeroHeader: View {
     }
 
     private var statusCircle: some View {
-        StatusCircle(summary.statusText, symbol: summary.statusSymbol, color: .heroInk)
+        StatusCircle(summary.statusText, symbol: summary.statusSymbol, color: .white)
             .symbolEffect(
                 .pulse,
                 isActive: !reduceMotion && !MotionBudget.isConstrained && summary.isCounting
@@ -77,7 +77,7 @@ struct RaceHeroHeader: View {
         .dynamicTypeSize(...DynamicTypeSize.xxLarge)
         .buttonStyle(.plain)
         .frame(width: .badgeL, height: .badgeL)
-        .background(.heroInk.opacity(.opacityTint), in: .circle)
+        .background(.white.opacity(.opacityTint), in: .circle)
     }
 }
 
@@ -101,7 +101,7 @@ private struct RaceHeroFollow: View {
         .dynamicTypeSize(...DynamicTypeSize.xxLarge)
         .buttonStyle(.plain)
         .frame(width: .badgeL, height: .badgeL)
-        .background(.heroInk.opacity(following ? .opacitySoft : .opacityTint), in: .circle)
+        .background(.white.opacity(following ? .opacitySoft : .opacityTint), in: .circle)
         .disabled(!results.canToggle(race))
         .sensoryFeedback(.selection, trigger: following)
         .accessibilityLabel(Text(verbatim: results.followLabel(race)))

@@ -8,13 +8,11 @@ struct PartyCardBackground: View {
 
     var body: some View {
         let palette = PartyPalette.of(party: party, fallback: 0)
-        HeroSurface(.colors([palette.primary, palette.secondary])) {
-            ZStack {
-                LinearGradient(
-                    colors: [palette.primary, palette.secondary], startPoint: .topLeading,
-                    endPoint: .bottomTrailing)
-                Color.scoreboard.opacity(.opacitySoft)
-            }
+        ZStack {
+            LinearGradient(
+                colors: [palette.primary, palette.secondary], startPoint: .topLeading,
+                endPoint: .bottomTrailing)
+            Color.scoreboard.opacity(.opacitySoft)
         }
     }
 }
@@ -41,7 +39,7 @@ struct PastOtherRow: View {
                 .monospacedDigit()
         }
         .padding(.spaceS)
-        .background(.heroInk.opacity(.opacityTint), in: .rect(cornerRadius: .radiusM))
+        .background(.white.opacity(.opacityTint), in: .rect(cornerRadius: .radiusM))
         .opacity(.opacityStrong)
     }
 }

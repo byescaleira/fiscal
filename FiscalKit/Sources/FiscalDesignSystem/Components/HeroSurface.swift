@@ -1,25 +1,13 @@
 import SwiftUI
 
 public enum HeroTone: Hashable, Sendable {
-    case party(String)
-    case parties(String, String)
     case vote
     case colors([Color])
 
     public var tints: [Color] {
         switch self {
-        case .party(let party):
-            let palette = PartyPalette.of(party: party)
-            return [palette.primary, palette.secondary]
-        case .parties(let first, let second):
-            return [
-                PartyPalette.of(party: first, fallback: 0).primary,
-                PartyPalette.of(party: second, fallback: 1).primary,
-            ]
-        case .vote:
-            return [.voteYes, .voteNo]
-        case .colors(let colors):
-            return colors
+        case .vote: [.voteYes, .voteNo]
+        case .colors(let colors): colors
         }
     }
 }

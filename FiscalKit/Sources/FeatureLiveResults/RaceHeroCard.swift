@@ -41,7 +41,7 @@ public struct RaceHeroCard: View {
             }
         }
         .padding(.spaceInset)
-        .foregroundStyle(.heroInk)
+        .foregroundStyle(.white)
         .background { RaceHeroBackground(summary: summary) }
         .clipShape(.rect(cornerRadius: .radiusGroup))
         .opacity(results?.isOffline == true ? .opacityStrong : 1)
@@ -80,13 +80,11 @@ private struct RaceHeroBackground: View {
         let sides = summary.sides
         let first = PartyPalette.of(party: sides.first?.candidate.party ?? "", fallback: 0)
         let second = PartyPalette.of(party: sides.last?.candidate.party ?? "", fallback: 1)
-        HeroSurface(.colors([first.primary, second.primary])) {
-            ZStack {
-                LinearGradient(
-                    colors: [first.primary, second.primary], startPoint: .leading,
-                    endPoint: .trailing)
-                Color.scoreboard.opacity(.opacitySoft)
-            }
+        ZStack {
+            LinearGradient(
+                colors: [first.primary, second.primary], startPoint: .leading,
+                endPoint: .trailing)
+            Color.scoreboard.opacity(.opacitySoft)
         }
         .accessibilityHidden(true)
     }
@@ -175,7 +173,7 @@ private struct RaceHeroCenter: View {
             Text(summary.race.final ? "TSE" : "counted")
                 .font(.caption2.weight(.semibold))
                 .opacity(.opacityStrong)
-            RaceCountBar(value: summary.countedFraction, color: .heroInk)
+            RaceCountBar(value: summary.countedFraction, color: .white)
                 .frame(width: .badgeXL)
         }
         .frame(minWidth: .badgeXL + .spaceL)
@@ -217,11 +215,11 @@ private struct RaceHeroSplit: View {
             segments: [
                 TallyChart.Segment(
                     id: "first", title: summary.sides.first?.candidate.name ?? "", value: share,
-                    color: .heroInk),
+                    color: .white),
                 TallyChart.Segment(
                     id: "second", title: summary.sides.last?.candidate.name ?? "",
-                    value: 1 - share, color: .heroInk.opacity(.opacitySoft)),
-            ], height: .spaceS, track: .heroInk.opacity(.opacityTint)
+                    value: 1 - share, color: .white.opacity(.opacitySoft)),
+            ], height: .spaceS, track: .white.opacity(.opacityTint)
         )
         .animation(reduceMotion ? nil : .chartReveal(0), value: share)
         .accessibilityHidden(true)
@@ -239,8 +237,8 @@ struct RaceHeroBallots: View {
                     segments: ballots.map { ballot in
                         TallyChart.Segment(
                             id: ballot.id, title: ballot.title, value: Double(ballot.count),
-                            color: .heroInk.opacity(Self.opacity(ballot.kind)))
-                    }, height: .space2XS, track: .heroInk.opacity(.opacityTint))
+                            color: .white.opacity(Self.opacity(ballot.kind)))
+                    }, height: .space2XS, track: .white.opacity(.opacityTint))
                 ViewThatFits(in: .horizontal) {
                     HStack(spacing: .spaceM) { items(ballots) }
                     Grid(
@@ -260,7 +258,7 @@ struct RaceHeroBallots: View {
         ForEach(ballots) { ballot in
             HStack(spacing: .space2XS) {
                 Circle()
-                    .fill(.heroInk.opacity(Self.opacity(ballot.kind)))
+                    .fill(.white.opacity(Self.opacity(ballot.kind)))
                     .frame(width: .spaceXS, height: .spaceXS)
                 Text(verbatim: ballot.title)
                     .opacity(.opacityStrong)
@@ -290,7 +288,7 @@ private struct RaceHeroLastPlay: View {
     var body: some View {
         HStack(spacing: .spaceS) {
             Capsule()
-                .fill(.heroInk)
+                .fill(.white)
                 .frame(width: .space2XS)
                 .frame(maxHeight: .infinity)
             VStack(alignment: .leading, spacing: .spaceHairline) {

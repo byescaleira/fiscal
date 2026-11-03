@@ -19,7 +19,7 @@ struct PastWinnerCard: View {
                     .amountLine()
                 Spacer(minLength: .spaceS)
                 StatusCircle(
-                    String(appLocalized: "Elected"), symbol: "checkmark.seal.fill", color: .heroInk)
+                    String(appLocalized: "Elected"), symbol: "checkmark.seal.fill", color: .white)
             }
             PastWinnerHeadline(winner: winner)
             if let runnerUp {
@@ -36,7 +36,7 @@ struct PastWinnerCard: View {
             }
         }
         .padding(.spaceL)
-        .foregroundStyle(.heroInk)
+        .foregroundStyle(.white)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background { PartyCardBackground(party: winner.party) }
         .clipShape(.rect(cornerRadius: .radiusGroup))

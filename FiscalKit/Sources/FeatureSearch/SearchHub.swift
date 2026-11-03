@@ -52,7 +52,8 @@ private struct DoorTile: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceS) {
-            Chip(chip, color: .heroInk, shape: .capsule)
+            Chip(chip, color: .white, shape: .capsule)
+                .environment(\.colorScheme, .dark)
             Spacer(minLength: .spaceL)
             Text(title)
                 .font(.titleMedium)
@@ -62,22 +63,20 @@ private struct DoorTile: View {
                 .opacity(.opacityStrong)
                 .lineLimit(3)
         }
-        .foregroundStyle(.heroInk)
+        .foregroundStyle(.white)
         .frame(maxWidth: .infinity, minHeight: .medallion + .spaceXL, alignment: .leading)
         .padding(.spaceL)
         .background(alignment: .topTrailing) {
             Image(systemName: symbol)
                 .font(.icon(.xl, weight: .bold))
-                .foregroundStyle(.heroInk.opacity(.opacitySoft))
+                .foregroundStyle(.white.opacity(.opacitySoft))
                 .padding(.spaceL)
                 .accessibilityHidden(true)
         }
-        .background {
-            HeroSurface(.colors(colors), cornerRadius: .radiusL) {
-                LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing)
-            }
-            .clipShape(.rect(cornerRadius: .radiusL))
-        }
+        .background(
+            LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing),
+            in: .rect(cornerRadius: .radiusL)
+        )
         .accessibilityElement(children: .combine)
     }
 }

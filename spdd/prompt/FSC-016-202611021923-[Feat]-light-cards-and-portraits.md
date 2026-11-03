@@ -2,7 +2,7 @@
 
 ## Requirements
 
-**Problema.** Políticos que assumem em 2027, como Eduardo Riedel, aparecem com o rosto genérico, embora todos tenham traços: o app exige o mesmo partido nos traços e no dado. E 13 cartões de destaque ficam escuros no modo claro, destoando do resto do app.
+**Problema.** Políticos que assumem em 2027, como Eduardo Riedel, aparecem com o rosto genérico, embora todos tenham traços: o app exige o mesmo partido nos traços e no dado. E 4 cartões têm fundo preto no modo claro, destoando do resto do app. O pedido do usuário, depois de ver a primeira versão: o foco é só tirar o preto, e o cartão do político não é para mexer.
 
 **Definição de pronto**
 
@@ -19,13 +19,13 @@
 
 7. Dado o detalhe de uma votação no modo claro, quando abre, então o placar tem superfície clara, com a cor suave do Sim na lateral esquerda, a do Não na direita e o centro neutro, a data em texto simples, os números em preto, e a cor forte só nos círculos e sinais.
 8. Dado o mesmo placar no modo escuro, quando abre, então fica como hoje.
-9. Dada a página do político no modo claro, quando abre, então o cabeçalho tem superfície clara com a cor suave do partido, e o retrato continua na cor do partido.
-10. Dados os cartões de Região ("Quem governa" e "Na sua região agora") no modo claro, quando aparecem, então seguem o mesmo padrão.
-11. Dados o destaque do Feed e os cartões da corrida (herói e eleito) no modo claro, quando aparecem, então seguem o mesmo padrão, e a setinha é legível.
-12. Dados os cartões de Fiscalizar (hub, conclusão da investigação, comparar) e de Memória (eleição passada, vencedor, guia de estudo) no modo claro, quando aparecem, então seguem o mesmo padrão.
-13. Dado qualquer um dos 13 cartões no modo escuro, quando aparece, então o visual é o de hoje.
+9. Dados os cartões com a cor do partido ou do tema (página do político, Quem governa, destaque do Feed, herói e eleito da corrida, hub de Fiscalizar, eleição passada, vencedor e guia de estudo), quando aparecem em qualquer modo, então ficam exatamente como eram antes desta fase.
+10. Dado "Na sua região agora" no modo claro, quando aparece, então não tem fundo preto, e segue o padrão do placar.
+11. Dada a conclusão da investigação no modo claro, quando aparece, então não tem fundo preto, e segue o padrão do placar.
+12. Dada a tela de comparar no modo claro, quando aparece, então o cartão de cima não termina em preto, e cada lado mantém a cor da sua coluna, em suave.
+13. Dado qualquer um dos 4 cartões no modo escuro, quando aparece, então o visual é o de hoje.
 14. Dado o ajuste de Aparência em Claro num aparelho escuro, ou em Escuro num aparelho claro, quando o cartão aparece, então segue o ajuste.
-15. Dadas todas as cores de partido da paleta, quando o cartão aparece no modo claro, então o texto principal tem contraste de pelo menos 4,5:1 e o secundário de pelo menos 3:1.
+15. Dadas todas as cores de partido da paleta, quando o cartão de comparar aparece no modo claro, então o texto principal tem contraste de pelo menos 4,5:1 e o secundário de pelo menos 3:1.
 16. Dado Aumentar contraste ligado, quando o cartão aparece no modo claro, então a superfície perde a cor suave e ganha um contorno, e o texto segue legível.
 17. Dado Reduzir transparência ligado, quando o cartão aparece, então a superfície continua opaca.
 18. Dado um cartaz de compartilhar, em qualquer modo, quando é gerado, então fica igual ao de hoje.
@@ -57,8 +57,6 @@ classDiagram
     }
     class HeroTone {
         <<enumeration>>
-        party(name)
-        parties(first, second)
         vote
         colors(list)
     }
@@ -70,18 +68,17 @@ classDiagram
     PortraitStore --> PortraitLibrary
     PortraitStore --> PortraitRig
     HeroSurface --> HeroTone
-    HeroTone --> PartyPalette
 ```
 
-Nenhum arquivo público, dado do aparelho nem formato de traços muda. `PartyBackdrop`, `voteYesBoard` e `voteNoBoard` continuam para os cartazes.
+Nenhum arquivo público, dado do aparelho nem formato de traços muda. `PartyBackdrop` continua nos cartões coloridos e nos cartazes, e `voteYesBoard` e `voteNoBoard` continuam no modo escuro e nos cartazes.
 
 ## Approach
 
 - **Decisões registradas.** O [ADR 0025](../../docs/adr/0025-portrait-by-slug-and-hero-cards-follow-the-mode.md) registra o retrato pelo identificador e os cartões seguindo o modo.
 - **Retrato pelo identificador.** A roupa e o fundo já usam o partido que chega, então basta tirar a exigência de partido igual. Medido em 02/11/2026: nenhum dos 2.356 identificadores publicados tem outro nome nos traços; dois têm outro estado (`flavio-bolsonaro`, `rosangela-moro`) e são as mesmas pessoas.
 - **Conferência.** Como os traços do app não guardam o nome, a conferência é um script sobre `scripts/avatar-traits.json`. Sem rede, ele lê os dados de teste e entra no `verify --full`. Com `--published`, lê os arquivos publicados, no fechamento e depois de uma carga.
-- **Superfície única.** Decisão do usuário: todos os 13 cartões, com superfície clara, cor suave, texto escuro e cor forte só nos sinais. Entre três versões do placar, ele escolheu a de laterais coloridas e centro neutro, com os números em preto. `HeroSurface` recebe o fundo de hoje para o modo escuro e, no claro, desenha o cinza dos cartões com a cor nas laterais. O `.environment(\.colorScheme, .dark)` e o branco fixo saem; `Color.heroInk` é preto no claro e branco no escuro, e `HeroInk` dá os tons do placar.
-- **São 13, não 16.** Ao mudar o código, a contagem real de fundos escuros fixos foi: placar, político, Quem governa, Na sua região agora, destaque do Feed, herói e eleito da corrida, hub de Fiscalizar, conclusão, comparar, eleição passada, vencedor e guia de estudo. `RaceCompactCard` e `ElectionScheduleSection` já seguem o modo, e `RaceHeroHeader` e `PastCardParts` são partes desses cartões.
+- **Só tirar o preto.** Decisão do usuário, ao ver a primeira versão: o cartão do político não é para mexer, e o foco é só tirar o preto. A superfície clara fica nos 4 cartões com preto de verdade: placar, "Na sua região agora", conclusão da investigação e comparar. Os cartões com a cor do partido ou do tema voltam a ser como eram. No placar, ele escolheu, entre três versões, as laterais coloridas com o centro neutro e os números em preto. `HeroSurface` recebe o fundo de hoje para o modo escuro e, no claro, desenha o cinza dos cartões com a cor nas laterais. `Color.heroInk` é preto no claro e branco no escuro, e `HeroInk` dá os tons do placar.
+- **Película dos cartões coloridos.** Os cartões com a cor do partido têm uma película escura leve. Ela continua, porque o usuário pediu para não mexer neles.
 - **Referências.** As telas de FotMob estão atrás de cadastro, e a busca não trouxe imagens do Apple Sports no claro. O desenho veio das três versões mostradas ao usuário. **O trabalho para na operação 2 e na operação 4 para o ok do usuário.**
 - **Cartazes.** `PartyBackdrop` e os tokens de placar ficam para os cartazes, que viram imagem. Os cartões saem deles.
 - **Partido divergente.** Decisão do usuário: mudança separada logo depois, com a causa dos dados parados em 28/10. Até lá, a mesma pessoa pode aparecer com dois partidos.
@@ -91,15 +88,10 @@ Nenhum arquivo público, dado do aparelho nem formato de traços muda. `PartyBac
 
 - `FiscalResource/PortraitLibrary.swift`: `traits(for:)` só com o identificador.
 - `FeatureCore/Portraits/PortraitStore.swift`, `PortraitRig.swift`: chave de cache e rosto neutro.
-- `FeatureCore/Navigation/RouteCard.swift`: `RouteChevron` seguindo o modo.
 - `FiscalDesignSystem/Components/HeroSurface.swift`: novo, com `HeroTone`.
 - `FeatureVotes/VoteHeroSection.swift`.
-- `FeatureProfile/ProfileHero.swift`, `ProfileStickyHeader.swift`.
-- `FeatureRegion/RegionGovernment.swift`, `RegionNow.swift`.
-- `FeatureFeed/FeedHighlightHero.swift`.
-- `FeatureLiveResults/RaceHeroCard.swift`, `RaceHeroHeader.swift`, `RaceWinnerCard.swift`.
-- `FeatureSearch/SearchHub.swift`, `InvestigationConclusion.swift`, `CompareParts.swift`.
-- `FeatureMemory/PastRaceSections.swift`, `PastWinnerCard.swift`, `PastCardParts.swift`, `StudyGuideScreen.swift`.
+- `FeatureRegion/RegionNow.swift`.
+- `FeatureSearch/InvestigationConclusion.swift`, `CompareParts.swift`.
 - `scripts/portrait-check.py`: novo. `scripts/verify.sh`: chama o script.
 - `Fiscal/FiscalUITests/HeroCardsTests.swift`: novo, com os dois modos.
 - `Fiscal/Fiscal/Localizable.xcstrings`, se algum texto mudar.
@@ -120,7 +112,7 @@ Nenhum arquivo público, dado do aparelho nem formato de traços muda. `PartyBac
    - **Parar e mostrar Riedel no iPhone, com dados reais, antes da operação 3.**
    - Cobre: 5, 6. Verificação: o script nos dois modos, captura e iPhone.
 3. **Superfície do cartão.**
-   - `HeroTone`: `party`, `parties`, `vote`, `colors`.
+   - `HeroTone`: `vote`, `colors`.
    - `HeroSurface`: no escuro, o fundo de hoje, recebido de cada cartão; no claro, o cinza dos cartões com a cor nas laterais; com Aumentar contraste, só o cinza e um contorno.
    - Cobre: 8, 13, 15, 16, 17. Verificação: `HeroSurfaceTests`, com o contraste de todas as cores da paleta.
 4. **Placar da votação.** Depende de: 3.
@@ -128,16 +120,16 @@ Nenhum arquivo público, dado do aparelho nem formato de traços muda. `PartyBac
    - `VoteHeroSection`: `HeroSurface(.vote)`; sai `BoardStyle`, o modo forçado e o branco fixo; os círculos seguem as cores de Sim e Não.
    - **Parar e mostrar no iPhone, nos dois modos, antes da operação 5.**
    - Cobre: 7, 8. Verificação: captura dos dois modos, iPhone.
-5. **Político e Região.** Depende de: 4.
-   - `ProfileHero`, `RegionGovernment`, `RegionNow` com `HeroSurface(.party)`.
-   - Cobre: 9, 10, 13. Verificação: captura dos dois modos.
-6. **Feed e corrida.** Depende de: 4. `[P]` com 5.
-   - `FeedHighlightHero`, `RaceHeroCard`, `RaceHeroHeader`, `RaceWinnerCard` e `RouteChevron`.
-   - Cobre: 11, 13. Verificação: captura dos dois modos.
-7. **Fiscalizar e Memória.** Depende de: 4. `[P]` com 5.
-   - `SearchHub`, `InvestigationConclusion`, `CompareParts`, `PastRaceSections`, `PastWinnerCard`, `PastCardParts`, `StudyGuideScreen`.
-   - **Mostrar todos os cartões no iPhone, nos dois modos, ao terminar.**
-   - Cobre: 12, 13. Verificação: captura dos dois modos, iPhone.
+5. **Na sua região agora.** Depende de: 4.
+   - `RegionNow` com `HeroSurface`, e a setinha seguindo o modo.
+   - Cobre: 10, 13. Verificação: captura dos dois modos.
+6. **Conclusão e comparar.** Depende de: 4. `[P]` com 5.
+   - `InvestigationConclusion` e `CompareParts` com `HeroSurface`.
+   - Cobre: 11, 12, 13. Verificação: captura dos dois modos.
+7. **Cartões coloridos como eram.** Depende de: 4.
+   - Devolver à versão anterior a página do político, Quem governa, o destaque do Feed, a corrida, o hub de Fiscalizar e Memória.
+   - **Mostrar no iPhone, nos dois modos, ao terminar.**
+   - Cobre: 9. Verificação: `git diff` vazio nesses arquivos contra a `development`, captura e iPhone.
 8. **Ajuste de Aparência e testes de interface.** Depende de: 5 a 7.
    - `HeroCardsTests`: abre os cartões nos dois modos e no maior tamanho.
    - Conferir o ajuste de Aparência, Aumentar contraste e Reduzir transparência.
@@ -174,7 +166,8 @@ Nenhum arquivo público, dado do aparelho nem formato de traços muda. `PartyBac
 - **Sem IA nos traços:** nenhum traço novo nem gerado. **QUEBRA** se `scripts/avatar-traits.json` mudar nesta fase.
 - **Mesma regra:** o retrato não depende de quem a pessoa apoia, nem do cargo, nem do dado. `support_stays_private` barra.
 - **Só fatos:** a cor de Sim, de Não e do partido continua só como informação; nenhum tom novo sugere juízo.
-- **Modo escuro igual:** os 13 cartões ficam como hoje no modo escuro. **QUEBRA** se uma captura de comparação mostrar outro fundo ou outro texto.
+- **Cartões coloridos intactos:** a página do político, Quem governa, o destaque do Feed, a corrida, o hub de Fiscalizar e Memória não mudam, em nenhum modo. **QUEBRA** se um desses arquivos aparecer no diff da fase.
+- **Modo escuro igual:** os 4 cartões ficam como hoje no modo escuro. **QUEBRA** se uma captura de comparação mostrar outro fundo ou outro texto.
 - **Contraste:** **QUEBRA** se uma cor de partido ficar abaixo de 4,5:1 no texto principal do modo claro.
 - **Cartazes:** `PartyBackdrop`, `voteYesBoard`, `voteNoBoard` e `ShareCardView` não mudam. **QUEBRA** se um teste de cartaz mudar.
 - **Widgets e Atividade ao Vivo:** o visual não muda; só o retrato segue a regra nova.

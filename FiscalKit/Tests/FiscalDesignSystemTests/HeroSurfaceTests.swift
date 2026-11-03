@@ -73,8 +73,6 @@ struct HeroSurfaceTests {
 
     @Test func eachToneBringsItsColors() {
         #expect(HeroTone.vote.tints.count == 2)
-        #expect(HeroTone.party("PT").tints.count == 2)
-        #expect(HeroTone.parties("PT", "PL").tints.count == 2)
         #expect(HeroTone.colors([.red]).tints == [.red])
     }
 

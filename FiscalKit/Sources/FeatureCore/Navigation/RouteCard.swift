@@ -2,19 +2,18 @@ import FiscalDesignSystem
 import SwiftUI
 
 public struct RouteChevron: View {
-    private let isOnHero: Bool
+    private let isOnDarkCard: Bool
 
-    public init(isOnHero: Bool = false) {
-        self.isOnHero = isOnHero
+    public init(isOnDarkCard: Bool = false) {
+        self.isOnDarkCard = isOnDarkCard
     }
 
     public var body: some View {
         Image(systemName: "chevron.forward")
-            .font(.footnote.weight(isOnHero ? .bold : .semibold))
+            .font(.footnote.weight(isOnDarkCard ? .bold : .semibold))
             .foregroundStyle(
-                isOnHero
-                    ? AnyShapeStyle(Color.heroInk.opacity(.opacityStrong))
-                    : AnyShapeStyle(.tertiary)
+                isOnDarkCard
+                    ? AnyShapeStyle(Color.white.opacity(.opacityStrong)) : AnyShapeStyle(.tertiary)
             )
             .accessibilityHidden(true)
     }
