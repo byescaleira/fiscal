@@ -13,23 +13,23 @@
 | 3 | Arthur Henrique em Região | Abrir com dados publicados | passou | [Captura](portrait-mayor.png). Nos dados de teste, o prefeito tem outro identificador e continua neutro |
 | 4 | Sem traços | Modelo | passou em teste | `findsTraitsByTheSlugAlone`, `drawsThePersonWithThePartyTheDataBrings` |
 | 5 | As 2.356 pessoas publicadas | `scripts/portrait-check.py --published` | passou | 2.356 lidas, 0 sem traços, 0 problemas, em 03/11/2026. Os dados publicados são de 28/10 |
-| 6 | Identificador com outro nome | Trocar um nome em memória e rodar o script | passou | O script saiu com erro 1 e apontou o identificador e os dois nomes. Sem teste automático |
+| 6 | Identificador com outro nome | Teste do script | passou | `scripts/portrait-check-test.py`, no `verify --full` |
 | 7 | Placar claro | Abrir | passou | [Claro e escuro](appearance-and-contrast.png), [captura](vote-light.png), iPhone |
-| 8 | Placar escuro | Abrir | passou em parte | [Captura](vote-dark.png). Sem comparação pixel a pixel; os tokens e o fundo são os de antes |
+| 8 | Placar escuro | Comparar o build de `efaae65` com o novo | passou | [Antes e depois](dark-before-after.png): nominal e simbólica sem nenhum pixel diferente no cartão |
 | 9 | Cartões coloridos iguais | `git diff` contra a `development` | passou | Nenhum desses arquivos no diff; [político](cards-two-modes.png) no simulador; iPhone |
 | 10 | "Na sua região agora" | Abrir Região | passou em parte | O cartão não apareceu nos dados de teste. Só o código e a versão instalada no iPhone, sem confirmação específica desse cartão |
 | 11 | Conclusão da investigação | Abrir uma investigação no modo claro | passou | [Captura](cards-two-modes.png) |
-| 12 | Comparar | Abrir | passou | `testTheScoreboardAndTheComparisonOpenInTheCurrentMode`, [captura](hero-compare.png), [dois modos](cards-two-modes.png) |
-| 13 | Modo escuro dos 4 cartões | Abrir | passou em parte | Placar e comparar vistos no escuro. Conclusão e "Na sua região agora" só no código |
-| 14 | Ajuste de Aparência | Forçar Claro em aparelho escuro e Escuro em aparelho claro | passou | [Captura](appearance-and-contrast.png), no placar |
+| 12 | Comparar | Abrir | passou | `testTheScoreboardAndTheComparisonOpenInTheCurrentMode`, [captura](hero-compare.png), [dois modos](cards-two-modes.png). Com mais de duas colunas: `twoSidesKeepANeutralCenterAndMoreColumnsKeepTheirColors`, sem ver na tela |
+| 13 | Modo escuro dos 4 cartões | Comparar builds | passou em parte | Placar: igual. Comparar: a única diferença é o rosto de Kim Kataguiri, antes neutro e agora desenhado ([antes e depois](dark-before-after.png)). Conclusão e "Na sua região agora" só lidos no código |
+| 14 | Ajuste de Aparência | Forçar pelo valor salvo: Claro em aparelho escuro e Escuro em aparelho claro | passou em parte | [Capturas com legenda](appearance-and-contrast.png), no placar. A chave foi passada no lançamento, sem usar a tela de Ajustes |
 | 15 | Contraste | Modelo | passou em teste | `everyPartyColorKeepsTheTextReadableInLightMode`, com todas as cores da paleta, em cálculo sobre os valores do sistema |
 | 16 | Aumentar contraste | Ligar no simulador | passou | [Captura](appearance-and-contrast.png): cinza e contorno, no placar |
-| 17 | Reduzir transparência | Ligar por `defaults` | passou em parte | A superfície não usa material. A captura ficou igual, mas não confirmei que o ajuste estava ativo |
+| 17 | Reduzir transparência | Ligar por `defaults` | não comprovado | No código, a superfície não usa material e é opaca. A captura ficou igual, e não confirmei que o ajuste estava ativo |
 | 18 | Cartazes | `git diff` e testes | passou em parte | `FeatureShare` e `PartyBackdrop` fora do diff, testes passando. O retrato segue a regra nova neles, e nenhum cartaz foi comparado na tela |
 | 19 | Widget e Atividade ao Vivo | `git diff` | passou em parte | `FiscalWidgets` fora do diff. Não abertos |
 | 20 | Maior tamanho de texto | Abrir comparar | passou em parte | `testTheComparisonIsReadableAtTheLargestTextSize`, [captura](hero-compare-largest.png), que só confere se os nomes existem. Placar coberto na `FSC-015` |
 
-**Verificação:** `scripts/verify.sh --full` passou, e `scripts/ui-test.sh` passou nos 25 testes.
+**Verificação:** `scripts/verify.sh --full` passou, e `scripts/ui-test.sh` passou nos 25 testes. A proteção contra rosto errado é o `portrait-check`: sobre os dados de teste a cada verificação completa e, sobre os publicados, manual, antes de versão e depois de carga.
 
 **Não visto:** Mac, iPad, Duo aberto e VoiceOver.
 

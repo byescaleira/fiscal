@@ -76,6 +76,12 @@ struct HeroSurfaceTests {
         #expect(HeroTone.colors([.red]).tints == [.red])
     }
 
+    @Test func twoSidesKeepANeutralCenterAndMoreColumnsKeepTheirColors() {
+        #expect(HeroTone.vote.lightStops.count == 3)
+        #expect(HeroTone.colors([.red]).lightStops.count == 3)
+        #expect(HeroTone.colors([.red, .green, .blue, .orange]).lightStops.count == 4)
+    }
+
     @Test func theInkOnlyChangesInLightMode() {
         let dark = HeroInk(.dark)
         let light = HeroInk(.light)

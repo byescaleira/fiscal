@@ -10,6 +10,12 @@ public enum HeroTone: Hashable, Sendable {
         case .colors(let colors): colors
         }
     }
+
+    public var lightStops: [Color] {
+        let soft = tints.map { $0.opacity(.opacitySoft) }
+        guard soft.count <= 2 else { return soft }
+        return [soft.first ?? .clear, .plainRow, soft.last ?? .clear]
+    }
 }
 
 extension Color {
@@ -69,12 +75,8 @@ public struct HeroSurface<Dark: View>: View {
                         .strokeBorder(.primary, lineWidth: .spaceHairline)
                 }
         } else {
-            let tints = tone.tints
             LinearGradient(
-                colors: [
-                    (tints.first ?? .clear).opacity(.opacitySoft), Color.plainRow,
-                    (tints.last ?? .clear).opacity(.opacitySoft),
-                ], startPoint: .leading, endPoint: .trailing
+                colors: tone.lightStops, startPoint: .leading, endPoint: .trailing
             )
             .background(Color.plainRow)
         }

@@ -18,7 +18,7 @@ O usuário viu políticos que assumem em 2027 com o rosto genérico, como Eduard
 ## Consequências
 
 - Uma troca de partido não apaga mais o rosto de ninguém.
-- Um identificador reaproveitado para outra pessoa mostraria o rosto errado se ninguém conferisse; o script existe por isso.
+- Um identificador reaproveitado para outra pessoa mostraria o rosto errado se ninguém conferisse. O script substitui a exigência de partido igual, e o modo `--published` é manual: roda antes de cada versão e depois de cada carga.
 - Um contraste por superfície entra nos testes, com todas as cores de partido.
 - O partido divergente entre os arquivos continua visível até uma mudança separada no servidor.
 
