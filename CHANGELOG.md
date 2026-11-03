@@ -45,6 +45,8 @@ Primeira versão, a 1.0.0.
 
 ### Changed
 
+- O Feed virou uma lista contínua, com divisórias entre os itens no lugar dos cartões. O destaque e a apuração no topo continuam como cartões.
+- As checagens do Projeto Comprova no Feed mostram a imagem da própria publicação, inteira e com crédito, buscada no aparelho.
 - Quem tem traços aparece sempre desenhado, mesmo quando o partido no dado muda; antes, Eduardo Riedel e outros caíam no rosto genérico ([FSC-016](spdd/prompt/FSC-016-202611021923-[Feat]-light-cards-and-portraits.md)).
 - O placar da votação, "Na sua região agora", a conclusão da investigação e o comparar não têm mais fundo preto no modo claro. No escuro e nos cartões coloridos, nada muda.
 - A barra que aparece ao rolar passou a valer também no detalhe da votação (proposta, placar e atalhos), no detalhe da corrida (corrida e apurado) e nas notas (nome, ano e total) ([FSC-015](spdd/prompt/FSC-015-202611021500-[Feat]-sticky-bar-votes-region-tabs.md)).
