@@ -11,7 +11,7 @@ struct FeedCard: View {
         Group {
             if let route = Route.destination(for: item) {
                 RouteCard(
-                    route, label: Text(verbatim: feed.accessibility(item)), padding: .spaceL,
+                    route, label: Text(verbatim: feed.accessibility(item)), padding: 0,
                     cornerRadius: .radiusGroup
                 ) {
                     content
@@ -19,7 +19,6 @@ struct FeedCard: View {
             } else if let url = item.url {
                 content
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.spaceL)
                     .background {
                         ExternalLink(destination: url, showsSymbol: false) {
                             Color.clear.contentShape(.rect(cornerRadius: .radiusGroup))
@@ -32,7 +31,6 @@ struct FeedCard: View {
             } else {
                 content
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.spaceL)
                     .background {
                         Color.clear
                             .accessibilityElement()
@@ -40,7 +38,11 @@ struct FeedCard: View {
                     }
             }
         }
-        .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
+        .padding(.horizontal, .spaceS)
+        .padding(.vertical, .spaceM)
+        .overlay(alignment: .bottom) {
+            Divider().offset(y: .spaceL / 2)
+        }
     }
 
     private var content: some View {
@@ -55,6 +57,10 @@ struct FeedCard: View {
             }
             .allowsHitTesting(false)
             .accessibilityHidden(true)
+            if item.kind == .check, let url = item.url {
+                FeedCheckImage(page: url)
+                    .allowsHitTesting(false)
+            }
             if item.ballots.count == 1, let ballot = item.ballots.first {
                 FeedSoleBallot(ballot: ballot)
                     .allowsHitTesting(false)
