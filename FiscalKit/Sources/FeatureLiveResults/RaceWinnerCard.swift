@@ -19,7 +19,7 @@ struct RaceWinnerCard: View {
                 RouteLink(.race(id: summary.race.id), showsChevron: false) {
                     content
                         .frame(maxWidth: .infinity)
-                        .overlay(alignment: .trailing) { RouteChevron(isOnDarkCard: true) }
+                        .overlay(alignment: .trailing) { RouteChevron(isOnHero: true) }
                         .contentShape(.rect)
                 }
                 .buttonStyle(.plain)
@@ -28,13 +28,15 @@ struct RaceWinnerCard: View {
             }
         }
         .padding(.spaceInset)
-        .foregroundStyle(.white)
+        .foregroundStyle(.heroInk)
         .background {
-            ZStack {
-                LinearGradient(
-                    colors: [palette.primary, palette.secondary], startPoint: .topLeading,
-                    endPoint: .bottomTrailing)
-                Color.scoreboard.opacity(.opacitySoft)
+            HeroSurface(.colors([palette.primary, palette.secondary])) {
+                ZStack {
+                    LinearGradient(
+                        colors: [palette.primary, palette.secondary], startPoint: .topLeading,
+                        endPoint: .bottomTrailing)
+                    Color.scoreboard.opacity(.opacitySoft)
+                }
             }
         }
         .overlay { CelebrationBurst(colors: [palette.primary, palette.secondary, .white]) }
@@ -63,10 +65,9 @@ struct RaceWinnerCard: View {
                 }
                 .scaleEffect(appeared ? 1 : 0.6)
                 .opacity(appeared ? 1 : 0)
-                Chip("ELECTED", color: .white, shape: .capsule)
+                Chip("ELECTED", color: .heroInk, shape: .capsule)
                     .lineLimit(1)
                     .fixedSize()
-                    .environment(\.colorScheme, .dark)
                 Text(verbatim: winner.candidate.name)
                     .font(.emphasis(.title, weight: .heavy))
                     .multilineTextAlignment(.center)
@@ -102,7 +103,7 @@ struct RaceWinnerCard: View {
                         .monospacedDigit()
                 }
                 .padding(.spaceS)
-                .background(.white.opacity(.opacityTint), in: .rect(cornerRadius: .radiusM))
+                .background(.heroInk.opacity(.opacityTint), in: .rect(cornerRadius: .radiusM))
                 .opacity(.opacityStrong)
             }
             RaceHeroBallots(summary: summary)

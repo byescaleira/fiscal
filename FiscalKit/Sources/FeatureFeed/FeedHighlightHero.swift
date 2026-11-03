@@ -20,7 +20,7 @@ struct FeedHighlightHero: View {
             } label: {
                 HStack(spacing: .spaceM) {
                     content.frame(maxWidth: .infinity, alignment: .leading)
-                    RouteChevron(isOnDarkCard: true)
+                    RouteChevron(isOnHero: true)
                 }
                 .contentShape(.rect)
             }
@@ -34,7 +34,7 @@ struct FeedHighlightHero: View {
             footer
         }
         .padding(.spaceInset)
-        .foregroundStyle(.white)
+        .foregroundStyle(.heroInk)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background { backdrop }
         .clipShape(.rect(cornerRadius: .radiusGroup))
@@ -52,7 +52,7 @@ struct FeedHighlightHero: View {
 
     @ViewBuilder private var backdrop: some View {
         if let party = highlight.person?.party, !party.isEmpty {
-            PartyBackdrop(party: party)
+            HeroSurface(.party(party)) { PartyBackdrop(party: party) }
         } else {
             FeedHighlightBackdrop(slot: feed.highlightThemeSlot(highlight))
         }
@@ -71,7 +71,7 @@ struct FeedHighlightHero: View {
             }
             .labelStyle(.iconOnly)
             .buttonStyle(.borderless)
-            .tint(.white)
+            .tint(.heroInk)
             .font(.body.weight(.semibold))
             .frame(width: .badgeL, height: .badgeL)
             .contentShape(.circle)
@@ -107,12 +107,12 @@ struct FeedHighlightHero: View {
                 FeedHighlightRelevance(weight: highlight.weight, filled: appeared)
                 Spacer(minLength: .spaceS)
                 WeightMethodButton(method: feed.highlightMethod)
-                    .tint(.white)
+                    .tint(.heroInk)
             }
             VStack(alignment: .leading, spacing: .spaceS) {
                 FeedHighlightRelevance(weight: highlight.weight, filled: appeared)
                 WeightMethodButton(method: feed.highlightMethod)
-                    .tint(.white)
+                    .tint(.heroInk)
             }
         }
     }
@@ -138,7 +138,7 @@ private struct FeedHighlightAuthor: View {
             }
             .padding(.vertical, .spaceS)
             .padding(.horizontal, .spaceM)
-            .background(.white.opacity(.opacityFill), in: .rect(cornerRadius: .radiusM))
+            .background(.heroInk.opacity(.opacityFill), in: .rect(cornerRadius: .radiusM))
             .contentShape(.rect)
         }
         .buttonStyle(.plain)
@@ -159,7 +159,7 @@ private struct FeedHighlightAuthor: View {
                     .fixedSize()
                     .overlay {
                         Capsule().strokeBorder(
-                            .white.opacity(.opacitySoft), lineWidth: .spaceHairline / 2)
+                            .heroInk.opacity(.opacitySoft), lineWidth: .spaceHairline / 2)
                     }
             }
             Text(verbatim: feed.authorLine(person))
@@ -181,7 +181,7 @@ private struct FeedHighlightRelevance: View {
         Group {
             if dynamicTypeSize.isAccessibilitySize {
                 VStack(alignment: .leading, spacing: .spaceXS) {
-                    StatusCircle(relevance.title, symbol: relevance.symbol, color: .white)
+                    StatusCircle(relevance.title, symbol: relevance.symbol, color: .heroInk)
                         .accessibilityHidden(true)
                     Text(verbatim: relevance.title)
                         .font(.caption.weight(.semibold))
@@ -190,7 +190,7 @@ private struct FeedHighlightRelevance: View {
                 }
             } else {
                 HStack(spacing: .spaceXS) {
-                    StatusCircle(relevance.title, symbol: relevance.symbol, color: .white)
+                    StatusCircle(relevance.title, symbol: relevance.symbol, color: .heroInk)
                         .accessibilityHidden(true)
                     Text(verbatim: relevance.title)
                         .font(.caption.weight(.semibold))
@@ -208,7 +208,7 @@ private struct FeedHighlightRelevance: View {
             ForEach(0..<Relevance.segments, id: \.self) { index in
                 Capsule()
                     .fill(
-                        .white.opacity(
+                        .heroInk.opacity(
                             filled && Double(index) < relevance.filledSegments
                                 ? 1 : .opacityTint)
                     )
@@ -251,13 +251,13 @@ private struct FeedHighlightScore: View {
                 segments: [
                     .init(
                         id: "yes", title: String(appLocalized: "Yes"), value: Double(tally.yes),
-                        color: .white),
+                        color: .heroInk),
                     .init(
                         id: "no", title: String(appLocalized: "No"), value: Double(tally.no),
-                        color: .white.opacity(.opacitySoft)),
+                        color: .heroInk.opacity(.opacitySoft)),
                     .init(
                         id: "others", title: String(appLocalized: "Others"),
-                        value: Double(tally.others), color: .white.opacity(.opacityTint)),
+                        value: Double(tally.others), color: .heroInk.opacity(.opacityTint)),
                 ], height: .spaceXS
             )
             .accessibilityHidden(true)
@@ -288,12 +288,14 @@ private struct FeedHighlightBackdrop: View {
         let color =
             slot.map { ChartPalette.color(at: $0 % ChartPalette.categorical.count) }
             ?? ChartPalette.color(at: ChartPalette.categorical.count - 1)
-        ZStack {
-            Color.scoreboard
-            LinearGradient(
-                colors: [color, color.opacity(.opacitySoft)], startPoint: .topLeading,
-                endPoint: .bottomTrailing)
-            Color.scoreboard.opacity(.opacitySoft)
+        HeroSurface(.colors([color])) {
+            ZStack {
+                Color.scoreboard
+                LinearGradient(
+                    colors: [color, color.opacity(.opacitySoft)], startPoint: .topLeading,
+                    endPoint: .bottomTrailing)
+                Color.scoreboard.opacity(.opacitySoft)
+            }
         }
     }
 }

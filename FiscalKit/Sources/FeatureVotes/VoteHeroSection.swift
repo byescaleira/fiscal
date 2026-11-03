@@ -46,7 +46,13 @@ private struct VoteScoreboard: View {
         let ink = HeroInk(colorScheme)
         VStack(spacing: .spaceM) {
             VStack(spacing: .space2XS) {
-                Chip(vote.heroCaption, color: ink.primary, shape: .capsule)
+                if colorScheme == .light {
+                    Text(verbatim: vote.heroCaption)
+                        .font(.chipLabel)
+                        .foregroundStyle(ink.secondary)
+                } else {
+                    Chip(vote.heroCaption, color: ink.primary, shape: .capsule)
+                }
                 Text(verbatim: vote.title)
                     .font(.titleMedium)
                     .foregroundStyle(ink.primary)

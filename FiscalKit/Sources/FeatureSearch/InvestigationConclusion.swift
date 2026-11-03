@@ -82,7 +82,7 @@ private struct ReadingPanel: View {
                                 .minimumScaleFactor(.shareTextShrink)
                             Text(verbatim: number.label)
                                 .font(.caption.weight(.semibold))
-                                .foregroundStyle(.white.opacity(.opacityStrong))
+                                .foregroundStyle(.heroInk.opacity(.opacityStrong))
                                 .fixedSize(horizontal: false, vertical: true)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -98,22 +98,23 @@ private struct ReadingPanel: View {
                         .contentTransition(.opacity)
                     if reading.origin == .model {
                         ExplainerBadge()
-                            .environment(\.colorScheme, .dark)
                             .transition(.opacity)
                     }
                 }
                 .animation(reduceMotion ? nil : .smooth, value: reading)
             }
         }
-        .foregroundStyle(.white)
+        .foregroundStyle(.heroInk)
         .padding(.spaceL)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            LinearGradient(
-                colors: [Color.scoreboard.mix(with: .white, by: .opacityFill), .scoreboard],
-                startPoint: .topLeading, endPoint: .bottomTrailing),
-            in: .rect(cornerRadius: .radiusGroup)
-        )
+        .background {
+            HeroSurface(.colors([.scoreboardAccent])) {
+                LinearGradient(
+                    colors: [Color.scoreboard.mix(with: .white, by: .opacityFill), .scoreboard],
+                    startPoint: .topLeading, endPoint: .bottomTrailing)
+            }
+            .clipShape(.rect(cornerRadius: .radiusGroup))
+        }
         .padding(.vertical, .spaceS)
     }
 }

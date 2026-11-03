@@ -16,14 +16,17 @@ struct CompareHero: View {
         .padding(.vertical, .spaceXL)
         .padding(.horizontal, .spaceS)
         .background {
-            HStack(spacing: .zero) {
-                ForEach(columns) { column in
-                    LinearGradient(
-                        colors: [column.color, .scoreboard], startPoint: .top, endPoint: .bottom)
+            HeroSurface(.colors(columns.map(\.color))) {
+                HStack(spacing: .zero) {
+                    ForEach(columns) { column in
+                        LinearGradient(
+                            colors: [column.color, .scoreboard], startPoint: .top,
+                            endPoint: .bottom)
+                    }
                 }
+                .background(Color.scoreboard)
             }
         }
-        .background(Color.scoreboard)
         .clipShape(.rect(cornerRadius: .radiusGroup))
     }
 }
@@ -42,13 +45,13 @@ private struct CompareHeroColumn: View {
                 .multilineTextAlignment(.center)
                 .lineLimit(3)
             PartyMark(column.party)
-                .overlay { Capsule().stroke(.white.opacity(.opacitySoft)) }
+                .overlay { Capsule().stroke(.heroInk.opacity(.opacitySoft)) }
             Text(verbatim: column.detail)
                 .font(.caption)
                 .multilineTextAlignment(.center)
                 .opacity(.opacityStrong)
         }
-        .foregroundStyle(.white)
+        .foregroundStyle(.heroInk)
         .padding(.horizontal, .space2XS)
         .accessibilityElement(children: .combine)
     }

@@ -6,13 +6,13 @@
 
 ## Contexto
 
-O usuário viu políticos que assumem em 2027 com o rosto genérico, como Eduardo Riedel, e cartões escuros no modo claro, como o placar da votação. Todas as 2.356 pessoas publicadas têm traços, mas o app exigia o mesmo partido nos traços e no dado, e a mesma pessoa aparece com partidos diferentes em 264 casos. E 17 cartões têm fundo escuro fixo.
+O usuário viu políticos que assumem em 2027 com o rosto genérico, como Eduardo Riedel, e cartões escuros no modo claro, como o placar da votação. Todas as 2.356 pessoas publicadas têm traços, mas o app exigia o mesmo partido nos traços e no dado, e a mesma pessoa aparece com partidos diferentes em 264 casos. E 13 cartões têm fundo escuro fixo.
 
 ## Decisão
 
 1. Os traços de uma pessoa são achados só pelo identificador. A roupa e o fundo do retrato usam o partido que o dado traz. Quem não tem traços continua com o rosto neutro.
 2. Um script confere se cada identificador aponta para o mesmo nome nos traços: nos dados de teste, em toda verificação completa, e nos dados publicados, no fechamento e depois de uma carga.
-3. Os cartões de destaque dentro das telas seguem o modo do aparelho. No claro, superfície clara com a cor suave, texto escuro e a cor forte só nos sinais. No escuro, como hoje.
+3. Os cartões de destaque dentro das telas seguem o modo do aparelho. No claro, superfície clara com a cor suave nas laterais, centro neutro, texto escuro e a cor forte só nos sinais. No escuro, como hoje.
 4. Os cartazes de compartilhar, os widgets e a Atividade ao Vivo não mudam.
 
 ## Consequências

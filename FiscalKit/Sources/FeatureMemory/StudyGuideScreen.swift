@@ -102,9 +102,8 @@ private struct StudyCardView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceM) {
             HStack {
-                Chip(position, color: .white, shape: .capsule)
+                Chip(position, color: .heroInk, shape: .capsule)
                     .monospacedDigit()
-                    .environment(\.colorScheme, .dark)
                 Spacer(minLength: .spaceS)
             }
             Text(verbatim: card.title)
@@ -118,13 +117,15 @@ private struct StudyCardView: View {
                 .font(.caption.weight(.medium))
                 .opacity(.opacityStrong)
         }
-        .foregroundStyle(.white)
+        .foregroundStyle(.heroInk)
         .padding(.spaceInset)
         .frame(maxWidth: .infinity, minHeight: .studyCardMinHeight, alignment: .topLeading)
         .background {
-            ZStack {
-                color
-                Color.scoreboard.opacity(.opacitySoft)
+            HeroSurface(.colors([color])) {
+                ZStack {
+                    color
+                    Color.scoreboard.opacity(.opacitySoft)
+                }
             }
         }
         .clipShape(.rect(cornerRadius: .radiusGroup))

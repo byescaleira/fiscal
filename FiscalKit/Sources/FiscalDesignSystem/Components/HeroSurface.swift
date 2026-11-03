@@ -24,6 +24,14 @@ public enum HeroTone: Hashable, Sendable {
     }
 }
 
+extension Color {
+    public static let heroInk = Color(light: 0x000000, dark: 0xFFFFFF)
+}
+
+extension ShapeStyle where Self == Color {
+    public static var heroInk: Color { Color.heroInk }
+}
+
 public struct HeroInk: Sendable {
     private let isDark: Bool
 
@@ -73,12 +81,14 @@ public struct HeroSurface<Dark: View>: View {
                         .strokeBorder(.primary, lineWidth: .spaceHairline)
                 }
         } else {
-            ZStack {
-                Color.plainRow
-                LinearGradient(
-                    colors: tone.tints.map { $0.opacity(.opacityTint) },
-                    startPoint: .topLeading, endPoint: .bottomTrailing)
-            }
+            let tints = tone.tints
+            LinearGradient(
+                colors: [
+                    (tints.first ?? .clear).opacity(.opacitySoft), Color.plainRow,
+                    (tints.last ?? .clear).opacity(.opacitySoft),
+                ], startPoint: .leading, endPoint: .trailing
+            )
+            .background(Color.plainRow)
         }
     }
 }

@@ -61,10 +61,9 @@ private struct RegionHighlightCard: View {
         VStack(alignment: .leading, spacing: .spaceL) {
             HStack(spacing: .spaceS) {
                 Chip(
-                    region.highlightKicker(highlight).uppercased(with: .app), color: .white,
+                    region.highlightKicker(highlight).uppercased(with: .app), color: .heroInk,
                     shape: .capsule
                 )
-                .environment(\.colorScheme, .dark)
                 Spacer(minLength: .spaceS)
                 Label(region.highlightScope, systemImage: "mappin")
                     .font(.caption.weight(.semibold))
@@ -76,7 +75,7 @@ private struct RegionHighlightCard: View {
             } label: {
                 HStack(spacing: .spaceM) {
                     content.frame(maxWidth: .infinity, alignment: .leading)
-                    RouteChevron(isOnDarkCard: true)
+                    RouteChevron(isOnHero: true)
                 }
                 .contentShape(.rect)
             }
@@ -85,12 +84,15 @@ private struct RegionHighlightCard: View {
             .accessibilityLabel(Text(verbatim: region.highlightAccessibility(highlight)))
             .accessibilityAddTraits(.isButton)
             WeightMethodButton(method: region.activity.method)
-                .tint(.white)
+                .tint(.heroInk)
         }
         .padding(.spaceInset)
-        .foregroundStyle(.white)
+        .foregroundStyle(.heroInk)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.scoreboard, in: .rect(cornerRadius: .radiusGroup))
+        .background {
+            HeroSurface(.colors([.scoreboardAccent])) { Color.scoreboard }
+                .clipShape(.rect(cornerRadius: .radiusGroup))
+        }
         .onAppear {
             withAnimation(reduceMotion ? nil : .chartReveal(0)) { appeared = true }
         }
@@ -138,7 +140,7 @@ private struct RegionHighlightCard: View {
                         .monospacedDigit()
                         .opacity(.opacityStrong)
                 }
-                ProgressBar(value: appeared ? highlight.weightShare : 0, color: .white)
+                ProgressBar(value: appeared ? highlight.weightShare : 0, color: .heroInk)
                 if let text = highlight.coverage.uncertaintyShort {
                     Label(text, systemImage: "info.circle")
                         .font(.caption.weight(.medium))

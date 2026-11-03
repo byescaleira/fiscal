@@ -63,7 +63,7 @@ struct HeroSurfaceTests {
         for (party, colors) in parties {
             for hex in colors.values {
                 let tint = try #require(RGB(hex: hex))
-                let surface = tint.over(Self.row, opacity: .opacityTint)
+                let surface = tint.over(Self.row, opacity: .opacitySoft)
                 let secondary = Self.label.over(surface, opacity: .opacityStrong)
                 #expect(surface.contrast(with: Self.label) >= 4.5, "\(party) \(hex)")
                 #expect(surface.contrast(with: secondary) >= 3, "\(party) \(hex)")

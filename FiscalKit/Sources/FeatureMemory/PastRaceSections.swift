@@ -105,7 +105,7 @@ private struct PastHeroCard: View {
             }
         }
         .padding(.spaceInset)
-        .foregroundStyle(.white)
+        .foregroundStyle(.heroInk)
         .background { PartyCardBackground(party: leader.party) }
         .clipShape(.rect(cornerRadius: .radiusGroup))
         .accessibilityElement(children: .combine)
@@ -127,8 +127,7 @@ private struct PastHeroLeader: View {
             .overlay { Circle().strokeBorder(.white, lineWidth: .space2XS) }
             .scaleEffect(appeared ? 1 : .heroPortraitEntryScale)
             .opacity(appeared ? 1 : 0)
-            Chip(breakdown.outcome, color: .white, shape: .capsule)
-                .environment(\.colorScheme, .dark)
+            Chip(breakdown.outcome, color: .heroInk, shape: .capsule)
             Text(verbatim: breakdown.leaderNames)
                 .font(.emphasis(.title, weight: .heavy))
                 .multilineTextAlignment(.center)

@@ -59,9 +59,9 @@ private struct ProfileHeroCard: View {
         .padding(.spaceXL)
         .frame(maxWidth: .infinity)
         .background {
-            PartyBackdrop(party: person.party).clipShape(.rect(cornerRadius: .radiusGroup))
+            HeroSurface(.party(person.party)) { PartyBackdrop(party: person.party) }
+                .clipShape(.rect(cornerRadius: .radiusGroup))
         }
-        .environment(\.colorScheme, .dark)
     }
 }
 
