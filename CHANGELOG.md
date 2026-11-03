@@ -45,6 +45,8 @@ Primeira versão, a 1.0.0.
 
 ### Changed
 
+- Quem tem traços aparece sempre desenhado, mesmo quando o partido no dado muda; antes, Eduardo Riedel e outros caíam no rosto genérico ([FSC-016](spdd/prompt/FSC-016-202611021923-[Feat]-light-cards-and-portraits.md)).
+- O placar da votação, "Na sua região agora", a conclusão da investigação e o comparar não têm mais fundo preto no modo claro. No escuro e nos cartões coloridos, nada muda.
 - A barra que aparece ao rolar passou a valer também no detalhe da votação (proposta, placar e atalhos), no detalhe da corrida (corrida e apurado) e nas notas (nome, ano e total) ([FSC-015](spdd/prompt/FSC-015-202611021500-[Feat]-sticky-bar-votes-region-tabs.md)).
 - O detalhe da votação ficou mais curto: placar em círculos, o que muda antes da explicação e a lista de votos em tela própria, com busca e filtros. Votação simbólica diz o que a casa registrou, sem traços.
 - Votações começa pelo que foi votado, com linhas mais curtas. A próxima sessão fica numa linha que abre a pauta, e pauta de data passada não aparece.

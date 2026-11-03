@@ -43,6 +43,16 @@ Retratos menores que `.portraitAnimated` são sempre imagem parada.
 
 Lottie gerada por `scripts/animations.py` (sem fundo, camadas nomeadas pela paleta), embutida em `FiscalResourceAnimation.swift` e tocada por `FiscalAnimationView(_:loops:isStill:)`. Prévia em `scripts/animations-preview.html`.
 
+## Cartões com fundo preto
+
+Quatro cartões tinham fundo preto também no modo claro: o placar da votação, "Na sua região agora", a conclusão da investigação e o cartão de cima de comparar. Eles usam `HeroSurface` ([ADR 0025](adr/0025-portrait-by-slug-and-hero-cards-follow-the-mode.md)):
+
+- **Claro:** o cinza dos cartões, a cor suave nas laterais e o centro neutro, com o texto em `Color.heroInk` ou `HeroInk`.
+- **Escuro:** o fundo de cada cartão, como antes.
+- **Aumentar contraste:** só o cinza e um contorno.
+
+Os cartões com a cor do partido ou do tema não usam essa peça e continuam iguais nos dois modos, por decisão do usuário.
+
 ## Barra ao rolar
 
 Quando algo precisa continuar visível, `View.revealBar` e `ShortcutStrip`, do `byescaleira-kit`, põem uma barra sobre a rolagem. No app, `RevealPage` junta a barra, o herói e os capítulos ([ADR 0024](adr/0024-reveal-bar-following-and-ballots-screens.md)).

@@ -60,7 +60,7 @@ O app tem a cara da pessoa; os dados continuam com a cara dos fatos.
     - nada de balão de fala nem frase que a pessoa não disse;
     - o nome aparece sempre ao lado, e o retrato é marcado como "Ilustração do Fiscal".
   - **Marca do partido:** um selo próprio com a sigla e as cores do partido, com movimento simples (pulso, onda). A forma da logo (estrela, tucano, número, mascote) não é recriada nem "no nosso estilo": continua sendo a marca registrada do partido e faria o app parecer material de campanha.
-  - **Escala:** quem ainda não tem traços cadastrados aparece com um retrato genérico (silhueta, iniciais e cor do partido). A ordem de cadastro é presidente e candidatos, governadores, senadores e deputados.
+  - **Escala:** o retrato vem do identificador da pessoa, com a cor do partido que o dado traz ([ADR 0025](adr/0025-portrait-by-slug-and-hero-cards-follow-the-mode.md)); quem ainda não tem traços cadastrados aparece com um retrato genérico (silhueta, iniciais e cor do partido). A ordem de cadastro é presidente e candidatos, governadores, senadores e deputados.
   - **Publicação:** os retratos saem do servidor como arquivo estático (`v1/avatars/{slug}.json`), para crescer sem atualizar o app.
   - **Nos cards:** o retrato animado vira imagem parada no compartilhamento, com a marca "Ilustração do Fiscal". Nas 72 horas antes e nas 24 horas depois de uma votação, os cards de candidato saem sem retrato (Res. TSE sobre conteúdo sintético; confirmar com a pesquisa jurídica).
 - **O que a paleta nunca toca:** gráficos, placares e listas de políticos. Neles a cor marca o partido de cada candidato (`PartyPalette`) ou o dado (sim, não, ausente), e nunca segue a paleta da pessoa. O mesmo gráfico tem a mesma cor para todo mundo.
