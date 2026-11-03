@@ -13,7 +13,7 @@
 | 3 | Arthur Henrique em Região | Abrir com dados publicados | passou | [Captura](portrait-mayor.png). Nos dados de teste, o prefeito tem outro identificador e continua neutro |
 | 4 | Sem traços | Modelo | passou em teste | `findsTraitsByTheSlugAlone`, `drawsThePersonWithThePartyTheDataBrings` |
 | 5 | As 2.356 pessoas publicadas | `scripts/portrait-check.py --published` | passou | 2.356 lidas, 0 sem traços, 0 problemas, em 03/11/2026. Os dados publicados são de 28/10 |
-| 6 | Identificador com outro nome | Forçar o erro | não executado | O ramo do erro está no script, mas nenhum caso real ou forjado o acionou |
+| 6 | Identificador com outro nome | Trocar um nome em memória e rodar o script | passou | O script saiu com erro 1 e apontou o identificador e os dois nomes. Sem teste automático |
 | 7 | Placar claro | Abrir | passou | [Claro e escuro](appearance-and-contrast.png), [captura](vote-light.png), iPhone |
 | 8 | Placar escuro | Abrir | passou em parte | [Captura](vote-dark.png). Sem comparação pixel a pixel; os tokens e o fundo são os de antes |
 | 9 | Cartões coloridos iguais | `git diff` contra a `development` | passou | Nenhum desses arquivos no diff; [político](cards-two-modes.png) no simulador; iPhone |
