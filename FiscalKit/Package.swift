@@ -149,7 +149,8 @@ let package = Package(
         .testTarget(
             name: "AppShellTests",
             dependencies: [
-                "FiscalDomain", "FiscalData", "FiscalResource", "FeatureCore", "AppShell",
+                "FiscalDomain", "FiscalData", "FiscalResource", "FeatureCore", "FeatureLiveResults",
+                "AppShell",
             ]),
     ]
 )
