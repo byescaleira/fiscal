@@ -79,7 +79,7 @@ struct HighlightAlertCenterTests {
     private let service = FakeAlertService()
     private var ledger: HighlightAlertLedger { HighlightAlertLedger(suiteName: suite) }
 
-    private func highlight(_ id: String, weight: Int = 85, daysAgo: Int = 0) -> Highlight {
+    private func highlight(_ id: String, weight: Int = 70, daysAgo: Int = 0) -> Highlight {
         let calendar = HighlightAlertRule.brasilia
         let date = calendar.date(byAdding: .day, value: -daysAgo, to: .now) ?? .now
         return Highlight(
@@ -110,7 +110,7 @@ struct HighlightAlertCenterTests {
 
     @Test func aHighlightBelowTheMinimumWeightDoesNotStart() async {
         defer { forget() }
-        let center = center([highlight("a", weight: 84)])
+        let center = center([highlight("a", weight: 69)])
         await center.resume()
         await center.consider()
         #expect(activities.started.isEmpty)

@@ -138,3 +138,13 @@ func TestPendingHighlightExpiresWithoutRegistrations(t *testing.T) {
 		t.Fatal("expired highlight still pending")
 	}
 }
+
+func TestEligibleAsksForTheMinimumWeight(t *testing.T) {
+	now := time.Date(2026, 11, 3, 12, 0, 0, 0, brasilia)
+	if !Eligible(Item{ID: "a", Weight: 70, Date: "2026-11-03"}, now) {
+		t.Fatal("weight 70 must be eligible")
+	}
+	if Eligible(Item{ID: "a", Weight: 69, Date: "2026-11-03"}, now) {
+		t.Fatal("weight 69 must not be eligible")
+	}
+}

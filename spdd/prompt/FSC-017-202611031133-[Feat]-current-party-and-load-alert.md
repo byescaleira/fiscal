@@ -35,6 +35,8 @@
 
 17. Dado o banco de dados na VPS, quando a medida roda, então o usuário recebe quantos destaques passariam de 70, 75 e 85 nos últimos 30 dias, ou quanto histórico existe, e decide. O limite não muda nesta fase sem essa decisão.
 18. Dados os registros de token recusados com erro 401, quando investigados, então a causa é relatada, e os testes de `HighlightAlertRule` e `HighlightAlertCenter` cobrem peso mínimo, janela de 24 horas e item já avisado.
+20. Dado um destaque do último dia com peso 70, quando o servidor e o app avaliam a regra, então ele entra na Atividade ao Vivo. Com peso 69, não entra. Vale nos dois lados.
+21. Dados os Ajustes e o método do peso, quando mostram a regra, então dizem peso 70.
 
 **Documentos**
 
@@ -90,7 +92,7 @@ O formato dos arquivos publicados não muda; só o valor de `party` nos cartões
 - **Comparação antes de publicar.** Rodar o novo código sobre a mesma entrada e listar quantas pessoas mudam de partido. **O trabalho para na operação 2 com essa lista, antes de qualquer deploy.**
 - **Retratos.** Decisão do usuário e regra do projeto: traços descritos a olho a partir da foto oficial, sem IA gerando imagem. Os quatro são vices eleitos, e o dado publicado não traz foto, então a foto é procurada no TSE.
 - **Alerta.** Decisão do usuário: notificação pelo ntfy, em tópico privado. `ExecStopPost` em `fiscal-sync.service` chama o script com o resultado da execução. A idade vem de `public/v1/meta.json`. O tópico fica em `secrets/ntfy-topic`, e quem cria o arquivo é o usuário, sem passar pelo chat.
-- **Limite do destaque.** Decisão do usuário: medir antes de mudar. O limite é uma constante no servidor (`AlertMinWeight`) e uma regra no app; só muda com a decisão dele, por `spdd-prompt-update`.
+- **Limite do destaque.** Decisão do usuário: medir antes de mudar. Medido em 03/11/2026, pelas ações mais pesadas de cada pessoa, nos últimos 30 dias: 0 destaques com peso 85, 1 com 75 e no máximo 12 com 70, em 9 dias. Com esses números, o usuário decidiu por 70. O limite é uma constante no servidor (`AlertMinWeight`), usada pelo push do `fiscal-api` e pelo método publicado, e uma regra no app (`HighlightAlertRule.standard`). Por isso o deploy inclui o `api`.
 - **Fora daqui.** Curtir e compartilhar no Feed, sugestões e algoritmo do Feed, Web e publicação do site.
 
 ## Structure
@@ -102,6 +104,8 @@ O formato dos arquivos publicados não muda; só o valor de `party` nos cartões
 - `scripts/avatar-traits.json` e os arquivos gerados por `scripts/avatars.py`: os traços novos.
 - `scripts/party-check.py`: novo, compara os partidos entre o índice e as listas publicadas.
 - `FiscalKit/Tests/FiscalDomainTests/`: testes de `HighlightAlertRule`. `FiscalKit/Tests/AppShellTests/`: testes de `HighlightAlertCenter`.
+- `server/internal/publicdata/highlights.go` e `FiscalKit/Sources/FiscalDomain/PublicData/HighlightAlertRule.swift`: o limite. `server/internal/highlightalert/highlightalert_test.go`: o limite no servidor.
+- `FiscalKit/Sources/FeatureSettings/SettingsScreen.swift`, `Fiscal/Fiscal/Localizable.xcstrings`, `server/README.md` e `docs/validation.md`: o texto da regra.
 - Documentos: `docs/adr/0026-current-party-and-load-alert.md`, `docs/adr/README.md`, `docs/server-runbook.md`, `docs/backlog.md`, `docs/roadmap.md`, `CHANGELOG.md`, `spdd/README.md`, `docs/evidence/FSC-017/qa.md`.
 
 ## Operations
@@ -127,12 +131,13 @@ O formato dos arquivos publicados não muda; só o valor de `party` nos cartões
    - Testes de `HighlightAlertRule` e `HighlightAlertCenter`.
    - Medida na VPS, só em leitura, e investigação dos 401 com os logs.
    - **Relatar ao usuário os números e a causa.**
-   - Cobre: 17, 18. Verificação: testes e relatório.
+   - Com a decisão do usuário: limite 70 no servidor e no app, e nos textos que citam a regra.
+   - Cobre: 17, 18, 20, 21. Verificação: testes e relatório.
 6. **Deploy.** Depende de: 2, 3, 4.
    - O usuário cria `secrets/ntfy-topic` e instala o app ntfy.
-   - `scripts/server-deploy.sh --apply` de `ingest`, `pages` e `units`, **com o ok do usuário, pedido na hora**.
+   - `scripts/server-deploy.sh --apply` de `api`, `ingest`, `pages` e `units`, **com o ok do usuário, pedido na hora**.
    - Um disparo de teste do aviso, com o ok dele.
-   - Cobre: 7, 10, 11. Verificação: `party-check --published`, `portrait-check --published`, notificação recebida.
+   - Cobre: 7, 10, 11, 20. Verificação: `party-check --published`, `portrait-check --published`, notificação recebida, limite 70 em `method/weight.json` publicado.
 7. **Documentos e fechamento.** Depende de: todas.
    - Runbook, backlog sem o App ID da Meta, roadmap, índice, `CHANGELOG` e ADR.
    - QA em `docs/evidence/FSC-017/qa.md`, dizendo o que não foi visto.
@@ -161,7 +166,7 @@ O formato dos arquivos publicados não muda; só o valor de `party` nos cartões
 - **Alerta sem dado pessoal:** a mensagem só diz o estado da carga. **QUEBRA** se levar nome, token ou caminho interno.
 - **Alerta não derruba a carga:** falha do script não muda o resultado do serviço.
 - **Segredo:** o tópico nunca aparece em log, commit, chat ou processo visível.
-- **Limite do destaque:** não muda sem a decisão do usuário com os números.
+- **Limite do destaque:** 70, por decisão do usuário com os números. **QUEBRA** se o servidor e o app usarem valores diferentes.
 - **VPS:** a medida e a investigação são só leitura; o cron não muda de novo nesta fase.
 - **Sem esquema novo e sem saída nova do aparelho.**
 - **Fora de escopo, QUEBRA se entrar:** Feed, curtir, compartilhar, sugestões, Web e publicação do site.

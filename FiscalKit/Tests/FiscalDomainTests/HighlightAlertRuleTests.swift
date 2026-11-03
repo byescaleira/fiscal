@@ -6,7 +6,7 @@ struct HighlightAlertRuleTests {
     private let rule = HighlightAlertRule.standard
     private let calendar = HighlightAlertRule.brasilia
 
-    private func highlight(_ id: String = "a", weight: Int = 85, on date: String = "2026-11-03")
+    private func highlight(_ id: String = "a", weight: Int = 70, on date: String = "2026-11-03")
         -> Highlight
     {
         Highlight(
@@ -25,12 +25,12 @@ struct HighlightAlertRuleTests {
             ?? .distantPast
     }
 
-    @Test func theStandardRuleAsksForWeightEightyFiveAndOneDay() {
-        #expect(rule.minWeight == 85)
+    @Test func theStandardRuleAsksForWeightSeventyAndOneDay() {
+        #expect(rule.minWeight == 70)
         #expect(rule.maxAgeHours == 24)
     }
 
-    @Test(arguments: [(84, false), (85, true), (100, true)])
+    @Test(arguments: [(69, false), (70, true), (100, true)])
     func theWeightMustReachTheMinimum(weight: Int, passes: Bool) {
         #expect(rule.passes(highlight(weight: weight), now: moment(3)) == passes)
     }
@@ -56,7 +56,7 @@ struct HighlightAlertRuleTests {
     @Test func pickSkipsWhatWasAlreadyShownAndWhatDoesNotPass() {
         let items = [
             highlight("light", weight: 60), highlight("shown", weight: 90),
-            highlight("next", weight: 85), highlight("last", weight: 95),
+            highlight("next", weight: 70), highlight("last", weight: 95),
         ]
         let pick = rule.pick(from: items, shown: ["shown"], now: moment(3))
         #expect(pick?.id == "next")
@@ -68,9 +68,9 @@ struct HighlightAlertRuleTests {
     }
 
     @Test func aPublishedRuleReplacesTheStandardOne() {
-        let lower = HighlightAlertRule(minWeight: 70, maxAgeHours: 24)
-        #expect(lower.passes(highlight(weight: 70), now: moment(3)))
-        #expect(!rule.passes(highlight(weight: 70), now: moment(3)))
+        let higher = HighlightAlertRule(minWeight: 85, maxAgeHours: 24)
+        #expect(!higher.passes(highlight(weight: 70), now: moment(3)))
+        #expect(rule.passes(highlight(weight: 70), now: moment(3)))
     }
 
     @Test func theLedgerRemembersOnlyTheLastSixty() {

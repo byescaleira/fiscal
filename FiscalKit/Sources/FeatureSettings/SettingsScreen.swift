@@ -129,7 +129,7 @@ private struct HighlightAlertsSection: View {
                 SettingsLabel(
                     "Highest-weight highlights on the Lock Screen",
                     detail:
-                        "Only weight 85 or more, from the last day. Fiscal sends only an anonymous Apple token.",
+                        "Only weight 70 or more, from the last day. Fiscal sends only an anonymous Apple token.",
                     symbol: "bell.badge", color: .retroRust)
             }
             .tint(.positive)

@@ -14,7 +14,7 @@ const (
 	HighlightMoney     = "money"
 	HighlightIndicator = "indicator"
 	HighlightLimit     = 4
-	AlertMinWeight     = 85
+	AlertMinWeight     = 70
 	AlertMaxAgeHours   = 24
 )
 
