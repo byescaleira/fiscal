@@ -27,7 +27,7 @@
 11. Dadas 6 execuções seguidas com falha, quando a sexta termina, então chega uma notificação no celular dizendo que a carga falhou, sem nenhum dado de pessoa.
 12. Dadas mais falhas depois disso, quando terminam, então não chega outra notificação.
 13. Dada a primeira execução boa depois do aviso, quando termina, então chega uma notificação de que voltou.
-14. Dados dados com mais de 48 horas sem mudar, com as execuções terminando bem, quando a execução termina, então chega o mesmo aviso uma vez, e o texto diz que os dados estão velhos.
+14. Dados dados com mais de 48 horas sem mudar, com as execuções terminando bem, quando a execução termina, então chega um aviso uma vez, e o título e o texto dizem que os dados estão sem mudar, sem dizer que a carga falhou.
 15. Dado o tópico ausente em `secrets/`, quando o script roda, então não derruba a carga e registra no log.
 16. Dado o ntfy fora do ar, quando o script roda, então não derruba a carga e tenta de novo na execução seguinte.
 
@@ -105,12 +105,12 @@ O formato dos arquivos publicados não muda; só o valor de `party` nos cartões
 ## Structure
 
 - `server/internal/publicdata/link.go`: a regra do partido atual; `link_test.go`: os testes.
-- `server/deploy/fiscal-load-alert.sh`: novo. `server/deploy/fiscal-load-alert_test.go` ou teste em shell: novo.
+- `server/deploy/fiscal-load-alert.sh`: novo. `server/deploy/load_alert_test.go`: novo.
 - `server/deploy/systemd/fiscal-sync.service`: `ExecStopPost`.
 - `scripts/server-deploy.sh`: leva o script para a VPS, se o estágio atual não levar.
 - `scripts/avatar-traits.json` e os arquivos gerados por `scripts/avatars.py`: os traços novos.
 - `scripts/party-check.py`: novo, compara os partidos entre o índice e as listas publicadas.
-- `FiscalKit/Tests/FiscalDomainTests/`: testes de `HighlightAlertRule`. `FiscalKit/Tests/AppShellTests/`: testes de `HighlightAlertCenter`.
+- `FiscalKit/Tests/FiscalDomainTests/`: testes de `HighlightAlertRule`. `FiscalKit/Tests/AppShellTests/`: testes de `HighlightAlertCenter`. `FiscalKit/Package.swift`: `AppShellTests` passa a depender de `FeatureLiveResults`, para o teste implementar `HighlightActivityTracking`.
 - `server/internal/publicdata/highlights.go` e `FiscalKit/Sources/FiscalDomain/PublicData/HighlightAlertRule.swift`: o limite. `server/internal/highlightalert/highlightalert_test.go`: o limite no servidor.
 - `FiscalKit/Sources/FeatureSettings/SettingsScreen.swift`, `Fiscal/Fiscal/Localizable.xcstrings`, `server/README.md` e `docs/validation.md`: o texto da regra.
 - `server/cmd/ingest/main.go` e `server/compose.yaml`: o padrão de `HOT_FROM_ORIGIN`. `docs/adr/0008-smart-sync.md`: a decisão.
@@ -123,7 +123,7 @@ O formato dos arquivos publicados não muda; só o valor de `party` nos cartões
    - Chamada no fim de `Link`, nos dois caminhos do deputado estadual.
    - Cobre: 1 a 6, 8. Verificação: `go test ./internal/publicdata/`.
 2. **Comparação.** Depende de: 1.
-   - `scripts/party-check.py`, sem rede sobre arquivos locais e com `--published`.
+   - `scripts/party-check.py`, com `--dir` sobre arquivos locais e com `--published`.
    - Rodar o novo código com a entrada real, sem publicar, e listar quem muda.
    - **Parar e mostrar a lista ao usuário antes da operação 3.**
    - Cobre: 7. Verificação: a lista e o script.
@@ -176,7 +176,7 @@ O formato dos arquivos publicados não muda; só o valor de `party` nos cartões
 - **Rosto certo:** `portrait-check` sem nome diferente.
 - **Alerta sem dado pessoal:** a mensagem só diz o estado da carga. **QUEBRA** se levar nome, token ou caminho interno.
 - **Alerta não derruba a carga:** falha do script não muda o resultado do serviço.
-- **Segredo:** o tópico nunca aparece em log, commit, chat ou processo visível.
+- **Segredo:** o tópico nunca aparece em log, commit, chat ou processo visível. **Exceção registrada em 03/11/2026:** o nome em uso apareceu no chat, pela forma como o comando de criação foi rodado. A decisão de trocar ou manter é do usuário, e o runbook explica como trocar.
 - **Limite do destaque:** 70, por decisão do usuário com os números. **QUEBRA** se o servidor e o app usarem valores diferentes.
 - **Dados quentes:** nada além dos três arquivos muda de lugar, e a VPS continua como reserva. **QUEBRA** se o app precisar de versão nova para isso.
 - **VPS:** a medida e a investigação são só leitura; o cron não muda de novo nesta fase.

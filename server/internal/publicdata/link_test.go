@@ -1,6 +1,7 @@
 package publicdata
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"testing"
@@ -332,6 +333,70 @@ func TestLinkAssemblyWithoutCurrentListOnlyLinksElected(t *testing.T) {
 	for _, p := range people {
 		if p.Primary().Status != StatusInOffice {
 			t.Fatalf("%s = %s", p.Name, p.Primary().Status)
+		}
+	}
+}
+
+func partiesOf(t *testing.T, value any, slug string) []string {
+	t.Helper()
+	data, err := json.Marshal(value)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var tree any
+	if err := json.Unmarshal(data, &tree); err != nil {
+		t.Fatal(err)
+	}
+	found := []string{}
+	var walk func(node any)
+	walk = func(node any) {
+		switch v := node.(type) {
+		case map[string]any:
+			if v["slug"] == slug {
+				if party, ok := v["party"].(string); ok {
+					found = append(found, party)
+				}
+			}
+			for _, child := range v {
+				walk(child)
+			}
+		case []any:
+			for _, child := range v {
+				walk(child)
+			}
+		}
+	}
+	walk(tree)
+	return found
+}
+
+func TestBuildShowsTheCurrentPartyInEveryCardOfThePerson(t *testing.T) {
+	ds := sampleDataset()
+	var person *Person
+	for _, p := range ds.People {
+		if p.Name == "Mailza Assis" {
+			person = p
+		}
+	}
+	if person == nil {
+		t.Fatal("sample person not found")
+	}
+	person.Candidacies = append([]Candidacy{{Year: 2026, Office: person.Primary().Office, UF: person.Primary().UF, Party: "NOVO"}}, person.Candidacies...)
+	applyCurrentParty(person)
+	files := filesByPath(Build(ds, &Slugs{byKey: map[string]string{}}))
+	for _, path := range []string{"index/people.json", "people/mailza-assis.json", "places/" + person.Primary().UF + ".json"} {
+		value, ok := files[path]
+		if !ok {
+			t.Fatalf("missing %s", path)
+		}
+		parties := partiesOf(t, value, "mailza-assis")
+		if len(parties) == 0 {
+			t.Fatalf("%s has no card of the person", path)
+		}
+		for _, party := range parties {
+			if party != "NOVO" {
+				t.Fatalf("%s shows %q", path, party)
+			}
 		}
 	}
 }

@@ -139,7 +139,7 @@ func TestLoadAlertNotifiesOnceAboutStaleData(t *testing.T) {
 	}
 	a.writeAge(49 * time.Hour)
 	a.finish("success", 3)
-	if len(a.sent()) != 1 || !strings.Contains(a.sent()[0].body, "velhos") {
+	if len(a.sent()) != 1 || !strings.Contains(a.sent()[0].body, "velhos") || strings.Contains(a.sent()[0].title, "falhou") {
 		t.Fatalf("stale notices: %+v", a.sent())
 	}
 	a.writeAge(time.Hour)

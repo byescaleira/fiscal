@@ -63,7 +63,7 @@ esac
 
 if [ "$age" -ge "$stale_hours" ]; then
   if [ ! -e "$state/notified" ]; then
-    send "Fiscal: carga de dados falhou" "A carga termina, mas os dados estão velhos: $age horas sem mudar." && touch "$state/notified"
+    send "Fiscal: dados sem mudar" "A carga termina, mas os dados estão velhos: $age horas sem mudar." && touch "$state/notified"
   fi
   exit 0
 fi

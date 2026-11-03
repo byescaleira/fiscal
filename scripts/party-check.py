@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import json
+import os
 import sys
 import unicodedata
 import urllib.request
@@ -15,6 +16,11 @@ UFS = (
 def key(party):
     decomposed = unicodedata.normalize("NFD", party.casefold())
     return "".join(c for c in decomposed if unicodedata.category(c) != "Mn" and not c.isspace())
+
+
+def read_local(root, path):
+    with open(os.path.join(root, path), encoding="utf-8") as handle:
+        return json.load(handle)
 
 
 def fetch(path):
@@ -43,11 +49,15 @@ def divergent(index, places):
 
 def main():
     parser = argparse.ArgumentParser(description="List who has more than one party in the published files")
-    parser.parse_args()
+    source = parser.add_mutually_exclusive_group(required=True)
+    source.add_argument("--published", action="store_true", help="read the published files")
+    source.add_argument("--dir", help="read a local copy of the v2 folder")
+    args = parser.parse_args()
+    read = (lambda path: read_local(args.dir, path)) if args.dir else fetch
     index, places = [], []
-    collect(fetch("index/people.json"), index)
+    collect(read("index/people.json"), index)
     for uf in UFS:
-        collect(fetch(f"places/{uf}.json"), places)
+        collect(read(f"places/{uf}.json"), places)
     found = divergent(index, places)
     print(f"party-check: {len({card['slug'] for card in index + places})} people, {len(found)} with more than one party")
     for slug, parties in sorted(found.items()):

@@ -185,12 +185,13 @@ Regras:
 - **Alerta da carga** (`fiscal-load-alert.sh`, em `ExecStopPost` do `fiscal-sync.service`):
   - avisa uma vez, por um tópico privado do ntfy, depois de 6 execuções seguidas com falha ou com os dados de `public/v1/meta.json` com mais de 48 horas sem mudar;
   - avisa de novo quando a execução termina bem com os dados em dia. O estado fica em `/var/lib/fiscal-load-alert`;
+  - o aviso de dados sem mudar pode vir de um período sem novidade nas fontes, então confira o `-plan` antes de tratar como falha;
   - o aviso não leva dado de ninguém, e nenhuma falha do script muda o resultado do serviço. Tópico ausente ou ntfy fora do ar só ficam no log, e ele tenta de novo na execução seguinte;
   - **Criar ou trocar o tópico:** no app Terminal do Mac, fora do Claude Code, para o nome não passar pelo chat: `ssh root@179.198.114.91 'umask 077; openssl rand -hex 16 > /opt/fiscal-api/secrets/ntfy-topic; cat /opt/fiscal-api/secrets/ntfy-topic'`. Assine o nome no app ntfy;
-  - **Testar:** `/opt/fiscal-api/fiscal-load-alert.sh --test`;
+  - **Testar:** `/opt/fiscal-api/fiscal-load-alert.sh --test`. O script usa `curl` e `python3` do host, sem os quais o aviso não sai e a carga segue normal;
   - **Conferir:** `journalctl -u fiscal-sync --since today | grep fiscal-load-alert`.
 - **Imagens sumindo:** em 03/11/2026, a limpeza diária do Docker tinha apagado as imagens `fiscal-ingest` e `fiscal-pages`, que não têm contêiner rodando, e os dados ficaram parados desde 28/10. `/etc/cron.d/docker-image-prune` agora usa `--filter "label!=fiscal.sha"`. Se o `fiscal-sync` falhar com imagem ausente, confira esse filtro e refaça o deploy.
-- **Conferir os dados publicados:** `python3 scripts/party-check.py` compara o partido entre o índice e as listas por estado, e `python3 scripts/portrait-check.py --published` procura quem está sem traços.
+- **Conferir os dados publicados:** `python3 scripts/party-check.py --published` compara o partido entre o índice e as listas por estado, e `python3 scripts/portrait-check.py --published` procura quem está sem traços.
 - **Pausar tudo:** `systemctl stop fiscal-sync.timer`. Para voltar, use `start`.
 - **Voltar os dados publicados:**
   1. **Na hora:** painel do Pages › `fiscal-dados` › Deployments › o deploy bom › **Rollback**.
