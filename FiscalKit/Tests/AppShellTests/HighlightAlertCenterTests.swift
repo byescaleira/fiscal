@@ -183,13 +183,15 @@ struct HighlightAlertCenterTests {
         #expect(activities.started.isEmpty)
     }
 
-    @Test func turningItOffEndsEverythingOnTheLockScreen() async {
+    @Test func turningItOffEndsEverythingAndRemovesTheToken() async {
         defer { forget() }
+        ledger.save(token: "token-1")
         let center = center([highlight("a")])
         await center.resume()
         await center.setEnabled(false)
         #expect(activities.endedAll)
         #expect(!ledger.isEnabled)
+        #expect(ledger.registeredToken == nil)
     }
 
     @Test func aNewStartTokenIsRegisteredAndSaved() async {

@@ -45,6 +45,7 @@ Primeira versão, a 1.0.0.
 
 ### Changed
 
+- A Atividade ao Vivo do destaque passa a aceitar peso 70, no servidor e no app. Com o limite de 85, nenhum destaque entrou nos 30 dias medidos.
 - O Feed virou uma lista contínua, com divisórias entre os itens no lugar dos cartões. O destaque e a apuração no topo continuam como cartões.
 - As checagens do Projeto Comprova no Feed mostram a imagem da própria publicação, inteira e com crédito, buscada no aparelho.
 - Quem tem traços aparece sempre desenhado, mesmo quando o partido no dado muda; antes, Eduardo Riedel e outros caíam no rosto genérico ([FSC-016](spdd/prompt/FSC-016-202611021923-[Feat]-light-cards-and-portraits.md)).
@@ -66,6 +67,9 @@ Primeira versão, a 1.0.0.
 
 ### Fixed
 
+- A mesma pessoa não aparece mais com dois partidos: governador, vice e deputado estadual em exercício usam o partido da candidatura mais recente, e o histórico de cada eleição continua como foi.
+- Eliane Leal, Gustavo Rocha, Jessica Sales e Larissa ganharam retrato próprio.
+- A carga de dados avisa no celular quando falha ou quando os dados ficam velhos, e a limpeza do Docker não apaga mais as imagens da carga.
 - O app do Mac carrega os dados: o sandbox ganhou a rede de saída.
 - Com a atualização obrigatória, atalhos, alertas de destaque, registro da Live Activity e a atualização em segundo plano também param.
 - A Live Activity da apuração abre a Apuração, não a tela inicial.
