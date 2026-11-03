@@ -59,12 +59,25 @@ classDiagram
         <<enumeration>>
         vote
         colors(list)
+        +tints
+        +lightStops
+    }
+    class HeroInk {
+        +primary
+        +secondary
+        +dimmed
+        +track
+        +signal(color)
     }
     class PortraitCheck {
         <<script>>
         +fixture
         +published
     }
+    class PortraitCheckTest {
+        <<script>>
+    }
+    PortraitCheckTest --> PortraitCheck
     PortraitStore --> PortraitLibrary
     PortraitStore --> PortraitRig
     HeroSurface --> HeroTone
@@ -87,16 +100,15 @@ Nenhum arquivo público, dado do aparelho nem formato de traços muda. `PartyBac
 ## Structure
 
 - `FiscalResource/PortraitLibrary.swift`: `traits(for:)` só com o identificador.
-- `FeatureCore/Portraits/PortraitStore.swift`, `PortraitRig.swift`: chave de cache e rosto neutro.
-- `FiscalDesignSystem/Components/HeroSurface.swift`: novo, com `HeroTone`.
+- `FeatureCore/Portraits/PortraitStore.swift`: chave de cache e rosto neutro.
+- `FiscalDesignSystem/Components/HeroSurface.swift`: novo, com `HeroTone`, `HeroInk` e `Color.heroInk`.
 - `FeatureVotes/VoteHeroSection.swift`.
 - `FeatureRegion/RegionNow.swift`.
 - `FeatureSearch/InvestigationConclusion.swift`, `CompareParts.swift`.
-- `scripts/portrait-check.py`: novo. `scripts/verify.sh`: chama o script.
+- `scripts/portrait-check.py` e `scripts/portrait-check-test.py`: novos. `scripts/verify.sh`: chama os dois.
 - `Fiscal/FiscalUITests/HeroCardsTests.swift`: novo, com os dois modos.
-- `Fiscal/Fiscal/Localizable.xcstrings`, se algum texto mudar.
 - Testes: `PortraitLibraryTests`, `PortraitStoreTests`, `HeroSurfaceTests` (novo).
-- Documentos: `docs/adr/0025-portrait-by-slug-and-hero-cards-follow-the-mode.md`, `docs/adr/README.md`, `docs/brief.md`, `docs/design-system.md`, `docs/validation.md`, `docs/roadmap.md`, `docs/backlog.md`, `CHANGELOG.md`, `spdd/README.md`, `docs/evidence/FSC-016/qa.md`.
+- Documentos: `docs/adr/0025-portrait-by-slug-and-hero-cards-follow-the-mode.md`, `docs/adr/README.md`, `docs/brief.md`, `docs/design-system.md`, `docs/validation.md`, `docs/roadmap.md`, `docs/backlog.md`, `CHANGELOG.md`, `spdd/README.md`, `docs/evidence/FSC-016/qa.md`, `spdd/review/`.
 
 ## Operations
 
@@ -108,11 +120,12 @@ Nenhum arquivo público, dado do aparelho nem formato de traços muda. `PartyBac
 2. **Conferência dos traços.** Depende de: 1.
    - `scripts/portrait-check.py`: compara identificador e nome entre `scripts/avatar-traits.json` e `showcase-people.json`; com `--published`, com `index/people.json` e `places/<uf>.json`, e diz quantas pessoas leu.
    - Sai com erro e aponta o caso quando o nome difere, ou quando falta traço a alguém com `--published`.
-   - `scripts/verify.sh --full` chama sem rede.
+   - `scripts/portrait-check-test.py` cobre o erro, e `scripts/verify.sh --full` chama os dois, sem rede.
    - **Parar e mostrar Riedel no iPhone, com dados reais, antes da operação 3.**
    - Cobre: 5, 6. Verificação: o script nos dois modos, captura e iPhone.
 3. **Superfície do cartão.**
-   - `HeroTone`: `vote`, `colors`.
+   - `HeroTone`: `vote`, `colors`, com `lightStops` para o claro: duas cores têm o centro neutro, e mais de duas mantêm cada coluna.
+   - `HeroInk` e `Color.heroInk`: os tons do texto nos dois modos.
    - `HeroSurface`: no escuro, o fundo de hoje, recebido de cada cartão; no claro, o cinza dos cartões com a cor nas laterais; com Aumentar contraste, só o cinza e um contorno.
    - Cobre: 8, 13, 15, 16, 17. Verificação: `HeroSurfaceTests`, com o contraste de todas as cores da paleta.
 4. **Placar da votação.** Depende de: 3.
