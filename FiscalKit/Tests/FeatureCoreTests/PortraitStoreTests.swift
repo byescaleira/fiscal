@@ -8,18 +8,22 @@ import Testing
 
 @MainActor
 struct PortraitStoreTests {
-    @Test func assemblesBundledPortraitsOnlyForTheSameParty() {
+    @Test func drawsThePersonWithThePartyTheDataBrings() {
         let store = PortraitStore()
         #expect(store.drawsPortraits)
-        #expect(store.hasTraits(slug: "lula", party: "PT"))
-        #expect(!store.hasTraits(slug: "lula", party: "PL"))
-        #expect(!store.hasTraits(slug: "nobody", party: "PSB"))
+        #expect(store.hasTraits(slug: "lula"))
+        #expect(store.hasTraits(slug: "eduardo-riedel"))
+        #expect(!store.hasTraits(slug: "nobody"))
         let lula = store.animation(slug: "lula", party: "PT")
         #expect(lula != nil)
         let neutral = store.animation(slug: "nobody", party: "PSB")
         #expect(neutral != nil)
         #expect(neutral === store.animation(slug: "someone-else", party: "psb"))
         #expect(lula !== store.animation(slug: "lula", party: "PL"))
+        let otherParty = store.animation(slug: "eduardo-riedel", party: "PSDB")
+        #expect(otherParty != nil)
+        #expect(otherParty !== store.animation(slug: "nobody", party: "PSDB"))
+        #expect(otherParty !== store.animation(slug: "eduardo-riedel", party: "PP"))
         #expect(!PortraitStore(library: .empty).drawsPortraits)
         #expect(store.seal != nil)
     }

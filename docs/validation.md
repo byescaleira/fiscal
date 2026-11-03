@@ -77,6 +77,13 @@ Build: `____` · Data: `__/__/____`
 - [ ] Filtro Seguindo, widget "Quem eu sigo" e Siri abrem a tela de quem você segue; seguir e deixar de seguir nela mudam o Feed.
 - [ ] Mac, iPad e Duo aberto: a coluna fica legível, e o que se abre vai ao outro lado.
 
+### Retratos e cartões
+
+- [ ] Quem assume em 2027 aparece desenhado, mesmo com outro partido no dado: conferir Eduardo Riedel e rodar `python3 -I scripts/portrait-check.py --published` depois de cada carga.
+- [ ] No modo claro, o placar, "Na sua região agora", a conclusão da investigação e comparar não têm fundo preto; no escuro, ficam como antes.
+- [ ] O cartão do político e os outros cartões coloridos ficam iguais nos dois modos.
+- [ ] O ajuste de Aparência e Aumentar contraste valem para esses quatro cartões.
+
 ### Meu apoio e privacidade
 
 - [ ] A instalação nova abre direto, sem setup e sem pergunta política.
