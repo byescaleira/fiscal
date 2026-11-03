@@ -45,6 +45,7 @@ Primeira versão, a 1.0.0.
 
 ### Changed
 
+- A pauta, as votações recentes e o resumo de hoje passam a vir só da Cloudflare, para a VPS não ser o caminho de cada abertura do app. Esses dados podem atrasar até uns 10 minutos.
 - A Atividade ao Vivo do destaque passa a aceitar peso 70, no servidor e no app. Com o limite de 85, nenhum destaque entrou nos 30 dias medidos.
 - O Feed virou uma lista contínua, com divisórias entre os itens no lugar dos cartões. O destaque e a apuração no topo continuam como cartões.
 - As checagens do Projeto Comprova no Feed mostram a imagem da própria publicação, inteira e com crédito, buscada no aparelho.

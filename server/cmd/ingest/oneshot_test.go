@@ -84,3 +84,22 @@ func TestSiteConfig(t *testing.T) {
 		}
 	}
 }
+
+func TestHotDataStaysOnTheCDNByDefault(t *testing.T) {
+	now := time.Date(2026, 11, 3, 12, 0, 0, 0, time.UTC)
+	for _, tc := range []struct {
+		value string
+		want  bool
+	}{{"", false}, {"0", false}, {"false", false}, {"1", true}, {"true", true}} {
+		cfg, err := loadConfig(env(map[string]string{"HOT_FROM_ORIGIN": tc.value}), now)
+		if err != nil {
+			t.Fatalf("HOT_FROM_ORIGIN=%q: %v", tc.value, err)
+		}
+		if got := cfg.stager().Origin != nil; got != tc.want {
+			t.Fatalf("HOT_FROM_ORIGIN=%q: origin=%v, want %v", tc.value, got, tc.want)
+		}
+	}
+	if _, err := loadConfig(env(map[string]string{"HOT_FROM_ORIGIN": "maybe"}), now); err == nil {
+		t.Fatal("an invalid value must fail")
+	}
+}

@@ -38,6 +38,11 @@
 20. Dado um destaque do último dia com peso 70, quando o servidor e o app avaliam a regra, então ele entra na Atividade ao Vivo. Com peso 69, não entra. Vale nos dois lados.
 21. Dados os Ajustes e o método do peso, quando mostram a regra, então dizem peso 70.
 
+**Dados quentes**
+
+22. Dado o `release.json` publicado depois do deploy, quando o app o lê, então não há o campo `origin`, e `today.json`, `agenda/today.json` e `votes/recent.json` vêm só da Cloudflare, com atraso de até uns 10 minutos.
+23. Dada a Cloudflare fora do ar, quando o app lê os dados, então continua recorrendo à VPS, como já faz.
+
 **Documentos**
 
 19. Dados o runbook e o backlog, quando a fase fecha, então registram o caso das imagens, o filtro do cron, o alerta e como conferir, e o App ID da Meta sai do backlog.
@@ -93,6 +98,8 @@ O formato dos arquivos publicados não muda; só o valor de `party` nos cartões
 - **Retratos.** Decisão do usuário e regra do projeto: traços descritos a olho a partir da foto oficial, sem IA gerando imagem. Os quatro são vices eleitos, e o dado publicado não traz foto, então a foto é procurada no TSE.
 - **Alerta.** Decisão do usuário: notificação pelo ntfy, em tópico privado. `ExecStopPost` em `fiscal-sync.service` chama o script com o resultado da execução. A idade vem de `public/v1/meta.json`. O tópico fica em `secrets/ntfy-topic`, e quem cria o arquivo é o usuário, sem passar pelo chat.
 - **Limite do destaque.** Decisão do usuário: medir antes de mudar. Medido em 03/11/2026, pelas ações mais pesadas de cada pessoa, nos últimos 30 dias: 0 destaques com peso 85, 1 com 75 e no máximo 12 com 70, em 9 dias. Com esses números, o usuário decidiu por 70. O limite é uma constante no servidor (`AlertMinWeight`), usada pelo push do `fiscal-api` e pelo método publicado, e uma regra no app (`HighlightAlertRule.standard`). Por isso o deploy inclui o `api`.
+- **Dados quentes.** Decisão do usuário em 03/11/2026: a VPS não aguentaria 50 milhões de usuários ativos, então os três arquivos quentes saem dela. `HOT_FROM_ORIGIN` passa a 0 por padrão, no `fiscal-ingest` e no `compose.yaml`. O `release.json` vem da Cloudflare, então o app não precisa de versão nova. O intervalo de `PAGES_DATA_INTERVAL` (10 minutos na VPS, conferido em 03/11/2026) passa a ser o atraso dos dados quentes. O [ADR 0008](../../docs/adr/0008-smart-sync.md) registra a mudança.
+- **Push em escala.** Fica fora: o limite de 200 mil registros e o envio pela VPS não chegam a 50 milhões e pedem uma mudança própria. Registrado no backlog.
 - **Fora daqui.** Curtir e compartilhar no Feed, sugestões e algoritmo do Feed, Web e publicação do site.
 
 ## Structure
@@ -106,6 +113,7 @@ O formato dos arquivos publicados não muda; só o valor de `party` nos cartões
 - `FiscalKit/Tests/FiscalDomainTests/`: testes de `HighlightAlertRule`. `FiscalKit/Tests/AppShellTests/`: testes de `HighlightAlertCenter`.
 - `server/internal/publicdata/highlights.go` e `FiscalKit/Sources/FiscalDomain/PublicData/HighlightAlertRule.swift`: o limite. `server/internal/highlightalert/highlightalert_test.go`: o limite no servidor.
 - `FiscalKit/Sources/FeatureSettings/SettingsScreen.swift`, `Fiscal/Fiscal/Localizable.xcstrings`, `server/README.md` e `docs/validation.md`: o texto da regra.
+- `server/cmd/ingest/main.go` e `server/compose.yaml`: o padrão de `HOT_FROM_ORIGIN`. `docs/adr/0008-smart-sync.md`: a decisão.
 - Documentos: `docs/adr/0026-current-party-and-load-alert.md`, `docs/adr/README.md`, `docs/server-runbook.md`, `docs/backlog.md`, `docs/roadmap.md`, `CHANGELOG.md`, `spdd/README.md`, `docs/evidence/FSC-017/qa.md`.
 
 ## Operations
@@ -133,11 +141,14 @@ O formato dos arquivos publicados não muda; só o valor de `party` nos cartões
    - **Relatar ao usuário os números e a causa.**
    - Com a decisão do usuário: limite 70 no servidor e no app, e nos textos que citam a regra.
    - Cobre: 17, 18, 20, 21. Verificação: testes e relatório.
-6. **Deploy.** Depende de: 2, 3, 4.
+5a. **Dados quentes.**
+   - `HOT_FROM_ORIGIN` com padrão 0 no `fiscal-ingest` e no `compose.yaml`, e `1` continua aceito para voltar atrás.
+   - Cobre: 22, 23. Verificação: teste do padrão, e `release.json` publicado sem `origin` depois do deploy.
+6. **Deploy.** Depende de: 2, 3, 4, 5a.
    - O usuário cria `secrets/ntfy-topic` e instala o app ntfy.
    - `scripts/server-deploy.sh --apply` de `api`, `ingest`, `pages` e `units`, **com o ok do usuário, pedido na hora**.
    - Um disparo de teste do aviso, com o ok dele.
-   - Cobre: 7, 10, 11, 20. Verificação: `party-check --published`, `portrait-check --published`, notificação recebida, limite 70 em `method/weight.json` publicado.
+   - Cobre: 7, 10, 11, 20, 22. Verificação: `party-check --published`, `portrait-check --published`, notificação recebida, limite 70 em `method/weight.json` publicado, `release.json` sem `origin`.
 7. **Documentos e fechamento.** Depende de: todas.
    - Runbook, backlog sem o App ID da Meta, roadmap, índice, `CHANGELOG` e ADR.
    - QA em `docs/evidence/FSC-017/qa.md`, dizendo o que não foi visto.
@@ -167,6 +178,7 @@ O formato dos arquivos publicados não muda; só o valor de `party` nos cartões
 - **Alerta não derruba a carga:** falha do script não muda o resultado do serviço.
 - **Segredo:** o tópico nunca aparece em log, commit, chat ou processo visível.
 - **Limite do destaque:** 70, por decisão do usuário com os números. **QUEBRA** se o servidor e o app usarem valores diferentes.
+- **Dados quentes:** nada além dos três arquivos muda de lugar, e a VPS continua como reserva. **QUEBRA** se o app precisar de versão nova para isso.
 - **VPS:** a medida e a investigação são só leitura; o cron não muda de novo nesta fase.
 - **Sem esquema novo e sem saída nova do aparelho.**
 - **Fora de escopo, QUEBRA se entrar:** Feed, curtir, compartilhar, sugestões, Web e publicação do site.

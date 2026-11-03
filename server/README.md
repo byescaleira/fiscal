@@ -258,7 +258,7 @@ Cada arquivo sai com o `.gz` ao lado, por escrita atômica (`internal/publish`, 
 | `SITE_MAX_DROP` | `0.2` | Queda máxima de arquivos ou pessoas contra a release anterior |
 | `SITE_MAX_FILES` | `18000` | Teto de arquivos do site (de 100 a 20 000, o limite do Pages Free) |
 | `SITE_KEEP` | `3` | Releases guardadas em `PUBLIC_DIR/site/sites` |
-| `HOT_FROM_ORIGIN` | `1` | Põe `origin` no `release.json`: o app lê `today.json`, `agenda/today.json` e `votes/recent.json` primeiro no `api/v1` da VPS e busca lá a votação que o Pages ainda não tem; `0` tira |
+| `HOT_FROM_ORIGIN` | `0` | Com `1`, põe `origin` no `release.json`: o app lê `today.json`, `agenda/today.json` e `votes/recent.json` primeiro no `api/v1` da VPS e busca lá a votação que o Pages ainda não tem. Com `0`, tudo vem do Pages |
 | `INGEST_LOCK_WAIT` | `20m` | Quanto uma fase espera o lock global |
 | `INGEST_NICE` | `19` | Prioridade do processo (`0` desliga) |
 | `INGEST_MAX_LOAD`, `INGEST_MIN_AVAILABLE_MB`, `INGEST_CAPACITY_WAIT` | `2`, `1536`, `20m` | Guarda de carga antes de cada fase (`0` desliga cada limite) |
