@@ -40,10 +40,12 @@ fi
 mkdir -p "$state" 2>/dev/null || { log "sem pasta de estado"; exit 0; }
 [ -n "$result" ] || { log "sem resultado do serviço"; exit 0; }
 
+ingest="$(cat "$state/ingest-exit" 2>/dev/null || echo 0)"
+rm -f "$state/ingest-exit"
 failures="$(cat "$state/failures" 2>/dev/null || echo 0)"
 case "$failures" in ""|*[!0-9]*) failures=0 ;; esac
 
-if [ "$result" != "success" ]; then
+if [ "$result" != "success" ] || [ "$ingest" != "0" ]; then
   failures=$((failures + 1))
   echo "$failures" > "$state/failures" 2>/dev/null
   if [ "$failures" -ge "$failure_limit" ] && [ ! -e "$state/notified" ]; then

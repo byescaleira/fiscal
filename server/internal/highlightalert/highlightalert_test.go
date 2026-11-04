@@ -113,8 +113,8 @@ func TestEligibleHighlightWaitsForTheFirstRegistration(t *testing.T) {
 	)
 	os.Chtimes(path, later, later)
 	w.CheckOnce(ctx)
-	if got := sender.sent(); len(got) != 2 || got[1] != "h2" {
-		t.Fatalf("a new file sends the next unsent item, got %v", got)
+	if got := sender.sent(); len(got) != 1 {
+		t.Fatalf("a new file must wait while an alert is on screen, got %v", got)
 	}
 }
 
@@ -146,5 +146,21 @@ func TestEligibleAsksForTheMinimumWeight(t *testing.T) {
 	}
 	if Eligible(Item{ID: "a", Weight: 69, Date: "2026-11-03"}, now) {
 		t.Fatal("weight 69 must not be eligible")
+	}
+}
+
+func TestPickWaitsForTheLifetimeSinceTheLastAlert(t *testing.T) {
+	now := time.Date(2026, 11, 4, 12, 0, 0, 0, brasilia)
+	items := []Item{{ID: "a", Weight: 80, Date: "2026-11-04"}, {ID: "b", Weight: 80, Date: "2026-11-04"}}
+	if it, ok := Pick(items, map[string]time.Time{}, now); !ok || it.ID != "a" {
+		t.Fatalf("first alert: %+v %v", it, ok)
+	}
+	sent := map[string]time.Time{"a": now.Add(-Lifetime + time.Minute)}
+	if it, ok := Pick(items, sent, now); ok {
+		t.Fatalf("sent %s while the previous one is on screen", it.ID)
+	}
+	sent["a"] = now.Add(-Lifetime)
+	if it, ok := Pick(items, sent, now); !ok || it.ID != "b" {
+		t.Fatalf("after the lifetime: %+v %v", it, ok)
 	}
 }

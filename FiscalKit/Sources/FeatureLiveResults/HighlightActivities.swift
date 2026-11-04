@@ -78,12 +78,10 @@ public protocol HighlightActivityTracking: AnyObject {
         }
 
         private func arrived(_ activityID: String, highlightID: String) async {
-            let others = live.filter { $0.id != activityID }
-            if others.contains(where: { $0.attributes.highlightId == highlightID }) {
+            guard live.allSatisfy({ $0.id == activityID }) else {
                 await end([activityID])
                 return
             }
-            await end(Set(others.map(\.id)))
             onShown?(highlightID)
         }
 

@@ -111,6 +111,37 @@ func TestLoadAlertNotifiesOnceOnTheSixthFailure(t *testing.T) {
 	}
 }
 
+func (a *alertRig) ingestExits(code string) {
+	a.t.Helper()
+	if err := os.MkdirAll(a.state, 0o755); err != nil {
+		a.t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(a.state, "ingest-exit"), []byte(code+"\n"), 0o644); err != nil {
+		a.t.Fatal(err)
+	}
+}
+
+func TestLoadAlertCountsAFailedIngestEvenWhenPublishingWorks(t *testing.T) {
+	a := newAlertRig(t)
+	for range 5 {
+		a.ingestExits("1")
+		a.finish("success", 1)
+	}
+	if len(a.sent()) != 0 {
+		t.Fatalf("notified before the sixth failure: %+v", a.sent())
+	}
+	a.ingestExits("1")
+	a.finish("success", 1)
+	if len(a.sent()) != 1 || !strings.Contains(a.sent()[0].title, "falhou") {
+		t.Fatalf("failed ingest did not notify: %+v", a.sent())
+	}
+	a.ingestExits("0")
+	a.finish("success", 1)
+	if len(a.sent()) != 2 || !strings.Contains(a.sent()[1].title, "voltou") {
+		t.Fatalf("recovery of the ingest: %+v", a.sent())
+	}
+}
+
 func TestLoadAlertForgetsFailuresBelowTheLimit(t *testing.T) {
 	a := newAlertRig(t)
 	a.finish("exit-code", 5)
@@ -238,7 +269,7 @@ func TestSyncUnitRunsTheAlertWithoutChangingTheResult(t *testing.T) {
 		t.Fatal(err)
 	}
 	unit := string(data)
-	for _, want := range []string{"ExecStopPost=-/opt/fiscal-api/fiscal-load-alert.sh", "StateDirectory=fiscal-load-alert"} {
+	for _, want := range []string{"ExecStopPost=-/opt/fiscal-api/fiscal-load-alert.sh", "StateDirectory=fiscal-load-alert", `echo $$? > "$$STATE_DIRECTORY/ingest-exit"`} {
 		if !strings.Contains(unit, want) {
 			t.Fatalf("unit misses %q", want)
 		}

@@ -77,6 +77,11 @@ func Eligible(it Item, now time.Time) bool {
 }
 
 func Pick(items []Item, sent map[string]time.Time, now time.Time) (Item, bool) {
+	for _, at := range sent {
+		if now.Sub(at) < Lifetime {
+			return Item{}, false
+		}
+	}
 	for _, it := range items {
 		if _, done := sent[it.ID]; done {
 			continue

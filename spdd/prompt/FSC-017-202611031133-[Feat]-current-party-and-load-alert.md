@@ -30,6 +30,7 @@
 14. Dados dados com mais de 48 horas sem mudar, com as execuções terminando bem, quando a execução termina, então chega um aviso uma vez, e o título e o texto dizem que os dados estão sem mudar, sem dizer que a carga falhou.
 15. Dado o tópico ausente em `secrets/`, quando o script roda, então não derruba a carga e registra no log.
 16. Dado o ntfy fora do ar, quando o script roda, então não derruba a carga e tenta de novo na execução seguinte.
+24. Dadas 6 execuções seguidas em que a carga (`fiscal-ingest`) falhou e a publicação terminou bem, quando a sexta termina, então chega o mesmo aviso de falha. Uma falha da carga sozinha continua não impedindo a publicação.
 
 **Atividade ao Vivo**
 
@@ -37,6 +38,8 @@
 18. Dados os registros de token recusados com erro 401, quando investigados, então a causa é relatada, e os testes de `HighlightAlertRule` e `HighlightAlertCenter` cobrem peso mínimo, janela de 24 horas e item já avisado.
 20. Dado um destaque do último dia com peso 70, quando o servidor e o app avaliam a regra, então ele entra na Atividade ao Vivo. Com peso 69, não entra. Vale nos dois lados.
 21. Dados os Ajustes e o método do peso, quando mostram a regra, então dizem peso 70.
+25. Dada uma Atividade do destaque na tela e outro destaque elegível, quando o app abre, volta do segundo plano ou recebe outra, então a que está na tela continua, e a que chegou é encerrada.
+26. Dados 4 destaques elegíveis, quando o servidor lê arquivos publicados novos, então manda no máximo um a cada 8 horas.
 
 **Dados quentes**
 
@@ -99,6 +102,8 @@ O formato dos arquivos publicados não muda; só o valor de `party` nos cartões
 - **Alerta.** Decisão do usuário: notificação pelo ntfy, em tópico privado. `ExecStopPost` em `fiscal-sync.service` chama o script com o resultado da execução. A idade vem de `public/v1/meta.json`. O tópico fica em `secrets/ntfy-topic`, e quem cria o arquivo é o usuário, sem passar pelo chat.
 - **Limite do destaque.** Decisão do usuário: medir antes de mudar. Medido em 03/11/2026, pelas ações mais pesadas de cada pessoa, nos últimos 30 dias: 0 destaques com peso 85, 1 com 75 e no máximo 12 com 70, em 9 dias. Com esses números, o usuário decidiu por 70. O limite é uma constante no servidor (`AlertMinWeight`), usada pelo push do `fiscal-api` e pelo método publicado, e uma regra no app (`HighlightAlertRule.standard`). Por isso o deploy inclui o `api`.
 - **Dados quentes.** Decisão do usuário em 03/11/2026: a VPS não aguentaria 50 milhões de usuários ativos, então os três arquivos quentes saem dela. `HOT_FROM_ORIGIN` passa a 0 por padrão, no `fiscal-ingest` e no `compose.yaml`. O `release.json` vem da Cloudflare, então o app não precisa de versão nova. O intervalo de `PAGES_DATA_INTERVAL` (10 minutos na VPS, conferido em 03/11/2026) passa a ser o atraso dos dados quentes. O [ADR 0008](../../docs/adr/0008-smart-sync.md) registra a mudança.
+- **Uma Atividade por vez.** Achado em 04/11/2026, no iPhone do usuário: com o limite de 70, vários destaques ficam elegíveis juntos, e o app e o servidor trocavam a que estava na tela, e em segundo plano o iOS recusa iniciar outra, então ela sumia. Regra: o que está na tela fica. O servidor espera 8 horas, a duração da Atividade, desde o último envio.
+- **Falha da carga no alerta.** O serviço segue para a publicação mesmo com a carga falhando, e isso continua. A unit grava o código de saída da carga em `STATE_DIRECTORY`, e o script o soma ao resultado do serviço.
 - **Push em escala.** Fica fora: o limite de 200 mil registros e o envio pela VPS não chegam a 50 milhões e pedem uma mudança própria. Registrado no backlog.
 - **Fora daqui.** Curtir e compartilhar no Feed, sugestões e algoritmo do Feed, Web e publicação do site.
 
@@ -106,7 +111,8 @@ O formato dos arquivos publicados não muda; só o valor de `party` nos cartões
 
 - `server/internal/publicdata/link.go`: a regra do partido atual; `link_test.go`: os testes.
 - `server/deploy/fiscal-load-alert.sh`: novo. `server/deploy/load_alert_test.go`: novo.
-- `server/deploy/systemd/fiscal-sync.service`: `ExecStopPost`.
+- `server/deploy/systemd/fiscal-sync.service`: `ExecStopPost` e o registro do código de saída da carga.
+- `FiscalKit/Sources/AppShell/Integrations/HighlightAlertCenter.swift`, `FiscalKit/Sources/FeatureLiveResults/HighlightActivities.swift` e `server/internal/highlightalert/highlightalert.go`: uma Atividade por vez.
 - `scripts/server-deploy.sh`: leva o script para a VPS, se o estágio atual não levar.
 - `scripts/avatar-traits.json` e os arquivos gerados por `scripts/avatars.py`: os traços novos.
 - `scripts/party-check.py`: novo, compara os partidos entre o índice e as listas publicadas.
@@ -129,8 +135,8 @@ O formato dos arquivos publicados não muda; só o valor de `party` nos cartões
    - Cobre: 7. Verificação: a lista e o script.
 3. **Alerta.**
    - `fiscal-load-alert.sh`: contador em arquivo, aviso único, aviso de volta, idade dos dados, sem falhar a carga.
-   - `ExecStopPost` em `fiscal-sync.service`.
-   - Cobre: 11 a 16. Verificação: teste do script com um servidor falso.
+   - `ExecStopPost` em `fiscal-sync.service`, e o código de saída da carga em `STATE_DIRECTORY`.
+   - Cobre: 11 a 16, 24. Verificação: teste do script com um servidor falso.
 4. **Retratos novos.** `[P]` com 3.
    - Procurar a foto oficial de candidatura dos quatro no TSE e descrever os traços na escala de `avatar-traits.json`.
    - `scripts/avatars.py` regenera o arquivo do app.
@@ -140,7 +146,8 @@ O formato dos arquivos publicados não muda; só o valor de `party` nos cartões
    - Medida na VPS, só em leitura, e investigação dos 401 com os logs.
    - **Relatar ao usuário os números e a causa.**
    - Com a decisão do usuário: limite 70 no servidor e no app, e nos textos que citam a regra.
-   - Cobre: 17, 18, 20, 21. Verificação: testes e relatório.
+   - O app não troca a Atividade na tela, e o servidor espera 8 horas entre envios.
+   - Cobre: 17, 18, 20, 21, 25, 26. Verificação: testes e relatório. O caso real do cenário 25 é conferido no iPhone.
 5a. **Dados quentes.**
    - `HOT_FROM_ORIGIN` com padrão 0 no `fiscal-ingest` e no `compose.yaml`, e `1` continua aceito para voltar atrás.
    - Cobre: 22, 23. Verificação: teste do padrão, e `release.json` publicado sem `origin` depois do deploy.
@@ -179,6 +186,7 @@ O formato dos arquivos publicados não muda; só o valor de `party` nos cartões
 - **Segredo:** o tópico nunca aparece em log, commit, chat ou processo visível. **Exceção registrada em 03/11/2026:** o nome em uso apareceu no chat, pela forma como o comando de criação foi rodado. A decisão de trocar ou manter é do usuário, e o runbook explica como trocar.
 - **Limite do destaque:** 70, por decisão do usuário com os números. **QUEBRA** se o servidor e o app usarem valores diferentes.
 - **Dados quentes:** nada além dos três arquivos muda de lugar, e a VPS continua como reserva. **QUEBRA** se o app precisar de versão nova para isso.
+- **Uma Atividade por vez:** **QUEBRA** se o app ou o servidor substituir a que está na tela.
 - **VPS:** a medida e a investigação são só leitura; o cron não muda de novo nesta fase.
 - **Sem esquema novo e sem saída nova do aparelho.**
 - **Fora de escopo, QUEBRA se entrar:** Feed, curtir, compartilhar, sugestões, Web e publicação do site.

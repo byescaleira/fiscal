@@ -135,10 +135,10 @@ struct HighlightAlertCenterTests {
         #expect(activities.started == ["b"])
     }
 
-    @Test func whatIsOnTheLockScreenNowDoesNotStartAgain() async {
+    @Test func whatIsOnTheLockScreenStaysAndNothingElseStarts() async {
         defer { forget() }
         activities.active = ["a"]
-        let center = center([highlight("a")])
+        let center = center([highlight("a"), highlight("b")])
         await center.resume()
         await center.consider()
         #expect(activities.started.isEmpty)
