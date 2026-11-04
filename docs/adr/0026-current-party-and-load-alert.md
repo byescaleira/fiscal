@@ -13,7 +13,7 @@ A mesma pessoa aparecia com dois partidos em 259 casos, porque o cargo em exerc�
 1. Quando o cargo em exercício vem do TSE, o partido dele é o da candidatura mais recente da pessoa. Cargo que vem da Câmara ou do Senado mantém o partido da API.
 2. O histórico de candidaturas não muda: cada eleição mantém o seu partido.
 3. As imagens do Fiscal têm o rótulo `fiscal.sha`, e a limpeza do Docker não as apaga.
-4. Depois de cada execução, um script conta as falhas seguidas e a idade dos dados. Com 6 falhas ou dados com mais de 48 horas, avisa uma vez por um tópico privado do ntfy, e avisa de novo quando volta.
+4. Depois de cada execução, um script conta as falhas seguidas e a idade dos dados. Com 6 falhas ou dados com mais de 48 horas, avisa uma vez por um tópico privado do ntfy, e avisa de novo quando volta. Uma divergência da conferência semanal (código 3) não conta como falha e avisa na hora.
 
 ## Consequências
 

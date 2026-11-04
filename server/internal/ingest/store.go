@@ -136,6 +136,12 @@ func (in *Ingest) withSource(ctx context.Context, rep *Report, srcs *sourceSet, 
 				return true, nil
 			}
 			counts = c.Map()
+			if c.Repeated > 0 {
+				in.logger.Printf("ALERT store: %s: %d rows repeat a key with other content, and only the last one was kept", s.id, c.Repeated)
+				in.mu.Lock()
+				rep.Repeated += c.Repeated
+				in.mu.Unlock()
+			}
 		}
 		t.done(ctx, datastore.StatusOK, counts, nil)
 		return true, nil

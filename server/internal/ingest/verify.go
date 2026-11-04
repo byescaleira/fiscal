@@ -3,10 +3,15 @@ package ingest
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io/fs"
 	"os"
+	"path/filepath"
+	"slices"
 	"strings"
 
+	"liveresults/internal/publish"
 	"liveresults/internal/site"
 )
 
@@ -20,6 +25,8 @@ type Consistency struct {
 	Site        int      `json:"site"`
 	Sample      []string `json:"sample"`
 	Refreshed   int      `json:"refreshed"`
+	Held        []string `json:"held,omitempty"`
+	Released    string   `json:"released,omitempty"`
 }
 
 func volatile(rel string) bool {
@@ -76,6 +83,9 @@ func (in *Ingest) Verify(ctx context.Context, hooks SyncHooks, j Job) (string, e
 		}
 	}
 	c := Consistency{CheckedAt: in.stamp(), Incremental: incremental.Release, Full: rep.Release, Staging: len(staging), Site: len(siteDiff), Sample: sample(append(append([]string(nil), staging...), siteDiff...), 30), Refreshed: len(refreshed)}
+	if len(staging)+len(siteDiff) > 0 {
+		c.Held = heldPaths(staging, siteDiff)
+	}
 	if data, err := json.MarshalIndent(c, "", " "); err == nil {
 		if err := writeAtomic(in.path(ConsistencyFile), data); err != nil {
 			in.logger.Printf("verify: %v", err)
@@ -88,6 +98,56 @@ func (in *Ingest) Verify(ctx context.Context, hooks SyncHooks, j Job) (string, e
 		return line, fmt.Errorf("%w: %d staging files and %d site files differ", ErrDivergence, c.Staging, c.Site)
 	}
 	return line, nil
+}
+
+func heldPaths(staging, siteDiff []string) []string {
+	held := slices.Concat(staging, siteDiff)
+	slices.Sort(held)
+	return slices.Compact(held)
+}
+
+func ReadConsistency(dataDir string) (Consistency, bool, error) {
+	var c Consistency
+	data, err := os.ReadFile(filepath.Join(dataDir, ConsistencyFile))
+	if errors.Is(err, fs.ErrNotExist) {
+		return c, false, nil
+	}
+	if err != nil {
+		return c, false, err
+	}
+	if err := json.Unmarshal(data, &c); err != nil {
+		return c, false, fmt.Errorf("%s: %w", ConsistencyFile, err)
+	}
+	return c, true, nil
+}
+
+func PublishStaging(dataDir string, st *site.Stager) (site.Release, error) {
+	path := filepath.Join(dataDir, ManifestFile)
+	m, err := publish.LoadManifest(path)
+	if err != nil {
+		return site.Release{}, err
+	}
+	if !m.Loaded() {
+		return site.Release{}, fmt.Errorf("publish staging: no manifest at %s yet", path)
+	}
+	rel, err := st.Stage("memoria", m.Paths())
+	if err != nil {
+		return rel, err
+	}
+	m.Settle()
+	if err := m.Save(); err != nil {
+		return rel, err
+	}
+	c, ok, err := ReadConsistency(dataDir)
+	if err != nil || !ok {
+		return rel, err
+	}
+	c.Held, c.Released = nil, rel.Release
+	data, err := json.MarshalIndent(c, "", " ")
+	if err != nil {
+		return rel, err
+	}
+	return rel, writeAtomic(filepath.Join(dataDir, ConsistencyFile), data)
 }
 
 func (in *Ingest) keepPublished(release string) {

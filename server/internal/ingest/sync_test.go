@@ -2,15 +2,18 @@ package ingest
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"io"
 	"log"
+	"maps"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 	"time"
 
+	"liveresults/internal/datastore"
 	"liveresults/internal/publicdata"
 	"liveresults/internal/site"
 )
@@ -147,6 +150,116 @@ func TestVerifyFindsNoDivergenceBetweenIncrementalAndFullRebuild(t *testing.T) {
 	readJSON(t, h.in.path(ConsistencyFile), &c)
 	if c.Full == "" || c.Incremental == "" || c.Staging != 0 || c.Site != 0 {
 		t.Fatalf("consistency = %+v", c)
+	}
+}
+
+func tamperSnapshot(t *testing.T, in *Ingest) {
+	t.Helper()
+	if err := in.LoadSnapshot(); err != nil {
+		t.Fatal(err)
+	}
+	in.mu.Lock()
+	for _, p := range in.dataset.People {
+		for i := range p.Roles {
+			p.Roles[i].Party = "TESTE"
+		}
+	}
+	in.mu.Unlock()
+	if err := in.SaveSnapshot(); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestADivergentCheckHoldsThePathsUntilTheyArePublishedByHand(t *testing.T) {
+	h := newSyncHarness(t)
+	h.run("senado")
+	tamperSnapshot(t, h.in)
+	h.clock = h.clock.Add(time.Minute)
+	outs, err := h.in.RunJob(context.Background(), "memoria", h.hooks())
+	if !errors.Is(err, ErrDivergence) || len(outs) != 1 {
+		t.Fatalf("memoria: %v %+v", err, outs)
+	}
+	c, ok, err := ReadConsistency(h.in.cfg.DataDir)
+	if err != nil || !ok || c.Staging == 0 || c.Site == 0 || len(c.Held) == 0 {
+		t.Fatalf("consistency: %v %v %+v", ok, err, c)
+	}
+	if current, _ := h.in.site.CurrentName(); current != c.Incremental {
+		t.Fatalf("ready = %s, want the incremental %s", current, c.Incremental)
+	}
+	held := filepath.Join(h.in.site.Dir(c.Incremental), "v2", "index", "people.json")
+	before, err := os.ReadFile(held)
+	if err != nil || !strings.Contains(string(before), "TESTE") {
+		t.Fatalf("the incremental release should keep what was published: %v", err)
+	}
+	h.clock = h.clock.Add(time.Minute)
+	h.run("senado")
+	current, _ := h.in.site.CurrentName()
+	data, err := os.ReadFile(filepath.Join(h.in.site.Dir(current), "v2", "index", "people.json"))
+	if err != nil || !strings.Contains(string(data), "TESTE") {
+		t.Fatalf("a later job must not publish the held paths by itself: %v", err)
+	}
+	if c, _, _ := ReadConsistency(h.in.cfg.DataDir); len(c.Held) == 0 {
+		t.Fatal("a later job must keep the record of the held paths")
+	}
+	h.clock = h.clock.Add(time.Minute)
+	rel, err := PublishStaging(h.in.cfg.DataDir, h.in.site)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if current, _ := h.in.site.CurrentName(); current != rel.Release {
+		t.Fatalf("ready = %s, want %s", current, rel.Release)
+	}
+	data, err = os.ReadFile(filepath.Join(h.in.site.Dir(rel.Release), "v2", "index", "people.json"))
+	if err != nil || strings.Contains(string(data), "TESTE") {
+		t.Fatalf("publishing must carry the staging area: %v", err)
+	}
+	c, _, err = ReadConsistency(h.in.cfg.DataDir)
+	if err != nil || len(c.Held) != 0 || c.Released != rel.Release {
+		t.Fatalf("after publishing: %v %+v", err, c)
+	}
+}
+
+func TestPublishStagingNeedsAManifest(t *testing.T) {
+	st := &site.Stager{Staging: t.TempDir(), Root: t.TempDir()}
+	if _, err := PublishStaging(t.TempDir(), st); err == nil {
+		t.Fatal("no manifest means nothing to publish")
+	}
+}
+
+func TestRepeatedStoreKeysEndTheJobAsADivergence(t *testing.T) {
+	h := newSyncHarness(t)
+	db, err := datastore.Open(filepath.Join(t.TempDir(), "fiscal.db"), func() time.Time { return h.clock })
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { db.Close() })
+	h.in.UseStore(db)
+	data, err := os.ReadFile(h.get.routes["/despesas_ceaps/2026"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	var rows []map[string]any
+	if err := json.Unmarshal(data, &rows); err != nil || len(rows) == 0 {
+		t.Fatalf("fixture: %v", err)
+	}
+	repeated := maps.Clone(rows[0])
+	repeated["valorReembolsado"] = 1.5
+	data, err = json.Marshal(append(rows, repeated))
+	if err != nil {
+		t.Fatal(err)
+	}
+	path := filepath.Join(t.TempDir(), "ceaps.json")
+	if err := os.WriteFile(path, data, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	h.get.routes["/despesas_ceaps/2026"] = path
+	h.clock = h.clock.Add(time.Minute)
+	outs, err := h.in.RunJob(context.Background(), "senado", h.hooks())
+	if !errors.Is(err, ErrDivergence) || len(outs) != 1 || !errors.Is(outs[0].Err, ErrDivergence) {
+		t.Fatalf("a repeated key must end as a divergence: %v %+v", err, outs)
+	}
+	if outs[0].Release == "" {
+		t.Fatalf("the data read from the source still goes out: %+v", outs[0])
 	}
 }
 

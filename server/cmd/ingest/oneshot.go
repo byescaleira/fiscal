@@ -16,6 +16,7 @@ import (
 	"liveresults/internal/ingest"
 	"liveresults/internal/jobctl"
 	"liveresults/internal/publicdata"
+	"liveresults/internal/site"
 	"liveresults/internal/sources/fetch"
 )
 
@@ -28,7 +29,7 @@ func main() {
 	flag.Var(&once, "once", "run one load (full, the default, or live), stage the site and exit")
 	healthCheck := flag.Bool("check", false, "exit 0 when the scheduler wrote a heartbeat recently")
 	restore := flag.String("restore", "", "replace the store with this backup (stop the timers first) and exit")
-	siteCmd := flag.String("site", "", "status or rollback: inspect or move the staged site that the Pages job deploys")
+	siteCmd := flag.String("site", "", "status, rollback or publish-staging: inspect or move the staged site that the Pages job deploys")
 	to := flag.String("to", "", "with -site rollback: the site to go back to (default: the one before the current)")
 	allowDrop := flag.Bool("allow-drop", false, "accept a release with more than SITE_MAX_DROP fewer files or people (this run only)")
 	configCheck := flag.Bool("config-check", false, "validate the configuration and exit")
@@ -158,9 +159,10 @@ func siteCommand(ctx context.Context, cfg config, cmd, to string) int {
 			log.Printf("no staged site yet; kept: %v", names)
 			return 0
 		}
+		logHeld(cfg)
 		log.Printf("ready: %s (%s, %d files, %d logical, %d people, generated %s); kept: %v", cur.Release, cur.Kind, cur.Files, cur.Logical, cur.People, cur.GeneratedAt, names)
 		return 0
-	case "rollback":
+	case "rollback", "publish-staging":
 		if err := os.MkdirAll(cfg.ingest.DataDir, 0o700); err != nil {
 			log.Printf("data dir: %v", err)
 			return 1
@@ -175,7 +177,14 @@ func siteCommand(ctx context.Context, cfg config, cmd, to string) int {
 			return 1
 		}
 		defer lock.Release()
-		name, err := st.Rollback(to)
+		var name string
+		if cmd == "rollback" {
+			name, err = st.Rollback(to)
+		} else {
+			var rel site.Release
+			rel, err = ingest.PublishStaging(cfg.ingest.DataDir, st)
+			name = rel.Release
+		}
 		if err != nil {
 			log.Printf("site: %v", err)
 			return 1
@@ -183,8 +192,19 @@ func siteCommand(ctx context.Context, cfg config, cmd, to string) int {
 		log.Printf("ready now points to %s; the Pages job deploys it on its next run", name)
 		return 0
 	}
-	log.Printf("-site takes status or rollback")
+	log.Printf("-site takes status, rollback or publish-staging")
 	return 2
+}
+
+func logHeld(cfg config) {
+	c, ok, err := ingest.ReadConsistency(cfg.ingest.DataDir)
+	if err != nil {
+		log.Printf("consistency: %v", err)
+		return
+	}
+	if ok && len(c.Held) > 0 {
+		log.Printf("held: %d paths of the check of %s are in the staging area but not in the site; after explaining them, publish with -site publish-staging", len(c.Held), c.CheckedAt)
+	}
 }
 
 func runLocked(ctx context.Context, cfg config, kind, restore, job string) int {

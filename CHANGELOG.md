@@ -68,6 +68,8 @@ Primeira versão, a 1.0.0.
 
 ### Fixed
 
+- Os gastos dos deputados não perdem mais linhas quando a Câmara repete o número do documento, como numa passagem e no reembolso dela.
+- A conferência semanal dos dados avisa no celular e guarda o que divergiu, e isso só é publicado com um comando explícito.
 - A mesma pessoa não aparece mais com dois partidos: governador, vice e deputado estadual em exercício usam o partido da candidatura mais recente, e o histórico de cada eleição continua como foi.
 - Eliane Leal, Gustavo Rocha, Jessica Sales e Larissa ganharam retrato próprio.
 - A carga de dados avisa no celular quando falha ou quando os dados ficam velhos, e a limpeza do Docker não apaga mais as imagens da carga.

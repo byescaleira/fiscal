@@ -178,13 +178,15 @@ Regras:
   - `release.json` traz `base` (a release anterior) e `rebuilt` (pacotes refeitos);
   - `ingest-data/v1-manifest.json` › `pending` lista o que ainda não foi publicado;
   - `ingest-data/sync-state.json` guarda, por trabalho, a última execução, a impressão digital da sonda e o resultado.
-- **Alerta de consistência** (`ALERT consistency` no log; o `fiscal-ingest` sai com código 3, e o `fiscal-sync.service` segue para o `fiscal-pages` mesmo assim):
-  - **Na hora:** a release incremental continua publicada (`consistency: kept … published`). O preparo e o manifesto ficam com a saída completa, e os caminhos divergentes só entram numa release quando mudarem de novo.
-  - **Para publicar a reconstrução completa** depois de conferir que ela está certa: `docker compose --profile jobs run --rm --no-deps -T fiscal-ingest -site rollback -to <release completa>` (o nome está em `consistency.json` › `full`), e o próximo tique publica.
-  - **Depois:** abrir `ingest-data/consistency.json` (`sample` lista os primeiros arquivos que divergiram), achar a causa no caminho incremental e corrigir.
+- **Alerta de consistência** (`ALERT consistency` ou `ALERT store` no log; o `fiscal-ingest` sai com código 3, o aviso chega na hora, e o `fiscal-sync.service` segue para o `fiscal-pages` mesmo assim):
+  - **Na hora:** a release incremental continua publicada (`consistency: kept … published`). O preparo e o manifesto ficam com a saída completa. Os caminhos ficam em `ingest-data/consistency.json` › `held`, e `-site status` avisa. Nada deles sai sozinho, a não ser que o arquivo mude de novo ou que o pacote da pessoa seja remontado.
+  - **Achar a causa:** `consistency.json` traz os caminhos, e o `index/people.json` publicado comparado com `public/v1/index/people.json` mostra o campo que mudou. Depois de um deploy com regra nova na ligação, a divergência é esperada até rodar um trabalho de ligação. `ALERT store` quer dizer que uma fonte repetiu uma chave com outro conteúdo e o banco perdeu linhas: corrija a chave antes de publicar.
+  - **Para publicar o preparo**, depois de conferir que ele está certo: `docker compose --profile jobs run --rm --no-deps -T fiscal-ingest -site publish-staging`. Monta a release inteira a partir do preparo, zera o `held`, e o próximo `fiscal-pages` publica. Não use `-site rollback -to <release completa>`: essa release costuma já ter sido apagada, porque só as 3 mais novas ficam.
+  - **Corrigir fonte e preparo numa vez só**, com o ok do usuário: `systemctl stop fiscal-sync.timer`; `fiscal-ingest -job camara`, que não publica sozinho; `fiscal-ingest -site publish-staging`; `fiscal-pages`; `systemctl start fiscal-sync.timer`.
 - **Alerta da carga** (`fiscal-load-alert.sh`, em `ExecStopPost` do `fiscal-sync.service`):
   - avisa uma vez, por um tópico privado do ntfy, depois de 6 execuções seguidas com falha ou com os dados de `public/v1/meta.json` com mais de 48 horas sem mudar;
   - avisa de novo quando a execução termina bem com os dados em dia. O estado fica em `/var/lib/fiscal-load-alert`;
+  - uma divergência (código 3) não conta como falha: avisa na hora, uma vez, e tenta de novo na execução seguinte se o ntfy não responder;
   - o aviso de dados sem mudar pode vir de um período sem novidade nas fontes, então confira o `-plan` antes de tratar como falha;
   - o aviso não leva dado de ninguém, e nenhuma falha do script muda o resultado do serviço. Tópico ausente ou ntfy fora do ar só ficam no log, e ele tenta de novo na execução seguinte;
   - **Criar ou trocar o tópico:** no app Terminal do Mac, fora do Claude Code, para o nome não passar pelo chat: `ssh root@179.198.114.91 'umask 077; openssl rand -hex 16 > /opt/fiscal-api/secrets/ntfy-topic; cat /opt/fiscal-api/secrets/ntfy-topic'`. Assine o nome no app ntfy;

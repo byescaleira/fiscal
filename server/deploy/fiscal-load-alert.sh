@@ -45,6 +45,14 @@ rm -f "$state/ingest-exit"
 failures="$(cat "$state/failures" 2>/dev/null || echo 0)"
 case "$failures" in ""|*[!0-9]*) failures=0 ;; esac
 
+if [ "$ingest" = "3" ]; then
+  touch "$state/divergence" 2>/dev/null
+  ingest=0
+fi
+if [ -e "$state/divergence" ]; then
+  send "Fiscal: conferência dos dados divergiu" "A conferência dos dados achou divergência. Veja o runbook." && rm -f "$state/divergence"
+fi
+
 if [ "$result" != "success" ] || [ "$ingest" != "0" ]; then
   failures=$((failures + 1))
   echo "$failures" > "$state/failures" 2>/dev/null
