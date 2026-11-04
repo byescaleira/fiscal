@@ -83,7 +83,7 @@ O `APPATTEST_APP_ID` não precisa entrar no `.env`: ele sai de `APNS_TEAM_ID` + 
 | `PAGES_DATA_INTERVAL` | `1h` | Intervalo mínimo entre deploys de releases quentes (`hot`, `destaques`) |
 | `PAGES_MAX_DEPLOYS_PER_DAY` | `400` | Teto diário de deploys |
 | `PAGES_MAX_DEPLOYS_PER_MONTH` | `450` | Teto mensal de deploys; as releases de rotina se espalham pelo que resta do mês (seção 6) |
-| `HOT_FROM_ORIGIN` | `1` | `release.json` manda o app ler o quente primeiro na VPS; `0` devolve tudo ao Pages |
+| `HOT_FROM_ORIGIN` | `0` | Tudo vem do Pages. `1` faz o `release.json` mandar o app ler o quente primeiro na VPS, que não aguenta volume alto ([ADR 0008](adr/0008-smart-sync.md)) |
 
 ## 3. Deploy das imagens (com o ok do usuário a cada vez)
 
@@ -182,6 +182,16 @@ Regras:
   - **Na hora:** a release incremental continua publicada (`consistency: kept … published`). O preparo e o manifesto ficam com a saída completa, e os caminhos divergentes só entram numa release quando mudarem de novo.
   - **Para publicar a reconstrução completa** depois de conferir que ela está certa: `docker compose --profile jobs run --rm --no-deps -T fiscal-ingest -site rollback -to <release completa>` (o nome está em `consistency.json` › `full`), e o próximo tique publica.
   - **Depois:** abrir `ingest-data/consistency.json` (`sample` lista os primeiros arquivos que divergiram), achar a causa no caminho incremental e corrigir.
+- **Alerta da carga** (`fiscal-load-alert.sh`, em `ExecStopPost` do `fiscal-sync.service`):
+  - avisa uma vez, por um tópico privado do ntfy, depois de 6 execuções seguidas com falha ou com os dados de `public/v1/meta.json` com mais de 48 horas sem mudar;
+  - avisa de novo quando a execução termina bem com os dados em dia. O estado fica em `/var/lib/fiscal-load-alert`;
+  - o aviso de dados sem mudar pode vir de um período sem novidade nas fontes, então confira o `-plan` antes de tratar como falha;
+  - o aviso não leva dado de ninguém, e nenhuma falha do script muda o resultado do serviço. Tópico ausente ou ntfy fora do ar só ficam no log, e ele tenta de novo na execução seguinte;
+  - **Criar ou trocar o tópico:** no app Terminal do Mac, fora do Claude Code, para o nome não passar pelo chat: `ssh root@179.198.114.91 'umask 077; openssl rand -hex 16 > /opt/fiscal-api/secrets/ntfy-topic; cat /opt/fiscal-api/secrets/ntfy-topic'`. Assine o nome no app ntfy;
+  - **Testar:** `/opt/fiscal-api/fiscal-load-alert.sh --test`. O script usa `curl` e `python3` do host, sem os quais o aviso não sai e a carga segue normal;
+  - **Conferir:** `journalctl -u fiscal-sync --since today | grep fiscal-load-alert`.
+- **Imagens sumindo:** em 03/11/2026, a limpeza diária do Docker tinha apagado as imagens `fiscal-ingest` e `fiscal-pages`, que não têm contêiner rodando, e os dados ficaram parados desde 28/10. `/etc/cron.d/docker-image-prune` agora usa `--filter "label!=fiscal.sha"`. Se o `fiscal-sync` falhar com imagem ausente, confira esse filtro e refaça o deploy.
+- **Conferir os dados publicados:** `python3 scripts/party-check.py --published` compara o partido entre o índice e as listas por estado, e `python3 scripts/portrait-check.py --published` procura quem está sem traços.
 - **Pausar tudo:** `systemctl stop fiscal-sync.timer`. Para voltar, use `start`.
 - **Voltar os dados publicados:**
   1. **Na hora:** painel do Pages › `fiscal-dados` › Deployments › o deploy bom › **Rollback**.
@@ -203,9 +213,9 @@ Regras:
     - **Não está confirmado se o `wrangler pages deploy` conta.**
   - **O que o Fiscal faz.** `PAGES_MAX_DEPLOYS_PER_MONTH=450` é teto duro. As releases de rotina esperam `tempo até o fim do mês ÷ deploys restantes`, cerca de 96 min no começo do mês. As quentes esperam também `PAGES_DATA_INTERVAL`. `full`, `memoria`, rollback, `-force` e mudança na apuração saem na hora.
   - **Conferir.** Em Account Home › Workers & Pages › Plans, veja se o uso de builds do mês acompanha os deploys diretos.
-  - **Se não contar:** `PAGES_MAX_DEPLOYS_PER_MONTH=9000`, `PAGES_DATA_INTERVAL=10m` e, se quiser tudo pelo Pages, `HOT_FROM_ORIGIN=0`.
-  - **Em produção (26/10/2026).** Depois de uns 12 deploys diretos, o painel não mostrou contador de builds do Pages e os "Workers build mins" seguiram em 0. O `.env` da VPS usa `PAGES_MAX_DEPLOYS_PER_MONTH=4500` (cerca de um deploy a cada 10 min) e `PAGES_DATA_INTERVAL=10m`, com `HOT_FROM_ORIGIN=1`. Se um deploy for recusado por cota, a release no ar continua servindo e o quente segue pela origem; volte o teto para 450.
-  - **O quente não depende do Pages.** `today.json`, `agenda/today.json`, `votes/recent.json` e as votações de hoje ficam no `v1` da VPS assim que mudam. O `release.json` diz ao app que leia esses arquivos primeiro na origem (`origin.first`) e que busque lá uma votação que o Pages ainda não tem (`origin.onMissing`).
+  - **Se não contar:** `PAGES_MAX_DEPLOYS_PER_MONTH=9000` e `PAGES_DATA_INTERVAL=10m`.
+  - **Em produção (26/10/2026).** Depois de uns 12 deploys diretos, o painel não mostrou contador de builds do Pages e os "Workers build mins" seguiram em 0. O `.env` da VPS usa `PAGES_MAX_DEPLOYS_PER_MONTH=4500` (cerca de um deploy a cada 10 min) e `PAGES_DATA_INTERVAL=10m`. Se um deploy for recusado por cota, a release no ar continua servindo e o quente fica parado até o próximo deploy; volte o teto para 450.
+  - **O quente vem do Pages (desde 03/11/2026).** `today.json`, `agenda/today.json`, `votes/recent.json` e as votações de hoje chegam ao app no próximo deploy, em até `PAGES_DATA_INTERVAL`. A cópia em `v1` na VPS continua como reserva se o Pages falhar.
 
 ## 7. Caddy
 
@@ -232,7 +242,7 @@ O resto fica como está:
 - `@data`, para o layout `v1`, as votações de hoje e a reserva geral;
 - `/api/*`, encaminhado para o Go, inclusive `POST /api/v1/attest/challenge`, `POST /api/v1/attest/keys` e os registros.
 
-Rode `caddy validate` antes de recarregar. Se a carga do Caddy pesar em pico, `HOT_FROM_ORIGIN=0` no `.env` devolve o quente ao Pages no próximo deploy, sem versão nova do app.
+Rode `caddy validate` antes de recarregar. O app só lê da VPS se o Pages falhar. `HOT_FROM_ORIGIN=1` no `.env` traz o quente de volta para a VPS no próximo deploy, sem versão nova do app, e só serve com pouco volume.
 
 ## 8. App Attest
 

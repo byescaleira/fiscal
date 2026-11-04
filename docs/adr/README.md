@@ -46,3 +46,4 @@ Cada decisão que molda o Fiscal além de uma única mudança ganha um registro 
 | [0023](0023-politician-page-chapters-and-item-cards.md) | A página do político em capítulos, gesto sem dado e cartões de um item | Aceito |
 | [0024](0024-reveal-bar-following-and-ballots-screens.md) | A barra ao rolar, quem você segue no Feed e os votos em tela própria | Aceito |
 | [0025](0025-portrait-by-slug-and-hero-cards-follow-the-mode.md) | O retrato vem do identificador, e os cartões pretos seguem o modo | Aceito |
+| [0026](0026-current-party-and-load-alert.md) | O cargo em exercício usa o partido mais recente, e a carga avisa quando falha | Aceito |

@@ -84,13 +84,13 @@ final class HighlightAlertCenter {
     }
 
     func consider() async {
+        guard activities.activeHighlightIDs().isEmpty else { return }
         guard isEnabled, activities.isAvailable, let data = publicData(),
             let list = try? await data.highlights()
         else { return }
         let now = Date.now
         let rule = list.method?.alertRule ?? .standard
-        let shown = ledger.shown.union(activities.activeHighlightIDs())
-        guard let pick = rule.pick(from: list.items, shown: shown, now: now) else { return }
+        guard let pick = rule.pick(from: list.items, shown: ledger.shown, now: now) else { return }
         do {
             try await activities.start(pick, now: now)
             ledger.record(pick.id)

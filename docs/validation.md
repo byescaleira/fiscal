@@ -52,7 +52,7 @@ Build: `____` · Data: `__/__/____`
 ### Destaque na tela de bloqueio
 
 - [ ] Com "Destaques de maior peso na tela de bloqueio" ligado (Ajustes › Seus dados e privacidade), o registro do token de push-to-start chega ao servidor (`highlight-registrations.json`).
-- [ ] Um destaque de peso 85 ou mais do último dia abre a Atividade do destaque; tocar abre o perfil ou a votação certa.
+- [ ] Um destaque de peso 70 ou mais do último dia abre a Atividade do destaque; tocar abre o perfil ou a votação certa.
 - [ ] Desligar encerra a Atividade em andamento e remove o token.
 - [ ] Atividades ao Vivo desligadas nos Ajustes do iOS: nada é registrado.
 
