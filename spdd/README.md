@@ -3,7 +3,7 @@
 As análises, os canvases e as revisões do Fiscal no método SPDD (open-spdd). O processo está na skill `sdd`, `references/process.md`, e, no app Apple, na skill `byescaleira-sdd`, `references/process.md`. A troca do ciclo antigo está no [ADR 0019](../docs/adr/0019-spdd-process.md). `docs/specs/`, `docs/changes/` e `docs/decisions.md` são histórico congelado.
 
 - **Código do projeto:** `FSC`
-- **Próxima sequência:** `FSC-018`
+- **Próxima sequência:** `FSC-021`
 
 ## Pastas
 
@@ -37,5 +37,6 @@ No shell, ponha esses caminhos entre aspas: o zsh trata `[...]` como padrão de 
 | `FSC-015` | [Barra do topo, votações, região e ícones das abas](prompt/FSC-015-202611021500-[Feat]-sticky-bar-votes-region-tabs.md) | entregue | `feature/sticky-bar-and-screens` | [#13](https://github.com/byescaleira/fiscal/pull/13) |
 | `FSC-016` | [Cartões no modo claro e bonequinho de todos](prompt/FSC-016-202611021923-[Feat]-light-cards-and-portraits.md) | entregue | `feature/light-cards-and-portraits` | [#14](https://github.com/byescaleira/fiscal/pull/14) |
 | `FSC-017` | [Partido atual, retratos novos e alerta de carga](prompt/FSC-017-202611031133-[Feat]-current-party-and-load-alert.md) | em andamento | `feature/party-and-load-alert` | — |
+| `FSC-020` | [O app só lê a CDN, e os alertas de destaque são locais](prompt/FSC-020-202611042045-[Feat]-app-reads-only-from-cdn-and-local-alerts.md) | em andamento | `feature/local-highlight-alerts` | — |
 
 As capacidades que ainda vivem em guias de recurso (atualização obrigatória em [force-update.md](../docs/force-update.md), site e Fiscal na Web em [web.md](../docs/web.md), admin e flags em [admin.md](../docs/admin.md)) ganham um canvas `[Codify]` na primeira mudança da área.

@@ -49,6 +49,9 @@ public struct HighlightAlertLedger: Sendable {
     static let shownKey = "fiscal.highlightAlerts.shown"
     static let enabledKey = "fiscal.highlightAlerts.enabled"
     static let tokenKey = "fiscal.highlightAlerts.token"
+    static let notificationKey = "fiscal.highlightAlerts.notification"
+    static let planKey = "fiscal.highlightAlerts.plan"
+    static let offsetKey = "fiscal.highlightAlerts.offset"
     public static let shownLimit = 60
 
     private let suiteName: String?
@@ -68,6 +71,54 @@ public struct HighlightAlertLedger: Sendable {
 
     public func setEnabled(_ value: Bool) {
         defaults?.set(value, forKey: Self.enabledKey)
+    }
+
+    public var isNotificationEnabled: Bool {
+        defaults?.bool(forKey: Self.notificationKey) ?? false
+    }
+
+    public func setNotificationEnabled(_ value: Bool) {
+        defaults?.set(value, forKey: Self.notificationKey)
+    }
+
+    public var plan: HighlightAlertPlan {
+        guard let data = defaults?.data(forKey: Self.planKey),
+            let plan = try? JSONDecoder().decode(HighlightAlertPlan.self, from: data)
+        else { return HighlightAlertPlan() }
+        return plan
+    }
+
+    public func save(plan: HighlightAlertPlan) {
+        defaults?.set(try? JSONEncoder().encode(plan), forKey: Self.planKey)
+    }
+
+    public func settle(now: Date) -> [String] {
+        var plan = plan
+        var passed: [String] = []
+        if let activity = plan.activity, activity.hasPassed(now) {
+            passed.append(activity.highlightId)
+            plan.activity = nil
+        }
+        if let notification = plan.notification, notification.hasPassed(now) {
+            passed.append(notification.highlightId)
+            plan.notification = nil
+        }
+        passed.forEach(record)
+        save(plan: plan)
+        return passed
+    }
+
+    public func deviceOffset(
+        draw: () -> Int = { Int.random(in: HighlightAlertSchedule.offsetRange) }
+    ) -> Int {
+        if let saved = defaults?.object(forKey: Self.offsetKey) as? Int { return saved }
+        let offset = draw()
+        defaults?.set(offset, forKey: Self.offsetKey)
+        return offset
+    }
+
+    public func clearLegacyToken() {
+        defaults?.removeObject(forKey: Self.tokenKey)
     }
 
     public var shown: Set<String> {
