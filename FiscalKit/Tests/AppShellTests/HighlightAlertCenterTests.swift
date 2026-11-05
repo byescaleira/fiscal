@@ -120,7 +120,7 @@ struct HighlightAlertCenterTests {
         let center = HighlightAlertCenter(
             activities: activities, notifications: notifications, ledger: ledger,
             publicData: { items.map { FixedHighlights(items: $0) } }, allows: { allows },
-            slots: { _, _ in slots })
+            slots: { _, _, _ in slots })
         await center.resume()
         return center
     }
@@ -270,18 +270,22 @@ struct HighlightAlertCenterTests {
         let center = HighlightAlertCenter(
             activities: activities, notifications: notifications, ledger: ledger,
             publicData: { FixedHighlights(items: [highlight("h1")]) }, allows: { true },
-            slots: { _, _ in slots }, prepare: { prepared.append($0.id) })
+            slots: { _, _, _ in slots }, prepare: { prepared.append($0.id) })
         await center.resume()
         await center.activate()
         await center.activate()
         #expect(prepared == ["h1"])
     }
 
-    @Test func theLegacyTokenIsErasedOnOpening() async {
+    @Test(arguments: [true, false])
+    func openingKeepsTheHabitOnlyWhileAnAlertIsOn(isOn: Bool) async {
         defer { forget() }
         UserDefaults(suiteName: suite)?.set("token-1", forKey: "fiscal.highlightAlerts.token")
+        ledger.setEnabled(isOn)
+        ledger.recordOpening(.now.addingTimeInterval(-86_400))
         let center = await center([])
         await center.activate()
+        #expect(ledger.habit.openings.count == (isOn ? 2 : 0))
         #expect(
             UserDefaults(suiteName: suite)?.string(forKey: "fiscal.highlightAlerts.token") == nil)
     }

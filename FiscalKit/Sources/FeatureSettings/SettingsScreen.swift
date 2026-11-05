@@ -129,7 +129,7 @@ private struct HighlightAlertsSection: View {
                 SettingsLabel(
                     "Highest-weight highlights on the Lock Screen",
                     detail:
-                        "At 8:00, only weight 70 or more, from the last day. Scheduled when you open the app. Fiscal sends no device code.",
+                        "Only weight 70 or more, from the last day, once a day at a time you usually use the app. The time is worked out on this device and never leaves it.",
                     symbol: "bell.badge", color: .retroRust)
             }
             .tint(.positive)
@@ -148,9 +148,9 @@ private struct HighlightAlertsSection: View {
         var body: some View {
             Toggle(isOn: isOn) {
                 SettingsLabel(
-                    "Evening highlight notification",
+                    "Highlight notification",
                     detail:
-                        "At 19:00, the next highest-weight highlight. Scheduled when you open the app.",
+                        "The next highest-weight highlight, at another time you usually use the app.",
                     symbol: "bell", color: .retroTeal)
             }
             .tint(.positive)

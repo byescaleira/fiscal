@@ -138,11 +138,19 @@ struct HighlightAlertPlanTests {
         #expect(ledger.deviceOffset(draw: { 7 }) == 42)
     }
 
-    @Test func theLegacyTokenIsErased() {
+    @Test func theLegacyTokenAndAttestKeyAreErased() throws {
         let name = "highlight-plan-\(UUID().uuidString)"
+        let standardName = "highlight-standard-\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: name)
+        let standard = try #require(UserDefaults(suiteName: standardName))
+        defer {
+            defaults?.removePersistentDomain(forName: name)
+            standard.removePersistentDomain(forName: standardName)
+        }
         defaults?.set("token-1", forKey: "fiscal.highlightAlerts.token")
-        HighlightAlertLedger(suiteName: name).clearLegacyToken()
+        standard.set("key-1", forKey: "AppAttestKeyID")
+        HighlightAlertLedger(suiteName: name).clearLegacy(standard)
         #expect(defaults?.string(forKey: "fiscal.highlightAlerts.token") == nil)
+        #expect(standard.string(forKey: "AppAttestKeyID") == nil)
     }
 }

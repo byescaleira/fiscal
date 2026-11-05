@@ -18,7 +18,7 @@ public struct HighlightAlertRule: Codable, Hashable, Sendable {
         text
             ?? String(
                 appLocalized:
-                    "On the Lock Screen (Live Activity), only a highlight with weight \(minWeight) or more enters, for a fact up to \(maxAgeHours) hours after the end of its day (Brasília time), once a day at 8:00 on the device clock and for up to 8 hours."
+                    "On the Lock Screen (Live Activity), only a highlight with weight \(minWeight) or more enters, for a fact up to \(maxAgeHours) hours after the end of its day (Brasília time), once a day, at a time the device learns from when you use the app, and for up to 8 hours."
             )
     }
 
@@ -52,6 +52,8 @@ public struct HighlightAlertLedger: Sendable {
     static let notificationKey = "fiscal.highlightAlerts.notification"
     static let planKey = "fiscal.highlightAlerts.plan"
     static let offsetKey = "fiscal.highlightAlerts.offset"
+    static let openingsKey = "fiscal.highlightAlerts.openings"
+    static let legacyAttestKey = "AppAttestKeyID"
     public static let shownLimit = 60
 
     private let suiteName: String?
@@ -117,8 +119,23 @@ public struct HighlightAlertLedger: Sendable {
         return offset
     }
 
-    public func clearLegacyToken() {
+    public func clearLegacy(_ standard: UserDefaults = .standard) {
         defaults?.removeObject(forKey: Self.tokenKey)
+        standard.removeObject(forKey: Self.legacyAttestKey)
+    }
+
+    public var habit: HighlightAlertHabit {
+        let values = defaults?.array(forKey: Self.openingsKey) as? [Double] ?? []
+        return HighlightAlertHabit(openings: values.map(Date.init(timeIntervalSince1970:)))
+    }
+
+    public func recordOpening(_ date: Date) {
+        let openings = habit.recording(date).openings.map(\.timeIntervalSince1970)
+        defaults?.set(openings, forKey: Self.openingsKey)
+    }
+
+    public func clearHabit() {
+        defaults?.removeObject(forKey: Self.openingsKey)
     }
 
     public var shown: Set<String> {

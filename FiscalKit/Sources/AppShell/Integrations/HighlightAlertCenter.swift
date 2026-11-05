@@ -14,7 +14,9 @@ final class HighlightAlertCenter {
     private let ledger: HighlightAlertLedger
     private let publicData: @MainActor () -> (any PublicDataService)?
     private let allows: @MainActor () -> Bool
-    private let slots: @MainActor (_ offset: Int, _ now: Date) -> HighlightAlertSlots
+    private let slots:
+        @MainActor (_ schedule: HighlightAlertSchedule, _ offset: Int, _ now: Date) ->
+            HighlightAlertSlots
     private let prepare: @MainActor (Highlight) -> Void
     private var isHeld = true
     private var wantsActivation = false
@@ -32,9 +34,11 @@ final class HighlightAlertCenter {
         allows: @escaping @MainActor () -> Bool = {
             FiscalServices.shared.isOn(.highlightAlerts)
         },
-        slots: @escaping @MainActor (_ offset: Int, _ now: Date) -> HighlightAlertSlots = {
-            HighlightAlertCenter.defaultSlots(offset: $0, now: $1)
-        },
+        slots:
+            @escaping @MainActor (_ schedule: HighlightAlertSchedule, _ offset: Int, _ now: Date)
+            -> HighlightAlertSlots = {
+                HighlightAlertCenter.defaultSlots(schedule: $0, offset: $1, now: $2)
+            },
         prepare: @escaping @MainActor (Highlight) -> Void = {
             HighlightAlertCenter.shelvePortrait(of: $0)
         }
@@ -51,8 +55,13 @@ final class HighlightAlertCenter {
     func activate() async {
         wantsActivation = true
         guard !isHeld else { return }
-        ledger.clearLegacyToken()
+        ledger.clearLegacy()
         let now = Date.now
+        if ledger.isEnabled || ledger.isNotificationEnabled {
+            ledger.recordOpening(now)
+        } else {
+            ledger.clearHabit()
+        }
         await activities.endExpired(now: now)
         for _ in ledger.settle(now: now) { FiscalEvents.alertReceived.log() }
         #if DEBUG
@@ -137,7 +146,7 @@ final class HighlightAlertCenter {
             rule: list.method?.alertRule ?? .standard,
             wantsActivity: isForeground && ledger.isEnabled && activities.isAvailable,
             wantsNotification: wantsNotification,
-            slots: slots(ledger.deviceOffset(), now))
+            slots: slots(ledger.habit.schedule(now: now), ledger.deviceOffset(), now))
         var plan = ledger.plan
         if let planned = next.activity,
             let highlight = list.items.first(where: { $0.id == planned.highlightId })
@@ -206,11 +215,13 @@ final class HighlightAlertCenter {
         portraits.shelve(slug: person.slug, party: person.party)
     }
 
-    private static func defaultSlots(offset: Int, now: Date) -> HighlightAlertSlots {
+    private static func defaultSlots(schedule: HighlightAlertSchedule, offset: Int, now: Date)
+        -> HighlightAlertSlots
+    {
         #if DEBUG
             if let test = testSlots { return test }
         #endif
-        return HighlightAlertSchedule.standard.slots(offset: offset, now: now)
+        return schedule.slots(offset: offset, now: now)
     }
 
     #if DEBUG

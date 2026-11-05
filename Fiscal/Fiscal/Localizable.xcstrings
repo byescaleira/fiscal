@@ -2326,26 +2326,6 @@
         }
       }
     },
-    "At 19:00, the next highest-weight highlight. Scheduled when you open the app." : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Às 19h, o destaque seguinte em peso. O app agenda quando você o abre."
-          }
-        }
-      }
-    },
-    "At 8:00, only weight 70 or more, from the last day. Scheduled when you open the app. Fiscal sends no device code." : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Às 8h, só peso 70 ou mais, do último dia. O app agenda quando você o abre e não envia nenhum código do aparelho."
-          }
-        }
-      }
-    },
     "Attendance" : {
       "localizations" : {
         "pt-BR" : {
@@ -4900,16 +4880,6 @@
         }
       }
     },
-    "Evening highlight notification" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Notificação de destaque à noite"
-          }
-        }
-      }
-    },
     "Event" : {
       "localizations" : {
         "pt-BR" : {
@@ -6292,6 +6262,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Alertas do destaque"
+          }
+        }
+      }
+    },
+    "Highlight notification" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notificação de destaque"
           }
         }
       }
@@ -9269,12 +9249,12 @@
         }
       }
     },
-    "On the Lock Screen (Live Activity), only a highlight with weight %lld or more enters, for a fact up to %lld hours after the end of its day (Brasília time), once a day at 8:00 on the device clock and for up to 8 hours." : {
+    "On the Lock Screen (Live Activity), only a highlight with weight %lld or more enters, for a fact up to %lld hours after the end of its day (Brasília time), once a day, at a time the device learns from when you use the app, and for up to 8 hours." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Na tela de bloqueio (Atividade ao Vivo) só entra destaque com peso %1$lld ou mais, de um fato de até %2$lld horas depois do fim do dia dele (horário de Brasília), uma vez por dia, às 8h no relógio do aparelho, e por até 8 horas."
+            "value" : "Na tela de bloqueio (Atividade ao Vivo) só entra destaque com peso %1$lld ou mais, de um fato de até %2$lld horas depois do fim do dia dele (horário de Brasília), uma vez por dia, num horário que o aparelho aprende pelo seu uso do app, e por até 8 horas."
           }
         }
       }
@@ -9359,6 +9339,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Só neste iPhone"
+          }
+        }
+      }
+    },
+    "Only weight 70 or more, from the last day, once a day at a time you usually use the app. The time is worked out on this device and never leaves it." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Só peso 70 ou mais, do último dia, uma vez por dia, num horário em que você costuma usar o app. O horário é calculado neste aparelho e não sai dele."
           }
         }
       }
@@ -14122,6 +14112,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O máximo que a lei permite por mês para os %@ deputados federais e %@ senadores em exercício."
+          }
+        }
+      }
+    },
+    "The next highest-weight highlight, at another time you usually use the app." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O destaque seguinte em peso, em outro horário em que você costuma usar o app."
           }
         }
       }
