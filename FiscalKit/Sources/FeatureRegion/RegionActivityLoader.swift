@@ -21,20 +21,28 @@ struct RegionActivityLoader: Sendable {
         activity.actions = leads.actions
         activity.mandates = leads.mandates
         activity.method = highlights?.method
-        let voteIDs = Set(found.map(\.vote.id))
-        let items = (highlights?.items ?? []).filter {
-            !($0.kind == .vote && voteIDs.contains($0.route))
-        }
-        let regional = items.filter { item in
-            item.person.map { region.contains($0.slug) } ?? false
-        }
-        activity.highlights = Array(
-            (regional.isEmpty ? Array(items.prefix(1)) : regional).prefix(Self.highlightLimit))
-        activity.highlightsAreNational = regional.isEmpty && !activity.highlights.isEmpty
+        let picked = Self.pick(
+            highlights?.items ?? [], region: region, voteIDs: Set(found.map(\.vote.id)))
+        activity.highlights = picked.highlights
+        activity.highlightsAreNational = picked.isNational
         var seen = Set<String>()
         activity.sources = ((highlights?.sources ?? []) + found.flatMap(\.sources))
             .filter { seen.insert($0.id).inserted }
         return activity
+    }
+
+    static func pick(_ items: [Highlight], region: Set<String>, voteIDs: Set<String>)
+        -> (highlights: [Highlight], isNational: Bool)
+    {
+        let items = items.filter { !($0.kind == .vote && voteIDs.contains($0.route)) }
+        var people = Set<String>()
+        let regional = items.filter { item in
+            guard let slug = item.person?.slug, region.contains(slug) else { return false }
+            return people.insert(slug).inserted
+        }
+        let chosen = Array(
+            (regional.isEmpty ? Array(items.prefix(1)) : regional).prefix(Self.highlightLimit))
+        return (chosen, regional.isEmpty && !chosen.isEmpty)
     }
 
     private struct Found: Sendable {
