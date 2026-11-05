@@ -59,13 +59,6 @@ public final class FiscalServices {
         }
     }
 
-    func highlightAlertService() -> (any HighlightAlertService)? {
-        #if DEBUG
-            if ShowcaseLiveResults.fromLaunchArguments() != nil { return nil }
-        #endif
-        return LiveResultsClient.fromBundle()
-    }
-
     var explainer: Explainer {
         isOn(.intelligence) ? .shared : .fixed
     }

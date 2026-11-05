@@ -2326,6 +2326,26 @@
         }
       }
     },
+    "At 19:00, the next highest-weight highlight. Scheduled when you open the app." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Às 19h, o destaque seguinte em peso. O app agenda quando você o abre."
+          }
+        }
+      }
+    },
+    "At 8:00, only weight 70 or more, from the last day. Scheduled when you open the app. Fiscal sends no device code." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Às 8h, só peso 70 ou mais, do último dia. O app agenda quando você o abre e não envia nenhum código do aparelho."
+          }
+        }
+      }
+    },
     "Attendance" : {
       "localizations" : {
         "pt-BR" : {
@@ -4879,6 +4899,16 @@
         }
       }
     },
+    "Evening highlight notification" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notificação de destaque à noite"
+          }
+        }
+      }
+    },
     "Event" : {
       "localizations" : {
         "pt-BR" : {
@@ -5530,6 +5560,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O Fiscal mantém este visual, seja qual for o ajuste do aparelho."
+          }
+        }
+      }
+    },
+    "Fiscal notifications are off in Settings." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As notificações do Fiscal estão desligadas nos Ajustes."
           }
         }
       }
@@ -9225,7 +9265,18 @@
         }
       }
     },
+    "On the Lock Screen (Live Activity), only a highlight with weight %lld or more enters, for a fact up to %lld hours after the end of its day (Brasília time), once a day at 8:00 on the device clock and for up to 8 hours." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "On the Lock Screen (Live Activity), only a highlight with weight %1$lld or more enters, for a fact up to %2$lld hours after the end of its day (Brasília time), once a day at 8:00 on the device clock and for up to 8 hours."
+          }
+        }
+      }
+    },
     "On the Lock Screen (Live Activity), only a highlight with weight %lld or more enters, for a fact up to %lld hours after the end of its day (Brasília time), once per device and for up to 8 hours." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -9309,6 +9360,7 @@
       }
     },
     "Only weight 70 or more, from the last day. Fiscal sends only an anonymous Apple token." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -9399,6 +9451,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abrir recibo"
+          }
+        }
+      }
+    },
+    "Open Settings" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Ajustes"
           }
         }
       }

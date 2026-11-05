@@ -6,6 +6,21 @@ import UniformTypeIdentifiers
 
 extension PortraitStore {
     public static let shelfSide: CGFloat = 120
+    public static let shelfLifetime: TimeInterval = 7 * 86_400
+
+    public static func pruneShelf(now: Date = .now, fileManager: FileManager = .default) {
+        guard let folder = PortraitShelf.url(for: "x")?.deletingLastPathComponent(),
+            let files = try? fileManager.contentsOfDirectory(
+                at: folder, includingPropertiesForKeys: [.contentModificationDateKey])
+        else { return }
+        for file in files {
+            let date = try? file.resourceValues(forKeys: [.contentModificationDateKey])
+                .contentModificationDate
+            if let date, now.timeIntervalSince(date) > shelfLifetime {
+                try? fileManager.removeItem(at: file)
+            }
+        }
+    }
 
     public func shelve(slug: String, party: String) {
         guard let url = PortraitShelf.url(for: slug),

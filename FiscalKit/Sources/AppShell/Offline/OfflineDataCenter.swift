@@ -43,6 +43,7 @@ public final class OfflineDataCenter {
         guard Self.refreshesInBackground(store: store) else { return }
         scheduleBackgroundRefresh()
         _ = try? await coordinator?.refresh()
+        await HighlightAlertCenter.shared.refreshInBackground()
     }
 
     static func refreshesInBackground(store: AppReleaseStore) -> Bool {

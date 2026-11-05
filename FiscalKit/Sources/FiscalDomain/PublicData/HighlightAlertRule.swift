@@ -18,7 +18,7 @@ public struct HighlightAlertRule: Codable, Hashable, Sendable {
         text
             ?? String(
                 appLocalized:
-                    "On the Lock Screen (Live Activity), only a highlight with weight \(minWeight) or more enters, for a fact up to \(maxAgeHours) hours after the end of its day (Brasília time), once per device and for up to 8 hours."
+                    "On the Lock Screen (Live Activity), only a highlight with weight \(minWeight) or more enters, for a fact up to \(maxAgeHours) hours after the end of its day (Brasília time), once a day at 8:00 on the device clock and for up to 8 hours."
             )
     }
 
@@ -130,17 +130,5 @@ public struct HighlightAlertLedger: Sendable {
         guard !ids.contains(id) else { return }
         ids.append(id)
         defaults?.set(Array(ids.suffix(Self.shownLimit)), forKey: Self.shownKey)
-    }
-
-    public var registeredToken: String? {
-        defaults?.string(forKey: Self.tokenKey)
-    }
-
-    public func save(token: String?) {
-        if let token {
-            defaults?.set(token, forKey: Self.tokenKey)
-        } else {
-            defaults?.removeObject(forKey: Self.tokenKey)
-        }
     }
 }

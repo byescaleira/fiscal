@@ -10,6 +10,12 @@ public struct PlannedAlert: Codable, Hashable, Sendable {
     }
 
     public func hasPassed(_ now: Date) -> Bool { fireDate <= now }
+
+    public func isSame(as other: PlannedAlert?) -> Bool {
+        guard let other else { return false }
+        return highlightId == other.highlightId
+            && abs(fireDate.timeIntervalSince(other.fireDate)) < 1
+    }
 }
 
 public struct HighlightAlertPlan: Codable, Hashable, Sendable {

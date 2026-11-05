@@ -1,7 +1,7 @@
 import FiscalDomain
 import Foundation
 
-public struct LiveResultsClient: LiveResultsService, HighlightAlertService {
+public struct LiveResultsClient: LiveResultsService {
     private struct Removal: Encodable {
         let pushToken: String
         let challenge: String?
@@ -9,12 +9,6 @@ public struct LiveResultsClient: LiveResultsService, HighlightAlertService {
 
     private struct Registration: Encodable {
         let raceId: String
-        let pushToken: String
-        let environment: PushEnvironment
-        let challenge: String?
-    }
-
-    private struct HighlightRegistration: Encodable {
         let pushToken: String
         let environment: PushEnvironment
         let challenge: String?
@@ -96,21 +90,6 @@ public struct LiveResultsClient: LiveResultsService, HighlightAlertService {
 
     public func unfollow(pushToken: String) async throws {
         try await attested(method: "DELETE", path: "v1/live-activities") { challenge in
-            Removal(pushToken: pushToken, challenge: challenge)
-        }
-    }
-
-    public func registerHighlights(pushToken: String, environment: PushEnvironment)
-        async throws
-    {
-        try await attested(path: "v1/highlight-activities") { challenge in
-            HighlightRegistration(
-                pushToken: pushToken, environment: environment, challenge: challenge)
-        }
-    }
-
-    public func unregisterHighlights(pushToken: String) async throws {
-        try await attested(method: "DELETE", path: "v1/highlight-activities") { challenge in
             Removal(pushToken: pushToken, challenge: challenge)
         }
     }

@@ -39,6 +39,7 @@ Definição de pronto (nomes e pesos são fictícios; quando o cenário não diz
 31. **Given** o app instalado no iPhone real **When** Feed, Região, Pessoa, Votações, Apuração e Ajustes são abertos, com uma captura de rede **Then** nenhum pedido vai para `fiscal.byescaleira.com/api`. Links do site, privacidade e suporte continuam abrindo no navegador.
 32. **Given** o build final **When** as permissões são conferidas **Then** saem `aps-environment`, App Attest, `remote-notification` e `NSSupportsLiveActivitiesFrequentUpdates`, e ficam App Group, iCloud, links universais, `fetch` e `NSSupportsLiveActivities`.
 33. **Given** a VPS depois do deploy aprovado **When** a carga e o TSE rodam **Then** `fiscal-pages` continua publicando, inclusive `races.json`, e o log de acesso não recebe mais pedidos do app. Prova no fechamento, com a VPN desligada.
+34. **Given** a Atividade de `h1` agendada **When** chega o horário **Then** o iOS mostra o alerta com o título e o subtítulo de `h1`, com o som padrão do iPhone; o modo silencioso do aparelho é respeitado pelo sistema. A notificação das 19:00 continua sem som.
 
 ## Entities
 
@@ -123,12 +124,12 @@ classDiagram
    - A ordem do arquivo publicado continua sendo a ordem de peso, como em `pick`.
    - Com as Atividades desligadas, a notificação leva o primeiro destaque, porque "o segundo" só existe para não repetir a Atividade.
    - Atraso fixo por aparelho de 0 a 600 s, sorteado uma vez e guardado só no aparelho, porque 50 milhões de toques no mesmo minuto são um risco estimado para a CDN. Sem medição real.
-   - A Atividade tenta agendar sem alerta nem som. Se o iOS recusar, ou se ela não aparecer no teste da operação 2, **paro e pergunto ao usuário**, com a prova.
+   - O iOS exige um alerta para agendar a Atividade (`alertConfiguration` não é opcional, visto no SDK em 05/11/2026). Decisão do usuário: "Som padrão do iPhone". Se ela não aparecer no teste da operação 2, **paro e pergunto ao usuário**, com a prova.
    - A notificação não pede som (`.alert`).
    - A prateleira reaproveita 120 px e apaga PNGs com mais de 7 dias ao montar o plano, para não crescer sem limite.
    - O app em segundo plano só pode trocar a notificação; a Atividade fica como está, porque o iOS recusa com `visibility`.
    - O app fixa a pasta `v2`, sem ler `release.json`; uma mudança de formato publica uma pasta nova ao lado da antiga.
-4. **ADR:** [`docs/adr/0028-app-reads-only-from-cdn-and-local-alerts.md`](../../docs/adr/0028-app-reads-only-from-cdn-and-local-alerts.md), em Proposto. Inverte a regra "só por Atividades ao Vivo, nunca por notificação comum" da `FSC-007`, substitui o envio por push e o [ADR 0017](../../docs/adr/0017-app-store-privacy-label.md), e revê os ADRs 0002 e 0007 onde falam de registro e App Attest. O limite de 8 h entre envios da `FSC-017` deixa de valer com o deploy.
+4. **ADR:** [`docs/adr/0028-app-reads-only-from-cdn-and-local-alerts.md`](../../docs/adr/0028-app-reads-only-from-cdn-and-local-alerts.md), Aceito. Inverte a regra "só por Atividades ao Vivo, nunca por notificação comum" da `FSC-007`, substitui o envio por push e o [ADR 0017](../../docs/adr/0017-app-store-privacy-label.md), e revê os ADRs 0002 e 0007 onde falam de registro e App Attest. O limite de 8 h entre envios da `FSC-017` deixa de valer com o deploy.
 5. **Tratamento de erros:** a falha de agendar é silenciosa e tenta de novo na próxima abertura; a CDN fora mantém o plano e, nas telas, cai no cache, no pacote offline e no erro que já existe; a recusa de permissão mostra o aviso uma vez em Ajustes, sem alerta; a falha do retrato cai na silhueta.
 6. **Riscos:**
    - Quem não abre o app para de receber → texto em Ajustes e no método.
@@ -167,8 +168,8 @@ classDiagram
    - Cobre: 1, 2, 6, 7, 8, 12, 13, 14, 22, 24. Verificação: testes de `FiscalDomainTests`.
 2. **Agendar a Atividade.** Depende de: 1.
    - `HighlightActivities` lê, agenda e encerra a pendente, com fim em horário + 8 h; saem o token e o início na hora.
-   - Medir no simulador: agendar sem alerta nem som, encerrar uma pendente e o limite.
-   - Cobre: 3, 4, 5, 9. Verificação: testes com o rastreador falso e captura no simulador. **Se sem alerta não funcionar, parar e perguntar.**
+   - Agendar com alerta do título e do subtítulo, e som padrão. Medir no simulador: encerrar uma pendente e o limite.
+   - Cobre: 3, 4, 5, 9, 34. Verificação: testes com o rastreador falso e captura no simulador. **Se a Atividade não aparecer, parar e perguntar.**
 3. **Notificação local.** Depende de: 1.
    - `HighlightNotifications`: permissão, identificador fixo para substituir a anterior, sem som, corpo com a incerteza, toque pelo mesmo destino e banner em primeiro plano.
    - Cobre: 15, 17, 18, 19. Verificação: testes com o agendador falso e o simulador.
@@ -189,7 +190,7 @@ classDiagram
    - Cobre: 24, 30, 32. Verificação: testes de `FeatureLiveResults`, `AppShell` e `FeatureFeed`, `scripts/build.sh Debug` nas três plataformas e captura da apuração no simulador com o cenário de disputa.
 9. **Parada no iPhone.** Depende de: 5, 6, 8.
    - Build DEBUG com horários de teste por argumento de lançamento. Primeiro confirmar no simulador; depois instalar no iPhone e seguir o roteiro com o app fechado e a tela bloqueada, mais a captura de rede.
-   - Cobre: 25, 31. Verificação: `docs/evidence/FSC-020/qa.md`. **Parar para o ok do usuário antes da operação 10.**
+   - Cobre: 25, 31, 34. Verificação: `docs/evidence/FSC-020/qa.md`. **Parar para o ok do usuário antes da operação 10.**
 10. **VPS só para a CDN.** Depende de: 9.
     - Remover vigia, APNs, App Attest, rotas, registros, `HIGHLIGHT_ALERTS`, `HOT_FROM_ORIGIN` e `Origin`; ajustar o texto do método; manter a leitura do TSE, a carga e a publicação.
     - Cobre: 23. Verificação: `cd server && go vet ./... && go test ./...`. **O deploy, o Caddy e apagar arquivos na VPS só com o ok do usuário, pedido na hora; a conferência do cenário 33 vem depois disso.**

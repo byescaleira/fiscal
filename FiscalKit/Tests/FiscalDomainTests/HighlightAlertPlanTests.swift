@@ -137,9 +137,10 @@ struct HighlightAlertPlanTests {
     }
 
     @Test func theLegacyTokenIsErased() {
-        let ledger = ledger()
-        ledger.save(token: "token-1")
-        ledger.clearLegacyToken()
-        #expect(ledger.registeredToken == nil)
+        let name = "highlight-plan-\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: name)
+        defaults?.set("token-1", forKey: "fiscal.highlightAlerts.token")
+        HighlightAlertLedger(suiteName: name).clearLegacyToken()
+        #expect(defaults?.string(forKey: "fiscal.highlightAlerts.token") == nil)
     }
 }

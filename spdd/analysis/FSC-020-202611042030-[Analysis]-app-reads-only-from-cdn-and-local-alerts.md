@@ -82,7 +82,7 @@ A cada abertura, o app lê os destaques na CDN e monta o plano do próximo horá
 | Retrato | Tela de bloqueio e Ilha expandida passam a mostrar o bonequinho; a Ilha compacta segue com o ícone; sem imagem, fica a silhueta atual | Pedido do usuário, com mudança visual para mostrar no iPhone | veto |
 | Espalhar o horário | Cada aparelho soma um atraso fixo de até 10 min, para os toques não caírem no mesmo minuto | Cerca de 10 min de diferença entre aparelhos. A CDN é quem absorve; o ganho é uma estimativa | reversível |
 | Atualizar a notificação em segundo plano | Se o iOS rodar a atualização existente, troca a notificação pendente pelo destaque novo | Conteúdo mais novo quando der, sem garantia. Depende de um teste no iPhone | reversível |
-| Som | Sem som, se o iOS permitir, porque um horário fixo pode acordar alguém | A confirmar na API; se o iOS exigir som, volta como decisão no canvas | reversível |
+| Som | Decisão do usuário: som padrão do iPhone na Atividade, porque o iOS exige um alerta para agendar; a notificação fica sem som | Chama mais atenção às 08:00, salvo no modo silencioso | reversível |
 | Retrato nos widgets | Fora desta mudança; vai ao backlog | Os widgets também caem na silhueta, pela leitura do código; o usuário pediu para mostrar variantes antes de ampliar | reversível |
 | Regra e canvases | ADR novo; a `FSC-007` é atualizada por `spdd-prompt-update`; o cenário 26 da `FSC-017` deixa de valer com o deploy desta | O PR #16 entra primeiro, sem ser reaberto | reversível |
 
