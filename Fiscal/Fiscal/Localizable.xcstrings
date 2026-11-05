@@ -9269,8 +9269,8 @@
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "On the Lock Screen (Live Activity), only a highlight with weight %1$lld or more enters, for a fact up to %2$lld hours after the end of its day (Brasília time), once a day at 8:00 on the device clock and for up to 8 hours."
+            "state" : "translated",
+            "value" : "Na tela de bloqueio (Atividade ao Vivo) só entra destaque com peso %1$lld ou mais, de um fato de até %2$lld horas depois do fim do dia dele (horário de Brasília), uma vez por dia, às 8h no relógio do aparelho, e por até 8 horas."
           }
         }
       }

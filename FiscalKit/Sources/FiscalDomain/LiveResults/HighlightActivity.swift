@@ -59,7 +59,8 @@ public struct HighlightActivityState: Codable, Hashable, Sendable {
         public init(highlight: Highlight) {
             let coverage = highlight.coverage
             self.init(
-                highlightId: highlight.id, kind: highlight.kind.rawValue, title: highlight.title,
+                highlightId: highlight.id, kind: highlight.kind.rawValue,
+                title: highlight.plainSummary ?? highlight.title,
                 subtitle: highlight.subtitle, date: highlight.date.description,
                 route: highlight.route, personName: highlight.person?.name,
                 personSlug: highlight.person?.slug, party: highlight.person?.party,

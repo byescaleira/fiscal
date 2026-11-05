@@ -17,7 +17,7 @@ Definição de pronto (nomes e pesos são fictícios; quando o cenário não diz
 9. **Given** o iOS recusa o pedido com `targetMaximumExceeded` ou `visibility` **When** o app tenta agendar **Then** nada entra em `shown`, nenhuma mensagem aparece e a próxima tentativa é só na próxima abertura.
 10. **Given** a preferência da Atividade é desligada **When** há pendente e Atividade na tela **Then** as duas são encerradas e as próximas aberturas não agendam Atividade.
 11. **Given** o app preso pela atualização obrigatória **When** a política exige atualização **Then** a pendente e a notificação agendada são canceladas, e o plano só volta depois da liberação.
-12. **Given** o interruptor da notificação ligado com permissão, `h1` (peso 92) e `h2` (peso 90) **When** o app abre às 22:00 de D **Then** `h1` fica como Atividade de 08:00 de D+1 e `h2` como notificação de 19:00 de D+1, com título "o título de `h2`" e corpo "o subtítulo de `h2`".
+12. **Given** o interruptor da notificação ligado com permissão, `h1` (peso 92) e `h2` (peso 90) **When** o app abre às 22:00 de D **Then** `h1` fica como Atividade de 08:00 de D+1 e `h2` como notificação de 19:00 de D+1, com o mesmo título que o Feed mostra (o resumo simples de `h2`, ou o título oficial se não houver) e corpo "o subtítulo de `h2`".
 13. **Given** o interruptor ligado e só `h1` valendo **When** o app abre **Then** `h1` é da Atividade e não sai notificação.
 14. **Given** o interruptor ligado e as Atividades desligadas no sistema ou na preferência **When** o app abre com `h1` e `h2` **Then** a notificação leva `h1`, porque não há o que repetir.
 15. **Given** um destaque com peso estimado **When** a notificação é montada **Then** o corpo leva o subtítulo e a incerteza curta da `FSC-004`.
@@ -39,7 +39,7 @@ Definição de pronto (nomes e pesos são fictícios; quando o cenário não diz
 31. **Given** o app instalado no iPhone real **When** Feed, Região, Pessoa, Votações, Apuração e Ajustes são abertos, com uma captura de rede **Then** nenhum pedido vai para `fiscal.byescaleira.com/api`. Links do site, privacidade e suporte continuam abrindo no navegador.
 32. **Given** o build final **When** as permissões são conferidas **Then** saem `aps-environment`, App Attest, `remote-notification` e `NSSupportsLiveActivitiesFrequentUpdates`, e ficam App Group, iCloud, links universais, `fetch` e `NSSupportsLiveActivities`.
 33. **Given** a VPS depois do deploy aprovado **When** a carga e o TSE rodam **Then** `fiscal-pages` continua publicando, inclusive `races.json`, e o log de acesso não recebe mais pedidos do app. Prova no fechamento, com a VPN desligada.
-34. **Given** a Atividade de `h1` agendada **When** chega o horário **Then** o iOS mostra o alerta com o título e o subtítulo de `h1`, com o som padrão do iPhone; o modo silencioso do aparelho é respeitado pelo sistema. A notificação das 19:00 continua sem som.
+34. **Given** a Atividade de `h1` agendada **When** chega o horário **Then** a Atividade e o alerta do iOS trazem o mesmo título que o Feed mostra, com o subtítulo, em pt-BR, e o alerta usa o som padrão do iPhone; o modo silencioso do aparelho é respeitado pelo sistema. A notificação das 19:00 continua sem som.
 
 ## Entities
 
@@ -127,6 +127,7 @@ classDiagram
    - O iOS exige um alerta para agendar a Atividade (`alertConfiguration` não é opcional, visto no SDK em 05/11/2026). Decisão do usuário: "Som padrão do iPhone". Se ela não aparecer no teste da operação 2, **paro e pergunto ao usuário**, com a prova.
    - A notificação não pede som (`.alert`).
    - A prateleira reaproveita 120 px e apaga PNGs com mais de 7 dias ao montar o plano, para não crescer sem limite.
+   - A abertura monta o plano sem esperar a indexação das pessoas no Spotlight, porque, se a pessoa sair antes, o iOS recusa o agendamento (visto no simulador em 05/11/2026).
    - O app em segundo plano só pode trocar a notificação; a Atividade fica como está, porque o iOS recusa com `visibility`.
    - O app fixa a pasta `v2`, sem ler `release.json`; uma mudança de formato publica uma pasta nova ao lado da antiga.
 4. **ADR:** [`docs/adr/0028-app-reads-only-from-cdn-and-local-alerts.md`](../../docs/adr/0028-app-reads-only-from-cdn-and-local-alerts.md), Aceito. Inverte a regra "só por Atividades ao Vivo, nunca por notificação comum" da `FSC-007`, substitui o envio por push e o [ADR 0017](../../docs/adr/0017-app-store-privacy-label.md), e revê os ADRs 0002 e 0007 onde falam de registro e App Attest. O limite de 8 h entre envios da `FSC-017` deixa de valer com o deploy.
@@ -155,7 +156,7 @@ classDiagram
 - `FiscalKit/Sources/AppShell/Integrations/HighlightAlertCenter.swift`: o plano. `SystemIntegrations.swift`, `UpdateConnections.swift` e `Fiscal/Fiscal/FiscalApp.swift`: abertura, trava e atualização em segundo plano.
 - `FiscalKit/Sources/FeatureCore/Portraits/PortraitStore+Shelf.swift`: limpeza de 7 dias.
 - `Fiscal/FiscalWidgets/HighlightLiveActivity.swift` e `HighlightWidgetViews.swift`: retrato pela prateleira, com a silhueta de reserva, só na Atividade.
-- `FiscalKit/Sources/FeatureSettings/SettingsScreen.swift` e `SettingsModel.swift`: os dois interruptores, os textos e o aviso. `Fiscal/Fiscal/Localizable.xcstrings`: as traduções.
+- `FiscalKit/Sources/FeatureSettings/SettingsScreen.swift` e `SettingsModel.swift`: os dois interruptores, os textos e o aviso. `Fiscal/Fiscal/Localizable.xcstrings` e `Fiscal/FiscalWidgets/Localizable.xcstrings`: as traduções.
 - `FiscalKit/Tests/FiscalDomainTests/`, `FiscalKit/Tests/AppShellTests/HighlightAlertCenterTests.swift`, `FiscalKit/Tests/FeatureSettingsTests/`: os testes.
 - `server/internal/highlightalert/`, `apns/`, `appattest/`: removidos; `server/internal/store/` sai se ficar sem uso. `server/cmd/server/main.go`, `server/internal/httpapi/`, `live/`, `publish/` e testes: só a leitura do TSE e a saúde local. `server/compose.yaml`: sem `APNS_*`, `HIGHLIGHT_ALERTS` e `HOT_FROM_ORIGIN`. `server/internal/site/` e `server/cmd/ingest/main.go`: sem `Origin`. `server/internal/publicdata/highlights.go`: o texto de `alert`. `server/internal/pages/`: sem a cópia de `published/highlights.json`.
 - `docs/adr/0028-app-reads-only-from-cdn-and-local-alerts.md`, `docs/adr/0017`, `0002`, `0007` e `README.md`, `spdd/prompt/FSC-001-…`, `FSC-002-…` e `FSC-007-…` (pelo `spdd-prompt-update`), `site/privacy.html`, `site/index.html`, `site/support.html`, `site/llms.txt`, `docs/app-store/`, `docs/architecture.md`, `docs/validation.md`, `docs/server-runbook.md`, `server/README.md`, `docs/backlog.md`, `CHANGELOG.md`, `docs/evidence/FSC-020/qa.md`.

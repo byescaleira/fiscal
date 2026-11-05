@@ -54,7 +54,7 @@ final class HighlightAlertCenter {
         ledger.clearLegacyToken()
         let now = Date.now
         await activities.endExpired(now: now)
-        ledger.settle(now: now).forEach { _ in FiscalEvents.alertReceived.log() }
+        for _ in ledger.settle(now: now) { FiscalEvents.alertReceived.log() }
         #if DEBUG
             if await forceShowcase() { return }
         #endif
@@ -174,7 +174,7 @@ final class HighlightAlertCenter {
         let current = await notifications.pending()
         if planned.isSame(as: current) { return current }
         do {
-            try await notifications.schedule(HighlightBoard(highlight), at: planned.fireDate)
+            try await notifications.schedule(highlight, at: planned.fireDate)
             return planned
         } catch {
             return current

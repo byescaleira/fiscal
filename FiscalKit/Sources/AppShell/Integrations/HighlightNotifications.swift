@@ -22,7 +22,7 @@ protocol HighlightNotificationScheduling: AnyObject {
     func status() async -> HighlightNotificationStatus
     func requestPermission() async -> Bool
     func pending() async -> PlannedAlert?
-    func schedule(_ board: HighlightBoard, at date: Date) async throws
+    func schedule(_ highlight: Highlight, at date: Date) async throws
     func cancel() async
 }
 
@@ -65,9 +65,10 @@ extension HighlightBoard {
             return PlannedAlert(highlightId: id, fireDate: Date(timeIntervalSince1970: fire))
         }
 
-        func schedule(_ board: HighlightBoard, at date: Date) async throws {
+        func schedule(_ highlight: Highlight, at date: Date) async throws {
+            let board = HighlightBoard(highlight)
             let content = UNMutableNotificationContent()
-            content.title = board.title
+            content.title = highlight.plainSummary ?? highlight.title
             content.body = board.notificationBody
             content.userInfo = [
                 Self.highlightKey: board.id,
@@ -114,7 +115,7 @@ extension HighlightBoard {
         func status() async -> HighlightNotificationStatus { .denied }
         func requestPermission() async -> Bool { false }
         func pending() async -> PlannedAlert? { nil }
-        func schedule(_ board: HighlightBoard, at date: Date) async throws {}
+        func schedule(_ highlight: Highlight, at date: Date) async throws {}
         func cancel() async {}
     }
 #endif

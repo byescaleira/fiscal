@@ -43,7 +43,8 @@ public protocol HighlightActivityTracking: AnyObject {
                 attributes: HighlightActivityAttributes(highlight: highlight), content: content,
                 pushType: nil, style: .standard,
                 alertConfiguration: AlertConfiguration(
-                    title: LocalizedStringResource(stringLiteral: highlight.title),
+                    title: LocalizedStringResource(
+                        stringLiteral: highlight.plainSummary ?? highlight.title),
                     body: LocalizedStringResource(stringLiteral: highlight.subtitle),
                     sound: .default),
                 start: date)

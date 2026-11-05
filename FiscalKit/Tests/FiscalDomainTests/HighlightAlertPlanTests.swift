@@ -102,7 +102,9 @@ struct HighlightAlertPlanTests {
 
     @Test func theSameInputAlwaysGivesTheSameChoice() {
         let items = [highlight("h1", weight: 92), highlight("h2", weight: 90)]
-        #expect(plan(items, now: moment(3, 22)) == plan(items, now: moment(3, 22)))
+        let first = plan(items, now: moment(3, 22))
+        let second = plan(items, now: moment(3, 22))
+        #expect(first == second)
     }
 
     private func ledger() -> HighlightAlertLedger {

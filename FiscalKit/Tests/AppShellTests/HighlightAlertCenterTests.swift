@@ -41,7 +41,7 @@ private final class FakeNotifications: HighlightNotificationScheduling {
     var grants = true
     var asked = 0
     var pendingAlert: PlannedAlert?
-    var boards: [HighlightBoard] = []
+    var sent: [Highlight] = []
     var cancelled = 0
 
     func status() async -> HighlightNotificationStatus { current }
@@ -50,9 +50,9 @@ private final class FakeNotifications: HighlightNotificationScheduling {
         return grants
     }
     func pending() async -> PlannedAlert? { pendingAlert }
-    func schedule(_ board: HighlightBoard, at date: Date) async throws {
-        boards.append(board)
-        pendingAlert = PlannedAlert(highlightId: board.id, fireDate: date)
+    func schedule(_ highlight: Highlight, at date: Date) async throws {
+        sent.append(highlight)
+        pendingAlert = PlannedAlert(highlightId: highlight.id, fireDate: date)
     }
     func cancel() async {
         cancelled += 1
@@ -237,90 +237,6 @@ struct HighlightAlertCenterTests {
         #expect(activities.pending == nil)
     }
 
-    @Test func theNotificationTakesTheSecondHighlight() async {
-        defer { forget() }
-        ledger.setNotificationEnabled(true)
-        let center = await center([highlight("h1", weight: 92), highlight("h2", weight: 90)])
-        await center.activate()
-        #expect(activities.scheduled == ["h1"])
-        #expect(notifications.boards.map(\.id) == ["h2"])
-        #expect(notifications.pendingAlert?.fireDate == evening)
-    }
-
-    @Test func aSingleHighlightSendsNoNotification() async {
-        defer { forget() }
-        ledger.setNotificationEnabled(true)
-        let center = await center([highlight("h1")])
-        await center.activate()
-        #expect(notifications.boards.isEmpty)
-    }
-
-    @Test func withActivitiesOffTheNotificationTakesTheFirst() async {
-        defer { forget() }
-        ledger.setNotificationEnabled(true)
-        activities.isAvailable = false
-        let center = await center([highlight("h1"), highlight("h2")])
-        await center.activate()
-        #expect(activities.scheduled.isEmpty)
-        #expect(notifications.boards.map(\.id) == ["h1"])
-    }
-
-    @Test func theSameNotificationIsNotScheduledTwice() async {
-        defer { forget() }
-        ledger.setNotificationEnabled(true)
-        let center = await center([highlight("h1"), highlight("h2")])
-        await center.activate()
-        await center.activate()
-        #expect(notifications.boards.map(\.id) == ["h2"])
-    }
-
-    @Test func theNotificationNeverAsksPermissionByItself() async {
-        defer { forget() }
-        let center = await center([highlight("h1"), highlight("h2")])
-        await center.activate()
-        #expect(notifications.asked == 0)
-        #expect(notifications.boards.isEmpty)
-        #expect(!ledger.isNotificationEnabled)
-    }
-
-    @Test func turningTheNotificationOnAsksAndPlans() async {
-        defer { forget() }
-        let center = await center([highlight("h1"), highlight("h2")])
-        #expect(await center.setNotificationEnabled(true))
-        #expect(notifications.asked == 1)
-        #expect(ledger.isNotificationEnabled)
-        #expect(notifications.boards.map(\.id) == ["h2"])
-    }
-
-    @Test func aRefusedPermissionLeavesItOff() async {
-        defer { forget() }
-        notifications.grants = false
-        notifications.current = .denied
-        let center = await center([highlight("h1"), highlight("h2")])
-        #expect(await center.setNotificationEnabled(true) == false)
-        #expect(!ledger.isNotificationEnabled)
-        #expect(notifications.boards.isEmpty)
-    }
-
-    @Test func turningTheNotificationOffRemovesIt() async {
-        defer { forget() }
-        ledger.setNotificationEnabled(true)
-        let center = await center([highlight("h1"), highlight("h2")])
-        await center.activate()
-        _ = await center.setNotificationEnabled(false)
-        #expect(notifications.pendingAlert == nil)
-        #expect(ledger.plan.notification == nil)
-    }
-
-    @Test func aPermissionRemovedInTheSystemSchedulesNothing() async {
-        defer { forget() }
-        ledger.setNotificationEnabled(true)
-        notifications.current = .denied
-        let center = await center([highlight("h1"), highlight("h2")])
-        await center.activate()
-        #expect(notifications.boards.isEmpty)
-    }
-
     @Test func theBackgroundOnlyTouchesTheNotification() async {
         defer { forget() }
         ledger.setNotificationEnabled(true)
@@ -333,7 +249,7 @@ struct HighlightAlertCenterTests {
         await center.refreshInBackground()
         #expect(activities.scheduled.isEmpty)
         #expect(activities.endedPending == 0)
-        #expect(notifications.boards.map(\.id) == ["h9"])
+        #expect(notifications.sent.map(\.id) == ["h9"])
     }
 
     @Test func aPendingThatCannotEndIsKeptAndNothingElseIsAsked() async {
@@ -375,6 +291,92 @@ struct HighlightAlertCenterTests {
         let uncertainty = board.uncertaintyShort ?? ""
         #expect(!uncertainty.isEmpty)
         #expect(board.notificationBody == "Subtítulo \(uncertainty)")
+    }
+}
+
+extension HighlightAlertCenterTests {
+    @Test func theNotificationTakesTheSecondHighlight() async {
+        defer { forget() }
+        ledger.setNotificationEnabled(true)
+        let center = await center([highlight("h1", weight: 92), highlight("h2", weight: 90)])
+        await center.activate()
+        #expect(activities.scheduled == ["h1"])
+        #expect(notifications.sent.map(\.id) == ["h2"])
+        #expect(notifications.pendingAlert?.fireDate == evening)
+    }
+
+    @Test func aSingleHighlightSendsNoNotification() async {
+        defer { forget() }
+        ledger.setNotificationEnabled(true)
+        let center = await center([highlight("h1")])
+        await center.activate()
+        #expect(notifications.sent.isEmpty)
+    }
+
+    @Test func withActivitiesOffTheNotificationTakesTheFirst() async {
+        defer { forget() }
+        ledger.setNotificationEnabled(true)
+        activities.isAvailable = false
+        let center = await center([highlight("h1"), highlight("h2")])
+        await center.activate()
+        #expect(activities.scheduled.isEmpty)
+        #expect(notifications.sent.map(\.id) == ["h1"])
+    }
+
+    @Test func theSameNotificationIsNotScheduledTwice() async {
+        defer { forget() }
+        ledger.setNotificationEnabled(true)
+        let center = await center([highlight("h1"), highlight("h2")])
+        await center.activate()
+        await center.activate()
+        #expect(notifications.sent.map(\.id) == ["h2"])
+    }
+
+    @Test func theNotificationNeverAsksPermissionByItself() async {
+        defer { forget() }
+        let center = await center([highlight("h1"), highlight("h2")])
+        await center.activate()
+        #expect(notifications.asked == 0)
+        #expect(notifications.sent.isEmpty)
+        #expect(!ledger.isNotificationEnabled)
+    }
+
+    @Test func turningTheNotificationOnAsksAndPlans() async {
+        defer { forget() }
+        let center = await center([highlight("h1"), highlight("h2")])
+        #expect(await center.setNotificationEnabled(true))
+        #expect(notifications.asked == 1)
+        #expect(ledger.isNotificationEnabled)
+        #expect(notifications.sent.map(\.id) == ["h2"])
+    }
+
+    @Test func aRefusedPermissionLeavesItOff() async {
+        defer { forget() }
+        notifications.grants = false
+        notifications.current = .denied
+        let center = await center([highlight("h1"), highlight("h2")])
+        #expect(await center.setNotificationEnabled(true) == false)
+        #expect(!ledger.isNotificationEnabled)
+        #expect(notifications.sent.isEmpty)
+    }
+
+    @Test func turningTheNotificationOffRemovesIt() async {
+        defer { forget() }
+        ledger.setNotificationEnabled(true)
+        let center = await center([highlight("h1"), highlight("h2")])
+        await center.activate()
+        _ = await center.setNotificationEnabled(false)
+        #expect(notifications.pendingAlert == nil)
+        #expect(ledger.plan.notification == nil)
+    }
+
+    @Test func aPermissionRemovedInTheSystemSchedulesNothing() async {
+        defer { forget() }
+        ledger.setNotificationEnabled(true)
+        notifications.current = .denied
+        let center = await center([highlight("h1"), highlight("h2")])
+        await center.activate()
+        #expect(notifications.sent.isEmpty)
     }
 }
 
