@@ -95,9 +95,6 @@ private struct LiveResultsFooter: View {
                     "Numbers straight from the TSE, with no projections or polls.",
                     systemImage: "building.columns")
             }
-            if let off = results.activitiesOffText {
-                Text(verbatim: off)
-            }
         }
         .font(.caption)
         .foregroundStyle(.secondary)

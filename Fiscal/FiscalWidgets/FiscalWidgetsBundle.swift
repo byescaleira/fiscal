@@ -11,7 +11,6 @@ struct FiscalWidgetsBundle: WidgetBundle {
     }
 
     var body: some Widget {
-        RaceLiveActivity()
         HighlightLiveActivity()
         VoteWidget()
         HighlightWidget()

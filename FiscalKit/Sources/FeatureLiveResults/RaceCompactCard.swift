@@ -4,7 +4,6 @@ import FiscalDomain
 import SwiftUI
 
 struct RaceCompactCard: View {
-    @Environment(LiveResultsModel.self) private var results
     let race: Race
 
     var body: some View {
@@ -39,22 +38,10 @@ struct RaceCompactCard: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: summary.cardAccessibility))
         .accessibilityHint(Text("Shows every candidate and the blank and null votes"))
-        .contextMenu {
-            if results.showsFollow(race) {
-                Button {
-                    Task { await results.toggle(race) }
-                } label: {
-                    Label(
-                        results.isFollowing(race) ? "Stop Following" : "Follow on Lock Screen",
-                        systemImage: results.isFollowing(race) ? "lock.slash" : "lock.iphone")
-                }
-            }
-        }
     }
 }
 
 private struct RaceCompactHeader: View {
-    @Environment(LiveResultsModel.self) private var results
     let summary: RaceSummary
 
     var body: some View {
@@ -75,11 +62,6 @@ private struct RaceCompactHeader: View {
                     .foregroundStyle(.secondary)
             }
             Spacer(minLength: .spaceS)
-            if results.isFollowing(summary.race) {
-                Image(systemName: "lock.iphone")
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(.secondary)
-            }
             RaceStatusBadge(summary: summary)
         }
     }

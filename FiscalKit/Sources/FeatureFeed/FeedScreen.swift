@@ -21,7 +21,7 @@ public struct FeedScreen<RaceHero: View>: View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: .spaceL, pinnedViews: .sectionHeaders) {
                 if let board = feed.liveBoard {
-                    FeedRaceHero(board: board) { raceHero(board.race) }
+                    raceHero(board.race)
                         .transition(reduceMotion ? .identity : .opacity)
                         .zIndex(1)
                 }

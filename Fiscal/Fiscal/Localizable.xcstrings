@@ -3857,6 +3857,7 @@
       }
     },
     "Couldn't start the Live Activity. Try again." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -5759,6 +5760,7 @@
       }
     },
     "Follow %@ on the Lock Screen" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -5809,6 +5811,7 @@
       }
     },
     "Follow on Lock Screen" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -7429,6 +7432,7 @@
       }
     },
     "Live Activities are turned off for Fiscal in Settings." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -12460,6 +12464,7 @@
       }
     },
     "Shows the count on the Lock Screen and in the Dynamic Island." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -13226,6 +13231,7 @@
       }
     },
     "Stop Following" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -13246,6 +13252,7 @@
       }
     },
     "Stop following %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -14351,6 +14358,7 @@
       }
     },
     "The server didn't accept this Live Activity. Try following again." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -15089,6 +15097,7 @@
       }
     },
     "Turn on Live Activities for Fiscal in Settings to follow a race on the Lock Screen." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {

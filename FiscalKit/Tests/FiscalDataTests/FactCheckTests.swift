@@ -14,7 +14,7 @@ struct FactCheckTests {
             memoryCapacity: 1_024 * 1_024, diskCapacity: 0, directory: nil)
         configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
         return PublicDataClient(
-            baseURL: try #require(URL(string: "https://\(host)/api")),
+            dataURL: try #require(URL(string: "https://\(host)")),
             session: URLSession(configuration: configuration))
     }
 
@@ -45,8 +45,8 @@ struct FactCheckTests {
 
     @Test func decodesTheChecksOfAPerson() async throws {
         PublicDataStub.reply(
-            .init(status: 200, body: Data(sample.utf8)), to: "/api/v1/people/lula/checks.json",
-            on: host)
+            .init(status: 200, body: Data(#"{ "files": { "checks.json": \#(sample) } }"#.utf8)),
+            to: "/v2/people/lula.json", on: host)
         let list = try #require(try await client().checks(slug: "lula"))
         #expect(list.items.map(\.id) == ["comprova-20389", "comprova-20025"])
         let first = try #require(list.items.first)
@@ -60,7 +60,7 @@ struct FactCheckTests {
                 == "https://creativecommons.org/licenses/by-nd/4.0/deed.pt-br")
         #expect(list.items.last?.verdict == nil)
         #expect(list.sources.map(\.id) == ["comprova"])
-        #expect(PublicDataStub.seen(on: host).map(\.path) == ["/api/v1/people/lula/checks.json"])
+        #expect(PublicDataStub.seen(on: host).map(\.path).contains("/v2/people/lula.json"))
     }
 
     @Test func aMissingFileMeansNoChecks() async throws {
@@ -74,7 +74,9 @@ struct FactCheckTests {
         await #expect(throws: PublicDataError.unavailable) {
             try await client().checks(slug: "lula")
         }
-        PublicDataStub.fallback(.init(status: 200, body: Data(#"{"items": 1}"#.utf8)), on: host)
+        PublicDataStub.fallback(
+            .init(status: 200, body: Data(#"{"files": {"checks.json": {"items": 1}}}"#.utf8)),
+            on: host)
         await #expect(throws: PublicDataError.invalidData) {
             try await client().checks(slug: "lula")
         }

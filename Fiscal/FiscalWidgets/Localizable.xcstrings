@@ -2,6 +2,7 @@
   "sourceLanguage" : "pt-BR",
   "strings" : {
     "%@ counted" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -23,6 +24,7 @@
       }
     },
     "%@ votes" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -281,6 +283,7 @@
       }
     },
     "ELECTED" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -291,6 +294,7 @@
       }
     },
     "Elected" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -366,6 +370,7 @@
       }
     },
     "FINAL" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -408,6 +413,7 @@
       }
     },
     "Final" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -418,6 +424,7 @@
       }
     },
     "Final result" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -563,6 +570,7 @@
       }
     },
     "LIVE" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -754,6 +762,7 @@
       }
     },
     "No update since %@ · TSE" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -947,6 +956,7 @@
       }
     },
     "Starts at 5 PM Brasília time" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -968,6 +978,7 @@
       }
     },
     "TSE" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -978,6 +989,7 @@
       }
     },
     "TSE file from %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -1061,6 +1073,7 @@
       }
     },
     "Votes apart: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -1241,6 +1254,7 @@
       }
     },
     "counted" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {

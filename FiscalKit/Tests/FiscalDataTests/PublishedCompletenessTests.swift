@@ -37,7 +37,6 @@ struct PublishedCompletenessTests {
         configuration.requestCachePolicy = .returnCacheDataElseLoad
         configuration.httpMaximumConnectionsPerHost = PublishedCompletenessTests.width
         return PublicDataClient(
-            baseURL: URL(string: "https://fiscal.byescaleira.com/api").unsafelyUnwrapped,
             dataURL: URL(string: "https://dados.fiscal.byescaleira.com").unsafelyUnwrapped,
             session: URLSession(configuration: configuration))
     }()
