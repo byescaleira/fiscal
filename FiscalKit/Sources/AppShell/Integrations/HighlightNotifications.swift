@@ -6,6 +6,7 @@ import Foundation
 #endif
 
 public enum FiscalNotifications {
+    @MainActor
     public static func install() {
         #if canImport(ActivityKit) && os(iOS)
             UNUserNotificationCenter.current().delegate = HighlightNotificationDelegate.shared
@@ -88,7 +89,9 @@ extension HighlightBoard {
         }
     }
 
-    final class HighlightNotificationDelegate: NSObject, UNUserNotificationCenterDelegate, Sendable
+    @MainActor
+    final class HighlightNotificationDelegate: NSObject,
+        @preconcurrency UNUserNotificationCenterDelegate
     {
         static let shared = HighlightNotificationDelegate()
 
@@ -106,7 +109,7 @@ extension HighlightBoard {
                     HighlightNotifications.urlKey] as? String,
                 let url = URL(string: value)
             else { return }
-            await MainActor.run { FiscalServices.shared.pendingURL = url }
+            FiscalServices.shared.pendingURL = url
         }
     }
 #else
