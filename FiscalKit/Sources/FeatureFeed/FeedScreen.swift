@@ -10,6 +10,7 @@ public struct FeedScreen<RaceHero: View>: View {
     @Environment(FiscalNavigation.self) private var navigation: FiscalNavigation?
     @Environment(FollowingBadge.self) private var badge: FollowingBadge?
     @Environment(FollowController.self) private var follow: FollowController?
+    @Environment(LikeController.self) private var like: LikeController?
     @Environment(\.scenePhase) private var scenePhase
     @ReducesMotion private var reduceMotion
     private let raceHero: (Race) -> RaceHero
@@ -51,6 +52,12 @@ public struct FeedScreen<RaceHero: View>: View {
             await feed.watchRaces()
         }
         .onChange(of: feed.newCount, initial: true) { _, count in badge?.count = count }
+        .onChange(of: feed.items, initial: true) { _, items in
+            like?.showing(
+                Dictionary(
+                    items.compactMap { item in Route.destination(for: item).map { (item.id, $0) } },
+                    uniquingKeysWith: { first, _ in first }))
+        }
         .onChange(of: follow?.followed) { _, slugs in
             guard let slugs else { return }
             Task { await feed.followsChanged(to: slugs) }

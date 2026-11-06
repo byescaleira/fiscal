@@ -40,7 +40,7 @@ O usuário pediu o curtir com a onda escolhida na FSC-023 ("depois cria a FSC-02
      - tocar num gasto abre os gastos do mês;
      - tocar num destaque abre o destaque;
      - tocar numa checagem abre a página do Comprova no navegador;
-     - um item sem destino que dê para guardar (proposta, discurso ou evento sem votação e sem link) fica sem toque e diz "Este item saiu do Feed";
+     - uma proposta, um discurso ou um evento sem votação e sem link abre o mesmo destino da linha enquanto continua no Feed; quando sai do Feed, fica sem toque e diz "Este item saiu do Feed";
      - o rodapé diz "Suas curtidas ficam só neste aparelho, fora do iCloud e do backup."
 7. **Lista vazia.** Sem curtidas, a tela mostra "Nada curtido" e "Toque no coração de um item do Feed para guardar aqui."
 8. **Apagar curtidas.**
@@ -144,7 +144,9 @@ classDiagram
         +items: [LikedItem]
         +liked: Set~String~
         +error: FiscalError?
+        +feedRoutes: [String: Route]
         +isLiked(id: String) Bool
+        +showing(routes: [String: Route])
         +toggle(LikedItem) Bool
         +remove(id: String)
         +erase()
@@ -188,7 +190,7 @@ classDiagram
    É a mesma política do apoio ([ADR 0021](../../docs/adr/0021-end-of-lens-support-on-device.md)).
 2. **Dado:**
    - a `LikedItem` copia do item o que precisa para mostrar e reabrir: tipo, título, dia e os identificadores de destino;
-   - `ContentDetail` não é `Codable` e não é guardado. Por isso, uma proposta, um discurso ou um evento sem votação e sem link mostra "Este item saiu do Feed" na lista;
+   - `ContentDetail` não é `Codable` e não é guardado. Enquanto o item está no Feed, a lista usa a rota que o Feed mostra agora; quando ele sai do Feed, uma proposta, um discurso ou um evento sem votação e sem link mostra "Este item saiu do Feed" na lista;
    - o `id` é o mesmo do `FeedItem` (`vote-…`, `check-…`, `expenses-…`), e `highlight-<id>` no destaque.
 3. **Esquema:**
    - a `FiscalSchemaV4` vira uma versão congelada, com cópias aninhadas das quatro entidades, como a V3;
@@ -232,7 +234,7 @@ classDiagram
      - `.highlight` quando há `highlightID`;
      - nada nos outros casos.
 
-     O link externo vale quando só há `url`.
+     Sem destino guardado, vale a rota que o Feed mostra agora (`LikeController.feedRoutes`, preenchida pela `FeedScreen` a cada carga); depois, o link externo quando só há `url`.
    - **Ações:** "Descurtir" ao arrastar e "Apagar curtidas" na barra, com confirmação.
    - **Ordem:** pela data da curtida, a mais recente primeiro, sem limite. A lista é preguiçosa.
 10. **Exportação:**
@@ -352,6 +354,7 @@ classDiagram
      - grava;
      - se falhar, volta o estado e põe `error = .onSave`.
    - **`items`:** mantido em ordem pela data.
+   - **`showing(_:)`:** guarda as rotas dos itens que o Feed mostra agora, só na memória.
    - **Sem repositório:** `toggle` devolve o estado atual e não muda nada.
    - **Verificação:** `LikeControllerTests` com repositório falso:
      - curtir e descurtir;
@@ -410,7 +413,7 @@ classDiagram
     - **Lógica:**
       - lista preguiçosa dos `items`;
       - cada linha mostra o símbolo do tipo (o mesmo da linha do Feed), o título com até 2 linhas e o dia por `PublicFormat`;
-      - o destino segue `Route.destination(for:)` ou abre o link externo;
+      - o destino segue `Route.destination(for:)`, depois `feedRoutes`, ou abre o link externo;
       - sem destino, a linha mostra "Este item saiu do Feed", sem toque;
       - "Descurtir" ao arrastar;
       - "Apagar curtidas" na barra, com `confirmationDialog`;

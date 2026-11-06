@@ -128,6 +128,22 @@ struct LikeControllerTests {
         #expect(await store.items.isEmpty)
     }
 
+    @Test func anItemStillInTheFeedOpensWhatTheFeedShows() throws {
+        let like = LikeController(likes: Store())
+        let detail = try #require(URL(string: "https://www.camara.leg.br/1"))
+        let proposal = LikedItem(
+            id: "action-1", kind: .proposal, title: "PLP", day: CalendarDay(.now), likedAt: .now)
+        #expect(like.destination(for: proposal) == nil)
+        like.showing(["action-1": .settings])
+        #expect(like.destination(for: proposal) == .settings)
+        let vote = LikedItem(
+            id: "vote-1", kind: .vote, title: "PEC", day: CalendarDay(.now), likedAt: .now,
+            voteID: "1", url: detail)
+        #expect(like.destination(for: vote) == .vote(id: "1"))
+        like.showing([:])
+        #expect(like.destination(for: proposal) == nil)
+    }
+
     @Test func withoutAStoreNothingChanges() async {
         let like = LikeController(likes: nil)
         #expect(await !like.toggle(Self.item("a")))

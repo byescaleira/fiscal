@@ -6,6 +6,7 @@ import Observation
 public final class LikeController {
     public private(set) var items: [LikedItem] = []
     public private(set) var hasLoaded = false
+    public private(set) var feedRoutes: [String: Route] = [:]
     public var error: FiscalError?
     @ObservationIgnored private let likes: (any LikeRepository)?
     @ObservationIgnored private var pending: Set<String> = []
@@ -18,6 +19,14 @@ public final class LikeController {
 
     public func isLiked(_ id: String) -> Bool {
         items.contains { $0.id == id }
+    }
+
+    public func showing(_ routes: [String: Route]) {
+        feedRoutes = routes
+    }
+
+    public func destination(for item: LikedItem) -> Route? {
+        Route.destination(for: item) ?? feedRoutes[item.id]
     }
 
     public func reload() async {

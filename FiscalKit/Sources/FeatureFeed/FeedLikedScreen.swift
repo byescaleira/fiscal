@@ -23,7 +23,7 @@ public struct FeedLikedScreen: View {
                 List {
                     Section {
                         ForEach(like.items) { item in
-                            FeedLikedRow(item: item)
+                            FeedLikedRow(item: item, route: like.destination(for: item))
                                 .swipeActions {
                                     Button("Unlike", systemImage: "heart.slash", role: .destructive)
                                     {
@@ -64,9 +64,10 @@ public struct FeedLikedScreen: View {
 
 private struct FeedLikedRow: View {
     let item: LikedItem
+    let route: Route?
 
     var body: some View {
-        if let route = Route.destination(for: item) {
+        if let route {
             RouteLink(route) { label }
         } else if let url = item.url {
             ExternalLink(destination: url) { label }
