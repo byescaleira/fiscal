@@ -1,4 +1,3 @@
-import ByescaleiraEffects
 import FeatureCore
 import FiscalDesignSystem
 import FiscalDomain
@@ -46,7 +45,6 @@ public struct FeedScreen<RaceHero: View>: View {
         .emphasisTitle("Feed")
         .toolbar { FeedToolbar() }
         .refreshable { await feed.load() }
-        .task { try? await EffectsWarmUp.compile() }
         .task(id: session.generation) {
             await feed.load()
             await feed.watchRaces()

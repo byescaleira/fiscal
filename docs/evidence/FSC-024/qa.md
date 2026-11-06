@@ -30,3 +30,9 @@
 **Ponto para a revisão de interface:** a linha do coração soma cerca de 44 pt a cada item do Feed.
 
 **Depois da revisão:** a faixa, a onda e o toque háptico passaram a disparar só depois de a curtida ser gravada; o coração vazio do destaque usa o branco com `.opacityStrong`; a lista ganhou o menu de contexto e o `.privacySensitive()`. Só o build e os testes conferiram essas mudanças, sem nova captura.
+
+**Teste no iPhone (06/11/2026), com o usuário:**
+- o coração no rodapé abria uma faixa vazia em cada card ("adicionou uma faixa branca enorme em cada card"): foi para o cabeçalho, ao lado da data ([captura](row-heart-header.png));
+- curtir fazia a rolagem pular e voltar de um item deixava o Feed em outra posição: a curtida grava sem avisar a sessão (`LikeStoreTests.likingDoesNotTellTheSessionToReload`), e o Feed só troca a lista quando ela muda;
+- a onda não agradou ("eu acho que a animação com o coração estava mais legal"): saíram a faixa e a onda, fica a animação do coração. As evidências da onda acima ficam como histórico.
+

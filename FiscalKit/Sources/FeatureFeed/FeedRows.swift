@@ -5,7 +5,6 @@ import SwiftUI
 
 struct FeedCard: View {
     @Environment(FeedModel.self) private var feed
-    @State private var like = FeedLikeState()
     let item: FeedItem
 
     var body: some View {
@@ -41,7 +40,6 @@ struct FeedCard: View {
         }
         .padding(.horizontal, .spaceS)
         .padding(.vertical, .spaceM)
-        .feedLikeWash(like)
         .overlay(alignment: .bottom) {
             Divider().offset(y: .spaceL / 2)
         }
@@ -49,7 +47,7 @@ struct FeedCard: View {
 
     private var content: some View {
         VStack(alignment: .leading, spacing: .spaceM) {
-            FeedCardHeader(item: item, like: $like)
+            FeedCardHeader(item: item)
             Group {
                 if let expenses = item.expenses {
                     FeedExpensesBody(item: item, expenses: expenses)
@@ -101,7 +99,6 @@ private struct FeedCardHeader: View {
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
     let item: FeedItem
-    @Binding var like: FeedLikeState
 
     private var person: PersonCard? {
         item.ballots.count <= 1 ? item.involved.first : nil
@@ -192,7 +189,7 @@ private struct FeedCardHeader: View {
     }
 
     private var heart: some View {
-        FeedLikeButton(state: $like, id: item.id) {
+        FeedLikeButton(id: item.id) {
             LikedItem(item: item, likedAt: .now)
         }
     }
