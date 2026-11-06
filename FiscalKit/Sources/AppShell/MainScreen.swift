@@ -1,6 +1,5 @@
 import FeatureCore
 import FeatureGuides
-import FeatureSettings
 import FiscalDesignSystem
 import FiscalDomain
 import SwiftUI
@@ -43,7 +42,6 @@ public struct MainScreen: View {
                 if !path.isEmpty { AccessibilityNotification.ScreenChanged(nil).post() }
             }
             .modifier(RoutesBeside())
-            .modifier(MetalLabLaunch())
             .readsLayoutContext()
             .environment(
                 \.open,

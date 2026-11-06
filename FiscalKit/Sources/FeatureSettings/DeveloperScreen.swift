@@ -29,19 +29,6 @@ private struct DeveloperPage: View {
                 }
             }
             DeveloperLayoutSection()
-            #if DEBUG
-                Section {
-                    NavigationLink {
-                        MetalLabScreen()
-                    } label: {
-                        Label {
-                            Text(verbatim: "Metal")
-                        } icon: {
-                            Image(systemName: "cube.transparent").foregroundStyle(Color.retroDenim)
-                        }
-                    }
-                }
-            #endif
             if developer.canSimulateUpdates { DeveloperUpdatesSection() }
             DeveloperDataSection()
             DeveloperLogSection(developer.log)
