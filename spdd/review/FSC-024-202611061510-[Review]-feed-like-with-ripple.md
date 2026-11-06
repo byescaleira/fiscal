@@ -10,7 +10,8 @@
 - **Veredito da primeira leitura:**
   - canvas: Needs Rework, com 3 críticos, todos de texto e de sincronia;
   - painel (interface, código e segurança): aprovado, sem bloqueador.
-- **Depois das correções:** veja a última coluna da tabela.
+- **Depois das correções** (`8f615ca`): a re-revisão do canvas deu Ready to Merge, com os três críticos resolvidos e nenhum novo.
+- **Veredito final:** Ready to Merge.
 
 | Severidade | Dimensão | Achado | Resolução |
 | --- | --- | --- | --- |
