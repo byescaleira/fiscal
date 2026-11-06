@@ -56,6 +56,7 @@ public struct PlenaryChart: View {
             }
         }
         .aspectRatio(.plenaryAspect, contentMode: .fit)
+        .dynamicTypeSize(...DynamicTypeSize.xLarge)
         .onAppear {
             if animates, start == nil { start = .now }
         }

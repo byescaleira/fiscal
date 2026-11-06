@@ -30,6 +30,7 @@ O que falta, por prioridade. Itens concluídos saem daqui; o motivo das decisõe
 - **[P2] Arquivos auxiliares do banco do aparelho.** A exclusão do backup marca `-wal` e `-shm` só se já existirem na abertura, e o `groupContainer` do `Device.store` não foi conferido. Vale conferir com o app rodando, porque o apoio mora nesse banco.
 
 - **[P2] Validar a carta colecionável no iPhone.** A variante "Carta" foi escolhida sem teste no aparelho ("Não consigo validar agora, vamos seguindo", 06/11/2026). Faltam a inclinação, o giro com os botões e a medição de quadros ao abrir a página; um ajuste muda só os tokens do kit ([FSC-023](../spdd/prompt/FSC-023-202611052151-[Feat]-plenary-and-holographic-card.md)).
+- **[P2] Texto secundário no fundo do PSB.** O cargo, o mandato e a situação ficam perto de 2,9:1 sobre o `PartyBackdrop` do PSB (medido na [FSC-023](evidence/FSC-023/qa.md)), abaixo de 4,5:1. Vem de antes da carta; rever o fundo dos partidos claros.
 - **[P2] Custo dos efeitos medido.** Instruments (SwiftUI e Metal System Trace) e o Power Profiler num iPhone antigo, com o plenário e a carta, antes de levar shader para outra tela ([ADR 0026](adr/0026-shader-effects-never-carry-data.md)).
 
 ## Depois da 1.0 ou sem data

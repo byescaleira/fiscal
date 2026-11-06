@@ -65,7 +65,34 @@ classDiagram
         +seatsPerRow: [Int]
         +seats: [Seat]
         +lastRank: Int
+        +init(yes: Int, no: Int, others: Int, seats: Int)
         +angle(beforeSeat: Int) Double
+    }
+    class Seat {
+        +row: Int
+        +angle: Double
+        +group: Group
+        +rank: Int
+    }
+    class Group {
+        <<enum>>
+        yes
+        no
+        other
+        absent
+    }
+    class PlenaryLegendItem {
+        +group: Group
+        +count: Int
+        +title: String
+    }
+    class PlenaryColors {
+        +yes: Color
+        +no: Color
+        +other: Color
+        +absent: Color
+        +track: Color
+        +ink: Color
     }
     class PlenaryChart {
         +layout: HemicycleLayout
@@ -77,7 +104,16 @@ classDiagram
         +person: Profile
     }
     class ProfileHeroCollectible {
-        +content: View
+        <<ViewModifier>>
+        -reader: TiltReader
+        -isOnScreen: Bool
+    }
+    class ProfileHeroWindow {
+        +party: String
+        +portrait: View
+    }
+    class ProfileHeroWindowFoil {
+        -reader: TiltReader (ambiente)
     }
     class HolographicFoil {
         <<byescaleira-kit ByescaleiraEffects>>
@@ -106,9 +142,16 @@ classDiagram
     }
     VoteDetailModel --> PlenarySeats
     VoteDetailModel --> HemicycleLayout
+    HemicycleLayout --> Seat
+    Seat --> Group
+    PlenaryLegendItem --> Group
+    VoteDetailModel --> PlenaryLegendItem
     PlenaryChart --> HemicycleLayout
+    PlenaryChart --> PlenaryColors
     ProfileHeroCard --> ProfileHeroCollectible
-    ProfileHeroCard --> HolographicFoil
+    ProfileHeroCard --> ProfileHeroWindow
+    ProfileHeroWindow --> ProfileHeroWindowFoil
+    ProfileHeroWindowFoil --> HolographicFoil
     ProfileHeroCollectible --> TiltReader
     ProfileHeroCollectible --> CollectibleFrame
     ProfileHeroCollectible --> CardTurn
@@ -164,6 +207,8 @@ classDiagram
       - o reflexo por cima, porque clareava o texto;
       - o formato 63:88, que deixaria o topo da página alto demais;
       - o painel escuro, porque o fundo do partido sem folha já tem o contraste de hoje.
+    - **Tamanho:** a moldura soma 9 pt (`.collectibleFrame`) de cada lado. O conteúdo fica 18 pt mais estreito e o cartão 18 pt mais alto, mas a largura externa continua a da página.
+13. **Exploração antes do canvas:** o laboratório (`a877737`, `605bf86` e o protótipo da carta, `decf30d`) entrou antes do canvas e da prompt-update, por ser exploração só em DEBUG, pedida para escolher no iPhone. Ele saiu na etapa D, e nada dele fica no app.
 
 ## Structure
 
@@ -181,6 +226,9 @@ classDiagram
 | `FiscalKit/Sources/FeatureProfile/ProfileScreen.swift` | `EffectsWarmUp.compile()` no `task` |
 | `FiscalKit/Tests/FiscalDesignSystemTests/HemicycleLayoutTests.swift` | Movido de `FeatureSettingsTests` |
 | `FiscalKit/Tests/FeatureVotesTests/VoteDetailModelPlenaryTests.swift` | Novo |
+| `FiscalKit/Tests/FiscalDomainTests/PlenarySeatsTests.swift` | Novo |
+| `FiscalKit/Package.resolved`, `Fiscal.xcworkspace/xcshareddata/swiftpm/Package.resolved` | `byescaleira-kit` 0.10.0 e depois 0.11.0 |
+| `docs/evidence/FSC-023/` | QA: roteiro, capturas e contraste medido |
 | `FiscalKit/Sources/FeatureSettings/MetalLab/`, `HemicycleLayoutTests` em `FeatureSettingsTests`, `DeveloperScreen.swift`, `AppShell/MainScreen.swift` | Laboratório removido (etapa D) |
 | `Fiscal/Fiscal/Localizable.xcstrings` | Textos novos do plenário |
 | `docs/design-system.md`, `docs/backlog.md`, `CHANGELOG.md`, `docs/adr/README.md`, `spdd/README.md` | Documentos |
@@ -331,7 +379,7 @@ classDiagram
   - zero comentários e zero avisos;
   - tokens do design system, sem número solto fora deles;
   - Swift Testing em `PlenarySeats`, `HemicycleLayout` e `VoteDetailModel+Plenary`.
-- **Textos:** chaves em inglês com tradução pt-BR; números por `PublicFormat.number`.
+- **Textos:** chaves em inglês com tradução pt-BR; números por `PublicFormat.number`, exceto as contagens do plenário (até 513), que ficam em `%lld` para o catálogo escolher o plural ("1 outro", "84 não votaram") e nunca passam de três dígitos.
 - **Movimento:** `@ReducesMotion` e `MotionBudget.isConstrained` no app; `accessibilityReduceMotion` e `\.liteMode` no kit, que é a mesma regra.
 - **Fato, não opinião** (regra 14): a cor de cada ponto é o voto, a ordem é a do voto, a linha é a regra publicada e o holográfico é igual para todos.
 - **Verificação:** `scripts/verify.sh --quick` durante o trabalho; `--full` no fim; captura no simulador antes do iPhone; `FISCAL_BUILD_ROOT=~/Library/Developer/FiscalBuild-metal`.

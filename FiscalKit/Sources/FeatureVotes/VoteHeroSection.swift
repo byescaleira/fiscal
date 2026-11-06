@@ -143,24 +143,46 @@ private struct HeroPlenary: View {
             if dynamicTypeSize.isAccessibilitySize {
                 VStack(alignment: .leading, spacing: .space2XS) { items(colors) }
             } else {
-                HStack(spacing: .spaceM) { items(colors) }
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: .spaceM) { items(colors) }
+                    Grid(
+                        alignment: .leading, horizontalSpacing: .spaceM,
+                        verticalSpacing: .space2XS
+                    ) {
+                        ForEach(pairs, id: \.first.id) { pair in
+                            GridRow {
+                                item(pair.first, colors: colors)
+                                if let second = pair.second { item(second, colors: colors) }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
 
+    private var pairs: [(first: PlenaryLegendItem, second: PlenaryLegendItem?)] {
+        let legend = vote.plenaryLegend
+        return stride(from: 0, to: legend.count, by: 2).map { index in
+            (legend[index], index + 1 < legend.count ? legend[index + 1] : nil)
+        }
+    }
+
     private func items(_ colors: PlenaryColors) -> some View {
-        ForEach(vote.plenaryLegend) { item in
-            HStack(spacing: .space2XS) {
-                Circle()
-                    .fill(colors.color(for: item.group))
-                    .frame(width: .spaceS, height: .spaceS)
-                Text(verbatim: item.title)
-                    .font(.caption)
-                    .monospacedDigit()
-                    .foregroundStyle(colors.ink)
-                    .lineLimit(1)
-                    .fixedSize()
-            }
+        ForEach(vote.plenaryLegend) { item($0, colors: colors) }
+    }
+
+    private func item(_ item: PlenaryLegendItem, colors: PlenaryColors) -> some View {
+        HStack(spacing: .space2XS) {
+            Circle()
+                .fill(colors.color(for: item.group))
+                .frame(width: .spaceS, height: .spaceS)
+            Text(verbatim: item.title)
+                .font(.caption)
+                .monospacedDigit()
+                .foregroundStyle(colors.ink)
+                .lineLimit(1)
+                .fixedSize()
         }
     }
 
