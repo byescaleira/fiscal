@@ -48,6 +48,7 @@ classDiagram
         +requiredYes: Int?
         +seats: Int?
         +plenary: PlenarySeats?
+        +plenaryLayout: HemicycleLayout?
         +plenaryLegend: [PlenaryLegendItem]
         +plenaryAccessibility: String?
         +accessibilityScore: String
@@ -104,7 +105,7 @@ classDiagram
         +trigger: Int
     }
     VoteDetailModel --> PlenarySeats
-    PlenarySeats --> HemicycleLayout
+    VoteDetailModel --> HemicycleLayout
     PlenaryChart --> HemicycleLayout
     ProfileHeroCard --> ProfileHeroCollectible
     ProfileHeroCard --> HolographicFoil
@@ -126,8 +127,8 @@ classDiagram
 3. **Onde entra:** no lugar da `TallyChart`, dentro do placar (`VoteScoreboard`), quando `plenary` existe. O placar continua com a superfície clara e escura da FSC-016 (`HeroSurface`, `HeroInk`), e as cores dos pontos vêm do mesmo `HeroInk`: sim em `ink.signal(.voteYes)`, não como hoje, outro em `.voteAbstain` e "não votaram" em `ink.track`.
 4. **Quórum só onde o app já sabe.** A linha usa o `requiredYes` de hoje, que é só o da PEC (3/5). Maioria absoluta da PLP e maioria simples ficam de fora: a proposição PLP também tem votações de requerimento, e uma linha errada mudaria a leitura de "passou ou não". Isso vai para o backlog, com a fonte da regra.
 5. **Cadeiras:** 513 na Câmara e 81 no Senado, as mesmas constantes do `requiredYes`, levadas para `seats`. "Não votaram" é cadeiras menos o total publicado, com o nome dito na legenda. O app não chama isso de "ausentes", porque inclui quem preside a sessão e quem não registrou voto.
-6. **Kit primeiro, na mudança `KIT-012` "Efeitos de shader".**
-   - **Processo próprio:** análise e canvas no `byescaleira-kit`, com o ok do usuário, um PR para a `development` do kit, merge e tag `v0.10.0` com ok a cada vez.
+6. **Kit primeiro, na mudança `KIT-014` "Efeitos de shader".**
+   - **Processo próprio:** análise e canvas no `byescaleira-kit`, com o ok do usuário, um PR para a `main` do kit, merge e tag `v0.10.0` com ok a cada vez.
    - **Módulo novo `ByescaleiraEffects`**, que depende de `ByescaleiraAccessibility` e `ByescaleiraDesign`:
      - `Effects.metal`, com `holographicFoil` e `ripple`;
      - `HolographicFoil`, uma view para usar como camada (`blendMode(.screen)`);
@@ -138,7 +139,7 @@ classDiagram
    - **Plataformas:** compila nas cinco do kit; no watchOS, as views devolvem o conteúdo sem efeito.
 7. **Holográfico no fundo do cartão** (etapa C, substituído pelo item 12 na etapa C2). O `ProfileHeroCard` ganha o `HolographicFoil` sobre o `PartyBackdrop`, dentro do mesmo recorte do fundo. Assim, o texto, o retrato animado (Lottie) e os botões de vidro ficam fora do efeito, que é o achado do 🚫 nos protótipos.
    - **Parâmetros fixos:** força 0,42, faixa a 33°, espectro de 0,85. Nenhum vem do perfil.
-   - **Sensor:** o `TiltReader` liga em `onAppear` com a cena ativa e desliga em `onDisappear`, na cena inativa e com o gate fechado. A cada leitura, só a camada do fundo é redesenhada, porque a inclinação mora numa subview própria.
+   - **Sensor:** o `tiltReading(_:)` do kit liga e desliga o `TiltReader` com o aparecer, a cena e o gate, e o `onScrollVisibilityChange` tira a leitura quando o cartão sai da tela. A cada leitura, só a camada do fundo é redesenhada, porque a inclinação mora numa subview própria.
 8. **Compilação antes do uso:** `EffectsWarmUp.compile()` roda uma vez no `task` da página do político, fora do caminho do toque.
 9. **Laboratório:** sai na última etapa, junto com o argumento de abertura e a linha em `MainScreen`. Os achados ficam na análise.
 10. **Padrões seguidos sem pergunta:**
@@ -148,7 +149,7 @@ classDiagram
     - a captura no simulador antes do iPhone.
 11. **Etapas com parada no iPhone:**
     - (A) o plenário;
-    - (B) o kit `KIT-012` até a tag, com as paradas do processo do kit;
+    - (B) o kit `KIT-014` até a tag, com as paradas do processo do kit;
     - (C) o cartão holográfico;
     - (C2) a carta colecionável: a `KIT-015` no kit até a tag `v0.11.0` e o cartão do topo como carta;
     - (D) remoção do laboratório, documentos e fechamento.
@@ -183,7 +184,7 @@ classDiagram
 | `FiscalKit/Sources/FeatureSettings/MetalLab/`, `HemicycleLayoutTests` em `FeatureSettingsTests`, `DeveloperScreen.swift`, `AppShell/MainScreen.swift` | Laboratório removido (etapa D) |
 | `Fiscal/Fiscal/Localizable.xcstrings` | Textos novos do plenário |
 | `docs/design-system.md`, `docs/backlog.md`, `CHANGELOG.md`, `docs/adr/README.md`, `spdd/README.md` | Documentos |
-| `byescaleira-kit` (outro repositório) | `KIT-012`: `Sources/ByescaleiraEffects/`, testes, aba no catálogo, `CHANGELOG`, tag `v0.10.0`; `KIT-015`: folha `.sparkle`, moldura e giro, tag `v0.11.0` |
+| `byescaleira-kit` (outro repositório) | `KIT-014`: `Sources/ByescaleiraEffects/`, testes, aba no catálogo, `CHANGELOG`, tag `v0.10.0`; `KIT-015`: folha `.sparkle`, moldura e giro, tag `v0.11.0` |
 
 ## Operations
 
@@ -196,7 +197,7 @@ classDiagram
    - **Verificação:** teste com 252/176/1/513 (`absent` 84), com 600 votos em 513 (nil) e com negativo (nil).
 2. **`HemicycleLayout` no `FiscalDesignSystem`** `[P]`
    - **Lógica:** a mesma do protótipo: fileiras pelo menor desajuste entre o arco e a largura da fileira (até 24), cadeiras por fileira por maior resto, ordem por ângulo, sim à esquerda e não à direita com o mesmo ritmo, e o meio depois.
-   - **Assinatura:** `public init(_ seats: PlenarySeats)`.
+   - **Assinatura:** `public init(yes:no:others:seats:)`, com os números, porque o `FiscalDesignSystem` não depende do `FiscalDomain`. O `VoteDetailModel` passa os valores do `PlenarySeats` em `plenaryLayout`.
    - **Verificação:** os 5 testes do protótipo, movidos para `FiscalDesignSystemTests`, mais 81 cadeiras com 2 "não votaram".
    - **Depende de:** 1.
 3. **`PlenaryChart`**
@@ -214,6 +215,7 @@ classDiagram
 4. **`VoteDetailModel+Plenary`**
    - **`seats: Int?`:** 513 para `.camara`, 81 para `.senado`, nil para as outras casas. `requiredYes` passa a usar `seats`, com o mesmo resultado.
    - **`plenary: PlenarySeats?`:** existe só quando a votação é nominal, tem placar (`hasScore`), tem `seats` e tem `tally.total > 0`. Usa `yes`, `no` e `others ?? 0`, e o `requiredYes` atual.
+   - **`plenaryLayout: HemicycleLayout?`:** o `HemicycleLayout` montado com os números do `plenary`.
    - **`plenaryLegend`:** quatro itens com a contagem, o título ("sim", "não", "outro"/"outros" por plural, "não votaram") e a cor.
    - **`plenaryAccessibility`:** "Plenário: %lld sim, %lld não, %lld outros e %lld não votaram, de %lld cadeiras", e, com quórum, mais "%lld sim para aprovar".
    - **`accessibilityScore`:** acrescenta `plenaryAccessibility` antes do `headline`.
@@ -241,8 +243,8 @@ classDiagram
 
 **Etapa B: kit**
 
-7. **`KIT-012` no `byescaleira-kit`**
-   - **Processo:** análise e canvas no kit (parada do kit), código, `scripts/verify.sh --full` do kit (cinco plataformas e catálogo), PR para a `development` do kit, e merge na `main` com a tag `v0.10.0`, só com o ok do usuário a cada passo.
+7. **`KIT-014` no `byescaleira-kit`**
+   - **Processo:** análise e canvas no kit (parada do kit), código, `scripts/verify.sh --full` do kit (cinco plataformas e catálogo), PR para a `main` do kit, merge e a tag `v0.10.0`, só com o ok do usuário a cada passo.
    - **Contrato que o Fiscal usa:**
      - `HolographicFoil(tilt: CGPoint)`, uma view;
      - `@Observable TiltReader` com `tilt`, `start()` e `stop()`;
@@ -262,7 +264,7 @@ classDiagram
 9. **Fundo holográfico do `ProfileHeroCard`**
    - **Lógica:**
      - o `background` do cartão passa a ser uma subview `ProfileHeroBackdrop(party:)`, com o `PartyBackdrop` e o `HolographicFoil(tilt: reader.tilt)` por cima, recortados juntos em `.radiusGroup`;
-     - o `TiltReader` é um `@State` dessa subview: liga em `onAppear` com `scenePhase == .active` e desliga em `onDisappear` e com a cena inativa;
+     - o `TiltReader` é um `@State` dessa subview, ligado pelo `tiltReading(_:)` do kit (aparecer, cena ativa e gate), num filho que sai quando o `onScrollVisibilityChange` diz que o cartão saiu da tela;
      - nada do `Profile` entra no efeito, além do partido, que já pinta o `PartyBackdrop` hoje.
    - **Verificação:**
      - captura no simulador, arrastando a inclinação pelo catálogo do kit;

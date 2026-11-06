@@ -43,6 +43,9 @@ Primeira versão, a 1.0.0.
 - Links do site abrem o app no conteúdo, pelos links universais, assim que a nova AASA for publicada.
 - Convite dispensável na aba Região para compartilhar quem você acompanha, com o novo cartão "Quem eu sigo".
 
+- Plenário no detalhe da votação: um ponto por cadeira (513 na Câmara, 81 no Senado), com sim à esquerda, não à direita, quem não votou no meio e a linha de quórum da PEC. A contagem anima uma vez e fica parada com Reduzir movimento ([FSC-023](spdd/prompt/FSC-023-202611052151-[Feat]-plenary-and-holographic-card.md)).
+- O cartão do político virou uma carta colecionável, igual para todos: moldura metalizada, o retrato numa janela holográfica com brilhos e a carta girando com a inclinação do iPhone.
+
 ### Changed
 
 - O Feed virou uma lista contínua, com divisórias entre os itens no lugar dos cartões. O destaque e a apuração no topo continuam como cartões.

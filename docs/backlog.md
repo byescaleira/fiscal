@@ -29,8 +29,13 @@ O que falta, por prioridade. Itens concluídos saem daqui; o motivo das decisõe
 
 - **[P2] Arquivos auxiliares do banco do aparelho.** A exclusão do backup marca `-wal` e `-shm` só se já existirem na abertura, e o `groupContainer` do `Device.store` não foi conferido. Vale conferir com o app rodando, porque o apoio mora nesse banco.
 
+- **[P2] Validar a carta colecionável no iPhone.** A variante "Carta" foi escolhida sem teste no aparelho ("Não consigo validar agora, vamos seguindo", 06/11/2026). Faltam a inclinação, o giro com os botões e a medição de quadros ao abrir a página; um ajuste muda só os tokens do kit ([FSC-023](../spdd/prompt/FSC-023-202611052151-[Feat]-plenary-and-holographic-card.md)).
+- **[P2] Custo dos efeitos medido.** Instruments (SwiftUI e Metal System Trace) e o Power Profiler num iPhone antigo, com o plenário e a carta, antes de levar shader para outra tela ([ADR 0026](adr/0026-shader-effects-never-carry-data.md)).
+
 ## Depois da 1.0 ou sem data
 
+- **[P2] Onda no curtir.** O `byescaleira-kit` 0.10.0 já tem `View.ripple(origin:trigger:)`; ela entra com a mudança de curtir, só em conteúdo SwiftUI ([FSC-023](../spdd/prompt/FSC-023-202611052151-[Feat]-plenary-and-holographic-card.md)).
+- **[P2] Linha de quórum da PLP e da maioria simples.** Lei complementar pede maioria absoluta (art. 69 da Constituição: 257 na Câmara, 41 no Senado), mas a mesma proposição também tem votações de requerimento e de destaque, em que a regra é outra. A linha só entra quando o dado disser o tipo de cada votação.
 - **[P2] Mac: grade do painel.** Dinheiro em `CardGrid` com cartões de tamanhos diferentes (herói em duas colunas, métricas pequenas); a lista de origem, as tabelas, o `GroupBox` e o menu Ir entraram na `FSC-008`.
 - **[P2] Capturas do iPhone Duo.** Aberto, meio aberto em pé e deitado e AX no simulador, com a postura trocada à mão no Device Hub (puladas na `FSC-008` a pedido do usuário; a lógica está coberta pelo `FoldNavigationTests`).
 - **[P3] Workspace: `asc.py` mais estrito.** Aceitar só URLs da API da Apple no `call` e no `links.next`, e trocar os `assert` do DER por saída com erro (no template do workspace, revisão de segurança da `FSC-008`).
