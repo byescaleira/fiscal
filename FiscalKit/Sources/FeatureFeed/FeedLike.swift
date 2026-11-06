@@ -1,3 +1,4 @@
+import ByescaleiraEffects
 import FeatureCore
 import FiscalDesignSystem
 import FiscalDomain
@@ -9,6 +10,7 @@ struct FeedLikeButton: View {
     @State private var likes = 0
     let id: String
     var ink: Color?
+    var party: String?
     let make: () -> LikedItem
 
     var body: some View {
@@ -32,8 +34,14 @@ struct FeedLikeButton: View {
                     rest: ink.map { AnyShapeStyle($0.opacity(.opacityStrong)) }
                         ?? AnyShapeStyle(.secondary))
             )
+            .likeBurst(trigger: likes, colors: confetti)
             .sensoryFeedback(.impact(weight: .light), trigger: likes)
         }
+    }
+
+    private var confetti: [Color] {
+        let palette = party.flatMap { $0.isEmpty ? nil : PartyPalette.of(party: $0) } ?? .hearts
+        return palette.confetti(lightened: ink == nil ? 0 : .opacitySoft)
     }
 }
 

@@ -35,4 +35,6 @@
 - o coração no rodapé abria uma faixa vazia em cada card ("adicionou uma faixa branca enorme em cada card"): foi para o cabeçalho, ao lado da data ([captura](row-heart-header.png));
 - curtir fazia a rolagem pular e voltar de um item deixava o Feed em outra posição: a curtida grava sem avisar a sessão (`LikeStoreTests.likingDoesNotTellTheSessionToReload`), e o Feed só troca a lista quando ela muda;
 - a onda não agradou ("eu acho que a animação com o coração estava mais legal"): saíram a faixa e a onda, fica a animação do coração. As evidências da onda acima ficam como histórico.
+- o usuário pediu o coração explodindo em confete de corações, nas cores do partido do card ou em vermelho: [sequência no simulador](like-burst-sequence.png), com corações azuis de um deputado do Republicanos; no iPhone, "ficou muito bom";
+- o pulo continuava ao curtir lá embaixo e ao navegar: a recarga voltava à primeira página. Agora ela mantém páginas e anos (`FeedModelTests.aRefreshKeepsWhatWasAlreadyShown`); no iPhone, "deu certo".
 

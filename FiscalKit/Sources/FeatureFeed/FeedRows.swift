@@ -189,7 +189,7 @@ private struct FeedCardHeader: View {
     }
 
     private var heart: some View {
-        FeedLikeButton(id: item.id) {
+        FeedLikeButton(id: item.id, party: person?.party) {
             LikedItem(item: item, likedAt: .now)
         }
     }

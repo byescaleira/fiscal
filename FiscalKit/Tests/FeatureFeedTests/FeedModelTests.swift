@@ -137,6 +137,20 @@ struct FeedModelTests {
         #expect(model.visible.count == FeedModel.pageSize)
     }
 
+    @Test func aRefreshKeepsWhatWasAlreadyShown() async throws {
+        let model = try await makeModel(following: ["tabata-amaral", "nikolas-ferreira"])
+        await model.load()
+        var turns = 0
+        while model.visible.count <= FeedModel.pageSize * 3, !model.isAtEnd, turns < 60 {
+            await model.loadMore()
+            turns += 1
+        }
+        let shown = model.visible.map(\.id)
+        try #require(shown.count > FeedModel.pageSize)
+        await model.load()
+        #expect(Array(model.visible.map(\.id).prefix(shown.count)) == shown)
+    }
+
     @Test func whatIsOnScreenNeverMovesWhenMoreLoads() async throws {
         let model = try await makeModel(following: ["tabata-amaral", "nikolas-ferreira"])
         await model.load()

@@ -15,6 +15,16 @@ public struct PartyPalette: Sendable, Equatable {
             colors: [primary, secondary], startPoint: .topLeading, endPoint: .bottomTrailing)
     }
 
+    public static let hearts = make(0xD7263D, 0xF25C78)
+
+    public func confetti(lightened amount: Double) -> [Color] {
+        [
+            primary.mix(with: .white, by: amount), secondary.mix(with: .white, by: amount),
+            primary.mix(with: .white, by: amount + .opacityTint),
+            secondary.mix(with: .white, by: amount + .opacityTint),
+        ]
+    }
+
     public static func of(party: String, fallback index: Int = 0) -> PartyPalette {
         let key = party.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: nil)
             .replacingOccurrences(of: " ", with: "")

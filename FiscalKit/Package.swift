@@ -13,7 +13,7 @@ let package = Package(
             targets: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureSettings", "AppShell"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/byescaleira/byescaleira-kit.git", from: "0.11.0"),
+        .package(url: "https://github.com/byescaleira/byescaleira-kit.git", from: "0.12.0"),
         .package(url: "https://github.com/airbnb/lottie-spm.git", from: "4.5.0"),
     ],
     targets: [
@@ -52,7 +52,10 @@ let package = Package(
             dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
         .target(
             name: "FeatureFeed",
-            dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
+            dependencies: [
+                "FiscalDomain", "FiscalDesignSystem", "FeatureCore",
+                .product(name: "ByescaleiraEffects", package: "byescaleira-kit"),
+            ]),
         .target(
             name: "FeatureRegion",
             dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),

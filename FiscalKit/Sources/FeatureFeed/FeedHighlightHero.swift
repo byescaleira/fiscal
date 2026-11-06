@@ -102,7 +102,9 @@ struct FeedHighlightHero: View {
     }
 
     private var likeButton: some View {
-        FeedLikeButton(id: LikedItem.highlightID(highlight.id), ink: .white) {
+        FeedLikeButton(
+            id: LikedItem.highlightID(highlight.id), ink: .white, party: highlight.person?.party
+        ) {
             LikedItem(highlight: highlight, likedAt: .now)
         }
     }
