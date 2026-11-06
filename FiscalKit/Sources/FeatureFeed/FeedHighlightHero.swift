@@ -10,6 +10,7 @@ struct FeedHighlightHero: View {
     @ReducesMotion private var reduceMotion
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var appeared = false
+    @State private var like = FeedLikeState()
     let highlight: Highlight
 
     var body: some View {
@@ -36,6 +37,7 @@ struct FeedHighlightHero: View {
         .padding(.spaceInset)
         .foregroundStyle(.white)
         .frame(maxWidth: .infinity, alignment: .leading)
+        .feedLikeWash(like, ink: .white)
         .background { backdrop }
         .clipShape(.rect(cornerRadius: .radiusGroup))
         .contextMenu {
@@ -101,6 +103,12 @@ struct FeedHighlightHero: View {
         }
     }
 
+    private var likeButton: some View {
+        FeedLikeButton(state: $like, id: LikedItem.highlightID(highlight.id), ink: .white) {
+            LikedItem(highlight: highlight, likedAt: .now)
+        }
+    }
+
     private var footer: some View {
         ViewThatFits(in: .horizontal) {
             HStack(alignment: .center, spacing: .spaceS) {
@@ -108,11 +116,16 @@ struct FeedHighlightHero: View {
                 Spacer(minLength: .spaceS)
                 WeightMethodButton(method: feed.highlightMethod)
                     .tint(.white)
+                likeButton
             }
             VStack(alignment: .leading, spacing: .spaceS) {
                 FeedHighlightRelevance(weight: highlight.weight, filled: appeared)
-                WeightMethodButton(method: feed.highlightMethod)
-                    .tint(.white)
+                HStack(spacing: .spaceS) {
+                    WeightMethodButton(method: feed.highlightMethod)
+                        .tint(.white)
+                    Spacer(minLength: .spaceS)
+                    likeButton
+                }
             }
         }
     }

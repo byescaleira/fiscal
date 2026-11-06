@@ -45,6 +45,7 @@ Primeira versão, a 1.0.0.
 
 - Plenário no detalhe da votação: um ponto por cadeira (513 na Câmara, 81 no Senado), com sim à esquerda, não à direita, quem não votou no meio e a linha de quórum da PEC. A contagem anima uma vez e fica parada com Reduzir movimento ([FSC-023](spdd/prompt/FSC-023-202611052151-[Feat]-plenary-and-holographic-card.md)).
 - O cartão do político virou uma carta colecionável, igual para todos: moldura metalizada, o retrato numa janela holográfica com brilhos e a carta girando com a inclinação do iPhone.
+- Curtir no Feed: um coração em cada item e no destaque do topo, com uma onda de cor saindo do coração e um toque háptico. As curtidas são privadas, sem contagem, ficam só no aparelho, fora do iCloud e do backup, e aparecem em "Curtidas", no menu do coração da barra do Feed ([FSC-024](spdd/prompt/FSC-024-202611061418-[Feat]-feed-like-with-ripple.md)).
 
 ### Changed
 

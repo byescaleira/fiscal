@@ -4204,6 +4204,16 @@
         }
       }
     },
+    "Delete Liked Items" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar curtidas"
+          }
+        }
+      }
+    },
     "Delete My Choice" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4992,6 +5002,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Todo aparelho conectado à sua Conta Apple mostra os mesmos dados."
+          }
+        }
+      }
+    },
+    "Every heart in the Feed goes back to empty. This can't be undone." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos os corações do Feed voltam a ficar vazios. Não dá para desfazer."
           }
         }
       }
@@ -7464,12 +7484,32 @@
         }
       }
     },
+    "Like" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Curtir"
+          }
+        }
+      }
+    },
     "Like the party" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Igual ao partido"
+          }
+        }
+      }
+    },
+    "Liked Items" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Curtidas"
           }
         }
       }
@@ -8060,6 +8100,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Meu apoio"
+          }
+        }
+      }
+    },
+    "My Support and Liked Items" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meu apoio e curtidas"
           }
         }
       }
@@ -8873,6 +8923,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Não publicado para estes cargos: %@"
+          }
+        }
+      }
+    },
+    "Nothing Liked" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nada curtido"
           }
         }
       }
@@ -13557,6 +13617,16 @@
         }
       }
     },
+    "Tap the heart on a Feed item to keep it here." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque no coração de um item do Feed para guardar aqui."
+          }
+        }
+      }
+    },
     "Taxes and public spending" : {
       "localizations" : {
         "pt-BR" : {
@@ -14807,6 +14877,16 @@
         }
       }
     },
+    "This item left the Feed" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este item saiu do Feed"
+          }
+        }
+      }
+    },
     "This race isn't in the latest TSE file." : {
       "localizations" : {
         "pt-BR" : {
@@ -15268,6 +15348,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Deixou de seguir %@"
+          }
+        }
+      }
+    },
+    "Unlike" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descurtir"
           }
         }
       }
@@ -17149,6 +17239,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Suas investigações sincronizam pela sua própria conta do iCloud. Quem você apoia nunca sai deste aparelho."
+          }
+        }
+      }
+    },
+    "Your liked items stay only on this device, outside iCloud and backups." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suas curtidas ficam só neste aparelho, fora do iCloud e do backup."
           }
         }
       }
