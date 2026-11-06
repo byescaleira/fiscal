@@ -75,7 +75,7 @@
 
         func pulseStage() {
             let now = PortraitClock.now
-            stageMixers.forEach { $0.apply(.tap, at: now) }
+            for mixer in stageMixers { mixer.apply(.tap, at: now) }
         }
 
         func follow(roll: Double) {
@@ -170,7 +170,8 @@
                                         Text(
                                             verbatim:
                                                 "Ilustração de \(model.person.name), motor \(engine.rawValue)"
-                                        ))
+                                        )
+                                    )
                                     .accessibilityAddTraits(.isImage)
                                 Text(verbatim: engine.rawValue)
                                     .font(.caption)

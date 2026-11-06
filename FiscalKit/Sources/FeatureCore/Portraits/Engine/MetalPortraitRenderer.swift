@@ -204,10 +204,13 @@
         private func stillTarget(_ side: Int) -> StillTarget? {
             if let known = stillTargets[side] { return known }
             guard
-                let sampled = texture(side, sampleCount: Self.sampleCount, format: Self.colorFormat),
+                let sampled = texture(
+                    side, sampleCount: Self.sampleCount, format: Self.colorFormat),
                 let resolved = texture(side, sampleCount: 1, format: Self.colorFormat),
-                let stencil = texture(side, sampleCount: Self.sampleCount, format: Self.stencilFormat),
-                let readback = device.makeBuffer(length: side * side * 4, options: .storageModeShared)
+                let stencil = texture(
+                    side, sampleCount: Self.sampleCount, format: Self.stencilFormat),
+                let readback = device.makeBuffer(
+                    length: side * side * 4, options: .storageModeShared)
             else { return nil }
             let target = StillTarget(
                 sampled: sampled, resolved: resolved, stencil: stencil, readback: readback)
@@ -265,7 +268,8 @@
                     isStroke = false
                     for contour in item.contours where contour.range.count >= 3 {
                         let anchor = frame.points[contour.range.lowerBound]
-                        for index in (contour.range.lowerBound + 1)..<(contour.range.upperBound - 1) {
+                        for index in (contour.range.lowerBound + 1)..<(contour.range.upperBound - 1)
+                        {
                             add(anchor)
                             add(frame.points[index])
                             add(frame.points[index + 1])

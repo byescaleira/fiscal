@@ -295,15 +295,16 @@
             let segments = closed ? count : count - 1
             return (0..<segments).map { segment in
                 let next = (segment + 1) % count
-                let flatness = shapes.map { shape -> Double in
-                    let start = shape.vertices[segment]
-                    let end = shape.vertices[next]
-                    let control1 = zip(start, shape.outgoing[segment]).map(+)
-                    let control2 = zip(end, shape.incoming[next]).map(+)
-                    let first = zip(zip(start, control1), control2).map { $0.0 - 2 * $0.1 + $1 }
-                    let second = zip(zip(control1, control2), end).map { $0.0 - 2 * $0.1 + $1 }
-                    return max(hypot(first[0], first[1]), hypot(second[0], second[1]))
-                }.max() ?? 0
+                let flatness =
+                    shapes.map { shape -> Double in
+                        let start = shape.vertices[segment]
+                        let end = shape.vertices[next]
+                        let control1 = zip(start, shape.outgoing[segment]).map(+)
+                        let control2 = zip(end, shape.incoming[next]).map(+)
+                        let first = zip(zip(start, control1), control2).map { $0.0 - 2 * $0.1 + $1 }
+                        let second = zip(zip(control1, control2), end).map { $0.0 - 2 * $0.1 + $1 }
+                        return max(hypot(first[0], first[1]), hypot(second[0], second[1]))
+                    }.max() ?? 0
                 guard flatness > 0 else { return 1 }
                 return max(1, Int((0.75 * flatness / tolerance).squareRoot().rounded(.up)))
             }

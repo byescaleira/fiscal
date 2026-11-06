@@ -37,7 +37,8 @@ private struct DeveloperPage: View {
                         Label {
                             Text(verbatim: "Bonequinhos em Metal")
                         } icon: {
-                            Image(systemName: "person.crop.circle").foregroundStyle(Color.retroDenim)
+                            Image(systemName: "person.crop.circle").foregroundStyle(
+                                Color.retroDenim)
                         }
                     }
                 }

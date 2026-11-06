@@ -123,7 +123,9 @@
                 play(Self.reactions[index], loop: nil, at: time, blend: Self.switchBlend)
             case .holdBegan:
                 isHolding = true
-                play(Self.think, loop: scene.markers[Self.thinkLoop], at: time, blend: Self.switchBlend)
+                play(
+                    Self.think, loop: scene.markers[Self.thinkLoop], at: time,
+                    blend: Self.switchBlend)
             case .holdEnded:
                 guard isHolding else { return }
                 isHolding = false
@@ -197,7 +199,8 @@
             guard let loop = clip.loop, loop.duration > 0, reached >= loop.start else {
                 return min(reached, clip.marker.end)
             }
-            return loop.start + (reached - loop.start).truncatingRemainder(dividingBy: loop.duration)
+            return loop.start
+                + (reached - loop.start).truncatingRemainder(dividingBy: loop.duration)
         }
     }
 #endif

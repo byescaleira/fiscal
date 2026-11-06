@@ -114,7 +114,8 @@
                 [CGPoint(x: 0, y: 0), CGPoint(x: 10, y: 0), CGPoint(x: 10, y: 10)], closed: false,
                 width: 2)
             #expect(corner.count == 12 + 3 * disc)
-            #expect(PortraitStroke.triangles([CGPoint(x: 1, y: 1)], closed: false, width: 0).isEmpty)
+            #expect(
+                PortraitStroke.triangles([CGPoint(x: 1, y: 1)], closed: false, width: 0).isEmpty)
         }
 
         @Test func tapReactsAndReturnsToIdleWithoutAJump() throws {
@@ -129,7 +130,8 @@
             #expect(mixer.currentMarker == "smile")
             let middle = mixer.sample(at: 11 + PortraitMixer.switchBlend / 2)
             let smile = try #require(scene.markers["smile"])
-            let pureSmile = scene.sample(at: smile.start + scene.frameRate * PortraitMixer.switchBlend / 2)
+            let pureSmile = scene.sample(
+                at: smile.start + scene.frameRate * PortraitMixer.switchBlend / 2)
             #expect(middle != pureSmile)
             #expect(middle != scene.sample(at: 0))
             #expect(mixer.isActing(at: 11.1))
@@ -170,7 +172,9 @@
             #expect(looking.eyeX == limits.eyeX)
             #expect(looking.eyeY == -limits.eyeY)
             mixer.apply(.lookEnded, at: 1)
-            #expect(abs(mixer.offsets(at: 1 + PortraitMixer.lookReturn / 2).eyeX - limits.eyeX / 2) < 1e-9)
+            #expect(
+                abs(mixer.offsets(at: 1 + PortraitMixer.lookReturn / 2).eyeX - limits.eyeX / 2)
+                    < 1e-9)
             #expect(abs(mixer.offsets(at: 1 + PortraitMixer.lookReturn).eyeX) < 1e-9)
             mixer.apply(.tilt(90), at: 2)
             #expect(mixer.offsets(at: 2).roll == limits.roll)
@@ -210,8 +214,12 @@
                             "\(slug) \(pose?.rawValue ?? "rest")"
                         )
                     }
-                    #expect(difference.mean <= Self.parityMean, "\(slug) \(pose?.rawValue ?? "rest") mean \(difference.mean)")
-                    #expect(difference.tail <= Self.parityTail, "\(slug) \(pose?.rawValue ?? "rest") tail \(difference.tail)")
+                    #expect(
+                        difference.mean <= Self.parityMean,
+                        "\(slug) \(pose?.rawValue ?? "rest") mean \(difference.mean)")
+                    #expect(
+                        difference.tail <= Self.parityTail,
+                        "\(slug) \(pose?.rawValue ?? "rest") tail \(difference.tail)")
                 }
             }
             print("Portrait parity worst mean \(worst.mean) tail \(worst.tail) at \(worst.case)")
@@ -299,7 +307,9 @@
             for y in 0..<height {
                 for x in 0..<width where edge[y * width + x] {
                     for ny in max(0, y - 1)...min(height - 1, y + 1) {
-                        for nx in max(0, x - 1)...min(width - 1, x + 1) { ring[ny * width + nx] = true }
+                        for nx in max(0, x - 1)...min(width - 1, x + 1) {
+                            ring[ny * width + nx] = true
+                        }
                     }
                 }
             }

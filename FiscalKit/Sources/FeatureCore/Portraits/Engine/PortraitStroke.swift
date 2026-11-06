@@ -42,7 +42,8 @@
             var last = CGPoint(x: center.x + radius, y: center.y)
             for step in 1...steps {
                 let angle = 2 * Double.pi * Double(step) / Double(steps)
-                let next = CGPoint(x: center.x + radius * cos(angle), y: center.y + radius * sin(angle))
+                let next = CGPoint(
+                    x: center.x + radius * cos(angle), y: center.y + radius * sin(angle))
                 output += [center, last, next]
                 last = next
             }

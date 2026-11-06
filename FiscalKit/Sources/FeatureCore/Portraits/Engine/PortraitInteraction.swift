@@ -24,7 +24,11 @@
         func body(content: Content) -> some View {
             content
                 .contentShape(.circle)
-                .onGeometryChange(for: CGSize.self) { $0.size } action: { size = $0 }
+                .onGeometryChange(for: CGSize.self) {
+                    $0.size
+                } action: {
+                    size = $0
+                }
                 .gesture(touch, isEnabled: isEnabled)
                 .sensoryFeedback(.impact(weight: .light), trigger: taps)
                 .accessibilityAction(named: Text(verbatim: "Reagir")) { react() }

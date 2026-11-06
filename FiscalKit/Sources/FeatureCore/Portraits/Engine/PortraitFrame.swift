@@ -200,7 +200,10 @@
             let halfHeight = size.height / 2
             let corner = min(max(radius, 0), halfWidth, halfHeight)
             let corners = [
-                (CGPoint(x: center.x + halfWidth - corner, y: center.y - halfHeight + corner), -0.5),
+                (
+                    CGPoint(x: center.x + halfWidth - corner, y: center.y - halfHeight + corner),
+                    -0.5
+                ),
                 (CGPoint(x: center.x + halfWidth - corner, y: center.y + halfHeight - corner), 0.0),
                 (CGPoint(x: center.x - halfWidth + corner, y: center.y + halfHeight - corner), 0.5),
                 (CGPoint(x: center.x - halfWidth + corner, y: center.y - halfHeight + corner), 1.0),
