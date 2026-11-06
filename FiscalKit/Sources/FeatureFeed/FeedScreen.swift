@@ -1,3 +1,4 @@
+import ByescaleiraEffects
 import FeatureCore
 import FiscalDesignSystem
 import FiscalDomain
@@ -44,6 +45,7 @@ public struct FeedScreen<RaceHero: View>: View {
         .emphasisTitle("Feed")
         .toolbar { FeedToolbar() }
         .refreshable { await feed.load() }
+        .task { try? await EffectsWarmUp.compile() }
         .task(id: session.generation) {
             await feed.load()
             await feed.watchRaces()
@@ -68,8 +70,15 @@ private struct FeedToolbar: ToolbarContent {
 
     var body: some ToolbarContent {
         ToolbarItem(placement: .primaryAction) {
-            Button("My Support", systemImage: "heart") { open(.support, in: section) }
-                .tint(Color.primary)
+            Menu {
+                Button("My Support", systemImage: "heart") { open(.support, in: section) }
+                Button("Liked Items", systemImage: "heart.text.square") {
+                    open(.liked, in: section)
+                }
+            } label: {
+                Label("My Support and Liked Items", systemImage: "heart")
+            }
+            .tint(Color.primary)
         }
         FixedToolbarSpacer(placement: .primaryAction)
         ToolbarItem(placement: .primaryAction) {

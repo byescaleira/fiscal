@@ -40,6 +40,7 @@ A fase 8 corre em etapas:
 | 8.3.8 | `FSC-014`: nova página do político, com o bonequinho no cabeçalho, compartilhar um item específico e um destino principal por cartão ([canvas](../spdd/prompt/FSC-014-202611020300-[Feat]-politician-page-and-share-an-item.md)) | entregue ([PR #12](https://github.com/byescaleira/fiscal/pull/12)) |
 | 8.3.9 | `FSC-015`: a barra que aparece no topo ao rolar, nas telas em que algo precisa continuar visível | entregue ([PR #13](https://github.com/byescaleira/fiscal/pull/13)), canvas aprovado pelo usuário em 2026-11-02 |
 | 8.3.10 | `FSC-016`: bonequinho de quem assume em 2027 e o fim do fundo preto no modo claro ([canvas](../spdd/prompt/FSC-016-202611021923-[Feat]-light-cards-and-portraits.md)) | entregue ([PR #14](https://github.com/byescaleira/fiscal/pull/14)), canvas aprovado pelo usuário em 2026-11-02 |
+| 8.3.11 | `FSC-024`: curtir no Feed, privado e só no aparelho, com a onda do kit e a lista "Curtidas" ([canvas](../spdd/prompt/FSC-024-202611061418-[Feat]-feed-like-with-ripple.md), [ADR 0027](adr/0027-private-likes-on-device.md)) | em andamento, branch `feature/like` |
 | 8.4 | Loja: roteiro de [validation.md](validation.md) no iPhone físico, rótulo de privacidade ([ADR 0017](adr/0017-app-store-privacy-label.md)), capturas, TestFlight e envio para a revisão | — |
 
 - **Lançamento só iOS (iPhone e iPad).** Mac e visionOS compilam no mesmo projeto, mas a receita própria do Mac e o envio dessas plataformas ficam no [backlog](backlog.md).

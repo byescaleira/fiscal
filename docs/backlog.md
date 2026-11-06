@@ -35,7 +35,7 @@ O que falta, por prioridade. Itens concluídos saem daqui; o motivo das decisõe
 
 ## Depois da 1.0 ou sem data
 
-- **[P2] Onda no curtir.** O `byescaleira-kit` 0.10.0 já tem `View.ripple(origin:trigger:)`; ela entra com a mudança de curtir, só em conteúdo SwiftUI ([FSC-023](../spdd/prompt/FSC-023-202611052151-[Feat]-plenary-and-holographic-card.md)).
+- **[P3] Curtir a apuração.** O cartão da apuração vem pronto do `FeatureLiveResults`, sem canto livre para o coração e sem lugar para a faixa entre o fundo e o conteúdo; ficou fora da [FSC-024](../spdd/prompt/FSC-024-202611061418-[Feat]-feed-like-with-ripple.md) (Approach 13).
 - **[P2] Linha de quórum da PLP e da maioria simples.** Lei complementar pede maioria absoluta (art. 69 da Constituição: 257 na Câmara, 41 no Senado), mas a mesma proposição também tem votações de requerimento e de destaque, em que a regra é outra. A linha só entra quando o dado disser o tipo de cada votação.
 - **[P2] Mac: grade do painel.** Dinheiro em `CardGrid` com cartões de tamanhos diferentes (herói em duas colunas, métricas pequenas); a lista de origem, as tabelas, o `GroupBox` e o menu Ir entraram na `FSC-008`.
 - **[P2] Capturas do iPhone Duo.** Aberto, meio aberto em pé e deitado e AX no simulador, com a postura trocada à mão no Device Hub (puladas na `FSC-008` a pedido do usuário; a lógica está coberta pelo `FoldNavigationTests`).

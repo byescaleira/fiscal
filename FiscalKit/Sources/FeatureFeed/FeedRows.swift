@@ -5,6 +5,7 @@ import SwiftUI
 
 struct FeedCard: View {
     @Environment(FeedModel.self) private var feed
+    @State private var like = FeedLikeState()
     let item: FeedItem
 
     var body: some View {
@@ -40,6 +41,7 @@ struct FeedCard: View {
         }
         .padding(.horizontal, .spaceS)
         .padding(.vertical, .spaceM)
+        .feedLikeWash(like)
         .overlay(alignment: .bottom) {
             Divider().offset(y: .spaceL / 2)
         }
@@ -70,10 +72,16 @@ struct FeedCard: View {
                     ForEach(item.ballots) { FeedBallotRow(ballot: $0) }
                 }
             }
-            if Route.destination(for: item) == nil, item.url != nil {
-                FeedSourceLink()
-                    .allowsHitTesting(false)
-                    .accessibilityHidden(true)
+            HStack(spacing: .spaceS) {
+                if Route.destination(for: item) == nil, item.url != nil {
+                    FeedSourceLink()
+                        .allowsHitTesting(false)
+                        .accessibilityHidden(true)
+                }
+                Spacer(minLength: .spaceS)
+                FeedLikeButton(state: $like, id: item.id) {
+                    LikedItem(item: item, likedAt: .now)
+                }
             }
         }
     }

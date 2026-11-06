@@ -36,3 +36,23 @@ struct SwiftDataFollowRepository: FollowRepository {
         try await store.unfollow(slug: slug)
     }
 }
+
+struct SwiftDataLikeRepository: LikeRepository {
+    let store: FiscalStore
+
+    func liked() async throws -> [LikedItem] {
+        try await store.liked()
+    }
+
+    func like(_ item: LikedItem) async throws {
+        try await store.like(item)
+    }
+
+    func unlike(id: String) async throws {
+        try await store.unlike(id: id)
+    }
+
+    func reset() async throws {
+        try await store.resetLikes()
+    }
+}

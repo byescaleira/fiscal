@@ -27,15 +27,7 @@ extension FeedModel {
     }
 
     public func symbol(_ item: FeedItem) -> String {
-        switch item.kind {
-        case .vote: "checkmark.square"
-        case .proposal: "doc.text"
-        case .speech: "text.bubble"
-        case .expenses: "brazilianrealsign"
-        case .check: "checkmark.shield"
-        case .event: "building.columns"
-        case .highlight: "star"
-        }
+        FeedLikedText.symbol(LikedItem.Kind(item.kind))
     }
 
     public func dayText(_ item: FeedItem) -> String {

@@ -52,7 +52,10 @@ let package = Package(
             dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
         .target(
             name: "FeatureFeed",
-            dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
+            dependencies: [
+                "FiscalDomain", "FiscalDesignSystem", "FeatureCore",
+                .product(name: "ByescaleiraEffects", package: "byescaleira-kit"),
+            ]),
         .target(
             name: "FeatureRegion",
             dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),

@@ -60,7 +60,7 @@ Os efeitos de shader seguem as seis regras do [ADR 0026](adr/0026-shader-effects
 - **Plenário:** `PlenaryChart`, no `FiscalDesignSystem`, desenha um ponto por cadeira em `Canvas` (513 na Câmara, 81 no Senado). A cor e a ordem vêm só do voto, e a linha de quórum aparece só onde a regra é conhecida (PEC). A contagem anima uma vez, em 2,2 s.
 - **Carta colecionável:** o cartão do topo da página do político ganha a moldura metalizada (`collectibleFrame`), o retrato numa janela com a folha `.sparkle` e o giro com a inclinação (`cardTurn`). O texto e os botões ficam no fundo do partido, sem efeito. A carta é igual para todo político.
 - **Degradação:** com Reduzir movimento ou o modo leve, a carta fica parada e o sensor não liga; com Aumentar contraste ou Reduzir transparência, a janela fica sem holográfico e a moldura vira prata liso. No Mac e no visionOS, a carta fica parada.
-- **Onda:** `View.ripple(origin:trigger:)` existe no kit e entra no app com o curtir. Não vale sobre view do UIKit, como o retrato em Lottie.
+- **Onda do curtir:** ao curtir, uma faixa na cor de destaque (branca no destaque do topo) aparece atrás da linha e some em 1,6 s, com a `View.ripple(origin:trigger:)` do kit saindo do coração. A onda roda só na faixa, nunca no texto, nos números ou no retrato, e não aparece com Reduzir movimento ou o modo leve; o toque háptico continua ([FSC-024](../spdd/prompt/FSC-024-202611061418-[Feat]-feed-like-with-ripple.md)).
 
 ## Barra ao rolar
 

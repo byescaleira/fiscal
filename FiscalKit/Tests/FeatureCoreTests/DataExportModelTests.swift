@@ -33,6 +33,28 @@ struct DataExportModelTests {
         #expect(try DataArchive.decoded(from: archive.encoded()) == archive)
     }
 
+    @Test func exportsTheLikedItems() async throws {
+        let repositories = try FiscalDatabase.open(inMemory: true).repositories
+        let liked = LikedItem(
+            id: "vote-senado-7107", kind: .vote, title: "PEC 221/2019",
+            day: CalendarDay(exportedAt), likedAt: exportedAt, voteID: "senado-7107")
+        try await #require(repositories.likes).like(liked)
+        let exportedAt = exportedAt
+        let export = DataExportModel(repositories: repositories, now: { exportedAt })
+        await export.prepare()
+        let archive = try #require(export.archive)
+        #expect(archive.liked == [liked])
+        #expect(try DataArchive.decoded(from: archive.encoded()) == archive)
+    }
+
+    @Test func anArchiveFromBeforeLikesStillReads() throws {
+        let json = #"{"exportedAt":"2026-11-01T12:00:00Z","following":[]}"#
+        let archive = try DataArchive.decoded(from: Data(json.utf8))
+        #expect(archive.liked == nil)
+        #expect(archive.following.isEmpty)
+        #expect(archive.support == nil)
+    }
+
     @Test func aFailedReadReportsTheError() async throws {
         let follows = try FiscalDatabase.open(inMemory: true).repositories.follows
         let export = DataExportModel(
