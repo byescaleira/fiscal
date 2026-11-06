@@ -21,6 +21,11 @@ import SwiftUI
                         detail: "Luz que segue o iPhone no cartão do político",
                         symbol: "sparkles", color: .retroDenim
                     ) { SheenPrototype() }
+                    MetalLabRow(
+                        title: "Carta colecionável",
+                        detail: "Moldura metalizada, brilhos e a carta girando com o iPhone",
+                        symbol: "rectangle.portrait.on.rectangle.portrait", color: .retroRust
+                    ) { CollectiblePrototype() }
                 } header: {
                     Text(verbatim: "Protótipos").sectionTitle()
                 } footer: {
@@ -86,7 +91,7 @@ public struct MetalLabLaunch: ViewModifier {
 }
 
 public enum MetalLabPrototype: String, Identifiable, Sendable {
-    case lab, like, paper, sheen
+    case lab, like, paper, sheen, collectible
 
     public var id: Self { self }
 
@@ -97,6 +102,7 @@ public enum MetalLabPrototype: String, Identifiable, Sendable {
             case .like: LikePrototype()
             case .paper: PaperPrototype()
             case .sheen: SheenPrototype()
+            case .collectible: CollectiblePrototype()
             }
         }
     #endif

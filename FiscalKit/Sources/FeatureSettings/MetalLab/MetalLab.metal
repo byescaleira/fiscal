@@ -86,3 +86,28 @@ static float labNoise(float2 value) {
     }
     return half4(min(color.rgb + light * color.a, half3(color.a)), color.a);
 }
+
+[[ stitchable ]] half4 labCollectible(
+    float2 position, half4 color, float2 size, float2 tilt,
+    float strength, float sparkle, float metal
+) {
+    float2 uv = position / size;
+    float diagonal = dot(uv - 0.5, normalize(float2(1.0, 0.7)));
+    float sweep = tilt.x * 0.6 + tilt.y * 0.4;
+    float cosmos = labNoise(position * 0.045) * 0.6 + labNoise(position * 0.12) * 0.4;
+    float lines = 0.5 + 0.5 * sin((position.x + position.y) * 1.6);
+    float texture = mix(cosmos, lines, 0.18);
+    float hue = diagonal * 1.8 + texture * 0.45 + tilt.x * 0.9 - tilt.y * 0.6;
+    float3 rainbow = 0.5 + 0.5 * cos(6.2831853 * (hue + float3(0.0, 0.33, 0.67)));
+    float shift = diagonal - sweep;
+    float sheen = 0.3 + 0.7 * exp(-shift * shift * 9.0);
+    float3 foil = rainbow * sheen * (0.55 + 0.45 * texture) * strength;
+    float2 cell = floor(position / 9.0);
+    float seed = labHash2(cell);
+    float2 spot = (cell + 0.2 + 0.6 * float2(labHash2(cell + 3.1), labHash2(cell + 7.7))) * 9.0;
+    float glint = pow(max(0.0, cos(6.2831853 * seed + tilt.x * 5.0 + tilt.y * 4.0)), 24.0);
+    float shape = 1.0 - smoothstep(0.4, 1.6, length(position - spot));
+    float3 sparkles = float3(glint * shape * sparkle * step(0.55, seed));
+    float3 base = float3(0.62, 0.63, 0.66) * (0.75 + 0.25 * sheen) * metal;
+    return half4(half3(min(base + foil + sparkles, float3(1.0))), 1.0h);
+}

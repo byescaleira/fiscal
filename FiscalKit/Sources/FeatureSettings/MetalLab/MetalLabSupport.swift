@@ -28,6 +28,17 @@
         static let rippleSpeed: Float = 1200
         static let rippleOffset = CGSize(width: 24, height: 24)
         static let cardAspect: CGFloat = 4.0 / 5.0
+        static let collectibleAspect: CGFloat = 63.0 / 88.0
+        static let collectibleFrame: CGFloat = 9
+        static let collectibleArt: CGFloat = 1.45
+        static let collectibleFoil: Float = 0.9
+        static let collectibleFrameFoil: Float = 0.55
+        static let collectibleSparkle: Float = 0.9
+        static let collectibleTurn = 12.0
+        static let collectiblePerspective: CGFloat = 0.45
+        static let collectibleGlare = 0.24
+        static let collectibleGlareTravel: CGFloat = 0.45
+        static let collectibleGlareRadius: CGFloat = 2.2
 
         static func compile() async {
             let none = Shader.Argument.float2(CGSize.zero)
@@ -36,6 +47,7 @@
             try? await library.labBurst(none, one, one, .color(.clear)).compile(as: .colorEffect)
             try? await library.labPaper(none, one, one, one, none).compile(as: .colorEffect)
             try? await library.labSheen(none, none, one, one).compile(as: .colorEffect)
+            try? await library.labCollectible(none, none, one, one, one).compile(as: .colorEffect)
         }
     }
 
