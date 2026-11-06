@@ -71,7 +71,7 @@ Depois, sobre a recomendação de uma exploração própria com pesquisa e prot�
 
 | Decisão | Porta | Escolha e motivo |
 | --- | --- | --- |
-| Quais protótipos viram mudança | pergunta | **Recomendado, nesta ordem:** (1) o plenário em Canvas no detalhe da votação, porque mostra as 513 pessoas e a linha do quórum, que hoje não aparece; (2) o papel nos cartazes de compartilhar, agora que a exportação leva o shader; (3) a onda do curtir, dentro da mudança de curtir e compartilhar. **Não recomendado:** o brilho na inclinação, que é decorativo, liga o sensor e esbarra na regra de que brilho só representa número real |
+| Quais protótipos viram mudança | pergunta | **Escolha do usuário (05/11/2026): plenário, onda do curtir e cartão do político holográfico.** Recomendação de antes, nesta ordem: (1) o plenário em Canvas no detalhe da votação, porque mostra as 513 pessoas e a linha do quórum, que hoje não aparece; (2) o papel nos cartazes de compartilhar, agora que a exportação leva o shader; (3) a onda do curtir, dentro da mudança de curtir e compartilhar. **Não recomendado:** o brilho na inclinação, que é decorativo, liga o sensor e esbarra na regra de que brilho só representa número real |
 | O efeito não muda o dado | veto | Cor, brilho e espessura só representam números reais; nenhum efeito muda a ordem, a cor ou o tamanho de um ponto, barra ou número |
 | Degradação única | veto | Reduzir movimento, `MotionBudget.isConstrained` e o estado térmico `serious` param o efeito pela regra que já existe, sem segunda regra; o VoiceOver lê os números |
 | Shader só enquanto anima | veto | `isEnabled` desligado fora da animação, e `compile()` antes do primeiro uso |
@@ -110,6 +110,18 @@ Depois, sobre a recomendação de uma exploração própria com pesquisa e prot�
 
 ## Escolha do usuário
 
-Aguardando o usuário ver os protótipos no iPhone (instalados em 05/11/2026) e escolher.
+Resposta do usuário em 05/11/2026, depois dos protótipos instalados no iPhone:
+
+> Plenário, Onda do curtir, Cartão do político pode ter o mesmo efeito que tem as cartas de Pokémon raras e holográficas, como se fosse um card colecionável também
+
+| Escolha | O que entra no canvas | Salvaguarda |
+| --- | --- | --- |
+| **Plenário** | Um ponto por parlamentar no detalhe da votação, em Canvas, com a linha do quórum que a regra da votação pede | Contagem igual ao dado oficial, testada; sem regra de quórum conhecida, sem linha |
+| **Onda do curtir** | Onda a partir do toque e partículas no coração, na mudança de curtir e compartilhar | Só durante a animação; nunca sobre retrato animado |
+| **Cartão do político holográfico** | O cartão do político como carta colecionável: faixa holográfica que segue a inclinação, como as cartas raras | **Igual para todo político, partido e lado:** nenhuma "raridade" por dado, cargo, resultado ou popularidade; o efeito fica numa camada por cima e nunca envolve o retrato animado; para com Reduzir movimento, Pouca Energia e aparelho quente, e o sensor só liga com a tela à vista |
+
+**Fica de fora:** o papel no cartaz (não escolhido), o mapa por shader (`FSC-021`), o fluxo do dinheiro em partículas e a abertura com shader.
+
+**Decisão do usuário sobre a regra do brilho:** o holográfico entra como acabamento de carta colecionável, não como sinal de valor. Por isso ele é o mesmo em todos os cartões; um brilho que variasse com o político viraria juízo e fica proibido.
 
 **Sigo para o canvas?**
