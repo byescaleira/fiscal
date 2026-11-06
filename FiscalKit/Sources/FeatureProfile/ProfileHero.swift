@@ -1,3 +1,4 @@
+import ByescaleiraEffects
 import FeatureCore
 import FiscalDesignSystem
 import FiscalDomain
@@ -58,10 +59,26 @@ private struct ProfileHeroCard: View {
         .foregroundStyle(.primary)
         .padding(.spaceXL)
         .frame(maxWidth: .infinity)
-        .background {
-            PartyBackdrop(party: person.party).clipShape(.rect(cornerRadius: .radiusGroup))
-        }
+        .background { ProfileHeroBackdrop(party: person.party) }
         .environment(\.colorScheme, .dark)
+    }
+}
+
+private struct ProfileHeroBackdrop: View {
+    let party: String
+    @State private var reader = TiltReader()
+    @State private var isOnScreen = true
+
+    var body: some View {
+        PartyBackdrop(party: party)
+            .overlay { HolographicFoil(tilt: reader.tilt) }
+            .clipShape(.rect(cornerRadius: .radiusGroup))
+            .background {
+                if isOnScreen {
+                    Color.clear.tiltReading(reader)
+                }
+            }
+            .onScrollVisibilityChange { isOnScreen = $0 }
     }
 }
 
