@@ -37,6 +37,9 @@ struct FiscalApp: App {
                 .groupedSurface(.plain)
                 .readsLiteMode()
                 .inAppBrowser()
+                #if DEBUG
+                    .modifier(PortraitLabLaunch())
+                #endif
         }
         #if os(iOS) || os(visionOS)
             .backgroundTask(.appRefresh(OfflineDataCenter.refreshIdentifier)) {

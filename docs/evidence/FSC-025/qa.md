@@ -10,15 +10,15 @@ Roteiro da definição de pronto do [canvas](../../../spdd/prompt/FSC-025-202611
 | Tocar: gesto neutro e volta ao `idle` sem salto | passou | [captura do aceno no Metal](lab-metal-wave.png); `tapReactsAndReturnsToIdleWithoutAJump` |
 | Segurar 0,5 s: `think` e `thinkLoop`, e volta em 0,3 s | passou nos testes | `holdThinksUntilReleased`; o gesto no simulador não foi capturado no meio |
 | Arrastar: olhos e rosto seguem o dedo, presos ao `lookAround`, e voltam em 0,4 s | passou nos testes | `lookAndTiltStayInsideWhatTheRigAlreadyDoes`, `lookMovesTheEyesAndTiltTurnsTheHead` |
-| Inclinar o iPhone | não executável aqui | O simulador não tem sensor de movimento; fica para o iPhone |
+| Inclinar o iPhone | não executado | O simulador não tem sensor; no iPhone a sessão foi só de medição |
 | Toque durante o `wave` mistura em 0,2 s | passou nos testes | `tapReactsAndReturnsToIdleWithoutAJump` |
-| Movimento reduzido: só imagem parada e o rodapé | não executado | Fica para o iPhone, junto da medição |
-| Botão "Medir" e a tabela | não executado | A medição vale só no iPhone (operação 16) |
+| Movimento reduzido: só imagem parada e o rodapé | não executado | Não conferido em aparelho nem simulador |
+| Botão "Medir" e a tabela | passou no iPhone | Duas rodadas no iPhone 17 Pro Max, com e sem otimização ([prova](proof.md)) |
 | Sem Metal: "Metal indisponível neste aparelho" | não executável aqui | Todo aparelho do alvo tem Metal; o caminho está no código |
-| Evidência e decisão em `proof.md` | pendente | Depende da medição no iPhone do usuário |
+| Evidência e decisão em `proof.md` | passou | [Prova](proof.md): parar este motor; o Power Profiler não gravou e o usuário dispensou nova gravação |
 
 ## Achados durante o QA
 
 - O `Canvas` congelava depois do primeiro quadro, porque o desenho não dependia do tique da `TimelineView`. O quadro passou a ser calculado fora do `Canvas`.
 - A imagem parada do Metal reservava um buffer sem devolver, e o semáforo derrubava o teste ao ser liberado. Agora o buffer é devolvido depois do desenho.
-- O banco do simulador vinha de outra branch, com esquema mais novo, e o app não abria. A reinstalação limpa resolveu; não é desta mudança.
+- O banco do simulador e o do iPhone vinham de outra branch, com esquema mais novo, e o app não abria. No simulador, a reinstalação limpa resolveu; no iPhone, sem apagar nada, o laboratório passou a abrir na raiz da janela, por cima da tela de erro.

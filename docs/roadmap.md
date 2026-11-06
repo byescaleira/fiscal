@@ -76,13 +76,13 @@ Pedido de 2026-11-06: desenhar os bonequinhos com Metal, de forma leve, e pôr a
 
 | Fase | Entrega | Estado |
 | --- | --- | --- |
-| 1 | Prova de viabilidade: Lottie, Canvas e Metal lado a lado no iPhone, com as ações e a medição ([canvas](../spdd/prompt/FSC-025-202611061422-[Feat]-portraits-metal-proof.md)) | em andamento |
+| 1 | Prova de viabilidade: Lottie, Canvas e Metal lado a lado no iPhone, com as ações e a medição ([canvas](../spdd/prompt/FSC-025-202611061422-[Feat]-portraits-metal-proof.md)) | feita: o Metal gastou quase três vezes a CPU do Lottie no iPhone, e a decisão foi parar este motor ([prova](evidence/FSC-025/proof.md)); o laboratório fica no Debug |
 | 2 | Exportação do rig em malha pelo `avatars.py` | substituída pela fase 8 |
-| 3 | Motor novo no app atrás do `PortraitArtwork`, com imagem parada e prateleira; Lottie como reserva | planejada |
+| 3 | Motor novo no app atrás do `PortraitArtwork`, com imagem parada e prateleira; Lottie como reserva | em espera: volta só com o motor da fase 8, com a malha na GPU |
 | 4 | Troca no iOS, iPadOS, macOS e visionOS e saída do rig Lottie do retrato, com ADR | planejada |
 | 5 | Ações da pessoa: olhar para o dedo, tocar para reagir, segurar para pensar e inclinar o iPhone | planejada |
 | 6 | Efeito no retrato (holográfico da carta por dentro), revendo o ADR 0026 | planejada |
-| 7 | Estilo novo: formatos, proporções e características de estilo inspirados no Memoji da Apple, ainda plano, com uma luz suave desenhada no motor; estilo próprio, sem copiar a Apple, iterado no iPhone | planejada (pedido de 2026-11-06) |
+| 7 | Próxima. Estilo novo, feito no `avatars.py` e no rig do Lottie: formatos, proporções e características de estilo inspirados no Memoji da Apple, ainda plano, com uma luz suave desenhada no motor; estilo próprio, sem copiar a Apple, iterado no iPhone | planejada (pedido de 2026-11-06) |
 | 8 | Traços mínimos e rig paramétrico: cada pessoa vira um registro compacto de índices e parâmetros (rosto, olhos, cabelo), as partes viram formas com parâmetros em vez de uma camada por combinação, e o Metal monta tudo de uma malha compartilhada com um bloco pequeno por bonequinho; substitui a fase 2 e vem depois da 7 | planejada (pedido de 2026-11-06) |
 
 ### Pedidos do usuário para depois (2026-10-25)

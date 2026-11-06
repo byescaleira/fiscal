@@ -37,6 +37,6 @@ No shell, ponha esses caminhos entre aspas: o zsh trata `[...]` como padrão de 
 | `FSC-015` | [Barra do topo, votações, região e ícones das abas](prompt/FSC-015-202611021500-[Feat]-sticky-bar-votes-region-tabs.md) | entregue | `feature/sticky-bar-and-screens` | [#13](https://github.com/byescaleira/fiscal/pull/13) |
 | `FSC-016` | [Cartões no modo claro e bonequinho de todos](prompt/FSC-016-202611021923-[Feat]-light-cards-and-portraits.md) | entregue | `feature/light-cards-and-portraits` | [#14](https://github.com/byescaleira/fiscal/pull/14) |
 | `FSC-022` | [Ícones do app com paisagens do Brasil vistas de cima](prompt/FSC-022-202611051909-[Feat]-icons-aerial-brazil-landscapes.md) | entregue | `feature/app-icon-landscapes` | [#17](https://github.com/byescaleira/fiscal/pull/17) |
-| `FSC-025` | [Bonequinhos em Metal, fase 1: prova de viabilidade](prompt/FSC-025-202611061422-[Feat]-portraits-metal-proof.md) | em andamento | `feature/metal-portraits` | — |
+| `FSC-025` | [Bonequinhos em Metal, fase 1: prova de viabilidade](prompt/FSC-025-202611061422-[Feat]-portraits-metal-proof.md) | entregue: prova concluída com a decisão de parar este motor | `feature/metal-portraits` | — |
 
 As capacidades que ainda vivem em guias de recurso (atualização obrigatória em [force-update.md](../docs/force-update.md), site e Fiscal na Web em [web.md](../docs/web.md), admin e flags em [admin.md](../docs/admin.md)) ganham um canvas `[Codify]` na primeira mudança da área.
