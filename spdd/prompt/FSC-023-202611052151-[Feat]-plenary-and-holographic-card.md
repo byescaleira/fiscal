@@ -22,12 +22,19 @@ O usuário pediu para explorar melhor o Metal (05/11/2026). Depois da [análise]
 7. **Sem plenário (caso de erro):**
    - **Dado:** uma votação simbólica, pendente, de outra casa, sem total, ou com mais votos que cadeiras.
    - **Então:** o placar fica exatamente como hoje (`TallyChart` ou `HeroNoScore`), sem pontos e sem erro.
-8. **Cartão do político holográfico.**
+8. **Cartão do político como carta colecionável.**
    - **Dado:** a página de qualquer político, no iPhone.
    - **Quando:** a pessoa inclina o aparelho.
-   - **Então:** uma faixa holográfica atravessa o fundo do cartão do topo e segue a inclinação. O nome, o cargo, o retrato e os botões ficam fora do efeito, com o mesmo contraste de hoje.
+   - **Então:** o cartão do topo vira uma carta, com três partes:
+     - uma moldura metalizada e holográfica em volta;
+     - o retrato numa janela de arte, com nuvens coloridas, listras finas e brilhos que acendem conforme o ângulo;
+     - a carta inteira girando até 12° com a inclinação.
+   - **Conteúdo sem efeito:** o nome, o cargo, o mandato, a situação, o partido e os botões ficam sobre o fundo do partido de hoje, com o mesmo contraste de hoje.
    - **Para todos:** o efeito é idêntico para todo político, partido, lado e cargo.
-9. **Holográfico parado.** Com Reduzir movimento ou o modo leve ativo, ou no Mac e no visionOS, a faixa fica parada na posição neutra e o sensor de movimento não liga.
+   - **Escolha:** a faixa sozinha (`KIT-014`) funcionou no iPhone, mas "não parece um card colecionável" (Rafael, 06/11/2026). Do protótipo "Carta colecionável", vale a variante recomendada, "Carta", porque ele respondeu "Não consigo validar agora, vamos seguindo". A validação no iPhone continua pendente e só pode mudar tokens.
+9. **Carta parada.**
+   - **Movimento:** com Reduzir movimento ou o modo leve ativo, ou no Mac e no visionOS, a moldura e a janela ficam na posição neutra, a carta não gira e o sensor de movimento não liga.
+   - **Contraste:** com Aumentar contraste ou Reduzir transparência, a janela fica sem holográfico e a moldura vira um prata liso.
 10. **Sensor só com a tela à vista.** Ao sair da página, ao ir para o fundo ou ao rolar o cartão para fora da tela, a leitura do movimento para em até 1 s.
 11. **Onda no kit.** O `byescaleira-kit` 0.10.0 publica a onda a partir do toque, testada no catálogo. O Fiscal não a usa nesta mudança, e a ligação fica no backlog para a mudança de curtir.
 12. **Sem laboratório na versão da loja.** A tela Desenvolvedor › Metal e o argumento `-FiscalMetalLab` saem do código ao fim desta mudança.
@@ -68,7 +75,20 @@ classDiagram
     class ProfileHeroCard {
         +person: Profile
     }
+    class ProfileHeroCollectible {
+        +content: View
+    }
     class HolographicFoil {
+        <<byescaleira-kit ByescaleiraEffects>>
+        +tilt: CGPoint
+        +style: Style
+    }
+    class CollectibleFrame {
+        <<byescaleira-kit ByescaleiraEffects>>
+        +tilt: CGPoint
+        +cornerRadius: CGFloat
+    }
+    class CardTurn {
         <<byescaleira-kit ByescaleiraEffects>>
         +tilt: CGPoint
     }
@@ -86,8 +106,11 @@ classDiagram
     VoteDetailModel --> PlenarySeats
     PlenarySeats --> HemicycleLayout
     PlenaryChart --> HemicycleLayout
+    ProfileHeroCard --> ProfileHeroCollectible
     ProfileHeroCard --> HolographicFoil
-    ProfileHeroCard --> TiltReader
+    ProfileHeroCollectible --> TiltReader
+    ProfileHeroCollectible --> CollectibleFrame
+    ProfileHeroCollectible --> CardTurn
 ```
 
 - **`PlenarySeats`** é novo, no `FiscalDomain`: um valor só com números, sem lógica de tela.
@@ -113,7 +136,7 @@ classDiagram
      - `EffectsWarmUp.compile()`.
    - **Degradação:** a mesma regra do ADR, lida de `accessibilityReduceMotion` e `\.liteMode`.
    - **Plataformas:** compila nas cinco do kit; no watchOS, as views devolvem o conteúdo sem efeito.
-7. **Holográfico no fundo do cartão.** O `ProfileHeroCard` ganha o `HolographicFoil` sobre o `PartyBackdrop`, dentro do mesmo recorte do fundo. Assim, o texto, o retrato animado (Lottie) e os botões de vidro ficam fora do efeito, que é o achado do 🚫 nos protótipos.
+7. **Holográfico no fundo do cartão** (etapa C, substituído pelo item 12 na etapa C2). O `ProfileHeroCard` ganha o `HolographicFoil` sobre o `PartyBackdrop`, dentro do mesmo recorte do fundo. Assim, o texto, o retrato animado (Lottie) e os botões de vidro ficam fora do efeito, que é o achado do 🚫 nos protótipos.
    - **Parâmetros fixos:** força 0,42, faixa a 33°, espectro de 0,85. Nenhum vem do perfil.
    - **Sensor:** o `TiltReader` liga em `onAppear` com a cena ativa e desliga em `onDisappear`, na cena inativa e com o gate fechado. A cada leitura, só a camada do fundo é redesenhada, porque a inclinação mora numa subview própria.
 8. **Compilação antes do uso:** `EffectsWarmUp.compile()` roda uma vez no `task` da página do político, fora do caminho do toque.
@@ -127,7 +150,19 @@ classDiagram
     - (A) o plenário;
     - (B) o kit `KIT-012` até a tag, com as paradas do processo do kit;
     - (C) o cartão holográfico;
+    - (C2) a carta colecionável: a `KIT-015` no kit até a tag `v0.11.0` e o cartão do topo como carta;
     - (D) remoção do laboratório, documentos e fechamento.
+12. **Carta colecionável** (prompt-update de 06/11/2026).
+    - **Peças do kit:** a `KIT-015` traz `HolographicFoil(tilt:style: .sparkle)`, `collectibleFrame(tilt:cornerRadius:)` e `cardTurn(_:)`, com a mesma degradação da `KIT-014`.
+    - **Montagem no Fiscal:** o kit dá as peças, e a carta é montada no `ProfileHero`:
+      - o fundo do partido fica atrás do conteúdo, no raio `.radiusGroup` menos a moldura;
+      - a moldura e o giro ficam em volta do cartão;
+      - o retrato vai para uma janela de arte (`PartyBackdrop` com a folha `.sparkle` por cima, recortada em `.radiusM` e com um contorno branco suave).
+    - **Inclinação:** um `ProfileHeroCollectible` é dono do `TiltReader`. Ele aplica a moldura e o giro, põe o leitor no ambiente para a folha da janela e mantém o `tiltReading` com o `onScrollVisibilityChange` da etapa C.
+    - **Fora do protótipo:**
+      - o reflexo por cima, porque clareava o texto;
+      - o formato 63:88, que deixaria o topo da página alto demais;
+      - o painel escuro, porque o fundo do partido sem folha já tem o contraste de hoje.
 
 ## Structure
 
@@ -140,15 +175,15 @@ classDiagram
 | `FiscalKit/Sources/FeatureVotes/VoteDetailModel+Plenary.swift` | Novo: `seats`, `plenary`, `plenaryLegend`, `plenaryAccessibility` |
 | `FiscalKit/Sources/FeatureVotes/VoteDetailModel+Text.swift` | `requiredYes` usa `seats`; `accessibilityScore` inclui o plenário |
 | `FiscalKit/Sources/FeatureVotes/VoteHeroSection.swift` | `PlenaryChart` no lugar da `TallyChart` quando `plenary` existe, com a legenda |
-| `FiscalKit/Package.swift` | `byescaleira-kit` a partir de `0.10.0`; `ByescaleiraEffects` no `FeatureProfile` |
-| `FiscalKit/Sources/FeatureProfile/ProfileHero.swift` | Fundo com `HolographicFoil` e uma subview dona do `TiltReader` |
+| `FiscalKit/Package.swift` | `byescaleira-kit` a partir de `0.10.0`, e de `0.11.0` na etapa C2; `ByescaleiraEffects` no `FeatureProfile` |
+| `FiscalKit/Sources/FeatureProfile/ProfileHero.swift` | Etapa C: fundo com `HolographicFoil` e uma subview dona do `TiltReader`. Etapa C2: a carta, com `ProfileHeroCollectible`, a janela de arte e a moldura |
 | `FiscalKit/Sources/FeatureProfile/ProfileScreen.swift` | `EffectsWarmUp.compile()` no `task` |
 | `FiscalKit/Tests/FiscalDesignSystemTests/HemicycleLayoutTests.swift` | Movido de `FeatureSettingsTests` |
 | `FiscalKit/Tests/FeatureVotesTests/VoteDetailModelPlenaryTests.swift` | Novo |
 | `FiscalKit/Sources/FeatureSettings/MetalLab/`, `HemicycleLayoutTests` em `FeatureSettingsTests`, `DeveloperScreen.swift`, `AppShell/MainScreen.swift` | Laboratório removido (etapa D) |
 | `Fiscal/Fiscal/Localizable.xcstrings` | Textos novos do plenário |
 | `docs/design-system.md`, `docs/backlog.md`, `CHANGELOG.md`, `docs/adr/README.md`, `spdd/README.md` | Documentos |
-| `byescaleira-kit` (outro repositório) | `KIT-012`: `Sources/ByescaleiraEffects/`, testes, aba no catálogo, `CHANGELOG`, tag `v0.10.0` |
+| `byescaleira-kit` (outro repositório) | `KIT-012`: `Sources/ByescaleiraEffects/`, testes, aba no catálogo, `CHANGELOG`, tag `v0.10.0`; `KIT-015`: folha `.sparkle`, moldura e giro, tag `v0.11.0` |
 
 ## Operations
 
@@ -242,12 +277,41 @@ classDiagram
 
 **Parada C:** iPhone; espera o ok.
 
+**Etapa C2: carta colecionável**
+
+13. **`KIT-015` no `byescaleira-kit`**
+    - **Processo:** análise e canvas no kit, código, `scripts/verify.sh --full` do kit, PR para a `main` do kit, merge e tag `v0.11.0`, só com o ok do usuário a cada passo.
+    - **Contrato que o Fiscal usa:**
+      - `HolographicFoil(tilt:style:)`, com `.sparkle`;
+      - `View.collectibleFrame(tilt:cornerRadius:)`;
+      - `View.cardTurn(_:)`.
+    - **Verificação:** os testes do giro no kit e a captura do exemplo "Carta" no catálogo.
+
+**Parada C2:** push, merge e tag do kit, com o ok do usuário.
+
+14. **Kit 0.11.0 no Fiscal**
+    - **Lógica:** `Package.swift` a partir de `0.11.0`, com os dois `Package.resolved`.
+    - **Verificação:** `scripts/verify.sh --quick ios`.
+    - **Depende de:** 13.
+15. **Cartão do topo como carta**
+    - **Lógica:**
+      - o `ProfileHeroBackdrop` sai;
+      - o conteúdo do cartão fica sobre o `PartyBackdrop`, recortado em `.radiusGroup - .collectibleFrame`;
+      - o `ProfileHeroCollectible` envolve o cartão com `collectibleFrame(tilt:cornerRadius: .radiusGroup)` e `cardTurn(_:)`, é dono do `TiltReader` e o põe no ambiente;
+      - o retrato fica numa janela de arte com `PartyBackdrop` e `ProfileHeroWindowFoil`, que lê o leitor do ambiente e desenha a folha `.sparkle`;
+      - o crédito "Fiscal Illustration" fica embaixo da janela.
+    - **Verificação:**
+      - captura no simulador, em claro e escuro, com Reduzir movimento e com Aumentar contraste;
+      - o contraste do nome, do cargo e da situação medido em 3 cores de partido, igual ao de antes da etapa C;
+      - o iPhone, quando o usuário puder validar.
+    - **Depende de:** 14.
+
 **Etapa D: fechamento**
 
 11. **Laboratório removido**
     - **Lógica:** apagar `FeatureSettings/MetalLab/`, os testes do laboratório, a seção em `DeveloperScreen` e o `MetalLabLaunch` em `MainScreen` (e o `import FeatureSettings` que só ele usava).
     - **Verificação:** `grep -r "MetalLab\|FiscalMetalLab"` sem resultado; build nas três plataformas.
-    - **Depende de:** 5 e 10.
+    - **Depende de:** 5, 10 e 15.
 12. **Documentos**
     - **`docs/design-system.md`:** seção "Efeitos" com as seis regras do ADR 0026, o plenário e o holográfico.
     - **`docs/backlog.md`:** a onda do kit no curtir; a linha de quórum da PLP (maioria absoluta, art. 69 da Constituição) com a regra de quando vale; a medição com Instruments e Power Profiler num aparelho antigo.
@@ -276,6 +340,9 @@ classDiagram
 - **Proibido variar o efeito por dado.** O holográfico e a onda não recebem nada do político, do partido (além do fundo que já existe), do cargo, do resultado, do seguir, do apoio ou de qualquer número. Nada de "carta rara" para alguns.
 - **Proibido shader no dado.** O plenário é `Canvas`; nenhum `colorEffect`, `layerEffect` ou `distortionEffect` desenha ponto, barra, número ou texto.
 - **Proibido envolver o conteúdo com o efeito.** O efeito não envolve texto, número, retrato ou botão: só camada de fundo. Nenhum `layerEffect` em volta de view com Lottie.
+  - A moldura pinta atrás do cartão.
+  - O giro é uma transformação, sem shader.
+  - Não há reflexo nem folha por cima do texto.
 - **Proibida linha de quórum sem regra conhecida.** Só a PEC (3/5 de 513 = 308; de 81 = 49). PLP e maioria simples ficam no backlog.
 - **QUEBRA:** a `TallyChart` sai do placar quando há plenário. A acessibilidade do placar ganha uma frase, e o `requiredYes` não muda de valor.
 - **Contagem igual ao dado:**
@@ -286,7 +353,7 @@ classDiagram
 - **Sensor:** o `TiltReader` nunca liga com Reduzir movimento ou o modo leve, fora da tela ou com a cena inativa; 30 Hz no máximo.
 - **Sem animação contínua em tela de dado:** a contagem dura 2,2 s e para; o holográfico só redesenha quando a inclinação muda.
 - **Kit:**
-  - nada do kit entra no Fiscal antes da tag `v0.10.0`;
+  - nada do kit entra no Fiscal antes da tag `v0.10.0`, e nada da carta antes da `v0.11.0`;
   - push, merge e tag no kit e no Fiscal só com o ok do usuário, a cada vez;
   - nenhuma dependência nova de terceiros.
 - **Fora de escopo:**
@@ -296,5 +363,6 @@ classDiagram
   - fluxo do dinheiro e abertura com shader;
   - widgets, Atividade ao Vivo e o site;
   - cartazes de compartilhar do político;
+  - o formato 63:88 e o reflexo do protótipo;
   - linha de quórum da PLP;
   - servidor e dados.

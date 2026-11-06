@@ -29,11 +29,13 @@ private struct ProfileHeroCard: View {
                         .fixedSize()
                 }
             }
-            PersonPortrait(
-                slug: person.slug, name: person.name, party: person.party, size: .medallion,
-                expression: profile.hasJustFollowed ? .wave : nil
-            )
-            .overlay(Circle().strokeBorder(.white, lineWidth: .space2XS))
+            ProfileHeroWindow(party: person.party) {
+                PersonPortrait(
+                    slug: person.slug, name: person.name, party: person.party, size: .medallion,
+                    expression: profile.hasJustFollowed ? .wave : nil
+                )
+                .overlay(Circle().strokeBorder(.white, lineWidth: .space2XS))
+            }
             Text("Fiscal Illustration")
                 .font(.caption2)
                 .foregroundStyle(.secondary)
@@ -59,26 +61,58 @@ private struct ProfileHeroCard: View {
         .foregroundStyle(.primary)
         .padding(.spaceXL)
         .frame(maxWidth: .infinity)
-        .background { ProfileHeroBackdrop(party: person.party) }
+        .background {
+            PartyBackdrop(party: person.party)
+                .clipShape(.rect(cornerRadius: .radiusGroup - .collectibleFrame))
+        }
+        .modifier(ProfileHeroCollectible())
         .environment(\.colorScheme, .dark)
     }
 }
 
-private struct ProfileHeroBackdrop: View {
-    let party: String
+private struct ProfileHeroCollectible: ViewModifier {
     @State private var reader = TiltReader()
     @State private var isOnScreen = true
 
-    var body: some View {
-        PartyBackdrop(party: party)
-            .overlay { HolographicFoil(tilt: reader.tilt) }
-            .clipShape(.rect(cornerRadius: .radiusGroup))
+    func body(content: Content) -> some View {
+        content
+            .collectibleFrame(tilt: reader.tilt, cornerRadius: .radiusGroup)
+            .cardTurn(reader.tilt)
+            .environment(reader)
             .background {
                 if isOnScreen {
                     Color.clear.tiltReading(reader)
                 }
             }
             .onScrollVisibilityChange { isOnScreen = $0 }
+    }
+}
+
+private struct ProfileHeroWindow<Portrait: View>: View {
+    let party: String
+    @ViewBuilder let portrait: Portrait
+
+    var body: some View {
+        portrait
+            .padding(.vertical, .spaceL)
+            .frame(maxWidth: .infinity)
+            .background {
+                PartyBackdrop(party: party)
+                    .overlay { ProfileHeroWindowFoil() }
+            }
+            .clipShape(.rect(cornerRadius: .radiusM))
+            .overlay {
+                RoundedRectangle(cornerRadius: .radiusM)
+                    .strokeBorder(.white.opacity(.opacitySoft), lineWidth: .space2XS)
+            }
+    }
+}
+
+private struct ProfileHeroWindowFoil: View {
+    @Environment(TiltReader.self) private var reader
+
+    var body: some View {
+        HolographicFoil(tilt: reader.tilt, style: .sparkle)
     }
 }
 
