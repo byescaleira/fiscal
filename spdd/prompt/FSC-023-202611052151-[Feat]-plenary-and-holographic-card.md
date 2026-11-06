@@ -255,7 +255,7 @@ classDiagram
      - o raio do ponto é 0,38 da menor medida entre a largura da fileira e o arco da cadeira;
      - até a contagem chegar, a cadeira fica em `track` com opacidade `.opacityTint`;
      - o ponto que acaba de acender cresce até 1,55× e volta em 18 cadeiras.
-   - **Linha do quórum:** tracejada entre as cadeiras `requiredYes` e `requiredYes + 1`, com o texto "%lld para aprovar" (chave `"%lld to pass"`) no vão central. Sem `requiredYes`, não há linha.
+   - **Linha do quórum:** tracejada entre as cadeiras `requiredYes` e `requiredYes + 1`, com o texto "%lld para aprovar" (chave `"%lld to pass"`) no vão central. Sem `requiredYes`, não há linha. O gráfico limita o tamanho do texto a `xLarge` (`dynamicTypeSize(...DynamicTypeSize.xLarge)`), para o rótulo não invadir as cadeiras; o número também está na frase do VoiceOver e no texto do placar.
    - **Animação:** com `animates` verdadeiro, `TimelineView(.animation(paused:))` corre por 2,2 s a partir do aparecimento, uma vez por instância (`@State`); com `animates` falso, desenha completo.
    - **Acessibilidade:** `accessibilityHidden(true)`, porque o rótulo fica no placar.
    - **Verificação:** captura no simulador, claro e escuro, Câmara e Senado; o protótipo serve de referência.
@@ -276,7 +276,7 @@ classDiagram
    - **Depende de:** 1.
 5. **Placar com o plenário**
    - **Lógica:** em `VoteScoreboard`, quando `vote.plenary` existe, `PlenaryChart` no lugar da `TallyChart`, com `PlenaryLegend` embaixo, e `animates = !reduceMotion && !MotionBudget.isConstrained` (`@ReducesMotion`). Sem plenário, o código de hoje fica intacto.
-   - **Legenda:** em linha, cada item com `lineLimit(1)` e `fixedSize`; nos tamanhos de acessibilidade, uma coluna.
+   - **Legenda:** em linha, cada item com `lineLimit(1)` e `fixedSize`. Quando a linha não cabe, `ViewThatFits` passa para uma grade de duas colunas (sim e não, outro e não votaram); nos tamanhos de acessibilidade, uma coluna.
    - **Verificação:**
      - captura no simulador da `camara-2236186-60` e da `senado-7107`, em claro, escuro, AX3 e com Reduzir movimento;
      - `scripts/ui-test.sh` no fluxo de votação;
