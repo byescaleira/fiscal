@@ -36,10 +36,11 @@ O app tem a cara da pessoa; os dados continuam com a cara dos fatos.
 - **Bandeira e brasões:** nunca recoloridos, com inscrição ou usados como produto (Lei 5.700/1971; Lei 9.279/1996, art. 191).
 - **Símbolos:** um conjunto de SF Symbols por tema e por estilo, usado nos chips e nos cards. Sem logotipo oficial de partido, que é marca registrada; os ícones de partido usam símbolos genéricos desenhados pelo Fiscal (ver "Ícone do app").
 - **Ícone do app** (pedido do usuário em 2026-10-25: "design do ícone seguindo a identidade do projeto"; escolhido por ele no iPhone no mesmo dia, depois de sete rodadas em `docs/changes/archive/2026-10-29-app-1.0/icon/`):
-  - **Principal:** a Amazônia ao amanhecer com o mapa do Brasil em vidro por cima. A estrela do template saiu.
+  - **Principal:** a Amazônia ao amanhecer vista de cima, com rio em curvas, vitórias-régias e uma canoa vazia, e o mapa do Brasil em vidro por cima. A estrela do template saiu.
+  - **Paisagens vistas de cima** (pedido do usuário em 2026-11-05, [FSC-022](../spdd/prompt/FSC-022-202611051909-[Feat]-icons-aerial-brazil-landscapes.md)): cada ícone de "Ícone do app" e de "Temas" é um lugar real do Brasil em ilustração caricata, com um elemento que diz o lugar sozinho e o mesmo mapa em vidro no centro. Nada de pessoa, prédio, placa ou texto na cena.
   - **Alternativos, em Ajustes › Aparência › Ícone do app:**
-    - Amazônia de dia e Amazônia com rio;
-    - Temas: um por cor (8);
+    - Dia na Amazônia (com um boto-cor-de-rosa) e Encontro das Águas (Rio Negro e Solimões lado a lado);
+    - Temas: um lugar por cor (8): Cataratas do Iguaçu (verde), Jalapão (urucum), Pantanal (índigo, com um tuiuiú), Ipês em flor (rosa), Chapada dos Veadeiros (dourado), Fernando de Noronha (turquesa, com uma tartaruga), Pão de Açúcar (grafite, com um veleiro) e Lençóis Maranhenses (areia);
     - Fauna do Brasil (6);
     - Partidos (30, todos os registrados no TSE, em ordem alfabética), atrás da flag `partyIcons`, desligada por padrão.
   - **Ícones de partido** (decisão do usuário, que aceitou o risco da regra 5.2.1 da App Store sobre propriedade intelectual de terceiros):
