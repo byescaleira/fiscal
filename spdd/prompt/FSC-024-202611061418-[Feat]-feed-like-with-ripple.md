@@ -42,11 +42,11 @@ O usuário pediu o curtir com a onda escolhida na FSC-023 ("depois cria a FSC-02
      - tocar numa checagem abre a página do Comprova no navegador;
      - uma proposta, um discurso ou um evento sem votação e sem link abre o mesmo destino da linha enquanto continua no Feed; quando sai do Feed, fica sem toque e diz "Este item saiu do Feed";
      - o rodapé diz "Suas curtidas ficam só neste aparelho, fora do iCloud e do backup."
-7. **Lista vazia.** Sem curtidas, a tela mostra "Nada curtido" e "Toque no coração de um item do Feed para guardar aqui."
+7. **Lista vazia.** Sem curtidas, a tela mostra "Nada curtido", "Toque no coração de um item do Feed para guardar aqui." e a linha "Só neste aparelho", como a página do apoio vazia.
 8. **Apagar curtidas.**
    - **Quando:** a pessoa escolhe "Apagar curtidas" e confirma.
    - **Então:** a lista fica vazia, e todos os corações do Feed ficam vazios.
-   - Arrastar uma linha para a esquerda mostra "Descurtir", que tira só aquela.
+   - Arrastar uma linha para a esquerda, ou tocar e segurar, mostra "Descurtir", que tira só aquela.
 9. **Destaque do topo.**
    - O destaque tem o mesmo coração, no canto inferior direito, em branco, a tinta do cartão.
    - A faixa com a onda é branca e fica entre o fundo do cartão e o conteúdo.
@@ -63,7 +63,7 @@ O usuário pediu o curtir com a onda escolhida na FSC-023 ("depois cria a FSC-02
 13. **Erro ao gravar (caso de erro).**
     - **Dado:** o repositório falha ao gravar.
     - **Quando:** a pessoa toca no coração.
-    - **Então:** o coração volta ao estado de antes, e o aviso de erro aparece como no seguir.
+    - **Então:** o coração volta ao estado de antes, sem faixa, sem onda e sem toque háptico, e o aviso de erro aparece como no seguir.
     - Dois toques rápidos no mesmo coração fazem uma mudança só.
 14. **Exportação antiga.** Um arquivo exportado antes desta mudança, sem o campo das curtidas, continua sendo lido.
 
@@ -143,7 +143,9 @@ classDiagram
     class LikeController {
         +items: [LikedItem]
         +liked: Set~String~
+        +hasLoaded: Bool
         +error: FiscalError?
+        +destination(for: LikedItem) Route?
         +feedRoutes: [String: Route]
         +isLiked(id: String) Bool
         +showing(routes: [String: Route])
@@ -182,7 +184,7 @@ classDiagram
 
 ## Approach
 
-1. **Curtida privada** ([ADR 0027](../../docs/adr/0027-private-likes-on-device.md), Proposto):
+1. **Curtida privada** ([ADR 0027](../../docs/adr/0027-private-likes-on-device.md), Aceito em 06/11/2026):
    - escolha do usuário em 06/11/2026;
    - sem contagem e sem nada fora do aparelho;
    - curtir não muda o Feed.
@@ -209,7 +211,9 @@ classDiagram
    - um `Toggle` com estilo próprio, para o VoiceOver ler o estado;
    - `heart` e `heart.fill` na cor de destaque (`\.appTint`), ou em branco no destaque do topo, que já usa o branco como tinta, com `.contentTransition(.symbolEffect(.replace))`;
    - alvo de `.badgeL` (44 pt);
-   - `.sensoryFeedback(.impact(weight: .light))` só quando passa a curtido.
+   - `.sensoryFeedback(.impact(weight: .light))` só quando a curtida é gravada: a faixa, a onda e o toque háptico disparam depois de o `toggle` devolver curtido, nunca ao descurtir, numa falha ou sem repositório;
+   - o coração vazio fica em `.secondary`, ou no branco com `.opacityStrong` no destaque do topo;
+   - o coração cheio e as linhas da lista usam `.privacySensitive()`, como as linhas do apoio.
 
    O vermelho fica de fora, porque é a cor do "não" nas votações.
 7. **Onda** ([ADR 0026](../../docs/adr/0026-shader-effects-never-carry-data.md), regra 3):
@@ -235,7 +239,8 @@ classDiagram
      - nada nos outros casos.
 
      Sem destino guardado, vale a rota que o Feed mostra agora (`LikeController.feedRoutes`, preenchida pela `FeedScreen` a cada carga); depois, o link externo quando só há `url`.
-   - **Ações:** "Descurtir" ao arrastar e "Apagar curtidas" na barra, com confirmação.
+   - **Ações:** "Descurtir" ao arrastar e no menu de contexto, e "Apagar curtidas" na barra, com confirmação.
+   - **Lista vazia:** o `EmptyStateView` do kit, o mesmo da página do apoio, com a linha "Só neste aparelho".
    - **Ordem:** pela data da curtida, a mais recente primeiro, sem limite. A lista é preguiçosa.
 10. **Exportação:**
     - o `DataArchive` ganha `liked: [LikedItem]?`;
@@ -270,6 +275,8 @@ classDiagram
 | `FiscalKit/Sources/FeatureCore/Navigation/Route.swift` | `case liked` e `destination(for: LikedItem)` |
 | `FiscalKit/Sources/FeatureCore/Export/DataArchive.swift`, `DataExportModel.swift` | `liked` |
 | `FiscalKit/Sources/AppShell/FiscalWindow.swift` | Cria e põe o `LikeController` no ambiente |
+| `FiscalKit/Sources/AppShell/MainScreen.swift` | O `FollowSync` também carrega as curtidas a cada sessão e mostra o erro delas |
+| `FiscalKit/Sources/FeatureFeed/FeedModel+Text.swift` | `symbol(_:)` usa `FeedLikedText.symbol`, para a linha e a lista terem o mesmo símbolo |
 | `FiscalKit/Sources/AppShell/RouteScreen.swift` | `.liked` abre a `FeedLikedScreen` |
 | `FiscalKit/Sources/FeatureFeed/FeedLike.swift` | Novo: `FeedLikeButton`, `FeedLikeWash` e o espaço de coordenadas |
 | `FiscalKit/Sources/FeatureFeed/FeedLikedScreen.swift` | Novo |
@@ -282,7 +289,7 @@ classDiagram
 | `FiscalKit/Tests/FiscalDataTests/SchemaMigrationTests.swift`, `SupportPrivacyTests.swift`, `DeviceStoreTests.swift` | V5, migração V4 para V5 e curtidas fora do iCloud |
 | `FiscalKit/Tests/FeatureCoreTests/LikeControllerTests.swift` | Novo |
 | `FiscalKit/Tests/FeatureCoreTests/DataExportModelTests.swift`, `NavigationTests.swift` | Curtidas na exportação e destino da curtida |
-| `FiscalKit/Tests/FeatureFeedTests/` | O Feed igual com e sem curtidas |
+| `FiscalKit/Tests/FeatureFeedTests/FeedLikedTextTests.swift` | Novo: símbolo e dia da lista |
 | `Fiscal/Fiscal/Localizable.xcstrings` | Textos novos |
 | `docs/evidence/FSC-024/` | QA: roteiro, capturas e a sequência da onda |
 | `docs/adr/0027-private-likes-on-device.md`, `docs/adr/README.md` | ADR novo |
@@ -347,7 +354,7 @@ classDiagram
 **Etapa B: estado e rota**
 
 6. **`LikeController`**
-   - **Assinatura:** `@MainActor @Observable public final class LikeController`, com `init(likes:now:)`, `items`, `liked`, `error`, `isLiked(_:)`, `toggle(_:) async -> Bool`, `remove(id:) async`, `erase() async` e `reload() async`.
+   - **Assinatura:** `@MainActor @Observable public final class LikeController`, com `init(likes:)`, `items`, `liked`, `hasLoaded`, `error`, `feedRoutes`, `isLiked(_:)`, `showing(_:)`, `destination(for:)`, `toggle(_:) async -> Bool`, `remove(id:) async`, `erase() async` e `reload() async`.
    - **`toggle`:**
      - ignora o id pendente;
      - muda o estado antes de gravar;
@@ -367,7 +374,8 @@ classDiagram
    - **Lógica:**
      - `Route.liked`;
      - `Route.destination(for: LikedItem)` como em Approach 9;
-     - a `FiscalWindow` cria o `LikeController` com `repositories.likes`, carrega no início e o põe no ambiente;
+     - a `FiscalWindow` cria o `LikeController` com `repositories.likes` e o põe no ambiente;
+     - o `FollowSync` do `MainScreen` carrega as curtidas junto dos seguidos, a cada `session.generation`, e mostra o erro com `errorAlert`;
      - o `RouteScreen` abre a `FeedLikedScreen` em `.liked`.
    - **Verificação:** `NavigationTests` com os quatro destinos e o caso sem destino.
    - **Depende de:** 1 e 6.
@@ -383,7 +391,7 @@ classDiagram
    - **Faixa:**
      - os detalhes de Approach 7;
      - `allowsHitTesting(false)` e `accessibilityHidden(true)`;
-     - o gatilho da onda é um contador de curtidas da linha, que só sobe ao curtir.
+     - o gatilho da onda é um contador de curtidas da linha, que só sobe depois de a curtida ser gravada.
    - **Ligação:** os dois se encontram pela origem, publicada com `onGeometryChange` no espaço de coordenadas da linha.
    - **Verificação:**
      - captura no simulador do primeiro quadro e do meio da onda;
@@ -399,7 +407,7 @@ classDiagram
      - a faixa fica entre o fundo e o conteúdo, dentro do mesmo recorte.
    - **Verificação:**
      - capturas da linha de votação, do gasto, da checagem, e do destaque;
-     - VoiceOver no simulador pelo Accessibility Inspector.
+     - o VoiceOver pelo `accessibilityRepresentation` com `Toggle`, conferido no código; a leitura em voz fica para o iPhone, com a validação da carta.
    - **Depende de:** 7 e 8.
    - **Cobre:** requisitos 1, 5, 9 e 12.
 10. **Menu do Feed e pré-compilação**
@@ -415,11 +423,12 @@ classDiagram
       - cada linha mostra o símbolo do tipo (o mesmo da linha do Feed), o título com até 2 linhas e o dia por `PublicFormat`;
       - o destino segue `Route.destination(for:)`, depois `feedRoutes`, ou abre o link externo;
       - sem destino, a linha mostra "Este item saiu do Feed", sem toque;
-      - "Descurtir" ao arrastar;
+      - "Descurtir" ao arrastar e no menu de contexto;
+      - `.privacySensitive()` em cada linha;
       - "Apagar curtidas" na barra, com `confirmationDialog`;
-      - `ContentUnavailableView` na lista vazia;
+      - `EmptyStateView` na lista vazia, com a linha "Só neste aparelho";
       - o rodapé com o texto do requisito 6.
-    - **Verificação:** capturas com três curtidas, da lista vazia e da confirmação. `FeatureFeedTests` confere que o Feed fica igual com e sem curtidas.
+    - **Verificação:** capturas com curtidas, da lista vazia e da confirmação. `FeedLikedTextTests` confere o símbolo e o dia. O requisito 12 é estrutural: o `FeedModel` não recebe o `LikeController` nem as curtidas, e só a `FeedScreen` lê as rotas para a lista.
     - **Depende de:** 7.
     - **Cobre:** requisitos 6, 7, 8 e 12.
 

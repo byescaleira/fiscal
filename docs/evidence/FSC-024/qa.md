@@ -11,10 +11,10 @@
 | 2 | Descurtir | Tocar de novo | passou | O coração volta a vazio, sem faixa. `LikeControllerTests.likesAndUnlikes` |
 | 3 | Guardado | Fechar e abrir o app | passou | O destaque curtido continua cheio depois de reabrir. `LikeStoreTests.aLikeSurvivesReopeningAndStaysOutOfBackups` |
 | 4 | Sem movimento | Reduzir movimento ligado, curtir | passou | [Sequência](reduce-motion-sequence.png): o coração enche, sem faixa e sem onda. O modo leve usa a mesma regra (`MotionBudget.isConstrained`), não testado à parte |
-| 5 | VoiceOver | Coração como alternância | passou em código; leitura não executável aqui | O botão é um `Toggle` com `accessibilityRepresentation`, rótulo "Curtir". O VoiceOver não foi ligado no simulador |
+| 5 | VoiceOver | Coração como alternância | passou em código; leitura não executável aqui | O botão é um `Toggle` com `accessibilityRepresentation`, rótulo "Curtir". A leitura em voz fica para o iPhone, com a validação da carta (canvas, Operation 9) |
 | 6 | Lista "Curtidas" | Menu do coração › Curtidas | passou | [Menu](feed-menu.png) e [lista](liked-list.png), mais recente primeiro. A proposta ainda no Feed abre o mesmo detalhe da linha. Destinos em `NavigationTests.eachLikedItemOpensItsOwnScreen` e `LikeControllerTests.anItemStillInTheFeedOpensWhatTheFeedShows` |
 | 7 | Lista vazia | Depois de apagar | passou | [Vazia](liked-empty.png): "Nada curtido" e "Toque no coração de um item do Feed para guardar aqui." |
-| 8 | Apagar curtidas | Lixeira › confirmar | passou | [Confirmação](erase-confirm.png). "Descurtir" ao arrastar em `LikeControllerTests.removingAndErasing`; o gesto não foi feito no simulador |
+| 8 | Apagar curtidas | Lixeira › confirmar | passou | [Confirmação](erase-confirm.png). "Descurtir" ao arrastar e no menu de contexto, em `LikeControllerTests.removingAndErasing`; os gestos não foram feitos no simulador |
 | 9 | Destaque do topo | Coração branco no rodapé do destaque | passou | [Destaque](highlight-wash.png). A apuração ficou fora (Approach 13) |
 | 10 | Privacidade | Modelos e backup | passou em teste | `SupportPrivacyTests`, `DeviceStoreTests`, `LikeStoreTests` e `DataExportModelTests.exportsTheLikedItems`. Nenhuma referência a curtidas em widget, Spotlight, Siri, `FiscalEvents` ou cartaz (`git grep` de `LikeController`, `LikedItem` e `likes` só acha o Feed, a janela, a navegação, a exportação e a camada de dados) |
 | 11 | Migração | Banco V4 aberto na V5 | passou em teste | `SchemaMigrationTests.aFourthVersionStoreKeepsSupportAndFollowsWithNoLikes`; o app abriu no simulador sobre um banco existente |
@@ -28,3 +28,5 @@
 - A proposta curtida, ainda no Feed, aparecia como "Este item saiu do Feed". O canvas foi atualizado (Approach 9), e a lista passou a usar a rota que o Feed mostra agora.
 
 **Ponto para a revisão de interface:** a linha do coração soma cerca de 44 pt a cada item do Feed.
+
+**Depois da revisão:** a faixa, a onda e o toque háptico passaram a disparar só depois de a curtida ser gravada; o coração vazio do destaque usa o branco com `.opacityStrong`; a lista ganhou o menu de contexto e o `.privacySensitive()`. Só o build e os testes conferiram essas mudanças, sem nova captura.

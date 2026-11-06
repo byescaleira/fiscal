@@ -24,6 +24,13 @@ public struct FeedLikedScreen: View {
                     Section {
                         ForEach(like.items) { item in
                             FeedLikedRow(item: item, route: like.destination(for: item))
+                                .privacySensitive()
+                                .contextMenu {
+                                    Button("Unlike", systemImage: "heart.slash", role: .destructive)
+                                    {
+                                        Task { await like.remove(id: item.id) }
+                                    }
+                                }
                                 .swipeActions {
                                     Button("Unlike", systemImage: "heart.slash", role: .destructive)
                                     {
@@ -86,6 +93,7 @@ private struct FeedLikedRow: View {
     private var label: some View {
         HStack(spacing: .spaceS) {
             SymbolBadge(FeedLikedText.symbol(item.kind), color: .secondary, size: .badgeM)
+                .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: .spaceHairline) {
                 Text(verbatim: item.title)
                     .font(.subheadline.weight(.semibold))

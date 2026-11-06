@@ -26,15 +26,22 @@ struct FeedLikeButton: View {
             Toggle(
                 isOn: Binding(
                     get: { like.isLiked(id) },
-                    set: { isOn in
-                        if isOn { state.count += 1 }
+                    set: { _ in
                         let item = make()
-                        Task { await like.toggle(item) }
+                        let wasLiked = like.isLiked(id)
+                        Task {
+                            if await like.toggle(item), !wasLiked { state.count += 1 }
+                        }
                     })
             ) {
                 Text("Like")
             }
-            .toggleStyle(FeedLikeToggleStyle(ink: ink ?? tint))
+            .toggleStyle(
+                FeedLikeToggleStyle(
+                    ink: ink ?? tint,
+                    rest: ink.map { AnyShapeStyle($0.opacity(.opacityStrong)) }
+                        ?? AnyShapeStyle(.secondary))
+            )
             .sensoryFeedback(.impact(weight: .light), trigger: state.count)
             .onGeometryChange(for: CGPoint.self) { proxy in
                 let frame = proxy.frame(in: .named(FeedLikeSpace.name))
@@ -48,6 +55,7 @@ struct FeedLikeButton: View {
 
 private struct FeedLikeToggleStyle: ToggleStyle {
     let ink: Color
+    let rest: AnyShapeStyle
 
     func makeBody(configuration: Configuration) -> some View {
         Button {
@@ -55,9 +63,8 @@ private struct FeedLikeToggleStyle: ToggleStyle {
         } label: {
             Image(systemName: configuration.isOn ? "heart.fill" : "heart")
                 .font(.body.weight(.semibold))
-                .foregroundStyle(
-                    configuration.isOn ? AnyShapeStyle(ink) : AnyShapeStyle(.secondary)
-                )
+                .foregroundStyle(configuration.isOn ? AnyShapeStyle(ink) : rest)
+                .privacySensitive(configuration.isOn)
                 .contentTransition(.symbolEffect(.replace))
                 .frame(minWidth: .badgeL, minHeight: .badgeL)
                 .contentShape(.rect)
