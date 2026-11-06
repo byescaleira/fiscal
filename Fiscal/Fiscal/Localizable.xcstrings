@@ -2148,16 +2148,6 @@
         }
       }
     },
-    "Amazon River" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rio na Amazônia"
-          }
-        }
-      }
-    },
     "Amazonas" : {
       "localizations" : {
         "pt-BR" : {
@@ -2194,16 +2184,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Animações · Licença Apache 2.0"
-          }
-        }
-      }
-    },
-    "Annatto" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Urucum"
           }
         }
       }
@@ -3318,6 +3298,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Muda todos os blocos para o lugar escolhido"
+          }
+        }
+      }
+    },
+    "Chapada dos Veadeiros" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chapada dos Veadeiros"
           }
         }
       }
@@ -5364,6 +5354,16 @@
         }
       }
     },
+    "Fernando de Noronha" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fernando de Noronha"
+          }
+        }
+      }
+    },
     "Fewer than 5 peers with data" : {
       "localizations" : {
         "pt-BR" : {
@@ -5945,16 +5945,6 @@
         }
       }
     },
-    "Forest" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mata"
-          }
-        }
-      }
-    },
     "Forest and gold" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -6175,16 +6165,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Governadores e Senado"
-          }
-        }
-      }
-    },
-    "Graphite" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Grafite"
           }
         }
       }
@@ -6710,6 +6690,16 @@
         }
       }
     },
+    "Iguaçu Falls" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cataratas do Iguaçu"
+          }
+        }
+      }
+    },
     "Illustration of %@" : {
       "localizations" : {
         "pt-BR" : {
@@ -6940,16 +6930,6 @@
         }
       }
     },
-    "Indigo" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anil"
-          }
-        }
-      }
-    },
     "Individual" : {
       "localizations" : {
         "pt-BR" : {
@@ -7030,12 +7010,12 @@
         }
       }
     },
-    "Ipê" : {
+    "Ipês in Bloom" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ipê"
+            "value" : "Ipês em flor"
           }
         }
       }
@@ -7127,6 +7107,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Onça-pintada"
+          }
+        }
+      }
+    },
+    "Jalapão" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jalapão"
           }
         }
       }
@@ -7400,6 +7390,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "mediana da Câmara Legislativa: %@"
+          }
+        }
+      }
+    },
+    "Lençóis Maranhenses" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lençóis Maranhenses"
           }
         }
       }
@@ -7771,6 +7771,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Conheça o Fiscal"
+          }
+        }
+      }
+    },
+    "Meeting of the Waters" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encontro das Águas"
           }
         }
       }
@@ -9856,6 +9866,16 @@
         }
       }
     },
+    "Pantanal" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pantanal"
+          }
+        }
+      }
+    },
     "Paraná" : {
       "localizations" : {
         "pt-BR" : {
@@ -11772,32 +11792,12 @@
         }
       }
     },
-    "Sand" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Areia"
-          }
-        }
-      }
-    },
     "Santa Catarina" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Santa Catarina"
-          }
-        }
-      }
-    },
-    "Savanna" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cerrado"
           }
         }
       }
@@ -11879,16 +11879,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Escolas, universidades e professores"
-          }
-        }
-      }
-    },
-    "Sea" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mar"
           }
         }
       }
@@ -13336,6 +13326,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Estilo"
+          }
+        }
+      }
+    },
+    "Sugarloaf Mountain" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pão de Açúcar"
           }
         }
       }

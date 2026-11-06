@@ -3,8 +3,8 @@
     {
       "value": {
         "linear-gradient": [
-          "srgb:0.85098,0.39608,0.24706,1.00000",
-          "srgb:0.96471,0.75686,0.46667,1.00000"
+          "srgb:0.93333,0.60392,0.36863,1.00000",
+          "srgb:0.85098,0.39608,0.24706,1.00000"
         ]
       }
     },
@@ -13,7 +13,7 @@
       "value": {
         "linear-gradient": [
           "srgb:0.29804,0.13725,0.08627,1.00000",
-          "srgb:0.29020,0.22745,0.14118,1.00000"
+          "srgb:0.18039,0.07843,0.04706,1.00000"
         ]
       }
     }
@@ -103,25 +103,121 @@
           "fill-specializations": [
             {
               "value": {
-                "solid": "srgb:0.94902,0.62745,0.48235,1.00000"
+                "solid": "srgb:0.78431,0.98039,0.98039,1.00000"
               }
             },
             {
               "appearance": "dark",
               "value": {
-                "solid": "srgb:0.47451,0.31373,0.24314,1.00000"
+                "solid": "srgb:0.47843,0.79216,0.80784,1.00000"
               }
             },
             {
               "appearance": "tinted",
               "value": {
-                "solid": "srgb:0.70980,0.70980,0.70980,1.00000"
+                "solid": "srgb:0.94902,0.94902,0.94902,1.00000"
               }
             }
           ],
           "glass": false,
-          "image-name": "4 River.svg",
-          "name": "4 River",
+          "image-name": "8 Glint.svg",
+          "name": "8 Glint",
+          "opacity": 1.0,
+          "position": {
+            "scale": 1,
+            "translation-in-points": [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "fill-specializations": [
+            {
+              "value": {
+                "solid": "srgb:0.17255,0.78824,0.81569,1.00000"
+              }
+            },
+            {
+              "appearance": "dark",
+              "value": {
+                "solid": "srgb:0.08627,0.43922,0.47843,1.00000"
+              }
+            },
+            {
+              "appearance": "tinted",
+              "value": {
+                "solid": "srgb:0.65882,0.65882,0.65882,1.00000"
+              }
+            }
+          ],
+          "glass": false,
+          "image-name": "7 Water.svg",
+          "name": "7 Water",
+          "opacity": 1.0,
+          "position": {
+            "scale": 1,
+            "translation-in-points": [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "fill-specializations": [
+            {
+              "value": {
+                "solid": "srgb:1.00000,0.94510,0.83922,1.00000"
+              }
+            },
+            {
+              "appearance": "dark",
+              "value": {
+                "solid": "srgb:0.74902,0.66275,0.54118,1.00000"
+              }
+            },
+            {
+              "appearance": "tinted",
+              "value": {
+                "solid": "srgb:0.93333,0.93333,0.93333,1.00000"
+              }
+            }
+          ],
+          "glass": false,
+          "image-name": "6 Sand.svg",
+          "name": "6 Sand",
+          "opacity": 1.0,
+          "position": {
+            "scale": 1,
+            "translation-in-points": [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "fill-specializations": [
+            {
+              "value": {
+                "solid": "srgb:0.24706,0.54118,0.22745,1.00000"
+              }
+            },
+            {
+              "appearance": "dark",
+              "value": {
+                "solid": "srgb:0.12157,0.29020,0.11373,1.00000"
+              }
+            },
+            {
+              "appearance": "tinted",
+              "value": {
+                "solid": "srgb:0.33333,0.33333,0.33333,1.00000"
+              }
+            }
+          ],
+          "glass": false,
+          "image-name": "5 Palms.svg",
+          "name": "5 Palms",
           "opacity": 1.0,
           "position": {
             "scale": 1,
@@ -132,10 +228,10 @@
           }
         }
       ],
-      "name": "River",
+      "name": "Spring",
       "shadow": {
         "kind": "neutral",
-        "opacity": 0.15
+        "opacity": 0.45
       },
       "specular": false,
       "translucency": {
@@ -149,25 +245,57 @@
           "fill-specializations": [
             {
               "value": {
-                "solid": "srgb:0.36863,0.10980,0.09020,1.00000"
+                "solid": "srgb:0.43137,0.54118,0.22745,1.00000"
               }
             },
             {
               "appearance": "dark",
               "value": {
-                "solid": "srgb:0.18431,0.05490,0.04706,1.00000"
+                "solid": "srgb:0.21176,0.27059,0.11373,1.00000"
               }
             },
             {
               "appearance": "tinted",
               "value": {
-                "solid": "srgb:0.18431,0.18431,0.18431,1.00000"
+                "solid": "srgb:0.30588,0.30588,0.30588,1.00000"
               }
             }
           ],
           "glass": false,
-          "image-name": "3 Near.svg",
-          "name": "3 Near",
+          "image-name": "4 Shrubs.svg",
+          "name": "4 Shrubs",
+          "opacity": 1.0,
+          "position": {
+            "scale": 1,
+            "translation-in-points": [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "fill-specializations": [
+            {
+              "value": {
+                "solid": "srgb:0.78824,0.37647,0.22745,1.00000"
+              }
+            },
+            {
+              "appearance": "dark",
+              "value": {
+                "solid": "srgb:0.43137,0.19608,0.12549,1.00000"
+              }
+            },
+            {
+              "appearance": "tinted",
+              "value": {
+                "solid": "srgb:0.41569,0.41569,0.41569,1.00000"
+              }
+            }
+          ],
+          "glass": false,
+          "image-name": "3 Top.svg",
+          "name": "3 Top",
           "opacity": 1.0,
           "position": {
             "scale": 1,
@@ -193,45 +321,13 @@
             {
               "appearance": "tinted",
               "value": {
-                "solid": "srgb:0.29020,0.29020,0.29020,1.00000"
+                "solid": "srgb:0.22745,0.22745,0.22745,1.00000"
               }
             }
           ],
           "glass": false,
-          "image-name": "2 Mid.svg",
-          "name": "2 Mid",
-          "opacity": 1.0,
-          "position": {
-            "scale": 1,
-            "translation-in-points": [
-              0,
-              0
-            ]
-          }
-        },
-        {
-          "fill-specializations": [
-            {
-              "value": {
-                "solid": "srgb:0.72549,0.29020,0.20000,1.00000"
-              }
-            },
-            {
-              "appearance": "dark",
-              "value": {
-                "solid": "srgb:0.36078,0.14510,0.10196,1.00000"
-              }
-            },
-            {
-              "appearance": "tinted",
-              "value": {
-                "solid": "srgb:0.41176,0.41176,0.41176,1.00000"
-              }
-            }
-          ],
-          "glass": false,
-          "image-name": "1 Far.svg",
-          "name": "1 Far",
+          "image-name": "2 Cliff.svg",
+          "name": "2 Cliff",
           "opacity": 1.0,
           "position": {
             "scale": 1,
@@ -242,10 +338,10 @@
           }
         }
       ],
-      "name": "Forest",
+      "name": "Serra",
       "shadow": {
         "kind": "neutral",
-        "opacity": 0.25
+        "opacity": 0.5
       },
       "specular": false,
       "translucency": {
@@ -259,25 +355,25 @@
           "fill-specializations": [
             {
               "value": {
-                "solid": "srgb:0.98824,0.89020,0.63137,1.00000"
+                "solid": "srgb:0.97647,0.78039,0.60392,1.00000"
               }
             },
             {
               "appearance": "dark",
               "value": {
-                "solid": "srgb:0.49412,0.44706,0.31373,1.00000"
+                "solid": "srgb:0.47843,0.29020,0.18824,1.00000"
               }
             },
             {
               "appearance": "tinted",
               "value": {
-                "solid": "srgb:0.89020,0.89020,0.89020,1.00000"
+                "solid": "srgb:0.78431,0.78431,0.78431,1.00000"
               }
             }
           ],
-          "glass": true,
-          "image-name": "0 Sun.svg",
-          "name": "0 Sun",
+          "glass": false,
+          "image-name": "1 Crest.svg",
+          "name": "1 Crest",
           "opacity": 1.0,
           "position": {
             "scale": 1,
@@ -288,12 +384,12 @@
           }
         }
       ],
-      "name": "Sun",
+      "name": "Dunes",
       "shadow": {
         "kind": "neutral",
         "opacity": 0.0
       },
-      "specular": true,
+      "specular": false,
       "translucency": {
         "enabled": false,
         "value": 0.5

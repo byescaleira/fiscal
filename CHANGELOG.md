@@ -13,7 +13,7 @@ Primeira versão, a 1.0.0.
 - Meu apoio: uma página privada com as pessoas e as causas que você escolhe, numa linha do tempo por data, só com fatos, guardada só no aparelho e que pode ser apagada. O resto do app é igual para todo mundo.
 - Cartões de compartilhar com arte brasileira de licença livre e o que circulou sobre cada político segundo o Projeto Comprova.
 - Widgets, atalhos da Siri e busca no Spotlight.
-- Ícone da Amazônia ao amanhecer, com ícones alternativos de temas, fauna e partidos.
+- Ícone da Amazônia ao amanhecer vista de cima, com ícones alternativos de temas, fauna e partidos. Os ícones principais e os temas mostram lugares do Brasil vistos de cima, cada tema com o nome do lugar: Cataratas do Iguaçu, Jalapão, Pantanal, Ipês em flor, Chapada dos Veadeiros, Fernando de Noronha, Pão de Açúcar e Lençóis Maranhenses ([FSC-022](spdd/prompt/FSC-022-202611051909-[Feat]-icons-aerial-brazil-landscapes.md)).
 - Roda a partir do iOS, iPadOS, macOS e visionOS 26, com o que é do 27 quando o aparelho tem.
 - Cores com contraste de texto conferido, botões e superfícies opacos com Reduzir transparência e barras de progresso lidas pelo VoiceOver.
 - Fundo branco no claro e preto no escuro em todas as telas, com os cartões em cinza do sistema.
