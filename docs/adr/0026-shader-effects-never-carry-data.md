@@ -1,6 +1,6 @@
 # 0026. Efeito de shader nunca carrega dado
 
-- **Estado:** Proposto
+- **Estado:** Aceito
 - **Data:** 2026-11-05
 - **Mudança:** [FSC-023](../../spdd/prompt/FSC-023-202611052151-[Feat]-plenary-and-holographic-card.md)
 

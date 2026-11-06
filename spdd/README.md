@@ -36,6 +36,6 @@ No shell, ponha esses caminhos entre aspas: o zsh trata `[...]` como padrão de 
 | `FSC-014` | [Nova página do político e compartilhar um item](prompt/FSC-014-202611020300-[Feat]-politician-page-and-share-an-item.md) | entregue | `feature/politician-page` | [#12](https://github.com/byescaleira/fiscal/pull/12) |
 | `FSC-015` | [Barra do topo, votações, região e ícones das abas](prompt/FSC-015-202611021500-[Feat]-sticky-bar-votes-region-tabs.md) | entregue | `feature/sticky-bar-and-screens` | [#13](https://github.com/byescaleira/fiscal/pull/13) |
 | `FSC-016` | [Cartões no modo claro e bonequinho de todos](prompt/FSC-016-202611021923-[Feat]-light-cards-and-portraits.md) | entregue | `feature/light-cards-and-portraits` | [#14](https://github.com/byescaleira/fiscal/pull/14) |
-| `FSC-023` | [Plenário em pontos e cartão do político holográfico](prompt/FSC-023-202611052151-[Feat]-plenary-and-holographic-card.md) | canvas | `feature/metal-exploration` | — |
+| `FSC-023` | [Plenário em pontos e cartão do político holográfico](prompt/FSC-023-202611052151-[Feat]-plenary-and-holographic-card.md) | em andamento | `feature/metal-exploration` | — |
 
 As capacidades que ainda vivem em guias de recurso (atualização obrigatória em [force-update.md](../docs/force-update.md), site e Fiscal na Web em [web.md](../docs/web.md), admin e flags em [admin.md](../docs/admin.md)) ganham um canvas `[Codify]` na primeira mudança da área.

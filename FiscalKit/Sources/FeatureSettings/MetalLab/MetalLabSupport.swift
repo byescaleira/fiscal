@@ -12,7 +12,6 @@
         nonisolated static let likeSpace = "likeCard"
         static let rippleDuration = 1.6
         static let burstDuration = 0.7
-        static let revealSeconds = 2.2
         static let tiltRate = 1.0 / 30
         static let tiltLimit = 1.0
         static let tiltGain = 2.5
@@ -28,9 +27,7 @@
         static let rippleDecay: Float = 8
         static let rippleSpeed: Float = 1200
         static let rippleOffset = CGSize(width: 24, height: 24)
-        static let plenaryAspect: CGFloat = 2
         static let cardAspect: CGFloat = 4.0 / 5.0
-        static let markerWidth: CGFloat = 1.5
 
         static func compile() async {
             let none = Shader.Argument.float2(CGSize.zero)
@@ -197,6 +194,47 @@
         func settle() {
             guard !isLive else { return }
             tilt = .zero
+        }
+    }
+
+    struct LabVote: Hashable, Identifiable {
+        let id: String
+        let house: String
+        let proposition: String
+        let date: String
+        let yes: Int
+        let no: Int
+        let other: Int
+        let total: Int
+        let required: Int
+        let requirement: String
+
+        static let chamber = LabVote(
+            id: "camara-2236186-60", house: "Câmara", proposition: "PLP 281/2019",
+            date: "14 out. 2026", yes: 252, no: 176, other: 1, total: 513, required: 257,
+            requirement: "maioria absoluta da Câmara")
+        static let senate = LabVote(
+            id: "senado-7107", house: "Senado", proposition: "PEC 221/2019", date: "14 out. 2026",
+            yes: 75, no: 1, other: 3, total: 81, required: 49, requirement: "3/5 do Senado")
+        static let all = [chamber, senate]
+
+        var absent: Int { max(total - yes - no - other, .zero) }
+
+        var summary: String {
+            "\(house), \(proposition), \(date): \(yes) sim, \(no) não, \(other) outros e \(absent) não votaram, de \(total). Eram precisos \(required) votos sim (\(requirement))."
+        }
+    }
+
+    struct FrameTicker: View {
+        let meter: FrameMeter
+
+        var body: some View {
+            TimelineView(.animation) { context in
+                Color.clear
+                    .frame(height: .zero)
+                    .onChange(of: context.date) { _, date in meter.tick(date) }
+            }
+            .onAppear { meter.reset() }
         }
     }
 #endif

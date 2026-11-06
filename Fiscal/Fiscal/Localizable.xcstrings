@@ -893,6 +893,28 @@
         }
       }
     },
+    "%lld did not vote" : {
+      "localizations" : {
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld não votou"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld não votaram"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld elected, awaiting inauguration" : {
       "localizations" : {
         "pt-BR" : {
@@ -1044,6 +1066,16 @@
         }
       }
     },
+    "%lld no" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld não"
+          }
+        }
+      }
+    },
     "%lld of %lld" : {
       "localizations" : {
         "pt-BR" : {
@@ -1164,6 +1196,28 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "Nenhum outro voto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld others" : {
+      "localizations" : {
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld outro"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld outros"
                 }
               }
             }
@@ -1312,6 +1366,16 @@
         }
       }
     },
+    "%lld to pass" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld para aprovar"
+          }
+        }
+      }
+    },
     "%lld updates from who you follow" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1373,6 +1437,38 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "0 anos"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld yes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld sim"
+          }
+        }
+      }
+    },
+    "%lld yes votes to pass" : {
+      "localizations" : {
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld voto sim para aprovar"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld votos sim para aprovar"
                 }
               }
             }
@@ -5664,6 +5760,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "As votações do Plenário e como cada um votou."
+          }
+        }
+      }
+    },
+    "Floor: %@, out of %lld seats" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plenário: %@, de %lld cadeiras"
           }
         }
       }

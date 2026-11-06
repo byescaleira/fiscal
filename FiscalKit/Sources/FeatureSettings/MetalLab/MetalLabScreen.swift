@@ -12,11 +12,6 @@ import SwiftUI
                         symbol: "heart", color: .retroRust
                     ) { LikePrototype() }
                     MetalLabRow(
-                        title: "Plenário",
-                        detail: "Um ponto por parlamentar, preenchendo voto a voto",
-                        symbol: "circle.grid.3x3", color: .retroOlive
-                    ) { PlenaryPrototype() }
-                    MetalLabRow(
                         title: "Papel no cartão",
                         detail: "Grão e luz no cartão de compartilhar e o teste da exportação",
                         symbol: "doc.richtext", color: .retroMustard
@@ -91,7 +86,7 @@ public struct MetalLabLaunch: ViewModifier {
 }
 
 public enum MetalLabPrototype: String, Identifiable, Sendable {
-    case lab, like, plenary, paper, sheen
+    case lab, like, paper, sheen
 
     public var id: Self { self }
 
@@ -100,7 +95,6 @@ public enum MetalLabPrototype: String, Identifiable, Sendable {
             switch self {
             case .lab: MetalLabScreen()
             case .like: LikePrototype()
-            case .plenary: PlenaryPrototype()
             case .paper: PaperPrototype()
             case .sheen: SheenPrototype()
             }

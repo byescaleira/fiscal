@@ -56,46 +56,6 @@ static float labNoise(float2 value) {
     return result;
 }
 
-[[ stitchable ]] half4 labHemicycle(
-    float2 position, half4 color, float2 center, float outer, float innerRadius,
-    device const float *rowStarts, int rowStartCount,
-    device const float *seatGroups, int seatGroupCount,
-    device const float *seatRanks, int seatRankCount,
-    float revealed, half4 yes, half4 no, half4 other, half4 absent
-) {
-    int rows = rowStartCount - 1;
-    float rowWidth = (outer - innerRadius) / float(rows);
-    float2 offset = position - center;
-    float radius = length(offset);
-    if (radius < innerRadius || radius >= outer || offset.y > rowWidth * 0.5) {
-        return half4(0.0);
-    }
-    int row = min(int((radius - innerRadius) / rowWidth), rows - 1);
-    int start = int(rowStarts[row]);
-    int count = int(rowStarts[row + 1]) - start;
-    float rowRadius = innerRadius + (float(row) + 0.5) * rowWidth;
-    float angle = atan2(-offset.y, offset.x);
-    if (angle < 0.0) {
-        angle = offset.x < 0.0 ? M_PI_F : 0.0;
-    }
-    float spacing = M_PI_F / float(count);
-    int seat = clamp(int((M_PI_F - angle) / spacing), 0, count - 1);
-    float seatAngle = M_PI_F - (float(seat) + 0.5) * spacing;
-    float2 seatCenter = center + float2(cos(seatAngle), -sin(seatAngle)) * rowRadius;
-    int index = start + seat;
-    float age = revealed - seatRanks[index];
-    float baseRadius = min(rowWidth, rowRadius * spacing) * 0.38;
-    float pop = 1.0 + 0.55 * clamp(1.0 - age / 18.0, 0.0, 1.0) * step(0.0, age);
-    float dotRadius = baseRadius * pop;
-    float coverage = 1.0 - smoothstep(dotRadius - 0.75, dotRadius + 0.75, length(position - seatCenter));
-    half4 fill = absent * 0.22h;
-    if (age >= 0.0) {
-        int group = int(seatGroups[index]);
-        fill = group == 0 ? yes : (group == 1 ? no : (group == 2 ? other : absent));
-    }
-    return fill * half(coverage);
-}
-
 [[ stitchable ]] half4 labPaper(
     float2 position, half4 color, float2 size, float scale,
     float grain, float fiber, float2 light
