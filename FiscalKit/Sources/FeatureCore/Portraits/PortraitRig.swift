@@ -25,6 +25,11 @@ struct PortraitRig {
     }
 
     func animation(for traits: PortraitLibrary.Traits, party: String) -> LottieAnimation? {
+        guard let document = document(for: traits, party: party) else { return nil }
+        return try? LottieAnimation(dictionary: document)
+    }
+
+    func document(for traits: PortraitLibrary.Traits, party: String) -> [String: Any]? {
         guard let palette = tones.palette(for: traits, party: party) else { return nil }
         var animation = document
         animation["layers"] = layers.compactMap { layer -> [String: Any]? in
@@ -34,7 +39,7 @@ struct PortraitRig {
             tinted["shapes"] = Self.tinted(shapes, palette)
             return tinted
         }
-        return try? LottieAnimation(dictionary: animation)
+        return animation
     }
 
     private static func matches(_ selector: Any?, _ traits: PortraitLibrary.Traits) -> Bool {

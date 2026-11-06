@@ -42,6 +42,9 @@ public struct MainScreen: View {
                 if !path.isEmpty { AccessibilityNotification.ScreenChanged(nil).post() }
             }
             .modifier(RoutesBeside())
+            #if DEBUG
+                .modifier(PortraitLabLaunch())
+            #endif
             .readsLayoutContext()
             .environment(
                 \.open,
