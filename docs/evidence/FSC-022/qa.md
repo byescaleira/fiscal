@@ -18,7 +18,7 @@ Canvas: [FSC-022](../../../spdd/prompt/FSC-022-202611051909-[Feat]-icons-aerial-
 | Até 12 camadas e 200 KB por `.icon`; gerador em até 10 s | passou | no máximo 9 camadas de paisagem mais 2 do mapa, até 124 KB, 2,9 s para os 11 |
 | Fauna e partido fora do diff | passou | as prévias reexportadas pelo `scripts/icons.sh` foram restauradas; `git status` só lista os 11 |
 | Trocar o ícone no simulador | não executável aqui | o toque no ícone durante a rolagem não abriu o aviso do sistema; o código da troca não mudou nesta fase |
-| iPhone físico | pendente | instalação ao fim da rodada 2, para o ok do usuário |
+| iPhone físico | passou | rodada 1 aprovada pelo usuário no iPhone em 05/11/2026 e os 11 ícones aprovados em 06/11/2026, depois da instalação da rodada 2; a tela inicial a 60 pt e o clear ficaram com o olhar do usuário, sem captura minha |
 | Mac, iPad e visionOS | não executável aqui | declarados no PR enquanto não forem vistos |
 
 `scripts/verify.sh --quick`: ok (build iOS, testes Swift dos alvos afetados, ponte, site e admin).

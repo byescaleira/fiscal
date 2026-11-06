@@ -389,7 +389,7 @@ def noronha(scene):
     beach = [crescent(470, 760, 70, math.radians(30), math.radians(150), 38)]
     turtle_shell = [(0, -40), (26, -26), (32, 4), (22, 34), (0, 44), (-22, 34), (-32, 4), (-26, -26)]
     turtle = [catmull(shape(turtle_shell, 790, 150, 1.5, math.radians(-30)), True)]
-    for fx, fy, sx, a in [(30, -24, 1, -40), (-30, -24, -1, 220), (24, 30, 1, 40), (-24, 30, -1, 140)]:
+    for fx, fy, a in [(30, -24, -40), (-30, -24, 220), (24, 30, 40), (-24, 30, 140)]:
         px, py = shape([(fx, fy)], 790, 150, 1.5, math.radians(-30))[0]
         turtle.append(blob(px, py, 26 if fy < 0 else 18, 12, math.radians(a - 30), rng, 0.0, 10))
     hx, hy = shape([(0, -56)], 790, 150, 1.5, math.radians(-30))[0]
