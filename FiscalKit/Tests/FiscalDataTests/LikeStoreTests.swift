@@ -75,4 +75,16 @@ struct LikeStoreTests {
         let values = try store.resourceValues(forKeys: [.isExcludedFromBackupKey])
         #expect(values.isExcludedFromBackup == true)
     }
+
+    @Test func likingDoesNotTellTheSessionToReload() async throws {
+        let (database, directory) = try open()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let likes = try #require(database.repositories.likes)
+        let before = database.store.changeHub.localRevision
+        try await likes.like(try item("a", at: 1))
+        try await likes.unlike(id: "event-a")
+        try await likes.like(try item("b", at: 2))
+        try await likes.reset()
+        #expect(database.store.changeHub.localRevision == before)
+    }
 }

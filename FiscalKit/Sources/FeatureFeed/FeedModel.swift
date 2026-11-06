@@ -263,12 +263,13 @@ public final class FeedModel {
     private func rebuild() {
         let uf = regionUF()
         hidesRaces = liveBoard != nil
-        items = FeedTimeline.build(
+        let built = FeedTimeline.build(
             FeedSources(
                 following: followed, activities: activities, actions: actions, speeches: speeches,
                 recent: recent, highlights: highlights, digest: digest, regionUF: uf,
                 regionName: uf.map(HomePlace.name(of:)), method: highlights?.method,
                 hidesRaces: hidesRaces))
+        if built != items { items = built }
     }
 
     private struct Page: Sendable {

@@ -5,7 +5,7 @@
 O usuário pediu o curtir com a onda escolhida na FSC-023 ("depois cria a FSC-024 do curtir com a onda", 06/11/2026). A [análise](../analysis/FSC-024-202611061413-[Analysis]-like-with-ripple.md) levou a três escolhas dele: o curtir é privado e sem contagem, fica só no aparelho, e a lista "Curtidas" fica no Feed, ao lado de "Meu apoio". Sem veto às outras decisões:
 - o coração vai em todas as linhas do Feed e nos cartões do topo;
 - só o botão do coração, sem os dois toques no cartão;
-- o coração no rodapé, à direita, com 44 pt;
+- o coração no rodapé, à direita, com 44 pt. Depois de ver no iPhone, em 06/11/2026, o usuário reprovou o rodapé ("adicionou uma faixa branca enorme em cada card"), e o coração da linha passou para o cabeçalho, ao lado da data (Approach 14);
 - a `FiscalSchemaV5`.
 
 **Definição de pronto:**
@@ -258,6 +258,16 @@ classDiagram
     - a apuração é um evento ao vivo, não um item do Feed, e a de 2026 já terminou;
     - por isso, só o destaque do topo ganha o coração, e a apuração entra no backlog.
 
+14. **Coração no cabeçalho** (`spdd-prompt-update` de 06/11/2026, depois do teste no iPhone):
+    - no rodapé, o coração criava uma linha de 44 pt em cada item do Feed, e o usuário reprovou;
+    - na linha, ele fica no cabeçalho, à direita da data, que já tem a altura do retrato, sem linha nova;
+    - o destaque do topo não muda: lá o coração já fica no rodapé que existia, depois do botão do método.
+
+15. **Curtir não recarrega o Feed** (`spdd-prompt-update` de 06/11/2026, depois do teste no iPhone):
+    - no aparelho, curtir fazia a rolagem pular e a onda sair da tela, e voltar de um item deixava o Feed em outra posição;
+    - a causa: toda gravação publicava no `FiscalChangeHub`, a sessão subia a `generation`, e a `FeedScreen` recarregava o Feed; no iPhone, o iCloud também publica mudanças;
+    - a curtida grava sem publicar, e o `FeedModel` só troca `items` quando a lista nova é diferente, para uma recarga com os mesmos dados não mexer na rolagem.
+
 ## Structure
 
 | Arquivo | Mudança |
@@ -276,11 +286,12 @@ classDiagram
 | `FiscalKit/Sources/FeatureCore/Export/DataArchive.swift`, `DataExportModel.swift` | `liked` |
 | `FiscalKit/Sources/AppShell/FiscalWindow.swift` | Cria e põe o `LikeController` no ambiente |
 | `FiscalKit/Sources/AppShell/MainScreen.swift` | O `FollowSync` também carrega as curtidas a cada sessão e mostra o erro delas |
+| `FiscalKit/Sources/FeatureFeed/FeedModel.swift` | `rebuild()` só troca `items` quando a lista nova é diferente |
 | `FiscalKit/Sources/FeatureFeed/FeedModel+Text.swift` | `symbol(_:)` usa `FeedLikedText.symbol`, para a linha e a lista terem o mesmo símbolo |
 | `FiscalKit/Sources/AppShell/RouteScreen.swift` | `.liked` abre a `FeedLikedScreen` |
 | `FiscalKit/Sources/FeatureFeed/FeedLike.swift` | Novo: `FeedLikeButton`, `FeedLikeWash` e o espaço de coordenadas |
 | `FiscalKit/Sources/FeatureFeed/FeedLikedScreen.swift` | Novo |
-| `FiscalKit/Sources/FeatureFeed/FeedRows.swift` | Coração no rodapé e a faixa atrás da linha |
+| `FiscalKit/Sources/FeatureFeed/FeedRows.swift` | Coração no cabeçalho, ao lado da data, e a faixa atrás da linha |
 | `FiscalKit/Sources/FeatureFeed/FeedHighlightHero.swift` | Coração e faixa entre o fundo e o conteúdo |
 | `FiscalKit/Sources/FeatureFeed/FeedScreen.swift` | Menu "Meu apoio e curtidas" e `EffectsWarmUp.compile()` |
 | `FiscalKit/Package.swift` | `ByescaleiraEffects` no `FeatureFeed` |
@@ -333,13 +344,14 @@ classDiagram
      - `unlike` apaga pelo `itemID`;
      - `liked` ordena por `likedAt`, a mais recente primeiro;
      - `resetLikes` apaga tudo;
-     - toda gravação passa pelo `commit()`.
+     - a gravação salva o contexto sem publicar no `FiscalChangeHub`: a curtida não muda nada no resto do app, e publicar subia a `session.generation`, que recarregava o Feed, pulava a rolagem e tirava a onda da tela (visto no iPhone em 06/11/2026).
    - **Verificação:** `LikeStoreTests`:
      - curtir duas vezes o mesmo id deixa uma linha;
      - a ordem;
      - descurtir;
      - apagar tudo;
-     - o `Device.store` fora do backup depois de curtir.
+     - o `Device.store` fora do backup depois de curtir;
+     - curtir e descurtir não mudam o `localRevision` do `FiscalChangeHub`.
    - **Depende de:** 2 e 3.
    - **Cobre:** requisitos 3, 8 e 10.
 5. **Exportação** `[P]`
@@ -400,7 +412,8 @@ classDiagram
    - **Cobre:** requisitos 1, 4 e 5.
 9. **Linha e cartões do topo**
    - **`FeedCard`:**
-     - ganha, no fim do conteúdo, uma linha com o coração à direita;
+     - o `FeedCardHeader` põe o coração depois da data, na mesma linha; nos tamanhos de acessibilidade, a data e o coração ficam numa linha própria, abaixo de quem;
+     - o conteúdo não ganha linha nova, e o "Ver a fonte" volta ao lugar de antes;
      - a faixa vai num `background` que fica atrás do `CardBackdropButton`, sem roubar o toque.
    - **Destaque do topo:**
      - `FeedHighlightHero` põe o coração no canto inferior direito, no rodapé, depois do botão do método;
