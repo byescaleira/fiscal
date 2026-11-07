@@ -169,6 +169,7 @@ classDiagram
     }
     class PartyPalette {
         +hearts: PartyPalette
+        +liking(party: String?) PartyPalette
         +confetti(lightened: Double) [Color]
     }
     class FeedLikedScreen
@@ -245,7 +246,6 @@ classDiagram
     - um arquivo antigo, sem o campo, continua sendo lido.
 11. **Dependência:**
     - o `FeatureFeed` usa o `ByescaleiraEffects` do kit `0.12.0` (Approach 17);
-    - o kit continua a partir da 0.11.0, sem versão nova;
     - a branch `feature/like` sai da `feature/metal-exploration` e só vira PR depois do merge do [PR #18](https://github.com/byescaleira/fiscal/pull/18).
 12. **Tamanho:** L, por causa do dado novo com migração, numa fase só, que segue como uma M. A linha entra no roadmap, na etapa 8.3.
 
@@ -267,14 +267,14 @@ classDiagram
 
 16. **Sem onda no Feed** (`spdd-prompt-update` de 06/11/2026, depois do teste no iPhone):
     - o usuário viu a onda no aparelho e preferiu a animação do coração ("a onda não ficou legal, eu acho que a animação com o coração estava mais legal");
-    - a faixa, a onda do kit e a pré-compilação do shader saem do Feed; ficam o coração que troca de vazio para cheio e o toque háptico;
+    - a faixa e a onda do kit saem do Feed (a pré-compilação volta com o confete, Approach 17); ficam o coração que troca de vazio para cheio e o toque háptico;
     - o `byescaleira-kit` continua com a `View.ripple(origin:trigger:)`, sem uso no app;
     - o ADR 0027 deixa a regra da faixa; o ADR 0026 continua valendo para a carta.
 
 17. **Confete de corações** (`spdd-prompt-update` de 06/11/2026, aprovado no iPhone: "ficou muito bom", "deu certo, pode formalizar"):
     - o usuário queria o coração explodindo em confete, "algo mais complexo e elaborado já que estamos fazendo com o metal", e só de corações, "relacionados a cor do partido do card, caso não tenha partido, faz vermelho";
     - a explosão é a `View.likeBurst(trigger:colors:)` do `byescaleira-kit` 0.12.0 ([KIT-016](https://github.com/byescaleira/byescaleira-kit/blob/main/spdd/prompt/KIT-016-202611061700-%5BFeat%5D-effects-like-burst.md)): o coração encolhe e salta, e um `colorEffect` desenha anel, brilho, 42 corações com giro, subida e gravidade, e brilhos, por 1,15 s;
-    - as cores vêm de `PartyPalette.confetti(lightened:)`: as duas do partido e as mesmas clareadas; sem partido, `PartyPalette.hearts` (tons de vermelho); no destaque do topo, clareadas com `.opacitySoft`;
+    - as cores vêm de `PartyPalette.liking(party:)` e `confetti(lightened:)`: as duas do partido e as mesmas clareadas; sem partido, `PartyPalette.hearts` (tons de vermelho); no destaque do topo, clareadas com `.opacitySoft`;
     - a linha usa o partido de quem aparece no cabeçalho; o destaque, o do autor;
     - o ADR 0026 ganhou a exceção da cor (regra 7); o resto do efeito é igual para todos.
 18. **Recarga sem pulo** (`spdd-prompt-update` de 06/11/2026, achado no iPhone):
@@ -301,9 +301,10 @@ classDiagram
 | `FiscalKit/Sources/AppShell/FiscalWindow.swift` | Cria e põe o `LikeController` no ambiente |
 | `FiscalKit/Sources/AppShell/MainScreen.swift` | O `FollowSync` também carrega as curtidas a cada sessão e mostra o erro delas |
 | `FiscalKit/Sources/FeatureFeed/FeedModel.swift` | `rebuild()` só troca `items` quando a lista nova é diferente; a recarga mantém páginas e anos já carregados |
-| `FiscalKit/Sources/FiscalDesignSystem/Styles/PartyPalette.swift` | `hearts` e `confetti(lightened:)` |
+| `FiscalKit/Sources/FiscalDesignSystem/Styles/PartyPalette.swift` | `hearts`, `liking(party:)` e `confetti(lightened:)` |
+| `FiscalKit/Tests/FiscalDesignSystemTests/PartyPaletteConfettiTests.swift` | Novo |
 | `FiscalKit/Package.swift`, `Package.resolved` | `byescaleira-kit` a partir de `0.12.0` e `ByescaleiraEffects` no `FeatureFeed` |
-| `FiscalKit/Tests/FeatureFeedTests/FeedModelTests.swift` | `aRefreshKeepsWhatWasAlreadyShown` |
+| `FiscalKit/Tests/FeatureFeedTests/FeedModelTests.swift` | `aRefreshWithTheSameDataLeavesTheListAlone` e `aRefreshKeepsWhatWasAlreadyShown` |
 | `FiscalKit/Sources/FeatureFeed/FeedModel+Text.swift` | `symbol(_:)` usa `FeedLikedText.symbol`, para a linha e a lista terem o mesmo símbolo |
 | `FiscalKit/Sources/AppShell/RouteScreen.swift` | `.liked` abre a `FeedLikedScreen` |
 | `FiscalKit/Sources/FeatureFeed/FeedLike.swift` | Novo: `FeedLikeButton`, o estilo do coração e as cores do confete |
@@ -461,7 +462,7 @@ classDiagram
     - **Textos:** `scripts/strings.sh`, com as chaves em inglês e pt-BR no catálogo.
     - **Documentos:**
       - `CHANGELOG` em Unreleased;
-      - "Efeitos" no design system: o curtir anima só o coração;
+      - "Efeitos" no design system: o curtir com o coração e o confete de corações;
       - backlog: sai "Onda no curtir" e entra "Curtir a apuração";
       - roadmap: a linha 8.3 da FSC-024;
       - ADR 0027 e índice de ADRs.
@@ -481,7 +482,7 @@ classDiagram
 - **Código:**
   - zero comentários e zero avisos;
   - tokens do design system (`.badgeL`, `.opacityStrong`), sem número solto;
-  - Swift Testing em `LikedItem`, no armazenamento, na migração, no `LikeController`, na rota e na exportação.
+  - Swift Testing em `LikedItem`, no armazenamento, na migração, no `LikeController`, na rota, na exportação, na paleta do confete (`PartyPalette.liking(party:)` e `confetti(lightened:)`) e na recarga do Feed (lista igual não muda, páginas mantidas).
 - **Textos:**
   - chaves em inglês com tradução pt-BR: "Like", "Liked items", "My Support and liked items", "Unlike", "Delete liked items", "Nothing liked", "This item left the Feed" e o rodapé de privacidade;
   - "Curtidas" e "Curtir", nunca "Likes" na tela.
@@ -522,8 +523,8 @@ classDiagram
   - o `DataArchive` ganha um campo opcional.
 - **Rótulo de privacidade:** não muda, porque nada sai do aparelho.
 - **Dependência:**
-  - nenhuma dependência nova;
-  - o kit continua na 0.11.0;
+  - nenhuma dependência nova de terceiros;
+  - o `byescaleira-kit` sobe para a `0.12.0`, pela `View.likeBurst` (KIT-016), e o `FeatureFeed` passa a usar o `ByescaleiraEffects`;
   - a FSC-024 vira PR só depois do merge do PR #18;
   - push e merge só com o ok do usuário, a cada vez.
 - **Fora de escopo:**

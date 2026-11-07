@@ -1,21 +1,21 @@
-# QA da FSC-024: curtir no Feed com a onda
+# QA da FSC-024: curtir no Feed
 
 - **Canvas:** [FSC-024](../../../spdd/prompt/FSC-024-202611061418-[Feat]-feed-like-with-ripple.md)
-- **Ambiente:** simulador "Fiscal Metal iPhone Duo" (iOS 27.1), com os dados publicados, em 06/11/2026. Build com o `byescaleira-kit` 0.11.0.
+- **Ambiente:** simulador "Fiscal Metal iPhone Duo" (iOS 27.1), com os dados publicados, em 06/11/2026; a primeira rodada usou o `byescaleira-kit` 0.11.0, e o confete, a 0.12.0. Depois do teste no iPhone, as linhas 1, 4 e 9 valem para o confete; as capturas da faixa ficam como histórico.
 - **iPhone físico:** não usado. O toque háptico, a onda em 120 Hz e o custo da faixa ficam para a validação no aparelho, junto da carta da FSC-023, no [backlog](../../backlog.md).
 - **Como a onda foi capturada:** gravação da tela (`simctl io recordVideo`) e quadros tirados com o `ffmpeg`, porque a faixa dura 1,6 s.
 
 | # | Cenário | Roteiro | Resultado | Evidência |
 | --- | --- | --- | --- | --- |
-| 1 | Curtir | Tocar no coração de uma linha e do destaque do topo | passou | [Destaque](highlight-wash.png): faixa branca entre o fundo e o conteúdo, com a onda chegando à borda. [Linha](row-wash-sequence.png): faixa na cor de destaque que some; o texto e o retrato não se mexem. [Coração cheio](row-liked.png) |
+| 1 | Curtir | Tocar no coração de uma linha | passou | [Confete de corações](like-burst-sequence.png) azuis de um deputado do Republicanos, no simulador; no iPhone, aprovado pelo usuário ("ficou muito bom"). Cor por partido e vermelho sem partido em `PartyPaletteConfettiTests` (`aPartyUsesItsOwnColors`, `withoutAPartyTheHeartsAreRed`); a captura do vermelho não foi feita, porque o simulador travou |
 | 2 | Descurtir | Tocar de novo | passou | O coração volta a vazio, sem faixa. `LikeControllerTests.likesAndUnlikes` |
 | 3 | Guardado | Fechar e abrir o app | passou | O destaque curtido continua cheio depois de reabrir. `LikeStoreTests.aLikeSurvivesReopeningAndStaysOutOfBackups` |
-| 4 | Sem movimento | Reduzir movimento ligado, curtir | passou | [Sequência](reduce-motion-sequence.png): o coração enche, sem faixa e sem onda. O modo leve usa a mesma regra (`MotionBudget.isConstrained`), não testado à parte |
+| 4 | Sem movimento | Reduzir movimento ligado, curtir | não executável aqui | O simulador travou na segunda rodada. Prova: o `likeBurst` do kit 0.12.0 não salta nem explode com `EffectMotion.isStill` (Reduzir movimento ou o modo leve), a mesma regra da `KIT-014`; a captura da primeira rodada mostra o coração enchendo sem efeito. Fica para o iPhone |
 | 5 | VoiceOver | Coração como alternância | passou em código; leitura não executável aqui | O botão é um `Toggle` com `accessibilityRepresentation`, rótulo "Curtir". A leitura em voz fica para o iPhone, com a validação da carta (canvas, Operation 9) |
 | 6 | Lista "Curtidas" | Menu do coração › Curtidas | passou | [Menu](feed-menu.png) e [lista](liked-list.png), mais recente primeiro. A proposta ainda no Feed abre o mesmo detalhe da linha. Destinos em `NavigationTests.eachLikedItemOpensItsOwnScreen` e `LikeControllerTests.anItemStillInTheFeedOpensWhatTheFeedShows` |
 | 7 | Lista vazia | Depois de apagar | passou | [Vazia](liked-empty.png): "Nada curtido" e "Toque no coração de um item do Feed para guardar aqui." |
 | 8 | Apagar curtidas | Lixeira › confirmar | passou | [Confirmação](erase-confirm.png). "Descurtir" ao arrastar e no menu de contexto, em `LikeControllerTests.removingAndErasing`; os gestos não foram feitos no simulador |
-| 9 | Destaque do topo | Coração branco no rodapé do destaque | passou | [Destaque](highlight-wash.png). A apuração ficou fora (Approach 13) |
+| 9 | Destaque do topo | Curtir o destaque | não executável aqui | O coração branco no rodapé do destaque está nas capturas da primeira rodada ([destaque](highlight-wash.png)); o confete clareado (`confetti(lightened: .opacitySoft)`, em `PartyPaletteConfettiTests.theConfettiHasFourTonesFromTheParty`) não foi capturado, porque o simulador travou. Fica para o iPhone. A apuração ficou fora (Approach 13) |
 | 10 | Privacidade | Modelos e backup | passou em teste | `SupportPrivacyTests`, `DeviceStoreTests`, `LikeStoreTests` e `DataExportModelTests.exportsTheLikedItems`. Nenhuma referência a curtidas em widget, Spotlight, Siri, `FiscalEvents` ou cartaz (`git grep` de `LikeController`, `LikedItem` e `likes` só acha o Feed, a janela, a navegação, a exportação e a camada de dados) |
 | 11 | Migração | Banco V4 aberto na V5 | passou em teste | `SchemaMigrationTests.aFourthVersionStoreKeepsSupportAndFollowsWithNoLikes`; o app abriu no simulador sobre um banco existente |
 | 12 | Curtir não muda o Feed | Ordem e filtro | passou | O `FeedModel` não conhece curtidas; a ordem do Feed foi a mesma antes e depois de curtir nas capturas |

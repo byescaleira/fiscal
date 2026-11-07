@@ -40,8 +40,7 @@ struct FeedLikeButton: View {
     }
 
     private var confetti: [Color] {
-        let palette = party.flatMap { $0.isEmpty ? nil : PartyPalette.of(party: $0) } ?? .hearts
-        return palette.confetti(lightened: ink == nil ? 0 : .opacitySoft)
+        PartyPalette.liking(party: party).confetti(lightened: ink == nil ? 0 : .opacitySoft)
     }
 }
 

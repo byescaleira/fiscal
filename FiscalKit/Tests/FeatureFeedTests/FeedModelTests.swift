@@ -2,6 +2,7 @@ import FeatureCore
 import FiscalData
 import FiscalDomain
 import Foundation
+import Observation
 import Testing
 
 @testable import FeatureFeed
@@ -137,6 +138,19 @@ struct FeedModelTests {
         #expect(model.visible.count == FeedModel.pageSize)
     }
 
+    @Test func aRefreshWithTheSameDataLeavesTheListAlone() async throws {
+        let model = try await makeModel(following: ["tabata-amaral"])
+        await model.load()
+        let changes = Changes()
+        withObservationTracking {
+            _ = model.items
+        } onChange: {
+            changes.count += 1
+        }
+        await model.load()
+        #expect(changes.count == 0)
+    }
+
     @Test func aRefreshKeepsWhatWasAlreadyShown() async throws {
         let model = try await makeModel(following: ["tabata-amaral", "nikolas-ferreira"])
         await model.load()
@@ -146,9 +160,11 @@ struct FeedModelTests {
             turns += 1
         }
         let shown = model.visible.map(\.id)
+        let wasAtEnd = model.isAtEnd
         try #require(shown.count > FeedModel.pageSize)
         await model.load()
         #expect(Array(model.visible.map(\.id).prefix(shown.count)) == shown)
+        #expect(model.isAtEnd == wasAtEnd)
     }
 
     @Test func whatIsOnScreenNeverMovesWhenMoreLoads() async throws {
@@ -278,4 +294,8 @@ struct FeedModelTests {
         #expect(model.visible.isEmpty)
         #expect(model.emptyMessage.isEmpty == false)
     }
+}
+
+private final class Changes: @unchecked Sendable {
+    var count = 0
 }

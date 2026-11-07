@@ -17,6 +17,11 @@ public struct PartyPalette: Sendable, Equatable {
 
     public static let hearts = make(0xD7263D, 0xF25C78)
 
+    public static func liking(party: String?) -> PartyPalette {
+        guard let party, !party.isEmpty else { return hearts }
+        return of(party: party)
+    }
+
     public func confetti(lightened amount: Double) -> [Color] {
         [
             primary.mix(with: .white, by: amount), secondary.mix(with: .white, by: amount),
