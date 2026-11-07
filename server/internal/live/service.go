@@ -6,55 +6,31 @@ import (
 	"errors"
 	"log"
 	"os"
+	"path/filepath"
 	"sync"
-	"sync/atomic"
 	"time"
 
-	"liveresults/internal/apns"
-	"liveresults/internal/store"
 	"liveresults/internal/tse"
 )
-
-var ErrNotReady = errors.New("race not ready")
-
-type Registry interface {
-	ForRace(raceID string) []store.Registration
-	Delete(token string) bool
-}
-
-type Stats struct {
-	Registrations int    `json:"registrations"`
-	Sent          int64  `json:"sent"`
-	Failed        int64  `json:"failed"`
-	Removed       int64  `json:"removed"`
-	Event         string `json:"event"`
-}
 
 type Service struct {
 	defs       []tse.Definition
 	source     tse.Source
-	sender     apns.Sender
-	registry   Registry
 	now        func() time.Time
 	statePath  string
 	publishDir string
-	workers    int
 	logger     *log.Logger
 
 	mu        sync.RWMutex
 	races     map[string]tse.Race
-	ended     map[string]bool
 	fetchedAt time.Time
 }
 
 type Options struct {
 	Source     tse.Source
-	Sender     apns.Sender
-	Registry   Registry
 	Now        func() time.Time
 	StatePath  string
 	PublishDir string
-	Workers    int
 	Logger     *log.Logger
 }
 
@@ -62,30 +38,22 @@ func New(o Options) *Service {
 	if o.Now == nil {
 		o.Now = time.Now
 	}
-	if o.Workers <= 0 {
-		o.Workers = 8
-	}
 	if o.Logger == nil {
 		o.Logger = log.Default()
 	}
 	return &Service{
 		defs:       tse.Definitions(),
 		source:     o.Source,
-		sender:     o.Sender,
-		registry:   o.Registry,
 		now:        o.Now,
 		statePath:  o.StatePath,
 		publishDir: o.PublishDir,
-		workers:    o.Workers,
 		logger:     o.Logger,
 		races:      map[string]tse.Race{},
-		ended:      map[string]bool{},
 	}
 }
 
 type state struct {
 	Races     []tse.Race `json:"races"`
-	Ended     []string   `json:"ended"`
 	FetchedAt time.Time  `json:"fetchedAt"`
 }
 
@@ -111,9 +79,6 @@ func (s *Service) LoadState() error {
 			s.races[r.ID] = r
 		}
 	}
-	for _, id := range st.Ended {
-		s.ended[id] = true
-	}
 	s.fetchedAt = st.FetchedAt
 	return nil
 }
@@ -122,24 +87,43 @@ func (s *Service) saveState() {
 	if s.statePath == "" {
 		return
 	}
-	s.mu.RLock()
-	st := state{FetchedAt: s.fetchedAt}
-	for _, d := range s.defs {
-		if r, ok := s.races[d.ID]; ok {
-			st.Races = append(st.Races, r)
-		}
-		if s.ended[d.ID] {
-			st.Ended = append(st.Ended, d.ID)
-		}
-	}
-	s.mu.RUnlock()
-	data, err := json.Marshal(st)
+	races, fetchedAt := s.Snapshot()
+	data, err := json.Marshal(state{Races: races, FetchedAt: fetchedAt})
 	if err == nil {
-		err = store.WriteFileAtomic(s.statePath, data)
+		err = writeFileAtomic(s.statePath, data)
 	}
 	if err != nil {
 		s.logger.Printf("save state: %v", err)
 	}
+}
+
+func writeFileAtomic(path string, data []byte) error {
+	dir := filepath.Dir(path)
+	if err := os.MkdirAll(dir, 0o700); err != nil {
+		return err
+	}
+	tmp, err := os.CreateTemp(dir, "."+filepath.Base(path)+".tmp-*")
+	if err != nil {
+		return err
+	}
+	name := tmp.Name()
+	defer os.Remove(name)
+	if err := tmp.Chmod(0o600); err != nil {
+		tmp.Close()
+		return err
+	}
+	if _, err := tmp.Write(data); err != nil {
+		tmp.Close()
+		return err
+	}
+	if err := tmp.Sync(); err != nil {
+		tmp.Close()
+		return err
+	}
+	if err := tmp.Close(); err != nil {
+		return err
+	}
+	return os.Rename(name, path)
 }
 
 func (s *Service) Snapshot() ([]tse.Race, time.Time) {
@@ -152,30 +136,6 @@ func (s *Service) Snapshot() ([]tse.Race, time.Time) {
 		}
 	}
 	return out, s.fetchedAt
-}
-
-func (s *Service) Race(id string) (tse.Race, bool) {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	r, ok := s.races[id]
-	return r, ok
-}
-
-func Changed(old, cur tse.Race) bool {
-	if old.Sections.Counted != cur.Sections.Counted || old.Final != cur.Final || len(old.Candidates) != len(cur.Candidates) {
-		return true
-	}
-	votes := make(map[string]int64, len(old.Candidates))
-	for _, c := range old.Candidates {
-		votes[c.Number] = c.Votes
-	}
-	for _, c := range cur.Candidates {
-		v, ok := votes[c.Number]
-		if !ok || v != c.Votes {
-			return true
-		}
-	}
-	return false
 }
 
 type fetchResult struct {
@@ -198,7 +158,6 @@ func (s *Service) PollOnce(ctx context.Context) {
 		}()
 	}
 	wg.Wait()
-	var toPush []tse.Race
 	updated := false
 	s.mu.Lock()
 	for i, res := range results {
@@ -209,35 +168,18 @@ func (s *Service) PollOnce(ctx context.Context) {
 		}
 		s.fetchedAt = s.now().UTC()
 		updated = true
-		if !res.modified {
-			continue
-		}
-		old, had := s.races[d.ID]
-		s.races[d.ID] = res.race
-		if (!had || Changed(old, res.race)) && !s.ended[d.ID] {
-			toPush = append(toPush, res.race)
+		if res.modified {
+			s.races[d.ID] = res.race
 		}
 	}
 	s.mu.Unlock()
-	if updated {
-		if err := s.publish(); err != nil {
-			s.logger.Printf("publish: %v", err)
-		}
+	if !updated {
+		return
 	}
-	for _, r := range toPush {
-		if ctx.Err() != nil {
-			break
-		}
-		stats := s.dispatch(ctx, r)
-		if stats.Event == "end" {
-			s.mu.Lock()
-			s.ended[r.ID] = true
-			s.mu.Unlock()
-		}
+	if err := s.publish(); err != nil {
+		s.logger.Printf("publish: %v", err)
 	}
-	if updated {
-		s.saveState()
-	}
+	s.saveState()
 }
 
 func (s *Service) Run(ctx context.Context, interval time.Duration) {
@@ -252,76 +194,4 @@ func (s *Service) Run(ctx context.Context, interval time.Duration) {
 			s.PollOnce(ctx)
 		}
 	}
-}
-
-func (s *Service) PushRace(ctx context.Context, id string) (Stats, error) {
-	r, ok := s.Race(id)
-	if !ok {
-		return Stats{}, ErrNotReady
-	}
-	return s.dispatch(ctx, r), nil
-}
-
-func tokenPrefix(token string) string {
-	if len(token) > 6 {
-		return token[:6]
-	}
-	return token
-}
-
-func (s *Service) dispatch(ctx context.Context, r tse.Race) Stats {
-	now := s.now()
-	msg, err := apns.BuildMessage(r, now)
-	if err != nil {
-		s.logger.Printf("push %s: build: %v", r.ID, err)
-		return Stats{}
-	}
-	stats := Stats{Event: "update"}
-	if msg.End {
-		stats.Event = "end"
-	}
-	regs := s.registry.ForRace(r.ID)
-	stats.Registrations = len(regs)
-	if len(regs) == 0 {
-		return stats
-	}
-	var sent, failed, removed atomic.Int64
-	jobs := make(chan store.Registration)
-	var wg sync.WaitGroup
-	workers := min(s.workers, len(regs))
-	for range workers {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			for reg := range jobs {
-				res := s.sender.Send(ctx, apns.Notification{Token: reg.PushToken, Environment: reg.Environment, Priority: msg.Priority, Payload: msg.Payload})
-				switch {
-				case res.OK():
-					sent.Add(1)
-				case res.TokenInvalid():
-					s.registry.Delete(reg.PushToken)
-					removed.Add(1)
-					s.logger.Printf("push race=%s token=%s… status=%d reason=%s removed", r.ID, tokenPrefix(reg.PushToken), res.Status, res.Reason)
-				default:
-					failed.Add(1)
-					if res.Err != nil {
-						s.logger.Printf("push race=%s token=%s… error=%v", r.ID, tokenPrefix(reg.PushToken), res.Err)
-					} else {
-						s.logger.Printf("push race=%s token=%s… status=%d reason=%s", r.ID, tokenPrefix(reg.PushToken), res.Status, res.Reason)
-					}
-				}
-			}
-		}()
-	}
-	for _, reg := range regs {
-		if ctx.Err() != nil {
-			break
-		}
-		jobs <- reg
-	}
-	close(jobs)
-	wg.Wait()
-	stats.Sent, stats.Failed, stats.Removed = sent.Load(), failed.Load(), removed.Load()
-	s.logger.Printf("push race=%s event=%s sections=%.2f registrations=%d sent=%d failed=%d removed=%d", r.ID, stats.Event, r.Sections.Percent, stats.Registrations, stats.Sent, stats.Failed, stats.Removed)
-	return stats
 }

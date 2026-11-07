@@ -162,7 +162,7 @@ func Method(sources []Source) WeightMethod {
 	committee := "Ainda não medido: os arquivos abertos usados não trazem o parecer de comissão."
 	bluesky := "A busca pública do Bluesky (app.bsky.feed.searchPosts em public.api.bsky.app) responde 403 sem autenticação; o sinal fica fora da conta para todos e aparece na lista do que faltou."
 	gdelt := "Limite de uma consulta a cada 5 segundos; cada carga mede uma parte, por ordem de impacto, e guarda o resultado por 3 dias. O que não foi medido fica fora da conta, não vira zero."
-	alert := fmt.Sprintf("Na tela de bloqueio (Live Activity) só entra destaque com peso %d ou mais, de um fato de até %d horas depois do fim do dia dele (horário de Brasília), uma vez por aparelho e por até 8 horas. Dá para desligar em Ajustes.", AlertMinWeight, AlertMaxAgeHours)
+	alert := fmt.Sprintf("Na tela de bloqueio (Atividade ao Vivo) só entra destaque com peso %d ou mais, de um fato de até %d horas depois do fim do dia dele (horário de Brasília), uma vez por dia, num horário que o aparelho aprende pelo seu uso do app, e por até 8 horas. O próprio aparelho escolhe o destaque e agenda o aviso, sem enviar nada a um servidor. Dá para desligar em Ajustes.", AlertMinWeight, AlertMaxAgeHours)
 	return WeightMethod{
 		Version:         WeightMethodVersion,
 		Summary:         "O peso ordena o que cada político faz, de 0 a 100. Ele soma quanto se fala do assunto (repercussão) e o alcance da medida (impacto). A mesma regra vale para todos os políticos e temas, e o peso nunca diz se a medida é boa ou ruim.",

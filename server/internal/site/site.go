@@ -87,13 +87,6 @@ type Release struct {
 	Buckets     map[string]int `json:"buckets"`
 	Base        string         `json:"base,omitempty"`
 	Rebuilt     int            `json:"rebuilt"`
-	Origin      *Origin        `json:"origin,omitempty"`
-}
-
-type Origin struct {
-	First     []string `json:"first"`
-	OnMissing []string `json:"onMissing"`
-	MaxAge    int      `json:"maxAge"`
 }
 
 type Stager struct {
@@ -101,7 +94,6 @@ type Stager struct {
 	Root    string
 	Keep    int
 	Rules   Rules
-	Origin  *Origin
 	Now     func() time.Time
 	Logger  *log.Logger
 }
@@ -387,7 +379,7 @@ func (s *Stager) build(tmp, name, kind string, paths []string, indexed map[strin
 }
 
 func (s *Stager) newRelease(name, kind string, logical, people int) Release {
-	return Release{Release: name, Kind: kind, Layout: Layout, GeneratedAt: s.now().UTC().Format(time.RFC3339), Logical: logical, People: people, Buckets: map[string]int{CityPeopleIndex.Dir: CityPeopleIndex.Count, VoteBundles.Dir: VoteBundles.Count}, Origin: s.Origin}
+	return Release{Release: name, Kind: kind, Layout: Layout, GeneratedAt: s.now().UTC().Format(time.RFC3339), Logical: logical, People: people, Buckets: map[string]int{CityPeopleIndex.Dir: CityPeopleIndex.Count, VoteBundles.Dir: VoteBundles.Count}}
 }
 
 func (s *Stager) finish(tmp string, rel Release, rebuilt int) (Release, error) {
