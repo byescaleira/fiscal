@@ -35,3 +35,16 @@
 **Pontos conferidos pelo revisor de canvas:** a apuração fora (Approach 13), as rotas do Feed na lista (Approach 9) e o coração branco no destaque batem com o código.
 
 **Segurança:** nada sai do aparelho. A curtida fica no `Device.store`, fora do iCloud e do backup, e só vai na exportação pedida pela pessoa. O rótulo de privacidade não muda.
+
+## Segunda rodada: ajustes depois do iPhone (`046aeee..51a21b6`)
+
+- **Escopo:** coração no cabeçalho, curtir sem recarregar o Feed, saída da onda, confete de corações com o kit 0.12.0 nas cores do partido, e a recarga que mantém páginas e anos (Approach 14 a 18; ADR 0026, regra 7).
+- **Painel (interface, código e segurança):** aprovado, sem bloqueador. O "deveria" sobre Reduzir movimento já é atendido no kit: o `likeBurst` usa `EffectMotion.isStill`. As sugestões de teste (paleta e fim da lista na recarga) entraram.
+- **Canvas:** Needs Rework na primeira leitura, com 5 críticos de sincronia e de prova:
+  - a dependência ainda citava a 0.11.0;
+  - o QA ainda mostrava a faixa;
+  - a paleta não tinha teste.
+
+  Depois de `51a21b6`: **Ready to Merge**, com os cinco resolvidos.
+- **Risco aberto:** o confete com Reduzir movimento, o confete clareado no destaque e o vermelho sem partido não foram vistos em tela, porque o simulador travou. Os testes da paleta e o código do kit cobrem a regra, e a validação visual está no backlog do iPhone.
+- **Veredito final:** Ready to Merge.
