@@ -6,36 +6,34 @@ import Observation
 @MainActor @Observable
 public final class ProfileModel {
     public let slug: String
-    public let showsFactChecks = false
     public private(set) var profile: Profile?
-    public private(set) var lens: Lens?
     public private(set) var votes: PublicList<PersonVote>?
     public private(set) var proposals: PublicList<Proposal>?
     public private(set) var speeches: PublicList<Speech>?
     public private(set) var expenses: ExpenseList?
     public private(set) var actions: ActionList?
     public private(set) var weightMethod: WeightMethod?
-    public private(set) var context: PersonContext?
-    public var selectedIndicatorID: String?
-    public private(set) var isFollowing = false
+    public private(set) var checks: FactCheckList?
+    public private(set) var selectedExpenseYear: Int?
+    public private(set) var hasFailedSource = false
+    public internal(set) var currentChapter: ProfileChapter?
     public private(set) var hasJustFollowed = false
     public private(set) var phase: PublicDataPhase = .idle
     public var error: FiscalError?
     @ObservationIgnored private let service: (any PublicDataService)?
     @ObservationIgnored private let follows: (any FollowRepository)?
-    @ObservationIgnored private let lensRepository: (any LensRepository)?
+    @ObservationIgnored private let requests = PublicDataRequests()
     @ObservationIgnored private let now: @Sendable () -> Date
     @ObservationIgnored let calendar: Calendar
 
     public init(
         slug: String, service: (any PublicDataService)?, follows: (any FollowRepository)? = nil,
-        lens: (any LensRepository)? = nil, now: @escaping @Sendable () -> Date = { .now },
-        calendar: Calendar = FiscalCalendar.current
+        now: @escaping @Sendable () -> Date = { .now },
+        calendar: Calendar = GregorianCalendar.current
     ) {
         self.slug = slug
         self.service = service
         self.follows = follows
-        lensRepository = lens
         self.now = now
         self.calendar = calendar
     }
@@ -63,6 +61,11 @@ public final class ProfileModel {
             ? profile.officeTitle : "\(profile.officeTitle) · \(profile.uf.uppercased())"
     }
 
+    public var identityLine: String {
+        guard let profile else { return "" }
+        return "\(profile.party) · \(officeLine)"
+    }
+
     public var statusText: String? { profile?.status.title }
 
     public var isInOffice: Bool { profile?.status == .inOffice }
@@ -87,34 +90,42 @@ public final class ProfileModel {
 
     public func load() async {
         if profile == nil { phase = .loading }
-        phase = await PublicDataPhase.settle(after: phase) {
+        phase = await PublicDataPhase.settle(after: phase, in: requests) {
             guard let service else { throw PublicDataError.unavailable }
-            profile = try await service.profile(slug: slug)
-            isFollowing = (try? await follows?.isFollowing(slug: slug)) ?? false
-            lens = try? await lensRepository?.lens()
+            return try await service.profile(slug: slug)
+        } apply: { loaded in
+            profile = loaded
         }
         await loadActivity()
     }
 
-    public func toggleFollow() async {
-        guard let follows, let card = profile?.card else { return }
-        do {
-            if isFollowing {
-                try await follows.unfollow(slug: slug)
-            } else {
-                try await follows.follow(card, at: now())
-            }
-            isFollowing.toggle()
-            hasJustFollowed = isFollowing
-        } catch {
-            self.error = .onSave
-        }
+    public var followCard: PersonCard? { canFollow ? profile?.card : nil }
+
+    public func followChanged(to isFollowing: Bool) {
+        hasJustFollowed = isFollowing
+    }
+
+    public var expenseYears: [Int] {
+        (profile?.years ?? []).filter { ($0.quotaCents ?? 0) > 0 }.map(\.year).sorted(by: >)
+    }
+
+    public var expenseYear: Int { selectedExpenseYear ?? expenseYears.first ?? year }
+
+    public func selectExpenseYear(_ year: Int) async {
+        guard let service, year != expenseYear else { return }
+        selectedExpenseYear = year
+        let slug = slug
+        let loaded = await Self.fetch(true) { try await service.expenses(slug: slug, year: year) }
+        guard selectedExpenseYear == year else { return }
+        hasFailedSource = loaded.failed
+        expenses = loaded.value
     }
 
     private func loadActivity() async {
         guard let service, let profile else { return }
         let slug = slug
         let year = year
+        let expenseYear = expenseYear
         let wanted = Set(profile.coverage.filter { $0.status == .available }.map(\.kind))
         async let votes = Self.fetch(wanted.contains("votes")) {
             try await service.votes(slug: slug, year: year)
@@ -126,28 +137,35 @@ public final class ProfileModel {
             try await service.speeches(slug: slug, year: year)
         }
         async let expenses = Self.fetch(wanted.contains("expenses")) {
-            try await service.expenses(slug: slug, year: year)
+            try await service.expenses(slug: slug, year: expenseYear)
         }
         async let actions = Self.fetch(true) { try await service.actions(slug: slug) }
         async let method = Self.fetch(true) { try await service.weightMethod() }
-
-        async let context = Self.fetch(true) {
-            try await Self.context(for: profile, service: service)
-        }
-        let loaded = await (votes, proposals, speeches, expenses, context)
-        self.votes = loaded.0
-        self.proposals = loaded.1
-        self.speeches = loaded.2
-        self.expenses = loaded.3
-        self.actions = await actions ?? nil
-        weightMethod = await method ?? nil
-        self.context = loaded.4 ?? nil
+        async let checks = Self.fetch(true) { try await service.checks(slug: slug) }
+        let loaded = await (votes, proposals, speeches, expenses)
+        let extras = await (actions, method, checks)
+        self.votes = loaded.0.value
+        self.proposals = loaded.1.value
+        self.speeches = loaded.2.value
+        self.expenses = loaded.3.value
+        self.actions = extras.0.value ?? nil
+        weightMethod = extras.1.value ?? nil
+        self.checks = extras.2.value ?? nil
+        hasFailedSource =
+            loaded.0.failed || loaded.1.failed || loaded.2.failed || loaded.3.failed
+            || extras.0.failed || extras.2.failed
     }
 
     nonisolated private static func fetch<Value: Sendable>(
         _ wanted: Bool, _ work: @Sendable () async throws -> Value
-    ) async -> Value? {
-        guard wanted else { return nil }
-        return try? await work()
+    ) async -> (value: Value?, failed: Bool) {
+        guard wanted else { return (nil, false) }
+        do {
+            return (try await work(), false)
+        } catch PublicDataError.notFound {
+            return (nil, false)
+        } catch {
+            return (nil, true)
+        }
     }
 }

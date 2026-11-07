@@ -113,10 +113,23 @@ func errorCode(t *testing.T, rec *httptest.ResponseRecorder) string {
 	return body.Error.Code
 }
 
+func TestHealthReportsVersion(t *testing.T) {
+	h := New(Config{Races: &fakeRaces{}, Registrations: &fakeRegs{}, Version: "1.2.3", Logger: log.New(io.Discard, "", 0)})
+	rec := httptest.NewRecorder()
+	h.ServeHTTP(rec, httptest.NewRequest("GET", "/api/health", nil))
+	var body struct {
+		OK      bool   `json:"ok"`
+		Version string `json:"version"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &body); err != nil || rec.Code != 200 || !body.OK || body.Version != "1.2.3" {
+		t.Fatalf("health %d %s", rec.Code, rec.Body.String())
+	}
+}
+
 func TestHealthAndHeaders(t *testing.T) {
 	e := newEnv(t, "")
 	rec := e.do("GET", "/api/health", "", nil)
-	if rec.Code != 200 || strings.TrimSpace(rec.Body.String()) != `{"ok":true}` {
+	if rec.Code != 200 || strings.TrimSpace(rec.Body.String()) != `{"ok":true,"version":"dev"}` {
 		t.Fatalf("health %d %s", rec.Code, rec.Body.String())
 	}
 	if rec.Header().Get("Cache-Control") != "no-store" {

@@ -77,18 +77,10 @@ private struct CompareGroupSection: View {
                 CompareMetricRow(metric: metric, columns: columns)
             }
         } header: {
-            VStack(alignment: .leading, spacing: .spaceXS) {
-                Text(verbatim: group.title).sectionTitle()
-                if group.isLensOrdered, compare.showsLensBadge {
-                    LensBadge()
-                }
-            }
-            .textCase(nil)
+            Text(verbatim: group.title).sectionTitle()
+                .textCase(nil)
         } footer: {
             VStack(alignment: .leading, spacing: .space2XS) {
-                if group.isLensOrdered {
-                    Text("Your topics come first. The numbers are the same for everyone.")
-                }
                 if group.id == "themes" {
                     Text(
                         "Estimated: each proposal's topic comes from keywords in its official summary and can miss."
@@ -105,10 +97,8 @@ private struct CompareGroupSection: View {
                     )
                     PeerMethodButton(items: compare.peerItems)
                 }
-                if !group.missing.isEmpty {
-                    Text(
-                        "Not published for these offices: \(group.missing.formatted(.list(type: .and).locale(.app)))"
-                    )
+                if let missing = compare.missingText(for: group) {
+                    Text(verbatim: missing)
                 }
                 if let line = compare.sourceLine { Text(verbatim: line) }
             }
@@ -136,6 +126,6 @@ private struct CompareEmptyState: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.groupedBackground)
+        .background(.plainBackground)
     }
 }

@@ -36,6 +36,11 @@ struct ElectionScheduleTests {
         #expect(current.rounds.map(\.status) == [.past, .today])
         #expect(current.liveRound?.number == 2)
         #expect(!current.isFinished)
+        let live = try #require(current.liveRound)
+        #expect(live.dateOrStatus == live.statusText)
+        #expect(current.rounds.first?.dateOrStatus == current.rounds.first?.shortDate)
+        #expect(live.accessibilityLabel.hasPrefix(live.title))
+        #expect(current.yearText == "2026")
     }
 
     @Test func beforeTheFirstRoundBothRoundsAreUpcoming() throws {

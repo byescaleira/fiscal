@@ -34,6 +34,9 @@ for part in $only; do
 done
 want() { case " $only " in *" $1 "*) return 0 ;; *) return 1 ;; esac; }
 sha="$(git -C "$project_root" rev-parse --short=12 HEAD)"
+marketing="$(sed -n 's/.*MARKETING_VERSION = \([0-9][0-9.]*\);.*/\1/p' "$project_root/Fiscal/Fiscal.xcodeproj/project.pbxproj" | head -n 1)"
+version="$(git -C "$project_root" describe --tags --match 'v[0-9]*' --exact-match 2>/dev/null | sed 's/^v//' || true)"
+[ -n "$version" ] || version="${marketing:-0.0.0}+$sha"
 if [ -n "$(git -C "$project_root" status --porcelain -- server scripts/server-deploy.sh)" ]; then
   echo "server/ tem mudanças sem commit; faça o commit antes do deploy." >&2
   [ "$apply" = 1 ] && exit 1
@@ -46,7 +49,7 @@ run() {
 remote_run() {
   if [ "$apply" = 1 ]; then ssh -o BatchMode=yes -o ConnectTimeout=15 "$host" "$1"; else plan "ssh $host '$1'"; fi
 }
-echo "Fiscal deploy $sha -> $host:$remote (linux/$goarch)"
+echo "Fiscal deploy $version ($sha) -> $host:$remote (linux/$goarch)"
 [ "$apply" = 1 ] || echo "Modo plano (sem --apply): nada é executado."
 echo "1. Compilar no Mac (sem compilar na VPS)"
 run rm -rf "$stage"
@@ -55,9 +58,9 @@ for target in "server:liveresults-server" "ingest:fiscal-ingest" "pages:fiscal-p
   pkg="${target%%:*}"
   bin="${target##*:}"
   if [ "$apply" = 1 ]; then
-    (cd "$server" && GOTOOLCHAIN=go1.26.10 CGO_ENABLED=0 GOOS=linux GOARCH="$goarch" go build -trimpath -ldflags="-s -w" -o "$stage/bin/$bin" "./cmd/$pkg")
+    (cd "$server" && GOTOOLCHAIN=go1.26.10 CGO_ENABLED=0 GOOS=linux GOARCH="$goarch" go build -trimpath -ldflags="-s -w -X main.version=$version" -o "$stage/bin/$bin" "./cmd/$pkg")
   else
-    plan "(cd server && GOTOOLCHAIN=go1.26.10 CGO_ENABLED=0 GOOS=linux GOARCH=$goarch go build -trimpath -ldflags='-s -w' -o .dist/$sha/bin/$bin ./cmd/$pkg)"
+    plan "(cd server && GOTOOLCHAIN=go1.26.10 CGO_ENABLED=0 GOOS=linux GOARCH=$goarch go build -trimpath -ldflags='-s -w -X main.version=$version' -o .dist/$sha/bin/$bin ./cmd/$pkg)"
   fi
 done
 run cp "$server"/deploy/docker/*.Dockerfile "$stage/docker/"

@@ -4,12 +4,10 @@ import Synchronization
 
 public struct OfflinePackRequest: Equatable, Sendable {
     public var followed: [String]
-    public var supported: [String]
     public var placeCode: String?
 
-    public init(followed: [String] = [], supported: [String] = [], placeCode: String? = nil) {
+    public init(followed: [String] = [], placeCode: String? = nil) {
         self.followed = followed
-        self.supported = supported
         self.placeCode = placeCode
     }
 }

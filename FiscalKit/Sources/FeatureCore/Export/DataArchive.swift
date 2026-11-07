@@ -5,13 +5,18 @@ import UniformTypeIdentifiers
 
 public struct DataArchive: Codable, Equatable, Sendable, Transferable {
     public let exportedAt: Date
-    public let lens: Lens?
+    public let support: SupportChoice?
     public let following: [FollowedPerson]
+    public let liked: [LikedItem]?
 
-    public init(exportedAt: Date, lens: Lens?, following: [FollowedPerson]) {
+    public init(
+        exportedAt: Date, support: SupportChoice?, following: [FollowedPerson],
+        liked: [LikedItem]? = nil
+    ) {
         self.exportedAt = exportedAt
-        self.lens = lens
+        self.support = support
         self.following = following
+        self.liked = liked
     }
 
     public static var transferRepresentation: some TransferRepresentation {

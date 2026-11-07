@@ -27,13 +27,11 @@ struct SpendingSection: View {
         Section {
             if !money.spenderPreview.isEmpty {
                 if money.spenders.count > money.spenderPreview.count {
-                    NavigationLink {
-                        MoneySpendersScreen(
+                    RouteLink(
+                        .spenders(
                             title: money.scopeName, spenders: money.spenders,
-                            year: money.spendYear
-                        )
-                        .environment(money)
-                    } label: {
+                            year: money.spendYear)
+                    ) {
                         Text("See All (\(money.spenders.count))")
                             .font(.subheadline.weight(.semibold))
                     }
@@ -104,7 +102,11 @@ private struct SpenderCard: View {
             Button {
                 open(.person(slug: spender.person.slug), in: section)
             } label: {
-                identity.contentShape(.rect)
+                HStack(spacing: .spaceM) {
+                    identity.frame(maxWidth: .infinity, alignment: .leading)
+                    RouteChevron()
+                }
+                .contentShape(.rect)
             }
             .buttonStyle(.plain)
             .accessibilityElement(children: .ignore)
@@ -112,28 +114,36 @@ private struct SpenderCard: View {
             .accessibilityAddTraits(.isButton)
             .accessibilityHint(Text("Opens the profile"))
             Spacer(minLength: 0)
-            if let year = money.spendYear {
-                Button {
-                    open(.expenses(slug: spender.person.slug, year: year), in: section)
-                } label: {
-                    Label("See Receipts", systemImage: "doc.text.magnifyingglass")
-                        .font(.subheadline.weight(.semibold))
-                        .frame(maxWidth: .infinity)
+            AdaptiveRow(spacing: .spaceS) {
+                if let year = money.spendYear {
+                    Button {
+                        open(.expenses(slug: spender.person.slug, year: year), in: section)
+                    } label: {
+                        Label("See Receipts", systemImage: "doc.text.magnifyingglass")
+                            .font(.buttonLabel)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.large)
+                    .tint(Color.primary)
+                } else {
+                    Spacer(minLength: 0)
                 }
-                .buttonStyle(.bordered)
-                .tint(Color.primary)
+                FollowButton(spender.person)
             }
         }
         .padding(.spaceL)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(.groupedRow, in: .rect(cornerRadius: .radiusGroup))
+        .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
+        .followActions(spender.person)
     }
 
     private var identity: some View {
         let card = spender.person
         return VStack(alignment: .leading, spacing: .spaceM) {
             HStack(alignment: .top) {
-                PersonPortrait(slug: card.slug, name: card.name, party: card.party, size: .ring)
+                PersonPortrait(
+                    slug: card.slug, name: card.name, party: card.party, size: .portraitAnimated)
                 Spacer(minLength: .spaceS)
                 PeerBadge(band: spender.band)
             }
@@ -152,7 +162,7 @@ private struct SpenderCard: View {
             }
             VStack(alignment: .leading, spacing: .spaceHairline) {
                 Text(verbatim: money.monthlyText(spender.monthlyCents))
-                    .font(.scoreboardNumber)
+                    .font(.scoreboardTitle)
                     .monospacedDigit()
                     .amountLine()
                 Text(verbatim: money.medianText(spender))
@@ -173,7 +183,7 @@ private struct SpenderCard: View {
     }
 }
 
-struct MoneySpendersScreen: View {
+public struct MoneySpendersScreen: View {
     @Environment(MoneyModel.self) private var money
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
@@ -181,19 +191,31 @@ struct MoneySpendersScreen: View {
     let spenders: [MoneyPlaces.Spender]
     let year: Int?
 
-    var body: some View {
+    public init(title: String, spenders: [MoneyPlaces.Spender], year: Int?) {
+        self.title = title
+        self.spenders = spenders
+        self.year = year
+    }
+
+    public var body: some View {
         AdaptiveList {
             Section {
                 ForEach(spenders) { spender in
-                    Button {
-                        open(.person(slug: spender.person.slug), in: section)
-                    } label: {
-                        SpenderRow(spender: spender)
+                    HStack(spacing: .spaceS) {
+                        Button {
+                            open(.person(slug: spender.person.slug), in: section)
+                        } label: {
+                            SpenderRow(spender: spender)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel(
+                            Text(verbatim: money.accessibilityLabel(for: spender))
+                        )
+                        .accessibilityAddTraits(.isButton)
+                        FollowButton(spender.person)
                     }
-                    .buttonStyle(.plain)
-                    .accessibilityElement(children: .ignore)
-                    .accessibilityLabel(Text(verbatim: money.accessibilityLabel(for: spender)))
-                    .accessibilityAddTraits(.isButton)
+                    .followActions(spender.person)
                 }
             } footer: {
                 Text(verbatim: money.sourceLine(for: .quota))

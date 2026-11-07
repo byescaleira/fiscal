@@ -1,11 +1,12 @@
 #!/bin/bash
 set -euo pipefail
 project_root="$(cd "$(dirname "$0")/.." && pwd)"
+source "$project_root/scripts/kit-access.sh"
 build_root="${FISCAL_BUILD_ROOT:-$HOME/Library/Developer/FiscalBuild}"
 configuration="${1:-Debug}"
 platforms="${2:-ios macos visionos}"
 build() {
-  xcodebuild -workspace "$project_root/Fiscal.xcworkspace" -scheme Production \
+  xcodebuild "${kit_scm[@]}" -workspace "$project_root/Fiscal.xcworkspace" -scheme Production \
     -configuration "$configuration" -destination "$1" -derivedDataPath "$2" \
     -skipPackageUpdates -disableAutomaticPackageResolution CODE_SIGNING_ALLOWED=NO \
     COMPILER_INDEX_STORE_ENABLE=NO ARCHS=arm64 build

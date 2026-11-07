@@ -2,15 +2,15 @@
 
 Serviço mínimo que guarda, por até 24 horas, o resumo **cifrado** que o app envia para o Fiscal na Web (`docs/web.md`). Ele não consegue ler o conteúdo: só guarda o pacote, confere o dono (hash do `ownerToken`) e entrega ao navegador.
 
-- Código: `server.mjs` (Node 22, sem dependências). Testes: `node --test server.test.mjs`.
+- Código: `server.mjs` (Node 22, sem dependências) e `package.json` com a versão (SemVer, `0.1.0` até o lançamento), que o `/bridge/health` devolve: `{"ok":true,"version":"0.1.0"}`. Testes: `node --test server.test.mjs`.
 - Produção: VPS em `/opt/fiscal-bridge`, `docker compose up -d --build`, ouvindo só em `127.0.0.1:3110`, publicado pelo Caddy em `https://fiscal.byescaleira.com/bridge/` (bloco do site, `handle /bridge/*`). O `Cache-Control` do site é condicional (`?Cache-Control`) para não sobrescrever o `no-store` da ponte.
-- Atualizar: copiar `server.mjs`, `Dockerfile` e `compose.yaml` para `/opt/fiscal-bridge` e rodar `docker compose up -d --build`. As sessões ficam em memória: reiniciar apaga as sessões, e o app reenvia no próximo ciclo.
+- Atualizar: copiar `package.json`, `server.mjs`, `Dockerfile` e `compose.yaml` para `/opt/fiscal-bridge` e rodar `docker compose up -d --build`. As sessões ficam em memória: reiniciar apaga as sessões, e o app reenvia no próximo ciclo.
 
 ## Ajustes sem reiniciar
 
 | Campo | Padrão | Faz |
 | --- | --- | --- |
-| `enabled` | `true` | `false` pausa: `PUT`, `GET` e `DELETE` respondem `503 {"error":"paused"}` com `Retry-After: 60`; `/bridge/health` continua `200` com `"paused": true`. |
+| `enabled` | `true` | `false` pausa: `PUT`, `GET` e `DELETE` respondem `503 {"error":"paused"}` com `Retry-After: 60`; `/bridge/health` continua `200` com a versão e `"paused": true`. |
 | `maxSnapshots` | `5000` | Acima disso, sessões novas recebem `503 {"error":"full"}`. |
 | `readPerMinute` | `120` | `GET` por IP por minuto. |
 | `writePerMinute` | `60` | `PUT` e `DELETE` por IP por minuto. |

@@ -128,6 +128,7 @@
 .flag-head { display: flex; justify-content: space-between; align-items: center; gap: var(--space-m); }
 .flag-head .footnote { margin: 2px 0 0; }
 .flag code { font-size: 12px; }
+.flag-description { margin: var(--space-2xs) 0 0; color: var(--secondary); }
 .flag-rollout { display: grid; grid-template-columns: auto minmax(0, 1fr) 48px; gap: var(--space-m); align-items: center; }
 .flag-rollout input { width: 100%; accent-color: var(--tint); }
 .flag-rollout output { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }

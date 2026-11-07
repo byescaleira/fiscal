@@ -8,30 +8,23 @@ struct ProfileAssetsSection: View {
 
     var body: some View {
         if !profile.assetDeclarations.isEmpty {
-            Section {
+            ContentBlock(
+                title: Text("Declared Assets"),
+                footer: [profile.assetsNote, profile.sourceText(for: ["assets"])]
+            ) {
                 ForEach(profile.assetDeclarations) { declaration in
                     DisclosureGroup {
                         ForEach(Array(declaration.items.enumerated()), id: \.offset) { _, item in
-                            LabeledContent {
-                                Text(verbatim: profile.money(item.cents)).monospacedDigit()
-                            } label: {
-                                Text(verbatim: item.kind)
-                            }
-                            .font(.subheadline)
+                            ProfileInfoRow(title: item.kind, value: profile.money(item.cents))
+                                .font(.subheadline)
                         }
                     } label: {
                         ProfileYearLine(
                             year: declaration.year, title: nil,
                             value: profile.money(declaration.totalCents))
                     }
+                    .tint(Color.primary)
                 }
-            } header: {
-                Text("Declared Assets").sectionTitle()
-            } footer: {
-                ProfileFooter(
-                    lines: [
-                        profile.assetsNote, profile.sourceText(for: ["assets"]),
-                    ])
             }
         }
     }
@@ -42,27 +35,24 @@ struct ProfileCampaignsSection: View {
 
     var body: some View {
         if !profile.campaigns.isEmpty {
-            Section {
+            ContentBlock(
+                title: Text("Campaigns"), footer: [profile.sourceText(for: ["campaigns"])]
+            ) {
                 ForEach(Array(profile.campaigns.enumerated()), id: \.offset) { _, campaign in
                     VStack(alignment: .leading, spacing: .spaceXS) {
                         ProfileYearLine(
                             year: campaign.year, title: profile.campaignDetail(campaign),
                             value: nil)
-                        LabeledContent("Raised") {
-                            Text(verbatim: profile.money(campaign.revenueCents)).monospacedDigit()
-                        }
-                        LabeledContent("Spent") {
-                            Text(verbatim: profile.money(campaign.expenseCents)).monospacedDigit()
-                        }
+                        ProfileInfoRow(
+                            title: String(appLocalized: "Raised"),
+                            value: profile.money(campaign.revenueCents))
+                        ProfileInfoRow(
+                            title: String(appLocalized: "Spent"),
+                            value: profile.money(campaign.expenseCents))
                     }
                     .font(.subheadline)
-                    .padding(.vertical, .space2XS)
                     .accessibilityElement(children: .combine)
                 }
-            } header: {
-                Text("Campaigns").sectionTitle()
-            } footer: {
-                ProfileFooter(lines: [profile.sourceText(for: ["campaigns"])])
             }
         }
     }
@@ -73,12 +63,11 @@ struct ProfileTimelineSection: View {
 
     var body: some View {
         if !profile.timeline.isEmpty {
-            Section {
+            ContentBlock(title: Text("Career"), footer: [profile.sourceText(for: ["timeline"])]) {
                 ForEach(Array(profile.timeline.enumerated()), id: \.offset) { _, career in
                     HStack(alignment: .top, spacing: .spaceM) {
                         Text(verbatim: String(career.year))
                             .font(.titleMedium)
-                            .fontWidth(.condensed)
                             .monospacedDigit()
                             .frame(width: .badgeXL, alignment: .leading)
                         VStack(alignment: .leading, spacing: .space2XS) {
@@ -94,13 +83,8 @@ struct ProfileTimelineSection: View {
                             }
                         }
                     }
-                    .padding(.vertical, .space2XS)
                     .accessibilityElement(children: .combine)
                 }
-            } header: {
-                Text("Career").sectionTitle()
-            } footer: {
-                ProfileFooter(lines: [profile.sourceText(for: ["timeline"])])
             }
         }
     }
@@ -111,7 +95,7 @@ struct ProfileCommitteesSection: View {
 
     var body: some View {
         if !profile.committees.isEmpty {
-            Section {
+            ContentBlock(title: Text("Committees"), footer: [profile.sourceText(for: ["votes"])]) {
                 ForEach(Array(profile.committees.enumerated()), id: \.offset) { _, committee in
                     VStack(alignment: .leading, spacing: .space2XS) {
                         Text(verbatim: committee.name).font(.rowTitle)
@@ -122,56 +106,6 @@ struct ProfileCommitteesSection: View {
                     }
                     .accessibilityElement(children: .combine)
                 }
-            } header: {
-                Text("Committees").sectionTitle()
-            } footer: {
-                ProfileFooter(lines: [profile.sourceText(for: ["votes"])])
-            }
-        }
-    }
-}
-
-struct ProfileFactChecksSection: View {
-    @Environment(ProfileModel.self) private var profile
-
-    var body: some View {
-        if profile.showsFactChecks {
-            Section {
-                IconRow(
-                    "Fact checks", detail: "Checks published by fact-checking agencies.",
-                    symbol: "checkmark.bubble", color: .retroDenim)
-            } header: {
-                Text("Fact Checks").sectionTitle()
-            }
-        }
-    }
-}
-
-struct ProfileCoverageSection: View {
-    @Environment(ProfileModel.self) private var profile
-
-    var body: some View {
-        if !profile.coverageLines.isEmpty {
-            Section {
-                ForEach(profile.coverageLines) { line in
-                    HStack(spacing: .spaceM) {
-                        Image(systemName: line.status.symbol)
-                            .foregroundStyle(line.status == .available ? .primary : .secondary)
-                            .frame(width: .badgeS)
-                            .accessibilityHidden(true)
-                        VStack(alignment: .leading, spacing: .spaceHairline) {
-                            Text(verbatim: line.title).font(.rowTitle)
-                            Text(verbatim: line.detail).font(.footnote).foregroundStyle(.secondary)
-                        }
-                    }
-                    .accessibilityElement(children: .combine)
-                }
-            } header: {
-                Text("What the Sources Publish").sectionTitle()
-            } footer: {
-                Text(
-                    "Some state assemblies don't publish attendance, votes or expenses as open data."
-                )
             }
         }
     }
@@ -182,19 +116,42 @@ struct ProfileAboutSection: View {
 
     var body: some View {
         if !profile.aboutLines.isEmpty {
-            Section {
+            ContentBlock(footer: [profile.sourceText]) {
                 ForEach(profile.aboutLines) { line in
-                    LabeledContent {
-                        Text(verbatim: line.value).multilineTextAlignment(.trailing)
-                            .textSelection(.enabled)
-                    } label: {
-                        Text(verbatim: line.title)
-                    }
+                    ProfileInfoRow(title: line.title, value: line.value)
+                        .textSelection(.enabled)
                 }
-            } header: {
-                Text("About").sectionTitle()
-            } footer: {
-                ProfileFooter(lines: [profile.sourceText])
+            }
+        }
+        if !profile.gaps.isEmpty {
+            ContentFooter(lines: profile.gaps)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, .spaceL)
+        }
+    }
+}
+
+struct ProfileInfoRow: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    let title: String
+    let value: String
+
+    var body: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: .spaceHairline) {
+                Text(verbatim: title).foregroundStyle(.secondary)
+                Text(verbatim: value).monospacedDigit()
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .accessibilityElement(children: .combine)
+        } else {
+            LabeledContent {
+                Text(verbatim: value)
+                    .monospacedDigit()
+                    .multilineTextAlignment(.trailing)
+            } label: {
+                Text(verbatim: title)
             }
         }
     }
@@ -209,7 +166,6 @@ private struct ProfileYearLine: View {
         HStack(alignment: .firstTextBaseline, spacing: .spaceM) {
             Text(verbatim: String(year))
                 .font(.amountRow)
-                .fontWidth(.condensed)
                 .monospacedDigit()
             if let title {
                 Text(verbatim: title).font(.subheadline).foregroundStyle(.secondary)
@@ -218,16 +174,6 @@ private struct ProfileYearLine: View {
             if let value {
                 Text(verbatim: value).font(.body.weight(.semibold)).monospacedDigit()
             }
-        }
-    }
-}
-
-extension Profile.Coverage.Status {
-    var symbol: String {
-        switch self {
-        case .available: "checkmark.circle"
-        case .notPublished: "minus.circle"
-        case .notLoaded: "clock"
         }
     }
 }

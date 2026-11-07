@@ -128,6 +128,10 @@ public struct PublicList<Item: Codable & Hashable & Sendable>: Codable, Hashable
     public static var empty: PublicList { PublicList(items: [], total: 0) }
 }
 
+extension Expense {
+    public var isCompany: Bool { document?.filter(\.isNumber).count == 14 }
+}
+
 public struct ExpenseList: Codable, Hashable, Sendable {
     public struct MonthTotal: Codable, Hashable, Sendable {
         public let month: Int

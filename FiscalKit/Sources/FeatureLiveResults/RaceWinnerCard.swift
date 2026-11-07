@@ -5,7 +5,7 @@ import SwiftUI
 
 struct RaceWinnerCard: View {
     @Environment(LiveResultsModel.self) private var results: LiveResultsModel?
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @State private var appeared = false
     let summary: RaceSummary
     let winner: RaceSummary.Contender
@@ -15,11 +15,12 @@ struct RaceWinnerCard: View {
         let palette = PartyPalette.of(party: winner.candidate.party, fallback: 0)
         VStack(alignment: .leading, spacing: .spaceL) {
             RaceHeroHeader(summary: summary)
-            if opensDetail, let results {
-                NavigationLink {
-                    RaceDetailScreen(raceID: summary.race.id).environment(results)
-                } label: {
-                    content.contentShape(.rect)
+            if opensDetail, results != nil {
+                RouteLink(.race(id: summary.race.id), showsChevron: false) {
+                    content
+                        .frame(maxWidth: .infinity)
+                        .overlay(alignment: .trailing) { RouteChevron(isOnDarkCard: true) }
+                        .contentShape(.rect)
                 }
                 .buttonStyle(.plain)
             } else {
@@ -58,15 +59,14 @@ struct RaceWinnerCard: View {
                         .font(.icon(.l, weight: .bold))
                         .symbolRenderingMode(.palette)
                         .foregroundStyle(.white, Color.scoreboardAccent)
-                        .symbolEffect(.bounce, value: appeared)
+                        .quietBounce(value: appeared)
                 }
                 .scaleEffect(appeared ? 1 : 0.6)
                 .opacity(appeared ? 1 : 0)
-                Text("ELECTED")
-                    .font(.caption.weight(.heavy))
-                    .padding(.horizontal, .spaceM)
-                    .padding(.vertical, .space2XS)
-                    .background(.white.opacity(.opacityTint), in: .capsule)
+                Chip("ELECTED", color: .white, shape: .capsule)
+                    .lineLimit(1)
+                    .fixedSize()
+                    .environment(\.colorScheme, .dark)
                 Text(verbatim: winner.candidate.name)
                     .font(.emphasis(.title, weight: .heavy))
                     .multilineTextAlignment(.center)
@@ -75,8 +75,9 @@ struct RaceWinnerCard: View {
                 HStack(spacing: .spaceS) {
                     PartyMark(winner.candidate.party)
                     Text(verbatim: winner.percent)
-                        .font(.scoreboardNumber)
+                        .font(.scoreboardTitle)
                         .monospacedDigit()
+                        .amountLine()
                 }
                 if let text = summary.winnerText {
                     Text(verbatim: text)
@@ -111,9 +112,6 @@ struct RaceWinnerCard: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(
-            Text(
-                verbatim: "\(summary.title), \(winner.candidate.name), \(summary.winnerText ?? "")")
-        )
+        .accessibilityLabel(Text(verbatim: summary.winnerAccessibility))
     }
 }

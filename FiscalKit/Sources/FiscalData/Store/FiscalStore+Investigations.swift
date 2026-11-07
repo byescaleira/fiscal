@@ -22,7 +22,7 @@ extension FiscalStore {
             } else {
                 for entity in existing { entity.update(with: investigation) }
             }
-            try modelContext.save()
+            try commit()
         } catch {
             modelContext.rollback()
             throw error
@@ -32,7 +32,7 @@ extension FiscalStore {
     public func deleteInvestigation(id: UUID) throws {
         do {
             for entity in try investigationEntities(id: id) { modelContext.delete(entity) }
-            try modelContext.save()
+            try commit()
         } catch {
             modelContext.rollback()
             throw error

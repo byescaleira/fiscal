@@ -3,7 +3,7 @@ import Foundation
 public enum PublicFormat {
     public static let missing = "—"
 
-    public static func updated(_ date: Date, calendar: Calendar = FiscalCalendar.current)
+    public static func updated(_ date: Date, calendar: Calendar = GregorianCalendar.current)
         -> String
     {
         let style = Date.VerbatimFormatStyle(

@@ -5,7 +5,7 @@ public struct PartySummary: Hashable, Identifiable, Sendable {
     public let party: String
     public let count: Int
 
-    public var id: String { SearchText.fold(party) }
+    public var id: String { party.searchFolded }
 }
 
 public struct SearchResults: Equatable, Sendable {
@@ -42,34 +42,34 @@ struct SearchIndex: Sendable {
         self.people = Self.alphabetical(people, by: \.name).map { card in
             let text = [
                 card.name, card.party, card.uf, states[card.uf] ?? "", card.officeTitle,
-                SearchText.aliases(for: card.office), SearchText.aliases(for: card.status),
+                card.office.searchAliases, card.status.searchAliases,
             ]
-            return Entry(value: card, words: SearchText.words(text.joined(separator: " ")))
+            return Entry(value: card, words: text.joined(separator: " ").searchWords)
         }
-        let counts = Dictionary(grouping: people) { SearchText.fold($0.party) }
+        let counts = Dictionary(grouping: people) { $0.party.searchFolded }
         parties = Self.alphabetical(
             counts.values.compactMap { group in
                 group.first.map { PartySummary(party: $0.party, count: group.count) }
             }, by: \.party
-        ).map { Entry(value: $0, words: SearchText.words($0.party)) }
+        ).map { Entry(value: $0, words: $0.party.searchWords) }
         self.places = places.map { place in
             let state = place.isState ? "estado" : states[place.uf] ?? ""
             return Entry(
-                value: place, words: SearchText.words("\(place.name) \(place.uf) \(state)"))
+                value: place, words: "\(place.name) \(place.uf) \(state)".searchWords)
         }
         self.votes = votes.map { vote in
             let text = [
                 vote.proposition, vote.kind ?? "", vote.summary, vote.plainSummary ?? "",
                 vote.themes.map(\.title).joined(separator: " "),
             ]
-            return Entry(value: vote, words: SearchText.words(text.joined(separator: " ")))
+            return Entry(value: vote, words: text.joined(separator: " ").searchWords)
         }
     }
 
     var isEmpty: Bool { people.isEmpty && places.isEmpty && votes.isEmpty }
 
     func results(for query: String, tokens: [SearchToken] = []) -> SearchResults {
-        let terms = SearchText.words(query)
+        let terms = query.searchWords
         let peopleTokens = tokens.filter(\.filtersPeople)
         let themeTokens = tokens.filter { !$0.filtersPeople }
         guard !terms.isEmpty || !tokens.isEmpty else { return SearchResults() }
@@ -78,7 +78,7 @@ struct SearchIndex: Sendable {
             results.people = Array(
                 people.lazy
                     .filter { entry in peopleTokens.allSatisfy { $0.admits(entry.value) } }
-                    .filter { SearchText.matches(terms, in: $0.words) }
+                    .filter { $0.words.matchesSearch(terms) }
                     .map(\.value)
                     .prefix(Self.peopleLimit))
         }
@@ -90,7 +90,7 @@ struct SearchIndex: Sendable {
             results.votes = Array(
                 votes.lazy
                     .filter { entry in themeTokens.allSatisfy { $0.admits(entry.value) } }
-                    .filter { SearchText.matches(terms, in: $0.words) }
+                    .filter { $0.words.matchesSearch(terms) }
                     .map(\.value)
                     .prefix(Self.groupLimit))
         }
@@ -104,7 +104,7 @@ struct SearchIndex: Sendable {
     private func matching<Value>(_ entries: [Entry<Value>], _ terms: [String]) -> [Value] {
         guard !terms.isEmpty else { return [] }
         return Array(
-            entries.lazy.filter { SearchText.matches(terms, in: $0.words) }.map(\.value)
+            entries.lazy.filter { $0.words.matchesSearch(terms) }.map(\.value)
                 .prefix(Self.groupLimit))
     }
 

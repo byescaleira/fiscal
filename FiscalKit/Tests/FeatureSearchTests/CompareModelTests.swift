@@ -69,26 +69,13 @@ struct CompareModelTests {
         #expect(model.table.columns.allSatisfy { $0.party == "PT" })
     }
 
-    @Test func theLensPutsTheChosenTopicsFirst() async throws {
-        let repositories = try FiscalDatabase.open(inMemory: true).repositories
-        let model = CompareModel(
-            slugs: ["tabata-amaral", "kim-kataguiri"], service: showcase,
-            lens: repositories.lens)
+    @Test func theTopicsKeepTheirNaturalOrder() async throws {
+        let model = CompareModel(slugs: ["tabata-amaral", "kim-kataguiri"], service: showcase)
         await model.load()
-        let plain = try #require(model.table.groups.first { $0.id == "themes" })
-        #expect(!plain.isLensOrdered)
-        let last = try #require(plain.metrics.last?.id)
-        let theme = String(last.dropFirst("theme-".count))
-        try await repositories.lens.save(
-            Lens(themes: [try #require(Theme(rawValue: theme))], supported: ["lula"]))
-        let adapted = CompareModel(
-            slugs: ["tabata-amaral", "kim-kataguiri"], service: showcase,
-            lens: repositories.lens)
-        await adapted.load()
-        let ordered = try #require(adapted.table.groups.first { $0.id == "themes" })
-        #expect(ordered.isLensOrdered)
-        #expect(ordered.metrics.first?.id == last)
-        #expect(Set(ordered.metrics.map(\.id)) == Set(plain.metrics.map(\.id)))
+        let themes = try #require(model.table.groups.first { $0.id == "themes" })
+        let ids = themes.metrics.map(\.id)
+        #expect(!ids.isEmpty)
+        #expect(ids == Theme.allCases.map { "theme-\($0.rawValue)" }.filter(ids.contains))
     }
 
     @Test func picksAndDropsPeople() async {

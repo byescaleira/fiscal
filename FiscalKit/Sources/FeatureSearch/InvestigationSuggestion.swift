@@ -4,7 +4,7 @@ import Foundation
 
 public struct InvestigationSuggestion: Hashable, Identifiable, Sendable {
     public enum Origin: Hashable, Sendable {
-        case highlight, vote, followed, lens, topic, pair
+        case highlight, vote, followed, topic, pair
     }
 
     public let origin: Origin
@@ -20,7 +20,6 @@ public struct InvestigationSuggestion: Hashable, Identifiable, Sendable {
         case .highlight: String(appLocalized: "Highlight of the Moment")
         case .vote: String(appLocalized: "Latest vote")
         case .followed: String(appLocalized: "Who you follow")
-        case .lens: String(appLocalized: "Your Lens")
         case .topic: String(appLocalized: "Topic")
         case .pair: String(appLocalized: "Side by side")
         }
@@ -31,7 +30,6 @@ public struct InvestigationSuggestion: Hashable, Identifiable, Sendable {
         case .highlight: "sparkle"
         case .vote: "checklist"
         case .followed: "person.crop.circle.badge.checkmark"
-        case .lens: "camera.filters"
         case .topic: "square.grid.2x2"
         case .pair: "rectangle.split.2x1"
         }
@@ -89,13 +87,7 @@ extension InvestigationModel {
     }
 
     private var personSuggestion: InvestigationSuggestion? {
-        let supported = lens?.supported.compactMap { slug in
-            index.people.first { $0.value.slug == slug }?.value
-        }
-        if let card = supported?.first {
-            return personQuestion(card, origin: .lens)
-        }
-        return followed.first.map { personQuestion($0, origin: .followed) }
+        followed.first.map { personQuestion($0, origin: .followed) }
     }
 
     private func personQuestion(_ card: PersonCard, origin: InvestigationSuggestion.Origin)
@@ -126,9 +118,10 @@ extension InvestigationModel {
     }
 
     private var topicSuggestion: InvestigationSuggestion? {
-        let themes = lens?.themes.isEmpty == false ? lens?.themes ?? [] : SearchModel.defaultThemes
         let touched = Set(recent.flatMap(\.themes))
-        guard let theme = themes.first(where: touched.contains) else { return nil }
+        guard let theme = SearchModel.defaultThemes.first(where: touched.contains) else {
+            return nil
+        }
         return InvestigationSuggestion(
             origin: .topic,
             question: String(appLocalized: "What did Congress vote on \(theme.title)?"),

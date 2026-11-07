@@ -53,7 +53,7 @@ public struct HighlightAlertLedger: Sendable {
 
     private let suiteName: String?
 
-    public init(suiteName: String? = HomePlace.appGroup) {
+    public init(suiteName: String? = AppGroup.identifier) {
         self.suiteName = suiteName
     }
 

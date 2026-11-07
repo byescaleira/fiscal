@@ -8,23 +8,17 @@ struct ProfileActionsSection: View {
 
     var body: some View {
         if !profile.actionItems.isEmpty {
-            Section {
+            ContentBlock(
+                title: Text("What They're Doing"),
+                footer: [
+                    profile.actionsRuleText, profile.actionsTotalText, profile.actionsSourceText,
+                ]
+            ) {
                 ForEach(profile.actionItems) { item in
                     ProfileActionLink(item: item)
                 }
-            } header: {
-                AdaptiveStack(spacing: .spaceS) {
-                    Text("What They're Doing").sectionTitle()
-                    Spacer(minLength: 0)
-                    WeightMethodButton(method: profile.weightMethod)
-                }
-                .textCase(nil)
-            } footer: {
-                ProfileFooter(
-                    lines: [
-                        profile.actionsRuleText, profile.actionsTotalText,
-                        profile.actionsSourceText,
-                    ])
+            } accessory: {
+                WeightMethodButton(method: profile.weightMethod)
             }
         }
     }
@@ -36,22 +30,10 @@ private struct ProfileActionLink: View {
 
     var body: some View {
         let label = Text(verbatim: profile.actionAccessibility(item))
-        if let route = profile.actionRoute(item) {
-            RouteLink(route) { ProfileActionRow(item: item) }
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel(label)
-                .accessibilityAddTraits(.isButton)
-        } else if let url = item.url {
-            Link(destination: url) { ProfileActionRow(item: item) }
-                .buttonStyle(.plain)
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel(label)
-                .accessibilityAddTraits(.isLink)
-        } else {
-            ProfileActionRow(item: item)
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel(label)
-        }
+        RouteLink(profile.actionRoute(item)) { ProfileActionRow(item: item) }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(label)
+            .accessibilityAddTraits(.isButton)
     }
 }
 
@@ -86,6 +68,5 @@ private struct ProfileActionRow: View {
                 repercussion: item.repercussion, impact: item.impact,
                 isTest: item.signals.isTest, coverage: item.coverage)
         }
-        .padding(.vertical, .space2XS)
     }
 }

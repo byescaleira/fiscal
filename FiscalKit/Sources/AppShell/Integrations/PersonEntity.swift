@@ -56,11 +56,18 @@ public struct PersonQuery: EntityStringQuery {
 
 enum IntentWorkspace {
     @MainActor
-    static func actions() throws -> IntegrationActions {
-        guard let service = FiscalServices.shared.publicData() else {
-            throw IntegrationError.unavailable
-        }
-        return IntegrationActions(service: service)
+    static func actions(store: AppReleaseStore = .shared) throws -> IntegrationActions {
+        try FiscalServices.shared.workspace(store: store)
+    }
+
+    static func ensureOpen(store: AppReleaseStore = .shared) throws {
+        if store.blocks { throw UpdateRequiredError() }
+    }
+}
+
+struct UpdateRequiredError: Error, CustomLocalizedStringResourceConvertible {
+    var localizedStringResource: LocalizedStringResource {
+        "Update Fiscal in the App Store to keep using it. Your data is safe."
     }
 }
 
@@ -71,7 +78,7 @@ enum IntegrationError: Error, CustomLocalizedStringResourceConvertible {
     var localizedStringResource: LocalizedStringResource {
         switch self {
         case .unavailable: "Fiscal couldn't reach the public data now. Try again in a moment."
-        case .noState: "Pick your state in Fiscal, in the Mine tab."
+        case .noState: "Pick your state in Fiscal, in the Region tab."
         }
     }
 }

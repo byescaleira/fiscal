@@ -3,107 +3,157 @@ import FiscalDesignSystem
 import FiscalDomain
 import SwiftUI
 
-struct RaceDetailScreen: View {
+public struct RaceDetailScreen: View {
     @Environment(LiveResultsModel.self) private var results
-    @State private var isLoading = true
+    let raceID: String
+
+    public init(raceID: String) {
+        self.raceID = raceID
+    }
+
+    public var body: some View {
+        Group {
+            switch results.detailPhase(for: raceID) {
+            case .ready(let summary):
+                RaceDetailContent(summary: summary)
+            case .loading:
+                ProgressView("Loading").frame(maxWidth: .infinity, maxHeight: .infinity)
+            case .unavailable:
+                RaceDetailUnavailable(raceID: raceID)
+            }
+        }
+        .background(.plainBackground)
+        .navigationTitle(Text(verbatim: results.detailTitle(for: raceID)))
+        #if os(iOS)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar(removing: .title)
+        #endif
+        .task { await results.loadDetail(id: raceID) }
+    }
+}
+
+private struct RaceDetailUnavailable: View {
+    @Environment(LiveResultsModel.self) private var results
     let raceID: String
 
     var body: some View {
-        Group {
-            if let race = results.race(id: raceID) {
-                RaceDetailContent(race: race)
-            } else if isLoading {
-                ProgressView("Loading").frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else {
-                ContentUnavailableView(
-                    "Race unavailable", systemImage: "chart.bar.xaxis",
-                    description: Text("This race isn't in the latest TSE file."))
-            }
+        EmptyStateView(
+            title: "Race unavailable", description: "This race isn't in the latest TSE file.",
+            actionTitle: "Try Again", action: { Task { await results.loadDetail(id: raceID) } }
+        ) {
+            IconRow(
+                "Official count", detail: "TSE", symbol: "checkmark.seal", color: .retroTeal)
         }
-        .background(.groupedBackground)
-        .navigationTitle(Text(verbatim: results.race(id: raceID).map(results.title) ?? ""))
-        #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-        #endif
-        .refreshable { await results.refresh() }
-        .task {
-            if results.race(id: raceID) == nil { await results.refresh() }
-            isLoading = false
-        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
 private struct RaceDetailContent: View {
     @Environment(LiveResultsModel.self) private var results
-    let race: Race
+    let summary: RaceSummary
 
     var body: some View {
-        let summary = RaceSummary(race: race)
-        ScrollView {
-            VStack(alignment: .leading, spacing: .spaceXL) {
-                RaceHeroCard(race: race, opensDetail: false)
-                LazyVGrid(
-                    columns: [
-                        GridItem(
-                            .adaptive(minimum: .cardColumn), spacing: .spaceXL, alignment: .top)
-                    ],
-                    alignment: .leading, spacing: .spaceXL
-                ) {
-                    RaceDetailSection(
-                        title: String(appLocalized: "Candidates"), footer: summary.majorityText
-                    ) {
-                        RaceStandings(
-                            contenders: summary.contenders, cut: summary.majorityCut,
-                            showsVotes: true)
-                    }
-                    RaceDetailSection(
-                        title: summary.ballotTitle,
-                        footer: summary.ballots.isEmpty
-                            ? nil
-                            : String(
-                                appLocalized:
-                                    "Blank and null votes don't count toward the valid votes, which decide the race."
-                            )
-                    ) {
-                        if summary.ballots.isEmpty {
-                            Label {
-                                Text(verbatim: summary.ballotLine)
-                            } icon: {
-                                Image(systemName: "clock")
-                            }
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                        } else {
-                            RaceBallotChart(summary: summary)
-                        }
-                    }
-                    RaceDetailSection(
-                        title: String(appLocalized: "Count"), footer: summary.sourceText
-                    ) {
-                        RaceCountFacts(summary: summary)
-                    }
+        RevealPage(
+            chapters: [String](),
+            maxWidth: .readableColumn * 2,
+            refresh: { await results.refresh() },
+            content: { _ in
+                RaceHeroCard(race: summary.race, opensDetail: false).revealHero()
+                CardGrid(minimumWidth: .cardColumn, spacing: .spaceXL) {
+                    RaceCandidatesSection(summary: summary)
+                    RaceBallotsSection(summary: summary)
+                    RaceCountSection(summary: summary)
                 }
-                if !race.final, let off = results.activitiesOffText {
+                if !summary.race.final, let off = results.activitiesOffText {
                     Text(verbatim: off)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .padding(.horizontal, .spaceXS)
                 }
+            },
+            bar: { _, _ in
+                RaceStickyHeader(summary: summary)
+            })
+    }
+}
+
+private struct RaceStickyHeader: View {
+    @Environment(LiveResultsModel.self) private var results
+    let summary: RaceSummary
+
+    var body: some View {
+        AdaptiveRow(spacing: .spaceM) {
+            Text(verbatim: results.detailTitle(for: summary.race.id))
+                .font(.headline)
+                .lineLimit(1)
+            Spacer(minLength: .spaceS)
+            HStack(alignment: .firstTextBaseline, spacing: .space2XS) {
+                Text(verbatim: summary.countedText)
+                    .font(.amountRow)
+                    .monospacedDigit()
+                Text(summary.race.final ? "TSE" : "counted")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
-            .padding(.horizontal, .spaceL)
-            .padding(.bottom, .space2XL)
-            .frame(maxWidth: .readableColumn * 2)
-            .frame(maxWidth: .infinity)
+            .lineLimit(1)
+            .fixedSize()
+        }
+        .padding(.horizontal, .spaceL)
+        .padding(.vertical, .spaceS)
+        .frame(maxWidth: .readableColumn * 2, alignment: .leading)
+        .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .combine)
+    }
+}
+
+private struct RaceCandidatesSection: View {
+    let summary: RaceSummary
+
+    var body: some View {
+        RaceDetailSection(title: Text("Candidates"), footer: summary.majorityText) {
+            RaceStandings(
+                contenders: summary.contenders, cut: summary.majorityCut, showsVotes: true)
         }
     }
 }
 
-struct RaceDetailSection<Content: View>: View {
-    private let title: String
+private struct RaceBallotsSection: View {
+    let summary: RaceSummary
+
+    var body: some View {
+        RaceDetailSection(title: Text(verbatim: summary.ballotTitle), footer: summary.ballotFooter)
+        {
+            if summary.ballots.isEmpty {
+                Label {
+                    Text(verbatim: summary.ballotLine)
+                } icon: {
+                    Image(systemName: "clock")
+                }
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+            } else {
+                RaceBallotChart(summary: summary)
+            }
+        }
+    }
+}
+
+private struct RaceCountSection: View {
+    let summary: RaceSummary
+
+    var body: some View {
+        RaceDetailSection(title: Text("Count"), footer: summary.sourceText) {
+            RaceCountFacts(summary: summary)
+        }
+    }
+}
+
+private struct RaceDetailSection<Content: View>: View {
+    private let title: Text
     private let footer: String?
     private let content: Content
 
-    init(title: String, footer: String?, @ViewBuilder content: () -> Content) {
+    init(title: Text, footer: String?, @ViewBuilder content: () -> Content) {
         self.title = title
         self.footer = footer
         self.content = content()
@@ -111,13 +161,13 @@ struct RaceDetailSection<Content: View>: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceM) {
-            Text(verbatim: title)
-                .font(.titleMedium)
+            title
+                .sectionTitle()
                 .accessibilityAddTraits(.isHeader)
             content
                 .padding(.spaceL)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(.groupedRow, in: .rect(cornerRadius: .radiusGroup))
+                .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
             if let footer {
                 Text(verbatim: footer)
                     .font(.caption)
@@ -131,7 +181,7 @@ struct RaceDetailSection<Content: View>: View {
 }
 
 private struct RaceCountFacts: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     let summary: RaceSummary
 
     var body: some View {
@@ -139,15 +189,16 @@ private struct RaceCountFacts: View {
             VStack(alignment: .leading, spacing: .spaceS) {
                 HStack(alignment: .firstTextBaseline) {
                     Text(verbatim: summary.countedText)
-                        .font(.scoreboardNumber)
+                        .font(.scoreboardTitle)
                         .monospacedDigit()
+                        .amountLine()
                         .contentTransition(
                             reduceMotion
                                 ? .identity : .numericText(value: summary.race.sections.percent))
                     Spacer(minLength: .spaceS)
                     RaceStatusBadge(summary: summary)
                 }
-                ProgressBar(value: summary.countedFraction, color: .retroTeal)
+                RaceCountBar(value: summary.countedFraction, color: .retroTeal)
                 Text(verbatim: summary.sectionsText)
                     .font(.footnote)
                     .foregroundStyle(.secondary)

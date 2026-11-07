@@ -39,13 +39,12 @@ struct PortraitLibraryTests {
         }
     }
 
-    @Test func refusesTraitsWhenThePartyDiffers() {
+    @Test func findsTraitsByTheSlugAlone() {
         let library = PortraitLibrary.bundled
-        #expect(library.traits(for: "lula", party: "PT") != nil)
-        #expect(library.traits(for: "lula", party: "pt") != nil)
-        #expect(library.traits(for: "lula", party: "PL") == nil)
-        #expect(library.traits(for: "allyson", party: "Uniao") != nil)
-        #expect(library.traits(for: "nobody", party: "PT") == nil)
+        #expect(library.traits(for: "lula") != nil)
+        #expect(library.traits(for: "eduardo-riedel") != nil)
+        #expect(library.traits(for: "arthur-henrique") != nil)
+        #expect(library.traits(for: "nobody") == nil)
     }
 
     @Test func decodesAndRejectsTraitTables() throws {
@@ -54,7 +53,7 @@ struct PortraitLibraryTests {
                 .utf8)
         let library = try PortraitLibrary.decode(traits: valid, rig: nil, seal: nil)
         #expect(library.rigVersion == 2)
-        #expect(library.traits(for: "a", party: "PT")?["face"] == "oval")
+        #expect(library.traits(for: "a")?["face"] == "oval")
         let outOfRange = Data(
             #"{"rigVersion":1,"fields":["slug","party"],"values":{"party":["PT"]},"people":[["a",3]]}"#
                 .utf8)

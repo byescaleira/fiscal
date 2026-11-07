@@ -74,21 +74,23 @@ public final class VoteDetailModel {
     public let id: String
     public let homeUF: String?
     public private(set) var detail: VoteDetail?
-    public private(set) var lens: Lens?
+    public private(set) var support: SupportChoice?
     public private(set) var phase: PublicDataPhase = .idle
     public var searchText = ""
     public var ballotFilter: BallotFilter = .all
     public var party: String?
     @ObservationIgnored private let service: (any PublicDataService)?
-    @ObservationIgnored private let lensRepository: (any LensRepository)?
+    @ObservationIgnored private let supportRepository: (any SupportRepository)?
+    @ObservationIgnored private let requests = PublicDataRequests()
 
     public init(
-        id: String, service: (any PublicDataService)?, lens: (any LensRepository)? = nil,
-        homeUF: String? = nil
+        id: String, service: (any PublicDataService)?, support: (any SupportRepository)? = nil,
+        homeUF: String? = nil, party: String? = nil
     ) {
+        self.party = party
         self.id = id
         self.service = service
-        lensRepository = lens
+        supportRepository = support
         self.homeUF = homeUF.map { $0.lowercased() }.flatMap { $0.isEmpty ? nil : $0 }
     }
 
@@ -98,20 +100,12 @@ public final class VoteDetailModel {
 
     public var outcome: VoteOutcome? { vote.map(VoteOutcome.init) }
 
-    public var themes: [Theme] {
-        guard let vote else { return [] }
-        return lens?.ordered(vote.themes) ?? vote.themes
-    }
-
-    public var showsLensBadge: Bool {
-        guard let lens, !lens.themes.isEmpty else { return false }
-        return themes.contains(where: lens.contains)
-    }
+    public var themes: [Theme] { vote?.themes ?? [] }
 
     public var supportedBallots: [VoteDetail.Ballot] {
-        guard let lens, !lens.supported.isEmpty else { return [] }
-        return (detail?.people ?? []).filter { lens.supports($0.slug) }
-            .sorted { lens.supportRank(of: $0.slug) < lens.supportRank(of: $1.slug) }
+        guard let support, !support.people.isEmpty else { return [] }
+        return (detail?.people ?? []).filter { support.supports($0.slug) }
+            .sorted { support.rank(of: $0.slug) < support.rank(of: $1.slug) }
     }
 
     public var supportedHeadline: String? {
@@ -122,8 +116,6 @@ public final class VoteDetailModel {
         }
         return String(appLocalized: "They did not all vote the same way")
     }
-
-    public func isLensTheme(_ theme: Theme) -> Bool { lens?.contains(theme) ?? false }
 
     public var guidanceGroups: [GuidanceGroup] {
         let groups = Dictionary(grouping: detail?.guidance ?? [], by: \.guidance)
@@ -197,10 +189,13 @@ public final class VoteDetailModel {
 
     public func load() async {
         if detail == nil { phase = .loading }
-        phase = await PublicDataPhase.settle(after: phase) {
-            lens = try? await lensRepository?.lens()
+        phase = await PublicDataPhase.settle(after: phase, in: requests) {
+            let support = try? await supportRepository?.support()
             guard let service else { throw PublicDataError.unavailable }
-            detail = try await service.vote(id: id)
+            return (support: support, detail: try await service.vote(id: id))
+        } apply: { loaded in
+            support = loaded.support
+            detail = loaded.detail
         }
     }
 

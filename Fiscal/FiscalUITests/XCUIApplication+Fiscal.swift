@@ -15,13 +15,27 @@ extension XCUIApplication {
     }
 
     func waitForSections() -> Bool {
-        buttons["Ajustes"].firstMatch.waitForExistence(timeout: 30)
+        buttons["Feed"].firstMatch.waitForExistence(timeout: 30)
+    }
+
+    func scrollDown(until element: XCUIElement, attempts: Int = 12) -> Bool {
+        for _ in 0..<attempts {
+            if element.exists { return true }
+            swipeUp()
+        }
+        return element.exists
+    }
+
+    func showFeed() {
+        buttons["Feed"].firstMatch.tap()
     }
 
     #if !os(tvOS)
         func openSettings() -> Bool {
+            showFeed()
+            guard buttons["Ajustes"].firstMatch.waitForExistence(timeout: 10) else { return false }
             buttons["Ajustes"].firstMatch.tap()
-            return navigationBars["Ajustes"].waitForExistence(timeout: 10)
+            return staticTexts["Privacidade"].waitForExistence(timeout: 10)
         }
     #endif
 }

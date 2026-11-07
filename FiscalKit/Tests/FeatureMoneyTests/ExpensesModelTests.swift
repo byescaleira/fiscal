@@ -78,6 +78,24 @@ struct ExpensesModelTests {
         #expect(lines.contains { $0.url != nil })
     }
 
+    @Test func onlyACompanyReceiptAndAMonthCanBeShared() async throws {
+        let model = await loaded()
+        let group = try #require(model.groups.first)
+        #expect(
+            model.shareRoute(forMonth: group.month)
+                == .share(.expenseMonth(slug: "tabata-amaral", year: 2_026, month: group.month)))
+        let lines = model.groups.flatMap(\.lines)
+        let company = try #require(lines.first { $0.isCompany })
+        #expect(
+            model.shareRoute(for: company)
+                == .share(.expense(slug: "tabata-amaral", year: 2_026, id: company.id)))
+        let person = try #require(lines.first { !$0.isCompany })
+        #expect(model.shareRoute(for: person) == nil)
+        #expect(model.shareRoute(forRecords: [person.id]) == nil)
+        #expect(model.shareRoute(forRecords: [company.id, person.id]) == nil)
+        #expect(model.shareRoute(forRecords: [company.id]) != nil)
+    }
+
     @Test func filteringByKindKeepsOnlyThatKind() async throws {
         let model = await loaded()
         let kind = try #require(model.categoryNames.first)
@@ -85,6 +103,22 @@ struct ExpensesModelTests {
         #expect(model.groups.flatMap(\.lines).allSatisfy { $0.category == kind })
         model.categoryFilter = nil
         #expect(model.groups.flatMap(\.lines).count == model.list?.items.count)
+    }
+
+    @Test func theFilterCountsTheKindAndNamesTheScope() async throws {
+        let model = await loaded()
+        #expect(model.canFilter)
+        #expect(model.activeFilterCount == 0)
+        #expect(model.scopeTitle == "2026 · \(String(appLocalized: "All kinds"))")
+        let kind = try #require(model.categoryNames.first)
+        model.categoryFilter = kind
+        #expect(model.hasFilter)
+        #expect(model.activeFilterCount == 1)
+        #expect(model.scopeTitle == "2026 · \(kind)")
+        model.clearFilters()
+        #expect(model.categoryFilter == nil)
+        #expect(model.averageReais == model.averageCents.map { Double($0) / 100 })
+        #expect(model.medianReais == model.medianCents.map { Double($0) / 100 })
     }
 
     @Test func switchingTheYearReloadsAndClearsTheSelection() async throws {

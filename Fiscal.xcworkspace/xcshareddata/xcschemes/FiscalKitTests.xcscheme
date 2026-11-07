@@ -86,9 +86,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "FeatureTodayTests"
-               BuildableName = "FeatureTodayTests"
-               BlueprintName = "FeatureTodayTests"
+               BlueprintIdentifier = "FeatureFeedTests"
+               BuildableName = "FeatureFeedTests"
+               BlueprintName = "FeatureFeedTests"
                ReferencedContainer = "container:FiscalKit">
             </BuildableReference>
          </TestableReference>
@@ -96,9 +96,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "FeatureMineTests"
-               BuildableName = "FeatureMineTests"
-               BlueprintName = "FeatureMineTests"
+               BlueprintIdentifier = "FeatureRegionTests"
+               BuildableName = "FeatureRegionTests"
+               BlueprintName = "FeatureRegionTests"
                ReferencedContainer = "container:FiscalKit">
             </BuildableReference>
          </TestableReference>
@@ -146,6 +146,16 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "FeatureContentTests"
+               BuildableName = "FeatureContentTests"
+               BlueprintName = "FeatureContentTests"
+               ReferencedContainer = "container:FiscalKit">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "FeatureSearchTests"
                BuildableName = "FeatureSearchTests"
                BlueprintName = "FeatureSearchTests"
@@ -156,9 +166,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "FeatureLensTests"
-               BuildableName = "FeatureLensTests"
-               BlueprintName = "FeatureLensTests"
+               BlueprintIdentifier = "FeatureSupportTests"
+               BuildableName = "FeatureSupportTests"
+               BlueprintName = "FeatureSupportTests"
                ReferencedContainer = "container:FiscalKit">
             </BuildableReference>
          </TestableReference>

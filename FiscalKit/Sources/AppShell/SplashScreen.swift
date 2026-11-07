@@ -40,7 +40,7 @@ public final class LaunchProgress {
 public struct SplashScreen<Footer: View>: View {
     @Environment(SettingsModel.self) private var settings: SettingsModel?
     @Environment(\.appTint) private var appTint
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     private let progress: Double?
     private let status: LocalizedStringKey?
     private let footer: Footer
@@ -76,7 +76,7 @@ public struct SplashScreen<Footer: View>: View {
             footer
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.groupedBackground)
+        .background(.plainBackground)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Opening Fiscal")
     }

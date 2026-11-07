@@ -3,8 +3,8 @@
     {
       "value": {
         "linear-gradient": [
-          "srgb:0.36078,0.61176,0.78039,1.00000",
-          "srgb:0.91373,0.76863,0.41569,1.00000"
+          "srgb:0.12157,0.30980,0.20392,1.00000",
+          "srgb:0.05882,0.20000,0.13333,1.00000"
         ]
       }
     },
@@ -12,8 +12,8 @@
       "appearance": "dark",
       "value": {
         "linear-gradient": [
-          "srgb:0.10980,0.18039,0.27059,1.00000",
-          "srgb:0.35294,0.26275,0.12941,1.00000"
+          "srgb:0.04314,0.12941,0.08627,1.00000",
+          "srgb:0.01569,0.06667,0.03922,1.00000"
         ]
       }
     }
@@ -103,25 +103,181 @@
           "fill-specializations": [
             {
               "value": {
-                "solid": "srgb:0.43529,0.70196,0.83922,1.00000"
+                "solid": "srgb:0.54118,0.35294,0.20392,1.00000"
               }
             },
             {
               "appearance": "dark",
               "value": {
-                "solid": "srgb:0.18039,0.36078,0.47059,1.00000"
+                "solid": "srgb:0.35294,0.22745,0.13333,1.00000"
               }
             },
             {
               "appearance": "tinted",
               "value": {
-                "solid": "srgb:0.75294,0.75294,0.75294,1.00000"
+                "solid": "srgb:0.29020,0.29020,0.29020,1.00000"
               }
             }
           ],
           "glass": false,
-          "image-name": "4 River.svg",
-          "name": "4 River",
+          "image-name": "5 Canoe.svg",
+          "name": "5 Canoe",
+          "opacity": 1.0,
+          "position": {
+            "scale": 1,
+            "translation-in-points": [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "fill-specializations": [
+            {
+              "value": {
+                "solid": "srgb:0.34510,0.65882,0.27059,1.00000"
+              }
+            },
+            {
+              "appearance": "dark",
+              "value": {
+                "solid": "srgb:0.17255,0.41569,0.18039,1.00000"
+              }
+            },
+            {
+              "appearance": "tinted",
+              "value": {
+                "solid": "srgb:0.47843,0.47843,0.47843,1.00000"
+              }
+            }
+          ],
+          "glass": false,
+          "image-name": "4 Pads.svg",
+          "name": "4 Pads",
+          "opacity": 1.0,
+          "position": {
+            "scale": 1,
+            "translation-in-points": [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "name": "Life",
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.35
+      },
+      "specular": false,
+      "translucency": {
+        "enabled": false,
+        "value": 0.5
+      }
+    },
+    {
+      "layers": [
+        {
+          "fill-specializations": [
+            {
+              "value": {
+                "solid": "srgb:0.49020,0.74510,0.35294,1.00000"
+              }
+            },
+            {
+              "appearance": "dark",
+              "value": {
+                "solid": "srgb:0.18431,0.41569,0.21961,1.00000"
+              }
+            },
+            {
+              "appearance": "tinted",
+              "value": {
+                "solid": "srgb:0.54118,0.54118,0.54118,1.00000"
+              }
+            }
+          ],
+          "glass": false,
+          "image-name": "3 Lit.svg",
+          "name": "3 Lit",
+          "opacity": 1.0,
+          "position": {
+            "scale": 1,
+            "translation-in-points": [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "fill-specializations": [
+            {
+              "value": {
+                "solid": "srgb:0.23529,0.54118,0.30588,1.00000"
+              }
+            },
+            {
+              "appearance": "dark",
+              "value": {
+                "solid": "srgb:0.10588,0.29020,0.16471,1.00000"
+              }
+            },
+            {
+              "appearance": "tinted",
+              "value": {
+                "solid": "srgb:0.36863,0.36863,0.36863,1.00000"
+              }
+            }
+          ],
+          "glass": false,
+          "image-name": "2 Crowns.svg",
+          "name": "2 Crowns",
+          "opacity": 1.0,
+          "position": {
+            "scale": 1,
+            "translation-in-points": [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "name": "Trees",
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.55
+      },
+      "specular": false,
+      "translucency": {
+        "enabled": false,
+        "value": 0.5
+      }
+    },
+    {
+      "layers": [
+        {
+          "fill-specializations": [
+            {
+              "value": {
+                "solid": "srgb:0.96471,0.76863,0.41569,1.00000"
+              }
+            },
+            {
+              "appearance": "dark",
+              "value": {
+                "solid": "srgb:0.72549,0.54118,0.30588,1.00000"
+              }
+            },
+            {
+              "appearance": "tinted",
+              "value": {
+                "solid": "srgb:0.88627,0.88627,0.88627,1.00000"
+              }
+            }
+          ],
+          "glass": false,
+          "image-name": "1 River.svg",
+          "name": "1 River",
           "opacity": 1.0,
           "position": {
             "scale": 1,
@@ -135,165 +291,9 @@
       "name": "River",
       "shadow": {
         "kind": "neutral",
-        "opacity": 0.15
-      },
-      "specular": false,
-      "translucency": {
-        "enabled": false,
-        "value": 0.5
-      }
-    },
-    {
-      "layers": [
-        {
-          "fill-specializations": [
-            {
-              "value": {
-                "solid": "srgb:0.07059,0.24706,0.16863,1.00000"
-              }
-            },
-            {
-              "appearance": "dark",
-              "value": {
-                "solid": "srgb:0.02745,0.10196,0.06667,1.00000"
-              }
-            },
-            {
-              "appearance": "tinted",
-              "value": {
-                "solid": "srgb:0.22745,0.22745,0.22745,1.00000"
-              }
-            }
-          ],
-          "glass": false,
-          "image-name": "3 Near.svg",
-          "name": "3 Near",
-          "opacity": 1.0,
-          "position": {
-            "scale": 1,
-            "translation-in-points": [
-              0,
-              0
-            ]
-          }
-        },
-        {
-          "fill-specializations": [
-            {
-              "value": {
-                "solid": "srgb:0.12157,0.38039,0.25490,1.00000"
-              }
-            },
-            {
-              "appearance": "dark",
-              "value": {
-                "solid": "srgb:0.05098,0.18039,0.12157,1.00000"
-              }
-            },
-            {
-              "appearance": "tinted",
-              "value": {
-                "solid": "srgb:0.35294,0.35294,0.35294,1.00000"
-              }
-            }
-          ],
-          "glass": false,
-          "image-name": "2 Mid.svg",
-          "name": "2 Mid",
-          "opacity": 1.0,
-          "position": {
-            "scale": 1,
-            "translation-in-points": [
-              0,
-              0
-            ]
-          }
-        },
-        {
-          "fill-specializations": [
-            {
-              "value": {
-                "solid": "srgb:0.24314,0.54118,0.36863,1.00000"
-              }
-            },
-            {
-              "appearance": "dark",
-              "value": {
-                "solid": "srgb:0.10196,0.26275,0.18824,1.00000"
-              }
-            },
-            {
-              "appearance": "tinted",
-              "value": {
-                "solid": "srgb:0.47843,0.47843,0.47843,1.00000"
-              }
-            }
-          ],
-          "glass": false,
-          "image-name": "1 Far.svg",
-          "name": "1 Far",
-          "opacity": 1.0,
-          "position": {
-            "scale": 1,
-            "translation-in-points": [
-              0,
-              0
-            ]
-          }
-        }
-      ],
-      "name": "Forest",
-      "shadow": {
-        "kind": "neutral",
-        "opacity": 0.25
-      },
-      "specular": false,
-      "translucency": {
-        "enabled": false,
-        "value": 0.5
-      }
-    },
-    {
-      "layers": [
-        {
-          "fill-specializations": [
-            {
-              "value": {
-                "solid": "srgb:0.96471,0.83137,0.41961,1.00000"
-              }
-            },
-            {
-              "appearance": "dark",
-              "value": {
-                "solid": "srgb:0.89020,0.69020,0.29412,1.00000"
-              }
-            },
-            {
-              "appearance": "tinted",
-              "value": {
-                "solid": "srgb:0.87843,0.87843,0.87843,1.00000"
-              }
-            }
-          ],
-          "glass": true,
-          "image-name": "0 Sun.svg",
-          "name": "0 Sun",
-          "opacity": 1.0,
-          "position": {
-            "scale": 1,
-            "translation-in-points": [
-              0,
-              0
-            ]
-          }
-        }
-      ],
-      "name": "Sun",
-      "shadow": {
-        "kind": "neutral",
         "opacity": 0.0
       },
-      "specular": true,
+      "specular": false,
       "translucency": {
         "enabled": false,
         "value": 0.5

@@ -12,8 +12,6 @@ extension ProfileModel {
         public let source: String?
         public let fraction: Double?
         public var peer: Peer?
-
-        public var isMissing: Bool { value == PublicFormat.missing }
     }
 
     public struct Peer: Equatable, Sendable {
@@ -65,13 +63,7 @@ extension ProfileModel {
                 "election", String(appLocalized: "Votes in the last election"), "person.3",
                 PublicFormat.number(numbers.lastElectionVotes), kind: "campaigns"),
         ]
-    }
-
-    public var numbersFootnote: String {
-        String(
-            appLocalized:
-                "A dash means the source doesn't publish this number. Each number shows where it comes from."
-        )
+        .filter { $0.value != PublicFormat.missing }
     }
 
     public func sourceName(for kind: String) -> String? {
@@ -119,11 +111,8 @@ extension ProfileModel {
     private func tile(
         _ id: String, _ title: String, _ symbol: String, _ value: String, kind: String
     ) -> NumberTile {
-        let caption: String? =
-            value == PublicFormat.missing && profile?.coverage(of: kind) == .notPublished
-            ? String(appLocalized: "The house doesn't publish this") : nil
-        return NumberTile(
-            id: id, title: title, symbol: symbol, value: value, caption: caption,
+        NumberTile(
+            id: id, title: title, symbol: symbol, value: value, caption: nil,
             source: sourceName(for: kind), fraction: nil)
     }
 }

@@ -5,8 +5,6 @@ import SwiftUI
 
 public struct ExpensesScreen: View {
     @Environment(ExpensesModel.self) private var expenses
-    @Environment(\.open) private var open
-    @Environment(\.navigationSection) private var section
 
     public init() {}
 
@@ -14,36 +12,90 @@ public struct ExpensesScreen: View {
         PublicDataContent(
             phase: expenses.phase, isEmpty: expenses.isEmpty, retry: { await expenses.load() }
         ) {
-            AdaptiveList {
-                ExpensesHeroSection()
-                ExpensesMonthsSection()
-                ExpensesYearsSection()
-                ExpensesCategoriesSection()
-                ExpensesSpreadSection()
-                ExpensesFilterSection()
-                ForEach(expenses.groups) { ExpensesMonthSection(group: $0) }
-            }
+            #if os(macOS)
+                VSplitView {
+                    ExpensesOverview()
+                    ExpensesTable()
+                }
+            #else
+                ExpensesOverview()
+            #endif
         } empty: {
             ExpensesEmptyState()
         }
         .navigationTitle(Text(verbatim: expenses.title))
+        #if os(macOS)
+            .navigationSubtitle(expenses.recordsSubtitle)
+        #elseif !os(visionOS)
+            .navigationSubtitle(expenses.scopeTitle)
+        #endif
         .toolbarTitleDisplayMode(.inline)
-        .toolbar {
-            if expenses.years.count > 1 {
-                ToolbarItem(placement: .primaryAction) { ExpensesYearMenu().tint(Color.primary) }
-            }
-            ToolbarItem(placement: .primaryAction) {
-                Button {
-                    open(expenses.shareRoute, in: section)
-                } label: {
-                    Label("Share", systemImage: "square.and.arrow.up")
-                }
-                .disabled(expenses.isEmpty)
-                .tint(Color.primary)
-            }
-        }
+        #if os(iOS)
+            .toolbar(removing: .title)
+        #endif
+        .toolbar { ExpensesToolbar() }
+        .sensoryFeedback(.selection, trigger: expenses.categoryFilter)
+        .sensoryFeedback(.selection, trigger: expenses.year)
         .refreshable { await expenses.load() }
         .task { await expenses.load() }
+    }
+}
+
+private struct ExpensesOverview: View {
+    @Environment(ExpensesModel.self) private var expenses
+    @State private var showsBar = false
+
+    var body: some View {
+        AdaptiveList {
+            ExpensesHeroSection()
+                .onAppear { showsBar = false }
+                .onDisappear { showsBar = true }
+            ExpensesMonthsSection()
+            ExpensesYearsSection()
+            ExpensesCategoriesSection()
+            ExpensesSpreadSection()
+            #if !os(macOS)
+                let groups = expenses.groups
+                ForEach(groups) { group in
+                    ExpensesMonthSection(group: group, isLast: group.id == groups.last?.id)
+                }
+            #endif
+        }
+        .revealBar(isShown: showsBar) {
+            ExpensesStickyHeader()
+                .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+        }
+    }
+}
+
+private struct ExpensesStickyHeader: View {
+    @Environment(ExpensesModel.self) private var expenses
+
+    var body: some View {
+        AdaptiveRow(spacing: .spaceM) {
+            VStack(alignment: .leading, spacing: .spaceHairline) {
+                Text(verbatim: expenses.title)
+                    .font(.headline)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                Text(verbatim: expenses.scopeTitle)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+            }
+            Spacer(minLength: .spaceS)
+            Text(verbatim: expenses.total)
+                .font(.amountRow)
+                .monospacedDigit()
+                .lineLimit(1)
+                .fixedSize()
+        }
+        .padding(.horizontal, .spaceL)
+        .padding(.vertical, .spaceS)
+        .frame(maxWidth: .readableColumn, alignment: .leading)
+        .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -88,36 +140,9 @@ private struct ExpensesIdentity: View {
     }
 }
 
-private struct ExpensesYearMenu: View {
-    @Environment(ExpensesModel.self) private var expenses
-
-    var body: some View {
-        Menu {
-            Picker(
-                "Year",
-                selection: Binding(
-                    get: { expenses.year },
-                    set: { year in Task { await expenses.select(year: year) } })
-            ) {
-                ForEach(expenses.years, id: \.self) { year in
-                    Text(verbatim: String(year)).tag(year)
-                }
-            }
-            .pickerStyle(.inline)
-        } label: {
-            HStack(spacing: .spaceXS) {
-                Image(systemName: "calendar")
-                Text(verbatim: String(expenses.year)).monospacedDigit()
-            }
-            .font(.subheadline.weight(.semibold))
-        }
-        .accessibilityLabel(Text("Year"))
-        .accessibilityValue(Text(verbatim: String(expenses.year)))
-    }
-}
-
 private struct ExpensesMonthsSection: View {
     @Environment(ExpensesModel.self) private var expenses
+    @ReducesMotion private var reduceMotion
 
     var body: some View {
         @Bindable var expenses = expenses
@@ -130,14 +155,16 @@ private struct ExpensesMonthsSection: View {
                         Text(verbatim: month.value)
                             .font(.amountTitle)
                             .monospacedDigit()
-                            .contentTransition(.numericText(value: month.reais))
+                            .contentTransition(
+                                reduceMotion ? .identity : .numericText(value: month.reais)
+                            )
                             .amountLine()
                     }
                     .accessibilityElement(children: .combine)
                 }
                 MonthlyBarsChart(
                     months: expenses.months, highlighted: expenses.highlightedMonth?.month,
-                    averageReais: expenses.averageCents.map { Double($0) / 100 },
+                    averageReais: expenses.averageReais,
                     selection: $expenses.selectedMonth)
             }
             .padding(.vertical, .spaceXS)
@@ -210,7 +237,7 @@ private struct ExpensesSpreadSection: View {
                     }
                     ReceiptStripChart(
                         receipts: expenses.receipts,
-                        medianReais: expenses.medianCents.map { Double($0) / 100 },
+                        medianReais: expenses.medianReais,
                         category: expenses.categoryFilter)
                 }
                 .padding(.vertical, .spaceXS)
@@ -240,6 +267,6 @@ private struct ExpensesEmptyState: View {
                 color: .retroOrange)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.groupedBackground)
+        .background(.plainBackground)
     }
 }

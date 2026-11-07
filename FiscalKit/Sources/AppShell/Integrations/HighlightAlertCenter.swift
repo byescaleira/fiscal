@@ -1,3 +1,4 @@
+import FeatureCore
 import FeatureLiveResults
 import FeatureSettings
 import FiscalData
@@ -13,7 +14,10 @@ final class HighlightAlertCenter {
     private let environment: PushEnvironment
     private let service: @MainActor () -> (any HighlightAlertService)?
     private let publicData: @MainActor () -> (any PublicDataService)?
+    private let allows: @MainActor () -> Bool
     private var isObserving = false
+    private var isHeld = true
+    private var wantsActivation = false
     private var latestToken: String?
     private var didForceShowcase = false
 
@@ -25,12 +29,16 @@ final class HighlightAlertCenter {
         },
         publicData: @escaping @MainActor () -> (any PublicDataService)? = {
             FiscalServices.shared.publicData()
+        },
+        allows: @escaping @MainActor () -> Bool = {
+            FiscalServices.shared.isOn(.highlightAlerts)
         }
     ) {
         self.activities = activities
         self.ledger = ledger
         self.service = service
         self.publicData = publicData
+        self.allows = allows
         #if DEBUG
             environment = .development
         #else
@@ -39,17 +47,19 @@ final class HighlightAlertCenter {
     }
 
     func activate() async {
-        SettingsModel.onHighlightAlertsChange = { isOn in
-            Task { await HighlightAlertCenter.shared.setEnabled(isOn) }
-        }
+        wantsActivation = true
+        guard !isHeld else { return }
         if !isObserving {
             isObserving = true
             activities.onStartToken = { [weak self] token in self?.received(token) }
-            activities.onShown = { [weak self] id in self?.ledger.record(id) }
+            activities.onShown = { [weak self] id in
+                FiscalEvents.alertReceived.log()
+                self?.ledger.record(id)
+            }
             activities.observe()
         }
         await activities.endExpired(now: .now)
-        guard ledger.isEnabled else {
+        guard isEnabled else {
             await forget()
             return
         }
@@ -59,8 +69,22 @@ final class HighlightAlertCenter {
         await consider()
     }
 
+    func resume() async {
+        isHeld = false
+        if wantsActivation { await activate() }
+    }
+
+    func hold() async {
+        isHeld = true
+        await forget()
+    }
+
+    private var isEnabled: Bool {
+        !isHeld && ledger.isEnabled && allows()
+    }
+
     func consider() async {
-        guard ledger.isEnabled, activities.isAvailable, let data = publicData(),
+        guard isEnabled, activities.isAvailable, let data = publicData(),
             let list = try? await data.highlights()
         else { return }
         let now = Date.now
@@ -80,13 +104,14 @@ final class HighlightAlertCenter {
             await forget()
             return
         }
+        guard isEnabled else { return }
         if let latestToken { register(latestToken) }
         await consider()
     }
 
     private func received(_ token: String) {
         latestToken = token
-        guard ledger.isEnabled else { return }
+        guard isEnabled else { return }
         register(token)
     }
 
@@ -127,4 +152,12 @@ final class HighlightAlertCenter {
             return true
         }
     #endif
+}
+
+extension SettingsModel {
+    public static func fiscal() -> SettingsModel {
+        SettingsModel { isOn in
+            Task { await HighlightAlertCenter.shared.setEnabled(isOn) }
+        }
+    }
 }

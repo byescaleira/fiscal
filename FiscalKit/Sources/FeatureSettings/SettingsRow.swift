@@ -52,27 +52,6 @@ public struct SettingsLabel: View {
     }
 }
 
-struct SettingsExternalLabel: View {
-    private let label: SettingsLabel
-
-    init(
-        _ title: LocalizedStringKey, detail: LocalizedStringKey? = nil, symbol: String,
-        color: Color
-    ) {
-        label = SettingsLabel(title, detail: detail, symbol: symbol, color: color)
-    }
-
-    var body: some View {
-        HStack(spacing: .spaceS) {
-            label
-            Image(systemName: "arrow.up.right")
-                .font(.footnote.weight(.semibold))
-                .foregroundStyle(.tertiary)
-                .accessibilityHidden(true)
-        }
-    }
-}
-
 public struct SettingsPage<Content: View>: View {
     private let title: LocalizedStringKey
     private let content: Content
@@ -85,7 +64,7 @@ public struct SettingsPage<Content: View>: View {
     public var body: some View {
         Group {
             #if os(macOS)
-                Form { content }.formStyle(.grouped)
+                Form { content.surfaceRows() }.formStyle(.grouped).listSurface()
             #else
                 AdaptiveList { content }
             #endif

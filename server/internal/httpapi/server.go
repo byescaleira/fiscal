@@ -51,6 +51,7 @@ type Config struct {
 	Salt          []byte
 	Now           func() time.Time
 	Logger        *log.Logger
+	Version       string
 }
 
 type server struct {
@@ -64,6 +65,7 @@ type server struct {
 	salt       []byte
 	now        func() time.Time
 	logger     *log.Logger
+	version    string
 }
 
 func New(c Config) http.Handler {
@@ -80,6 +82,9 @@ func New(c Config) http.Handler {
 		c.Unattested = 10
 	}
 	c.Limiter.SetLimit(ClassUnattested, c.Unattested)
+	if c.Version == "" {
+		c.Version = "dev"
+	}
 	if c.AttestMode == "" {
 		c.AttestMode = AttestOptional
 	}
@@ -87,7 +92,7 @@ func New(c Config) http.Handler {
 		c.Salt = make([]byte, 32)
 		rand.Read(c.Salt)
 	}
-	s := &server{races: c.Races, regs: c.Registrations, highlights: c.Highlights, adminToken: c.AdminToken, attest: c.Attest, attestMode: c.AttestMode, limiter: c.Limiter, salt: c.Salt, now: c.Now, logger: c.Logger}
+	s := &server{races: c.Races, regs: c.Registrations, highlights: c.Highlights, adminToken: c.AdminToken, attest: c.Attest, attestMode: c.AttestMode, limiter: c.Limiter, salt: c.Salt, now: c.Now, logger: c.Logger, version: c.Version}
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/health", s.health)
 	mux.HandleFunc("GET /api/v1/races", s.limit(ClassRead, s.listRaces))
@@ -201,7 +206,10 @@ func writeError(w http.ResponseWriter, status int, code, message string) {
 }
 
 func (s *server) health(w http.ResponseWriter, r *http.Request) {
-	writeJSON(w, http.StatusOK, map[string]bool{"ok": true})
+	writeJSON(w, http.StatusOK, struct {
+		OK      bool   `json:"ok"`
+		Version string `json:"version"`
+	}{OK: true, Version: s.version})
 }
 
 func notReady(w http.ResponseWriter) {

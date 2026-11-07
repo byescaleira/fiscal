@@ -15,5 +15,5 @@ xcrun simctl status_bar "$device" override --time 9:41 --dataNetwork wifi --wifi
 xcrun simctl ui "$device" appearance "${FISCAL_APPEARANCE:-light}"
 xcrun simctl terminate "$device" "$bundle" 2>/dev/null || true
 xcrun simctl launch "$device" "$bundle" \
-  -fiscal.developer.showcase YES \
-  -AppleLanguages "(${FISCAL_LANGUAGE:-en})" -AppleLocale "${FISCAL_LOCALE:-en_US}" "$@"
+  -FiscalDataScenario "${FISCAL_DATA_SCENARIO:-normal}" -FiscalLiveScenario "${FISCAL_LIVE_SCENARIO:-finished}" \
+  -AppleLanguages "(pt-BR)" -AppleLocale pt_BR "$@"

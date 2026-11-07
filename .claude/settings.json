@@ -32,7 +32,11 @@
       "Bash(git push)",
       "Bash(git push *)",
       "Bash(ssh *)",
-      "Bash(scp *)"
+      "Bash(scp *)",
+      "Bash(rsync *)",
+      "Bash(scripts/server-deploy.sh --apply*)",
+      "Bash(wrangler *)",
+      "Bash(npx wrangler*)"
     ],
     "deny": [
       "Read(**/.env)",

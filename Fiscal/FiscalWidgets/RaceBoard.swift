@@ -43,6 +43,14 @@ struct RaceBoard {
 
     var officeText: String { title }
 
+    var countedFraction: Double { state.sectionsPercent / 100 }
+
+    var splitShares: (first: Double, second: Double) {
+        let first = self.first?.percent ?? 0
+        let second = self.second?.percent ?? 0
+        return first + second > 0 ? (first, second) : (1, 1)
+    }
+
     var centerValue: String {
         state.final ? String(appLocalized: "Final") : RaceText.shortPercent(state.sectionsPercent)
     }

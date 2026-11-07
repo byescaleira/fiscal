@@ -12,14 +12,52 @@ struct ProfileModelTests {
     private let showcase = ShowcasePublicData(scenario: .normal, now: instant)
 
     private func makeModel(
-        _ slug: String, lens: (any LensRepository)? = nil,
-        follows: (any FollowRepository)? = nil
+        _ slug: String, follows: (any FollowRepository)? = nil
     ) -> ProfileModel {
-        ProfileModel(
-            slug: slug, service: showcase, follows: follows, lens: lens, now: { Self.instant })
+        ProfileModel(slug: slug, service: showcase, follows: follows, now: { Self.instant })
     }
 
-    @Test func loadsTheProfileWithItsNumbersAndActivity() async {
+    @Test func aProposalOpensItsContentWithoutRepeatingTheAuthor() async throws {
+        let model = makeModel("tabata-amaral")
+        await model.load()
+        let proposal = try #require(model.recentProposals.first)
+        guard case .content(let content) = model.proposalRoute(proposal) else {
+            Issue.record("A proposal must open the content")
+            return
+        }
+        #expect(content.id == proposal.id)
+        #expect(content.officialSummary != nil || proposal.plainSummary == nil)
+        #expect(content.effect == model.proposalStatus(proposal))
+        #expect(content.stage == nil)
+        #expect(content.person == nil)
+    }
+
+    @Test func anActionOpensTheVoteOrTheContent() async throws {
+        let model = makeModel("tabata-amaral")
+        let vote = Self.action(kind: .vote, ref: "camara-1")
+        #expect(model.actionRoute(vote) == .vote(id: "camara-1"))
+        for item in [
+            Self.action(kind: .proposal, ref: nil), Self.action(kind: .speech, ref: nil),
+            Self.action(kind: .vote, ref: nil),
+        ] {
+            guard case .content(let content) = model.actionRoute(item) else {
+                Issue.record("Without a vote to open, the action must open the content")
+                continue
+            }
+            #expect(content.id == item.id)
+            #expect(content.person == nil)
+        }
+    }
+
+    private static func action(kind: ActionItem.Kind, ref: String?) -> ActionItem {
+        ActionItem(
+            id: "1", kind: kind, title: "Fato", proposition: "PL 1/2026",
+            date: CalendarDay(instant),
+            url: nil, ref: ref, ballot: nil, stage: nil, themes: [], weight: 50, repercussion: nil,
+            impact: 50, signals: .none)
+    }
+
+    @Test func loadsTheProfileWithItsNumbersAndActivity() async throws {
         let model = makeModel("tabata-amaral")
         #expect(model.isEmpty)
         await model.load()
@@ -32,72 +70,52 @@ struct ProfileModelTests {
                 "attendance", "proposals", "laws", "speeches", "votes", "quota", "assets",
                 "campaign", "election",
             ])
-        #expect(model.facts.allSatisfy { !$0.isMissing && $0.source != nil })
+        #expect(model.facts.allSatisfy { $0.value != PublicFormat.missing && $0.source != nil })
         #expect(model.facts.first?.fraction != nil)
         #expect(model.mandateText?.contains("2023") == true)
         #expect(!model.recentVotes.isEmpty)
         #expect(model.recentVotes == model.recentVotes.sorted { $0.date > $1.date })
-        #expect(model.lastVoteText != nil)
         #expect(model.recentProposals.count == 3)
         #expect(model.recentSpeeches.count == 2)
         #expect(model.hasExpenses)
         let share = model.categoryLines.map(\.fraction).reduce(0, +)
         #expect(abs(share - 1) < 0.0001)
-        #expect(model.monthBars.map(\.month) == model.monthBars.map(\.month).sorted())
+        #expect(model.monthBars.map(\.month) == Array(1...12))
         #expect(model.expenseHeadline != nil)
+        let peak = try #require(model.monthBars.first { $0.month == model.highlightedMonth })
+        #expect(model.monthBars.allSatisfy { $0.cents <= peak.cents })
+        let average = try #require(model.monthAverageReais)
+        #expect(average > 0 && average <= peak.reais)
+        #expect(model.expensesSectionTitle.contains(model.yearText))
         #expect(model.shareRoute == .share(.person(slug: "tabata-amaral")))
         #expect(model.sourceText(for: ["votes"])?.contains("Câmara dos Deputados") == true)
         #expect(model.sourceText(for: ["assets"])?.contains("Tribunal Superior Eleitoral") == true)
-        #expect(!model.showsFactChecks)
     }
 
-    @Test func aStateDeputyWithoutAssemblyDataShowsDashesAndSaysWhy() async {
+    @Test func aStateDeputyWithoutAssemblyDataShowsNoDashAndSaysWhy() async {
         let model = makeModel("eduardo-suplicy")
         await model.load()
         let tiles = Dictionary(uniqueKeysWithValues: model.facts.map { ($0.id, $0) })
-        #expect(tiles["attendance"]?.value == "—")
-        #expect(tiles["attendance"]?.caption != nil)
-        #expect(tiles["quota"]?.value == "—")
-        #expect(tiles["assets"]?.isMissing == false)
+        #expect(tiles["attendance"] == nil)
+        #expect(tiles["quota"] == nil)
+        #expect(tiles["assets"] != nil)
         #expect(model.votes == nil)
         #expect(model.recentVotes.isEmpty)
         #expect(!model.hasExpenses)
-        #expect(model.coverageLines.contains { $0.status == .notPublished })
+        #expect(model.gaps.count == 1)
         #expect(!model.assetDeclarations.isEmpty)
         #expect(model.aboutLines.contains { $0.id == "birth" })
         #expect(!model.aboutLines.contains { $0.id == "salary" })
     }
 
-    @Test func theLensPutsItsThemesFirstAndMarksThem() async throws {
-        let lens = try FiscalDatabase.open(inMemory: true).repositories.lens
-        let probe = makeModel("tabata-amaral")
-        await probe.load()
-        let dataOrder = probe.themeLines.map(\.theme)
-        let last = try #require(dataOrder.last)
-        try await lens.save(Lens(themes: [last, .taxes, .economy], supported: ["lula"]))
-        let model = makeModel("tabata-amaral", lens: lens)
+    @Test func theThemesComeByHowManyActionsTheyHave() async throws {
+        let model = makeModel("tabata-amaral")
         await model.load()
-        #expect(model.showsLensBadge)
-        #expect(model.isLensAdapted)
-        #expect(model.themeLines.first?.theme == last)
-        #expect(model.themeLines.first?.isLensTheme == true)
-        #expect(Set(model.themeLines.map(\.theme)) == Set(dataOrder))
-        #expect(model.lensBallots.map(\.count).reduce(0, +) == model.lensVotes.count)
-        let themes = model.lensThemes
-        #expect(model.lensVotes.allSatisfy { vote in vote.themes.contains { themes.contains($0) } })
-    }
-
-    @Test func theImpartialLensKeepsTheDataOrder() async throws {
-        let lens = try FiscalDatabase.open(inMemory: true).repositories.lens
-        try await lens.save(Lens(prefersNotToSay: true))
-        let model = makeModel("kim-kataguiri", lens: lens)
-        await model.load()
-        let probe = makeModel("kim-kataguiri")
-        await probe.load()
-        #expect(!model.showsLensBadge)
-        #expect(!model.isLensAdapted)
-        #expect(model.themeLines.map(\.theme) == probe.themeLines.map(\.theme))
-        #expect(model.lensBallots.isEmpty)
+        let profile = try #require(model.profile)
+        let actions = model.themeLines.map(\.actions)
+        #expect(!actions.isEmpty)
+        #expect(actions == actions.sorted(by: >))
+        #expect(Set(model.themeLines.map(\.theme)) == Set(profile.themes.map(\.key)))
     }
 
     @Test func readsEveryBallot() {
@@ -110,24 +128,28 @@ struct ProfileModelTests {
             ProfileBallot.tallied.map(\.symbol) == ["checkmark", "xmark", "minus", "circle.dashed"])
     }
 
-    @Test func formatsTheSupplierDocument() {
-        #expect(ProfileModel.formattedDocument("12345678000190") == "12.345.678/0001-90")
-        #expect(ProfileModel.formattedDocument("123") == "123")
-    }
-
-    @Test func followsAndUnfollowsOnTheDevice() async throws {
+    @Test func followsThroughTheWindowController() async throws {
         let follows = try FiscalDatabase.open(inMemory: true).repositories.follows
         let model = makeModel("kim-kataguiri", follows: follows)
         #expect(!model.canFollow)
+        #expect(model.followCard == nil)
         await model.load()
         #expect(model.canFollow)
-        #expect(!model.isFollowing)
-        await model.toggleFollow()
-        #expect(model.isFollowing)
+        let card = try #require(model.followCard)
+        let follow = FollowController(follows: follows, widget: { _ in })
+        model.followChanged(to: await follow.toggle(card))
+        #expect(model.hasJustFollowed)
         #expect(try await follows.followed().map(\.card.name) == ["Kim Kataguiri"])
-        await model.toggleFollow()
-        #expect(!model.isFollowing)
+        model.followChanged(to: await follow.toggle(card))
+        #expect(!model.hasJustFollowed)
         #expect(try await follows.followed().isEmpty)
+    }
+
+    @Test func cannotFollowWithoutTheDatabase() async {
+        let model = makeModel("kim-kataguiri")
+        await model.load()
+        #expect(!model.canFollow)
+        #expect(model.followCard == nil)
     }
 
     @Test func aMissingProfileSaysSo() async {

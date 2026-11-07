@@ -9,7 +9,7 @@ public enum PortraitShelf {
     }
 
     public static func url(for slug: String) -> URL? {
-        FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: HomePlace.appGroup)?
+        AppGroup.containerURL?
             .appending(path: "portraits", directoryHint: .isDirectory)
             .appending(path: "\(slug).png")
     }

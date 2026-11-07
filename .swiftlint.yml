@@ -53,6 +53,21 @@ custom_rules:
     excluded: '.*Package\.swift$'
     severity: error
 
+  support_stays_private:
+    name: Support stays private
+    message: O apoio só pode ser lido em Meu apoio e na tela da votação (ADR 0021). Nenhuma outra tela muda por causa dele.
+    regex: '\b(SupportContext|SupportChoice|SupportRepository|SupportEntity)\b|repositories\.support'
+    included: '.*/(Sources/(Feature|AppShell)[^/]*|Fiscal/(Fiscal|Shared|FiscalWidgets))/.*\.swift$'
+    excluded: '.*/Sources/(FeatureSupport/.*|FeatureVotes/VoteDetailModel|FeatureCore/Identity/SupportContext|FeatureCore/Export/(DataArchive|DataExportModel)|AppShell/(RouteScreen|FiscalWindow))(\.swift)?$'
+    severity: error
+
+  external_link_component:
+    name: External link component
+    message: Use ExternalLink, que mostra o ícone e abre dentro do app.
+    regex: '\bLink\(destination:'
+    included: '.*/Sources/(Feature|AppShell)[^/]*/.*\.swift$'
+    severity: error
+
   design_token_spacing:
     name: Design token spacing
     message: Use os tokens de espaçamento do FiscalDesignSystem (.spaceS, .spaceM...).
@@ -75,6 +90,12 @@ custom_rules:
     name: Design token font
     message: Use .icon(_:weight:) ou os tokens de tipografia do FiscalDesignSystem.
     regex: '\.system\(size: [0-9]'
+    included: '.*/(Sources/(Feature|AppShell|FiscalPreview)|Fiscal/(Fiscal|Shared|FiscalWidgets)/).*\.swift$'
+    severity: error
+  emphasis_font:
+    name: Emphasis font
+    message: 'Número e título de destaque só na Bricolage Grotesque (.emphasis, tokens .amount*); nada de SF arredondada, condensada, mono ou black/heavy em tamanho fixo.'
+    regex: '(\.fontDesign\(\s*\.(rounded|monospaced|serif)\s*\)|design:\s*\.(rounded|monospaced|serif)\b|\.width\(\s*\.(condensed|compressed|expanded)\s*\)|\.monospaced\(\)|\.system\(size:[^)]*weight:\s*\.(heavy|black))'
     included: '.*/(Sources/(Feature|AppShell|FiscalPreview)|Fiscal/(Fiscal|Shared|FiscalWidgets)/).*\.swift$'
     severity: error
 

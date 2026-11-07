@@ -1,19 +1,19 @@
 import FiscalDomain
 import Foundation
 
-struct SwiftDataLensRepository: LensRepository {
+struct SwiftDataSupportRepository: SupportRepository {
     let store: FiscalStore
 
-    func lens() async throws -> Lens? {
-        try await store.lens()
+    func support() async throws -> SupportChoice? {
+        try await store.support()
     }
 
-    func save(_ lens: Lens) async throws {
-        try await store.save(lens)
+    func save(_ support: SupportChoice) async throws {
+        try await store.save(support: support)
     }
 
     func reset() async throws {
-        try await store.resetLens()
+        try await store.resetSupport()
     }
 }
 
@@ -34,5 +34,25 @@ struct SwiftDataFollowRepository: FollowRepository {
 
     func unfollow(slug: String) async throws {
         try await store.unfollow(slug: slug)
+    }
+}
+
+struct SwiftDataLikeRepository: LikeRepository {
+    let store: FiscalStore
+
+    func liked() async throws -> [LikedItem] {
+        try await store.liked()
+    }
+
+    func like(_ item: LikedItem) async throws {
+        try await store.like(item)
+    }
+
+    func unlike(id: String) async throws {
+        try await store.unlike(id: id)
+    }
+
+    func reset() async throws {
+        try await store.resetLikes()
     }
 }

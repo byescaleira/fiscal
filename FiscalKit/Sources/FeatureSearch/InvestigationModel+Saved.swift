@@ -1,7 +1,49 @@
 import FiscalDomain
 import Foundation
 
+struct TitleEdit: Equatable {
+    let id: Investigation.ID
+    let text: String
+}
+
 extension InvestigationModel {
+    public var title: String {
+        if let titleEdit, titleEdit.id == current?.id { return titleEdit.text }
+        return current?.question ?? ""
+    }
+
+    @discardableResult
+    public func editTitle(_ text: String) -> Bool {
+        guard let id = current?.id else { return false }
+        let ended = text.contains("\n")
+        let flat =
+            ended ? text.replacing("\n", with: " ").trimmingCharacters(in: .whitespaces) : text
+        titleEdit = TitleEdit(id: id, text: flat)
+        return ended
+    }
+
+    public func commitTitle() {
+        guard let titleEdit, titleEdit.id == current?.id else { return }
+        rename(titleEdit.text)
+        self.titleEdit = nil
+    }
+
+    public var isRenaming: Bool {
+        get { renaming != nil }
+        set { if !newValue { renaming = nil } }
+    }
+
+    public func startRenaming(_ investigation: Investigation) {
+        renameText = investigation.title
+        renaming = investigation
+    }
+
+    public func commitRenaming() {
+        guard let renaming else { return }
+        rename(renaming, to: renameText)
+        self.renaming = nil
+    }
+
     public func rename(_ text: String) {
         guard let investigation = current else { return }
         rename(investigation, to: text)

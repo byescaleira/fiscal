@@ -7,6 +7,8 @@ public final class OfflineDataModel {
     public private(set) var summary: OfflinePackSummary = .empty
     public private(set) var isRefreshing = false
     public private(set) var error: PublicDataError?
+    public private(set) var isErasing = false
+    public var isConfirmingErase = false
     @ObservationIgnored private let service: any OfflinePackService
 
     public init(service: any OfflinePackService) {
@@ -31,12 +33,31 @@ public final class OfflineDataModel {
         }
     }
 
+    public var canErase: Bool { !isRefreshing && !isErasing && !summary.isEmpty }
+
+    public func confirmErase() {
+        guard canErase else { return }
+        isConfirmingErase = true
+    }
+
+    public func cancelErase() {
+        isConfirmingErase = false
+    }
+
     public func erase() async {
+        guard !isErasing else { return }
+        isErasing = true
+        defer { isErasing = false }
         summary = await service.erase()
         error = nil
+        isConfirmingErase = false
     }
 
     public var sizeText: String { Self.bytes(summary.storedBytes) }
+
+    public var peopleText: String { PublicFormat.number(summary.people) }
+
+    public var filesText: String { PublicFormat.number(summary.files) }
 
     public var limitText: String { Self.bytes(OfflinePackSummary.limitBytes) }
 

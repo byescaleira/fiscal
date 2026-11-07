@@ -31,20 +31,20 @@ O Fiscal mostra o que os seus representantes fazem com o seu voto: presença, vo
 
 | | |
 | --- | --- |
-| **Hoje** | O destaque do momento, o resumo do dia no Congresso, as votações que acabaram de acontecer e a apuração ao vivo nas eleições, com Atividade ao Vivo e widget. |
+| **Feed** | O que aconteceu, por data: votos, propostas, discursos, gastos e checagens de quem você segue e o que é relevante, cada linha com o motivo. O filtro Seguindo leva à lista de quem você segue e às sugestões. No topo, o destaque do momento e a apuração ao vivo nas eleições, com Atividade ao Vivo e widget. |
 | **Região** | Quem governa a sua cidade, o seu estado e o país, as bancadas partido por partido e como os seus deputados e senadores votaram. Os 5.570 municípios. |
-| **Cada político** | Presença, propostas, discursos e cota comparados com os colegas do mesmo cargo; patrimônio e indicadores de antes e de depois da posse; as checagens do Projeto Comprova. |
+| **Cada político** | Uma página em capítulos que dependem do cargo e do que existe: como vota, o que propõe, quanto gasta, de onde vem e o que circulou segundo o Projeto Comprova. Dá para compartilhar uma nota, um voto ou uma proposta. |
 | **Votações** | O que foi decidido e o que muda na prática, com o placar por partido. Votações do mesmo projeto no mesmo dia aparecem juntas. |
 | **Dinheiro** | Quanto custa um mandato, estado por estado, contra o salário mínimo, para onde vai a cota parlamentar e quem financia as campanhas. |
 | **Fiscalizar** | Busca por pessoa, votação, tema ou cidade, investigações que cruzam dados e ficam salvas no iCloud, e a Memória: eleições desde 1989, fases da política brasileira e guias de estudo. |
-| **Compartilhar** | Cartazes prontos para Stories, feed ou mensagem, com obras de arte brasileiras em domínio público. |
+| **Compartilhar** | Cartazes prontos para Stories, feed ou mensagem, com obras de arte brasileiras em domínio público ou fotos do Brasil sob CC BY-SA 4.0, sempre com crédito. |
 
 ## Princípios
 
 - **Fato, não opinião.** O Fiscal não toma partido e não dá nota a ninguém. Todo número tem fonte e data.
 - **A mesma régua para todos.** Comparações sempre com colegas do mesmo cargo e da mesma casa, com o método publicado no app ("Como medimos").
 - **Incerteza explicada.** Quando algo é estimado, o app diz por quê e o que falta para ter certeza.
-- **Privacidade.** Sem conta. A Lente (os temas e as pessoas que você apoia) fica só no aparelho. A Apple Intelligence escreve as explicações no próprio aparelho, só a partir dos fatos oficiais.
+- **Privacidade.** Sem conta. O que você apoia, pessoas e causas, fica só no aparelho. A Apple Intelligence escreve as explicações no próprio aparelho, só a partir dos fatos oficiais.
 
 ## De onde vêm os dados
 
@@ -70,16 +70,16 @@ flowchart LR
 
 ## Desenvolvimento
 
-App em SwiftUI para iOS 27 (com iPadOS, macOS e visionOS no mesmo projeto), SwiftData com sincronização CloudKit, Swift Charts, Lottie e Foundation Models; servidor em Go só com a biblioteca padrão e SQLite. Abra `Fiscal.xcworkspace` no Xcode 27: o scheme `Production` roda o app, `FiscalKitTests` a suíte do pacote e `FiscalUITests` a interface.
+App em SwiftUI para iOS a partir do 26, com os recursos do 27 (e iPadOS, macOS e visionOS no mesmo projeto), SwiftData com sincronização CloudKit, Swift Charts, Lottie e Foundation Models; servidor em Go só com a biblioteca padrão e SQLite. Abra `Fiscal.xcworkspace` no Xcode 27: o scheme `Production` roda o app, `FiscalKitTests` a suíte do pacote e `FiscalUITests` a interface.
 
 ```sh
 scripts/verify.sh --quick
 ```
 
-O fluxo é spec-driven: a [constituição](docs/constitution.md) traz as regras inegociáveis, as [specs](docs/specs/README.md) a verdade atual de cada capacidade, as [mudanças](docs/changes/README.md) o que está em andamento e os [ADRs](docs/adr/README.md) as decisões. Para agentes de código, o ponto de partida é o [AGENTS.md](AGENTS.md).
+O fluxo é o SPDD ([open-spdd](https://github.com/gszhangwei/open-spdd)): a [constituição](docs/constitution.md) traz as regras inegociáveis, o [spdd/](spdd/README.md) as análises e os REASONS Canvases (a verdade atual de cada capacidade) e os [ADRs](docs/adr/README.md) as decisões. Para agentes de código, o ponto de partida é o [AGENTS.md](AGENTS.md).
 
 Mais: [arquitetura](docs/architecture.md) · [design system](docs/design-system.md) · [roadmap](docs/roadmap.md) · [site e Fiscal na Web](docs/web.md) · [App Store](docs/app-store/README.md) · [validação antes de distribuir](docs/validation.md).
 
 ## Licença
 
-O código está sob a [PolyForm Noncommercial 1.0.0](LICENSE.md): pode ler, estudar, modificar e usar para fins pessoais, educativos e de pesquisa, e por organizações sem fins lucrativos. Qualquer uso comercial é proibido. Os dados exibidos são públicos e vêm das fontes oficiais citadas em cada tela; as obras de arte dos cartazes estão em domínio público ([créditos](FiscalKit/Sources/FiscalResource/art-credits.json)).
+O código está sob a [PolyForm Noncommercial 1.0.0](LICENSE.md): pode ler, estudar, modificar e usar para fins pessoais, educativos e de pesquisa, e por organizações sem fins lucrativos. Qualquer uso comercial é proibido. Os dados exibidos são públicos e vêm das fontes oficiais citadas em cada tela; as obras dos cartazes estão em domínio público ou sob CC BY-SA 4.0 ([créditos](FiscalKit/Sources/FiscalResource/art-credits.json)).

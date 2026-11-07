@@ -9,20 +9,29 @@ struct MoneyCard<Content: View>: View {
     }
 
     var body: some View {
-        VStack(spacing: .spaceM) { content }
-            .multilineTextAlignment(.center)
-            .foregroundStyle(.primary)
-            .padding(.spaceInset)
-            .frame(maxWidth: .infinity)
-            .background(.groupedRow, in: .rect(cornerRadius: .radiusGroup))
+        card
             .listRowInsets(EdgeInsets())
             .listRowBackground(Color.clear)
+    }
+
+    @ViewBuilder private var card: some View {
+        let stack = VStack(spacing: .spaceM) { content }
+            .multilineTextAlignment(.center)
+            .foregroundStyle(.primary)
+            .frame(maxWidth: .infinity)
+        #if os(macOS)
+            GroupBox { stack }
+        #else
+            stack
+                .padding(.spaceInset)
+                .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
+        #endif
     }
 }
 
 struct MoneyHeroValue: View {
     @Environment(\.appTint) private var tint
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     let chip: String
     let value: String
     let cents: Int
@@ -30,9 +39,7 @@ struct MoneyHeroValue: View {
 
     var body: some View {
         VStack(spacing: .spaceS) {
-            Text(verbatim: chip)
-                .font(.caption.weight(.heavy))
-                .foregroundStyle(tint)
+            Chip(chip, color: tint, shape: .capsule)
             Text(verbatim: value)
                 .font(.amountHero)
                 .monospacedDigit()

@@ -5,25 +5,14 @@ import Testing
 
 @testable import FeatureVotes
 
-struct StoredLens: LensRepository {
-    let value: Lens?
-
-    func lens() async throws -> Lens? { value }
-    func save(_ lens: Lens) async throws {}
-    func reset() async throws {}
-}
-
 @MainActor
 struct VotesModelTests {
     private let now = Date(timeIntervalSince1970: 1_792_917_720)
 
-    private func model(
-        _ scenario: PublicDataScenario = .normal, lens: Lens? = nil
-    ) -> VotesModel {
+    private func model(_ scenario: PublicDataScenario = .normal) -> VotesModel {
         let now = now
         return VotesModel(
-            service: ShowcasePublicData(scenario: scenario, now: now),
-            lens: StoredLens(value: lens), now: { now })
+            service: ShowcasePublicData(scenario: scenario, now: now), now: { now })
     }
 
     @Test func loadsTheLatestFloorVotesGroupedByDay() async throws {
@@ -75,70 +64,40 @@ struct VotesModelTests {
                 == "\(VotesModel.HouseFilter.camara.title) · \(Theme.health.title)")
     }
 
-    @Test func theTopicMenuSplitsLensTopicsFromTheRest() async {
-        let lens = Lens(themes: [.security, .health, .environment], supported: ["lula"])
-        let votes = model(lens: lens)
+    @Test func theTopicMenuKeepsTheNaturalOrder() async {
+        let votes = model()
         await votes.load()
-        #expect(votes.lensThemeChoices.allSatisfy(lens.contains))
-        #expect(votes.otherThemeChoices.allSatisfy { !lens.contains($0) })
-        #expect(votes.lensThemeChoices + votes.otherThemeChoices == votes.themeChoices)
-        let plain = model()
-        await plain.load()
-        #expect(plain.lensThemeChoices.isEmpty)
-        #expect(plain.otherThemeChoices == plain.themeChoices)
+        #expect(!votes.themeChoices.isEmpty)
+        #expect(votes.themeChoices == Theme.allCases.filter { votes.themeChoices.contains($0) })
+        #expect(Set(votes.themeChoices).count == votes.themeChoices.count)
     }
 
-    @Test func theLensPutsItsTopicsFirstWithoutHidingAnything() async {
-        let lens = Lens(themes: [.security, .health, .environment], supported: ["lula"])
-        let votes = model(lens: lens)
+    @Test func everyVoteIsListedInItsDayWithNothingPutFirst() async {
+        let votes = model()
         await votes.load()
-        #expect(Array(votes.themeChoices.prefix(3)) == [.security, .health, .environment])
-        #expect(Set(votes.themeChoices).count == votes.themeChoices.count)
-        #expect(votes.showsLensBadge)
-        #expect(votes.highlights.count == VotesModel.highlightLimit)
-        #expect(votes.highlights.allSatisfy { $0.themes.contains(where: lens.contains) })
         #expect(votes.filtered.count == 6)
-        let listed = votes.highlights.map(\.id) + votes.days.flatMap(\.votes).map(\.id)
+        let listed = votes.days.flatMap(\.votes).map(\.id)
         #expect(listed.count == Set(listed).count)
         #expect(Set(listed) == Set(votes.filtered.map(\.id)))
         #expect(!votes.showsNoMatch)
-        votes.house = .camara
-        #expect(votes.highlights.isEmpty)
-        #expect(votes.days.flatMap(\.votes).count == votes.filtered.count)
-    }
-
-    @Test func withoutALensNothingIsAdapted() async {
-        let votes = model()
-        await votes.load()
-        #expect(!votes.showsLensBadge)
-        #expect(votes.highlights.isEmpty)
-        #expect(votes.themeChoices == Theme.allCases.filter { votes.themeChoices.contains($0) })
-    }
-
-    @Test func aNeutralLensStillPutsItsTopicsFirst() async {
-        let votes = model(lens: Lens(themes: [.health, .education, .taxes], prefersNotToSay: true))
-        await votes.load()
-        #expect(votes.showsLensBadge)
     }
 
     @Test func theAgendaShowsTheHousesWithItems() async throws {
         let votes = model()
         await votes.load()
         #expect(votes.agendaHouses.map(\.house) == [.camara, .senado])
-        #expect(votes.isAgendaToday)
         let camara = try #require(votes.agendaHouses.first)
         #expect(!votes.agendaStatus(camara).isEmpty)
     }
 
-    @Test func missingTalliesShowADash() async {
+    @Test func aVoteWithoutATallyHasNoScore() async {
         let votes = model()
         let vote = VoteSummary(
             id: "camara-1", house: .camara, date: CalendarDay(now), time: nil,
             proposition: "PL 1/2026", kind: nil, summary: "Texto", plainSummary: nil,
             themes: [], result: nil, approved: nil, nominal: false,
             tally: VoteSummary.Tally(yes: nil, no: nil, others: nil))
-        #expect(votes.yesText(vote) == PublicFormat.missing)
-        #expect(votes.noText(vote) == PublicFormat.missing)
+        #expect(votes.compactScore(vote) == nil)
         #expect(VoteOutcome(vote) == .symbolic)
         #expect(VoteTally.segments(vote.tally).allSatisfy { $0.value == 0 })
     }

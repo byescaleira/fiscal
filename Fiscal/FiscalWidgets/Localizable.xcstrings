@@ -70,6 +70,12 @@
                   "state" : "translated",
                   "value" : "%lld deputados federais"
                 }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Nenhum deputado federal"
+                }
               }
             }
           }
@@ -91,6 +97,12 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld deputados estaduais"
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Nenhum deputado estadual"
                 }
               }
             }
@@ -152,6 +164,16 @@
         }
       }
     },
+    "Choose whether the widget shows your state or who you follow." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha se o widget mostra seu estado ou quem você segue."
+          }
+        }
+      }
+    },
     "Couldn't load the highlights" : {
       "localizations" : {
         "pt-BR" : {
@@ -182,22 +204,22 @@
         }
       }
     },
-    "counted" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "apuradas"
-          }
-        }
-      }
-    },
     "EARLIER" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ANTES"
+          }
+        }
+      }
+    },
+    "ELECTED" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ELEITO"
           }
         }
       }
@@ -212,12 +234,32 @@
         }
       }
     },
-    "ELECTED" : {
+    "Expenses for %@: %@" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ELEITO"
+            "value" : "Gastos de %1$@: %2$@"
+          }
+        }
+      }
+    },
+    "FINAL" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FINAL"
+          }
+        }
+      }
+    },
+    "Fact check: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checagem: %@"
           }
         }
       }
@@ -250,16 +292,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Final"
-          }
-        }
-      }
-    },
-    "FINAL" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "FINAL"
           }
         }
       }
@@ -310,6 +342,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O Fiscal tenta de novo daqui a pouco. Abra o app para ver os últimos dados salvos."
+          }
+        }
+      }
+    },
+    "Follow someone in Fiscal" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siga alguém no Fiscal"
+          }
+        }
+      }
+    },
+    "Following" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seguindo"
           }
         }
       }
@@ -387,6 +439,16 @@
         }
       }
     },
+    "My State" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meu estado"
+          }
+        }
+      }
+    },
     "NO" : {
       "localizations" : {
         "pt-BR" : {
@@ -403,6 +465,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nenhum destaque ainda"
+          }
+        }
+      }
+    },
+    "No recent updates" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem novidades recentes"
           }
         }
       }
@@ -437,7 +509,18 @@
         }
       }
     },
+    "Open Fiscal and choose your state in Following." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abra o Fiscal e escolha seu estado em Seguindo."
+          }
+        }
+      }
+    },
     "Open Fiscal and choose your state in Mine." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -512,6 +595,16 @@
         }
       }
     },
+    "Show" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar"
+          }
+        }
+      }
+    },
     "Source: %@" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -566,26 +659,6 @@
         }
       }
     },
-    "The latest vote in Congress, with the Yes and No score and the result." : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A votação mais recente do Congresso, com o placar de Sim e Não e o resultado."
-          }
-        }
-      }
-    },
-    "This state's list isn't published yet." : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A lista deste estado ainda não foi publicada."
-          }
-        }
-      }
-    },
     "TSE" : {
       "localizations" : {
         "pt-BR" : {
@@ -602,6 +675,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Arquivo do TSE das %@"
+          }
+        }
+      }
+    },
+    "The latest vote in Congress, with the Yes and No score and the result." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A votação mais recente do Congresso, com o placar de Sim e Não e o resultado."
+          }
+        }
+      }
+    },
+    "This state's list isn't published yet." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A lista deste estado ainda não foi publicada."
           }
         }
       }
@@ -649,6 +742,16 @@
         }
       }
     },
+    "Voted %@ · %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votou %1$@ · %2$@"
+          }
+        }
+      }
+    },
     "Votes apart: %@" : {
       "localizations" : {
         "pt-BR" : {
@@ -680,12 +783,43 @@
         }
       }
     },
+    "Who I Follow" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem eu sigo"
+          }
+        }
+      }
+    },
+    "Who represents your state, or who you follow, with a tap to each profile." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem representa seu estado, ou quem você segue, com um toque para cada perfil."
+          }
+        }
+      }
+    },
     "Who represents your state, with a tap to each profile." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quem representa o seu estado, com um toque para cada perfil."
+          }
+        }
+      }
+    },
+    "Who you follow shows up here, with their latest update." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quem você segue aparece aqui, com a novidade mais recente."
           }
         }
       }
@@ -696,6 +830,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "SIM"
+          }
+        }
+      }
+    },
+    "and %lld more" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "e mais %lld"
+          }
+        }
+      }
+    },
+    "counted" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "apuradas"
           }
         }
       }

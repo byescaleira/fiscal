@@ -1,9 +1,9 @@
 import FeatureCore
+import FeatureFeed
 import FeatureLiveResults
-import FeatureMine
 import FeatureMoney
+import FeatureRegion
 import FeatureSearch
-import FeatureToday
 import FeatureVotes
 import FiscalDomain
 import SwiftUI
@@ -15,37 +15,32 @@ struct SectionScreen: View {
     @ViewBuilder var body: some View {
         let data = FiscalServices.shared.publicData()
         switch section {
-        case .today:
+        case .feed:
             let services = FiscalServices.shared
             ModelHost(
-                TodayModel(
-                    service: data, lens: session.repositories.lens,
-                    races: services.liveResultsService(),
-                    follows: services.todayFollows(session.repositories.follows))
+                FeedModel(
+                    service: data, races: services.liveResultsService(),
+                    follows: services.feedFollows(session.repositories.follows))
             ) {
-                ModelHost(services.liveResults()) {
-                    TodayScreen { race in RaceHeroCard(race: race, opensDetail: true) }
-                }
+                FeedScreen { race in RaceHeroCard(race: race, opensDetail: true) }
             }
-        case .mine:
-            ModelHost(MineModel(service: data, follows: session.repositories.follows)) {
-                MineScreen()
+        case .region:
+            ModelHost(RegionModel(service: data)) {
+                RegionScreen()
             }
         case .votes:
-            ModelHost(VotesModel(service: data, lens: session.repositories.lens)) {
-                VotesScreen()
-            }
+            ModelHost(VotesModel(service: data)) { VotesScreen() }
         case .money:
-            ModelHost(MoneyModel(service: data, lens: session.repositories.lens)) { MoneyScreen() }
+            ModelHost(MoneyModel(service: data)) { MoneyScreen() }
         case .search:
             ModelHost(
                 SearchModel(
                     service: data,
                     board: InvestigationModel(
-                        service: data, lens: session.repositories.lens,
-                        follows: session.repositories.follows,
+                        service: data, follows: session.repositories.follows,
                         repository: session.repositories.investigations,
-                        homeUF: HomePlace.chosenUF(in: .standard)))
+                        homeUF: HomePlace.chosenUF(in: .standard),
+                        usesModel: FiscalServices.shared.usesIntelligence))
             ) {
                 SearchScreen()
             }

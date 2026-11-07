@@ -220,6 +220,8 @@ func buildSender(c config) (apns.Sender, error) {
 	return apns.NewClient(tokens, c.topic), nil
 }
 
+var version = "dev"
+
 func main() {
 	check := flag.Bool("check", false, "query the local health endpoint and exit 0 or 1")
 	flag.Parse()
@@ -277,7 +279,7 @@ func main() {
 			log.Fatalf("highlight alerts: %v", err)
 		}
 	}
-	apiConfig := httpapi.Config{Races: svc, Registrations: regs, AdminToken: cfg.adminToken, AttestMode: cfg.attestMode}
+	apiConfig := httpapi.Config{Races: svc, Registrations: regs, AdminToken: cfg.adminToken, AttestMode: cfg.attestMode, Version: version}
 	var attest *appattest.Service
 	if cfg.attestMode != httpapi.AttestOff {
 		verifier, err := appattest.NewVerifier(cfg.attestAppID, cfg.attestDev)
@@ -350,7 +352,7 @@ func main() {
 	if cfg.apnsDisabled {
 		apnsMode = "disabled"
 	}
-	log.Printf("listening on %s source=%s apns=%s poll=%s registrations=%d admin=%v publish=%v highlightAlerts=%v appAttest=%s", address, mode, apnsMode, cfg.poll, regs.Count(), cfg.adminToken != "", cfg.publishDir() != "", cfg.alerts, cfg.attestMode)
+	log.Printf("listening on %s version=%s source=%s apns=%s poll=%s registrations=%d admin=%v publish=%v highlightAlerts=%v appAttest=%s", address, version, mode, apnsMode, cfg.poll, regs.Count(), cfg.adminToken != "", cfg.publishDir() != "", cfg.alerts, cfg.attestMode)
 
 	<-ctx.Done()
 	log.Printf("shutting down")

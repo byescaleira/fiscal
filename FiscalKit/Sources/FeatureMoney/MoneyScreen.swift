@@ -28,6 +28,9 @@ public struct MoneyScreen: View {
             MoneyEmptyState()
         }
         .emphasisTitle("Money")
+        #if !os(visionOS)
+            .navigationSubtitle(money.scopeName)
+        #endif
         .toolbar { MoneyToolbar() }
         .refreshable { await money.load() }
         .task { await money.load() }
@@ -44,10 +47,6 @@ private struct MoneyAnswerSection: View {
                     .listRowInsets(EdgeInsets())
                     .listRowBackground(Color.clear)
             }
-        } header: {
-            if money.showsLensBadge {
-                MoneyLensHeader(note: money.lensNote)
-            }
         } footer: {
             Text(verbatim: money.answerSourceLine)
         }
@@ -56,14 +55,14 @@ private struct MoneyAnswerSection: View {
 
 private struct MoneyAnswerCard: View {
     @Environment(\.appTint) private var tint
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     let answer: MoneyModel.Answer
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceL) {
             VStack(alignment: .leading, spacing: .space2XS) {
                 Text(verbatim: answer.kicker)
-                    .font(.caption.weight(.heavy))
+                    .font(.chipLabel)
                     .foregroundStyle(tint)
                     .contentTransition(.opacity)
                 HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
@@ -107,7 +106,7 @@ private struct MoneyAnswerCard: View {
         .foregroundStyle(.primary)
         .padding(.spaceInset)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.groupedRow, in: .rect(cornerRadius: .radiusGroup))
+        .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isHeader)
     }
@@ -131,31 +130,6 @@ private struct MoneyAnswerLine: View {
         .padding(.vertical, .spaceS)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(tint.opacity(.opacityFill), in: .rect(cornerRadius: .radiusM))
-    }
-}
-
-private struct MoneyLensHeader: View {
-    @Environment(\.open) private var open
-    @Environment(\.navigationSection) private var section
-    let note: String?
-
-    var body: some View {
-        AdaptiveRow(spacing: .spaceS) {
-            Button {
-                open(.lens, in: section)
-            } label: {
-                LensBadge()
-            }
-            .buttonStyle(.plain)
-            .accessibilityHint(Text("Opens what your lens changes"))
-            if let note {
-                Text(verbatim: note)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .textCase(nil)
-        .padding(.bottom, .spaceS)
     }
 }
 
@@ -188,6 +162,6 @@ private struct MoneyEmptyState: View {
             IconRow("Campaigns", symbol: "building.columns", color: .retroTeal)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.groupedBackground)
+        .background(.plainBackground)
     }
 }

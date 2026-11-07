@@ -21,6 +21,8 @@ import (
 
 const exitBusy = 75
 
+var version = "dev"
+
 func main() {
 	var once onceFlag
 	flag.Var(&once, "once", "run one load (full, the default, or live), stage the site and exit")
@@ -86,7 +88,7 @@ func main() {
 	}
 	switch {
 	case *configCheck:
-		log.Printf("config ok")
+		log.Printf("config ok: version=%s", version)
 		return
 	case *healthCheck:
 		os.Exit(check(cfg.ingest.DataDir, time.Now(), 2*cfg.live+5*time.Minute))

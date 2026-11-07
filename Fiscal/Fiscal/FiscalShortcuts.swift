@@ -29,6 +29,27 @@ nonisolated struct FiscalShortcuts: AppShortcutsProvider {
                 "Election results in \(.applicationName)",
             ],
             shortTitle: "Vote Count", systemImageName: "chart.bar.xaxis")
+        AppShortcut(
+            intent: FollowPersonIntent(),
+            phrases: [
+                "Follow \(\.$target) in \(.applicationName)",
+                "Follow a politician in \(.applicationName)",
+            ],
+            shortTitle: "Follow", systemImageName: "person.badge.plus")
+        AppShortcut(
+            intent: UnfollowPersonIntent(),
+            phrases: [
+                "Unfollow \(\.$target) in \(.applicationName)",
+                "Unfollow a politician in \(.applicationName)",
+            ],
+            shortTitle: "Unfollow", systemImageName: "person.badge.minus")
+        AppShortcut(
+            intent: OpenFollowingIntent(),
+            phrases: [
+                "Who I follow in \(.applicationName)",
+                "Show who I follow in \(.applicationName)",
+            ],
+            shortTitle: "Following", systemImageName: "person.2")
     }
 }
 

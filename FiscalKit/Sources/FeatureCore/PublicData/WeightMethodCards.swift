@@ -38,20 +38,12 @@ struct WeightDetailsCard: View {
 
     var body: some View {
         WeightCard {
-            DisclosureGroup {
-                VStack(alignment: .leading, spacing: .spaceL) {
-                    values("Type", method.kinds)
-                    values("Reach", method.scopes)
-                    values("Stage", method.stages)
-                    themes
-                    lines("Rules", method.rules)
-                    lines("Limits", method.limits)
-                }
-                .padding(.top, .spaceM)
-            } label: {
-                Label("Technical Details", systemImage: "list.bullet.rectangle")
-                    .font(.rowTitle)
-            }
+            values("Type", method.kinds)
+            values("Reach", method.scopes)
+            values("Stage", method.stages)
+            themes
+            lines("Rules", method.rules)
+            lines("Limits", method.limits)
         }
     }
 

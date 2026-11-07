@@ -28,12 +28,6 @@ extension ShareCardContent {
         if case .investigation(let investigation) = body { return investigation }
         return nil
     }
-
-    public var hasOwnPoster: Bool { isVictory || investigation != nil }
-}
-
-extension ShareCard {
-    public var investigation: ShareInvestigation? { content.investigation }
 }
 
 extension ShareCardBuilder {
@@ -70,12 +64,7 @@ extension ShareCardBuilder {
         switch slugs.count {
         case 1: return link("person", slugs[0])
         case 2: return link("compare", slugs.joined(separator: ","))
-        default:
-            var components = URLComponents()
-            components.scheme = "https"
-            components.host = Self.host
-            components.path = "/"
-            return components.url ?? URL(fileURLWithPath: "/")
+        default: return home()
         }
     }
 }

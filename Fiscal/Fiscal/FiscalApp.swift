@@ -2,6 +2,8 @@ import AppShell
 import FeatureCore
 import FeatureSettings
 import FiscalData
+import FiscalDesignSystem
+import FiscalDomain
 import Observation
 import SwiftUI
 
@@ -11,6 +13,8 @@ struct FiscalApp: App {
     @State private var bootstrap: FiscalBootstrap
 
     init() {
+        FiscalLanguage.install()
+        HomePlace.migrateLegacyKeys(in: .standard)
         #if DEBUG && !targetEnvironment(simulator)
             if CommandLine.arguments.contains("-FiscalInitializeCloudSchema") {
                 FiscalDatabase.initializeCloudSchema()
@@ -18,7 +22,7 @@ struct FiscalApp: App {
         #endif
         FiscalShortcutsSetup.install()
         FiscalAppearance.install()
-        let settings = SettingsModel()
+        let settings = SettingsModel.fiscal()
         _settings = State(initialValue: settings)
         _bootstrap = State(initialValue: FiscalBootstrap())
     }
@@ -30,10 +34,28 @@ struct FiscalApp: App {
                 .environment(bootstrap.update)
                 .featureFlags(bootstrap.flags)
                 .fiscalSettings(settings)
+                .groupedSurface(.plain)
+                .readsLiteMode()
+                .inAppBrowser()
         }
         #if os(iOS) || os(visionOS)
             .backgroundTask(.appRefresh(OfflineDataCenter.refreshIdentifier)) {
                 await OfflineDataCenter.shared.refreshInBackground()
+            }
+        #endif
+        #if os(macOS)
+            .commands { FiscalCommands() }
+        #endif
+        #if os(visionOS)
+            WindowGroup(for: UUID.self) { $id in
+                RouteWindowScreen(id: id)
+                    .environment(bootstrap.update)
+                    .environment(bootstrap.export)
+                    .featureFlags(bootstrap.flags)
+                    .fiscalSettings(settings)
+                    .groupedSurface(.plain)
+                    .readsLiteMode()
+                    .inAppBrowser()
             }
         #endif
         #if os(macOS)
@@ -43,6 +65,9 @@ struct FiscalApp: App {
                     .environment(bootstrap.export)
                     .featureFlags(bootstrap.flags)
                     .fiscalSettings(settings)
+                    .groupedSurface(.plain)
+                    .readsLiteMode()
+                    .inAppBrowser()
             }
         #endif
     }
@@ -66,6 +91,7 @@ private final class FiscalBootstrap {
             update = AppUpdateModel(source: CloudKitAppReleaseSource())
         #endif
         hold = UpdateHoldModel(update: update)
+        FiscalServices.shared.flags = flags
     }
 
     func prepare() async {
@@ -82,7 +108,8 @@ private final class FiscalBootstrap {
             self.database = database
             export = DataExportModel(repositories: database.repositories)
             Task { await flags.refresh() }
-            await hold.attach([])
+            try? AppGroup.publish(.current())
+            await hold.attach(FiscalServices.shared.holdConnections())
         } catch {
             self.error = error.localizedDescription
         }
@@ -120,15 +147,16 @@ private struct FiscalRootView: View {
             } else if let window {
                 MainScreen().fiscalWindow(window).environment(launch)
             } else if let error = bootstrap.error {
-                ContentUnavailableView {
-                    Label(
-                        "Couldn't open Fiscal",
-                        systemImage: "externaldrive.badge.exclamationmark")
-                } description: {
-                    Text(error)
-                } actions: {
-                    Button("Try Again") { attempt += 1 }
+                EmptyStateView(
+                    title: String(appLocalized: "Couldn't open Fiscal"), description: error,
+                    actionTitle: String(appLocalized: "Try Again"), action: { attempt += 1 }
+                ) {
+                    IconRow(
+                        "Nothing was erased", symbol: "externaldrive",
+                        color: .retroDenim)
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(.plainBackground)
             } else {
                 SplashScreen(progress: launch.fraction, status: launch.status)
             }

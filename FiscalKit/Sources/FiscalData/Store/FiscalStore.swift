@@ -4,28 +4,48 @@ import SwiftData
 
 @ModelActor
 public actor FiscalStore {
-    public func lens() throws -> Lens? {
-        try lensEntity()?.lens
+    public nonisolated let changeHub = FiscalChangeHub()
+
+    func commit() throws {
+        try modelContext.save()
+        changeHub.publish(.local)
     }
 
-    public func save(_ lens: Lens, at date: Date = .now) throws {
+    public func support() throws -> SupportChoice? {
+        if let entity = try supportEntity() { return entity.support }
+        guard let legacy = try lensEntity() else { return nil }
+        let support = legacy.legacySupport
         do {
-            if let entity = try lensEntity() {
-                entity.update(with: lens, at: date)
-            } else {
-                modelContext.insert(LensEntity(lens: lens, updatedAt: date))
-            }
-            try modelContext.save()
+            modelContext.insert(SupportEntity(support: support, updatedAt: legacy.updatedAt))
+            try modelContext.delete(model: LensEntity.self)
+            try commit()
+            return support
         } catch {
             modelContext.rollback()
             throw error
         }
     }
 
-    public func resetLens() throws {
+    public func save(support: SupportChoice, at date: Date = .now) throws {
         do {
+            if let entity = try supportEntity() {
+                entity.update(with: support, at: date)
+            } else {
+                modelContext.insert(SupportEntity(support: support, updatedAt: date))
+            }
             try modelContext.delete(model: LensEntity.self)
-            try modelContext.save()
+            try commit()
+        } catch {
+            modelContext.rollback()
+            throw error
+        }
+    }
+
+    public func resetSupport() throws {
+        do {
+            try modelContext.delete(model: SupportEntity.self)
+            try modelContext.delete(model: LensEntity.self)
+            try commit()
         } catch {
             modelContext.rollback()
             throw error
@@ -60,7 +80,7 @@ public actor FiscalStore {
             } else {
                 for entity in existing { entity.update(with: card) }
             }
-            try modelContext.save()
+            try commit()
         } catch {
             modelContext.rollback()
             throw error
@@ -72,11 +92,18 @@ public actor FiscalStore {
             let existing = try modelContext.fetch(
                 FetchDescriptor<FollowEntity>(predicate: #Predicate { $0.slug == slug }))
             for entity in existing { modelContext.delete(entity) }
-            try modelContext.save()
+            try commit()
         } catch {
             modelContext.rollback()
             throw error
         }
+    }
+
+    private func supportEntity() throws -> SupportEntity? {
+        var descriptor = FetchDescriptor<SupportEntity>(
+            sortBy: [SortDescriptor(\.updatedAt, order: .reverse)])
+        descriptor.fetchLimit = 1
+        return try modelContext.fetch(descriptor).first
     }
 
     private func lensEntity() throws -> LensEntity? {

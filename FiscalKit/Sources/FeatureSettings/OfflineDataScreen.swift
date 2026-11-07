@@ -5,9 +5,9 @@ import SwiftUI
 
 struct OfflineDataScreen: View {
     @Environment(OfflineDataModel.self) private var offline
-    @State private var isConfirmingErase = false
 
     var body: some View {
+        @Bindable var offline = offline
         SettingsPage("Offline Data") {
             Section {
                 OfflineDataHeader()
@@ -19,10 +19,9 @@ struct OfflineDataScreen: View {
             Section {
                 SettingsLabel(
                     "People saved", symbol: "person.2", color: .retroDenim,
-                    value: PublicFormat.number(offline.summary.people))
+                    value: offline.peopleText)
                 SettingsLabel(
-                    "Files", symbol: "doc.on.doc", color: .retroOlive,
-                    value: PublicFormat.number(offline.summary.files))
+                    "Files", symbol: "doc.on.doc", color: .retroOlive, value: offline.filesText)
                 SettingsLabel(
                     "Without compression", symbol: "arrow.up.left.and.arrow.down.right",
                     color: .retroMustard, value: offline.originalText)
@@ -39,19 +38,9 @@ struct OfflineDataScreen: View {
                 }
                 .disabled(offline.isRefreshing)
                 Button("Delete Offline Data", systemImage: "trash", role: .destructive) {
-                    isConfirmingErase = true
+                    offline.confirmErase()
                 }
-                .disabled(offline.isRefreshing || offline.summary.isEmpty)
-                .confirmationDialog(
-                    "Delete the offline data?", isPresented: $isConfirmingErase,
-                    titleVisibility: .visible
-                ) {
-                    Button("Delete Offline Data", role: .destructive) {
-                        Task { await offline.erase() }
-                    }
-                } message: {
-                    Text("Fiscal downloads it again on the next update with a connection.")
-                }
+                .disabled(!offline.canErase)
             } footer: {
                 if let error = offline.error {
                     Text(verbatim: error.message)
@@ -63,25 +52,48 @@ struct OfflineDataScreen: View {
             }
         }
         .task { await offline.load() }
+        .sheet(isPresented: $offline.isConfirmingErase) {
+            OfflineEraseGuide().environment(offline)
+        }
+    }
+}
+
+private struct OfflineEraseGuide: View {
+    @Environment(OfflineDataModel.self) private var offline
+
+    var body: some View {
+        GuideSheet(
+            index: 0, count: 1, isWorking: offline.isErasing,
+            primary: GuideAction("Delete Offline Data") { Task { await offline.erase() } },
+            secondary: GuideAction("Keep Offline Data") { offline.cancelErase() }
+        ) {
+            GuidePage(
+                title: "Delete the offline data?",
+                message: "Fiscal downloads it again on the next update with a connection."
+            ) {
+                FiscalAnimationView(.backup)
+            }
+        }
     }
 }
 
 private struct OfflineDataHeader: View {
     @Environment(OfflineDataModel.self) private var offline
     @Environment(\.appTint) private var appTint
+    @Environment(\.settingsReducesMotion) private var reduceMotion
 
     var body: some View {
         VStack(alignment: .leading, spacing: .spaceS) {
             Chip("On This Device", color: appTint, shape: .capsule)
                 .textCase(.uppercase)
             Text(verbatim: offline.sizeText)
-                .font(.scoreboardNumber)
+                .font(.scoreboardTitle)
                 .monospacedDigit()
-                .contentTransition(.numericText())
+                .contentTransition(reduceMotion ? .opacity : .numericText())
             Text("Up to \(offline.limitText)")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
-            ProgressBar(value: offline.fillFraction, color: appTint)
+            OfflineFillBar(value: offline.fillFraction, color: appTint)
             Group {
                 if let updated = offline.updatedText {
                     Text("Updated \(updated)")
@@ -93,7 +105,20 @@ private struct OfflineDataHeader: View {
             .foregroundStyle(.secondary)
         }
         .padding(.vertical, .spaceXS)
-        .animation(.smooth, value: offline.summary)
+        .animation(reduceMotion ? nil : .smooth, value: offline.summary)
         .accessibilityElement(children: .combine)
+    }
+}
+
+private struct OfflineFillBar: View {
+    @Environment(\.settingsReducesMotion) private var reduceMotion
+    @State private var isFilled = false
+    let value: Double
+    let color: Color
+
+    var body: some View {
+        ProgressBar(value: isFilled || reduceMotion ? value : .zero, color: color)
+            .animation(reduceMotion ? nil : .smooth, value: isFilled)
+            .task { isFilled = true }
     }
 }

@@ -25,16 +25,15 @@ public final class PortraitStore {
         library.rig != nil
     }
 
-    public func hasTraits(slug: String, party: String) -> Bool {
-        library.traits(for: slug, party: party) != nil
+    public func hasTraits(slug: String) -> Bool {
+        library.traits(for: slug) != nil
     }
 
     public func animation(slug: String, party: String) -> LottieAnimation? {
         guard let rig = rig() else { return nil }
         let key = key(slug: slug, party: party)
         if let cached = assembled[key] { return cached }
-        let traits =
-            library.traits(for: slug, party: party) ?? rig.neutral(slug: slug, party: party)
+        let traits = library.traits(for: slug) ?? rig.neutral(slug: slug, party: party)
         guard let animation = rig.animation(for: traits, party: party) else { return nil }
         if assembled.count >= Self.cacheLimit { assembled.removeAll(keepingCapacity: true) }
         assembled[key] = animation
@@ -70,7 +69,7 @@ public final class PortraitStore {
 
     private func key(slug: String, party: String) -> String {
         let party = PortraitLibrary.partyKey(party)
-        guard library.traits(for: slug, party: party) != nil else { return "neutral|" + party }
+        guard library.traits(for: slug) != nil else { return "neutral|" + party }
         return slug + "|" + party
     }
 }

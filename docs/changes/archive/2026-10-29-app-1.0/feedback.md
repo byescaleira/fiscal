@@ -1,0 +1,168 @@
+# Pedidos do usuário na rodada de ajustes da 1.0
+
+Lista única dos pedidos feitos no iPhone, com o estado de cada um. Atualizada a cada entrega; cada entrega é instalada no iPhone e relatada.
+
+Estados: **no iPhone** (instalado no aparelho), **em andamento** (frente rodando), **na fila** (ainda não começou), **decisão** (precisa do usuário).
+
+## Navegação e componentes
+
+| Pedido | Estado | Onde |
+| --- | --- | --- |
+| Ícones das abas (casa, pessoas, arquivo, recibo, lupa) e Fiscalizar em destaque — ajuste do usuário em 26/10 | no código | AppSection, MainScreen |
+| Tags de partido em faixas verticais iguais, sem gradiente | no iPhone | PartyMark, PartySeal |
+| Nenhum segmented control no app | no iPhone | Compartilhar, Gastos, Votos do detalhe |
+| Seguir e Compartilhar do perfil numa linha, mesma altura | no iPhone | ProfileHero |
+| Retrato sem rosto em cinza neutro | no iPhone | PersonPortrait |
+
+## Votações
+
+| Pedido | Estado | Onde |
+| --- | --- | --- |
+| Filtros na toolbar em vez da pilha vertical | no iPhone | VotesToolbar |
+| Card Sim × Não com margem da lista e mais respiro | no iPhone | VoteHeroSection |
+| Check e xmark dos representantes em círculo | no iPhone | VoteBallotsSection |
+
+## Meus e dados
+
+| Pedido | Estado | Onde |
+| --- | --- | --- |
+| Escolher qualquer cidade, com prefeito e vereadores | no iPhone | Meus, servidor (TSE 2024) |
+| Comparação só com 2 políticos | no iPhone | Compare |
+| Todos os políticos nos dados de teste (ex.: Flávio Bolsonaro) | no iPhone (594 nacionais) | showcase-people.json |
+| Volume da base de dados (votações, perfis, dinheiro reais) | em andamento | frente data |
+| Rostos para todos (628 desenhados) | no iPhone | avatars.py, fiscal-portraits.deflate |
+
+## Compartilhar
+
+| Pedido | Estado | Onde |
+| --- | --- | --- |
+| Card com pouca informação e sem componentes nativos | no iPhone | SharePoster |
+| Arte brasileira antes das paisagens | no iPhone | ShareModel |
+| Paisagem ocupando o card inteiro, como as pinturas | no iPhone | ShareArtwork |
+| Acervo histórico só com pinturas coloridas em alta resolução | no iPhone (22 pinturas) | art-works.json |
+
+## Apuração ao vivo
+
+| Pedido | Estado | Onde |
+| --- | --- | --- |
+| Card ao vivo do Hoje com uma barra de força por lado, sem diferença | no iPhone | TodayLiveRaceCard |
+| Live Activity igual ao card: foto, tag, % apurado, barra de força, fundo do sistema em vidro | no iPhone | RaceLiveActivity |
+| Live Activity cabendo na tela de bloqueio, percentual em destaque | no iPhone | RaceLiveActivity |
+| Card do Hoje igual ao destaque da apuração; Live Activity no mesmo desenho | no iPhone | RaceHeroCard, TodayRaceHero |
+| Live Activity menos apertada: candidatos em linhas | no iPhone | RaceLiveActivity |
+| Resumo do dia sem carregar (dado real ainda não publicado) | na fila: deploy | VPS |
+| Apuração mostrando 87% (era o cenário de teste) | no iPhone, só dado real | launch sem cenário |
+| Tela de apuração menos repetitiva, com brancos, nulos, abstenção e fotos | no iPhone | LiveResultsScreen, RaceDetailScreen |
+
+## Lente e visual
+
+| Pedido | Estado | Onde |
+| --- | --- | --- |
+| "De que lado você está?" na proposta do app | no iPhone | LensStanceSpectrum, LensChoices |
+| "O seu visual" consistente com o app | no iPhone | LensLookPreview, LensLookChoices |
+| Gráfico de "Seus temas" na tela da Lente | no iPhone | LensThemeChart |
+
+## Gráficos e dinheiro
+
+| Pedido | Estado | Onde |
+| --- | --- | --- |
+| Temas em Fiscalizar com Swift Charts | no iPhone | ThemeCharts |
+| Seções de Dinheiro com gráficos próprios do Swift Charts | no iPhone | FeatureMoney |
+
+## Novas funcionalidades
+
+| Pedido | Estado | Onde |
+| --- | --- | --- |
+| Destaque do momento sempre na aba Hoje | no iPhone (aparece com dados reais) | TodayHighlightSection |
+| Peso de cada ação (repercussão + impacto, regra única) | no iPhone; repercussão só pela Wikipédia (GDELT limitou, Bluesky exige login) | weight.go, ProfileActionsSection |
+| Preços com série histórica (gasolina e bens de consumo) | no iPhone (ANP desde 2001, IPCA) | indicators |
+| Antes × durante o mandato para todos | no iPhone (aparece com dados reais) | ProfileContextSection |
+| Explicar em linguagem simples o sentido dos dados, com Foundation Models e selo de interpretação imparcial | no iPhone (votação, perfil, Temas; aparece com dados reais) | FeatureCore/Explain |
+| Selo: "Apple Intelligence" em vez de "Siri" | decidido: Apple Intelligence | ExplainerBadge |
+| Repercussão no X, Instagram ou TikTok | decisão (custo) | — |
+
+## Backend e dados reais
+
+| Pedido | Estado | Onde |
+| --- | --- | --- |
+| Só dados reais no iPhone | no iPhone, dados reais no ar desde 26/10 01:51 UTC | sem -FiscalDataScenario |
+| Backend que guarda tudo e sincroniza sozinho (SQLite, decisão do usuário) | no ar (banco de 1,3 GB, backup diário) | datastore, ADR 0006 |
+| Deploy da carga na VPS (aprovado pelo usuário) | no ar: 2.357 pessoas, 69.269 municipais, 4.452 votações, 1.152 checagens | fiscal-ingest, Caddy /api/v1 |
+
+## Rodada de 26/10
+
+| Pedido | Estado | Onde |
+| --- | --- | --- |
+| Fotos dos dois escolhidos maiores na comparação | no iPhone | ComparePicker |
+| Live Activity parecida com o card ao vivo, com padding adequado | no iPhone | RaceLiveActivity |
+| Barra do card ao vivo como estava na apuração | no iPhone | RaceHeroCard |
+| Seletor de imagens do compartilhar melhor | no iPhone | ShareArtPicker |
+| Card ao vivo no topo do Hoje | no iPhone | TodayScreen |
+| Compartilhar o Destaque do momento | no iPhone | SharePosterHighlight, TodayHighlightSection |
+| Cargo no feminino (Deputada, Senadora…) | no iPhone (dados de teste; real após a próxima carga) | Office.title(for:) |
+| Ajustes e telas internas no padrão do app | no iPhone | FeatureSettings |
+| Sem "Apagar minha escolha" na Privacidade da Lente | no iPhone | LensPrivacySection |
+| Destaque do momento no widget (sempre) e na Live Activity (só peso ≥ 85, últimas 24 h) | no iPhone; push por servidor depende do deploy do fiscal-api | HighlightWidget, HighlightLiveActivity |
+| Cabeçalho de Meus melhor, sem cor | no iPhone | MineHeroCard |
+| Botões da toolbar na cor do texto; Trocar lugar na toolbar de Meus | no iPhone | toolbars |
+| Lente pelos candidatos que a pessoa apoia, no lugar do lado (apoiar ≠ seguir) | no iPhone | FeatureLens, SupportThemes, FiscalSchemaV2 |
+| Tela "O que mais importa para você?" (temas) no layout do app | no iPhone | LensThemesStep |
+| Boas-vindas (setup da Lente) no claro e no escuro | no iPhone | LensSetupScreen, LensBackdrop |
+| Contraste dos botões principais no escuro | no iPhone | ProminentButton |
+| Reiniciar o servidor da apuração (aprovado) | no ar: push dos destaques e abstenção | fiscal-api |
+
+| Card do vencedor quando a disputa termina (sem "ao vivo"), com animação | no iPhone | RaceWinnerCard, WinnerLockScreen |
+| Sem tag de "lente" no Hoje; a palavra lente sai da interface | no iPhone | TodayScreen, badges |
+| Testar o disparo da Live Activity do destaque | no iPhone (forçado); pelo servidor não dispara: peso máx. 50 sem notícias | frente credibility |
+| Compartilhar o card de vitória nos Stories | no iPhone | ShareVictoryPoster |
+| Credibilidade: só fatos, motivo da incerteza, sinal ausente não é zero | em andamento | frente credibility |
+
+| Selo de voto/resultado em círculo em todo o app | no iPhone | StatusCircle |
+| Propostas do perfil desconfiguradas (espaços enormes) | no iPhone | FlowLayout, ProfileProposalRow |
+| Card de vitória abrindo "disputa indisponível" | no iPhone (detalhe busca a disputa no servidor) | RaceDetailScreen |
+| Tirar a tag "Sua cidade" | no iPhone | MineHeroCard |
+| Destaque do momento parecido com o card de vitória | em andamento | frente credibility |
+| Salários sem sentido (todos iguais) → "Quanto custa um mandato" | no iPhone (dados de teste; real após deploy da carga) | FeatureMoney Mandate* |
+| Mais retratos: deputados estaduais, vice-governadores, prefeitos de capitais e cidades > 200 mil | em andamento | frentes faces e–h |
+
+| Compartilhar não abria no Instagram ("content unavailable") | no iPhone (PNG de verdade, sem texto junto) | ShareCardFile |
+| Pôster dos Stories: menos informação, padding maior, mais confete | no iPhone | ShareVictoryPoster |
+| Um só botão de compartilhar no card de vitória | no iPhone | RaceWinnerCard |
+| Linhas gigantes em Região e Votações | no iPhone | MineSections, VotePartySections |
+| Ícones dos Ajustes no estilo byescaleira (sem círculo com gradiente) | no iPhone | SettingsRow |
+| Aba "Meus" vira "Região" | no iPhone | catálogo |
+| Retratos: +1.402 (estaduais, vice-governadores, prefeitos e vices de 157 cidades) | no iPhone (2.030 no total) | fiscal-portraits.pack |
+| Destaque do momento no estilo do card de vitória; incerteza do peso | no iPhone | TodayHighlightHero, WeightCoverage |
+| Classificar os números (favorável/na média/desfavorável; relevância alta/média/baixa) | no iPhone (servidor só no próximo deploy do ingest) | PeerClassification, benchmarks.go |
+| Área histórica (apurações passadas, história política, estudo) | no iPhone (dados reais só após deploy do ingest e regra do Caddy) | FeatureMemory, server/internal/history |
+| Refactor da aba Região (hierarquia, bancadas, quem governa) | no iPhone | FeatureMine |
+| O que falta do Politicômetro | respondido; dado novo só depois do catálogo de leituras | docs/research/2026-10-25-api-politicometro.md |
+| Objetivo claro por tela, fluxo e seção; só leituras (sem dado bruto); backend pré-processa tudo; sincronização inteligente | proposta enviada, aguardando decisões | — |
+| Documentar os padrões de tela aprovados | cartão proposto | docs/design-system.md |
+| Fiscalizar como investigação: busca contextual com IA local, quadro de peças, conclusão e pôster; Eleições sai da tela | no iPhone (fidelidade ao partido só após deploy do ingest) | FeatureSearch, index/facts.json |
+| Status dos turnos em Eleições ainda em cápsula (deve ser círculo) | no iPhone, calendário na Memória com StatusCircle | FeatureMemory |
+| Tag "Por quem você apoia" escondida pela arte no Destaque | no iPhone (removida do hero) | TodayHighlightHero |
+| Mais retratos Lottie (Jones Manoel e os eleitos de 2026) | no iPhone: 2.689 rostos, todos os 2.357 da base real | scripts/avatar-traits.json |
+| Expressões controláveis nos retratos (acenar, joinha, balançar, sorrir) | no iPhone: boneco único, 424 KB, 2.689 rostos; falta o "pensar" no Fiscalizar | PortraitRig |
+| Folha "Como medimos" vazia (texto branco herdado do Destaque) | no iPhone, redesenhada em cartões | WeightMethodSheet |
+| Criar o app no App Store Connect (pt-BR, padrão de nome) | feito: Fiscal: Política Transparente, id 6826982117 | docs/app-store |
+| Preencher App Store Connect e TestFlight | feito, menos disponibilidade (sua confirmação), telefone de contato, rótulo de privacidade, capturas e build | docs/app-store/metadata.json |
+| Dinheiro: filtro de região não faz nada; primeira seção fora da identidade; tela sem propósito | no iPhone (money/places.json real só após deploy do ingest) | FeatureMoney |
+| Expressões neutras aleatórias de tempos em tempos nos retratos (positivas/negativas só quando o contexto pede) | no iPhone; "pensar" no Fiscalizar ligado | PersonPortrait, avatars.py |
+| Trilhos e carrosséis cortando as laterais: devem ir de ponta a ponta | no iPhone, 2ª correção (seção sem margem); aguardando conferência | EdgeToEdgeRail |
+| Investigações salvas no iCloud (SwiftData + CloudKit) | no iPhone; falta publicar o schema no console do CloudKit | FiscalData |
+| Sincronização inteligente por fonte e tema (5 min a mensal), incremental, sem carga completa | em andamento | frente smart-sync |
+| Só o app escreve no servidor | no ar: App Attest obrigatório em registro e remoção (401 sem prova); dados de leitura públicos no CDN (decisão do usuário) | server/internal/httpapi |
+| Swift Charts no lugar dos gráficos desenhados à mão (começando por Por tipo de gasto) | no iPhone; Por tipo de gasto conferido no simulador (espaçamento entre linhas a ajustar) | FiscalDesignSystem/Charts |
+| Quem você apoia: tirar Paleta, Arte e Ícone (já estão nos Ajustes) e a tag "Por quem você apoia" do primeiro card | no iPhone, conferido no simulador | FeatureLens |
+| Dados que não carregavam (investigação, votação, Memória) | corrigido: quorum como frase, votos sem proposição, Memória incluída na release e publicada; checagem de contrato passando contra os dados reais | FiscalDomain, server/internal/ingest, PublishedContractTests |
+| Destaque do momento: cor do partido do autor, sem rosto, relevância pequena | no iPhone, conferido no simulador; resumo simples entra com a próxima publicação | TodayHighlightHero |
+| Modo offline com pacote mínimo de dados | no iPhone; 13 testes passando; ~1 MB no aparelho, atualiza pelo ETag e em segundo plano | FiscalData/PublicData/Offline, Ajustes › Dados offline |
+| Votação "duplicada" (PL 1123/2025): várias votações do mesmo projeto no dia | em andamento: agrupar por projeto e dia com a decisão principal | frente vote-groups |
+| Servidor não pode cair no ingest; seguro; só o app consulta; 8 GB para milhões | no ar (26/10): dados públicos na Cloudflare Pages em dados.fiscal.byescaleira.com, ingest em fases na VPS (4 vCPU/16 GB), publicação automática, App Attest no registro; app lendo do Pages | server/, ADR 0007, docs/server-runbook.md |
+
+## Ícone
+
+| Pedido | Estado | Onde |
+| --- | --- | --- |
+| Ícone com a identidade do projeto | sessão própria (fiscal-icon) | Fiscal/Fiscal/FiscalIcon*.icon |

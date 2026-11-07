@@ -23,8 +23,8 @@ extension VoteDetailModel {
 
     public var noValue: Double { Double(vote?.no ?? 0) }
 
-    public var othersText: String {
-        String(appLocalized: "\(PublicFormat.number(vote?.others)) other votes")
+    public var othersText: String? {
+        vote?.others.map { String(appLocalized: "\($0) other votes") }
     }
 
     public var quorumText: String {
@@ -43,8 +43,7 @@ extension VoteDetailModel {
     }
 
     public var requiredYes: Int? {
-        guard let vote, isAmendment else { return nil }
-        let seats = vote.house == .camara ? 513 : 81
+        guard isAmendment, let seats else { return nil }
         return Int((Double(seats) * Self.amendmentShare).rounded(.up))
     }
 
@@ -72,7 +71,8 @@ extension VoteDetailModel {
     public var accessibilityScore: String {
         guard let vote else { return "" }
         return [
-            heroCaption, outcome?.title, VoteTally.label(vote.tally), quorumText, headline,
+            heroCaption, outcome?.title, VoteTally.label(vote.tally), quorumText,
+            plenaryAccessibility, headline,
         ]
         .compactMap(\.self).joined(separator: ". ")
     }
@@ -128,5 +128,26 @@ extension VoteDetailModel {
 
     public func filterTitle(_ filter: BallotFilter) -> String {
         "\(filter.title) \(count(filter))"
+    }
+}
+
+extension VoteDetailModel {
+    public var sameDayVotes: [VoteSummary.Related] { vote?.sameDayVotes ?? [] }
+
+    public func sameDayLine(_ item: VoteSummary.Related) -> String {
+        let kind =
+            item.nominal
+            ? String(appLocalized: "Roll-call vote") : String(appLocalized: "Voice vote")
+        return [item.time, kind].compactMap(\.self).joined(separator: " · ")
+    }
+
+    public var sameDayFooter: String {
+        let base = String(
+            appLocalized:
+                "The Chamber and the Senate often vote on the same bill several times in one day: requests, amendments, the main text and the final wording. The lists show the vote on the text."
+        )
+        let hidden = (vote?.sameDayCount ?? 0) - sameDayVotes.count
+        guard hidden > 0 else { return base }
+        return base + " " + String(appLocalized: "\(hidden) more aren't listed here.")
     }
 }
