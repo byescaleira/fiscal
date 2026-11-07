@@ -72,15 +72,15 @@ Correto no HIG não basta: a seção não pode parecer genérica.
 
 ### Bonequinhos em Metal (`FSC-025`, L)
 
-Pedido de 2026-11-06: desenhar os bonequinhos com Metal, de forma leve, e pôr ações sobre eles ([análise](../spdd/analysis/FSC-025-202611061417-[Analysis]-metal-portraits-and-actions.md)). Cada fase segue como uma M, e a fase 1 decide se as outras acontecem.
+Pedido de 2026-11-06: desenhar os bonequinhos com Metal, de forma leve, e pôr ações sobre eles ([análise](../spdd/analysis/FSC-025-202611061417-[Analysis]-metal-portraits-and-actions.md)). Cada fase segue como uma M. Depois da prova, o usuário decidiu manter o Lottie como motor geral e usar o Metal só no cabeçalho da página do político.
 
 | Fase | Entrega | Estado |
 | --- | --- | --- |
-| 1 | Prova de viabilidade: Lottie, Canvas e Metal lado a lado no iPhone, com as ações e a medição ([canvas](../spdd/prompt/FSC-025-202611061422-[Feat]-portraits-metal-proof.md)) | feita: o Metal gastou quase três vezes a CPU do Lottie no iPhone, e a decisão foi parar este motor ([prova](evidence/FSC-025/proof.md)); o laboratório fica no Debug |
+| 1 | Prova de viabilidade: Lottie, Canvas e Metal lado a lado no iPhone, com as ações e a medição ([canvas](../spdd/prompt/FSC-025-202611061422-[Feat]-portraits-metal-proof.md)) | feita: o Metal gastou quase três vezes a CPU do Lottie no iPhone, e a decisão foi não usá-lo como motor geral; o usuário manteve o Metal só no cabeçalho do perfil ([prova](evidence/FSC-025/proof.md)); o laboratório fica no Debug |
 | 2 | Ações sobre o Lottie (tocar, segurar e acenar pelos marcadores do rig), pela régua da prova; a exportação em malha passou para a fase 8 | planejada, depois da 7 |
-| 3 | Motor novo no app atrás do `PortraitArtwork`, com imagem parada e prateleira; Lottie como reserva | em espera: volta só com o motor da fase 8, com a malha na GPU |
-| 4 | Troca no iOS, iPadOS, macOS e visionOS e saída do rig Lottie do retrato, com ADR | planejada |
-| 5 | Ações da pessoa: olhar para o dedo, tocar para reagir, segurar para pensar e inclinar o iPhone | planejada |
+| 3 | Metal no cabeçalho da página do político: um bonequinho grande com as ações, só com a tela à vista, e o Lottie em todo o resto; régua própria de CPU e energia com um boneco | planejada, depois da 7 |
+| 4 | Troca geral do Lottie pelo Metal | cancelada: o Lottie segue como motor geral |
+| 5 | Ações da pessoa: olhar para o dedo, tocar para reagir, segurar para pensar e inclinar o iPhone | entram na fase 3, no cabeçalho do perfil |
 | 6 | Efeito no retrato (holográfico da carta por dentro), revendo o ADR 0026 | planejada |
 | 7 | Próxima. Estilo novo, feito no `avatars.py` e no rig do Lottie: formatos, proporções e características de estilo inspirados no Memoji da Apple, ainda plano, com uma luz suave desenhada no motor; estilo próprio, sem copiar a Apple, iterado no iPhone | planejada (pedido de 2026-11-06) |
 | 8 | Traços mínimos e rig paramétrico: cada pessoa vira um registro compacto de índices e parâmetros (rosto, olhos, cabelo), as partes viram formas com parâmetros em vez de uma camada por combinação, e o Metal monta tudo de uma malha compartilhada com um bloco pequeno por bonequinho; substitui a fase 2 e vem depois da 7 | planejada (pedido de 2026-11-06) |

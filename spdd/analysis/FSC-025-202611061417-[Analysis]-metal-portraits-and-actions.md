@@ -115,6 +115,8 @@
 - **Seguir para o roadmap e o canvas da fase 1.** Nenhum veto.
 - **Estilo (2026-11-06, durante a fase 1):** o bonequinho fica mais parecido com o Memoji da Apple no desenho (formatos, proporções e características de estilo), continua plano e ganha uma luz suave. É a fase 7, com análise própria; o estilo é próprio, sem usar assets nem o nome da Apple.
 
+- **Depois da prova (2026-11-06):** o Metal gastou quase três vezes a CPU do Lottie com três bonecos. O usuário decidiu não descartá-lo: o Lottie segue como motor geral, e o Metal fica só no cabeçalho da página do político, com um bonequinho e as ações. O roadmap em `docs/roadmap.md` é a versão viva das fases.
+
 ### Fases propostas para o roadmap
 
 1. **Prova de viabilidade:** um bonequinho (Riedel e um rosto neutro) em Metal e em `Canvas`, ao lado do Lottie, no iPhone; medição das cinco grandezas e decisão de seguir ou parar.

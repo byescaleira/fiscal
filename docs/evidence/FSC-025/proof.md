@@ -33,7 +33,11 @@ O Canvas também não passa: CPU 42,4%, memória +5,9 MB e 1,6% de quadros perdi
 | Canvas | 42,9% | +6,6 MB | 0,1% | não medida |
 | Metal | 40,8% | +0,0 MB | 0,1% | 0,43 ms (p95 0,81 ms) |
 
-A otimização quase não mudou a CPU (41,3% para 40,8%). O custo não vem só do Swift sem otimização. A explicação mais provável, que não foi medida à parte: durante as ações, que na medição acontecem a cada 3 s, o Metal e o Canvas pedem 120 quadros por segundo (ProMotion), enquanto o rig do Lottie anda a 30. Somado ao trabalho de cada quadro na CPU, isso dá cerca de três vezes a CPU do Lottie. A segunda rodada confirma a decisão de parar com este motor.
+A otimização quase não mudou a CPU (41,3% para 40,8%). O custo não vem só do Swift sem otimização. A explicação mais provável, que não foi medida à parte: durante as ações, que na medição acontecem a cada 3 s, o Metal e o Canvas pedem 120 quadros por segundo (ProMotion), enquanto o rig do Lottie anda a 30. Somado ao trabalho de cada quadro na CPU, isso dá cerca de três vezes a CPU do Lottie. A segunda rodada confirma que este motor não serve como motor geral, com vários bonecos na tela.
+
+## Decisão do usuário (2026-11-06)
+
+O Metal não vira o motor geral do bonequinho: o Lottie continua em todas as telas. O Metal fica num contexto só, o cabeçalho da página do político, com um bonequinho grande e as ações (tocar, segurar, olhar para o dedo e inclinar). Lá há um boneco por vez, e não três, e ele só desenha com a tela à vista. É onde as ações valem o custo. O custo de um boneco sozinho não foi medido; ele entra na régua da fase que fizer essa troca.
 
 ## O que pesa na leitura
 
