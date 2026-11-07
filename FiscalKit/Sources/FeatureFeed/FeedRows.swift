@@ -5,7 +5,6 @@ import SwiftUI
 
 struct FeedCard: View {
     @Environment(FeedModel.self) private var feed
-    @State private var like = FeedLikeState()
     let item: FeedItem
 
     var body: some View {
@@ -41,7 +40,6 @@ struct FeedCard: View {
         }
         .padding(.horizontal, .spaceS)
         .padding(.vertical, .spaceM)
-        .feedLikeWash(like)
         .overlay(alignment: .bottom) {
             Divider().offset(y: .spaceL / 2)
         }
@@ -72,16 +70,10 @@ struct FeedCard: View {
                     ForEach(item.ballots) { FeedBallotRow(ballot: $0) }
                 }
             }
-            HStack(spacing: .spaceS) {
-                if Route.destination(for: item) == nil, item.url != nil {
-                    FeedSourceLink()
-                        .allowsHitTesting(false)
-                        .accessibilityHidden(true)
-                }
-                Spacer(minLength: .spaceS)
-                FeedLikeButton(state: $like, id: item.id) {
-                    LikedItem(item: item, likedAt: .now)
-                }
+            if Route.destination(for: item) == nil, item.url != nil {
+                FeedSourceLink()
+                    .allowsHitTesting(false)
+                    .accessibilityHidden(true)
             }
         }
     }
@@ -116,13 +108,18 @@ private struct FeedCardHeader: View {
         if dynamicTypeSize.isAccessibilitySize {
             VStack(alignment: .leading, spacing: .spaceXS) {
                 who
-                day.allowsHitTesting(false).accessibilityHidden(true)
+                HStack(spacing: .spaceS) {
+                    day.allowsHitTesting(false).accessibilityHidden(true)
+                    Spacer(minLength: .spaceS)
+                    heart
+                }
             }
         } else {
             HStack(spacing: .spaceS) {
                 who
                 Spacer(minLength: .spaceS)
                 day.allowsHitTesting(false).accessibilityHidden(true)
+                heart
             }
         }
     }
@@ -189,6 +186,12 @@ private struct FeedCardHeader: View {
             .foregroundStyle(item.isFollowing ? AnyShapeStyle(tint) : AnyShapeStyle(.secondary))
             .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
             .fixedSize(horizontal: false, vertical: true)
+    }
+
+    private var heart: some View {
+        FeedLikeButton(id: item.id, party: person?.party) {
+            LikedItem(item: item, likedAt: .now)
+        }
     }
 
     private var day: some View {

@@ -17,6 +17,8 @@ O usuário pediu para explorar melhor o Metal. A pesquisa de 05/11/2026 ([relat�
 5. **O shader só roda quando precisa.** Com `isEnabled` desligado fora da animação, o sensor ligado só com a tela à vista e o shader compilado antes do primeiro uso.
 6. **A peça genérica vai para o kit.** Holográfico, onda e leitura da inclinação ficam num módulo `ByescaleiraEffects` do `byescaleira-kit`, com canvas próprio lá. O plenário é do Fiscal e fica no `FiscalDesignSystem`.
 
+7. **Exceção do confete do curtir** (06/11/2026, decisão do usuário): o confete de corações do curtir ([FSC-024](../../spdd/prompt/FSC-024-202611061418-[Feat]-feed-like-with-ripple.md)) usa as cores do partido da pessoa do card, e vermelho quando não há partido. A mecânica, a quantidade, o tempo e o desenho são os mesmos para todo item; só a cor acompanha o partido, como o fundo dos cards já faz. Não há confete diferente por cargo, resultado ou popularidade.
+
 ## Consequências
 
 - Um efeito novo passa pelas seis regras acima antes de entrar no canvas.

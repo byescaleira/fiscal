@@ -5,7 +5,7 @@
 O usuário pediu o curtir com a onda escolhida na FSC-023 ("depois cria a FSC-024 do curtir com a onda", 06/11/2026). A [análise](../analysis/FSC-024-202611061413-[Analysis]-like-with-ripple.md) levou a três escolhas dele: o curtir é privado e sem contagem, fica só no aparelho, e a lista "Curtidas" fica no Feed, ao lado de "Meu apoio". Sem veto às outras decisões:
 - o coração vai em todas as linhas do Feed e nos cartões do topo;
 - só o botão do coração, sem os dois toques no cartão;
-- o coração no rodapé, à direita, com 44 pt;
+- o coração no rodapé, à direita, com 44 pt. Depois de ver no iPhone, em 06/11/2026, o usuário reprovou o rodapé ("adicionou uma faixa branca enorme em cada card"), e o coração da linha passou para o cabeçalho, ao lado da data (Approach 14);
 - a `FiscalSchemaV5`.
 
 **Definição de pronto:**
@@ -15,19 +15,19 @@ O usuário pediu o curtir com a onda escolhida na FSC-023 ("depois cria a FSC-02
    - **Quando:** a pessoa toca no coração.
    - **Então:**
      - o coração fica cheio, na cor de destaque do app;
-     - uma faixa de cor aparece atrás da linha, com a onda saindo do coração, e some em 1,6 s;
+     - o coração encolhe, salta e enche, e explode em confete de corações nas cores do partido da pessoa do card, ou em vermelho sem partido, que somem em cerca de 1,2 s (Approach 17);
      - o texto, os números e o retrato da linha não se mexem;
      - o iPhone dá um toque háptico leve;
      - a votação aparece no topo da lista "Curtidas".
 2. **Descurtir.**
    - **Dado:** a mesma linha curtida.
    - **Quando:** a pessoa toca no coração de novo.
-   - **Então:** o coração fica vazio, sem onda e sem toque háptico, e a votação sai da lista "Curtidas".
+   - **Então:** o coração fica vazio, sem toque háptico, e a votação sai da lista "Curtidas".
 3. **Guardado.** Ao fechar e abrir o app, o coração da votação continua cheio.
 4. **Sem movimento.**
    - **Dado:** Reduzir movimento ligado, ou o modo leve do kit ativo (Pouca Energia, aparelho quente ou a escolha da pessoa).
    - **Quando:** a pessoa curte.
-   - **Então:** o coração fica cheio sem faixa e sem onda, e o toque háptico continua.
+   - **Então:** o coração fica cheio sem salto e sem confete, e o toque háptico continua.
 5. **VoiceOver.**
    - O coração é um elemento próprio, depois do cartão, e lê "Curtir, botão de alternância, desligado".
    - Ao ativar, ele lê "ligado".
@@ -48,8 +48,7 @@ O usuário pediu o curtir com a onda escolhida na FSC-023 ("depois cria a FSC-02
    - **Então:** a lista fica vazia, e todos os corações do Feed ficam vazios.
    - Arrastar uma linha para a esquerda, ou tocar e segurar, mostra "Descurtir", que tira só aquela.
 9. **Destaque do topo.**
-   - O destaque tem o mesmo coração, no canto inferior direito, em branco, a tinta do cartão.
-   - A faixa com a onda é branca e fica entre o fundo do cartão e o conteúdo.
+   - O destaque tem o mesmo coração, no canto inferior direito, em branco, a tinta do cartão; o confete sai nas cores do partido clareadas, para aparecer sobre o fundo do partido.
    - A apuração fica sem coração nesta fase (Approach 13).
 10. **Privacidade.**
     - A entidade das curtidas está só em `deviceModels`, e o `Device.store` continua fora do backup.
@@ -63,7 +62,7 @@ O usuário pediu o curtir com a onda escolhida na FSC-023 ("depois cria a FSC-02
 13. **Erro ao gravar (caso de erro).**
     - **Dado:** o repositório falha ao gravar.
     - **Quando:** a pessoa toca no coração.
-    - **Então:** o coração volta ao estado de antes, sem faixa, sem onda e sem toque háptico, e o aviso de erro aparece como no seguir.
+    - **Então:** o coração volta ao estado de antes, sem toque háptico, e o aviso de erro aparece como no seguir.
     - Dois toques rápidos no mesmo coração fazem uma mudança só.
 14. **Exportação antiga.** Um arquivo exportado antes desta mudança, sem o campo das curtidas, continua sendo lido.
 
@@ -163,8 +162,16 @@ classDiagram
         +liked
         +destination(for: LikedItem) Route?
     }
-    class FeedLikeButton
-    class FeedLikeWash
+    class FeedLikeButton {
+        +id: String
+        +ink: Color?
+        +party: String?
+    }
+    class PartyPalette {
+        +hearts: PartyPalette
+        +liking(party: String?) PartyPalette
+        +confetti(lightened: Double) [Color]
+    }
     class FeedLikedScreen
     LikedItem --> LikedItemKind
     LikedItem ..> FeedItem : copia na curtida
@@ -177,7 +184,6 @@ classDiagram
     LikeController --> LikeRepository
     DataArchive --> LikedItem
     FeedLikeButton --> LikeController
-    FeedLikeWash ..> FeedLikeButton : origem da onda
     FeedLikedScreen --> LikeController
     FeedLikedScreen ..> Route
 ```
@@ -211,20 +217,12 @@ classDiagram
    - um `Toggle` com estilo próprio, para o VoiceOver ler o estado;
    - `heart` e `heart.fill` na cor de destaque (`\.appTint`), ou em branco no destaque do topo, que já usa o branco como tinta, com `.contentTransition(.symbolEffect(.replace))`;
    - alvo de `.badgeL` (44 pt);
-   - `.sensoryFeedback(.impact(weight: .light))` só quando a curtida é gravada: a faixa, a onda e o toque háptico disparam depois de o `toggle` devolver curtido, nunca ao descurtir, numa falha ou sem repositório;
+   - `.sensoryFeedback(.impact(weight: .light))` só quando a curtida é gravada: o toque háptico dispara depois de o `toggle` devolver curtido, nunca ao descurtir, numa falha ou sem repositório;
    - o coração vazio fica em `.secondary`, ou no branco com `.opacityStrong` no destaque do topo;
    - o coração cheio e as linhas da lista usam `.privacySensitive()`, como as linhas do apoio.
 
    O vermelho fica de fora, porque é a cor do "não" nas votações.
-7. **Onda** ([ADR 0026](../../docs/adr/0026-shader-effects-never-carry-data.md), regra 3):
-   - **Camada:** a `FeedLikeWash` é um retângulo na cor de destaque com `.opacityTint` (branco no destaque do topo), posto atrás do conteúdo da linha.
-   - **Movimento:**
-     - a faixa aparece no curtir e some em `RippleTiming.duration` (1,6 s);
-     - o `ripple(origin:trigger:)` do kit roda nela, com a origem no centro do coração, medida num espaço de coordenadas da linha;
-     - o brilho do shader desenha os anéis sobre a cor lisa.
-   - **Conteúdo intocado:** texto, números e retrato nunca entram no `layerEffect`.
-   - **Sem movimento:** com `@ReducesMotion` ou `MotionBudget.isConstrained`, a faixa não aparece. O kit já desliga a onda pela mesma regra.
-   - **Pré-compilação:** `EffectsWarmUp.compile()` no `task` do Feed.
+7. **Confete** (Approach 17): `.likeBurst(trigger:colors:)` do kit 0.12.0 no botão, com as cores de `PartyPalette.confetti(lightened:)`; o símbolo troca com `.contentTransition(.symbolEffect(.replace))`; `EffectsWarmUp.compile()` no `task` do Feed.
 8. **Menu do Feed:**
    - O botão "Meu apoio" da barra vira um menu com o ícone `heart` e duas opções: "Meu apoio" (`heart`) e "Curtidas" (`heart.text.square`).
    - Assim, o coração da barra continua sendo "o que é seu", e a lista fica ao lado do apoio, como o usuário escolheu.
@@ -247,8 +245,7 @@ classDiagram
     - o `DataExportModel` lê as curtidas quando há repositório;
     - um arquivo antigo, sem o campo, continua sendo lido.
 11. **Dependência:**
-    - o `FeatureFeed` passa a usar o `ByescaleiraEffects`;
-    - o kit continua a partir da 0.11.0, sem versão nova;
+    - o `FeatureFeed` usa o `ByescaleiraEffects` do kit `0.12.0` (Approach 17);
     - a branch `feature/like` sai da `feature/metal-exploration` e só vira PR depois do merge do [PR #18](https://github.com/byescaleira/fiscal/pull/18).
 12. **Tamanho:** L, por causa do dado novo com migração, numa fase só, que segue como uma M. A linha entra no roadmap, na etapa 8.3.
 
@@ -257,6 +254,33 @@ classDiagram
     - pôr a faixa entre o fundo e o conteúdo pediria abrir esse cartão para o Feed, e pôr por cima cobriria números;
     - a apuração é um evento ao vivo, não um item do Feed, e a de 2026 já terminou;
     - por isso, só o destaque do topo ganha o coração, e a apuração entra no backlog.
+
+14. **Coração no cabeçalho** (`spdd-prompt-update` de 06/11/2026, depois do teste no iPhone):
+    - no rodapé, o coração criava uma linha de 44 pt em cada item do Feed, e o usuário reprovou;
+    - na linha, ele fica no cabeçalho, à direita da data, que já tem a altura do retrato, sem linha nova;
+    - o destaque do topo não muda: lá o coração já fica no rodapé que existia, depois do botão do método.
+
+15. **Curtir não recarrega o Feed** (`spdd-prompt-update` de 06/11/2026, depois do teste no iPhone):
+    - no aparelho, curtir fazia a rolagem pular e a onda sair da tela, e voltar de um item deixava o Feed em outra posição;
+    - a causa: toda gravação publicava no `FiscalChangeHub`, a sessão subia a `generation`, e a `FeedScreen` recarregava o Feed; no iPhone, o iCloud também publica mudanças;
+    - a curtida grava sem publicar, e o `FeedModel` só troca `items` quando a lista nova é diferente, para uma recarga com os mesmos dados não mexer na rolagem.
+
+16. **Sem onda no Feed** (`spdd-prompt-update` de 06/11/2026, depois do teste no iPhone):
+    - o usuário viu a onda no aparelho e preferiu a animação do coração ("a onda não ficou legal, eu acho que a animação com o coração estava mais legal");
+    - a faixa e a onda do kit saem do Feed (a pré-compilação volta com o confete, Approach 17); ficam o coração que troca de vazio para cheio e o toque háptico;
+    - o `byescaleira-kit` continua com a `View.ripple(origin:trigger:)`, sem uso no app;
+    - o ADR 0027 deixa a regra da faixa; o ADR 0026 continua valendo para a carta.
+
+17. **Confete de corações** (`spdd-prompt-update` de 06/11/2026, aprovado no iPhone: "ficou muito bom", "deu certo, pode formalizar"):
+    - o usuário queria o coração explodindo em confete, "algo mais complexo e elaborado já que estamos fazendo com o metal", e só de corações, "relacionados a cor do partido do card, caso não tenha partido, faz vermelho";
+    - a explosão é a `View.likeBurst(trigger:colors:)` do `byescaleira-kit` 0.12.0 ([KIT-016](https://github.com/byescaleira/byescaleira-kit/blob/main/spdd/prompt/KIT-016-202611061700-%5BFeat%5D-effects-like-burst.md)): o coração encolhe e salta, e um `colorEffect` desenha anel, brilho, 42 corações com giro, subida e gravidade, e brilhos, por 1,15 s;
+    - as cores vêm de `PartyPalette.liking(party:)` e `confetti(lightened:)`: as duas do partido e as mesmas clareadas; sem partido, `PartyPalette.hearts` (tons de vermelho); no destaque do topo, clareadas com `.opacitySoft`;
+    - a linha usa o partido de quem aparece no cabeçalho; o destaque, o do autor;
+    - o ADR 0026 ganhou a exceção da cor (regra 7); o resto do efeito é igual para todos.
+18. **Recarga sem pulo** (`spdd-prompt-update` de 06/11/2026, achado no iPhone):
+    - no aparelho, o iCloud avisa mudanças ao gravar e enquanto se navega, e cada aviso recarregava o Feed;
+    - a recarga voltava para a primeira página (`shownCount`) e só para os anos recentes, a lista encolhia e a rolagem caía para um item bem acima;
+    - numa recarga com o Feed já carregado, o `FeedModel` mantém as páginas mostradas e relê também os anos antigos já alcançados; a primeira carga e a troca de filtro continuam como antes.
 
 ## Structure
 
@@ -276,14 +300,18 @@ classDiagram
 | `FiscalKit/Sources/FeatureCore/Export/DataArchive.swift`, `DataExportModel.swift` | `liked` |
 | `FiscalKit/Sources/AppShell/FiscalWindow.swift` | Cria e põe o `LikeController` no ambiente |
 | `FiscalKit/Sources/AppShell/MainScreen.swift` | O `FollowSync` também carrega as curtidas a cada sessão e mostra o erro delas |
+| `FiscalKit/Sources/FeatureFeed/FeedModel.swift` | `rebuild()` só troca `items` quando a lista nova é diferente; a recarga mantém páginas e anos já carregados |
+| `FiscalKit/Sources/FiscalDesignSystem/Styles/PartyPalette.swift` | `hearts`, `liking(party:)` e `confetti(lightened:)` |
+| `FiscalKit/Tests/FiscalDesignSystemTests/PartyPaletteConfettiTests.swift` | Novo |
+| `FiscalKit/Package.swift`, `Package.resolved` | `byescaleira-kit` a partir de `0.12.0` e `ByescaleiraEffects` no `FeatureFeed` |
+| `FiscalKit/Tests/FeatureFeedTests/FeedModelTests.swift` | `aRefreshWithTheSameDataLeavesTheListAlone` e `aRefreshKeepsWhatWasAlreadyShown` |
 | `FiscalKit/Sources/FeatureFeed/FeedModel+Text.swift` | `symbol(_:)` usa `FeedLikedText.symbol`, para a linha e a lista terem o mesmo símbolo |
 | `FiscalKit/Sources/AppShell/RouteScreen.swift` | `.liked` abre a `FeedLikedScreen` |
-| `FiscalKit/Sources/FeatureFeed/FeedLike.swift` | Novo: `FeedLikeButton`, `FeedLikeWash` e o espaço de coordenadas |
+| `FiscalKit/Sources/FeatureFeed/FeedLike.swift` | Novo: `FeedLikeButton`, o estilo do coração e as cores do confete |
 | `FiscalKit/Sources/FeatureFeed/FeedLikedScreen.swift` | Novo |
-| `FiscalKit/Sources/FeatureFeed/FeedRows.swift` | Coração no rodapé e a faixa atrás da linha |
-| `FiscalKit/Sources/FeatureFeed/FeedHighlightHero.swift` | Coração e faixa entre o fundo e o conteúdo |
-| `FiscalKit/Sources/FeatureFeed/FeedScreen.swift` | Menu "Meu apoio e curtidas" e `EffectsWarmUp.compile()` |
-| `FiscalKit/Package.swift` | `ByescaleiraEffects` no `FeatureFeed` |
+| `FiscalKit/Sources/FeatureFeed/FeedRows.swift` | Coração no cabeçalho, ao lado da data |
+| `FiscalKit/Sources/FeatureFeed/FeedHighlightHero.swift` | Coração branco no rodapé |
+| `FiscalKit/Sources/FeatureFeed/FeedScreen.swift` | Menu "Meu apoio e curtidas" |
 | `FiscalKit/Tests/FiscalDomainTests/LikedItemTests.swift` | Novo |
 | `FiscalKit/Tests/FiscalDataTests/LikeStoreTests.swift` | Novo |
 | `FiscalKit/Tests/FiscalDataTests/SchemaMigrationTests.swift`, `SupportPrivacyTests.swift`, `DeviceStoreTests.swift` | V5, migração V4 para V5 e curtidas fora do iCloud |
@@ -291,7 +319,7 @@ classDiagram
 | `FiscalKit/Tests/FeatureCoreTests/DataExportModelTests.swift`, `NavigationTests.swift` | Curtidas na exportação e destino da curtida |
 | `FiscalKit/Tests/FeatureFeedTests/FeedLikedTextTests.swift` | Novo: símbolo e dia da lista |
 | `Fiscal/Fiscal/Localizable.xcstrings` | Textos novos |
-| `docs/evidence/FSC-024/` | QA: roteiro, capturas e a sequência da onda |
+| `docs/evidence/FSC-024/` | QA: roteiro e capturas |
 | `docs/adr/0027-private-likes-on-device.md`, `docs/adr/README.md` | ADR novo |
 | `docs/design-system.md`, `docs/backlog.md`, `docs/roadmap.md`, `CHANGELOG.md`, `spdd/README.md` | Documentos |
 
@@ -333,13 +361,14 @@ classDiagram
      - `unlike` apaga pelo `itemID`;
      - `liked` ordena por `likedAt`, a mais recente primeiro;
      - `resetLikes` apaga tudo;
-     - toda gravação passa pelo `commit()`.
+     - a gravação salva o contexto sem publicar no `FiscalChangeHub`: a curtida não muda nada no resto do app, e publicar subia a `session.generation`, que recarregava o Feed e pulava a rolagem (visto no iPhone em 06/11/2026).
    - **Verificação:** `LikeStoreTests`:
      - curtir duas vezes o mesmo id deixa uma linha;
      - a ordem;
      - descurtir;
      - apagar tudo;
-     - o `Device.store` fora do backup depois de curtir.
+     - o `Device.store` fora do backup depois de curtir;
+     - curtir e descurtir não mudam o `localRevision` do `FiscalChangeHub`.
    - **Depende de:** 2 e 3.
    - **Cobre:** requisitos 3, 8 e 10.
 5. **Exportação** `[P]`
@@ -383,37 +412,32 @@ classDiagram
 
 **Etapa C: interface**
 
-8. **`FeedLikeButton` e `FeedLikeWash`**
+8. **`FeedLikeButton`**
    - **Botão:**
      - `Toggle` com estilo próprio;
      - rótulo "Like" (pt-BR "Curtir");
-     - os detalhes de Approach 6.
-   - **Faixa:**
-     - os detalhes de Approach 7;
-     - `allowsHitTesting(false)` e `accessibilityHidden(true)`;
-     - o gatilho da onda é um contador de curtidas da linha, que só sobe depois de a curtida ser gravada.
-   - **Ligação:** os dois se encontram pela origem, publicada com `onGeometryChange` no espaço de coordenadas da linha.
+     - os detalhes de Approach 6, 7 e 17;
+     - o partido vem da linha (`person?.party`) ou do autor do destaque;
+     - um contador de curtidas da linha, que só sobe depois de a curtida ser gravada, dispara o toque háptico.
    - **Verificação:**
-     - captura no simulador do primeiro quadro e do meio da onda;
+     - captura no simulador do coração vazio e cheio;
      - captura com Reduzir movimento.
    - **Depende de:** 6.
    - **Cobre:** requisitos 1, 4 e 5.
 9. **Linha e cartões do topo**
    - **`FeedCard`:**
-     - ganha, no fim do conteúdo, uma linha com o coração à direita;
-     - a faixa vai num `background` que fica atrás do `CardBackdropButton`, sem roubar o toque.
+     - o `FeedCardHeader` põe o coração depois da data, na mesma linha; nos tamanhos de acessibilidade, a data e o coração ficam numa linha própria, abaixo de quem;
+     - o conteúdo não ganha linha nova, e o "Ver a fonte" volta ao lugar de antes.
    - **Destaque do topo:**
-     - `FeedHighlightHero` põe o coração no canto inferior direito, no rodapé, depois do botão do método;
-     - a faixa fica entre o fundo e o conteúdo, dentro do mesmo recorte.
+     - `FeedHighlightHero` põe o coração no canto inferior direito, no rodapé, depois do botão do método.
    - **Verificação:**
      - capturas da linha de votação, do gasto, da checagem, e do destaque;
      - o VoiceOver pelo `accessibilityRepresentation` com `Toggle`, conferido no código; a leitura em voz fica para o iPhone, com a validação da carta.
    - **Depende de:** 7 e 8.
    - **Cobre:** requisitos 1, 5, 9 e 12.
-10. **Menu do Feed e pré-compilação**
+10. **Menu do Feed**
     - **Lógica:**
-      - o botão "Meu apoio" vira o menu de Approach 8;
-      - `.task { try? await EffectsWarmUp.compile() }` no Feed.
+      - o botão "Meu apoio" vira o menu de Approach 8.
     - **Verificação:** captura do menu aberto.
     - **Depende de:** 7.
     - **Cobre:** requisito 6.
@@ -438,7 +462,7 @@ classDiagram
     - **Textos:** `scripts/strings.sh`, com as chaves em inglês e pt-BR no catálogo.
     - **Documentos:**
       - `CHANGELOG` em Unreleased;
-      - "Efeitos" no design system, com a onda do curtir;
+      - "Efeitos" no design system: o curtir com o coração e o confete de corações;
       - backlog: sai "Onda no curtir" e entra "Curtir a apuração";
       - roadmap: a linha 8.3 da FSC-024;
       - ADR 0027 e índice de ADRs.
@@ -450,7 +474,6 @@ classDiagram
 
 - **Plataforma:** iOS, iPadOS, macOS e visionOS a partir do 26.
   - No Mac e no visionOS, o coração e a lista são iguais.
-  - A onda segue o kit: no watchOS não existe, e nos outros sistemas para pela mesma regra de movimento.
 - **Arquitetura** (constituição, regra 3):
   - o dado fica no `FiscalDomain` e no `FiscalData`;
   - o estado fica no `LikeController` do `FeatureCore`;
@@ -458,13 +481,13 @@ classDiagram
   - as features não se importam entre si.
 - **Código:**
   - zero comentários e zero avisos;
-  - tokens do design system (`.badgeL`, `.opacityTint`, `RippleTiming.duration`), sem número solto;
-  - Swift Testing em `LikedItem`, no armazenamento, na migração, no `LikeController`, na rota e na exportação.
+  - tokens do design system (`.badgeL`, `.opacityStrong`), sem número solto;
+  - Swift Testing em `LikedItem`, no armazenamento, na migração, no `LikeController`, na rota, na exportação, na paleta do confete (`PartyPalette.liking(party:)` e `confetti(lightened:)`) e na recarga do Feed (lista igual não muda, páginas mantidas).
 - **Textos:**
   - chaves em inglês com tradução pt-BR: "Like", "Liked items", "My Support and liked items", "Unlike", "Delete liked items", "Nothing liked", "This item left the Feed" e o rodapé de privacidade;
   - "Curtidas" e "Curtir", nunca "Likes" na tela.
 - **Movimento:** `@ReducesMotion` e `MotionBudget.isConstrained` no app; `accessibilityReduceMotion` e `\.liteMode` no kit, que é a mesma regra.
-- **Fato, não opinião** (regra 14): o coração não tem número, não muda o Feed e tem o mesmo desenho e a mesma onda em todo item.
+- **Fato, não opinião** (regra 14): o coração não tem número, não muda o Feed e tem a mesma animação em todo item; só a cor do confete acompanha o partido.
 - **Verificação:**
   - `scripts/verify.sh --quick` durante o trabalho e `--full` no fim;
   - captura no simulador antes do iPhone;
@@ -487,15 +510,9 @@ classDiagram
 
   A única saída é a exportação pedida pela pessoa.
 - **Proibido curtir mudar o app.** A curtida não entra na ordem, no filtro, no destaque, nas sugestões, no "Seguindo" nem no "Meu apoio". Curtir não segue ninguém.
-- **Proibido o efeito envolver o conteúdo** (ADR 0026):
-  - o `ripple` roda só na `FeedLikeWash`;
-  - nenhum `layerEffect` em volta de texto, número, retrato ou botão;
-  - nenhum em volta de retrato animado.
-- **Proibida animação contínua:**
-  - a faixa e a onda duram 1,6 s e param;
-  - o shader fica desligado fora da animação;
-  - sem onda ao descurtir.
-- **Proibido variar por dado.** A cor é a de destaque do app (branco no destaque do topo) e a onda tem os mesmos parâmetros em todo item, tipo, partido e resultado. Nada de vermelho ou verde do voto no coração.
+- **Shader só na explosão** (Approach 17): o `colorEffect` do kit roda só nos 1,15 s da explosão, por cima, sem envolver texto, número ou retrato; nada de `layerEffect` no curtir.
+- **Proibida animação contínua:** o salto e o confete só ao curtir, nunca ao descurtir, numa falha ou sem repositório; sem toque háptico ao descurtir.
+- **Variação só na cor do confete** (ADR 0026, regra 7): o confete segue o partido, ou vermelho sem partido; o coração é a cor de destaque (branco no destaque do topo), e o desenho, a quantidade e o tempo são os mesmos em todo item, tipo e resultado. Nada de vermelho ou verde do voto no coração.
 - **Toque principal preservado:**
   - o cartão continua com um destino só;
   - o coração tem alvo próprio de 44 pt e não abre o cartão;
@@ -506,8 +523,8 @@ classDiagram
   - o `DataArchive` ganha um campo opcional.
 - **Rótulo de privacidade:** não muda, porque nada sai do aparelho.
 - **Dependência:**
-  - nenhuma dependência nova;
-  - o kit continua na 0.11.0;
+  - nenhuma dependência nova de terceiros;
+  - o `byescaleira-kit` sobe para a `0.12.0`, pela `View.likeBurst` (KIT-016), e o `FeatureFeed` passa a usar o `ByescaleiraEffects`;
   - a FSC-024 vira PR só depois do merge do PR #18;
   - push e merge só com o ok do usuário, a cada vez.
 - **Fora de escopo:**

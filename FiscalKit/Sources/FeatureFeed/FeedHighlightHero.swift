@@ -10,7 +10,6 @@ struct FeedHighlightHero: View {
     @ReducesMotion private var reduceMotion
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var appeared = false
-    @State private var like = FeedLikeState()
     let highlight: Highlight
 
     var body: some View {
@@ -37,7 +36,6 @@ struct FeedHighlightHero: View {
         .padding(.spaceInset)
         .foregroundStyle(.white)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .feedLikeWash(like, ink: .white)
         .background { backdrop }
         .clipShape(.rect(cornerRadius: .radiusGroup))
         .contextMenu {
@@ -104,7 +102,9 @@ struct FeedHighlightHero: View {
     }
 
     private var likeButton: some View {
-        FeedLikeButton(state: $like, id: LikedItem.highlightID(highlight.id), ink: .white) {
+        FeedLikeButton(
+            id: LikedItem.highlightID(highlight.id), ink: .white, party: highlight.person?.party
+        ) {
             LikedItem(highlight: highlight, likedAt: .now)
         }
     }

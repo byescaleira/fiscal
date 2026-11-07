@@ -23,7 +23,7 @@ O usuário pediu o curtir com a onda escolhida na FSC-023. Curtir uma votação,
 
    Só saem na exportação de dados pedida pela pessoa.
 4. **Curtir não muda nada no app.** Não muda a ordem, o filtro, o destaque, as sugestões nem o que o Fiscal mostra a outra pessoa.
-5. **A onda vai numa camada de fundo** que aparece só durante a animação. Ela nunca envolve o texto, os números ou o retrato da linha ([ADR 0026](0026-shader-effects-never-carry-data.md), regra 3).
+5. **Confete no lugar da onda.** Depois de ver no iPhone, em 06/11/2026, o usuário trocou a faixa com a onda por um coração que explode em confete de corações, nas cores do partido do card ou em vermelho, pela `View.likeBurst(trigger:colors:)` do kit 0.12.0 ([FSC-024](../../spdd/prompt/FSC-024-202611061418-[Feat]-feed-like-with-ripple.md), Approach 17; [ADR 0026](0026-shader-effects-never-carry-data.md), regra 7).
 
 ## Consequências
 

@@ -24,7 +24,7 @@ extension FiscalStore {
             } else {
                 for entity in existing { entity.update(with: item) }
             }
-            try commit()
+            try modelContext.save()
         } catch {
             modelContext.rollback()
             throw error
@@ -36,7 +36,7 @@ extension FiscalStore {
             let existing = try modelContext.fetch(
                 FetchDescriptor<LikeEntity>(predicate: #Predicate { $0.itemID == id }))
             for entity in existing { modelContext.delete(entity) }
-            try commit()
+            try modelContext.save()
         } catch {
             modelContext.rollback()
             throw error
@@ -46,7 +46,7 @@ extension FiscalStore {
     public func resetLikes() throws {
         do {
             try modelContext.delete(model: LikeEntity.self)
-            try commit()
+            try modelContext.save()
         } catch {
             modelContext.rollback()
             throw error
