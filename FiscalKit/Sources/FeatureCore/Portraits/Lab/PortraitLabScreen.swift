@@ -119,6 +119,8 @@
     private struct PortraitLabPage: View {
         @Environment(PortraitLabModel.self) private var model
         @ReducesMotion private var reduceMotion
+        @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+        @Environment(\.liteMode) private var liteMode
 
         private var isAnimated: Bool { !reduceMotion && !MotionBudget.isConstrained }
 
@@ -212,9 +214,29 @@
         }
 
         private var footer: String {
-            if !isAnimated { return "Movimento reduzido: só imagem parada" }
+            if !isAnimated { return "Movimento reduzido: só imagem parada. \(constraint)" }
             return
-                "FSC-025: toque para reagir, segure para pensar, arraste para o olhar seguir e incline o iPhone. Lottie não tem essas ações. Só em builds de desenvolvimento."
+                "FSC-025: toque para reagir, segure para pensar, arraste para o olhar seguir e incline o iPhone. Lottie não tem essas ações. Só em builds de desenvolvimento. \(tiltReading)"
+        }
+
+        private var constraint: String {
+            let info = ProcessInfo.processInfo
+            var reasons: [String] = []
+            if systemReduceMotion { reasons.append("Reduzir movimento ligado") }
+            if liteMode.reducesMotion && !systemReduceMotion { reasons.append("modo leve") }
+            if info.isLowPowerModeEnabled { reasons.append("Modo Pouca Energia") }
+            if info.thermalState.rawValue >= ProcessInfo.ThermalState.serious.rawValue {
+                reasons.append("aparelho quente")
+            }
+            return "Motivo: \(reasons.joined(separator: ", "))."
+        }
+
+        private var tiltReading: String {
+            guard model.tilt.isLive else { return "Sensor de inclinação desligado." }
+            let read = model.tilt.roll.formatted(.number.precision(.fractionLength(1)))
+            let limit = (model.canvasMixer?.limits.roll ?? 0).formatted(
+                .number.precision(.fractionLength(1)))
+            return "Inclinação lida: \(read)°, aplicada até \(limit)°."
         }
     }
 
