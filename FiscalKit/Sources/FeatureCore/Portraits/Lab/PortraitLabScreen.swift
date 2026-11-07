@@ -233,8 +233,10 @@
                 HStack(spacing: .spaceS) {
                     ForEach(Array(model.stageMixers.enumerated()), id: \.offset) { index, mixer in
                         stagePortrait(mixer, index)
-                            .frame(width: PortraitLabScreen.side, height: PortraitLabScreen.side)
+                            .aspectRatio(1, contentMode: .fit)
+                            .frame(maxWidth: PortraitLabScreen.side)
                             .clipShape(.circle)
+                            .accessibilityHidden(true)
                     }
                 }
                 .frame(maxWidth: .infinity)
@@ -289,9 +291,18 @@
             } footer: {
                 Text(
                     verbatim:
-                        "Cada motor roda sozinho por 20 s com 3 bonequinhos de 120 pt, três vezes, com 5 s de pausa; a tabela mostra a mediana. GPU só no Metal, somando os 3 bonequinhos."
+                        "Cada motor roda sozinho por 20 s com 3 bonequinhos de até 120 pt, três vezes, com 5 s de pausa; a tabela mostra a mediana. GPU só no Metal, somando os 3 bonequinhos. \(Self.preparation(model.metal))"
                 )
             }
+        }
+
+        static func preparation(_ renderer: MetalPortraitRenderer?) -> String {
+            guard let renderer else { return "Metal indisponível neste aparelho." }
+            let milliseconds =
+                Double(renderer.preparation.components.attoseconds) / 1e15
+                + Double(renderer.preparation.components.seconds) * 1_000
+            let text = milliseconds.formatted(.number.precision(.fractionLength(1)))
+            return "Pipeline do Metal pronto em \(text) ms."
         }
 
         static func summary(_ measure: PortraitMeasure) -> String {

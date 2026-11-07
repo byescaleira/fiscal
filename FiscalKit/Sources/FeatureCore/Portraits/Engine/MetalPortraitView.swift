@@ -43,7 +43,6 @@
             view.sampleCount = MetalPortraitRenderer.sampleCount
             view.clearColor = MetalPortraitRenderer.transparent
             view.clearStencil = 0
-            view.enableSetNeedsDisplay = false
             view.preferredFramesPerSecond = Self.idleRate
             (view.layer as? CAMetalLayer)?.colorspace = CGColorSpace(name: CGColorSpace.sRGB)
             #if os(macOS)
@@ -57,10 +56,23 @@
 
         func update(_ view: MTKView) {
             view.isPaused = !isRunning
-            if !isRunning { view.draw() }
+            view.enableSetNeedsDisplay = !isRunning
+            if !isRunning { redraw(view) }
         }
 
-        nonisolated func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {}
+        private func redraw(_ view: MTKView) {
+            #if os(macOS)
+                view.needsDisplay = true
+            #else
+                view.setNeedsDisplay()
+            #endif
+        }
+
+        nonisolated func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
+            MainActor.assumeIsolated {
+                if !isRunning { redraw(view) }
+            }
+        }
 
         nonisolated func draw(in view: MTKView) {
             MainActor.assumeIsolated { render(view) }

@@ -77,7 +77,7 @@ Pedido de 2026-11-06: desenhar os bonequinhos com Metal, de forma leve, e pôr a
 | Fase | Entrega | Estado |
 | --- | --- | --- |
 | 1 | Prova de viabilidade: Lottie, Canvas e Metal lado a lado no iPhone, com as ações e a medição ([canvas](../spdd/prompt/FSC-025-202611061422-[Feat]-portraits-metal-proof.md)) | feita: o Metal gastou quase três vezes a CPU do Lottie no iPhone, e a decisão foi parar este motor ([prova](evidence/FSC-025/proof.md)); o laboratório fica no Debug |
-| 2 | Exportação do rig em malha pelo `avatars.py` | substituída pela fase 8 |
+| 2 | Ações sobre o Lottie (tocar, segurar e acenar pelos marcadores do rig), pela régua da prova; a exportação em malha passou para a fase 8 | planejada, depois da 7 |
 | 3 | Motor novo no app atrás do `PortraitArtwork`, com imagem parada e prateleira; Lottie como reserva | em espera: volta só com o motor da fase 8, com a malha na GPU |
 | 4 | Troca no iOS, iPadOS, macOS e visionOS e saída do rig Lottie do retrato, com ADR | planejada |
 | 5 | Ações da pessoa: olhar para o dedo, tocar para reagir, segurar para pensar e inclinar o iPhone | planejada |

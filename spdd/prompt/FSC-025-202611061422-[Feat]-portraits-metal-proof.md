@@ -19,7 +19,7 @@ Definição de pronto:
 - **Given** Reduzir movimento, Modo Pouca Energia ou aparelho quente (`MotionBudget.isConstrained` ou `@ReducesMotion`) **When** o laboratório abre **Then** os três motores mostram a imagem parada, toque e arrasto não animam, o sensor não liga e o rodapé diz "Movimento reduzido: só imagem parada".
 - **Given** o botão "Medir" **When** a pessoa toca **Then** cada motor roda sozinho por 20 s com 3 bonequinhos de 120 pt, um depois do outro, e a tabela mostra por motor: CPU do processo (%), memória acrescentada (MB), quadros perdidos, tempo de GPU por quadro (ms, só Metal) e estado térmico no fim.
 - **Given** um aparelho sem Metal disponível (`MTLCreateSystemDefaultDevice()` nulo) **When** o laboratório abre **Then** a coluna Metal mostra "Metal indisponível neste aparelho" e as outras duas seguem.
-- **Given** a medição feita no iPhone do usuário **When** a fase fecha **Then** `docs/evidence/FSC-025/proof.md` traz a tabela das três medições do app, a captura do Instruments (Metal System Trace e Power Profiler) e a decisão "seguir" ou "parar" pela régua de Safeguards, com o que não foi medido dito por extenso.
+- **Given** a medição feita no iPhone do usuário **When** a fase fecha **Then** `docs/evidence/FSC-025/proof.md` traz a tabela das três medições do app, a captura do Instruments (Metal System Trace e Power Profiler) ou, quando o Instruments não gravar e o usuário dispensar nova gravação, o motivo por extenso, e a decisão "seguir" ou "parar" pela régua de Safeguards, com o que não foi medido dito por extenso.
 
 ## Entities
 
@@ -82,6 +82,15 @@ classDiagram
     tilt(Double)
   }
   class MetalPortraitRenderer
+  class PortraitStroke
+  class PortraitClock
+  class PortraitTilt {
+    Double roll
+  }
+  class PortraitLabPerson {
+    String slug
+    String party
+  }
   class CanvasPortraitView
   class PortraitBenchmark {
     [PortraitMeasure] results
@@ -98,6 +107,8 @@ classDiagram
   MetalPortraitRenderer ..> PortraitFrame
   CanvasPortraitView ..> PortraitFrame
   PortraitBenchmark ..> MetalPortraitRenderer
+  MetalPortraitRenderer ..> PortraitStroke
+  PortraitTilt ..> PortraitAction
 ```
 
 - **`PortraitRig`** (existe) ganha `document(for:party:)`, que devolve o dicionário já filtrado pelos traços e tingido pelo partido; `animation(for:party:)` passa a usá-lo e não muda de comportamento.
@@ -108,6 +119,7 @@ classDiagram
 - **`PortraitMixer`** decide a pose a cada quadro a partir das ações e mistura duas poses durante uma troca.
 - **`PortraitAction`** é o que a pessoa faz: tocar, segurar, soltar, arrastar, tirar o dedo e inclinar.
 - **`MetalPortraitRenderer`, `CanvasPortraitView` e `PortraitBenchmark`** desenham e medem; só existem no laboratório nesta fase.
+- **`PortraitStroke`, `PortraitClock`, `PortraitTilt` e `PortraitLabPerson`** são o traço em triângulos, o relógio comum aos gestos e ao desenho, o sensor de inclinação e as quatro pessoas do seletor.
 
 Nada muda em `PortraitLibrary`, `PortraitStore`, `PersonPortrait`, nos traços ou no rig: o app de produção continua igual.
 
@@ -161,7 +173,8 @@ Nada muda em `PortraitLibrary`, `PortraitStore`, `PersonPortrait`, nos traços o
 - `Fiscal/Fiscal/FiscalApp.swift`: o argumento `-portraitLab` em `#if DEBUG`, na raiz da janela, para o laboratório abrir mesmo quando o banco do aparelho não abre (achado no iPhone: banco gravado por outra branch, com esquema mais novo).
 - `FiscalKit/Tests/FeatureCoreTests/PortraitEngineTests.swift` (novo).
 - `docs/evidence/FSC-025/` (novo): `proof.md`, capturas e os traces resumidos.
-- `docs/roadmap.md`: a seção das seis fases da FSC-025.
+- `docs/roadmap.md`: a seção das fases da FSC-025, com as fases 7 (estilo inspirado no Memoji) e 8 (traços mínimos e rig paramétrico) pedidas pelo usuário em 2026-11-06 durante a geração.
+- `docs/research/2026-11-06-memoji-style-flat-avatars.md` e o índice `docs/research/README.md`: a pesquisa do estilo, pedida pelo usuário durante a geração, que alimenta a fase 7.
 - `spdd/README.md`: estado da linha.
 
 Dependências: o motor usa só `Metal`, `MetalKit`, `CoreMotion` e `SwiftUI` do sistema e os tipos de `FeatureCore`. Nenhum pacote novo.
@@ -182,9 +195,9 @@ Dependências: o motor usa só `Metal`, `MetalKit`, `CoreMotion` e `SwiftUI` do 
 12. **Teste de paridade:** as 25 pessoas da definição de pronto (escolhidas uma vez na fixture e fixadas por identificador) no quadro 0 e nas 8 poses paradas, Metal e Canvas contra o `PortraitStill`, com a média por canal sobre todos os pixels e o percentil 99,5 só nos pixels fora do anel de 1 px em volta das bordas da referência (pixel de borda é o que difere de um vizinho de 8 por mais de 8% em algum canal). Fora do simulador sem Metal, o teste de Metal é pulado com o motivo. Depende de: 9, 11. Cobre: paridade.
 13. **`PortraitTilt`:** `CMMotionManager` a 30 Hz só com a tela à vista, rolagem em graus para `tilt(roll)`, desligado ao sair e com movimento restrito. Depende de: 7. Cobre: inclinação.
 14. **`PortraitBenchmark`:** para cada motor, três rodadas de 20 s com 3 bonequinhos de 120 pt em `idle` e uma ação a cada 3 s, um motor de cada vez e 5 s de pausa entre eles; mede CPU do processo, memória acrescentada, quadros perdidos (intervalo maior que 1,5 vez o esperado), tempo de GPU médio e p95 (Metal) e estado térmico no fim; guarda a mediana e escreve no log do Developer. Depende de: 10, 11. Cobre: "Medir".
-15. **`PortraitLabScreen` e ligações:** seletor com `eduardo-riedel`, `lula`, `tabata-amaral` e "rosto neutro"; as três colunas rotuladas; rodapé de movimento; botão "Medir" e tabela; textos de erro de Approach; link "Bonequinhos em Metal" no Developer e `-portraitLab` na raiz da janela em `FiscalApp`, tudo em `#if DEBUG`; o modelo da tela entra pelo `ModelHost`. Os textos ficam em `Text(verbatim:)` como no laboratório da FSC-023, porque não vão para o catálogo. Depende de: 10, 11, 13, 14. Cobre: abrir o laboratório, trocar a pessoa, sem Metal, movimento restrito.
+15. **`PortraitLabScreen` e ligações:** seletor com `eduardo-riedel`, `lula`, `tabata-amaral` e "rosto neutro"; as três colunas rotuladas; rodapé de movimento; botão "Medir" e tabela; textos de erro de Approach; o rodapé da medição mostra o tempo de preparo do pipeline do Metal; link "Bonequinhos em Metal" no Developer e `-portraitLab` na raiz da janela em `FiscalApp`, tudo em `#if DEBUG`; o modelo da tela entra pelo `ModelHost`. Os textos ficam em `Text(verbatim:)` como no laboratório da FSC-023, porque não vão para o catálogo. Depende de: 10, 11, 13, 14. Cobre: abrir o laboratório, trocar a pessoa, sem Metal, movimento restrito.
 16. **Medição no iPhone e decisão:** instalar o Debug no iPhone do usuário, rodar "Medir" três vezes, gravar com `xctrace` o Metal System Trace e o Power Profiler de cada motor, capturar a tela, preencher `docs/evidence/FSC-025/proof.md` e aplicar a régua dos Safeguards. Depende de: 15. Cobre: evidência e decisão.
-17. **Documentos:** a seção das seis fases da FSC-025 em `docs/roadmap.md` (fase 1 com o resultado, as outras como planejadas ou canceladas conforme a decisão), `docs/backlog.md` se a prova abrir item, `CHANGELOG.md` em `Unreleased` ("Laboratório de bonequinhos em Metal, só em Debug") e a linha do `spdd/README.md`. Depende de: 16. Verificação: `scripts/verify.sh --full`.
+17. **Documentos:** a seção das fases da FSC-025 em `docs/roadmap.md` (fase 1 com o resultado; com "parar", a fase 2 vira "ações sobre o Lottie", e as fases do motor esperam a fase 8; as fases 7 e 8 pedidas pelo usuário), a pesquisa do estilo em `docs/research/`, `docs/backlog.md` se a prova abrir item, `CHANGELOG.md` em `Unreleased` ("Laboratório de bonequinhos em Metal, só em Debug") e a linha do `spdd/README.md`. Depende de: 16. Verificação: `scripts/verify.sh --full`.
 
 ## Norms
 
@@ -207,10 +220,10 @@ Dependências: o motor usa só `Metal`, `MetalKit`, `CoreMotion` e `SwiftUI` do 
   - o olhar e a inclinação nunca passam do maior desvio que `lookAround` e `tilt` já fazem no rig;
   - quem não tem traços continua com o rosto neutro nos três motores.
 - **Desempenho (régua de seguir ou parar, mediana de 3 rodadas no iPhone do usuário, 3 bonequinhos de 120 pt):**
-  - **seguir com Metal** se, contra o Lottie: CPU do processo pelo menos 30% menor, memória acrescentada não maior, no máximo 1% de quadros perdidos, GPU p95 de no máximo 2 ms por quadro para os 3, energia no Power Profiler não maior, e paridade dentro do limite da definição de pronto;
+  - **seguir com Metal** se, contra o Lottie: CPU do processo pelo menos 30% menor, memória acrescentada não maior, no máximo 1% de quadros perdidos, GPU p95 de no máximo 2 ms por quadro para os 3, energia no Power Profiler não maior quando ele gravar, e paridade dentro do limite da definição de pronto;
   - **seguir com Canvas** se o Canvas cumprir a mesma régua e o Metal não ganhar dele em CPU ou energia por mais de 15%;
   - **parar** se nenhum dos dois cumprir; a fase 2 vira "ações sobre o Lottie" (alternativa da análise);
-  - em repouso (nenhum movimento por 5 s), Metal e Canvas não pedem quadro;
+  - em repouso (fora da tela, com movimento restrito ou com o app em segundo plano), Metal e Canvas não pedem quadro; com o `idle` à vista, pedem 30 quadros por segundo, o mesmo ritmo do rig;
   - o pipeline compila em no máximo 150 ms e o primeiro quadro sai em no máximo 50 ms depois de pronto.
 - **Segurança e privacidade:** nenhum dado novo; nada sai do aparelho; o sensor de inclinação não grava nem registra valores; o log do Developer guarda só as medidas.
 - **Integração e compatibilidade:**

@@ -12,12 +12,14 @@ Roteiro da definição de pronto do [canvas](../../../spdd/prompt/FSC-025-202611
 | Arrastar: olhos e rosto seguem o dedo, presos ao `lookAround`, e voltam em 0,4 s | passou nos testes | `lookAndTiltStayInsideWhatTheRigAlreadyDoes`, `lookMovesTheEyesAndTiltTurnsTheHead` |
 | Inclinar o iPhone | não executado | O simulador não tem sensor; no iPhone a sessão foi só de medição |
 | Toque durante o `wave` mistura em 0,2 s | passou nos testes | `tapReactsAndReturnsToIdleWithoutAJump` |
-| Movimento reduzido: só imagem parada e o rodapé | não executado | Não conferido em aparelho nem simulador |
+| Movimento reduzido: só imagem parada e o rodapé | passou no simulador | [Captura](lab-reduced-motion.png) com Reduzir movimento ligado: os três parados e o rodapé. A primeira tentativa achou a coluna do Metal em branco, porque o `MTKView` pausado não redesenhava ao ganhar tamanho; corrigido para desenhar sob demanda |
 | Botão "Medir" e a tabela | passou no iPhone | Duas rodadas no iPhone 17 Pro Max, com e sem otimização ([prova](proof.md)) |
 | Sem Metal: "Metal indisponível neste aparelho" | não executável aqui | Todo aparelho do alvo tem Metal; o caminho está no código |
 | Evidência e decisão em `proof.md` | passou | [Prova](proof.md): parar este motor; o Power Profiler não gravou e o usuário dispensou nova gravação |
 
 ## Achados durante o QA
+
+- Pipeline do Metal pronto em 49,5 a 75,3 ms no simulador, dentro do limite de 150 ms; no iPhone não foi lido.
 
 - O `Canvas` congelava depois do primeiro quadro, porque o desenho não dependia do tique da `TimelineView`. O quadro passou a ser calculado fora do `Canvas`.
 - A imagem parada do Metal reservava um buffer sem devolver, e o semáforo derrubava o teste ao ser liberado. Agora o buffer é devolvido depois do desenho.
