@@ -13,7 +13,7 @@ Primeira versão, a 1.0.0.
 - Meu apoio: uma página privada com as pessoas e as causas que você escolhe, numa linha do tempo por data, só com fatos, guardada só no aparelho e que pode ser apagada. O resto do app é igual para todo mundo.
 - Cartões de compartilhar com arte brasileira de licença livre e o que circulou sobre cada político segundo o Projeto Comprova.
 - Widgets, atalhos da Siri e busca no Spotlight.
-- Ícone da Amazônia ao amanhecer, com ícones alternativos de temas, fauna e partidos.
+- Ícone da Amazônia ao amanhecer vista de cima, com ícones alternativos de temas, fauna e partidos. Os ícones principais e os temas mostram lugares do Brasil vistos de cima, cada tema com o nome do lugar: Cataratas do Iguaçu, Jalapão, Pantanal, Ipês em flor, Chapada dos Veadeiros, Fernando de Noronha, Pão de Açúcar e Lençóis Maranhenses ([FSC-022](spdd/prompt/FSC-022-202611051909-[Feat]-icons-aerial-brazil-landscapes.md)).
 - Roda a partir do iOS, iPadOS, macOS e visionOS 26, com o que é do 27 quando o aparelho tem.
 - Cores com contraste de texto conferido, botões e superfícies opacos com Reduzir transparência e barras de progresso lidas pelo VoiceOver.
 - Fundo branco no claro e preto no escuro em todas as telas, com os cartões em cinza do sistema.
@@ -42,6 +42,10 @@ Primeira versão, a 1.0.0.
 - Envio direto aos Stories do Instagram e do Facebook com o App ID da Meta; TikTok pelo Fotos, abrindo o app.
 - Links do site abrem o app no conteúdo, pelos links universais, assim que a nova AASA for publicada.
 - Convite dispensável na aba Região para compartilhar quem você acompanha, com o novo cartão "Quem eu sigo".
+
+- Plenário no detalhe da votação: um ponto por cadeira (513 na Câmara, 81 no Senado), com sim à esquerda, não à direita, quem não votou no meio e a linha de quórum da PEC. A contagem anima uma vez e fica parada com Reduzir movimento ([FSC-023](spdd/prompt/FSC-023-202611052151-[Feat]-plenary-and-holographic-card.md)).
+- O cartão do político virou uma carta colecionável, igual para todos: moldura metalizada, o retrato numa janela holográfica com brilhos e a carta girando com a inclinação do iPhone.
+- Curtir no Feed: um coração no cabeçalho de cada item, ao lado da data, e no destaque do topo, que explode em confete de corações nas cores do partido, ou em vermelho, com um toque háptico. As curtidas são privadas, sem contagem, ficam só no aparelho, fora do iCloud e do backup, e aparecem em "Curtidas", no menu do coração da barra do Feed ([FSC-024](spdd/prompt/FSC-024-202611061418-[Feat]-feed-like-with-ripple.md)).
 
 ### Changed
 

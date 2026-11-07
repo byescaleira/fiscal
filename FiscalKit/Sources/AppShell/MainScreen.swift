@@ -115,11 +115,17 @@ private struct RoutesBeside: ViewModifier {
 private struct FollowSync: ViewModifier {
     @Environment(SessionModel.self) private var session
     @Environment(FollowController.self) private var follow
+    @Environment(LikeController.self) private var like
 
     func body(content: Content) -> some View {
         @Bindable var follow = follow
+        @Bindable var like = like
         content
-            .task(id: session.generation) { await follow.reload() }
+            .task(id: session.generation) {
+                await follow.reload()
+                await like.reload()
+            }
             .errorAlert($follow.error)
+            .errorAlert($like.error)
     }
 }

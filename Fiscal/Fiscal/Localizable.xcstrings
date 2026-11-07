@@ -893,6 +893,28 @@
         }
       }
     },
+    "%lld did not vote" : {
+      "localizations" : {
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld não votou"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld não votaram"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld elected, awaiting inauguration" : {
       "localizations" : {
         "pt-BR" : {
@@ -1044,6 +1066,16 @@
         }
       }
     },
+    "%lld no" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld não"
+          }
+        }
+      }
+    },
     "%lld of %lld" : {
       "localizations" : {
         "pt-BR" : {
@@ -1164,6 +1196,28 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "Nenhum outro voto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld others" : {
+      "localizations" : {
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld outro"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld outros"
                 }
               }
             }
@@ -1312,6 +1366,16 @@
         }
       }
     },
+    "%lld to pass" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld para aprovar"
+          }
+        }
+      }
+    },
     "%lld updates from who you follow" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1373,6 +1437,38 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "0 anos"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld yes" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld sim"
+          }
+        }
+      }
+    },
+    "%lld yes votes to pass" : {
+      "localizations" : {
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld voto sim para aprovar"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld votos sim para aprovar"
                 }
               }
             }
@@ -2052,16 +2148,6 @@
         }
       }
     },
-    "Amazon River" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rio na Amazônia"
-          }
-        }
-      }
-    },
     "Amazonas" : {
       "localizations" : {
         "pt-BR" : {
@@ -2098,16 +2184,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Animações · Licença Apache 2.0"
-          }
-        }
-      }
-    },
-    "Annatto" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Urucum"
           }
         }
       }
@@ -3226,6 +3302,16 @@
         }
       }
     },
+    "Chapada dos Veadeiros" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chapada dos Veadeiros"
+          }
+        }
+      }
+    },
     "Chat" : {
       "localizations" : {
         "pt-BR" : {
@@ -4119,6 +4205,16 @@
         }
       }
     },
+    "Delete Liked Items" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar curtidas"
+          }
+        }
+      }
+    },
     "Delete My Choice" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -4911,6 +5007,16 @@
         }
       }
     },
+    "Every heart in the Feed goes back to empty. This can't be undone." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos os corações do Feed voltam a ficar vazios. Não dá para desfazer."
+          }
+        }
+      }
+    },
     "Every message reaches the person who writes the code." : {
       "localizations" : {
         "pt-BR" : {
@@ -5265,6 +5371,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Feed"
+          }
+        }
+      }
+    },
+    "Fernando de Noronha" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fernando de Noronha"
           }
         }
       }
@@ -5679,6 +5795,16 @@
         }
       }
     },
+    "Floor: %@, out of %lld seats" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plenário: %@, de %lld cadeiras"
+          }
+        }
+      }
+    },
     "Folded, side by side" : {
       "localizations" : {
         "pt-BR" : {
@@ -5848,16 +5974,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Segue um político no Fiscal sem abrir o app."
-          }
-        }
-      }
-    },
-    "Forest" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mata"
           }
         }
       }
@@ -6082,16 +6198,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Governadores e Senado"
-          }
-        }
-      }
-    },
-    "Graphite" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Grafite"
           }
         }
       }
@@ -6627,6 +6733,16 @@
         }
       }
     },
+    "Iguaçu Falls" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cataratas do Iguaçu"
+          }
+        }
+      }
+    },
     "Illustration of %@" : {
       "localizations" : {
         "pt-BR" : {
@@ -6857,16 +6973,6 @@
         }
       }
     },
-    "Indigo" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anil"
-          }
-        }
-      }
-    },
     "Individual" : {
       "localizations" : {
         "pt-BR" : {
@@ -6947,12 +7053,12 @@
         }
       }
     },
-    "Ipê" : {
+    "Ipês in Bloom" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ipê"
+            "value" : "Ipês em flor"
           }
         }
       }
@@ -7044,6 +7150,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Onça-pintada"
+          }
+        }
+      }
+    },
+    "Jalapão" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jalapão"
           }
         }
       }
@@ -7321,6 +7437,16 @@
         }
       }
     },
+    "Lençóis Maranhenses" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lençóis Maranhenses"
+          }
+        }
+      }
+    },
     "Less" : {
       "localizations" : {
         "pt-BR" : {
@@ -7381,12 +7507,32 @@
         }
       }
     },
+    "Like" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Curtir"
+          }
+        }
+      }
+    },
     "Like the party" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Igual ao partido"
+          }
+        }
+      }
+    },
+    "Liked Items" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Curtidas"
           }
         }
       }
@@ -7693,6 +7839,16 @@
         }
       }
     },
+    "Meeting of the Waters" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encontro das Águas"
+          }
+        }
+      }
+    },
     "Memory" : {
       "localizations" : {
         "pt-BR" : {
@@ -7968,6 +8124,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Meu apoio"
+          }
+        }
+      }
+    },
+    "My Support and Liked Items" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meu apoio e curtidas"
           }
         }
       }
@@ -8781,6 +8947,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Não publicado para estes cargos: %@"
+          }
+        }
+      }
+    },
+    "Nothing Liked" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nada curtido"
           }
         }
       }
@@ -9802,6 +9978,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Faz par com %@"
+          }
+        }
+      }
+    },
+    "Pantanal" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pantanal"
           }
         }
       }
@@ -11722,32 +11908,12 @@
         }
       }
     },
-    "Sand" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Areia"
-          }
-        }
-      }
-    },
     "Santa Catarina" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Santa Catarina"
-          }
-        }
-      }
-    },
-    "Savanna" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cerrado"
           }
         }
       }
@@ -11829,16 +11995,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Escolas, universidades e professores"
-          }
-        }
-      }
-    },
-    "Sea" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mar"
           }
         }
       }
@@ -13293,6 +13449,16 @@
         }
       }
     },
+    "Sugarloaf Mountain" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pão de Açúcar"
+          }
+        }
+      }
+    },
     "Suggested" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -13506,6 +13672,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Toque num tema para ver as votações dele. Deslize pelas barras para ver cada dia."
+          }
+        }
+      }
+    },
+    "Tap the heart on a Feed item to keep it here." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque no coração de um item do Feed para guardar aqui."
           }
         }
       }
@@ -14771,6 +14947,16 @@
         }
       }
     },
+    "This item left the Feed" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este item saiu do Feed"
+          }
+        }
+      }
+    },
     "This race isn't in the latest TSE file." : {
       "localizations" : {
         "pt-BR" : {
@@ -15233,6 +15419,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Deixou de seguir %@"
+          }
+        }
+      }
+    },
+    "Unlike" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descurtir"
           }
         }
       }
@@ -17114,6 +17310,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Suas investigações sincronizam pela sua própria conta do iCloud. Quem você apoia nunca sai deste aparelho."
+          }
+        }
+      }
+    },
+    "Your liked items stay only on this device, outside iCloud and backups." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suas curtidas ficam só neste aparelho, fora do iCloud e do backup."
           }
         }
       }

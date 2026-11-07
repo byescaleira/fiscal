@@ -23,6 +23,25 @@ struct AppIconTests {
         #expect(AppIcon(assetName: "Unknown") == .standard)
     }
 
+    @Test func landscapeIconsKeepTheirSavedNamesInOrder() {
+        #expect(
+            AppIcon.Collection.main.icons.map(\.previewName) == [
+                "FiscalIcon", "FiscalIconAmazonDay", "FiscalIconAmazonRiver",
+            ])
+        #expect(
+            AppIcon.Collection.themes.icons.compactMap(\.assetName) == [
+                "FiscalIconThemeForest", "FiscalIconThemeAnnatto", "FiscalIconThemeIndigo",
+                "FiscalIconThemeIpe", "FiscalIconThemeSavanna", "FiscalIconThemeSea",
+                "FiscalIconThemeGraphite", "FiscalIconThemeSand",
+            ])
+        #expect(AppIcon.allCases.count == 47)
+    }
+
+    @Test func everyThemeShowsADifferentPlace() {
+        let titles = AppIcon.Collection.themes.icons.map(\.title)
+        #expect(Set(titles).count == titles.count)
+    }
+
     @Test func everyRegisteredPartyHasAnIconInAlphabeticalOrder() {
         let parties = AppIcon.Collection.parties.icons
         #expect(parties.count == 30)
