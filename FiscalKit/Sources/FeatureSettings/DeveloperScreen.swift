@@ -29,6 +29,20 @@ private struct DeveloperPage: View {
                 }
             }
             DeveloperLayoutSection()
+            #if DEBUG
+                Section {
+                    NavigationLink {
+                        PortraitLabScreen()
+                    } label: {
+                        Label {
+                            Text(verbatim: "Bonequinhos em Metal")
+                        } icon: {
+                            Image(systemName: "person.crop.circle").foregroundStyle(
+                                Color.retroDenim)
+                        }
+                    }
+                }
+            #endif
             if developer.canSimulateUpdates { DeveloperUpdatesSection() }
             DeveloperDataSection()
             DeveloperLogSection(developer.log)

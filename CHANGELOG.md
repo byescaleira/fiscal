@@ -14,6 +14,7 @@ Primeira versão, a 1.0.0.
 - Cartões de compartilhar com arte brasileira de licença livre e o que circulou sobre cada político segundo o Projeto Comprova.
 - Widgets, atalhos da Siri e busca no Spotlight.
 - Ícone da Amazônia ao amanhecer vista de cima, com ícones alternativos de temas, fauna e partidos. Os ícones principais e os temas mostram lugares do Brasil vistos de cima, cada tema com o nome do lugar: Cataratas do Iguaçu, Jalapão, Pantanal, Ipês em flor, Chapada dos Veadeiros, Fernando de Noronha, Pão de Açúcar e Lençóis Maranhenses ([FSC-022](spdd/prompt/FSC-022-202611051909-[Feat]-icons-aerial-brazil-landscapes.md)).
+- Laboratório de bonequinhos em Metal, só nas builds de desenvolvimento: o mesmo bonequinho em Lottie, Canvas e Metal lado a lado, com tocar, segurar, olhar para o dedo e inclinar o iPhone, e a medição dos três ([FSC-025](spdd/prompt/FSC-025-202611061422-[Feat]-portraits-metal-proof.md)).
 - Roda a partir do iOS, iPadOS, macOS e visionOS 26, com o que é do 27 quando o aparelho tem.
 - Cores com contraste de texto conferido, botões e superfícies opacos com Reduzir transparência e barras de progresso lidas pelo VoiceOver.
 - Fundo branco no claro e preto no escuro em todas as telas, com os cartões em cinza do sistema.

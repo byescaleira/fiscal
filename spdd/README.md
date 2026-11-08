@@ -3,7 +3,7 @@
 As análises, os canvases e as revisões do Fiscal no método SPDD (open-spdd). O processo está na skill `sdd`, `references/process.md`, e, no app Apple, na skill `byescaleira-sdd`, `references/process.md`. A troca do ciclo antigo está no [ADR 0019](../docs/adr/0019-spdd-process.md). `docs/specs/`, `docs/changes/` e `docs/decisions.md` são histórico congelado.
 
 - **Código do projeto:** `FSC`
-- **Próxima sequência:** `FSC-025` (`FSC-017` a `FSC-021` estão em outras branches e sessões)
+- **Próxima sequência:** `FSC-026` (`FSC-017` a `FSC-021` estão em outras branches e sessões)
 
 ## Pastas
 
@@ -39,5 +39,6 @@ No shell, ponha esses caminhos entre aspas: o zsh trata `[...]` como padrão de 
 | `FSC-022` | [Ícones do app com paisagens do Brasil vistas de cima](prompt/FSC-022-202611051909-[Feat]-icons-aerial-brazil-landscapes.md) | entregue | `feature/app-icon-landscapes` | [#17](https://github.com/byescaleira/fiscal/pull/17) |
 | `FSC-023` | [Plenário em pontos e cartão do político holográfico](prompt/FSC-023-202611052151-[Feat]-plenary-and-holographic-card.md) | entregue | `feature/metal-exploration` | [#18](https://github.com/byescaleira/fiscal/pull/18) |
 | `FSC-024` | [Curtir no Feed com a onda](prompt/FSC-024-202611061418-[Feat]-feed-like-with-ripple.md) | entregue | `feature/like` | [#19](https://github.com/byescaleira/fiscal/pull/19) |
+| `FSC-025` | [Bonequinhos em Metal, fase 1: prova de viabilidade](prompt/FSC-025-202611061422-[Feat]-portraits-metal-proof.md) | entregue: prova concluída; Lottie segue como motor geral e o Metal fica no cabeçalho do perfil | `feature/metal-portraits` | [#23](https://github.com/byescaleira/fiscal/pull/23) |
 
 As capacidades que ainda vivem em guias de recurso (atualização obrigatória em [force-update.md](../docs/force-update.md), site e Fiscal na Web em [web.md](../docs/web.md), admin e flags em [admin.md](../docs/admin.md)) ganham um canvas `[Codify]` na primeira mudança da área.
