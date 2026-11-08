@@ -4,7 +4,7 @@ import sys
 from html.parser import HTMLParser
 from pathlib import Path
 
-PAGES = ["index.html", "privacy.html", "terms.html", "support.html"]
+PAGES = ["index.html", "privacy.html", "terms.html", "support.html", "404.html"]
 LANGUAGE = "pt-BR"
 APP_STORE_ID = "6826982117"
 SKIPPED = {"script", "style", "svg"}

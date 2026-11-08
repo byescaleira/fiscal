@@ -38,26 +38,30 @@ Texto novo no site sai só em pt-BR, direto no HTML. Antes do commit, `python3 s
 
 ## Publicar
 
-Só com o ok do usuário, pedido a cada vez, a partir da worktree de integração (`development`), nunca de uma `feature/*`. O bloco do Caddy está no [runbook do servidor](server-runbook.md#9-site-no-mesmo-bloco-proposta-com-o-ok-do-usuário).
+O site fica no projeto `fiscal-site` da Cloudflare Pages, com o domínio `fiscal.byescaleira.com` ([ADR 0030](adr/0030-site-on-cloudflare-pages.md), [FSC-025](../spdd/prompt/FSC-025-202611081040-[Feat]-site-and-universal-links-on-cloudflare-pages.md)). Publicar só com o ok do usuário, pedido a cada vez, a partir da worktree de integração (`development`), nunca de uma `feature/*`:
 
 ```sh
-cd /Users/rafael.escaleira/Documents/projects/lab-vibecode/politico-monitor/.claude/worktrees/integration && python3 scripts/site-i18n.py check && ls site/.well-known && rsync -a --delete --exclude '.DS_Store' --exclude '*.test.mjs' --exclude 'package.json' --exclude '_upload' --exclude 'app.html' --exclude 'link.html' --exclude 'web.css' --exclude 'web*.js' site/ root@179.198.114.91:/opt/fiscal-site/public/
+cd /Users/rafael.escaleira/Documents/projects/lab-vibecode/politico-monitor/.claude/worktrees/integration && scripts/site-publish.sh
 ```
 
-- **Fiscal na Web fica de fora até depois da 1.0** ([ADR 0016](adr/0016-web-companion-after-1-0.md)): `app.html`, `link.html`, `web.css` e os `web*.js` continuam no repositório e não sobem.
-- **`--delete`** deixa o servidor igual ao repositório; os `--exclude` protegem o que não sobe e o que já está lá com esses nomes. Nunca `--delete-excluded`.
-- **`.well-known/` vai junto e fica.**
-- **Links universais.** O app tem o entitlement `com.apple.developer.associated-domains` com `applinks:fiscal.byescaleira.com`, e a AASA lista um `components` por chave na raiz (`{"/": "/", "?": {"person": "*"}}` e assim por diante), além de `/link`. O `DeepLink` do app abre cada chave no mesmo destino do `fiscal://` (`person` no perfil, `vote` na votação, `expenses` em `<slug>-<ano>` nos gastos, `compare` em `a,b` no lado a lado, `race` na disputa); `place` e `highlight`, que não têm tela própria, abrem o cartão de compartilhar de quem representa a UF e do destaque. Chave desconhecida ou outro caminho do site abre o app em Hoje; outro domínio fica com o navegador. A AASA nova só vale depois de publicada (com o ok do usuário) e de o iOS baixá-la de novo pela CDN da Apple, o que leva até um dia; antes disso, os links abrem o site. O `Content-Type` é `application/json` no Caddy (`@aasa` no [runbook](server-runbook.md)) e no `scripts/site-server.mjs`, que serve arquivo sem extensão como JSON. Para conferir depois de publicar: `curl -s https://app-site-association.cdn-apple.com/a/v1/fiscal.byescaleira.com`.
+- **Sem `--apply`, é só o plano.** O script confere a branch, a árvore limpa em `site/` e nos scripts do site e o `site-i18n.py check`. Depois monta o site numa pasta temporária com `scripts/site-build.mjs` e lista o que subiria. Com `--apply`, publica com `npx --yes wrangler@4.149.0 pages deploy` e apaga a pasta ao fim.
+- **Login do `wrangler`.** É do usuário, uma vez, no app Terminal: `npx --yes wrangler@4.149.0 login`. O script nunca lê nem pede token.
+- **O que sobe.** `index`, `privacy`, `terms`, `support` e `404`, `llms.txt`, `style.css`, `assets/`, `fonts/` e `.well-known/apple-app-site-association`, mais um `_headers` gerado. A lista é fixa em `scripts/site-build.mjs` e tem teste.
+- **Fiscal na Web fica de fora até depois da 1.0** ([ADR 0016](adr/0016-web-companion-after-1-0.md)): `app.html`, `app.js`, `link.html`, `web.css`, os `web*.js` e `vendor/` continuam no repositório e não sobem.
+- **`_headers`.** O arquivo da Apple sai como `application/json`, porque a Pages serve arquivo sem extensão como binário. Todas as páginas levam `Strict-Transport-Security`, `X-Content-Type-Options`, `Referrer-Policy` e `Cache-Control: public, max-age=300`.
+- **Páginas sem `.html`.** A Pages serve `/privacy` a partir de `privacy.html` e redireciona `/privacy.html` para `/privacy`, que é o endereço que o app abre. Caminho desconhecido responde 404 com o `404.html`; sem ele, a Pages entregaria a página inicial com 200.
+- **Links universais.** O app tem o entitlement `com.apple.developer.associated-domains` com `applinks:fiscal.byescaleira.com`, e a AASA lista um `components` por chave na raiz (`{"/": "/", "?": {"person": "*"}}` e assim por diante), além de `/link`. O `DeepLink` do app abre cada chave no mesmo destino do `fiscal://` (`person` no perfil, `vote` na votação, `expenses` em `<slug>-<ano>` nos gastos, `compare` em `a,b` no lado a lado, `race` na disputa); `place` e `highlight`, que não têm tela própria, abrem o cartão de compartilhar de quem representa a UF e do destaque. Chave desconhecida ou outro caminho do site abre o app em Hoje; outro domínio fica com o navegador. `/link` não tem página até o Fiscal na Web voltar: com o app, abre o app; sem o app, responde 404. A AASA nova só vale depois de publicada e de o iOS baixá-la de novo pela CDN da Apple, o que leva até um dia.
+- **Volta atrás.** Painel da Pages › `fiscal-site` › Deployments › o deploy bom › **Rollback**.
 
-Depois, confira cada rota:
+Depois de publicar, confira cada rota (troque o domínio por `fiscal-site.pages.dev` antes da troca do DNS):
 
 ```sh
-for u in / /privacy /terms /support /link /llms.txt /style.css /app.js /fonts/BricolageGrotesque.woff2 /assets/icon.png /.well-known/apple-app-site-association; do curl -s -o /dev/null -w "$u %{http_code} %{content_type}\n" https://fiscal.byescaleira.com$u; done
+for u in / /privacy /terms /support /llms.txt /style.css /fonts/BricolageGrotesque.woff2 /assets/icon.png /.well-known/apple-app-site-association /api/v1/races /app /link; do curl -s -o /dev/null -w "$u %{http_code} %{content_type}\n" https://fiscal.byescaleira.com$u; done
 curl -sI https://fiscal.byescaleira.com/.well-known/apple-app-site-association
-curl -s https://fiscal.byescaleira.com/api/health
+curl -s https://app-site-association.cdn-apple.com/a/v1/fiscal.byescaleira.com
 ```
 
-Todas respondem `200`, sem redirecionamento; a `apple-app-site-association` com corpo JSON, e o `/api/health` com `{"ok":true,"version":"…"}`. Na dúvida sobre o que está no ar, compare o `md5` local com o `md5sum` remoto de cada arquivo mudado (`vps-operations.md`).
+As páginas e a AASA respondem `200`, sem redirecionamento, a AASA com `application/json`; `/api/v1/races`, `/app` e `/link` respondem `404`. A CDN da Apple devolve os mesmos `appIDs` e `components`, às vezes só no dia seguinte.
 
 ## Fiscal na Web (depois da 1.0)
 

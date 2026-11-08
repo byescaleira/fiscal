@@ -33,6 +33,7 @@ O que falta, por prioridade. Itens concluídos saem daqui; o motivo das decisõe
 
 ## Depois da 1.0 ou sem data
 
+- **[P2] Host do admin e da ponte.** Com o site na Cloudflare Pages ([ADR 0030](adr/0030-site-on-cloudflare-pages.md)), `fiscal.byescaleira.com/admin` e `/bridge/` deixam de chegar à VPS. Quando o admin ou o Fiscal na Web entrarem, eles ganham um host próprio (por exemplo, `admin.fiscal.byescaleira.com`), com o `ORIGIN` do admin e o CORS da ponte ajustados; a passkey continua com o RP ID `fiscal.byescaleira.com`.
 - **[P3] Curtir a apuração.** O cartão da apuração vem pronto do `FeatureLiveResults`, sem canto livre para o coração; ficou fora da [FSC-024](../spdd/prompt/FSC-024-202611061418-[Feat]-feed-like-with-ripple.md) (Approach 13).
 - **[P2] Linha de quórum da PLP e da maioria simples.** Lei complementar pede maioria absoluta (art. 69 da Constituição: 257 na Câmara, 41 no Senado), mas a mesma proposição também tem votações de requerimento e de destaque, em que a regra é outra. A linha só entra quando o dado disser o tipo de cada votação.
 - **[P2] Mac: grade do painel.** Dinheiro em `CardGrid` com cartões de tamanhos diferentes (herói em duas colunas, métricas pequenas); a lista de origem, as tabelas, o `GroupBox` e o menu Ir entraram na `FSC-008`.

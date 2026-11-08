@@ -50,3 +50,4 @@ Cada decisão que molda o Fiscal além de uma única mudança ganha um registro 
 | [0027](0027-private-likes-on-device.md) | Curtir é privado e fica só no aparelho | Aceito |
 | [0028](0028-app-reads-only-from-cdn-and-local-alerts.md) | O app só lê a CDN, e os alertas de destaque são locais | Aceito |
 | [0029](0029-current-party-and-load-alert.md) | O cargo em exercício usa o partido mais recente, e a carga avisa quando falha | Aceito |
+| [0030](0030-site-on-cloudflare-pages.md) | O site e os links universais na Cloudflare Pages | Aceito |

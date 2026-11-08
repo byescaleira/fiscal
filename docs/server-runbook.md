@@ -244,52 +244,18 @@ O deploy do servidor de `ba5e576` vai junto com a correção dos gastos, pelo `s
 5. **Caddy.** A edição da seção 7.
 6. **Só então, privacidade e rótulo.** A política nova ("Dados que coletamos: Nenhum") e o rótulo "Dados não coletados" só valem depois dos passos 2 e 4. Publicar o site com a política nova e trocar o rótulo no App Store Connect vêm depois deles, cada um com o ok do usuário.
 
-## 9. Site no mesmo bloco (proposta, com o ok do usuário)
+## 9. O site sai da VPS ([FSC-025](../spdd/prompt/FSC-025-202611081040-[Feat]-site-and-universal-links-on-cloudflare-pages.md))
 
-Hoje o bloco `fiscal.byescaleira.com` termina em `handle { respond 404 }`: o site não está no ar, e `/` e o arquivo de associação da Apple respondem 404 (conferido de fora em 07/11/2026, [QA da FSC-020](evidence/FSC-020/qa.md)). Sem esse arquivo, os links universais não abrem o app. Para publicar o site (`site/` do repositório, arquivos estáticos em `/opt/fiscal-site/public`), o bloco fica como abaixo. É o que o repositório pede (skill `byescaleira-sdd`, `launch-site-and-support.md` e `vps-operations.md`), não o que está na VPS: confira o bloco real antes de editar e siga os quatro passos (backup `.bak.<epoch>`, edição só deste bloco, `caddy validate`, `systemctl reload caddy`).
+O site não fica na VPS: vai para o projeto `fiscal-site` da Cloudflare Pages ([ADR 0030](adr/0030-site-on-cloudflare-pages.md), publicação em [docs/web.md](web.md#publicar)). Hoje o bloco `fiscal.byescaleira.com` termina em `handle { respond 404 }`, e `/` e o arquivo de associação da Apple respondem 404 (conferido de fora em 07/11/2026). A ordem abaixo vale depois do deploy da FSC-020 e da limpeza da VPS (seção 8), e cada passo pede o ok do usuário, a cada vez:
 
-```
-fiscal.byescaleira.com {
-	encode zstd gzip
+1. **Conferir o cenário 33 da FSC-020** pelo log de acesso, antes de tudo: depois da troca do DNS, esse log deixa de ver o domínio.
+2. **Projeto e primeira publicação.** O usuário faz o login do `wrangler` no app Terminal. Com o ok, `npx --yes wrangler@4.149.0 pages project create fiscal-site --production-branch main` e `scripts/site-publish.sh --apply`. **Anote o subdomínio `*.pages.dev` que a Pages imprimir**: o esperado é `fiscal-site.pages.dev`, mas, se esse nome já for de outra conta, ela dá um sufixo, e é o subdomínio impresso que vale daqui em diante. Conferir as rotas nele com a receita do `docs/web.md`.
+3. **Domínio.** O usuário adiciona `fiscal.byescaleira.com` em Workers & Pages › `fiscal-site` › Custom domains. Anote o TTL atual do registro `fiscal` na Vercel e o IP que ele aponta.
+4. **DNS.** Com o ok, na Vercel, o registro `fiscal` passa de A para CNAME com o subdomínio anotado no passo 2, sem proxy, como o `dados.fiscal`. Os outros registros de `byescaleira.com` ficam como estão. Espere o domínio aparecer como **Active** dentro do projeto `fiscal-site` da própria conta e confira as rotas em `https://fiscal.byescaleira.com`.
+5. **Caddy.** Com o ok, sai o bloco `fiscal.byescaleira.com` inteiro, nos quatro passos de sempre: backup `.bak.<epoch>`, edição só deste bloco, `caddy validate` e `systemctl reload caddy`. Os outros blocos ficam. Depois, `curl -s http://127.0.0.1:3130/api/health` na VPS responde `{"ok":true,…}`, e o log do Caddy não mostra falha de renovação de certificado desse domínio.
 
-	header {
-		Strict-Transport-Security "max-age=31536000; includeSubDomains"
-		X-Content-Type-Options "nosniff"
-		Referrer-Policy "strict-origin-when-cross-origin"
-		?Cache-Control "public, max-age=300"
-		-Server
-	}
+**Nunca apague o projeto `fiscal-site` com o CNAME no ar.** Tire antes o registro `fiscal` da Vercel (ou volte o A da VPS); um CNAME apontando para um projeto apagado deixa outra conta recriar o nome e servir conteúdo e um arquivo da Apple em `fiscal.byescaleira.com`.
 
-	handle /admin* {
-		reverse_proxy 127.0.0.1:3120
-	}
+**Volta atrás do DNS:** o registro A anterior, com o IP anotado no passo 3. O bloco do Caddy volta do backup. Com o domínio de volta na VPS, o site responde 404 de novo.
 
-	handle /bridge/* {
-		reverse_proxy 127.0.0.1:3110
-	}
-
-	@aasa path /.well-known/apple-app-site-association
-	header @aasa Content-Type "application/json"
-
-	handle {
-		root * /opt/fiscal-site/public
-		try_files {path} {path}.html
-		file_server
-	}
-
-	log {
-		output file /var/log/fiscal-access.log {
-			roll_size 100mb
-			roll_keep 10
-		}
-		format json
-	}
-}
-```
-
-- **Sem `@hot`, `@races`, `@data` nem `/api/*`**: o app não lê a VPS (seção 7).
-- **`?Cache-Control`** só entra quando a resposta não trouxe o seu: o `no-store` da ponte e do admin fica como está; o site ganha `public, max-age=300`.
-- **`try_files {path} {path}.html`** serve `/privacy`, `/terms`, `/support` e `/link` sem `.html`, como o `scripts/site-server.mjs` faz em `127.0.0.1:4173`.
-- **`handle /admin*`** é o painel de flags e versões (`admin/README.md`). **`handle /bridge/*`** só faz sentido com a ponte no ar, junto com o Fiscal na Web, depois da 1.0; até lá, pode ficar de fora.
-- **`/.well-known/apple-app-site-association`** precisa responder `200` com JSON, sem redirecionamento, enquanto houver versão na loja com `applinks:`.
-- **Saúde depois do reload:** `curl -s http://127.0.0.1:3130/api/health` na VPS (`{"ok":true,"version":"…"}`), `curl -s https://fiscal.byescaleira.com/admin/health` e, com a ponte no ar, `/bridge/health`, todos com a versão; depois as rotas do site com a receita de [docs/web.md](web.md#publicar).
+**Admin e ponte:** quando entrarem, ficam num host próprio apontando para a VPS (por exemplo, `admin.fiscal.byescaleira.com`), porque `fiscal.byescaleira.com` passa a ser da Pages. A passkey do admin usa o RP ID `fiscal.byescaleira.com`, que continua válido num subdomínio dele.
