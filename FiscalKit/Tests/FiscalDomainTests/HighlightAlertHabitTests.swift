@@ -52,6 +52,8 @@ struct HighlightAlertHabitTests {
     @Test func nightOpeningsNeverCount() {
         let openings = (10...14).flatMap { [moment($0, 23), moment($0, 3)] }
         #expect(schedule(openings, now: moment(15, 14)) == .standard)
+        let mostlyNight = (10...13).map { moment($0, 23) } + [moment(14, 12)]
+        #expect(schedule(mostlyNight, now: moment(15, 14)) == .standard)
     }
 
     @Test func recentOpeningsWeighMoreAndOldOnesLeave() {

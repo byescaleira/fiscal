@@ -44,13 +44,28 @@ private final class StubProtocol: URLProtocol, @unchecked Sendable {
 
 @Suite(.serialized)
 struct LiveResultsClientTests {
-    private func client() -> LiveResultsClient {
+    private func client(offline: OfflinePackStore? = nil) -> LiveResultsClient {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.protocolClasses = [StubProtocol.self]
         StubProtocol.requests = []
         return LiveResultsClient(
             dataURL: URL(string: "https://dados.example.test")!,
-            session: URLSession(configuration: configuration))
+            session: URLSession(configuration: configuration), offline: offline)
+    }
+
+    @Test func withTheCDNDownTheRacesComeFromThePackAndNoOtherAddress() async throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appending(path: "LiveResultsPack-\(UUID().uuidString)", directoryHint: .isDirectory)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let pack = OfflinePackStore(directory: directory)
+        try await pack.write(
+            Data(#"{"races":[],"fetchedAt":"2026-10-25T19:50:00Z"}"#.utf8), etag: nil,
+            for: "races.json")
+        let client = client(offline: pack)
+        StubProtocol.status = 503
+        #expect(try await client.races().isEmpty)
+        #expect(StubProtocol.requests.map(\.path) == ["/v2/races.json"])
+        StubProtocol.status = 200
     }
 
     @Test func readsTheRaceListFromTheCDN() async throws {

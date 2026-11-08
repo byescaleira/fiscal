@@ -236,9 +236,10 @@ O deploy do servidor de `ba5e576` vai junto com a correção dos gastos, pelo `s
    - `curl -s http://127.0.0.1:3130/api/health`, na VPS, responde `{"ok":true,…}`;
    - o log de acesso (`/var/log/fiscal-access.log`) não tem pedido com agente `Fiscal/` depois da instalação do app novo.
 2. **Apagar o que a versão anterior guardou na VPS.** Em `/opt/fiscal-api/data`: `highlight-registrations.json`, `highlight-alerts.json`, `registrations.json` e `attest-keys.json`. Em `/opt/fiscal-api/public`, a pasta `published/`. Confira os nomes reais antes de apagar.
-3. **Decidir sobre a chave do APNs.** O servidor novo não lê a chave. Apagá-la da VPS, ou revogá-la no Apple Developer, é decisão do usuário.
+3. **Revogar a chave do APNs (recomendado).** O servidor novo não lê a chave, e ela ainda manda push para todos os aparelhos do app. O recomendado é revogá-la no Apple Developer e apagar `secrets/apns.p8` da VPS, com o ok do usuário. Se outro app usa a mesma chave, registre aqui o motivo de mantê-la. A sincronização do iCloud não depende dela.
 4. **Limpar o `.env` da VPS.** O `compose.yaml` novo não passa a nenhum serviço as variáveis `APNS_*`, `APNS_DISABLED`, `APPATTEST_*`, `ADMIN_TOKEN`, `HIGHLIGHT_ALERTS` e `HOT_FROM_ORIGIN`, e o `fiscal-api` não monta mais `secrets/`. Elas podem sair do `.env`.
 5. **Caddy.** A edição da seção 7.
+6. **Só então, privacidade e rótulo.** A política nova ("Dados que coletamos: Nenhum") e o rótulo "Dados não coletados" só valem depois dos passos 2 e 4. Publicar o site com a política nova e trocar o rótulo no App Store Connect vêm depois deles, cada um com o ok do usuário.
 
 ## 9. Site no mesmo bloco (proposta, com o ok do usuário)
 

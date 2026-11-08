@@ -54,8 +54,8 @@ final class HighlightAlertCenter {
 
     func activate() async {
         wantsActivation = true
-        guard !isHeld else { return }
         ledger.clearLegacy()
+        guard !isHeld else { return }
         let now = Date.now
         if ledger.isEnabled || ledger.isNotificationEnabled {
             ledger.recordOpening(now)

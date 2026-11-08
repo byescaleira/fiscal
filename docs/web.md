@@ -99,7 +99,7 @@ O app cifra um JSON com chaves ordenadas. `v` do resumo é `1` e só ganha campo
 ### No app (quando o recurso entrar)
 
 - Alvo de serviço `FiscalWeb` (link, cifra, pacote, resumo, cliente da ponte, sessões no Keychain) e tela em `FeatureSettings/Web`, só no iPhone e no iPad.
-- Flag remota `web` (`FeatureFlag.web`) no app e no `admin/src/flags.mjs`, e as chaves `FiscalWebBridgeURL` e `FiscalWebsiteURL` no `Info.plist`.
+- Flag remota `web` (`FeatureFlag.web`) no app e no `admin/src/flags.mjs`, e a chave `FiscalWebsiteURL` no `Info.plist`. A chave `FiscalWebBridgeURL` saiu do app com a [FSC-020](../spdd/prompt/FSC-020-202611042045-[Feat]-app-reads-only-from-cdn-and-local-alerts.md) e volta junto com o Fiscal na Web.
 - Entitlement `com.apple.developer.associated-domains` com `applinks:fiscal.byescaleira.com`, que já está no app desde os links dos cartões de compartilhar (FSC-010); falta só tratar o `/link` no `DeepLink`, que hoje abre o Feed.
 - Teste Swift do vetor (`FiscalKit/Tests/FiscalWebTests/WebVector.swift`) lendo `docs/web-test-vector-v2.json`.
 - Com o recurso ligado, um resumo sai do aparelho cifrado de ponta a ponta para o navegador cujo QR o iPhone leu, fica até 24 horas na ponte e só abre naquele navegador. O rótulo da App Store continua o do [ADR 0017](adr/0017-app-store-privacy-label.md).

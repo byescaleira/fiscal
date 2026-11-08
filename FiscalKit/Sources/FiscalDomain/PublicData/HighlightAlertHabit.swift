@@ -25,7 +25,10 @@ public struct HighlightAlertHabit: Hashable, Sendable {
     }
 
     public func schedule(now: Date, calendar: Calendar = .current) -> HighlightAlertSchedule {
-        let recent = openings.filter { $0 <= now && now.timeIntervalSince($0) <= Self.window }
+        let recent = openings.filter {
+            $0 <= now && now.timeIntervalSince($0) <= Self.window
+                && Self.hours.contains(calendar.component(.hour, from: $0))
+        }
         let days = Set(recent.map { calendar.startOfDay(for: $0) })
         let order = ranked(recent, now: now, calendar: calendar)
         guard recent.count >= Self.minimumOpenings, days.count >= Self.minimumDays,
@@ -45,7 +48,6 @@ public struct HighlightAlertHabit: Hashable, Sendable {
         var weights: [Int: Double] = [:]
         for opening in recent {
             let hour = calendar.component(.hour, from: opening)
-            guard Self.hours.contains(hour) else { continue }
             weights[hour, default: 0] += pow(0.5, now.timeIntervalSince(opening) / Self.halfLife)
         }
         return weights.sorted { $0.value == $1.value ? $0.key < $1.key : $0.value > $1.value }
