@@ -1,7 +1,7 @@
 import Foundation
 
 public struct HighlightAlertRule: Codable, Hashable, Sendable {
-    public static let standard = HighlightAlertRule(minWeight: 85, maxAgeHours: 24)
+    public static let standard = HighlightAlertRule(minWeight: 70, maxAgeHours: 24)
     public static let lifetime: TimeInterval = 8 * 3_600
 
     public let minWeight: Int
@@ -18,7 +18,7 @@ public struct HighlightAlertRule: Codable, Hashable, Sendable {
         text
             ?? String(
                 appLocalized:
-                    "On the Lock Screen (Live Activity), only a highlight with weight \(minWeight) or more enters, for a fact up to \(maxAgeHours) hours after the end of its day (Brasília time), once per device and for up to 8 hours."
+                    "On the Lock Screen (Live Activity), only a highlight with weight \(minWeight) or more enters, for a fact up to \(maxAgeHours) hours after the end of its day (Brasília time), once a day, at a time the device learns from when you use the app, and for up to 8 hours."
             )
     }
 
@@ -49,6 +49,11 @@ public struct HighlightAlertLedger: Sendable {
     static let shownKey = "fiscal.highlightAlerts.shown"
     static let enabledKey = "fiscal.highlightAlerts.enabled"
     static let tokenKey = "fiscal.highlightAlerts.token"
+    static let notificationKey = "fiscal.highlightAlerts.notification"
+    static let planKey = "fiscal.highlightAlerts.plan"
+    static let offsetKey = "fiscal.highlightAlerts.offset"
+    static let openingsKey = "fiscal.highlightAlerts.openings"
+    static let legacyAttestKey = "AppAttestKeyID"
     public static let shownLimit = 60
 
     private let suiteName: String?
@@ -70,6 +75,69 @@ public struct HighlightAlertLedger: Sendable {
         defaults?.set(value, forKey: Self.enabledKey)
     }
 
+    public var isNotificationEnabled: Bool {
+        defaults?.bool(forKey: Self.notificationKey) ?? false
+    }
+
+    public func setNotificationEnabled(_ value: Bool) {
+        defaults?.set(value, forKey: Self.notificationKey)
+    }
+
+    public var plan: HighlightAlertPlan {
+        guard let data = defaults?.data(forKey: Self.planKey),
+            let plan = try? JSONDecoder().decode(HighlightAlertPlan.self, from: data)
+        else { return HighlightAlertPlan() }
+        return plan
+    }
+
+    public func save(plan: HighlightAlertPlan) {
+        defaults?.set(try? JSONEncoder().encode(plan), forKey: Self.planKey)
+    }
+
+    public func settle(now: Date) -> [String] {
+        var plan = plan
+        var passed: [String] = []
+        if let activity = plan.activity, activity.hasPassed(now) {
+            passed.append(activity.highlightId)
+            plan.activity = nil
+        }
+        if let notification = plan.notification, notification.hasPassed(now) {
+            passed.append(notification.highlightId)
+            plan.notification = nil
+        }
+        passed.forEach(record)
+        save(plan: plan)
+        return passed
+    }
+
+    public func deviceOffset(
+        draw: () -> Int = { Int.random(in: HighlightAlertSchedule.offsetRange) }
+    ) -> Int {
+        if let saved = defaults?.object(forKey: Self.offsetKey) as? Int { return saved }
+        let offset = draw()
+        defaults?.set(offset, forKey: Self.offsetKey)
+        return offset
+    }
+
+    public func clearLegacy(_ standard: UserDefaults = .standard) {
+        defaults?.removeObject(forKey: Self.tokenKey)
+        standard.removeObject(forKey: Self.legacyAttestKey)
+    }
+
+    public var habit: HighlightAlertHabit {
+        let values = defaults?.array(forKey: Self.openingsKey) as? [Double] ?? []
+        return HighlightAlertHabit(openings: values.map(Date.init(timeIntervalSince1970:)))
+    }
+
+    public func recordOpening(_ date: Date) {
+        let openings = habit.recording(date).openings.map(\.timeIntervalSince1970)
+        defaults?.set(openings, forKey: Self.openingsKey)
+    }
+
+    public func clearHabit() {
+        defaults?.removeObject(forKey: Self.openingsKey)
+    }
+
     public var shown: Set<String> {
         Set(defaults?.stringArray(forKey: Self.shownKey) ?? [])
     }
@@ -79,17 +147,5 @@ public struct HighlightAlertLedger: Sendable {
         guard !ids.contains(id) else { return }
         ids.append(id)
         defaults?.set(Array(ids.suffix(Self.shownLimit)), forKey: Self.shownKey)
-    }
-
-    public var registeredToken: String? {
-        defaults?.string(forKey: Self.tokenKey)
-    }
-
-    public func save(token: String?) {
-        if let token {
-            defaults?.set(token, forKey: Self.tokenKey)
-        } else {
-            defaults?.removeObject(forKey: Self.tokenKey)
-        }
     }
 }

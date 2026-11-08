@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"hash/fnv"
 	"strings"
 )
 
@@ -15,14 +16,15 @@ type Counts struct {
 	Changed   int `json:"changed"`
 	Unchanged int `json:"unchanged"`
 	Closed    int `json:"closed"`
+	Repeated  int `json:"repeated"`
 }
 
 func (c Counts) Add(o Counts) Counts {
-	return Counts{Inserted: c.Inserted + o.Inserted, Changed: c.Changed + o.Changed, Unchanged: c.Unchanged + o.Unchanged, Closed: c.Closed + o.Closed}
+	return Counts{Inserted: c.Inserted + o.Inserted, Changed: c.Changed + o.Changed, Unchanged: c.Unchanged + o.Unchanged, Closed: c.Closed + o.Closed, Repeated: c.Repeated + o.Repeated}
 }
 
 func (c Counts) Map() map[string]int {
-	return map[string]int{"inserted": c.Inserted, "changed": c.Changed, "unchanged": c.Unchanged, "closed": c.Closed}
+	return map[string]int{"inserted": c.Inserted, "changed": c.Changed, "unchanged": c.Unchanged, "closed": c.Closed, "repeated": c.Repeated}
 }
 
 type writer struct {
@@ -36,10 +38,11 @@ type writer struct {
 	end    *sql.Stmt
 	ins    *sql.Stmt
 	counts Counts
+	seen   map[uint64]uint64
 }
 
 func newWriter(ctx context.Context, tx *sql.Tx, t table, source string, run int64, at string) (*writer, error) {
-	w := &writer{ctx: ctx, tx: tx, t: t, source: source, run: run, at: at}
+	w := &writer{ctx: ctx, tx: tx, t: t, source: source, run: run, at: at, seen: map[uint64]uint64{}}
 	var err error
 	set := "seen_run = ?"
 	if t.stamp != "" {
@@ -77,6 +80,12 @@ func digest(payload []byte, cols []any) string {
 	return hex.EncodeToString(h.Sum(nil)[:16])
 }
 
+func sum64(s string) uint64 {
+	h := fnv.New64a()
+	h.Write([]byte(s))
+	return h.Sum64()
+}
+
 func (w *writer) put(key string, cols []any, value any) error {
 	if len(cols) != len(w.t.columns) {
 		return fmt.Errorf("%s: %d columns, want %d", w.t.name, len(cols), len(w.t.columns))
@@ -97,6 +106,11 @@ func (w *writer) put(key string, cols []any, value any) error {
 		touch = append(touch, w.at)
 	}
 	hash := digest(payload, hashed)
+	id, content := sum64(key), sum64(hash)
+	if prior, ok := w.seen[id]; ok && prior != content {
+		w.counts.Repeated++
+	}
+	w.seen[id] = content
 	res, err := w.touch.ExecContext(w.ctx, append(touch, w.source, key, hash)...)
 	if err != nil {
 		return err

@@ -53,9 +53,9 @@ Em inglês, curtas, respondendo o que o revisor precisa para testar sem pergunta
 
 - O app não pede conta, cadastro nem login; o apoio, opcional, fica só no aparelho.
 - O app é gratuito: sem assinatura, compra no app, anúncio ou paywall.
-- O que sai do aparelho e por quanto tempo: token da Atividade ao Vivo da apuração, token de push-to-start do destaque e a chave do App Attest ([ADR 0017](../adr/0017-app-store-privacy-label.md)), coerente com o rótulo de privacidade.
-- Por que o app roda em segundo plano: `fetch` para o pacote offline ([ADR 0015](../adr/0015-background-fetch-offline-pack.md)) e `remote-notification` para a sincronização do iCloud. Não há pedido de permissão de notificações: os alertas são Atividades ao Vivo.
-- De onde vêm os dados (CDN `dados.fiscal.byescaleira.com` e `fiscal.byescaleira.com/api`) e as explicações no aparelho (Foundation Models, com texto fixo de reserva).
+- Que nada sai do aparelho para um servidor nosso: sem token de push, sem identificador do aparelho e sem App Attest ([ADR 0028](../adr/0028-app-reads-only-from-cdn-and-local-alerts.md)), coerente com o rótulo "Dados não coletados".
+- Por que o app roda em segundo plano: só `fetch`, para o pacote offline ([ADR 0015](../adr/0015-background-fetch-offline-pack.md)) e para trocar a notificação local já agendada. Os alertas são agendados no aparelho: a Atividade ao Vivo do destaque e uma notificação local opcional, desligada por padrão; a permissão de notificações só é pedida quando a pessoa liga "Notificação de destaque".
+- De onde vêm os dados (só a CDN `dados.fiscal.byescaleira.com`, no Cloudflare Pages, inclusive a apuração) e as explicações no aparelho (Foundation Models, com texto fixo de reserva).
 - Neutralidade: nenhum partido em destaque; ícones de partido desligados por padrão ([ADR 0013](../adr/0013-party-symbol-icons.md)).
 
 ## Ordem de preenchimento
@@ -67,7 +67,7 @@ Em inglês, curtas, respondendo o que o revisor precisa para testar sem pergunta
 5. **Preço:** gratuito, sem compras no app nem assinatura ([ADR 0011](../adr/0011-free-app-noncommercial-license.md)).
 6. **Textos da versão** a partir deste `metadata.json`: nome, subtítulo, texto promocional, descrição, palavras-chave, URLs e "What's New" quando houver. Recarregue a página e confira: alguns campos ignoram valor colado por script.
 7. **Mídia** de [media/README.md](media/README.md), na ordem de envio.
-8. **Privacidade:** rótulo do [ADR 0017](../adr/0017-app-store-privacy-label.md) ("Identificadores › ID do dispositivo, não vinculado, funcionalidade do app", depois do ok do usuário), URL de privacidade e Content Rights (o app mostra conteúdo de terceiros: dados públicos, checagens CC BY-ND 4.0 e obras com licença conferida).
+8. **Privacidade:** rótulo proposto pelo [ADR 0028](../adr/0028-app-reads-only-from-cdn-and-local-alerts.md), "Dados não coletados", no lugar do [ADR 0017](../adr/0017-app-store-privacy-label.md); o usuário preenche no App Store Connect. Depois, URL de privacidade e Content Rights (o app mostra conteúdo de terceiros: dados públicos, checagens CC BY-ND 4.0 e obras com licença conferida).
 9. **Disponibilidade** (todos os países exceto a China continental, que exige registro ICP) e **lançamento manual**.
 10. **App Review Information:** `review.notes`, o e-mail `review.contact` e um **telefone de contato** que o usuário informa na hora (não fica no repositório); "Sign-in required" desmarcado.
 11. **TestFlight › Test Information:** e-mail de feedback (`support@byescaleira.com`), URL de marketing e de privacidade, descrição do beta em pt-BR e as mesmas notas de revisão; o "What to Test" de cada build sai do `ci_scripts/ci_post_xcodebuild.sh` (`TestFlight/WhatToTest.pt-BR.txt`).

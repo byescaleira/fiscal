@@ -211,18 +211,31 @@ struct OfflinePackTests {
             .init(failure: .notConnectedToInternet), to: "/v2/release.json", on: harness.host)
         PublicDataStub.reply(
             .init(failure: .notConnectedToInternet), to: "/v2/today.json", on: harness.host)
-        let api = PublicDataStub.makeHost()
-        PublicDataStub.fallback(.init(failure: .notConnectedToInternet), on: api)
         let notice = OfflineNotice()
         let client = PublicDataClient(
-            baseURL: try #require(URL(string: "https://\(api)/api")),
-            dataURL: URL(string: "https://\(harness.host)"), session: harness.session,
+            dataURL: try #require(URL(string: "https://\(harness.host)")), session: harness.session,
             offline: harness.store, notice: notice)
         let today = try await client.today()
         #expect(today.events.isEmpty)
         #expect(notice.state == .offline(Date(timeIntervalSince1970: 1_793_000_000)))
         await #expect(throws: PublicDataError.offline) { try await client.money() }
         await #expect(throws: PublicDataError.offline) { try await client.profile(slug: "ninguem") }
+    }
+
+    @Test func aFailingCDNFallsBackToThePackWithoutAnotherAddress() async throws {
+        let harness = try Harness()
+        harness.publishBasics()
+        try await harness.updater.refresh(OfflinePackRequest())
+        PublicDataStub.fallback(.init(failure: .notConnectedToInternet), on: harness.host)
+        PublicDataStub.reply(
+            .init(status: 503), to: "/v2/today.json", on: harness.host)
+        let notice = OfflineNotice()
+        let client = PublicDataClient(
+            dataURL: try #require(URL(string: "https://\(harness.host)")), session: harness.session,
+            offline: harness.store, notice: notice)
+        let today = try await client.today()
+        #expect(today.events.isEmpty)
+        #expect(notice.state == .offline(Date(timeIntervalSince1970: 1_793_000_000)))
     }
 
     @Test func showsTheOldestSavedDateUntilTheConnectionReturns() {

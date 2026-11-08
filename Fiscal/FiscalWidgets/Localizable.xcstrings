@@ -2,6 +2,7 @@
   "sourceLanguage" : "pt-BR",
   "strings" : {
     "%@ counted" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -23,6 +24,7 @@
       }
     },
     "%@ votes" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -39,6 +41,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@, %2$@, %3$@. Sim: %4$@. Não: %5$@. Outros: %6$@. %7$@."
+          }
+        }
+      }
+    },
+    "%@, %@. %@. %@. %@, weight %lld of 100." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %2$@. %3$@. %4$@. %5$@, peso %6$lld de 100."
           }
         }
       }
@@ -131,6 +144,50 @@
         }
       }
     },
+    "Around average" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na média"
+          }
+        }
+      }
+    },
+    "Assembly median: %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mediana da Assembleia: %@"
+          }
+        }
+      }
+    },
+    "Attendance" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presença"
+          }
+        }
+      }
+    },
+    "Better than average" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Melhor que a média"
+          }
+        }
+      }
+    },
     "Brazil" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -149,6 +206,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Câmara"
+          }
+        }
+      }
+    },
+    "Chamber median: %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mediana da Câmara: %@"
           }
         }
       }
@@ -215,6 +283,7 @@
       }
     },
     "ELECTED" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -225,11 +294,67 @@
       }
     },
     "Elected" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Eleito"
+          }
+        }
+      }
+    },
+    "Estimated: impact only" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estimado: só o impacto"
+          }
+        }
+      }
+    },
+    "Estimated: repercussion measured only with %@." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estimado: repercussão medida só com %@."
+          }
+        }
+      }
+    },
+    "Estimated: repercussion measured only with %@; %@ was missing in this load." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estimado: repercussão medida só com %1$@; faltou %2$@ nesta carga."
+          }
+        }
+      }
+    },
+    "Estimated: repercussion measured only with %@; %@ were missing in this load." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estimado: repercussão medida só com %1$@; faltaram %2$@ nesta carga."
+          }
+        }
+      }
+    },
+    "Estimated: weight from impact only; no repercussion signal was measured in this load (missing %@)." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estimado: peso só pelo impacto; nenhum sinal de repercussão foi medido nesta carga (faltaram %@)."
           }
         }
       }
@@ -245,6 +370,7 @@
       }
     },
     "FINAL" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -287,6 +413,7 @@
       }
     },
     "Final" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -297,6 +424,7 @@
       }
     },
     "Final result" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -387,6 +515,39 @@
         }
       }
     },
+    "High" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alta"
+          }
+        }
+      }
+    },
+    "High relevance" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alta relevância"
+          }
+        }
+      }
+    },
+    "Higher is better." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais alta é melhor."
+          }
+        }
+      }
+    },
     "Highlight of the Moment" : {
       "localizations" : {
         "pt-BR" : {
@@ -409,11 +570,89 @@
       }
     },
     "LIVE" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "AO VIVO"
+          }
+        }
+      }
+    },
+    "Legislative Chamber median: %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mediana da Câmara Legislativa: %@"
+          }
+        }
+      }
+    },
+    "Less active than average" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menos ativo que a média"
+          }
+        }
+      }
+    },
+    "Low" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baixa"
+          }
+        }
+      }
+    },
+    "Low relevance" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baixa relevância"
+          }
+        }
+      }
+    },
+    "Lower is better, per month in office." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais baixa é melhor, por mês de mandato."
+          }
+        }
+      }
+    },
+    "Medium" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Média"
+          }
+        }
+      }
+    },
+    "Medium relevance" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Média relevância"
           }
         }
       }
@@ -425,6 +664,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dinheiro"
+          }
+        }
+      }
+    },
+    "More active than average" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais ativo que a média"
           }
         }
       }
@@ -455,6 +705,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "NÃO"
+          }
+        }
+      }
+    },
+    "No direction: more proposals doesn't mean better proposals." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem direção: mais propostas não quer dizer propostas melhores."
+          }
+        }
+      }
+    },
+    "No direction: more speeches doesn't mean better work." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem direção: mais discursos não quer dizer atuação melhor."
           }
         }
       }
@@ -490,6 +762,7 @@
       }
     },
     "No update since %@ · TSE" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -505,6 +778,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nenhuma votação ainda"
+          }
+        }
+      }
+    },
+    "Office allowance per month" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cota por mês"
           }
         }
       }
@@ -562,6 +846,17 @@
         }
       }
     },
+    "Proposals" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Propostas"
+          }
+        }
+      }
+    },
     "Rejected" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -580,6 +875,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Senado"
+          }
+        }
+      }
+    },
+    "Senate median: %@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mediana do Senado: %@"
           }
         }
       }
@@ -638,7 +944,19 @@
         }
       }
     },
+    "Speeches" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discursos"
+          }
+        }
+      }
+    },
     "Starts at 5 PM Brasília time" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -660,6 +978,7 @@
       }
     },
     "TSE" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -670,6 +989,7 @@
       }
     },
     "TSE file from %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -753,6 +1073,7 @@
       }
     },
     "Votes apart: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -769,6 +1090,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Peso %lld"
+          }
+        }
+      }
+    },
+    "Weight %lld of 100" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peso %lld de 100"
+          }
+        }
+      }
+    },
+    "Weight %lld of 100, impact %lld, repercussion not measured." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peso %1$lld de 100, impacto %2$lld, repercussão não medida."
+          }
+        }
+      }
+    },
+    "Weight %lld of 100, repercussion %lld, impact %lld." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peso %1$lld de 100, repercussão %2$lld, impacto %3$lld."
+          }
+        }
+      }
+    },
+    "Weight %lld or more" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peso %lld ou mais"
+          }
+        }
+      }
+    },
+    "Weight %lld to %lld" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peso de %1$lld a %2$lld"
+          }
+        }
+      }
+    },
+    "Weight below %lld" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Peso abaixo de %lld"
           }
         }
       }
@@ -824,6 +1211,28 @@
         }
       }
     },
+    "Wikipedia" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wikipédia"
+          }
+        }
+      }
+    },
+    "Worse than average" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pior que a média"
+          }
+        }
+      }
+    },
     "YES" : {
       "localizations" : {
         "pt-BR" : {
@@ -845,11 +1254,67 @@
       }
     },
     "counted" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "apuradas"
+          }
+        }
+      }
+    },
+    "news" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "notícias"
+          }
+        }
+      }
+    },
+    "news about the bill" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "notícias da proposição"
+          }
+        }
+      }
+    },
+    "news citing the politician" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "notícias que citam o político"
+          }
+        }
+      }
+    },
+    "the politician's Wikipedia article" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "o artigo do político na Wikipédia"
+          }
+        }
+      }
+    },
+    "the theme's Wikipedia article" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "o artigo do tema na Wikipédia"
           }
         }
       }

@@ -52,7 +52,7 @@ type Outcome struct {
 	Err      error
 }
 
-var ErrDivergence = errors.New("the incremental site diverged from the full rebuild")
+var ErrDivergence = errors.New("the data check found a divergence")
 
 func (in *Ingest) UseProbe(fn func(context.Context, Job) (string, error)) {
 	in.probeFn = fn
@@ -300,6 +300,9 @@ func (in *Ingest) runJob(ctx context.Context, j Job, forced bool, st *SyncState,
 			js.RunFingerprint = fp
 		}
 		in.clearPending(st)
+		if rep.Repeated > 0 {
+			o.Err = fmt.Errorf("%w: %d rows repeat a store key with other content", ErrDivergence, rep.Repeated)
+		}
 	}
 	return finish()
 }

@@ -1,6 +1,7 @@
 package publicdata
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"testing"
@@ -167,6 +168,84 @@ func TestLinkAssemblyKeepsStatusWhenTheListLooksIncomplete(t *testing.T) {
 	}
 }
 
+func partied(c Candidacy, party string) Candidacy {
+	c.Party = party
+	return c
+}
+
+func TestLinkUsesTheLatestCandidacyPartyForTSEOffices(t *testing.T) {
+	cands := []Candidacy{
+		partied(cand(2022, OfficeGovernor, "ms", "1", "1", "ANA", "ANA LIMA", "ELEITO"), "AAA"),
+		partied(cand(2026, OfficeGovernor, "ms", "1", "2", "ANA", "ANA LIMA", "ELEITO"), "BBB"),
+		partied(cand(2022, OfficeStateDeputy, "ms", "2", "3", "BIA", "BIA REIS", "ELEITO"), "AAA"),
+		partied(cand(2026, OfficeFederalDeputy, "ms", "2", "4", "BIA", "BIA REIS", "NÃO ELEITO"), "CCC"),
+		partied(cand(2022, OfficeStateDeputy, "ms", "3", "5", "CAIO", "CAIO DIAS", "ELEITO"), "DDD"),
+		partied(cand(2022, OfficeViceGovernor, "rs", "4", "6", "DIA", "DIA MELO", "ELEITO"), "EEE"),
+		partied(cand(2026, OfficeViceGovernor, "rs", "4", "7", "DIA", "DIA MELO", "2º TURNO"), ""),
+	}
+	people := Link(LinkInput{Candidacies: cands, PreviousYear: 2022, ElectionYear: 2026, StateNames: states})
+	byName := map[string]*Person{}
+	for _, p := range people {
+		byName[p.Name] = p
+	}
+	ana := byName["Ana Lima"]
+	if ana == nil || ana.Primary().Party != "BBB" {
+		t.Fatalf("the governor keeps an old party: %+v", ana)
+	}
+	for _, r := range ana.Roles {
+		if r.Party != "BBB" {
+			t.Fatalf("two parties for one person: %+v", ana.Roles)
+		}
+	}
+	history := map[int]string{}
+	for _, c := range ana.Candidacies {
+		history[c.Year] = c.Party
+	}
+	if history[2022] != "AAA" || history[2026] != "BBB" {
+		t.Fatalf("the history changed: %+v", history)
+	}
+	if p := byName["Bia Reis"]; p == nil || p.Primary().Party != "CCC" {
+		t.Fatalf("a losing candidacy still is the latest party: %+v", p)
+	}
+	if p := byName["Caio Dias"]; p == nil || p.Primary().Party != "DDD" {
+		t.Fatalf("no newer candidacy must keep the party: %+v", p)
+	}
+	if p := byName["Dia Melo"]; p == nil || p.Primary().Party != "EEE" {
+		t.Fatalf("an empty party must keep the last known one: %+v", p)
+	}
+}
+
+func TestLinkKeepsThePartyOfTheHouses(t *testing.T) {
+	dep := &Person{
+		Keys: []string{"camara:1"}, Name: "Eva Nunes", CPF: "9", House: HouseCamara,
+		Roles: []Role{{Office: OfficeFederalDeputy, UF: "sp", Status: StatusInOffice, Party: "CAMARA"}},
+	}
+	sen := &Person{
+		Keys: []string{"senado:1"}, Name: "Rui Paz", CPF: "8", House: HouseSenado,
+		Roles: []Role{{Office: OfficeSenator, UF: "sp", Status: StatusInOffice, Party: "SENADO"}},
+	}
+	cands := []Candidacy{
+		partied(cand(2026, OfficeFederalDeputy, "sp", "9", "1", "EVA", "EVA NUNES", "ELEITO"), "OUTRO"),
+		partied(cand(2026, OfficeSenator, "sp", "8", "2", "RUI", "RUI PAZ", "NÃO ELEITO"), "OUTRO"),
+	}
+	Link(LinkInput{People: []*Person{dep, sen}, Candidacies: cands, PreviousYear: 2022, ElectionYear: 2026, StateNames: states})
+	if dep.Roles[0].Party != "CAMARA" || sen.Roles[0].Party != "SENADO" {
+		t.Fatalf("the API party changed: %+v %+v", dep.Roles, sen.Roles)
+	}
+}
+
+func TestLinkAssemblyUsesTheLatestParty(t *testing.T) {
+	cands := []Candidacy{
+		partied(cand(2022, OfficeStateDeputy, "ac", "7", "1", "NINA", "NINA REGO", "ELEITO"), "OLD"),
+		partied(cand(2026, OfficeStateDeputy, "ac", "7", "2", "NINA", "NINA REGO", "ELEITO"), "NEW"),
+	}
+	members := []AssemblyMember{{ID: 1, Name: "Nina Rego", FullName: "Nina"}}
+	people, _ := LinkAssembly(nil, cands, "ac", 2022, members, true, "aleac", states)
+	if len(people) != 1 || people[0].Primary().Party != "NEW" {
+		t.Fatalf("assembly role keeps the old party: %+v", people)
+	}
+}
+
 func TestMandateFor(t *testing.T) {
 	cases := []struct {
 		office     string
@@ -254,6 +333,70 @@ func TestLinkAssemblyWithoutCurrentListOnlyLinksElected(t *testing.T) {
 	for _, p := range people {
 		if p.Primary().Status != StatusInOffice {
 			t.Fatalf("%s = %s", p.Name, p.Primary().Status)
+		}
+	}
+}
+
+func partiesOf(t *testing.T, value any, slug string) []string {
+	t.Helper()
+	data, err := json.Marshal(value)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var tree any
+	if err := json.Unmarshal(data, &tree); err != nil {
+		t.Fatal(err)
+	}
+	found := []string{}
+	var walk func(node any)
+	walk = func(node any) {
+		switch v := node.(type) {
+		case map[string]any:
+			if v["slug"] == slug {
+				if party, ok := v["party"].(string); ok {
+					found = append(found, party)
+				}
+			}
+			for _, child := range v {
+				walk(child)
+			}
+		case []any:
+			for _, child := range v {
+				walk(child)
+			}
+		}
+	}
+	walk(tree)
+	return found
+}
+
+func TestBuildShowsTheCurrentPartyInEveryCardOfThePerson(t *testing.T) {
+	ds := sampleDataset()
+	var person *Person
+	for _, p := range ds.People {
+		if p.Name == "Mailza Assis" {
+			person = p
+		}
+	}
+	if person == nil {
+		t.Fatal("sample person not found")
+	}
+	person.Candidacies = append([]Candidacy{{Year: 2026, Office: person.Primary().Office, UF: person.Primary().UF, Party: "NOVO"}}, person.Candidacies...)
+	applyCurrentParty(person)
+	files := filesByPath(Build(ds, &Slugs{byKey: map[string]string{}}))
+	for _, path := range []string{"index/people.json", "people/mailza-assis.json", "places/" + person.Primary().UF + ".json"} {
+		value, ok := files[path]
+		if !ok {
+			t.Fatalf("missing %s", path)
+		}
+		parties := partiesOf(t, value, "mailza-assis")
+		if len(parties) == 0 {
+			t.Fatalf("%s has no card of the person", path)
+		}
+		for _, party := range parties {
+			if party != "NOVO" {
+				t.Fatalf("%s shows %q", path, party)
+			}
 		}
 	}
 }

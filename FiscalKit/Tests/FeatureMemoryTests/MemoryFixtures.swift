@@ -66,9 +66,6 @@ struct RaceFeed: LiveResultsService {
         return list
     }
 
-    func follow(raceID: String, pushToken: String, environment: PushEnvironment) async throws {}
-
-    func unfollow(pushToken: String) async throws {}
 }
 
 enum MemoryFixture {

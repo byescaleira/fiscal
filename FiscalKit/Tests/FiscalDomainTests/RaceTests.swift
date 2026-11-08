@@ -37,38 +37,6 @@ struct RaceTests {
         #expect(race.generatedAt == Date(timeIntervalSince1970: 1_792_960_930))
     }
 
-    @Test func buildsTheActivityStateFromTheRace() throws {
-        let state = RaceActivityState(race: try Self.race())
-        #expect(state.sectionsPercent == 25.0)
-        #expect(
-            state.candidates.first
-                == RaceStanding(number: "22", votes: 14_500_000, percent: 51.79, elected: false))
-        #expect(state.updatedAt == 1_792_960_930)
-        #expect(!state.final)
-    }
-
-    @Test func decodesThePushContentState() throws {
-        let payload = Data(
-            """
-            {"sectionsPercent":99.5,"candidates":[{"number":"13","votes":10,"percent":50.5,"elected":true}],
-            "final":true,"updatedAt":1792960000}
-            """.utf8)
-        let state = try JSONDecoder().decode(RaceActivityState.self, from: payload)
-        #expect(state.final)
-        #expect(state.candidates[0].elected)
-        #expect(state.updatedDate == Date(timeIntervalSince1970: 1_792_960_000))
-    }
-
-    @Test func joinsStandingsWithTheContenders() throws {
-        let state = RaceActivityState(race: try Self.race())
-        let rows = state.rows(with: [
-            RaceContender(number: "13", name: "Lula", party: "PT"),
-            RaceContender(number: "22", name: "Flavio Bolsonaro", party: "PL"),
-        ])
-        #expect(rows.map(\.name) == ["Flavio Bolsonaro", "Lula"])
-        #expect(state.rows(with: [])[0].name == "22")
-    }
-
     @Test func namesTheScope() {
         #expect(RaceText.scope("df") == "Distrito Federal")
         #expect(RaceText.scope("xx") == "XX")

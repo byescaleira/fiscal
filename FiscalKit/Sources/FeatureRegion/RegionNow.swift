@@ -20,7 +20,12 @@ struct RegionNowSection: View {
                 Section {
                     ForEach(region.activity.highlights) { highlight in
                         RegionHighlightCard(highlight: highlight)
-                            .listRowInsets(EdgeInsets())
+                            .listRowInsets(
+                                EdgeInsets(
+                                    top: highlight.id == region.activity.highlights.first?.id
+                                        ? 0 : .spaceM,
+                                    leading: 0, bottom: 0, trailing: 0)
+                            )
                             .listRowBackground(Color.clear)
                     }
                 } header: {

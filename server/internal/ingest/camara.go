@@ -377,7 +377,7 @@ func (in *Ingest) loadCamaraYear(ctx context.Context, y int, deps map[int64]*cam
 	if err != nil {
 		return nil, fmt.Errorf("ceap: %w", err)
 	}
-	n := 0
+	ids := expenseIDs{}
 	err = camara.ReadExpensesZip(c.Path, func(e camara.Expense) {
 		cy.quotaLoaded = true
 		cy.quotaTotal += e.Cents
@@ -385,17 +385,32 @@ func (in *Ingest) loadCamaraYear(ctx context.Context, y int, deps map[int64]*cam
 		if _, ok := deps[e.DeputyID]; !ok {
 			return
 		}
-		n++
-		id := e.DocumentID
-		if id == "" || id == "0" {
-			id = fmt.Sprintf("%d-%d", e.DeputyID, n)
-		}
-		cy.expenses[e.DeputyID] = append(cy.expenses[e.DeputyID], publicdata.Expense{ID: "camara-" + id, Year: e.Year, Month: e.Month, Category: categoryName(e.Category), Supplier: strings.TrimSpace(e.Supplier), Document: cnpj(e.SupplierID), Cents: e.Cents, URL: nilIfEmpty(e.URL)})
+		cy.expenses[e.DeputyID] = append(cy.expenses[e.DeputyID], camaraExpense(ids, e))
 	})
 	if err != nil {
 		return nil, fmt.Errorf("ceap: %w", err)
 	}
 	return cy, nil
+}
+
+type expenseIDs map[string]int
+
+func (ids expenseIDs) next(deputy int64, document string) string {
+	if document == "" || document == "0" {
+		key := fmt.Sprintf("%d-0", deputy)
+		ids[key]++
+		return fmt.Sprintf("camara-%s-%d", key, ids[key])
+	}
+	key := fmt.Sprintf("%d|%s", deputy, document)
+	ids[key]++
+	if ids[key] == 1 {
+		return "camara-" + document
+	}
+	return fmt.Sprintf("camara-%s-%d", document, ids[key])
+}
+
+func camaraExpense(ids expenseIDs, e camara.Expense) publicdata.Expense {
+	return publicdata.Expense{ID: ids.next(e.DeputyID, e.DocumentID), Year: e.Year, Month: e.Month, Category: categoryName(e.Category), Supplier: strings.TrimSpace(e.Supplier), Document: cnpj(e.SupplierID), Cents: e.Cents, URL: nilIfEmpty(e.URL)}
 }
 
 func (in *Ingest) camaraVotes(ctx context.Context, y int) ([]*publicdata.HouseVote, error) {

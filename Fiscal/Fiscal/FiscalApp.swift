@@ -22,6 +22,7 @@ struct FiscalApp: App {
         #endif
         FiscalShortcutsSetup.install()
         FiscalAppearance.install()
+        FiscalNotifications.install()
         let settings = SettingsModel.fiscal()
         _settings = State(initialValue: settings)
         _bootstrap = State(initialValue: FiscalBootstrap())

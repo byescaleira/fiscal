@@ -48,16 +48,12 @@ struct HighlightUncertainty: View {
 
 struct HighlightWho: View {
     let board: HighlightBoard
-    var showsPortrait = true
+    var readsShelf = false
 
     var body: some View {
         HStack(spacing: .spaceS) {
-            if showsPortrait, let name = board.personName, board.hasPerson {
-                PersonPortrait(
-                    slug: board.personSlug ?? "", name: name, party: board.party ?? "",
-                    size: .badgeS
-                )
-                .widgetAccentable()
+            if let name = board.personName, board.hasPerson {
+                HighlightPhoto(board: board, name: name, readsShelf: readsShelf)
             }
             VStack(alignment: .leading, spacing: 0) {
                 if let name = board.personName, board.hasPerson {
@@ -76,6 +72,35 @@ struct HighlightWho: View {
                     .widgetAccentable()
             }
         }
+    }
+}
+
+private struct HighlightPhoto: View {
+    let board: HighlightBoard
+    let name: String
+    let readsShelf: Bool
+
+    var body: some View {
+        if readsShelf, let image = shelved {
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFill()
+                .frame(width: .badgeS, height: .badgeS)
+                .clipShape(.circle)
+                .accessibilityHidden(true)
+        } else {
+            PersonPortrait(
+                slug: board.personSlug ?? "", name: name, party: board.party ?? "", size: .badgeS
+            )
+            .widgetAccentable()
+        }
+    }
+
+    private var shelved: UIImage? {
+        guard let slug = board.personSlug, let url = PortraitShelf.url(for: slug) else {
+            return nil
+        }
+        return UIImage(contentsOfFile: url.path(percentEncoded: false))
     }
 }
 

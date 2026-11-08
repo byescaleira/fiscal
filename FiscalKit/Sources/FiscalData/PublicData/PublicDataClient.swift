@@ -9,24 +9,21 @@ public struct PublicDataClient: PublicDataService {
     ]
 
     static let requestTimeout: TimeInterval = 20
-    static let originTimeout: TimeInterval = 6
 
     public static let sharedSession = makeSession(
         cache: URLCache(
             memoryCapacity: 8 * 1_024 * 1_024, diskCapacity: 128 * 1_024 * 1_024,
             directory: URLCache.publicDataDirectory))
 
-    private let baseURL: URL
-    private let dataURL: URL?
+    private let dataURL: URL
     private let session: URLSession
     private let offline: OfflinePackStore?
     private let notice: OfflineNotice?
 
     public init(
-        baseURL: URL, dataURL: URL? = nil, session: URLSession = PublicDataClient.sharedSession,
+        dataURL: URL, session: URLSession = PublicDataClient.sharedSession,
         offline: OfflinePackStore? = nil, notice: OfflineNotice? = nil
     ) {
-        self.baseURL = baseURL
         self.dataURL = dataURL
         self.session = session
         self.offline = offline
@@ -42,15 +39,8 @@ public struct PublicDataClient: PublicDataService {
     }
 
     public static func fromBundle(_ bundle: Bundle = .main) -> PublicDataClient? {
-        var value = bundle.object(forInfoDictionaryKey: "FiscalAPIURL") as? String
-        #if DEBUG
-            if let override = UserDefaults.standard.string(forKey: "FiscalAPIURL") {
-                value = override
-            }
-        #endif
-        guard let value, !value.isEmpty, let url = URL(string: value) else { return nil }
-        return PublicDataClient(
-            baseURL: url, dataURL: dataURL(bundle), offline: .shared, notice: .shared)
+        guard let url = dataURL(bundle) else { return nil }
+        return PublicDataClient(dataURL: url, offline: .shared, notice: .shared)
     }
 
     static func dataURL(_ bundle: Bundle) -> URL? {
@@ -62,10 +52,6 @@ public struct PublicDataClient: PublicDataService {
         #endif
         guard let value, !value.isEmpty else { return nil }
         return URL(string: value)
-    }
-
-    public func url(for path: String) -> URL {
-        baseURL.appending(path: "v1").appending(path: path)
     }
 
     func layoutURL(for path: String, base: URL) -> URL {
@@ -204,27 +190,7 @@ public struct PublicDataClient: PublicDataService {
     }
 
     private func online<Value: Decodable>(_ path: String) async throws -> Value {
-        guard let dataURL, await PublicDataRoute.shared.isLive(dataURL, session: session) else {
-            return try await legacy(path)
-        }
-        let origin = await PublicDataRoute.shared.origin(dataURL, session: session)
-        let first = origin?.readsFirst(path) == true
-        if first {
-            do {
-                return try await legacy(path, read: .strict)
-            } catch is CancellationError {
-                throw CancellationError()
-            } catch {}
-        }
-        do {
-            return try await PublicDataResolver { try await fetch($0, base: dataURL) }.value(path)
-        } catch PublicDataError.unavailable {
-            return try await legacy(path, read: first ? .cached(.unavailable) : .network)
-        } catch PublicDataError.offline where first {
-            return try await legacy(path, read: .cached(.offline))
-        } catch PublicDataError.notFound where origin?.coversMissing(path) == true {
-            return try await legacy(path, read: first ? .cached(.notFound) : .network)
-        }
+        try await PublicDataResolver { try await fetch($0, base: dataURL) }.value(path)
     }
 
     private func packed<Value: Decodable>(_ path: String, from store: OfflinePackStore)
@@ -245,30 +211,6 @@ public struct PublicDataClient: PublicDataService {
 }
 
 extension PublicDataClient {
-    private func legacy<Value: Decodable>(_ path: String, read: OriginRead = .network)
-        async throws -> Value
-    {
-        let request = Self.request(url(for: path), timeout: read.timeout)
-        let data: Data
-        switch read {
-        case .network:
-            data = try await load(request)
-        case .strict:
-            data = try await load(request, fallsBackToCache: false)
-        case .cached(let error):
-            data = try cached(request, else: error)
-        }
-        return try PublicDataResolver.decode(data, keys: [])
-    }
-
-    private func cached(_ request: URLRequest, else error: PublicDataError) throws -> Data {
-        guard let cached = session.configuration.urlCache?.cachedResponse(for: request) else {
-            throw error
-        }
-        if error == .offline { notice?.markOffline(dataFrom: Self.date(of: cached)) }
-        return cached.data
-    }
-
     private func fetch(_ file: String, base: URL) async throws -> Data {
         let url = layoutURL(for: file, base: base)
         if let recent = await PublicDataRecent.shared.data(for: url) { return recent }
@@ -284,7 +226,7 @@ extension PublicDataClient {
         return request
     }
 
-    private func load(_ request: URLRequest, fallsBackToCache: Bool = true) async throws -> Data {
+    private func load(_ request: URLRequest) async throws -> Data {
         let cache = session.configuration.urlCache
         let cached = cache?.cachedResponse(for: request)
         var conditional = request
@@ -299,7 +241,7 @@ extension PublicDataClient {
         } catch let error as URLError {
             if error.code == .cancelled { throw CancellationError() }
             let offline = Self.offlineCodes.contains(error.code)
-            if fallsBackToCache, let cached {
+            if let cached {
                 if offline { notice?.markOffline(dataFrom: Self.date(of: cached)) }
                 return cached.data
             }
@@ -320,21 +262,13 @@ extension PublicDataClient {
         case 400..<500 where http.statusCode != 429:
             throw PublicDataError.rejected(http.statusCode)
         default:
-            if fallsBackToCache, let cached { return cached.data }
+            if let cached { return cached.data }
             throw PublicDataError.unavailable
         }
     }
 }
 
 extension PublicDataClient {
-    enum OriginRead: Equatable {
-        case network
-        case strict
-        case cached(PublicDataError)
-
-        var timeout: TimeInterval { self == .strict ? originTimeout : requestTimeout }
-    }
-
     static func date(of cached: CachedURLResponse) -> Date? {
         guard let value = (cached.response as? HTTPURLResponse)?.value(forHTTPHeaderField: "Date")
         else { return nil }

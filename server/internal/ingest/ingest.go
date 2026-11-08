@@ -226,6 +226,7 @@ type Report struct {
 	Unchanged    bool
 	Changed      int
 	ChangedPaths []string
+	Repeated     int
 }
 
 func (in *Ingest) warn(r *Report, format string, args ...any) {

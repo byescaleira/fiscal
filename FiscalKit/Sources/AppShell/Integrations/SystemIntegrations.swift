@@ -15,6 +15,8 @@ struct SystemIntegrations: ViewModifier {
             .task(id: session.generation) {
                 IntegrationCenter.shared.syncWidgets()
                 await IntegrationCenter.shared.refreshIndex(follows: session.repositories.follows)
+            }
+            .task(id: session.generation) {
                 await HighlightAlertCenter.shared.activate()
             }
             .task(id: openRoutes) {

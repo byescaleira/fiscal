@@ -6,12 +6,12 @@
 
 ## Contexto
 
-O template traz o Fiscal na Web em `/app` (`site/app.html`, `site/web*.js`): uma versão só de leitura num computador, pareada com o iPhone por QR, com o resumo cifrado passando por uma ponte na VPS (`bridge/`). No Fiscal, a ponte não está publicada (`FiscalWebBridgeURL` vazio no `Info.plist`, sem serviço no [runbook](../server-runbook.md)), o app não monta o resumo para a web e o contrato do recurso não existe. O [roadmap](../roadmap.md) põe o Fiscal na Web em "Depois da 1.0", e a regra do site é nunca anunciar recurso que não existe.
+O template traz o Fiscal na Web em `/app` (`site/app.html`, `site/web*.js`): uma versão só de leitura num computador, pareada com o iPhone por QR, com o resumo cifrado passando por uma ponte na VPS (`bridge/`). No Fiscal, a ponte não está publicada (`FiscalWebBridgeURL` vazio no `Info.plist`, sem serviço no [runbook](../server-runbook.md); desde a [FSC-020](../../spdd/prompt/FSC-020-202611042045-[Feat]-app-reads-only-from-cdn-and-local-alerts.md), a chave nem existe no app), o app não monta o resumo para a web e o contrato do recurso não existe. O [roadmap](../roadmap.md) põe o Fiscal na Web em "Depois da 1.0", e a regra do site é nunca anunciar recurso que não existe.
 
 ## Decisão
 
 - O Fiscal na Web fica para depois da 1.0. Até lá, o site não tem link para `/app`, nem seção `#web`, nem item da política sobre a ponte, e a página da loja e o README não citam o recurso.
-- A ponte (`bridge/`) não é publicada na VPS e `FiscalWebBridgeURL` continua vazio; o código do template fica no repositório, testado pelo `verify.sh`, para servir de base.
+- A ponte (`bridge/`) não é publicada na VPS e o app não tem `FiscalWebBridgeURL` (saiu com a FSC-020); o código do template fica no repositório, testado pelo `verify.sh`, para servir de base.
 - O recurso volta por uma mudança própria em `docs/changes/<id>/`, com o contrato do resumo, a revisão de segurança da cifra e da ponte e o deploy pedido ao usuário.
 
 ## Consequências

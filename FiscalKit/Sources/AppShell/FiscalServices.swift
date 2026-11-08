@@ -10,7 +10,6 @@ public final class FiscalServices {
     public static let shared = FiscalServices()
     public var pendingURL: URL?
     public var flags: FeatureFlags?
-    let raceRegistration = HoldGate()
     @ObservationIgnored private var opening: Task<FiscalDatabase, any Error>?
     @ObservationIgnored private var resolvedPublicData: PublicDataSlot?
 
@@ -39,29 +38,13 @@ public final class FiscalServices {
     }
 
     func liveResults() -> LiveResultsModel {
-        #if DEBUG
-            let environment = PushEnvironment.development
-        #else
-            let environment = PushEnvironment.production
-        #endif
-        return LiveResultsModel(
-            service: liveResultsService(), activities: RaceActivities(),
-            environment: environment)
+        LiveResultsModel(service: liveResultsService())
     }
 
     func liveResultsService() -> (any LiveResultsService)? {
         guard isOn(.liveResults) else { return nil }
         #if DEBUG
             if let showcase = ShowcaseLiveResults.fromLaunchArguments() { return showcase }
-        #endif
-        return LiveResultsClient.fromBundle().map {
-            HeldLiveResultsService(base: $0, gate: raceRegistration)
-        }
-    }
-
-    func highlightAlertService() -> (any HighlightAlertService)? {
-        #if DEBUG
-            if ShowcaseLiveResults.fromLaunchArguments() != nil { return nil }
         #endif
         return LiveResultsClient.fromBundle()
     }

@@ -18,13 +18,13 @@ struct PublicDataClientTests {
             configuration.urlCache = cache
             configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
             client = PublicDataClient(
-                baseURL: try #require(URL(string: "https://\(host)/api")),
+                dataURL: try #require(URL(string: "https://\(host)")),
                 session: URLSession(configuration: configuration))
         }
 
         func reply(_ path: String, _ json: String, headers: [String: String] = [:]) {
             PublicDataStub.reply(
-                .init(status: 200, body: Data(json.utf8), headers: headers), to: "/api/v1/\(path)",
+                .init(status: 200, body: Data(json.utf8), headers: headers), to: "/v2/\(path)",
                 on: host)
         }
 
@@ -33,6 +33,11 @@ struct PublicDataClientTests {
         }
 
         var paths: [String] { PublicDataStub.seen(on: host).map(\.path) }
+
+        func forgetRecent(_ path: String) async {
+            guard let base = URL(string: "https://\(host)") else { return }
+            await PublicDataRecent.shared.forget(client.layoutURL(for: path, base: base))
+        }
     }
 
     @Test func requestsEveryFileAtTheContractPath() async throws {
@@ -53,17 +58,13 @@ struct PublicDataClientTests {
         _ = try? await client.agenda()
         _ = try? await client.money()
         _ = try? await client.today()
-        #expect(
-            harness.paths == [
-                "/api/v1/meta.json", "/api/v1/index/people.json", "/api/v1/index/places.json",
-                "/api/v1/places/sp.json", "/api/v1/people/tabata-amaral.json",
-                "/api/v1/people/tabata-amaral/votes-2026.json",
-                "/api/v1/people/tabata-amaral/proposals-2026.json",
-                "/api/v1/people/tabata-amaral/speeches-2026.json",
-                "/api/v1/people/tabata-amaral/expenses-2026.json", "/api/v1/votes/recent.json",
-                "/api/v1/votes/camara-2416587.json", "/api/v1/agenda/today.json",
-                "/api/v1/money/overview.json", "/api/v1/today.json",
-            ])
+        let expected: Set<String> = [
+            "/v2/meta.json", "/v2/index/people.json", "/v2/index/places.json",
+            "/v2/places/sp.json", "/v2/people/tabata-amaral.json", "/v2/votes/recent.json",
+            "/v2/agenda/today.json", "/v2/money/overview.json", "/v2/today.json",
+        ]
+        #expect(expected.isSubset(of: Set(harness.paths)))
+        #expect(harness.paths.allSatisfy { $0.hasPrefix("/v2/") })
     }
 
     @Test func decodesTheSearchIndex() async throws {
@@ -92,14 +93,14 @@ struct PublicDataClientTests {
         let harness = try Harness()
         harness.reply(
             "places/city/1200708.json",
-            #"{ "code": "1200708", "name": "Xapuri", "uf": "ac", "note": null, "sources": [], "groups": [{ "level": "city", "office": "mayor", "title": "Prefeitura", "people": [{ "slug": "maxsuel-maia-xapuri-ac", "name": "Maxsuel Maia", "office": "mayor", "uf": "ac", "party": "PP", "photo": null, "status": "inOffice" }, { "slug": "vanio-miranda-xapuri-ac", "name": "Vânio Miranda", "office": "viceMayor", "uf": "ac", "party": "PSDB", "photo": null, "status": "inOffice" }] }] }"#
+            #"{ "place": { "code": "1200708", "name": "Xapuri", "uf": "ac", "note": null, "sources": [], "groups": [{ "level": "city", "office": "mayor", "title": "Prefeitura", "people": [{ "slug": "maxsuel-maia-xapuri-ac", "name": "Maxsuel Maia", "office": "mayor", "uf": "ac", "party": "PP", "photo": null, "status": "inOffice" }, { "slug": "vanio-miranda-xapuri-ac", "name": "Vânio Miranda", "office": "viceMayor", "uf": "ac", "party": "PSDB", "photo": null, "status": "inOffice" }] }] } }"#
         )
         let city = try #require(try await harness.client.cityRepresentatives(code: "1200708"))
         #expect(city.code == "1200708")
         #expect(city.note == nil)
         #expect(city.groups.first?.level == .city)
         #expect(city.groups.first?.people.map(\.office) == [.mayor, .viceMayor])
-        #expect(harness.paths == ["/api/v1/places/city/1200708.json"])
+        #expect(harness.paths == ["/v2/places/city/1200708.json"])
         harness.everything(.init(status: 404))
         #expect(try await harness.client.cityRepresentatives(code: "9999999") == nil)
         harness.everything(.init(failure: .notConnectedToInternet))
@@ -133,8 +134,9 @@ struct PublicDataClientTests {
         harness.reply(
             "today.json", digest, headers: ["ETag": "\"v1\"", "Content-Type": "application/json"])
         let first = try await harness.client.today()
+        await harness.forgetRecent("today.json")
         PublicDataStub.reply(
-            .init(status: 304, headers: ["ETag": "\"v1\""]), to: "/api/v1/today.json",
+            .init(status: 304, headers: ["ETag": "\"v1\""]), to: "/v2/today.json",
             on: harness.host)
         let second = try await harness.client.today()
         #expect(first == second)
@@ -148,19 +150,23 @@ struct PublicDataClientTests {
             "votes/recent.json", "[]",
             headers: ["ETag": "\"v2\"", "Content-Type": "application/json"])
         #expect(try await harness.client.recentVotes().isEmpty)
+        await harness.forgetRecent("votes/recent.json")
         PublicDataStub.reply(
-            .init(failure: .notConnectedToInternet), to: "/api/v1/votes/recent.json",
+            .init(failure: .notConnectedToInternet), to: "/v2/votes/recent.json",
             on: harness.host)
         #expect(try await harness.client.recentVotes().isEmpty)
-        PublicDataStub.reply(.init(status: 502), to: "/api/v1/votes/recent.json", on: harness.host)
+        await harness.forgetRecent("votes/recent.json")
+        PublicDataStub.reply(.init(status: 502), to: "/v2/votes/recent.json", on: harness.host)
         #expect(try await harness.client.recentVotes().isEmpty)
     }
 
     @Test func buildsURLsUnderTheVersionFolder() throws {
         let client = PublicDataClient(
-            baseURL: try #require(URL(string: "https://fiscal.byescaleira.com/api")))
+            dataURL: try #require(URL(string: "https://dados.fiscal.byescaleira.com")))
         #expect(
-            client.url(for: PublicDataPath.profile(slug: "lula")).absoluteString
-                == "https://fiscal.byescaleira.com/api/v1/people/lula.json")
+            client.layoutURL(
+                for: "people/lula.json",
+                base: try #require(URL(string: "https://dados.fiscal.byescaleira.com"))
+            ).absoluteString == "https://dados.fiscal.byescaleira.com/v2/people/lula.json")
     }
 }
