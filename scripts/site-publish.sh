@@ -3,7 +3,6 @@ set -euo pipefail
 project_root="$(cd "$(dirname "$0")/.." && pwd)"
 project="fiscal-site"
 wrangler="wrangler@4.149.0"
-expected_branch="${FISCAL_SITE_BRANCH:-development}"
 apply=0
 usage() {
   cat <<'EOF'
@@ -26,7 +25,7 @@ done
 cd "$project_root"
 problems=()
 branch="$(git branch --show-current)"
-[ "$branch" = "$expected_branch" ] || problems+=("a branch é '$branch'; publique da '$expected_branch'")
+[ "$branch" = development ] || problems+=("a branch é '$branch'; publique da 'development'")
 if [ -n "$(git status --porcelain -- site scripts/site-build.mjs scripts/site-publish.sh scripts/site-i18n.py)" ]; then
   problems+=("há mudanças sem commit em site/ ou nos scripts do site")
 fi
@@ -48,13 +47,13 @@ sha="$(git rev-parse HEAD)"
 echo "Projeto: $project (Cloudflare Pages), branch main"
 echo "Commit: $sha"
 echo "Arquivos ($(printf '%s\n' "$files" | wc -l | tr -d ' ')):"
-printf '  %s\n' $files
+printf '%s\n' "$files" | sed 's/^/  /'
 if [ "$apply" = 0 ]; then
   echo "Modo plano (sem --apply): nada foi enviado."
   exit 0
 fi
 if ! npx --yes "$wrangler" whoami >/dev/null 2>&1; then
-  echo "O wrangler não está logado. Faça o login no app Terminal: npx --yes $wrangler login" >&2
+  echo "Não deu para confirmar o login do wrangler (login ou rede). Se faltar o login, faça no app Terminal: npx --yes $wrangler login" >&2
   exit 1
 fi
 npx --yes "$wrangler" pages deploy "$output" --project-name "$project" --branch main --commit-hash "$sha" --commit-dirty=false

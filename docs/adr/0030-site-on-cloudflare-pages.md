@@ -13,7 +13,7 @@ O site de `fiscal.byescaleira.com` (`site/`) nunca foi publicado. O bloco do Cad
 1. O site estático e o arquivo dos links universais ficam num projeto próprio da Cloudflare Pages, o `fiscal-site`, com o domínio `fiscal.byescaleira.com`. Decisão do usuário em 07/11/2026.
 2. A publicação é por Direct Upload, a partir do Mac, na worktree de integração. Um script monta a pasta e por padrão só mostra o plano; com `--apply`, publica com o `wrangler` de versão fixa. O login do `wrangler` é do usuário, no app Terminal. Decisão do usuário em 08/11/2026.
 3. Sobem as páginas públicas, os arquivos delas e o arquivo da Apple. O Fiscal na Web fica de fora até depois da 1.0 ([ADR 0016](0016-web-companion-after-1-0.md)). Um `_headers` dá o tipo `application/json` ao arquivo da Apple e os cabeçalhos de segurança e de cache. Um `404.html` faz caminho desconhecido responder 404.
-4. Na Vercel, o registro `fiscal` deixa de ser um A para a VPS e passa a ser um CNAME para `fiscal-site.pages.dev`, como o `dados.fiscal`. Depois disso, o bloco do Caddy desse domínio sai.
+4. Na Vercel, o registro `fiscal` deixa de ser um A para a VPS e passa a ser um CNAME para o subdomínio `*.pages.dev` do projeto (o esperado é `fiscal-site.pages.dev`; vale o que a Pages imprimir ao criar), como o `dados.fiscal`. Depois disso, o bloco do Caddy desse domínio sai.
 5. A primeira publicação vem depois do deploy e da limpeza da VPS da FSC-020, para a política de privacidade publicada ser verdadeira. Decisão do usuário em 08/11/2026.
 
 ## Consequências
@@ -22,6 +22,8 @@ O site de `fiscal.byescaleira.com` (`site/`) nunca foi publicado. O bloco do Cad
 - O log de acesso da VPS deixa de ver esse domínio. A conferência de que o app não chama a VPS (cenário 33 da FSC-020) vem antes da troca do DNS.
 - O admin e a ponte, quando entrarem, precisam de um host próprio apontando para a VPS (por exemplo, `admin.fiscal.byescaleira.com`). A passkey do admin usa o RP ID `fiscal.byescaleira.com`, que continua válido num subdomínio.
 - Volta atrás: o registro A anterior na Vercel, com o TTL anotado antes da troca.
+- Apagar o projeto exige tirar antes o CNAME `fiscal` da Vercel, para nenhuma outra conta tomar o domínio.
+- O `npx --yes wrangler@4.149.0` fixa a versão do topo, mas as dependências dele chegam sem lockfile, e os scripts de instalação rodam no Mac que tem o login da Cloudflare. O risco é aceito, como já é no `fiscal-pages` da VPS, que instala a mesma versão; se pesar, o `wrangler` passa a um `package.json` de ferramenta com lockfile, fora de `site/`.
 - O plano Free da Pages aceita o projeto a mais. Um site estático muda pouco, e o orçamento de deploys do `fiscal-dados` não é afetado.
 
 ## Alternativas consideradas

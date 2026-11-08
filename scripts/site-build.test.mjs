@@ -82,6 +82,8 @@ test('the headers give the association JSON and every page the security and cach
     'Referrer-Policy': 'strict-origin-when-cross-origin',
     'Cache-Control': 'public, max-age=300',
   });
+  const shared = Object.keys(parsed[`/${ASSOCIATION}`]).filter((name) => name in parsed['/*']);
+  assert.deepEqual(shared, []);
 });
 
 for (const [name, change, message] of [

@@ -9,7 +9,7 @@ Definição de pronto (o "site" é a pasta `site/` da `development`; o `wrangler
 **Etapa A, no repositório**
 
 1. **Given** `site/` como está **When** `node scripts/site-build.mjs <pasta>` roda **Then** a pasta tem exatamente: `index.html`, `privacy.html`, `terms.html`, `support.html`, `404.html`, `llms.txt`, `style.css`, `assets/favicon.png`, `assets/icon.png`, `assets/icon-dark.png`, `fonts/BricolageGrotesque.woff2`, `fonts/OFL.txt`, `.well-known/apple-app-site-association` e `_headers`. Ficam de fora `app.html`, `app.js`, `link.html`, `web.css`, todos os `web*.js`, `vendor/`, `web-crypto.test.mjs` e `package.json`.
-2. **Given** a mesma montagem **When** o `_headers` é lido **Then** `/.well-known/apple-app-site-association` tem `Content-Type: application/json` e `Cache-Control: public, max-age=300`. `/*` tem `Strict-Transport-Security: max-age=31536000; includeSubDomains`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin` e `Cache-Control: public, max-age=300`.
+2. **Given** a mesma montagem **When** o `_headers` é lido **Then** a regra de `/.well-known/apple-app-site-association` tem só `Content-Type: application/json`, e a regra `/*`, que também vale para esse caminho, tem `Strict-Transport-Security: max-age=31536000; includeSubDomains`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin` e `Cache-Control: public, max-age=300`. Nenhum cabeçalho aparece nas duas regras, porque a Pages juntaria os valores com vírgula.
 3. **Given** o arquivo da Apple sem `appIDs` com `Q7QLR2PH2X.com.byescaleira.fiscal`, ou com JSON inválido, ou ausente **When** a montagem roda **Then** ela falha com uma mensagem que diz qual problema, e nenhuma pasta parcial fica para trás. Com o arquivo certo, os 8 `components` de hoje (`/link` e as 7 chaves na raiz) passam iguais.
 4. **Given** a pasta de saída já existe e não está vazia **When** a montagem roda **Then** ela falha sem apagar nada, para nunca limpar uma pasta errada.
 5. **Given** `site/404.html` **When** `python3 scripts/site-i18n.py check` roda **Then** ele conta 5 páginas em pt-BR, sem problemas. A página diz que o endereço não existe, tem o link para a página inicial, o mesmo estilo e `noindex`, e não anuncia o Fiscal na Web.
@@ -21,7 +21,7 @@ Definição de pronto (o "site" é a pasta `site/` da `development`; o `wrangler
 **Etapa B, no ar (cada passo com o ok do usuário, pedido na hora)**
 
 10. **Given** o deploy da `FSC-020` feito, a limpeza da VPS (runbook, seção 8, passos 1 a 4) feita e o PR #21 na `development` **When** o projeto `fiscal-site` é criado e a primeira publicação roda **Then** `https://fiscal-site.pages.dev` responde 200 com o `curl` em `/`, `/privacy`, `/terms`, `/support`, `/llms.txt`, `/style.css`, `/assets/icon.png` e `/fonts/BricolageGrotesque.woff2`. O arquivo da Apple responde 200, com `application/json` e sem redirecionamento. `/api/v1/races`, `/app` e `/link` respondem 404. A política publicada é a nova ("Dados que coletamos: Nenhum").
-11. **Given** o domínio `fiscal.byescaleira.com` adicionado ao projeto no painel da Pages e o TTL do registro `fiscal` anotado **When** o registro `fiscal` na Vercel passa de A para CNAME `fiscal-site.pages.dev`, sem proxy **Then** o domínio fica Active na Pages, o certificado é válido e as rotas do cenário 10 respondem igual em `https://fiscal.byescaleira.com`. Volta atrás: o registro A anterior.
+11. **Given** o domínio `fiscal.byescaleira.com` adicionado ao projeto no painel da Pages e o TTL do registro `fiscal` anotado **When** o registro `fiscal` na Vercel passa de A para CNAME com o subdomínio `*.pages.dev` que a Pages imprimiu ao criar o projeto (o esperado é `fiscal-site.pages.dev`), sem proxy **Then** o domínio fica Active na Pages, o certificado é válido e as rotas do cenário 10 respondem igual em `https://fiscal.byescaleira.com`. Volta atrás: o registro A anterior.
 12. **Given** o DNS apontando para a Pages **When** o bloco `fiscal.byescaleira.com` sai do Caddy (backup `.bak.<epoch>`, `caddy validate`, `systemctl reload caddy`) **Then** os outros blocos seguem iguais, e `curl -s http://127.0.0.1:3130/api/health` na VPS continua respondendo `{"ok":true,…}`.
 13. **Given** até um dia depois da publicação **When** `curl -s https://app-site-association.cdn-apple.com/a/v1/fiscal.byescaleira.com` roda **Then** devolve os mesmos `appIDs` e `components` do arquivo publicado.
 14. **Given** o app instalado no iPhone do usuário e a CDN da Apple atualizada **When** a pessoa toca em `https://fiscal.byescaleira.com/?person=<slug>`, `?vote=<id>` e `?race=<id>` no Notas e no Mensagens **Then** o app abre no perfil, na votação e na disputa. Em Ajustes › Desenvolvedor › Links universais › Diagnóstico, a mesma URL aparece como aberta pelo Fiscal. **Given** `https://fiscal.byescaleira.com/privacy` no Safari **Then** abre a página, sem o app. Prova: roteiro manual no aparelho do usuário.
@@ -119,7 +119,7 @@ classDiagram
 - `scripts/site-build.test.mjs`: novo; os testes dos cenários 1 a 4.
 - `scripts/site-publish.sh`: novo; plano, checagens e `--apply`.
 - `scripts/verify.sh`: roda o teste novo.
-- `docs/web.md`, `docs/server-runbook.md` (seções 7 e 9), `docs/adr/0030-site-on-cloudflare-pages.md`, `docs/adr/README.md`, `docs/backlog.md`, `CHANGELOG.md`, `spdd/README.md` e `docs/evidence/FSC-025/qa.md`.
+- `docs/web.md`, `docs/server-runbook.md` (seção 9; a seção 7, das rotas `/api/*` no Caddy, é reescrita pela `FSC-020`), `docs/adr/0030-site-on-cloudflare-pages.md`, `docs/adr/README.md`, `docs/backlog.md`, `CHANGELOG.md`, `spdd/README.md` e `docs/evidence/FSC-025/qa.md`.
 - Fora do repositório: o projeto `fiscal-site` no painel da Cloudflare, o registro `fiscal` na Vercel e o bloco do Caddy na VPS.
 
 ## Operations
@@ -134,7 +134,7 @@ classDiagram
    - `scripts/site-publish.sh [--apply]`, no modelo do `server-deploy.sh`: confere branch, árvore limpa e `site-i18n.py`; monta numa pasta temporária; imprime o plano; com `--apply`, chama o `wrangler` fixo; apaga a pasta com `trap`.
    - Cobre: 6, 7, 8. Verificação: rodar sem `--apply` na `development` e fora dela, e `bash -n`.
 4. **Verificação e documentos da etapa A.** Depende de: 3.
-   - `verify.sh` com o teste novo; `docs/web.md` (Publicar), runbook (seções 7 e 9, com a ordem da etapa B e a volta atrás), ADR 0030 Aceito, backlog e `CHANGELOG`.
+   - `verify.sh` com o teste novo; `docs/web.md` (Publicar), runbook (seção 9, com a ordem da etapa B e a volta atrás), ADR 0030 Aceito, backlog e `CHANGELOG`.
    - Cobre: 9, 15. Verificação: `scripts/verify.sh --quick` e a revisão da fase. **Parar com o PR da etapa A; o merge na `development` espera o ok.**
 5. **Projeto e primeira publicação.** Depende de: 4, do deploy da `FSC-020`, da limpeza da VPS e do PR #21 na `development`.
    - O usuário faz o login do `wrangler` no Terminal. Com o ok, `npx --yes wrangler@4.149.0 pages project create fiscal-site --production-branch main`, depois `scripts/site-publish.sh --apply`.
@@ -167,6 +167,7 @@ classDiagram
 - Nada do Fiscal na Web sobe: `app.html`, `app.js`, `link.html`, `web.css`, `web*.js` e `vendor/`. Nada de `package.json` nem de teste.
 - O arquivo da Apple sobe idêntico ao do repositório. O script não o reescreve.
 - O projeto `fiscal-dados` não é tocado: nem deploy, nem domínio, nem configuração.
+- O projeto `fiscal-site` nunca é apagado com o CNAME `fiscal` no ar.
 - Só o registro `fiscal` muda na Vercel. `dados.fiscal` e os outros registros de `byescaleira.com` ficam como estão.
 - Só o bloco `fiscal.byescaleira.com` sai do Caddy. Os outros blocos e serviços da VPS ficam como estão.
 - O cenário 33 da `FSC-020` é conferido antes da troca do DNS.
