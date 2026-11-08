@@ -10,7 +10,10 @@ import (
 	"liveresults/internal/ingest"
 )
 
-const exitDivergence = 3
+const (
+	exitDivergence           = 3
+	exitDivergenceAndFailure = 4
+)
 
 func planCommand(cfg config) int {
 	in := ingest.New(cfg.ingest, nil, nil, nil)
@@ -63,13 +66,20 @@ func runSync(ctx context.Context, in *ingest.Ingest, db *datastore.Store, cfg co
 	if len(outcomes) == 0 && err == nil {
 		log.Printf("sync: nothing due")
 	}
-	switch {
-	case errors.Is(err, ingest.ErrDivergence):
-		return exitDivergence
-	case err != nil:
+	if err != nil && !errors.Is(err, ingest.ErrDivergence) {
 		log.Printf("sync: %v", err)
-		return 1
-	case failed:
+	}
+	return syncExit(failed, err)
+}
+
+func syncExit(failed bool, err error) int {
+	divergence := errors.Is(err, ingest.ErrDivergence)
+	switch {
+	case divergence && failed:
+		return exitDivergenceAndFailure
+	case divergence:
+		return exitDivergence
+	case err != nil, failed:
 		return 1
 	}
 	return 0

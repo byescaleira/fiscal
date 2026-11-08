@@ -29,7 +29,7 @@ func main() {
 	flag.Var(&once, "once", "run one load (full, the default, or live), stage the site and exit")
 	healthCheck := flag.Bool("check", false, "exit 0 when the scheduler wrote a heartbeat recently")
 	restore := flag.String("restore", "", "replace the store with this backup (stop the timers first) and exit")
-	siteCmd := flag.String("site", "", "status, rollback or publish-staging: inspect or move the staged site that the Pages job deploys")
+	siteCmd := flag.String("site", "", "status, rollback or publish-held: inspect or move the staged site that the Pages job deploys")
 	to := flag.String("to", "", "with -site rollback: the site to go back to (default: the one before the current)")
 	allowDrop := flag.Bool("allow-drop", false, "accept a release with more than SITE_MAX_DROP fewer files or people (this run only)")
 	configCheck := flag.Bool("config-check", false, "validate the configuration and exit")
@@ -162,7 +162,7 @@ func siteCommand(ctx context.Context, cfg config, cmd, to string) int {
 		logHeld(cfg)
 		log.Printf("ready: %s (%s, %d files, %d logical, %d people, generated %s); kept: %v", cur.Release, cur.Kind, cur.Files, cur.Logical, cur.People, cur.GeneratedAt, names)
 		return 0
-	case "rollback", "publish-staging":
+	case "rollback", "publish-held":
 		if err := os.MkdirAll(cfg.ingest.DataDir, 0o700); err != nil {
 			log.Printf("data dir: %v", err)
 			return 1
@@ -182,8 +182,12 @@ func siteCommand(ctx context.Context, cfg config, cmd, to string) int {
 			name, err = st.Rollback(to)
 		} else {
 			var rel site.Release
-			rel, err = ingest.PublishStaging(cfg.ingest.DataDir, st)
+			var skipped int
+			rel, skipped, err = ingest.PublishHeld(cfg.ingest.DataDir, cfg.ingest.PublicDir, st)
 			name = rel.Release
+			if skipped > 0 {
+				log.Printf("held: %d paths changed again since the check and kept the newer content", skipped)
+			}
 		}
 		if err != nil {
 			log.Printf("site: %v", err)
@@ -192,7 +196,7 @@ func siteCommand(ctx context.Context, cfg config, cmd, to string) int {
 		log.Printf("ready now points to %s; the Pages job deploys it on its next run", name)
 		return 0
 	}
-	log.Printf("-site takes status, rollback or publish-staging")
+	log.Printf("-site takes status, rollback or publish-held")
 	return 2
 }
 
@@ -203,7 +207,7 @@ func logHeld(cfg config) {
 		return
 	}
 	if ok && len(c.Held) > 0 {
-		log.Printf("held: %d paths of the check of %s are in the staging area but not in the site; after explaining them, publish with -site publish-staging", len(c.Held), c.CheckedAt)
+		log.Printf("held: %d paths of the check of %s differ from what is published, and none of them goes out until -site publish-held", len(c.Held), c.CheckedAt)
 	}
 }
 

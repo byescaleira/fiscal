@@ -97,13 +97,14 @@ type Origin struct {
 }
 
 type Stager struct {
-	Staging string
-	Root    string
-	Keep    int
-	Rules   Rules
-	Origin  *Origin
-	Now     func() time.Time
-	Logger  *log.Logger
+	Staging  string
+	Root     string
+	Keep     int
+	Rules    Rules
+	Origin   *Origin
+	Now      func() time.Time
+	Logger   *log.Logger
+	Detached bool
 }
 
 func (s *Stager) now() time.Time {
@@ -313,12 +314,31 @@ func (s *Stager) Stage(kind string, paths []string) (Release, error) {
 		os.RemoveAll(tmp)
 		return rel, err
 	}
+	if s.Detached {
+		s.logf("site %s staged without moving ready: files=%d logical=%d people=%d", name, rel.Files, rel.Logical, rel.People)
+		return rel, nil
+	}
 	if err := s.point(name); err != nil {
 		return rel, err
 	}
 	s.prune(name)
 	s.logf("site %s ready: files=%d logical=%d people=%d", name, rel.Files, rel.Logical, rel.People)
 	return rel, nil
+}
+
+func (s *Stager) Promote(name string) error {
+	if !ValidName(name) {
+		return fmt.Errorf("promote: invalid site %q", name)
+	}
+	if _, err := ReadRelease(filepath.Join(s.sites(), name)); err != nil {
+		return fmt.Errorf("promote: %s: %w", name, err)
+	}
+	if err := s.point(name); err != nil {
+		return err
+	}
+	s.prune(name)
+	s.logf("site %s ready", name)
+	return nil
 }
 
 func (s *Stager) clearTemp() {

@@ -136,12 +136,7 @@ func (in *Ingest) withSource(ctx context.Context, rep *Report, srcs *sourceSet, 
 				return true, nil
 			}
 			counts = c.Map()
-			if c.Repeated > 0 {
-				in.logger.Printf("ALERT store: %s: %d rows repeat a key with other content, and only the last one was kept", s.id, c.Repeated)
-				in.mu.Lock()
-				rep.Repeated += c.Repeated
-				in.mu.Unlock()
-			}
+			in.noteRepeated(rep, s.id, c)
 		}
 		t.done(ctx, datastore.StatusOK, counts, nil)
 		return true, nil
@@ -411,6 +406,16 @@ func (in *Ingest) receitaIO(ctx context.Context, rev **publicdata.RevenueBlock) 
 	}
 }
 
+func (in *Ingest) noteRepeated(rep *Report, source string, c datastore.Counts) {
+	if c.Repeated == 0 {
+		return
+	}
+	in.logger.Printf("ALERT store: %s: %d rows repeat a key with other content, and only the last one was kept", source, c.Repeated)
+	in.mu.Lock()
+	rep.Repeated += c.Repeated
+	in.mu.Unlock()
+}
+
 func (in *Ingest) storeCities(ctx context.Context, rep *Report, srcs *sourceSet, cities []publicdata.City) []publicdata.City {
 	t := in.track(ctx, "cidades")
 	if in.db == nil {
@@ -421,6 +426,7 @@ func (in *Ingest) storeCities(ctx context.Context, rep *Report, srcs *sourceSet,
 		if err != nil {
 			in.warn(rep, "store cidades: %v", err)
 		}
+		in.noteRepeated(rep, "cidades", c)
 		t.done(ctx, datastore.StatusOK, c.Map(), err)
 		return cities
 	}
