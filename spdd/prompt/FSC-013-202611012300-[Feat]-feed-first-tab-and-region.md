@@ -12,6 +12,7 @@
 2. Dado `fiscal://today` ou `fiscal://feed`, quando abre, então cai no Feed; `fiscal://following`, `fiscal://mine` ou `fiscal://region`, então cai em Região.
 3. Dado o widget "Quem eu sigo" ou a Siri, quando abre, então cai em Região, e o widget continua atualizando.
 4. Dada a aba Região, quando abre, então mostra quem a pessoa segue, as sugestões, Sua região, Quem governa, as bancadas e "Na sua região agora", sem a lista de novidades.
+26. Dados dois destaques da mesma pessoa da região em `highlights.json`, quando "Na sua região agora" aparece, então a pessoa aparece uma vez, no destaque de maior peso, com no máximo 2 cartões de pessoas diferentes e espaço entre eles; sem ninguém da região, fica 1 destaque nacional. Pedido do usuário em 05/11/2026, durante a `FSC-020`: "apareceram dois cards [...] e não tem um espaçamente vertical entre eles".
 5. Dada a barra do Feed, quando aparece, então tem o coração de "Meu apoio" e Ajustes.
 
 **Topo**
@@ -224,7 +225,8 @@ classDiagram
 4. **Região.** Depende de: 3.
    - `RegionScreen` (antes `MineScreen`) sem as novidades, com o título "Região" e ícone de mapa.
    - `RegionModel` (antes `MineModel`) sem `updates`, `missing`, `markSeen` e o retrato.
-   - Cobre: 3, 4. Verificação: `FeatureRegionTests`, `FollowIntentTests`, `IntegrationCenterTests`, captura.
+   - `RegionActivityLoader.pick` escolhe os destaques: tira as votações já listadas, deixa uma pessoa da região uma vez só e fica com até 2; sem ninguém da região, 1 nacional. `RegionNowSection` dá `.spaceM` acima de cada cartão depois do primeiro.
+   - Cobre: 3, 4, 26. Verificação: `FeatureRegionTests` (`RegionHighlightPickTests`), `FollowIntentTests`, `IntegrationCenterTests`, captura.
 5. **Retirar Hoje e renomear.** Depende de: 3, 4.
    - Remover `TodayModel` e as seções que saíram, levando os testes do que sobrevive.
    - Renomear os targets para `FeatureFeed` e `FeatureRegion`.
