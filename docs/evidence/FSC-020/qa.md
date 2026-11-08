@@ -3,7 +3,7 @@
 - **Canvas:** [FSC-020](../../../spdd/prompt/FSC-020-202611042045-[Feat]-app-reads-only-from-cdn-and-local-alerts.md)
 - **Ambiente:** iPhone 17 Pro Max do usuário (iOS 27.3), build DEBUG da `feature/local-highlight-alerts` instalado por `scripts/device.sh`; simulador iPhone para os textos de Ajustes; log de acesso do Caddy na VPS (`/var/log/fiscal-access.log`), só leitura.
 - **Data:** 05/11/2026 a 07/11/2026, no horário do aparelho (UTC-4).
-- **Capturas:** nenhuma versionada. O teste no aparelho foi visto pelo usuário e relatado na conversa.
+- **Capturas:** só as duas da apuração com a disputa fictícia de teste (cenário 30). O teste no aparelho foi visto pelo usuário e relatado na conversa.
 
 | # | Cenário | Roteiro | Resultado | Evidência |
 | --- | --- | --- | --- | --- |
