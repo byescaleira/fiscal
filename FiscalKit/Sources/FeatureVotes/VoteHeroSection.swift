@@ -77,7 +77,9 @@ private struct VoteScoreboard: View {
                     }
                 }
                 HeroRule()
-                if let tally = vote.vote?.tally, (tally.total ?? 0) > 0 {
+                if let layout = vote.plenaryLayout {
+                    HeroPlenary(layout: layout)
+                } else if let tally = vote.vote?.tally, (tally.total ?? 0) > 0 {
                     TallyChart(
                         segments: [
                             TallyChart.Segment(
@@ -122,6 +124,74 @@ private struct HeroSide: View {
             StatusCircle(choice.title, symbol: choice.symbol, color: ink.signal(choice.color))
         }
         .frame(maxWidth: .infinity)
+    }
+}
+
+private struct HeroPlenary: View {
+    @Environment(VoteDetailModel.self) private var vote
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @ReducesMotion private var reduceMotion
+    let layout: HemicycleLayout
+
+    var body: some View {
+        let colors = colors(HeroInk(colorScheme))
+        VStack(spacing: .spaceM) {
+            PlenaryChart(
+                layout: layout, colors: colors, requiredYes: vote.plenary?.requiredYes,
+                animates: !reduceMotion && !MotionBudget.isConstrained)
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: .space2XS) { items(colors) }
+            } else {
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: .spaceM) { items(colors) }
+                    Grid(
+                        alignment: .leading, horizontalSpacing: .spaceM,
+                        verticalSpacing: .space2XS
+                    ) {
+                        ForEach(pairs, id: \.first.id) { pair in
+                            GridRow {
+                                item(pair.first, colors: colors)
+                                if let second = pair.second { item(second, colors: colors) }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private var pairs: [(first: PlenaryLegendItem, second: PlenaryLegendItem?)] {
+        let legend = vote.plenaryLegend
+        return stride(from: 0, to: legend.count, by: 2).map { index in
+            (legend[index], index + 1 < legend.count ? legend[index + 1] : nil)
+        }
+    }
+
+    private func items(_ colors: PlenaryColors) -> some View {
+        ForEach(vote.plenaryLegend) { item($0, colors: colors) }
+    }
+
+    private func item(_ item: PlenaryLegendItem, colors: PlenaryColors) -> some View {
+        HStack(spacing: .space2XS) {
+            Circle()
+                .fill(colors.color(for: item.group))
+                .frame(width: .spaceS, height: .spaceS)
+            Text(verbatim: item.title)
+                .font(.caption)
+                .monospacedDigit()
+                .foregroundStyle(colors.ink)
+                .lineLimit(1)
+                .fixedSize()
+        }
+    }
+
+    private func colors(_ ink: HeroInk) -> PlenaryColors {
+        PlenaryColors(
+            yes: ink.signal(BallotChoice.yes.color),
+            no: .voteNo, other: .voteAbstain,
+            absent: colorScheme == .dark ? ink.dimmed : .voteAbsent, track: ink.track,
+            ink: ink.secondary)
     }
 }
 

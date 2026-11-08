@@ -53,6 +53,15 @@ Quatro cartões tinham fundo preto também no modo claro: o placar da votação,
 
 Os cartões com a cor do partido ou do tema não usam essa peça e continuam iguais nos dois modos, por decisão do usuário.
 
+## Efeitos
+
+Os efeitos de shader seguem as seis regras do [ADR 0026](adr/0026-shader-effects-never-carry-data.md): o dado nunca vai em shader, o efeito é igual para todos, fica fora do conteúdo, para com Reduzir movimento e o modo leve, só roda quando precisa e, quando é genérico, vem do `ByescaleiraEffects` do `byescaleira-kit` ([FSC-023](../spdd/prompt/FSC-023-202611052151-[Feat]-plenary-and-holographic-card.md)).
+
+- **Plenário:** `PlenaryChart`, no `FiscalDesignSystem`, desenha um ponto por cadeira em `Canvas` (513 na Câmara, 81 no Senado). A cor e a ordem vêm só do voto, e a linha de quórum aparece só onde a regra é conhecida (PEC). A contagem anima uma vez, em 2,2 s.
+- **Carta colecionável:** o cartão do topo da página do político ganha a moldura metalizada (`collectibleFrame`), o retrato numa janela com a folha `.sparkle` e o giro com a inclinação (`cardTurn`). O texto e os botões ficam no fundo do partido, sem efeito. A carta é igual para todo político.
+- **Degradação:** com Reduzir movimento ou o modo leve, a carta fica parada e o sensor não liga; com Aumentar contraste ou Reduzir transparência, a janela fica sem holográfico e a moldura vira prata liso. No Mac e no visionOS, a carta fica parada.
+- **Curtir:** o coração encolhe, salta e enche, e explode em confete de corações pela `View.likeBurst(trigger:colors:)` do kit: anel, brilho, 42 corações que giram, sobem, caem e somem em 1,15 s, e brilhos no fim. As cores vêm de `PartyPalette.confetti(lightened:)`: as do partido da pessoa do card, ou `PartyPalette.hearts` (vermelho) sem partido; no destaque do topo, clareadas. Com Reduzir movimento ou o modo leve, só o coração enche ([FSC-024](../spdd/prompt/FSC-024-202611061418-[Feat]-feed-like-with-ripple.md), [ADR 0026](adr/0026-shader-effects-never-carry-data.md), regra 7).
+
 ## Barra ao rolar
 
 Quando algo precisa continuar visível, `View.revealBar` e `ShortcutStrip`, do `byescaleira-kit`, põem uma barra sobre a rolagem. No app, `RevealPage` junta a barra, o herói e os capítulos ([ADR 0024](adr/0024-reveal-bar-following-and-ballots-screens.md)).

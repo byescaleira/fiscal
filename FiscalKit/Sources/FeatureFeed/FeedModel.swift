@@ -137,8 +137,11 @@ public final class FeedModel {
         if items.isEmpty { phase = .loading }
         loadGeneration += 1
         async let liveRaces: Void = refreshRaces()
-        let years = FollowingFeed.years(for: CalendarDay(now()))
-        let year = years.min() ?? Self.firstYear
+        let refreshing = hasLoaded
+        let recentYears = FollowingFeed.years(for: CalendarDay(now()))
+        let newest = recentYears.min() ?? Self.firstYear
+        let year = refreshing && oldestYear > 0 ? min(oldestYear, newest) : newest
+        let years = year < newest ? Array(year..<newest) + recentYears : recentYears
         phase = await PublicDataPhase.settle(after: phase, in: requests) { [self] in
             guard let service else { throw PublicDataError.unavailable }
             let following = (try? await follows?.followed()) ?? []
@@ -176,7 +179,7 @@ public final class FeedModel {
             oldestYear = year
             reachedEnd = people.isEmpty || year <= Self.firstYear
             hasLoaded = true
-            shownCount = Self.pageSize
+            shownCount = refreshing ? max(shownCount, Self.pageSize) : Self.pageSize
             rebuild()
             publishSnapshot()
         }
@@ -263,12 +266,13 @@ public final class FeedModel {
     private func rebuild() {
         let uf = regionUF()
         hidesRaces = liveBoard != nil
-        items = FeedTimeline.build(
+        let built = FeedTimeline.build(
             FeedSources(
                 following: followed, activities: activities, actions: actions, speeches: speeches,
                 recent: recent, highlights: highlights, digest: digest, regionUF: uf,
                 regionName: uf.map(HomePlace.name(of:)), method: highlights?.method,
                 hidesRaces: hidesRaces))
+        if built != items { items = built }
     }
 
     private struct Page: Sendable {

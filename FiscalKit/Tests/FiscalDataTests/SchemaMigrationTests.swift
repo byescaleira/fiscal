@@ -8,16 +8,16 @@ import Testing
 struct SchemaMigrationTests {
     @Test func theMigrationPlanOpensAnInMemoryStore() throws {
         let container = try ModelContainer(
-            for: Schema(versionedSchema: FiscalSchemaV4.self),
+            for: Schema(versionedSchema: FiscalSchemaV5.self),
             migrationPlan: FiscalMigrationPlan.self,
             configurations: ModelConfiguration(isStoredInMemoryOnly: true))
-        #expect(container.schema.entities.count == FiscalSchemaV4.models.count)
+        #expect(container.schema.entities.count == FiscalSchemaV5.models.count)
     }
 
     @Test func everyShippedVersionKeepsItsOwnClasses() {
         let versions: [[any PersistentModel.Type]] = [
             FiscalSchemaV1.models, FiscalSchemaV2.models, FiscalSchemaV3.models,
-            FiscalSchemaV4.models,
+            FiscalSchemaV4.models, FiscalSchemaV5.models,
         ]
         let identities = versions.flatMap { $0.map(ObjectIdentifier.init) }
         #expect(Set(identities).count == identities.count)
@@ -61,6 +61,22 @@ struct SchemaMigrationTests {
         #expect(try await repositories.follows.isFollowing(slug: "tabata-amaral"))
     }
 
+    @Test func aFourthVersionStoreKeepsSupportAndFollowsWithNoLikes() async throws {
+        let directory = try makeDirectory()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        try writeFourthVersion(in: directory)
+        let repositories = try FiscalDatabase.open(cloudSync: false, directory: directory)
+            .repositories
+        let support = try #require(try await repositories.support.support())
+        #expect(support.people == ["lula"])
+        #expect(support.causes == [.health])
+        #expect(
+            try await repositories.follows.followed().map(\.card.slug).sorted() == [
+                "nikolas-ferreira", "tabata-amaral",
+            ])
+        #expect(try await repositories.likes?.liked().isEmpty == true)
+    }
+
     private func makeDirectory() throws -> URL {
         let directory = FileManager.default.temporaryDirectory
             .appending(
@@ -94,6 +110,39 @@ struct SchemaMigrationTests {
         lens.themeKeys = [Theme.health, .taxes].map(\.rawValue).joined(separator: ",")
         lens.supportedKeys = "lula"
         context.insert(lens)
+        try context.save()
+    }
+
+    private func writeFourthVersion(in directory: URL) throws {
+        let configurations = [
+            ModelConfiguration(
+                FiscalDatabase.cloudStoreName, schema: Schema(FiscalSchemaV4.cloudModels),
+                url: directory.appending(path: "\(FiscalDatabase.cloudStoreName).store"),
+                cloudKitDatabase: .none),
+            ModelConfiguration(
+                FiscalDatabase.deviceStoreName, schema: Schema(FiscalSchemaV4.deviceModels),
+                url: directory.appending(path: "\(FiscalDatabase.deviceStoreName).store"),
+                cloudKitDatabase: .none),
+        ]
+        let container = try ModelContainer(
+            for: Schema(versionedSchema: FiscalSchemaV4.self), configurations: configurations)
+        let context = ModelContext(container)
+        for (slug, name, party) in [
+            ("tabata-amaral", "Tabata Amaral", "PSB"),
+            ("nikolas-ferreira", "Nikolas Ferreira", "PL"),
+        ] {
+            let follow = FiscalSchemaV4.FollowEntity(slug: slug, followedAt: .now)
+            follow.name = name
+            follow.office = Office.federalDeputy.rawValue
+            follow.uf = slug == "tabata-amaral" ? "sp" : "mg"
+            follow.party = party
+            follow.status = PersonStatus.inOffice.rawValue
+            context.insert(follow)
+        }
+        let support = FiscalSchemaV4.SupportEntity(updatedAt: .now)
+        support.peopleKeys = "lula"
+        support.causeKeys = Theme.health.rawValue
+        context.insert(support)
         try context.save()
     }
 }
