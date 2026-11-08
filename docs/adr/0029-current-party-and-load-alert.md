@@ -1,4 +1,4 @@
-# 0026. O cargo em exercício usa o partido mais recente, e a carga avisa quando falha
+# 0029. O cargo em exercício usa o partido mais recente, e a carga avisa quando falha
 
 - **Estado:** Aceito
 - **Data:** 2026-11-03
