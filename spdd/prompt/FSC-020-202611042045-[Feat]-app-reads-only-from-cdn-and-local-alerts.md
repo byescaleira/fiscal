@@ -37,7 +37,7 @@ Definição de pronto (nomes e pesos são fictícios; quando o cenário não diz
 29. **Given** `v2/races.json` com uma disputa em andamento e `fetchedAt` de 10 minutos atrás **When** `races()` roda **Then** devolve a lista da CDN, com o horário dela na tela, e não chama outro endereço; com a CDN fora, usa o pacote offline.
 30. **Given** a apuração no Feed e na tela da disputa **When** há disputa **Then** os números aparecem como antes, e não há botão de acompanhar nem pedido de Atividade da disputa.
 31. **Given** o app instalado no iPhone real **When** Feed, Região, Pessoa, Votações, Apuração e Ajustes são abertos, com uma captura de rede **Then** nenhum pedido vai para `fiscal.byescaleira.com/api`. Links do site, privacidade e suporte continuam abrindo no navegador.
-32. **Given** o build final **When** as permissões são conferidas **Then** saem `aps-environment`, App Attest, `remote-notification` e `NSSupportsLiveActivitiesFrequentUpdates`, e ficam App Group, iCloud, links universais, `fetch` e `NSSupportsLiveActivities`.
+32. **Given** o build final **When** as permissões são conferidas **Then** saem App Attest e `NSSupportsLiveActivitiesFrequentUpdates`, e ficam App Group, iCloud, `aps-environment` e `remote-notification` (só para os avisos silenciosos da sincronização do iCloud, sem registro de token em servidor do Fiscal), links universais, `fetch` e `NSSupportsLiveActivities`.
 33. **Given** a VPS depois do deploy aprovado **When** a carga e o TSE rodam **Then** `fiscal-pages` continua publicando, inclusive `races.json`, e o log de acesso não recebe mais pedidos do app. Prova no fechamento, com a VPN desligada.
 34. **Given** a Atividade de `h1` agendada **When** chega o horário **Then** a Atividade e o alerta do iOS trazem o mesmo título que o Feed mostra, com o subtítulo, em pt-BR, e o alerta usa o som padrão do iPhone; o modo silencioso do aparelho é respeitado pelo sistema. A notificação continua sem som.
 35. **Given** aberturas às 12:10, 12:40, 13:05, 12:20 e 12:15, em 5 dias diferentes dos últimos 28, e nenhuma outra **When** o app abre às 14:00 de D **Then** a Atividade fica para 12:00 de D+1 e a notificação para 19:00 de D, porque nenhuma hora com aberturas fica a 4 h ou mais das 12:00 e o padrão 19:00 fica.
@@ -64,6 +64,11 @@ classDiagram
     Int notificationHour
     Int minimumLeadSeconds
     next(Int hour, Int offset, Date now, Calendar calendar) Date
+    slots(Int offset, Date now, Calendar calendar) HighlightAlertSlots
+  }
+  class HighlightAlertSlots {
+    Date activity
+    Date notification
   }
   class HighlightAlertPlan {
     PlannedAlert activity
@@ -75,7 +80,7 @@ classDiagram
     Bool hasPassed(Date)
   }
   class HighlightAlertPlanner {
-    plan(List~Highlight~, Set~String~, HighlightAlertRule, wantsActivity, wantsNotification, Int offset, Date now, Calendar calendar) HighlightAlertPlan
+    plan(List~Highlight~ items, Set~String~ shown, Set~String~ excluding, HighlightAlertRule, wantsActivity, wantsNotification, HighlightAlertSlots) HighlightAlertPlan
   }
   class HighlightAlertHabit {
     List~Date~ openings
@@ -87,13 +92,16 @@ classDiagram
     Bool isNotificationEnabled
     Set~String~ shown
     HighlightAlertPlan plan
-    Int deviceOffset
     HighlightAlertHabit habit
+    deviceOffset() Int
+    settle(Date now) List~String~
     recordOpening(Date)
     clearHabit()
     clearLegacy()
   }
   class HighlightActivityTracking {
+    Bool isAvailable
+    activeHighlightIDs() Set~String~
     pendingHighlight() PlannedAlert
     schedule(Highlight, Date)
     endPending()
@@ -103,17 +111,22 @@ classDiagram
   class HighlightNotificationScheduling {
     status() NotificationStatus
     requestPermission() Bool
-    schedule(HighlightBoard, Date)
+    pending() PlannedAlert
+    schedule(Highlight, Date)
     cancel()
   }
   class HighlightAlertCenter {
     activate()
     refreshInBackground()
+    hold()
+    resume()
     setEnabled(Bool)
-    setNotificationEnabled(Bool)
+    setNotificationEnabled(Bool) Bool
+    notificationsAreDenied() Bool
   }
   HighlightAlertPlanner --> HighlightAlertRule
-  HighlightAlertPlanner --> HighlightAlertSchedule
+  HighlightAlertPlanner --> HighlightAlertSlots
+  HighlightAlertSchedule --> HighlightAlertSlots
   HighlightAlertHabit --> HighlightAlertSchedule
   HighlightAlertLedger --> HighlightAlertHabit
   HighlightAlertPlanner --> HighlightAlertPlan
@@ -124,11 +137,13 @@ classDiagram
   HighlightAlertCenter --> HighlightNotificationScheduling
 ```
 
-- `HighlightAlertSchedule`: novo; as duas horas do dia e 60 s de margem; `standard` é 08:00 e 19:00, só sem histórico.
+- `HighlightAlertSchedule`: novo; as duas horas do dia e 60 s de margem; `standard` é 08:00 e 19:00, só sem histórico. `slots` devolve os próximos instantes das duas horas, com o atraso do aparelho.
+- `HighlightAlertSlots`: novo; o instante da Atividade e o da notificação, que o planejador recebe já calculados.
+- `HighlightAlertPlanner.plan`: `excluding` traz os destaques já na tela, para não repetir.
 - `HighlightAlertHabit`: novo; função pura sobre as aberturas guardadas, que devolve o `HighlightAlertSchedule` da pessoa.
 - `HighlightAlertPlan` e `PlannedAlert`: novos; o que está agendado, guardado no App Group.
 - `HighlightAlertPlanner`: novo; função pura, sem seguidos nem apoio.
-- `HighlightAlertLedger`: ganha a preferência da notificação, desligada por padrão, o plano, o atraso e o histórico de aberturas; `clearLegacy` apaga o token e o `AppAttestKeyID`. Quem ligou ou desligou a Atividade mantém a escolha.
+- `HighlightAlertLedger`: ganha a preferência da notificação, desligada por padrão, o plano, o atraso e o histórico de aberturas; `clearLegacy` apaga o token e o `AppAttestKeyID`; `settle` passa para `shown` o que o plano já disparou; `deviceOffset` sorteia e guarda o atraso. Quem ligou ou desligou a Atividade mantém a escolha.
 - `HighlightActivityTracking`: perde `onStartToken`, `onShown`, `observe` e o início na hora, salvo o showcase de DEBUG.
 - `HighlightNotificationScheduling`: novo; protocolo para testar sem o sistema.
 - `PublicDataClient` e `LiveResultsClient`: só `FiscalDataURL`; saem `baseURL`, `legacy`, `PublicDataRoute`, `PublicDataOrigin`, `OriginRead`, `follow`, `unfollow` e `PushEnvironment`. `LiveResultsService` fica só com `races()`.
@@ -138,7 +153,7 @@ classDiagram
 ## Approach
 
 1. **Estratégia da solução:** a cada abertura, o app lê a CDN e calcula o plano do próximo horário. Ele compara com o que já está agendado e só mexe no que mudou, então repetir a abertura não cria nada novo. O que já passou entra em `shown` na abertura seguinte. O app perde a reserva na VPS, o registro, o App Attest e a Atividade da disputa. O servidor perde o vigia, o APNs, o App Attest e as rotas públicas, e fica só com a carga, a leitura do TSE e a publicação.
-2. **Decisões do usuário:** a Atividade e a notificação saem nos horários em que a pessoa costuma abrir o app, aprendidos no aparelho ("o horario ele pode ser dinamico por usuário", resposta "Pelo hábito da pessoa", 05/11/2026), com 08:00 e 19:00 só sem histórico; nenhum texto do app cita horário ("não precisa colocar a informação do horario no app"), e o interruptor se chama "Notificação de destaque"; notificação com o segundo destaque de maior peso; permissão só ao ligar o interruptor próprio, desligado por padrão. Sem veto às decisões anteriores da análise: abrir o app não inicia a Atividade, só o próximo horário, bonequinho na tela de bloqueio e na Ilha expandida. Pedido do usuário: "tirar tudo de bater o app direto na vps" e "só vamos deixar a vps responsavel por popular a cdn". Para vetar nesta parada: a Atividade da disputa sai inteira e volta pelo git; o `fiscal-api` fica só com a leitura do TSE, sem rota pública; sem reserva se a CDN cair; rótulo da loja proposto como "Dados não coletados".
+2. **Decisões do usuário:** a Atividade e a notificação saem nos horários em que a pessoa costuma abrir o app, aprendidos no aparelho ("o horario ele pode ser dinamico por usuário", resposta "Pelo hábito da pessoa", 05/11/2026), com 08:00 e 19:00 só sem histórico; nenhum texto do app cita horário ("não precisa colocar a informação do horario no app"), e o interruptor se chama "Notificação de destaque"; notificação com o segundo destaque de maior peso; permissão só ao ligar o interruptor próprio, desligado por padrão. Sem veto às decisões anteriores da análise: abrir o app não inicia a Atividade, só o próximo horário, bonequinho na tela de bloqueio e na Ilha expandida. Pedido do usuário: "tirar tudo de bater o app direto na vps" e "só vamos deixar a vps responsavel por popular a cdn". Para vetar nesta parada: a Atividade da disputa sai inteira e volta pelo git; o `fiscal-api` fica só com a leitura do TSE, sem rota pública; sem reserva se a CDN cair; rótulo da loja proposto como "Dados não coletados". Na revisão de 07/11/2026, o usuário decidiu manter `aps-environment` e `remote-notification` só para a sincronização do iCloud ([ADR 0015](../../docs/adr/0015-background-fetch-offline-pack.md)), resposta "Sim, voltar": sem eles, o que a pessoa segue só chegaria aos outros aparelhos quando o app abrisse em cada um; o aviso é da Apple, e o app não envia token a servidor do Fiscal.
 3. **Decisões padrão:**
    - A ordem do arquivo publicado continua sendo a ordem de peso, como em `pick`.
    - Hábito: conta só a abertura do app em primeiro plano, no relógio do aparelho, a no mínimo 30 min da anterior; guarda as 60 mais recentes, dos últimos 28 dias, no App Group, fora do iCloud. Cada abertura pesa `0,5^(dias/7)` na hora cheia em que aconteceu, e só contam as horas de 07 a 21, para nunca acordar ninguém. Com ao menos 5 aberturas em 3 dias diferentes, a Atividade fica na hora de maior peso e a notificação na de maior peso a 4 h ou mais dela; sem essa segunda hora, vale 19:00 e, se 19:00 estiver a menos de 4 h, 08:00. Empate fica com a hora mais cedo. O alerta sai no começo da hora, mais o atraso do aparelho, para chegar perto de quando a pessoa costuma abrir.

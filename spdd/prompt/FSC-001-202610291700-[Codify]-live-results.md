@@ -125,7 +125,7 @@ Camadas tocadas, com a regra de dependência do `FiscalKit`: `FiscalDomain` não
 - `Fiscal/FiscalWidgets/`
   - `RaceBoard.swift` (só o `RaceStyle`), `FiscalWidgetsBundle.swift`, `Localizable.xcstrings`; `RaceLiveActivity.swift` e `RaceWinnerLockScreen.swift` saíram com a `FSC-020`
 - `Fiscal/Fiscal/`
-  - `Info.plist` (`FiscalDataURL`), `Localizable.xcstrings`; `FiscalAPIURL`, `aps-environment`, o App Attest e `NSSupportsLiveActivitiesFrequentUpdates` saíram com a `FSC-020`
+  - `Info.plist` (`FiscalDataURL`), `Localizable.xcstrings`; `FiscalAPIURL`, o App Attest e `NSSupportsLiveActivitiesFrequentUpdates` saíram com a `FSC-020`; `aps-environment` fica só para a sincronização do iCloud
 - `server/`
   - `cmd/server/main.go`
   - `internal/tse/` (`model.go`, `fetch.go`, `parse.go`, `simulate.go`)

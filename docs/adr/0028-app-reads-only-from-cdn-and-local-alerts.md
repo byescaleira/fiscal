@@ -20,6 +20,7 @@ Medido em 04/11/2026: o iOS aceita agendar uma Atividade com o app em primeiro p
 6. A escolha só usa peso, data e o que já apareceu no aparelho; nada sobre quem a pessoa segue ou apoia.
 7. A VPS só alimenta a CDN: ficam a carga, a leitura do TSE sem rota pública e a publicação no Pages. Saem o APNs, o App Attest, as rotas e os arquivos de registro.
 8. Sem código de aparelho no servidor, o rótulo proposto na loja é "Dados não coletados", no lugar do [ADR 0017](0017-app-store-privacy-label.md).
+9. O app mantém `aps-environment` e `remote-notification` só para os avisos silenciosos da sincronização do iCloud ([ADR 0015](0015-background-fetch-offline-pack.md)), por decisão do usuário em 07/11/2026. O aviso é da Apple, pelo CloudKit, e nenhum token vai a servidor do Fiscal. Sem eles, o que a pessoa segue só chegaria aos outros aparelhos quando o app abrisse em cada um.
 
 ## Consequências
 
