@@ -25,6 +25,7 @@ public enum Route: Hashable, Sendable {
     case content(ContentDetail)
     case highlight(id: String)
     case support
+    case liked
 }
 
 extension Route {
@@ -34,6 +35,14 @@ extension Route {
             return .expenses(slug: expenses.slug, year: expenses.year)
         }
         return item.content.map { .content($0) }
+    }
+
+    public static func destination(for liked: LikedItem) -> Route? {
+        if let id = liked.voteID { return .vote(id: id) }
+        if let slug = liked.expensesSlug, let year = liked.expensesYear {
+            return .expenses(slug: slug, year: year)
+        }
+        return liked.highlightID.map { .highlight(id: $0) }
     }
 
     public static func destination(for event: SupportEvent) -> Route? {

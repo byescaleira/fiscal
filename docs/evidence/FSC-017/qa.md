@@ -8,7 +8,7 @@
 | # | Cenário | Roteiro | Resultado | Evidência |
 | --- | --- | --- | --- | --- |
 | 1 a 6 | Partido atual, histórico, Câmara e Senado, sem candidatura nova, assembleia | `go test ./internal/publicdata/` | passou em teste | `TestLinkUsesTheLatestCandidacyPartyForTSEOffices`, `TestLinkKeepsThePartyOfTheHouses`, `TestLinkAssemblyUsesTheLatestParty` |
-| 7 | Nenhuma pessoa com dois partidos no publicado | `python3 scripts/party-check.py --published` | **pendente** | Ainda 259 em 03/11, antes da reconstrução. O código já está na VPS, e a reconstrução semanal (`memoria`) está prevista para 04/11, 00:20 de Brasília. Confirmar depois dela |
+| 7 | Nenhuma pessoa com dois partidos no publicado | `python3 scripts/party-check.py --published` | passou | Em 08/11/2026, depois da reconstrução: "2361 people, 0 with more than one party". Em 03/11, antes dela, eram 259 |
 | 8 | Destaque, colegas e checagens com o mesmo partido | Teste e conferência no publicado | passou em parte | `TestBuildShowsTheCurrentPartyInEveryCardOfThePerson` cobre o índice, a página e a lista do estado; o destaque e os colegas usam o mesmo `card`, e as checagens usam `Primary().Party`, conferidos só na leitura do código. Falta o publicado, depois da mesma reconstrução |
 | 9 | Quatro vices desenhados | Abrir a página de cada um com os dados publicados | passou | [Captura](portraits.png). Traços a partir das fotos oficiais do TSE, sem guardar as fotos |
 | 10 | Retratos no publicado | `scripts/portrait-check.py --published` | passou | 2.362 pessoas, 0 sem traços, 0 problemas |

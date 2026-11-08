@@ -94,7 +94,7 @@ O formato dos arquivos publicados não muda; só o valor de `party` nos cartões
 
 ## Approach
 
-- **Decisões registradas.** O [ADR 0026](../../docs/adr/0026-current-party-and-load-alert.md) registra o partido mais recente e o alerta.
+- **Decisões registradas.** O [ADR 0029](../../docs/adr/0029-current-party-and-load-alert.md) (era o 0026, renumerado em 08/11/2026 porque o 0026 ficou com o shader na `development`) registra o partido mais recente e o alerta.
 - **Onde o partido muda.** Em `Link`, depois de criar os cargos: em cada cargo em exercício de governador, vice ou deputado estadual, vindo do TSE, o partido passa a ser o da candidatura mais recente que tenha partido. Cargos de Câmara e Senado já vêm da API, e prefeitos e vereadores vêm de `cities.go`: nenhum muda.
 - **Assembleias.** O ramo de `link.go` que confirma o deputado estadual pela assembleia usa o partido da candidatura, e `AssemblyMember` não traz partido. A regra vale também ali.
 - **Comparação antes de publicar.** Rodar o novo código sobre a mesma entrada e listar quantas pessoas mudam de partido. **O trabalho para na operação 2 com essa lista, antes de qualquer deploy.**
@@ -120,7 +120,7 @@ O formato dos arquivos publicados não muda; só o valor de `party` nos cartões
 - `server/internal/publicdata/highlights.go` e `FiscalKit/Sources/FiscalDomain/PublicData/HighlightAlertRule.swift`: o limite. `server/internal/highlightalert/highlightalert_test.go`: o limite no servidor.
 - `FiscalKit/Sources/FeatureSettings/SettingsScreen.swift`, `Fiscal/Fiscal/Localizable.xcstrings`, `server/README.md` e `docs/validation.md`: o texto da regra.
 - `server/cmd/ingest/main.go` e `server/compose.yaml`: o padrão de `HOT_FROM_ORIGIN`. `docs/adr/0008-smart-sync.md`: a decisão.
-- Documentos: `docs/adr/0026-current-party-and-load-alert.md`, `docs/adr/README.md`, `docs/server-runbook.md`, `docs/backlog.md`, `docs/roadmap.md`, `CHANGELOG.md`, `spdd/README.md`, `docs/evidence/FSC-017/qa.md`.
+- Documentos: `docs/adr/0029-current-party-and-load-alert.md`, `docs/adr/README.md`, `docs/server-runbook.md`, `docs/backlog.md`, `docs/roadmap.md`, `CHANGELOG.md`, `spdd/README.md`, `docs/evidence/FSC-017/qa.md`.
 
 ## Operations
 

@@ -101,6 +101,14 @@ struct FeedHighlightHero: View {
         }
     }
 
+    private var likeButton: some View {
+        FeedLikeButton(
+            id: LikedItem.highlightID(highlight.id), ink: .white, party: highlight.person?.party
+        ) {
+            LikedItem(highlight: highlight, likedAt: .now)
+        }
+    }
+
     private var footer: some View {
         ViewThatFits(in: .horizontal) {
             HStack(alignment: .center, spacing: .spaceS) {
@@ -108,11 +116,16 @@ struct FeedHighlightHero: View {
                 Spacer(minLength: .spaceS)
                 WeightMethodButton(method: feed.highlightMethod)
                     .tint(.white)
+                likeButton
             }
             VStack(alignment: .leading, spacing: .spaceS) {
                 FeedHighlightRelevance(weight: highlight.weight, filled: appeared)
-                WeightMethodButton(method: feed.highlightMethod)
-                    .tint(.white)
+                HStack(spacing: .spaceS) {
+                    WeightMethodButton(method: feed.highlightMethod)
+                        .tint(.white)
+                    Spacer(minLength: .spaceS)
+                    likeButton
+                }
             }
         }
     }

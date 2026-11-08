@@ -61,12 +61,14 @@ struct DeviceStoreTests {
     }
 
     @Test func theSupportNeverJoinsTheSyncedStore() {
-        let synced = FiscalSchemaV4.cloudModels.map { String(describing: $0) }
-        let device = FiscalSchemaV4.deviceModels.map { String(describing: $0) }
+        let synced = FiscalSchemaV5.cloudModels.map { String(describing: $0) }
+        let device = FiscalSchemaV5.deviceModels.map { String(describing: $0) }
         #expect(device.contains("SupportEntity"))
         #expect(device.contains("LensEntity"))
         #expect(!synced.contains("SupportEntity"))
         #expect(!synced.contains("LensEntity"))
+        #expect(device.contains("LikeEntity"))
+        #expect(!synced.contains("LikeEntity"))
         #expect(synced.contains("FollowEntity"))
     }
 }

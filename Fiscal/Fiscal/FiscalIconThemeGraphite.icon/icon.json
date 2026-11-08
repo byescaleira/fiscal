@@ -3,8 +3,8 @@
     {
       "value": {
         "linear-gradient": [
-          "srgb:0.36863,0.41176,0.46667,1.00000",
-          "srgb:0.78824,0.81176,0.83922,1.00000"
+          "srgb:0.43529,0.49412,0.55686,1.00000",
+          "srgb:0.29804,0.34510,0.40000,1.00000"
         ]
       }
     },
@@ -12,8 +12,8 @@
       "appearance": "dark",
       "value": {
         "linear-gradient": [
-          "srgb:0.12941,0.14510,0.16471,1.00000",
-          "srgb:0.23529,0.24314,0.25098,1.00000"
+          "srgb:0.13333,0.15294,0.17647,1.00000",
+          "srgb:0.08235,0.09412,0.10980,1.00000"
         ]
       }
     }
@@ -103,25 +103,89 @@
           "fill-specializations": [
             {
               "value": {
-                "solid": "srgb:0.63922,0.68235,0.74118,1.00000"
+                "solid": "srgb:0.93333,0.94510,0.95686,1.00000"
               }
             },
             {
               "appearance": "dark",
               "value": {
-                "solid": "srgb:0.32157,0.34118,0.36863,1.00000"
+                "solid": "srgb:0.58431,0.60784,0.63922,1.00000"
               }
             },
             {
               "appearance": "tinted",
               "value": {
-                "solid": "srgb:0.67451,0.67451,0.67451,1.00000"
+                "solid": "srgb:0.87843,0.87843,0.87843,1.00000"
               }
             }
           ],
           "glass": false,
-          "image-name": "4 River.svg",
-          "name": "4 River",
+          "image-name": "8 Lit.svg",
+          "name": "8 Lit",
+          "opacity": 1.0,
+          "position": {
+            "scale": 1,
+            "translation-in-points": [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "fill-specializations": [
+            {
+              "value": {
+                "solid": "srgb:0.78824,0.81176,0.83922,1.00000"
+              }
+            },
+            {
+              "appearance": "dark",
+              "value": {
+                "solid": "srgb:0.43137,0.45490,0.48627,1.00000"
+              }
+            },
+            {
+              "appearance": "tinted",
+              "value": {
+                "solid": "srgb:0.70588,0.70588,0.70588,1.00000"
+              }
+            }
+          ],
+          "glass": false,
+          "image-name": "7 Rock.svg",
+          "name": "7 Rock",
+          "opacity": 1.0,
+          "position": {
+            "scale": 1,
+            "translation-in-points": [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "fill-specializations": [
+            {
+              "value": {
+                "solid": "srgb:0.24706,0.43137,0.27451,1.00000"
+              }
+            },
+            {
+              "appearance": "dark",
+              "value": {
+                "solid": "srgb:0.11765,0.21961,0.14118,1.00000"
+              }
+            },
+            {
+              "appearance": "tinted",
+              "value": {
+                "solid": "srgb:0.35294,0.35294,0.35294,1.00000"
+              }
+            }
+          ],
+          "glass": false,
+          "image-name": "6 Green.svg",
+          "name": "6 Green",
           "opacity": 1.0,
           "position": {
             "scale": 1,
@@ -132,10 +196,10 @@
           }
         }
       ],
-      "name": "River",
+      "name": "Morros",
       "shadow": {
         "kind": "neutral",
-        "opacity": 0.15
+        "opacity": 0.5
       },
       "specular": false,
       "translucency": {
@@ -145,6 +209,38 @@
     },
     {
       "layers": [
+        {
+          "fill-specializations": [
+            {
+              "value": {
+                "solid": "srgb:1.00000,1.00000,1.00000,1.00000"
+              }
+            },
+            {
+              "appearance": "dark",
+              "value": {
+                "solid": "srgb:0.83922,0.86275,0.89020,1.00000"
+              }
+            },
+            {
+              "appearance": "tinted",
+              "value": {
+                "solid": "srgb:0.95686,0.95686,0.95686,1.00000"
+              }
+            }
+          ],
+          "glass": false,
+          "image-name": "5 Sail.svg",
+          "name": "5 Sail",
+          "opacity": 1.0,
+          "position": {
+            "scale": 1,
+            "translation-in-points": [
+              0,
+              0
+            ]
+          }
+        },
         {
           "fill-specializations": [
             {
@@ -155,19 +251,19 @@
             {
               "appearance": "dark",
               "value": {
-                "solid": "srgb:0.08235,0.09412,0.11373,1.00000"
+                "solid": "srgb:0.05490,0.06667,0.08235,1.00000"
               }
             },
             {
               "appearance": "tinted",
               "value": {
-                "solid": "srgb:0.18824,0.18824,0.18824,1.00000"
+                "solid": "srgb:0.18039,0.18039,0.18039,1.00000"
               }
             }
           ],
           "glass": false,
-          "image-name": "3 Near.svg",
-          "name": "3 Near",
+          "image-name": "4 Hull.svg",
+          "name": "4 Hull",
           "opacity": 1.0,
           "position": {
             "scale": 1,
@@ -181,58 +277,26 @@
           "fill-specializations": [
             {
               "value": {
-                "solid": "srgb:0.29020,0.33333,0.38824,1.00000"
+                "solid": "srgb:1.00000,1.00000,1.00000,1.00000"
               }
             },
             {
               "appearance": "dark",
               "value": {
-                "solid": "srgb:0.14510,0.16471,0.19608,1.00000"
+                "solid": "srgb:0.68235,0.71373,0.75294,1.00000"
               }
             },
             {
               "appearance": "tinted",
               "value": {
-                "solid": "srgb:0.32549,0.32549,0.32549,1.00000"
+                "solid": "srgb:0.95686,0.95686,0.95686,1.00000"
               }
             }
           ],
           "glass": false,
-          "image-name": "2 Mid.svg",
-          "name": "2 Mid",
-          "opacity": 1.0,
-          "position": {
-            "scale": 1,
-            "translation-in-points": [
-              0,
-              0
-            ]
-          }
-        },
-        {
-          "fill-specializations": [
-            {
-              "value": {
-                "solid": "srgb:0.48627,0.52941,0.58039,1.00000"
-              }
-            },
-            {
-              "appearance": "dark",
-              "value": {
-                "solid": "srgb:0.24314,0.26667,0.29020,1.00000"
-              }
-            },
-            {
-              "appearance": "tinted",
-              "value": {
-                "solid": "srgb:0.52157,0.52157,0.52157,1.00000"
-              }
-            }
-          ],
-          "glass": false,
-          "image-name": "1 Far.svg",
-          "name": "1 Far",
-          "opacity": 1.0,
+          "image-name": "3 Wake.svg",
+          "name": "3 Wake",
+          "opacity": 0.45,
           "position": {
             "scale": 1,
             "translation-in-points": [
@@ -242,10 +306,10 @@
           }
         }
       ],
-      "name": "Forest",
+      "name": "Boat",
       "shadow": {
         "kind": "neutral",
-        "opacity": 0.25
+        "opacity": 0.3
       },
       "specular": false,
       "translucency": {
@@ -259,25 +323,57 @@
           "fill-specializations": [
             {
               "value": {
-                "solid": "srgb:0.93333,0.94510,0.95686,1.00000"
+                "solid": "srgb:0.30588,0.43137,0.31373,1.00000"
               }
             },
             {
               "appearance": "dark",
               "value": {
-                "solid": "srgb:0.46667,0.47059,0.47843,1.00000"
+                "solid": "srgb:0.14510,0.20784,0.16471,1.00000"
               }
             },
             {
               "appearance": "tinted",
               "value": {
-                "solid": "srgb:0.94118,0.94118,0.94118,1.00000"
+                "solid": "srgb:0.29020,0.29020,0.29020,1.00000"
               }
             }
           ],
-          "glass": true,
-          "image-name": "0 Sun.svg",
-          "name": "0 Sun",
+          "glass": false,
+          "image-name": "2 Land.svg",
+          "name": "2 Land",
+          "opacity": 1.0,
+          "position": {
+            "scale": 1,
+            "translation-in-points": [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "fill-specializations": [
+            {
+              "value": {
+                "solid": "srgb:0.90980,0.86275,0.75294,1.00000"
+              }
+            },
+            {
+              "appearance": "dark",
+              "value": {
+                "solid": "srgb:0.46667,0.43922,0.36863,1.00000"
+              }
+            },
+            {
+              "appearance": "tinted",
+              "value": {
+                "solid": "srgb:0.87843,0.87843,0.87843,1.00000"
+              }
+            }
+          ],
+          "glass": false,
+          "image-name": "1 Beach.svg",
+          "name": "1 Beach",
           "opacity": 1.0,
           "position": {
             "scale": 1,
@@ -288,12 +384,12 @@
           }
         }
       ],
-      "name": "Sun",
+      "name": "Shore",
       "shadow": {
         "kind": "neutral",
-        "opacity": 0.0
+        "opacity": 0.3
       },
-      "specular": true,
+      "specular": false,
       "translucency": {
         "enabled": false,
         "value": 0.5

@@ -12,6 +12,7 @@ public struct FiscalWindow {
     public let portraits: PortraitStore
     public let liveResults: LiveResultsModel
     public let follow: FollowController
+    public let like: LikeController
     public let followingBadge: FollowingBadge
 
     public init(provider: any RepositoryProvider) {
@@ -25,6 +26,7 @@ public struct FiscalWindow {
             follows: repositories.follows,
             people: { try await FiscalServices.shared.publicData()?.people() ?? [] })
         followingBadge = FollowingBadge()
+        like = LikeController(likes: repositories.likes)
     }
 
     private static func repositories(_ repositories: Repositories) -> Repositories {
@@ -32,7 +34,8 @@ public struct FiscalWindow {
             if let scenario = SupportScenario.fromLaunchArguments() {
                 return Repositories(
                     support: ShowcaseSupportRepository(scenario: scenario),
-                    follows: repositories.follows, investigations: repositories.investigations)
+                    follows: repositories.follows, investigations: repositories.investigations,
+                    likes: repositories.likes)
             }
         #endif
         return repositories
@@ -46,6 +49,7 @@ extension View {
             .environment(window.support)
             .environment(window.liveResults)
             .environment(window.follow)
+            .environment(window.like)
             .environment(window.followingBadge)
             .fiscalPortraits(window.portraits)
             .environment(\.currentWindow, window)

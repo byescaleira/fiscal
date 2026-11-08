@@ -19,7 +19,9 @@ public final class DataExportModel {
         do {
             let support = try await repositories.support.support()
             let following = try await repositories.follows.followed()
-            archive = DataArchive(exportedAt: now(), support: support, following: following)
+            let liked = try await repositories.likes?.liked()
+            archive = DataArchive(
+                exportedAt: now(), support: support, following: following, liked: liked)
             isExporting = true
         } catch {
             self.error = .onFetch

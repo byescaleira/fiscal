@@ -1,3 +1,5 @@
+import FiscalDomain
+import Foundation
 import Testing
 
 @testable import FeatureCore
@@ -29,5 +31,29 @@ struct NavigationTests {
         navigation.selectedSection = .votes
         navigation.closeInspectorOutsideSelection()
         #expect(navigation.inspector == nil)
+    }
+
+    @Test func eachLikedItemOpensItsOwnScreen() throws {
+        let day = try #require(CalendarDay(year: 2026, month: 10, day: 14))
+        let likedAt = Date(timeIntervalSince1970: 1)
+        let url = try #require(URL(string: "https://projetocomprova.com.br/1"))
+        func make(
+            _ kind: LikedItem.Kind, voteID: String? = nil, slug: String? = nil, year: Int? = nil,
+            highlightID: String? = nil, url: URL? = nil
+        ) -> LikedItem {
+            LikedItem(
+                id: "x", kind: kind, title: "T", day: day, likedAt: likedAt, voteID: voteID,
+                expensesSlug: slug, expensesYear: year, highlightID: highlightID, url: url)
+        }
+        #expect(Route.destination(for: make(.vote, voteID: "v")) == .vote(id: "v"))
+        #expect(
+            Route.destination(for: make(.expenses, slug: "a", year: 2026))
+                == .expenses(slug: "a", year: 2026))
+        #expect(Route.destination(for: make(.highlight, highlightID: "h")) == .highlight(id: "h"))
+        #expect(
+            Route.destination(for: make(.highlight, voteID: "v", highlightID: "h"))
+                == .vote(id: "v"))
+        #expect(Route.destination(for: make(.check, url: url)) == nil)
+        #expect(Route.destination(for: make(.proposal)) == nil)
     }
 }

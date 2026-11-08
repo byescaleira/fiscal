@@ -43,8 +43,7 @@ extension VoteDetailModel {
     }
 
     public var requiredYes: Int? {
-        guard let vote, isAmendment else { return nil }
-        let seats = vote.house == .camara ? 513 : 81
+        guard isAmendment, let seats else { return nil }
         return Int((Double(seats) * Self.amendmentShare).rounded(.up))
     }
 
@@ -72,7 +71,8 @@ extension VoteDetailModel {
     public var accessibilityScore: String {
         guard let vote else { return "" }
         return [
-            heroCaption, outcome?.title, VoteTally.label(vote.tally), quorumText, headline,
+            heroCaption, outcome?.title, VoteTally.label(vote.tally), quorumText,
+            plenaryAccessibility, headline,
         ]
         .compactMap(\.self).joined(separator: ". ")
     }
