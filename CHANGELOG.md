@@ -9,7 +9,7 @@ Primeira versão, a 1.0.0.
 ### Added
 
 - Feed, Votações, Dinheiro, Região e Fiscalizar com dados oficiais da Câmara, do Senado, do TSE, do Portal da Transparência e dos municípios.
-- Apuração ao vivo das eleições, com Live Activity e Ilha Dinâmica.
+- Apuração ao vivo das eleições, com os números do TSE.
 - Meu apoio: uma página privada com as pessoas e as causas que você escolhe, numa linha do tempo por data, só com fatos, guardada só no aparelho e que pode ser apagada. O resto do app é igual para todo mundo.
 - Cartões de compartilhar com arte brasileira de licença livre e o que circulou sobre cada político segundo o Projeto Comprova.
 - Widgets, atalhos da Siri e busca no Spotlight.
@@ -46,9 +46,14 @@ Primeira versão, a 1.0.0.
 - Plenário no detalhe da votação: um ponto por cadeira (513 na Câmara, 81 no Senado), com sim à esquerda, não à direita, quem não votou no meio e a linha de quórum da PEC. A contagem anima uma vez e fica parada com Reduzir movimento ([FSC-023](spdd/prompt/FSC-023-202611052151-[Feat]-plenary-and-holographic-card.md)).
 - O cartão do político virou uma carta colecionável, igual para todos: moldura metalizada, o retrato numa janela holográfica com brilhos e a carta girando com a inclinação do iPhone.
 - Curtir no Feed: um coração no cabeçalho de cada item, ao lado da data, e no destaque do topo, que explode em confete de corações nas cores do partido, ou em vermelho, com um toque háptico. As curtidas são privadas, sem contagem, ficam só no aparelho, fora do iCloud e do backup, e aparecem em "Curtidas", no menu do coração da barra do Feed ([FSC-024](spdd/prompt/FSC-024-202611061418-[Feat]-feed-like-with-ripple.md)).
+- Notificação de destaque, em Ajustes › Notificações: desligada por padrão, leva o destaque seguinte em peso, sem som. A pergunta do iOS só aparece quando você liga o interruptor ([FSC-020](spdd/prompt/FSC-020-202611042045-[Feat]-app-reads-only-from-cdn-and-local-alerts.md)).
+- A Atividade ao Vivo do destaque mostra o bonequinho do político na tela de bloqueio e na Ilha Dinâmica expandida.
 
 ### Changed
 
+- O app lê os dados públicos e a apuração só da Cloudflare e não chama mais o servidor do Fiscal. Sem a Cloudflare, usa a cópia guardada e o pacote offline.
+- A Atividade ao Vivo do destaque é agendada no próprio aparelho, uma vez por dia, num horário que o aparelho aprende pelo seu uso do app. Abrir o app não a inicia mais na hora. O histórico de aberturas fica só no aparelho, fora do iCloud, e nunca sai dele.
+- Nada sai do aparelho para o servidor do Fiscal: saíram o código de push, o App Attest e o registro. O servidor só carrega as fontes, lê o TSE e publica na Cloudflare.
 - A pauta, as votações recentes e o resumo de hoje passam a vir só da Cloudflare, para a VPS não ser o caminho de cada abertura do app. Esses dados podem atrasar até uns 10 minutos.
 - A Atividade ao Vivo do destaque passa a aceitar peso 70, no servidor e no app. Com o limite de 85, nenhum destaque entrou nos 30 dias medidos.
 - O Feed virou uma lista contínua, com divisórias entre os itens no lugar dos cartões. O destaque e a apuração no topo continuam como cartões.
@@ -70,13 +75,16 @@ Primeira versão, a 1.0.0.
 - O cartão traz a mediana dos colegas no lugar de "Melhor" ou "Pior que a média", que fica só no perfil.
 - byescaleira-kit 0.7.2; a verificação completa roda o servidor com `-race` e o `govulncheck`.
 
+### Removed
+
+- A Atividade ao Vivo da apuração e o botão de acompanhar uma disputa, até a próxima eleição. A apuração continua nas telas.
+
 ### Fixed
 
 - A mesma pessoa não aparece mais com dois partidos: governador, vice e deputado estadual em exercício usam o partido da candidatura mais recente, e o histórico de cada eleição continua como foi.
 - Eliane Leal, Gustavo Rocha, Jessica Sales e Larissa ganharam retrato próprio.
 - A carga de dados avisa no celular quando falha ou quando os dados ficam velhos, e a limpeza do Docker não apaga mais as imagens da carga.
 - O app do Mac carrega os dados: o sandbox ganhou a rede de saída.
-- Com a atualização obrigatória, atalhos, alertas de destaque, registro da Live Activity e a atualização em segundo plano também param.
-- A Live Activity da apuração abre a Apuração, não a tela inicial.
+- Com a atualização obrigatória, atalhos, alertas de destaque e a atualização em segundo plano também param.
 - Contagens no plural certo, inclusive no zero.
 - O desenvolvimento passa a seguir o SPDD (open-spdd): análises e canvases em `spdd/`, um canvas `[Codify]` por capacidade e as specs e mudanças antigas congeladas como histórico ([ADR 0019](docs/adr/0019-spdd-process.md)).

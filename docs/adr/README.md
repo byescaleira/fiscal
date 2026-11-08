@@ -22,12 +22,12 @@ Cada decisão que molda o Fiscal além de uma única mudança ganha um registro 
 | ADR | Título | Estado |
 | --- | --- | --- |
 | [0001](0001-record-architecture-decisions.md) | Registrar decisões em ADRs | Aceito |
-| [0002](0002-static-first-server.md) | Servidor estático primeiro: tudo pronto, nada calculado por acesso | Aceito |
+| [0002](0002-static-first-server.md) | Servidor estático primeiro: tudo pronto, nada calculado por acesso | Aceito; push por canal e registro de token substituídos por [0028](0028-app-reads-only-from-cdn-and-local-alerts.md) |
 | [0003](0003-portuguese-only.md) | O Fiscal é só em português do Brasil | Aceito |
 | [0004](0004-lens-on-device-store.md) | A Lente fica num banco só do aparelho; os seguidos no iCloud privado | Aceito |
 | [0005](0005-data-ingest-process.md) | Carga de dados num processo próprio, com ligações e slugs guardados no servidor | Aceito |
 | [0006](0006-ingest-sqlite-store.md) | A carga guarda tudo num SQLite com histórico, e os arquivos públicos saem dele | Aceito |
-| [0007](0007-pages-cdn-phased-ingest.md) | Dados públicos no Cloudflare Pages, carga em fases na VPS atual e App Attest no registro | Aceito; calendário e publicação substituídos por [0008](0008-smart-sync.md) |
+| [0007](0007-pages-cdn-phased-ingest.md) | Dados públicos no Cloudflare Pages, carga em fases na VPS atual e App Attest no registro | Aceito; calendário e publicação substituídos por [0008](0008-smart-sync.md); reserva na VPS, pushes e App Attest substituídos por [0028](0028-app-reads-only-from-cdn-and-local-alerts.md) |
 | [0008](0008-smart-sync.md) | Sincronização por cadência, detecção de mudança e reconstrução incremental | Aceito |
 | [0009](0009-bricolage-emphasis-font.md) | Bricolage Grotesque como fonte de ênfase, SF Pro no corpo | Aceito |
 | [0010](0010-byescaleira-kit.md) | Design, componentes e idioma vêm do byescaleira-kit | Aceito |
@@ -37,7 +37,7 @@ Cada decisão que molda o Fiscal além de uma única mudança ganha um registro 
 | [0014](0014-settings-in-today-toolbar.md) | Ajustes na toolbar de Hoje, não numa aba | Aceito |
 | [0015](0015-background-fetch-offline-pack.md) | Modo `fetch` em segundo plano para o pacote offline | Aceito |
 | [0016](0016-web-companion-after-1-0.md) | Fiscal na Web só depois da 1.0 | Aceito |
-| [0017](0017-app-store-privacy-label.md) | Rótulo de privacidade da loja com os tokens e as chaves guardados no servidor | Aceito |
+| [0017](0017-app-store-privacy-label.md) | Rótulo de privacidade da loja com os tokens e as chaves guardados no servidor | Substituído por [0028](0028-app-reads-only-from-cdn-and-local-alerts.md) |
 | [0018](0018-widgets-read-public-data.md) | Os widgets leem os dados públicos direto, sem retrato escrito pelo app | Proposto |
 | [0019](0019-spdd-process.md) | Processo SPDD no lugar de specs e mudanças | Aceito |
 | [0020](0020-share-to-social-networks.md) | Compartilhar nas redes sem SDK de terceiros | Aceito |

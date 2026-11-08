@@ -12,7 +12,7 @@ Medido em 04/11/2026: o iOS aceita agendar uma Atividade com o app em primeiro p
 
 ## Decisão
 
-1. A cada abertura, o app lê os destaques na CDN e agenda só o próximo horário: Atividade às 08:00 e notificação às 19:00, no relógio do aparelho, com um atraso fixo por aparelho de até 10 minutos.
+1. A cada abertura, o app lê os destaques na CDN e agenda só o próximo horário da Atividade e o da notificação. Cada um sai no horário que o aparelho aprende pelo hábito de abertura do app, guardado só no aparelho; com 08:00 e 19:00, no relógio do aparelho, só sem histórico. Soma-se um atraso fixo por aparelho de até 10 minutos. O usuário escolheu o hábito em 2026-11-05 ("Pelo hábito da pessoa"), e nenhum texto do app cita a hora.
 2. A Atividade leva o destaque de maior peso que ainda vale no horário dela. A notificação leva o seguinte; com um só destaque, não sai notificação. Com as Atividades desligadas, a notificação leva o primeiro.
 3. A notificação tem interruptor próprio, desligado por padrão, e a pergunta do iOS só aparece quando a pessoa o liga. Isso encerra a regra "só por Atividades ao Vivo, nunca por notificação comum" da `FSC-007`, só para esta notificação.
 4. Abrir o app não inicia mais a Atividade na hora.

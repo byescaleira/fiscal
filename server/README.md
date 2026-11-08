@@ -6,96 +6,49 @@ A leitura pública não passa pela VPS: os JSON são um site estático do Cloudf
 
 | Binário | O que faz |
 | --- | --- |
-| **`liveresults-server`** (`cmd/server`, imagem `fiscal-api`) | A apuração ao vivo e o único endpoint que recebe dados. Lê os arquivos do TSE do 2º turno (presidente e governador de AC, AM, DF, ES, RN e TO), grava o placar em `PUBLIC_DIR/v1/races*.json`, atualiza as Live Activities por APNs e recebe o registro de token com App Attest. Contrato em `docs/changes/archive/2026-10-29-live-results/proposal.md` |
+| **`liveresults-server`** (`cmd/server`, imagem `fiscal-api`) | A leitura da apuração ao vivo. Lê os arquivos do TSE do 2º turno (presidente e governador de AC, AM, DF, ES, RN e TO) e grava o placar em `PUBLIC_DIR/v1/races*.json`, que o `fiscal-pages` publica no Pages. Não tem rota pública: só responde a saúde, ouvindo em `127.0.0.1`. Sem APNs, App Attest nem registro de token desde a [FSC-020](../spdd/prompt/FSC-020-202611042045-[Feat]-app-reads-only-from-cdn-and-local-alerts.md) ([ADR 0028](../docs/adr/0028-app-reads-only-from-cdn-and-local-alerts.md)); na VPS, isso vale depois do deploy desta mudança, que ainda não aconteceu |
 | **`fiscal-ingest`** (`cmd/ingest`, imagem `fiscal-ingest`) | A carga de dados da 1.0, em fases que rodam e saem (`-phase <nome>`) ou numa carga só (`-once full` ou `-once live`). Lê as fontes, guarda no SQLite, grava o `v1` local (área de preparo) e monta o site `v2` validado em `PUBLIC_DIR/site/ready`. Detalhes em [Carga de dados](#carga-de-dados-fiscal-ingest) |
 | **`fiscal-pages`** (`cmd/pages`, imagem `fiscal-pages`, com o `wrangler` fixado) | Faz o deploy do `site/ready`, junto com os arquivos da apuração e o `status.json`, no Pages. Um deploy por vez, só quando algo mudou, com 3 tentativas |
 
 ## Apuração ao vivo (`liveresults-server`)
 
+O app não chama este processo: ele lê `v2/races.json` na CDN. O servidor só lê o TSE e grava os arquivos que o `fiscal-pages` publica.
+
 ### Variáveis
 
 | Variável | Padrão | Uso |
 | --- | --- | --- |
-| `HOST` | `127.0.0.1` (`0.0.0.0` no container) | Endereço de escuta |
+| `HOST` | `127.0.0.1` (`0.0.0.0` no container, publicado só em `127.0.0.1:3130` pelo `compose.yaml`) | Endereço de escuta |
 | `PORT` | `3130` | Porta |
-| `DATA_DIR` | `./data` (`/data` no container) | `registrations.json` e `state.json`, pasta `0700`, arquivos `0600` |
-| `PUBLIC_DIR` | `./public` (`/public` no container) | Onde o poller grava os arquivos estáticos que o Caddy serve; com `SIMULATE=1` nada é gravado |
+| `DATA_DIR` | `./data` (`/data` no container) | `state.json` (as disputas e as encerradas), pasta `0700`, arquivo `0600` |
+| `PUBLIC_DIR` | `./public` (`/public` no container) | Onde o poller grava `v1/races.json` e `v1/races/<id>.json`; com `SIMULATE=1` nada é gravado |
 | `TSE_BASE_URL` | `https://resultados.tse.jus.br/oficial/ele2026` | Base dos arquivos do TSE; só `https://` (`http://` só com `SIMULATE=1`) |
 | `POLL_INTERVAL` | `20s` | Intervalo de leitura do TSE (`20s` ou `20`; de 5 s a 10 min) |
-| `SIMULATE` | vazio | `1` troca o TSE por dados sintéticos que andam por ~10 min e terminam com um eleito em cada disputa; os dados simulados ficam só na memória e em `GET /api/v1/races` do Go, nunca em `PUBLIC_DIR` |
-| `APNS_KEY_FILE` | vazio (`/secrets/apns.p8` no container) | Chave `.p8` (PKCS#8 PEM) |
-| `APNS_KEY_ID` | vazio | Key ID da chave |
-| `APNS_TEAM_ID` | vazio | Team ID |
-| `APNS_TOPIC` | vazio | Tópico completo, com o sufixo: `com.byescaleira.fiscal.push-type.liveactivity` |
-| `APNS_DISABLED` | vazio | `1` sobe sem APNs e só loga o resumo dos pushes (sem token) |
-| `ADMIN_TOKEN` | vazio | Liga `POST /api/v1/admin/push-test` (32+ caracteres); vazio, a rota responde 404. Gere na VPS com `openssl rand -hex 32` e guarde só no `.env` |
-| `HIGHLIGHT_ALERTS` | `1` | `0` desliga a Live Activity do destaque: sem as rotas `/api/v1/highlight-activities` (404) e sem ler `PUBLIC_DIR/published/highlights.json` |
+| `SIMULATE` | vazio | `1` troca o TSE por dados sintéticos que andam por ~10 min e terminam com um eleito em cada disputa; os dados simulados ficam só na memória e não são publicados, então não chegam ao app |
 
-Sem `APNS_KEY_FILE`, `APNS_KEY_ID`, `APNS_TEAM_ID` e `APNS_TOPIC` o servidor não sobe, a menos que `APNS_DISABLED=1`. A chave é carregada e um JWT é assinado no boot.
+Nenhuma variável é segredo. Configuração inválida derruba o processo no boot.
 
 ### Rotas
 
 | Rota | Resposta |
 | --- | --- |
-| `GET /api/health` | `{"ok":true,"version":"1.0.0+<sha>"}`: a versão vem do binário (`-ldflags "-X main.version=…"`, que o `scripts/server-deploy.sh` preenche com a tag `vX.Y.Z` do commit ou com o `MARKETING_VERSION` do app e o sha); `dev` num build local |
-| `GET /api/v1/races` | `{"races":[Race],"fetchedAt":"…"}`; `503 not_ready` antes do primeiro dado |
-| `GET /api/v1/races/{id}` | `Race`; `404 race_not_found`; `503 not_ready` |
-| `POST /api/v1/live-activities` | `{"raceId","pushToken","environment"}` → `204`; `422 invalid_request`, `413 body_too_large`, `409 token_bound_to_other_race`, `429 too_many_registrations`, `429 rate_limited`, `507 capacity_reached` |
-| `DELETE /api/v1/live-activities` | corpo `{"pushToken":"<hex>"}` (até 4 KiB) → `204` sempre que o corpo for válido, exista ou não o registro; `422 invalid_request`, `413 body_too_large`, `429 rate_limited` |
-| `POST /api/v1/highlight-activities` | `{"pushToken","environment"}` (token de push-to-start da `HighlightActivityAttributes`) → `204`; `422 invalid_request`, `413 body_too_large`, `409 token_bound_to_other_environment`, `429 too_many_registrations`, `429 rate_limited`, `507 capacity_reached` |
-| `DELETE /api/v1/highlight-activities` | corpo `{"pushToken":"<hex>"}` → `204` sempre que o corpo for válido; `422 invalid_request`, `413 body_too_large`, `429 rate_limited` |
-| `POST /api/v1/admin/push-test` | `Authorization: Bearer $ADMIN_TOKEN`, `{"raceId"}` → `{"registrations","sent","failed","removed","event"}` |
+| `GET /api/health` | `{"ok":true,"version":"1.0.0+<sha>"}`: a versão vem do binário (`-ldflags "-X main.version=…"`, que o `scripts/server-deploy.sh` preenche com a tag `vX.Y.Z` do commit ou com o `MARKETING_VERSION` do app e o sha); `dev` num build local. É o que o healthcheck do container (`-check`) consulta |
+| qualquer outra | `404 not_found` |
 
-O token vai no corpo do `DELETE`, nunca na URL: o log do Caddy grava a URI inteira. A rota antiga `DELETE /api/v1/live-activities/{pushToken}` não existe mais (responde `404 not_found`, e o log do Go continua cortando o token em 6 caracteres).
+Todas as respostas levam `Cache-Control: no-store`. As rotas antigas (`/api/v1/races`, `/api/v1/live-activities`, `/api/v1/highlight-activities`, `/api/v1/attest/*` e `/api/v1/admin/push-test`) saíram e respondem 404.
 
 Ids: `presidente-br`, `governador-ac`, `governador-am`, `governador-df`, `governador-es`, `governador-rn`, `governador-to`.
 
-Registros:
-- Cada registro guarda `createdAt` e vale 12 h. Registrar de novo o mesmo token renova o prazo. Registros vencidos são ignorados no envio e removidos na varredura que roda junto do flush, a cada 2 s.
-- Um token já registrado não troca de `raceId` nem de `environment`: o pedido diferente recebe `409 token_bound_to_other_race` e o original fica.
-- No máximo 20 registros vivos por IP de origem (IPv6 agrupado por /64), `429 too_many_registrations` acima disso. O IP só é guardado como SHA-256 truncado com um sal aleatório gerado no boot, em memória; `registrations.json` não leva IP nem hash, e ao reiniciar o teto recomeça.
-
-Destaque na tela de bloqueio (regra em `docs/changes/archive/2026-10-29-app-1.0/weight.md`):
-- Os tokens de push-to-start ficam em `DATA_DIR/highlight-registrations.json` (sem IP), valem 30 dias e são renovados a cada abertura do app; até 200 000 registros e 100 por IP.
-- A cada minuto o servidor confere `PUBLIC_DIR/published/highlights.json` (copiado pelo `fiscal-pages` só depois que o Pages confirma o deploy da release) e só relê quando data ou tamanho mudam. O primeiro item com peso ≥ 70, de fato até 24 h depois do fim do dia dele (Brasília), e ainda não enviado vira um push-to-start (`event: start`, prioridade 10) para todos os tokens; o id vai para `DATA_DIR/highlight-alerts.json` (14 dias). Um alerta por arquivo publicado.
-- Sem nenhum token registrado, nada é marcado como enviado: o item fica pendente e é reavaliado a cada minuto (o log avisa uma vez por item), e sai assim que houver o primeiro registro ou quando passar da janela de 24 h.
-
-Rate limit por IP: 120 GET e 120 POST/DELETE por minuto (CGNAT), `429 rate_limited` acima. IPv6 conta por /64. `X-Forwarded-For` (último valor) só é aceito quando a conexão vem de loopback ou de rede privada (gateway do Docker, `10/8`, `172.16/12`, `192.168/16`, `fc00::/7`); de qualquer outro endereço vale o `RemoteAddr`. Quando o mapa de buckets lota (100 000), o mais antigo é descartado.
-
-App Attest (`internal/appattest`, só biblioteca padrão):
-
-- **Rotas.**
-  - `POST /api/v1/attest/challenge` devolve `{"challenge"}`: 32 bytes em base64url, de uso único, válido por 2 min. Cada cliente (IPv4, ou o /64 do IPv6, pelo mesmo `X-Forwarded-For` do rate limit) tem até 8 desafios abertos; acima disso, `429 rate_limited` com `Retry-After: 120`. O teto global é de 100 mil (`503 attest_busy`).
-  - `POST /api/v1/attest/keys` recebe `{"keyId","attestation","challenge"}` (base64, até 16 KiB) e responde `204`, `401 attest_invalid` ou `507 capacity_reached`.
-- **Verificação da chave:**
-  - CBOR próprio;
-  - cadeia `x5c` até a Apple App Attestation Root CA embutida (`internal/appattest/apple-root-ca.der`, SHA-256 `1cb9823b…c932`);
-  - nonce `SHA256(authData ‖ SHA256(challenge))` na extensão `1.2.840.113635.100.8.2`;
-  - `keyId` = SHA-256 da chave pública;
-  - `rpIdHash` = SHA-256 de `APPATTEST_APP_ID`;
-  - contador 0;
-  - `aaguid` de produção (o de desenvolvimento só com `APPATTEST_ALLOW_DEVELOPMENT=1`).
-- **Registros com asserção.** `POST /api/v1/live-activities` e `POST /api/v1/highlight-activities` aceitam os cabeçalhos `X-Fiscal-Attest-Key` (base64 do `keyId`) e `X-Fiscal-Attest-Assertion` (base64 do CBOR), com `"challenge"` no corpo.
-  - A assinatura é sobre `SHA256(SHA256(authenticatorData ‖ SHA256(corpo)))`, e o contador precisa subir.
-  - Erros: `401 attest_invalid`, `401 attest_unknown_key` (o app atesta de novo) e `401 attest_challenge`.
-- **Modos:**
-  - **`APPATTEST_MODE=optional`** é o padrão quando há `APPATTEST_APP_ID` ou `APNS_TEAM_ID` + `APNS_TOPIC`. O registro sem cabeçalhos passa, com limite próprio de 10 por minuto por IP.
-  - **`required`** recusa o registro sem asserção com `401 attest_required`.
-  - **`off`** desliga.
-- **Chaves.** Ficam em `DATA_DIR/attest-keys.json` (`0600`, sem IP, até 500 000). Uma chave sem uso por 400 dias sai na leitura.
-
-Arquivos estáticos (`PUBLIC_DIR/v1`, a área de preparo): no boot do modo TSE só `races.json` e a pasta `races/` são apagados e republicados a partir do `state.json`; o resto de `v1/` é da carga de dados e não é tocado. A cada leitura, os arquivos das disputas são gravados antes dos pushes e só quando o conteúdo muda; `races.json` só é regravado quando alguma disputa muda, então o `fetchedAt` dele é o da última mudança, e o `ETag`/`304` do Caddy se mantém entre leituras sem novidade.
+Arquivos estáticos (`PUBLIC_DIR/v1`, a área de preparo): no boot do modo TSE só `races.json` e a pasta `races/` são apagados e republicados a partir do `state.json`; o resto de `v1/` é da carga de dados e não é tocado. A cada leitura, os arquivos das disputas só são gravados quando o conteúdo muda; `races.json` só é regravado quando alguma disputa muda, então o `fetchedAt` dele é o da última mudança.
 
 ### Rodar local
 
 ```sh
 cd server
 go build ./... && go vet ./... && go test -race ./...
-SIMULATE=1 APNS_DISABLED=1 POLL_INTERVAL=5s go run ./cmd/server
-curl -s http://127.0.0.1:3130/api/v1/races
+SIMULATE=1 POLL_INTERVAL=5s go run ./cmd/server
+curl -s http://127.0.0.1:3130/api/health
 ```
-
-Com APNs de verdade, aponte `APNS_KEY_FILE` para a `.p8` e preencha `APNS_KEY_ID`, `APNS_TEAM_ID` e `APNS_TOPIC`.
 
 ## Deploy
 
@@ -107,66 +60,13 @@ Só com o ok do usuário, pedido a cada vez. O passo a passo está no [runbook](
 - **`:previous` preservada.** `deploy/promote-image.sh` (rodado na VPS) só move `:current` para `:previous` quando o sha muda; as imagens levam o rótulo `fiscal.sha`, e repetir o deploy do mesmo sha não apaga o alvo do rollback.
 - **As fases.** As units do systemd (`deploy/systemd/`) agendam cada uma.
 
-`.env`, `secrets/`, `data/`, `ingest-data/`, `ingest-backups/`, `pages-data/` e `public/` nunca saem da VPS nem são sobrescritos. O `ADMIN_TOKEN` é gerado na própria VPS (`openssl rand -hex 32`) e vai só para o `.env`. A chave do pseudônimo do CPF (`secrets/pseudonym-key`, também `openssl rand -hex 32`) precisa existir antes do deploy da imagem `fiscal-ingest`; o passo a passo está no runbook.
+`.env`, `secrets/`, `data/`, `ingest-data/`, `ingest-backups/`, `pages-data/` e `public/` nunca saem da VPS nem são sobrescritos. A chave do pseudônimo do CPF (`secrets/pseudonym-key`, `openssl rand -hex 32`) precisa existir antes do deploy da imagem `fiscal-ingest`; o passo a passo está no runbook.
 
-A rota de teste do admin não passa pelo Caddy (ele responde 404 em `/api/v1/admin/*`); use só por SSH, direto no loopback:
+O container tem `pids_limit: 128` e log `json-file` com 3 arquivos de 10 MB. A saúde se confere na própria VPS: `curl -s http://127.0.0.1:3130/api/health`.
 
-```sh
-ssh vps 'set -a; . /opt/fiscal-api/.env; curl -s -X POST http://127.0.0.1:3130/api/v1/admin/push-test -H "Authorization: Bearer $ADMIN_TOKEN" -d "{\"raceId\":\"presidente-br\"}"'
-```
+## Caddy
 
-O Caddy encaminha `/api/*` de `fiscal.byescaleira.com` para `127.0.0.1:3130`. O container tem `pids_limit: 128` e log `json-file` com 3 arquivos de 10 MB.
-
-## Caddy (no ar desde 2026-10-25)
-
-Leitura sai do disco, sem passar pelo Go ([ADR 0002](../docs/adr/0002-static-first-server.md)): o poller grava `public/v1/races.json` e `public/v1/races/<id>.json` (com `.gz`), e o Caddy entrega com `ETag`, `304` e gzip pré-comprimido. Só o registro de tokens chega ao Go.
-
-```
-fiscal.byescaleira.com {
-	header {
-		Strict-Transport-Security "max-age=31536000; includeSubDomains"
-		-Server
-	}
-
-	@races path /api/v1/races /api/v1/races/*
-	handle @races {
-		root * /opt/fiscal-api/public
-		@list path /api/v1/races
-		rewrite @list /v1/races.json
-		@one path_regexp one ^/api/v1/races/([a-z]+-[a-z]{2})$
-		rewrite @one /v1/races/{re.one.1}.json
-		header Cache-Control "public, max-age=10, stale-while-revalidate=30"
-		file_server {
-			precompressed gzip
-		}
-	}
-
-	handle /api/v1/admin/* {
-		respond 404
-	}
-
-	handle /api/* {
-		encode zstd gzip
-		reverse_proxy 127.0.0.1:3130
-	}
-
-	handle {
-		respond 404
-	}
-
-	log {
-		output file /var/log/fiscal-access.log {
-			roll_size 100mb
-			roll_keep 10
-		}
-		format json
-	}
-}
-```
-
-O contrato não põe token na URL (o DELETE leva o token no corpo), por isso o log JSON do Caddy não precisa de filtro. Rode `caddy validate --config /etc/caddy/Caddyfile` antes de recarregar.
-
-O `rewrite` roda antes de `uri` no Caddy, por isso os matchers usam o caminho original com `/api`.
+O app não lê nada da VPS ([ADR 0028](../docs/adr/0028-app-reads-only-from-cdn-and-local-alerts.md)). O bloco `fiscal.byescaleira.com` que está na VPS hoje ainda é o de antes: `@races` e `@data` servem o `v1` de `/opt/fiscal-api/public`, e `/api/*` vai para `127.0.0.1:3130`. O app desta versão não usa nenhum deles. Depois do deploy do servidor novo, o Go só responde `GET /api/health` e 404; enquanto o Caddy encaminhar `/api/*`, a saúde também responde de fora. Tirar esses blocos (e o `@hot`, se estiver lá) é uma edição do Caddy à parte, só com o ok do usuário, com os passos do [runbook](../docs/server-runbook.md#7-caddy). O log de acesso (`/var/log/fiscal-access.log`) continua sendo o jeito de conferir que o app não chama a VPS.
 
 ## Carga de dados (`fiscal-ingest`)
 
@@ -198,7 +98,7 @@ O que vale em toda execução:
 - `index/city-people/{bucket}.json` = `{ items: { slug: ibge } }` (256 pacotes);
 - `votes/by-id/{bucket}.json` = `{ items: { id: votação } }` (512 pacotes);
 - o resto igual ao `v1`, inclusive a Memória (`history/*`);
-- mais `release.json` (com `base`, a release de onde saiu o delta, `rebuilt`, os pacotes refeitos, e `origin`, o quente lido primeiro na VPS), `_headers` (Cache-Control por tipo) e `404.html`.
+- mais `release.json` (com `base`, a release de onde saiu o delta, e `rebuilt`, os pacotes refeitos), `_headers` (Cache-Control por tipo) e `404.html`.
 
 O bucket são os 2 primeiros bytes do SHA-256 da chave, módulo o número de pacotes, em hexadecimal.
 
@@ -216,7 +116,7 @@ A release só vira `site/ready` (troca atômica de link simbólico) depois da va
 
 São guardadas as últimas `SITE_KEEP`.
 
-Sem nenhum arquivo mudado, nenhuma release nova é criada. A carga não toca em `PUBLIC_DIR/published/`: quem copia o `highlights.json` para lá é o `fiscal-pages`, depois do deploy confirmado (veja "Deploy no Pages").
+Sem nenhum arquivo mudado, nenhuma release nova é criada.
 
 **Incremental ([ADR 0008](../docs/adr/0008-smart-sync.md)):**
 
@@ -258,7 +158,6 @@ Cada arquivo sai com o `.gz` ao lado, por escrita atômica (`internal/publish`, 
 | `SITE_MAX_DROP` | `0.2` | Queda máxima de arquivos ou pessoas contra a release anterior |
 | `SITE_MAX_FILES` | `18000` | Teto de arquivos do site (de 100 a 20 000, o limite do Pages Free) |
 | `SITE_KEEP` | `3` | Releases guardadas em `PUBLIC_DIR/site/sites` |
-| `HOT_FROM_ORIGIN` | `0` | Com `1`, põe `origin` no `release.json`: o app lê `today.json`, `agenda/today.json` e `votes/recent.json` primeiro no `api/v1` da VPS e busca lá a votação que o Pages ainda não tem. Com `0`, tudo vem do Pages |
 | `INGEST_LOCK_WAIT` | `20m` | Quanto uma fase espera o lock global |
 | `INGEST_NICE` | `19` | Prioridade do processo (`0` desliga) |
 | `INGEST_MAX_LOAD`, `INGEST_MIN_AVAILABLE_MB`, `INGEST_CAPACITY_WAIT` | `2`, `1536`, `20m` | Guarda de carga antes de cada fase (`0` desliga cada limite) |
@@ -272,8 +171,9 @@ Cada execução faz um ciclo:
 
 1. **Lê `PUBLIC_DIR/site/ready`.**
 2. **Monta `PUBLIC_DIR/deploy/<release>`.** São links físicos da release, mais `v1/races.json`, `v1/races/*.json` e `v1/status.json` copiados para `v2/`, sem `.gz`.
-3. **Roda `wrangler pages deploy … --project-name=$PAGES_PROJECT --branch=$PAGES_BRANCH`.** O token vai só no ambiente do processo, e o log o mascara.
-4. **Publica o destaque.** Só com "Deployment complete" na saída, copia `v2/highlights.json` da release que subiu para `PUBLIC_DIR/published/highlights.json` (com `.gz`), que o alerta da tela de bloqueio lê. Assim o push nunca anuncia um item que ainda não está no Pages. Dry run, deploy falho e release ao vivo esperando o intervalo não copiam nada; uma execução sem mudança copia de novo o da release no ar, se faltar.
+3. **Roda `wrangler pages deploy … --project-name=$PAGES_PROJECT --branch=$PAGES_BRANCH`.** O token vai só no ambiente do processo, e o log o mascara. O estado só é gravado com "Deployment complete" na saída.
+
+O alerta do destaque não passa mais pelo servidor: o app lê `v2/highlights.json` na CDN e agenda a Atividade e a notificação no próprio aparelho ([FSC-020](../spdd/prompt/FSC-020-202611042045-[Feat]-app-reads-only-from-cdn-and-local-alerts.md)).
 
 Quando há deploy:
 
@@ -453,4 +353,4 @@ Limites dos containers de job no `compose.yaml`:
 
 As units dão `Nice=19`, `IOSchedulingClass=idle` e `CPUQuota=100%` ao cliente do Docker. Os limites que valem são os do container.
 
-O Caddy da VPS continua com o bloco `@data`, que serve o `v1` de `/opt/fiscal-api/public`, só como reserva para builds antigos, até todas as versões no ar lerem o Pages.
+O Caddy da VPS ainda tem o bloco `@data`, que serve o `v1` de `/opt/fiscal-api/public`. O app não o usa mais; tirá-lo é a edição do Caddy descrita em [Caddy](#caddy), só com o ok do usuário.

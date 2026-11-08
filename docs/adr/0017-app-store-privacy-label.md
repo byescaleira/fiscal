@@ -1,6 +1,6 @@
 # 0017. Rótulo de privacidade da loja com os tokens e as chaves guardados no servidor
 
-- **Estado:** Aceito (2026-10-29)
+- **Estado:** Substituído por [0028](0028-app-reads-only-from-cdn-and-local-alerts.md) (aceito em 2026-10-29)
 - **Data:** 2026-10-29
 - **Mudança:** [`align-workspace`](../changes/archive/2026-10-29-align-workspace/proposal.md)
 
