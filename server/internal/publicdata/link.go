@@ -125,8 +125,31 @@ func Link(in LinkInput) []*Person {
 	}
 	for _, p := range people {
 		enrich(p, in.StateNames)
+		applyCurrentParty(p)
 	}
 	return people
+}
+
+func applyCurrentParty(p *Person) {
+	party := ""
+	for _, c := range p.Candidacies {
+		if c.Party != "" {
+			party = c.Party
+			break
+		}
+	}
+	if party == "" {
+		return
+	}
+	for i, r := range p.Roles {
+		if r.Status == StatusElected {
+			continue
+		}
+		switch r.Office {
+		case OfficeGovernor, OfficeViceGovernor, OfficeStateDeputy:
+			p.Roles[i].Party = party
+		}
+	}
 }
 
 func FindSenatorCPF(p *Person, cands []Candidacy) (string, bool) {
@@ -376,6 +399,7 @@ func LinkAssembly(people []*Person, cands []Candidacy, uf string, year int, memb
 		if p.Contact == nil && (m.Email != "" || m.Phone != "") {
 			p.Contact = &Contact{Email: strPtr(m.Email), Phone: strPtr(m.Phone)}
 		}
+		applyCurrentParty(p)
 	}
 	return people, matched
 }

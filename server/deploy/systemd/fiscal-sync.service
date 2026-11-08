@@ -7,8 +7,10 @@ Wants=network-online.target
 [Service]
 Type=oneshot
 WorkingDirectory=/opt/fiscal-api
-ExecStart=-/usr/bin/docker compose --project-directory /opt/fiscal-api --profile jobs run --rm --no-deps -T fiscal-ingest -sync
+ExecStart=-/bin/sh -c '/usr/bin/docker compose --project-directory /opt/fiscal-api --profile jobs run --rm --no-deps -T fiscal-ingest -sync; echo $$? > "$$STATE_DIRECTORY/ingest-exit"'
 ExecStart=/usr/bin/docker compose --project-directory /opt/fiscal-api --profile jobs run --rm --no-deps -T fiscal-pages
+ExecStopPost=-/opt/fiscal-api/fiscal-load-alert.sh
+StateDirectory=fiscal-load-alert
 Nice=19
 IOSchedulingClass=idle
 CPUSchedulingPolicy=idle

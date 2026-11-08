@@ -1,7 +1,7 @@
 import Foundation
 
 public struct HighlightAlertRule: Codable, Hashable, Sendable {
-    public static let standard = HighlightAlertRule(minWeight: 85, maxAgeHours: 24)
+    public static let standard = HighlightAlertRule(minWeight: 70, maxAgeHours: 24)
     public static let lifetime: TimeInterval = 8 * 3_600
 
     public let minWeight: Int

@@ -301,12 +301,11 @@ func siteConfig(getenv func(string) string, c config) (config, error) {
 		}
 		c.nice = n
 	}
-	c.origin = true
 	if v := strings.TrimSpace(getenv("HOT_FROM_ORIGIN")); v != "" {
 		switch v {
 		case "1", "true":
+			c.origin = true
 		case "0", "false":
-			c.origin = false
 		default:
 			return c, errors.New("HOT_FROM_ORIGIN must be 1 or 0")
 		}
