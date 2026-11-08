@@ -15,7 +15,7 @@ web() {
     echo "==> node not found; skipping the web checks"
     return
   fi
-  step node --test bridge/server.test.mjs site/web-crypto.test.mjs
+  step node --test bridge/server.test.mjs site/web-crypto.test.mjs scripts/site-build.test.mjs
   step python3 scripts/site-i18n.py check
 }
 

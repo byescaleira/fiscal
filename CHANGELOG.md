@@ -8,6 +8,7 @@ Primeira versão, a 1.0.0.
 
 ### Added
 
+- Site público e arquivo dos links universais prontos para a Cloudflare Pages, no projeto `fiscal-site`: página 404, montagem com teste (`scripts/site-build.mjs`) e publicação com plano e `--apply` (`scripts/site-publish.sh`). A publicação e a troca do DNS de `fiscal.byescaleira.com` vêm depois do deploy da FSC-020, com o ok do usuário ([ADR 0030](docs/adr/0030-site-on-cloudflare-pages.md)).
 - Feed, Votações, Dinheiro, Região e Fiscalizar com dados oficiais da Câmara, do Senado, do TSE, do Portal da Transparência e dos municípios.
 - Apuração ao vivo das eleições, com Live Activity e Ilha Dinâmica.
 - Meu apoio: uma página privada com as pessoas e as causas que você escolhe, numa linha do tempo por data, só com fatos, guardada só no aparelho e que pode ser apagada. O resto do app é igual para todo mundo.
