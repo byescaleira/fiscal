@@ -142,6 +142,54 @@ func TestLoadAlertCountsAFailedIngestEvenWhenPublishingWorks(t *testing.T) {
 	}
 }
 
+func TestLoadAlertNotifiesAtOnceAboutADivergenceWithoutCountingAFailure(t *testing.T) {
+	a := newAlertRig(t)
+	a.ingestExits("3")
+	a.finish("success", 1)
+	if len(a.sent()) != 1 || !strings.Contains(a.sent()[0].title, "divergiram") {
+		t.Fatalf("a divergence must notify at once: %+v", a.sent())
+	}
+	a.finish("success", 3)
+	if len(a.sent()) != 1 {
+		t.Fatalf("the same divergence notified twice: %+v", a.sent())
+	}
+	if data, err := os.ReadFile(filepath.Join(a.state, "failures")); err != nil || strings.TrimSpace(string(data)) != "0" {
+		t.Fatalf("a divergence is not a failed load: %q %v", data, err)
+	}
+}
+
+func TestLoadAlertCountsTheFailureThatCameWithADivergence(t *testing.T) {
+	a := newAlertRig(t)
+	a.ingestExits("4")
+	a.finish("success", 1)
+	for range 5 {
+		a.ingestExits("1")
+		a.finish("success", 1)
+	}
+	titles := []string{}
+	for _, n := range a.sent() {
+		titles = append(titles, n.title)
+	}
+	if len(titles) != 2 || !strings.Contains(titles[0], "divergiram") || !strings.Contains(titles[1], "falhou") {
+		t.Fatalf("a divergence with a failed job must notify both: %v", titles)
+	}
+}
+
+func TestLoadAlertRetriesADivergenceWhenNtfyIsDown(t *testing.T) {
+	a := newAlertRig(t)
+	a.ingestExits("3")
+	if out, err := a.run(nil, "SERVICE_RESULT=success", "FISCAL_NTFY_URL=http://127.0.0.1:1"); err != nil {
+		t.Fatalf("script failed: %v\n%s", err, out)
+	}
+	if len(a.sent()) != 0 {
+		t.Fatalf("nothing can arrive with ntfy down: %+v", a.sent())
+	}
+	a.finish("success", 1)
+	if len(a.sent()) != 1 || !strings.Contains(a.sent()[0].title, "divergiram") {
+		t.Fatalf("the divergence must be sent on the next run: %+v", a.sent())
+	}
+}
+
 func TestLoadAlertForgetsFailuresBelowTheLimit(t *testing.T) {
 	a := newAlertRig(t)
 	a.finish("exit-code", 5)
