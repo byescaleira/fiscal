@@ -247,51 +247,20 @@ func (h *harness) stageHighlights(kind, day, highlights string) string {
 	return rel.Release
 }
 
-func (h *harness) published() string {
-	data, err := os.ReadFile(filepath.Join(h.public, PublishedDir, HighlightsFile))
-	if err != nil {
-		return ""
-	}
-	return string(data)
-}
-
-func TestHighlightsArePublishedOnlyAfterTheDeployIsConfirmed(t *testing.T) {
+func TestHighlightsGoOnlyToTheCDN(t *testing.T) {
 	h := newHarness(t)
-	first := `{"items":[{"id":"h1"}]}`
-	h.stageHighlights("full", "2026-10-26", first)
-	h.cfg.DryRun = true
-	h.cycle()
-	h.cfg.DryRun = false
-	if got := h.published(); got != "" {
-		t.Fatalf("a dry run published %s", got)
+	h.stageHighlights("full", "2026-10-26", `{"items":[{"id":"h1"}]}`)
+	if out := h.cycle(); !out.Deployed {
+		t.Fatalf("out = %+v", out)
 	}
-	h.silent = true
-	if _, err := h.cfg.Cycle(context.Background()); err == nil {
-		t.Fatal("silent wrangler must fail")
+	if !strings.Contains(strings.Join(h.seen, ","), "v2/highlights.json") {
+		t.Fatalf("the deploy must carry the highlights: %v", h.seen)
 	}
-	if got := h.published(); got != "" {
-		t.Fatalf("an unconfirmed deploy published %s", got)
+	if out := h.cycle(); out.Deployed || out.Reason != "nothing changed" {
+		t.Fatalf("again = %+v", out)
 	}
-	h.silent = false
-	if out := h.cycle(); !out.Deployed || h.published() != first {
-		t.Fatalf("after the deploy: %+v published=%q", out, h.published())
-	}
-	if _, err := os.Stat(filepath.Join(h.public, PublishedDir, HighlightsFile+".gz")); err != nil {
-		t.Fatalf("gzip pair: %v", err)
-	}
-	second := `{"items":[{"id":"h2"}]}`
-	h.stageHighlights("live", "2026-10-27", second)
-	if out := h.cycle(); out.Deployed || h.published() != first {
-		t.Fatalf("waiting for the interval: %+v published=%q", out, h.published())
-	}
-	h.clock = h.clock.Add(time.Hour)
-	if out := h.cycle(); !out.Deployed || h.published() != second {
-		t.Fatalf("after the interval: %+v published=%q", out, h.published())
-	}
-	h.write("highlights.json", `{"items":[{"id":"staged-only"}]}`)
-	os.Remove(filepath.Join(h.public, PublishedDir, HighlightsFile))
-	if out := h.cycle(); out.Deployed || out.Reason != "nothing changed" || h.published() != second {
-		t.Fatalf("nothing changed must restore the deployed highlights: %+v published=%q", out, h.published())
+	if _, err := os.Stat(filepath.Join(h.public, "published")); !os.IsNotExist(err) {
+		t.Fatalf("no copy may stay on the VPS: %v", err)
 	}
 }
 

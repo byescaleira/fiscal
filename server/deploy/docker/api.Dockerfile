@@ -3,8 +3,7 @@ COPY --chown=1000:1000 bin/liveresults-server /usr/local/bin/liveresults-server
 ENV HOST=0.0.0.0 \
     PORT=3130 \
     DATA_DIR=/data \
-    PUBLIC_DIR=/public \
-    APNS_KEY_FILE=/secrets/apns.p8
+    PUBLIC_DIR=/public
 USER 1000:1000
 WORKDIR /data
 EXPOSE 3130

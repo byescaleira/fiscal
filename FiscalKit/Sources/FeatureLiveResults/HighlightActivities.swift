@@ -4,10 +4,10 @@ import Foundation
 @MainActor
 public protocol HighlightActivityTracking: AnyObject {
     var isAvailable: Bool { get }
-    var onStartToken: (@MainActor (_ token: String) -> Void)? { get set }
-    var onShown: (@MainActor (_ highlightID: String) -> Void)? { get set }
     func activeHighlightIDs() -> Set<String>
-    func observe()
+    func pendingHighlight() -> PlannedAlert?
+    func schedule(_ highlight: Highlight, at date: Date) async throws
+    func endPending() async
     func start(_ highlight: Highlight, now: Date) async throws
     func endExpired(now: Date) async
     func endAll() async
@@ -18,10 +18,6 @@ public protocol HighlightActivityTracking: AnyObject {
 
     @MainActor
     public final class HighlightActivities: HighlightActivityTracking {
-        public var onStartToken: (@MainActor (String) -> Void)?
-        public var onShown: (@MainActor (String) -> Void)?
-        private var tasks: [Task<Void, Never>] = []
-
         public init() {}
 
         public var isAvailable: Bool { ActivityAuthorizationInfo().areActivitiesEnabled }
@@ -30,22 +26,35 @@ public protocol HighlightActivityTracking: AnyObject {
             Set(live.map(\.attributes.highlightId))
         }
 
-        public func observe() {
-            guard tasks.isEmpty else { return }
-            let tokens = Task { [weak self] in
-                for await data in Activity<HighlightActivityAttributes>.pushToStartTokenUpdates {
-                    let token = data.map { String(format: "%02x", $0) }.joined()
-                    self?.onStartToken?(token)
-                }
+        public func pendingHighlight() -> PlannedAlert? {
+            pending.first.map {
+                PlannedAlert(
+                    highlightId: $0.attributes.highlightId,
+                    fireDate: $0.content.state.endDate.addingTimeInterval(
+                        -HighlightAlertRule.lifetime))
             }
-            let arrivals = Task { [weak self] in
-                for await activity in Activity<HighlightActivityAttributes>.activityUpdates {
-                    let activityID = activity.id
-                    let highlightID = activity.attributes.highlightId
-                    await self?.arrived(activityID, highlightID: highlightID)
-                }
+        }
+
+        public func schedule(_ highlight: Highlight, at date: Date) async throws {
+            let state = HighlightActivityState(highlight: highlight, now: date)
+            let content = ActivityContent(
+                state: state, staleDate: state.endDate, relevanceScore: 50)
+            _ = try Activity.request(
+                attributes: HighlightActivityAttributes(highlight: highlight), content: content,
+                pushType: nil, style: .standard,
+                alertConfiguration: AlertConfiguration(
+                    title: LocalizedStringResource(
+                        stringLiteral: highlight.plainSummary ?? highlight.title),
+                    body: LocalizedStringResource(stringLiteral: highlight.subtitle),
+                    sound: .default),
+                start: date)
+        }
+
+        public func endPending() async {
+            for activity in Activity<HighlightActivityAttributes>.activities
+            where activity.activityState == .pending {
+                await activity.end(nil, dismissalPolicy: .immediate)
             }
-            tasks = [tokens, arrivals]
         }
 
         public func start(_ highlight: Highlight, now: Date) async throws {
@@ -77,12 +86,10 @@ public protocol HighlightActivityTracking: AnyObject {
             }
         }
 
-        private func arrived(_ activityID: String, highlightID: String) async {
-            guard live.allSatisfy({ $0.id == activityID }) else {
-                await end([activityID])
-                return
+        private var pending: [Activity<HighlightActivityAttributes>] {
+            Activity<HighlightActivityAttributes>.activities.filter {
+                $0.activityState == .pending
             }
-            onShown?(highlightID)
         }
 
         private func end(_ ids: Set<String>) async {
@@ -96,12 +103,12 @@ public protocol HighlightActivityTracking: AnyObject {
 #else
     @MainActor
     public final class HighlightActivities: HighlightActivityTracking {
-        public var onStartToken: (@MainActor (String) -> Void)?
-        public var onShown: (@MainActor (String) -> Void)?
         public init() {}
         public var isAvailable: Bool { false }
         public func activeHighlightIDs() -> Set<String> { [] }
-        public func observe() {}
+        public func pendingHighlight() -> PlannedAlert? { nil }
+        public func schedule(_ highlight: Highlight, at date: Date) async throws {}
+        public func endPending() async {}
         public func start(_ highlight: Highlight, now: Date) async throws {}
         public func endExpired(now: Date) async {}
         public func endAll() async {}

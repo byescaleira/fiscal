@@ -62,6 +62,34 @@ struct SettingsModelTests {
         #expect(settings.highlightAlertsValue == String(appLocalized: "On"))
     }
 
+    @Test func theNotificationStartsOffAndARefusalTurnsItBackOff() async throws {
+        var asked: [Bool] = []
+        let settings = SettingsModel(
+            defaults: try defaults(), languageSetting: LanguageSetting(),
+            alertLedger: HighlightAlertLedger(suiteName: "SettingsModelTests.\(UUID().uuidString)"),
+            highlightNotificationChanged: {
+                asked.append($0)
+                return false
+            },
+            notificationsAreDenied: { true })
+        #expect(!settings.highlightNotifications)
+        #expect(!settings.notificationsDenied)
+        await settings.setHighlightNotifications(true)
+        #expect(asked == [true])
+        #expect(!settings.highlightNotifications)
+        #expect(settings.notificationsDenied)
+    }
+
+    @Test func anAcceptedNotificationStaysOn() async throws {
+        let settings = SettingsModel(
+            defaults: try defaults(), languageSetting: LanguageSetting(),
+            alertLedger: HighlightAlertLedger(suiteName: "SettingsModelTests.\(UUID().uuidString)"),
+            highlightNotificationChanged: { _ in true })
+        await settings.setHighlightNotifications(true)
+        #expect(settings.highlightNotifications)
+        #expect(!settings.notificationsDenied)
+    }
+
     @Test func readsTheRowsFromTheFlags() throws {
         let defaults = try defaults()
         let settings = SettingsModel(defaults: defaults, languageSetting: LanguageSetting())

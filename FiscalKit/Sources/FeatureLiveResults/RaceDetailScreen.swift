@@ -64,12 +64,6 @@ private struct RaceDetailContent: View {
                     RaceBallotsSection(summary: summary)
                     RaceCountSection(summary: summary)
                 }
-                if !summary.race.final, let off = results.activitiesOffText {
-                    Text(verbatim: off)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .padding(.horizontal, .spaceXS)
-                }
             },
             bar: { _, _ in
                 RaceStickyHeader(summary: summary)

@@ -18,6 +18,8 @@ public final class SettingsModel {
             highlightAlertsChanged(highlightAlerts)
         }
     }
+    public private(set) var highlightNotifications: Bool
+    public private(set) var notificationsDenied = false
     public var cloudSync: Bool {
         didSet { CloudSyncPreference.set(cloudSync, in: defaults) }
     }
@@ -29,6 +31,8 @@ public final class SettingsModel {
     @ObservationIgnored private let iconSwitcher: any AppIconSwitching
     @ObservationIgnored private let alertLedger: HighlightAlertLedger
     @ObservationIgnored private let highlightAlertsChanged: @MainActor (Bool) -> Void
+    @ObservationIgnored private let highlightNotificationChanged: @MainActor (Bool) async -> Bool
+    @ObservationIgnored private let areNotificationsDenied: @MainActor () async -> Bool
 
     public init(
         defaults: UserDefaults = .standard, info: AppInfo = .main,
@@ -36,12 +40,17 @@ public final class SettingsModel {
         iconSwitcher: any AppIconSwitching = SystemAppIconSwitcher(),
         alertLedger: HighlightAlertLedger = HighlightAlertLedger(),
         flags: FeatureFlags? = nil,
-        highlightAlertsChanged: @escaping @MainActor (Bool) -> Void = { _ in }
+        highlightAlertsChanged: @escaping @MainActor (Bool) -> Void = { _ in },
+        highlightNotificationChanged: @escaping @MainActor (Bool) async -> Bool = { _ in false },
+        notificationsAreDenied: @escaping @MainActor () async -> Bool = { false }
     ) {
         self.defaults = defaults
         self.alertLedger = alertLedger
         self.highlightAlertsChanged = highlightAlertsChanged
+        self.highlightNotificationChanged = highlightNotificationChanged
+        areNotificationsDenied = notificationsAreDenied
         highlightAlerts = alertLedger.isEnabled
+        highlightNotifications = alertLedger.isNotificationEnabled
         self.iconSwitcher = iconSwitcher
         appIcon = iconSwitcher.current
         self.info = info
@@ -51,6 +60,17 @@ public final class SettingsModel {
             defaults.string(forKey: Key.appearance).flatMap(Appearance.init(rawValue:)) ?? .system
         tint = defaults.string(forKey: Key.tint) ?? RetroColor.default.hex
         cloudSync = CloudSyncPreference.isOn(in: defaults)
+    }
+
+    public func setHighlightNotifications(_ isOn: Bool) async {
+        highlightNotifications = isOn
+        let accepted = await highlightNotificationChanged(isOn)
+        if isOn && !accepted { highlightNotifications = false }
+        await refreshNotificationStatus()
+    }
+
+    public func refreshNotificationStatus() async {
+        notificationsDenied = await areNotificationsDenied()
     }
 
     public var locale: Locale { languageSetting.locale }

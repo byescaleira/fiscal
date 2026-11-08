@@ -89,12 +89,6 @@
             }
         }
 
-        public func state(raceID: String = "presidente-br", step: Int = 0) -> RaceActivityState? {
-            races(step: step).first { $0.id == raceID }.map {
-                RaceActivityState(race: $0, now: Self.reference)
-            }
-        }
-
         private func shape(index: Int, lean: Double, step: Int) -> Shape {
             switch self {
             case .waiting, .unavailable:

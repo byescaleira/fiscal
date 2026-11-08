@@ -8,36 +8,59 @@ import Testing
 @MainActor
 private final class FakeActivities: HighlightActivityTracking {
     var isAvailable = true
-    var onStartToken: (@MainActor (_ token: String) -> Void)?
-    var onShown: (@MainActor (_ highlightID: String) -> Void)?
     var active: Set<String> = []
-    var started: [String] = []
+    var pending: PlannedAlert?
+    var scheduled: [String] = []
     var endedAll = false
-    var failsToStart = false
+    var endedPending = 0
+    var failure: (any Error)?
+    var endsPending = true
 
     func activeHighlightIDs() -> Set<String> { active }
-    func observe() {}
-    func start(_ highlight: Highlight, now: Date) async throws {
-        if failsToStart { throw PublicDataError.unavailable }
-        started.append(highlight.id)
+    func pendingHighlight() -> PlannedAlert? { pending }
+    func schedule(_ highlight: Highlight, at date: Date) async throws {
+        if let failure { throw failure }
+        scheduled.append(highlight.id)
+        pending = PlannedAlert(highlightId: highlight.id, fireDate: date)
     }
+    func endPending() async {
+        endedPending += 1
+        if endsPending { pending = nil }
+    }
+    func start(_ highlight: Highlight, now: Date) async throws {}
     func endExpired(now: Date) async {}
-    func endAll() async { endedAll = true }
+    func endAll() async {
+        endedAll = true
+        pending = nil
+    }
 }
 
-private final class FakeAlertService: HighlightAlertService {
-    let registered: AsyncStream<String>
-    private let continuation: AsyncStream<String>.Continuation
+@MainActor
+private final class FakeNotifications: HighlightNotificationScheduling {
+    var current: HighlightNotificationStatus = .authorized
+    var grants = true
+    var asked = 0
+    var pendingAlert: PlannedAlert?
+    var sent: [Highlight] = []
+    var cancelled = 0
 
-    init() {
-        (registered, continuation) = AsyncStream.makeStream()
+    func status() async -> HighlightNotificationStatus { current }
+    func requestPermission() async -> Bool {
+        asked += 1
+        return grants
     }
-
-    func registerHighlights(pushToken: String, environment: PushEnvironment) async throws {
-        continuation.yield(pushToken)
+    func pending() async -> PlannedAlert? { pendingAlert }
+    func schedule(_ highlight: Highlight, at date: Date) async throws {
+        sent.append(highlight)
+        pendingAlert = PlannedAlert(highlightId: highlight.id, fireDate: date)
     }
-    func unregisterHighlights(pushToken: String) async throws {}
+    func cancel() async {
+        cancelled += 1
+        pendingAlert = nil
+    }
 }
+
+private struct Rejected: Error {}
 
 private struct FixedHighlights: PublicDataService {
     let items: [Highlight]
@@ -76,131 +99,293 @@ private struct FixedHighlights: PublicDataService {
 struct HighlightAlertCenterTests {
     private let suite = "test.highlight-center.\(UUID().uuidString)"
     private let activities = FakeActivities()
-    private let service = FakeAlertService()
+    private let notifications = FakeNotifications()
+    private let morning = Date.now.addingTimeInterval(3_600).rounded
+    private let evening = Date.now.addingTimeInterval(7_200).rounded
     private var ledger: HighlightAlertLedger { HighlightAlertLedger(suiteName: suite) }
 
-    private func highlight(_ id: String, weight: Int = 70, daysAgo: Int = 0) -> Highlight {
+    private func highlight(
+        _ id: String, weight: Int = 70, daysAgo: Int = 0, subtitle: String = ""
+    ) -> Highlight {
         let calendar = HighlightAlertRule.brasilia
         let date = calendar.date(byAdding: .day, value: -daysAgo, to: .now) ?? .now
         return Highlight(
-            id: id, kind: .action, title: "Destaque \(id)", subtitle: "", weight: weight,
+            id: id, kind: .action, title: "Destaque \(id)", subtitle: subtitle, weight: weight,
             repercussion: nil, impact: 60, route: "pessoa", person: nil, proposition: nil,
             date: CalendarDay(date, calendar: calendar), url: nil, signals: .none)
     }
 
-    private func center(_ items: [Highlight], allows: Bool = true) -> HighlightAlertCenter {
-        let service = service
-        return HighlightAlertCenter(
-            activities: activities, ledger: ledger, service: { service },
-            publicData: { FixedHighlights(items: items) }, allows: { allows })
+    private func center(_ items: [Highlight]?, allows: Bool = true) async -> HighlightAlertCenter {
+        let slots = HighlightAlertSlots(activity: morning, notification: evening)
+        let center = HighlightAlertCenter(
+            activities: activities, notifications: notifications, ledger: ledger,
+            publicData: { items.map { FixedHighlights(items: $0) } }, allows: { allows },
+            slots: { _, _, _ in slots })
+        await center.resume()
+        return center
     }
 
     private func forget() {
         UserDefaults(suiteName: suite)?.removePersistentDomain(forName: suite)
     }
 
-    @Test func aHighlightThatPassesStartsAndIsRemembered() async {
+    @Test func openingSchedulesAndDoesNotStartNow() async {
         defer { forget() }
-        let center = center([highlight("a")])
-        await center.resume()
-        await center.consider()
-        #expect(activities.started == ["a"])
-        #expect(ledger.shown == ["a"])
-    }
-
-    @Test func aHighlightBelowTheMinimumWeightDoesNotStart() async {
-        defer { forget() }
-        let center = center([highlight("a", weight: 69)])
-        await center.resume()
-        await center.consider()
-        #expect(activities.started.isEmpty)
+        let center = await center([highlight("h1"), highlight("h2")])
+        await center.activate()
+        #expect(activities.scheduled == ["h1"])
+        #expect(activities.pending?.fireDate == morning)
+        #expect(activities.active.isEmpty)
         #expect(ledger.shown.isEmpty)
     }
 
-    @Test func aHighlightOutsideTheWindowDoesNotStart() async {
+    @Test func openingSixTimesAsksTheSystemOnce() async {
         defer { forget() }
-        let center = center([highlight("a", daysAgo: 3)])
-        await center.resume()
-        await center.consider()
-        #expect(activities.started.isEmpty)
+        let center = await center([highlight("h1")])
+        for _ in 0..<6 { await center.activate() }
+        #expect(activities.scheduled == ["h1"])
+        #expect(activities.endedPending == 0)
     }
 
-    @Test func whatWasAlreadyAlertedDoesNotStartAgain() async {
+    @Test func aHeavierHighlightReplacesThePending() async {
         defer { forget() }
-        ledger.record("a")
-        let center = center([highlight("a"), highlight("b")])
-        await center.resume()
-        await center.consider()
-        await center.consider()
-        #expect(activities.started == ["b"])
+        activities.pending = PlannedAlert(highlightId: "h1", fireDate: morning)
+        let center = await center([highlight("h3", weight: 95), highlight("h1", weight: 92)])
+        await center.activate()
+        #expect(activities.scheduled == ["h3"])
+        #expect(activities.endedPending == 1)
     }
 
-    @Test func whatIsOnTheLockScreenStaysAndNothingElseStarts() async {
+    @Test func whatIsOnScreenStaysAndTheNextIsAnother() async {
         defer { forget() }
-        activities.active = ["a"]
-        let center = center([highlight("a"), highlight("b")])
-        await center.resume()
-        await center.consider()
-        #expect(activities.started.isEmpty)
+        activities.active = ["h1"]
+        let center = await center([highlight("h1"), highlight("h2")])
+        await center.activate()
+        #expect(activities.endedAll == false)
+        #expect(activities.scheduled == ["h2"])
     }
 
-    @Test func aFailedStartIsNotRememberedSoItCanTryAgain() async {
+    @Test(arguments: [false, true])
+    func withoutAValidHighlightTheScheduledPlanStays(cdnIsDown: Bool) async {
         defer { forget() }
-        activities.failsToStart = true
-        let center = center([highlight("a")])
-        await center.resume()
-        await center.consider()
+        let planned = PlannedAlert(highlightId: "h1", fireDate: morning)
+        activities.pending = planned
+        ledger.save(plan: HighlightAlertPlan(activity: planned))
+        let center = await center(cdnIsDown ? nil : [highlight("h5", weight: 69)])
+        await center.activate()
+        #expect(activities.scheduled.isEmpty)
+        #expect(activities.pending == planned)
+        #expect(ledger.plan.activity == planned)
+    }
+
+    @Test func aPassedAlertIsNotChosenAgain() async {
+        defer { forget() }
+        ledger.save(
+            plan: HighlightAlertPlan(
+                activity: PlannedAlert(highlightId: "h1", fireDate: .now.addingTimeInterval(-60))))
+        let center = await center([highlight("h1"), highlight("h2")])
+        await center.activate()
+        #expect(ledger.shown == ["h1"])
+        #expect(activities.scheduled == ["h2"])
+    }
+
+    @Test func aRefusalIsSilentAndTriesOnTheNextOpening() async {
+        defer { forget() }
+        activities.failure = Rejected()
+        let center = await center([highlight("h1")])
+        await center.activate()
         #expect(ledger.shown.isEmpty)
-        activities.failsToStart = false
-        await center.consider()
-        #expect(activities.started == ["a"])
+        #expect(ledger.plan.activity == nil)
+        activities.failure = nil
+        await center.activate()
+        #expect(activities.scheduled == ["h1"])
     }
 
-    @Test func nothingStartsWhileHeldTurnedOffOrDisallowed() async {
+    @Test func turningItOffEndsEverythingAndStopsPlanning() async {
         defer { forget() }
-        let held = center([highlight("a")])
-        await held.consider()
-        #expect(activities.started.isEmpty)
-
-        let disallowed = center([highlight("a")], allows: false)
-        await disallowed.resume()
-        await disallowed.consider()
-        #expect(activities.started.isEmpty)
-
-        ledger.setEnabled(false)
-        let off = center([highlight("a")])
-        await off.resume()
-        await off.consider()
-        #expect(activities.started.isEmpty)
-    }
-
-    @Test func nothingStartsWhenTheSystemHasLiveActivitiesOff() async {
-        defer { forget() }
-        activities.isAvailable = false
-        let center = center([highlight("a")])
-        await center.resume()
-        await center.consider()
-        #expect(activities.started.isEmpty)
-    }
-
-    @Test func turningItOffEndsEverythingAndRemovesTheToken() async {
-        defer { forget() }
-        ledger.save(token: "token-1")
-        let center = center([highlight("a")])
-        await center.resume()
+        let center = await center([highlight("h1")])
+        await center.activate()
         await center.setEnabled(false)
         #expect(activities.endedAll)
-        #expect(!ledger.isEnabled)
-        #expect(ledger.registeredToken == nil)
+        #expect(ledger.plan.activity == nil)
+        activities.scheduled = []
+        await center.activate()
+        #expect(activities.scheduled.isEmpty)
     }
 
-    @Test func aNewStartTokenIsRegisteredAndSaved() async {
+    @Test func holdingCancelsAndOnlyPlansAfterTheRelease() async {
         defer { forget() }
-        let center = center([])
+        ledger.setNotificationEnabled(true)
+        let center = await center([highlight("h1"), highlight("h2")])
+        await center.activate()
+        await center.hold()
+        #expect(activities.pending == nil)
+        #expect(notifications.pendingAlert == nil)
+        #expect(ledger.plan == HighlightAlertPlan())
+        activities.scheduled = []
+        await center.activate()
+        #expect(activities.scheduled.isEmpty)
+        await center.resume()
+        #expect(activities.scheduled == ["h1"])
+    }
+
+    @Test func theRemoteSwitchClearsWhatIsScheduled() async {
+        defer { forget() }
+        activities.pending = PlannedAlert(highlightId: "h1", fireDate: morning)
+        let center = await center([highlight("h1")], allows: false)
+        await center.activate()
+        #expect(activities.pending == nil)
+    }
+
+    @Test func theBackgroundOnlyTouchesTheNotification() async {
+        defer { forget() }
+        ledger.setNotificationEnabled(true)
+        let planned = PlannedAlert(highlightId: "h1", fireDate: morning)
+        activities.pending = planned
+        ledger.save(plan: HighlightAlertPlan(activity: planned))
+        let center = await center([
+            highlight("h1", weight: 92), highlight("h9", weight: 99), highlight("h2", weight: 90),
+        ])
+        await center.refreshInBackground()
+        #expect(activities.scheduled.isEmpty)
+        #expect(activities.endedPending == 0)
+        #expect(notifications.sent.map(\.id) == ["h9"])
+    }
+
+    @Test func aPendingThatCannotEndIsKeptAndNothingElseIsAsked() async {
+        defer { forget() }
+        let stuck = PlannedAlert(highlightId: "h1", fireDate: morning)
+        activities.pending = stuck
+        activities.endsPending = false
+        let center = await center([highlight("h3", weight: 95)])
+        await center.activate()
+        #expect(activities.scheduled.isEmpty)
+        #expect(ledger.plan.activity == stuck)
+    }
+
+    @Test func thePortraitIsPreparedBeforeScheduling() async {
+        defer { forget() }
+        var prepared: [String] = []
+        let slots = HighlightAlertSlots(activity: morning, notification: evening)
+        let center = HighlightAlertCenter(
+            activities: activities, notifications: notifications, ledger: ledger,
+            publicData: { FixedHighlights(items: [highlight("h1")]) }, allows: { true },
+            slots: { _, _, _ in slots }, prepare: { prepared.append($0.id) })
         await center.resume()
         await center.activate()
-        activities.onStartToken?("token-1")
-        var iterator = service.registered.makeAsyncIterator()
-        #expect(await iterator.next() == "token-1")
+        await center.activate()
+        #expect(prepared == ["h1"])
+    }
+
+    @Test(arguments: [true, false])
+    func openingKeepsTheHabitOnlyWhileAnAlertIsOn(isOn: Bool) async {
+        defer { forget() }
+        UserDefaults(suiteName: suite)?.set("token-1", forKey: "fiscal.highlightAlerts.token")
+        ledger.setEnabled(isOn)
+        ledger.recordOpening(.now.addingTimeInterval(-86_400))
+        let center = await center([])
+        await center.activate()
+        #expect(ledger.habit.openings.count == (isOn ? 2 : 0))
+        #expect(
+            UserDefaults(suiteName: suite)?.string(forKey: "fiscal.highlightAlerts.token") == nil)
+    }
+
+    @Test func theBodyCarriesTheSubtitleAndTheUncertainty() {
+        let board = HighlightBoard(highlight("h1", subtitle: "Subtítulo"))
+        let uncertainty = board.uncertaintyShort ?? ""
+        #expect(!uncertainty.isEmpty)
+        #expect(board.notificationBody == "Subtítulo \(uncertainty)")
+    }
+}
+
+extension HighlightAlertCenterTests {
+    @Test func theNotificationTakesTheSecondHighlight() async {
+        defer { forget() }
+        ledger.setNotificationEnabled(true)
+        let center = await center([highlight("h1", weight: 92), highlight("h2", weight: 90)])
+        await center.activate()
+        #expect(activities.scheduled == ["h1"])
+        #expect(notifications.sent.map(\.id) == ["h2"])
+        #expect(notifications.pendingAlert?.fireDate == evening)
+    }
+
+    @Test func aSingleHighlightSendsNoNotification() async {
+        defer { forget() }
+        ledger.setNotificationEnabled(true)
+        let center = await center([highlight("h1")])
+        await center.activate()
+        #expect(notifications.sent.isEmpty)
+    }
+
+    @Test func withActivitiesOffTheNotificationTakesTheFirst() async {
+        defer { forget() }
+        ledger.setNotificationEnabled(true)
+        activities.isAvailable = false
+        let center = await center([highlight("h1"), highlight("h2")])
+        await center.activate()
+        #expect(activities.scheduled.isEmpty)
+        #expect(notifications.sent.map(\.id) == ["h1"])
+    }
+
+    @Test func theSameNotificationIsNotScheduledTwice() async {
+        defer { forget() }
+        ledger.setNotificationEnabled(true)
+        let center = await center([highlight("h1"), highlight("h2")])
+        await center.activate()
+        await center.activate()
+        #expect(notifications.sent.map(\.id) == ["h2"])
+    }
+
+    @Test func theNotificationNeverAsksPermissionByItself() async {
+        defer { forget() }
+        let center = await center([highlight("h1"), highlight("h2")])
+        await center.activate()
+        #expect(notifications.asked == 0)
+        #expect(notifications.sent.isEmpty)
+        #expect(!ledger.isNotificationEnabled)
+    }
+
+    @Test func turningTheNotificationOnAsksAndPlans() async {
+        defer { forget() }
+        let center = await center([highlight("h1"), highlight("h2")])
+        #expect(await center.setNotificationEnabled(true))
+        #expect(notifications.asked == 1)
+        #expect(ledger.isNotificationEnabled)
+        #expect(notifications.sent.map(\.id) == ["h2"])
+    }
+
+    @Test func aRefusedPermissionLeavesItOff() async {
+        defer { forget() }
+        notifications.grants = false
+        notifications.current = .denied
+        let center = await center([highlight("h1"), highlight("h2")])
+        #expect(await center.setNotificationEnabled(true) == false)
+        #expect(!ledger.isNotificationEnabled)
+        #expect(notifications.sent.isEmpty)
+    }
+
+    @Test func turningTheNotificationOffRemovesIt() async {
+        defer { forget() }
+        ledger.setNotificationEnabled(true)
+        let center = await center([highlight("h1"), highlight("h2")])
+        await center.activate()
+        _ = await center.setNotificationEnabled(false)
+        #expect(notifications.pendingAlert == nil)
+        #expect(ledger.plan.notification == nil)
+    }
+
+    @Test func aPermissionRemovedInTheSystemSchedulesNothing() async {
+        defer { forget() }
+        ledger.setNotificationEnabled(true)
+        notifications.current = .denied
+        let center = await center([highlight("h1"), highlight("h2")])
+        await center.activate()
+        #expect(notifications.sent.isEmpty)
+    }
+}
+
+extension Date {
+    fileprivate var rounded: Date {
+        Date(timeIntervalSince1970: timeIntervalSince1970.rounded())
     }
 }

@@ -28,19 +28,18 @@ Build: `____` · Data: `__/__/____`
 
 ### Aparelhos
 
-- [ ] iPhone físico com a build do TestFlight (Release, ambiente de produção do CloudKit, do APNs e do App Attest).
+- [ ] iPhone físico com a build do TestFlight (Release, ambiente de produção do CloudKit).
 - [ ] iPad físico ou simulador de iPad, com a mesma build.
 - [ ] Segundo aparelho com a mesma conta do iCloud, para os seguidos e as investigações.
 - [ ] Capturas reais de cada tamanho enviado ([app-store/media/README.md](app-store/media/README.md)).
 
-### Apuração e Atividade ao Vivo
+### Apuração
 
-- [ ] Servidor em modo de simulação (`SIMULATE=1`, [runbook](server-runbook.md)), com o ok do usuário para mexer na VPS.
-- [ ] Seguir uma disputa na Apuração: a Atividade aparece na tela de bloqueio e na Dynamic Island.
-- [ ] Receber os pushes de atualização (placar muda sem abrir o app) e o de fim (alerta "Resultado", Atividade some depois de 4 h ou ao tocar).
-- [ ] Deixar de seguir: a Atividade termina na hora e o registro sai do servidor.
-- [ ] Sem rede: a tela mostra "Sem conexão. Mostrando os últimos números recebidos."
-- [ ] Voltar o servidor para o TSE real.
+A Atividade ao Vivo da disputa e o botão de acompanhar saíram até a próxima eleição ([ADR 0028](adr/0028-app-reads-only-from-cdn-and-local-alerts.md)). A apuração continua nas telas, lida em `v2/races.json` na CDN.
+
+- [ ] Em Debug, `-FiscalLiveScenario close`, `decided` e `waiting`: os números aparecem como antes, sem botão de acompanhar.
+- [ ] Sem rede: a tela usa o `races.json` do pacote offline ou mostra "Sem conexão. Mostrando os últimos números recebidos."
+- [ ] Em dia de eleição, com o `fiscal-pages.timer` ligado ([runbook](server-runbook.md)): a tela acompanha `v2/races.json`, com o horário do arquivo do TSE. O modo `SIMULATE=1` do servidor não publica nada, então não aparece no app.
 
 ### Página do político e cartões de um item
 
@@ -49,22 +48,22 @@ Build: `____` · Data: `__/__/____`
 - [ ] Compartilhar uma nota, um mês, um voto e uma proposta; nota sem CNPJ não tem botão.
 - [ ] Cartão que abre outra tela mostra a setinha; no Feed, a pessoa abre o perfil, e o resto abre o conteúdo.
 
-### Destaque na tela de bloqueio
+### Destaque na tela de bloqueio e notificação
 
-- [ ] Com "Destaques de maior peso na tela de bloqueio" ligado (Ajustes › Seus dados e privacidade), o registro do token de push-to-start chega ao servidor (`highlight-registrations.json`).
-- [ ] Um destaque de peso 70 ou mais do último dia abre a Atividade do destaque; tocar abre o perfil ou a votação certa.
-- [ ] Desligar encerra a Atividade em andamento e remove o token.
-- [ ] Atividades ao Vivo desligadas nos Ajustes do iOS: nada é registrado.
+Os dois alertas são agendados no próprio aparelho, sem servidor ([FSC-020](../spdd/prompt/FSC-020-202611042045-[Feat]-app-reads-only-from-cdn-and-local-alerts.md)). O último roteiro no iPhone está em [evidence/FSC-020/qa.md](evidence/FSC-020/qa.md).
 
-### App Attest
-
-- [ ] Com o servidor em `APPATTEST_MODE=required`, o primeiro registro atesta a chave e os seguintes passam só com a asserção.
-- [ ] Apagar a chave no servidor: o app recebe `attest_unknown_key`, atesta de novo e o registro passa na segunda tentativa.
-- [ ] Build do TestFlight usa o ambiente de produção (o servidor recusa desenvolvimento sem `APPATTEST_ALLOW_DEVELOPMENT=1`).
+- [ ] Instalação nova: "Destaques de maior peso na tela de bloqueio" ligado e "Notificação de destaque" desligado (Ajustes › Geral › Notificações); a pergunta do iOS sobre notificações não aparece ao abrir nem ao navegar.
+- [ ] Build DEBUG lançada com `-FiscalAlertTestSeconds` (horários de teste à frente) e `-fiscal.highlightAlerts.shown "()"`, com o app fechado e a tela bloqueada: a Atividade do destaque aparece com o bonequinho, o título do Feed e o subtítulo, toca o som padrão e fica na tela.
+- [ ] Ligar "Notificação de destaque": a pergunta do iOS aparece só nesse momento. Aceitar: a notificação chega depois da Atividade, sem som, com o destaque seguinte. Recusar: o interruptor volta, aparece "As notificações do Fiscal estão desligadas nos Ajustes." e o botão abre os Ajustes.
+- [ ] Tocar na Atividade e na notificação, com o app fechado e aberto: abre o perfil, a votação ou o Feed certo.
+- [ ] Desligar cada interruptor: a Atividade pendente ou a notificação agendada sai.
+- [ ] Nenhum texto de Ajustes ou do método cita hora.
+- [ ] Atividades ao Vivo desligadas nos Ajustes do iOS: a notificação, se ligada, leva o primeiro destaque.
 
 ### Dados públicos e pacote offline
 
 - [ ] Primeira abertura com rede: Feed, Votações, Dinheiro, Região e Fiscalizar carregam da CDN (`dados.fiscal.byescaleira.com`), com fonte e data em cada bloco.
+- [ ] Com o log de acesso da VPS aberto (só leitura, com o ok do usuário): abrir Feed, Região, Pessoa, Votações, Apuração e Ajustes não gera nenhum pedido com agente `Fiscal/`.
 - [ ] Ajustes › Seus dados e privacidade › Dados offline mostra o pacote baixado e o tamanho.
 - [ ] Modo avião e reabrir: o Feed, a cidade de casa, os seguidos e os apoiados abrem do pacote; o resto mostra "Isso não está salvo para uso offline."
 - [ ] `BGAppRefresh`: com o app em segundo plano, forçar a tarefa `com.byescaleira.fiscal.offline-refresh` pelo depurador (`e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.byescaleira.fiscal.offline-refresh"]`) e conferir a data nova do pacote.
@@ -135,4 +134,4 @@ Detalhes em [force-update.md](force-update.md#como-testar).
 - [ ] Só a recomendada acima: o aviso aparece uma única vez para aquela versão.
 - [ ] Política final em Production deixa a build da revisão em `current`.
 
-No simulador o app usa o banco local com CloudKit desligado e não recebe push de Atividade ao Vivo; nos aparelhos, o container `iCloud.fiscal`, o App Group, o push e o App Attest precisam das capabilities e da assinatura.
+No simulador o app usa o banco local com CloudKit desligado; nos aparelhos, o container `iCloud.fiscal` e o App Group precisam das capabilities e da assinatura. O app não usa push nem App Attest.

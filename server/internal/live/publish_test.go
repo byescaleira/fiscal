@@ -7,18 +7,16 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"sync"
 	"testing"
 	"time"
 
-	"liveresults/internal/apns"
 	"liveresults/internal/tse"
 )
 
 func TestPublishWritesStaticFilesReadableByTheProxy(t *testing.T) {
 	src := &fakeSource{races: map[string]tse.Race{}}
 	dir := t.TempDir()
-	svc := New(Options{Source: src, Sender: &recordingSender{}, Registry: newStore(t), PublishDir: dir, Logger: log.New(io.Discard, "", 0)})
+	svc := New(Options{Source: src, PublishDir: dir, Logger: log.New(io.Discard, "", 0)})
 
 	svc.PollOnce(context.Background())
 	if _, err := os.Stat(filepath.Join(dir, "v1", "races.json")); !os.IsNotExist(err) {
@@ -62,41 +60,11 @@ func TestPublishWritesStaticFilesReadableByTheProxy(t *testing.T) {
 	}
 }
 
-type diskCheckingSender struct {
-	path    string
-	mu      sync.Mutex
-	counted []int64
-}
-
-func (s *diskCheckingSender) Send(_ context.Context, n apns.Notification) apns.Result {
-	var race tse.Race
-	data, _ := os.ReadFile(s.path)
-	json.Unmarshal(data, &race)
-	s.mu.Lock()
-	s.counted = append(s.counted, race.Sections.Counted)
-	s.mu.Unlock()
-	return apns.Result{Status: 200}
-}
-
-func TestPublishHappensBeforePush(t *testing.T) {
-	src := &fakeSource{races: map[string]tse.Race{}}
-	dir := t.TempDir()
-	sender := &diskCheckingSender{path: filepath.Join(dir, "v1", "races", "presidente-br.json")}
-	svc := New(Options{Source: src, Sender: sender, Registry: newStore(t, token('a')), PublishDir: dir, Logger: log.New(io.Discard, "", 0)})
-	src.set(baseRace(10, 600, 400))
-	svc.PollOnce(context.Background())
-	src.set(baseRace(20, 1200, 800))
-	svc.PollOnce(context.Background())
-	if len(sender.counted) != 2 || sender.counted[0] != 10 || sender.counted[1] != 20 {
-		t.Fatalf("file on disk at push time = %v, want [10 20]", sender.counted)
-	}
-}
-
 func TestPublishRewritesOnlyWhenContentChanges(t *testing.T) {
 	src := &fakeSource{races: map[string]tse.Race{}}
 	dir := t.TempDir()
 	clock := time.Date(2026, 10, 25, 20, 0, 0, 0, time.UTC)
-	svc := New(Options{Source: src, Sender: &recordingSender{}, Registry: newStore(t), PublishDir: dir, Now: func() time.Time { return clock }, Logger: log.New(io.Discard, "", 0)})
+	svc := New(Options{Source: src, PublishDir: dir, Now: func() time.Time { return clock }, Logger: log.New(io.Discard, "", 0)})
 	src.set(baseRace(10, 600, 400))
 	svc.PollOnce(context.Background())
 	list := filepath.Join(dir, "v1", "races.json")
@@ -149,7 +117,7 @@ func TestResetPublishedDropsStaleFiles(t *testing.T) {
 	statePath := filepath.Join(t.TempDir(), "state.json")
 	st, _ := json.Marshal(state{Races: []tse.Race{baseRace(10, 600, 400)}, FetchedAt: time.Date(2026, 10, 25, 20, 0, 0, 0, time.UTC)})
 	os.WriteFile(statePath, st, 0o600)
-	svc := New(Options{Source: &fakeSource{races: map[string]tse.Race{}}, Sender: &recordingSender{}, Registry: newStore(t), StatePath: statePath, PublishDir: dir, Logger: log.New(io.Discard, "", 0)})
+	svc := New(Options{Source: &fakeSource{races: map[string]tse.Race{}}, StatePath: statePath, PublishDir: dir, Logger: log.New(io.Discard, "", 0)})
 	if err := svc.LoadState(); err != nil {
 		t.Fatal(err)
 	}
@@ -168,7 +136,7 @@ func TestResetPublishedDropsStaleFiles(t *testing.T) {
 	if _, err := os.Stat(filepath.Join(dir, "v1", "races", "presidente-br.json")); err != nil {
 		t.Fatal("races from the saved state must be published again")
 	}
-	empty := New(Options{Source: &fakeSource{races: map[string]tse.Race{}}, Sender: &recordingSender{}, Registry: newStore(t), PublishDir: dir, Logger: log.New(io.Discard, "", 0)})
+	empty := New(Options{Source: &fakeSource{races: map[string]tse.Race{}}, PublishDir: dir, Logger: log.New(io.Discard, "", 0)})
 	if err := empty.ResetPublished(); err != nil {
 		t.Fatal(err)
 	}

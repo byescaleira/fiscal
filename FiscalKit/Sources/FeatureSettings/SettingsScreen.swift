@@ -129,13 +129,54 @@ private struct HighlightAlertsSection: View {
                 SettingsLabel(
                     "Highest-weight highlights on the Lock Screen",
                     detail:
-                        "Only weight 70 or more, from the last day. Fiscal sends only an anonymous Apple token.",
+                        "Only weight 70 or more, from the last day, once a day at a time you usually use the app. The time is worked out on this device and never leaves it.",
                     symbol: "bell.badge", color: .retroRust)
             }
             .tint(.positive)
+            #if os(iOS)
+                HighlightNotificationRow()
+            #endif
         }
     }
 }
+
+#if os(iOS)
+    private struct HighlightNotificationRow: View {
+        @Environment(SettingsModel.self) private var settings
+        @Environment(\.openURL) private var openURL
+
+        var body: some View {
+            Toggle(isOn: isOn) {
+                SettingsLabel(
+                    "Highlight notification",
+                    detail:
+                        "The next highest-weight highlight, at another time you usually use the app.",
+                    symbol: "bell", color: .retroTeal)
+            }
+            .tint(.positive)
+            .task { await settings.refreshNotificationStatus() }
+            if settings.notificationsDenied {
+                VStack(alignment: .leading, spacing: .spaceS) {
+                    Text("Fiscal notifications are off in Settings.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                    Button("Open Settings") {
+                        if let url = URL(string: UIApplication.openNotificationSettingsURLString) {
+                            openURL(url)
+                        }
+                    }
+                    .font(.footnote.weight(.semibold))
+                }
+            }
+        }
+
+        private var isOn: Binding<Bool> {
+            Binding(
+                get: { settings.highlightNotifications },
+                set: { value in Task { await settings.setHighlightNotifications(value) } })
+        }
+    }
+#endif
 
 private struct PrivacySection: View {
     @Environment(SettingsModel.self) private var settings

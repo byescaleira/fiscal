@@ -30,7 +30,6 @@ struct RaceScenarioTests {
     @Test func progressingEndsDecided() {
         #expect(!RaceScenario.progressing.races(step: 3)[0].final)
         #expect(RaceScenario.progressing.races(step: 10).allSatisfy { $0.final })
-        #expect(RaceScenario.progressing.state(step: 5)?.sectionsPercent == 50)
     }
 
     @Test func tieIsOrderedByNumber() {

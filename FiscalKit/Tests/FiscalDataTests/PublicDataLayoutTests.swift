@@ -32,7 +32,6 @@ struct PublicDataLayoutTests {
 
     @Test func readsTheGroupedFilesWhenTheReleaseIsLive() async throws {
         let harness = try LayoutHarness()
-        harness.live()
         harness.onData("places/city/1200708.json", #"{ "place": \#(Self.city), "people": {} }"#)
         harness.onData(
             "people/lula.json",
@@ -44,13 +43,11 @@ struct PublicDataLayoutTests {
         await #expect(throws: PublicDataError.notFound) {
             try await harness.client.proposals(slug: "lula", year: 2_026)
         }
-        #expect(harness.apiPaths.isEmpty)
         #expect(harness.dataPaths.filter { $0 == "/v2/people/lula.json" }.count == 1)
     }
 
     @Test func findsACityOfficialThroughTheIndex() async throws {
         let harness = try LayoutHarness()
-        harness.live()
         let slug = "maxsuel-maia-xapuri-ac"
         let bucket = PublicDataLayout.cityPeopleIndex.bucket(slug)
         harness.onData(
@@ -68,22 +65,17 @@ struct PublicDataLayoutTests {
             ])
     }
 
-    @Test func fallsBackToTheCurrentServerUntilTheReleaseIsLive() async throws {
+    @Test func readsOnlyFromTheCDNWithoutAskingForTheRelease() async throws {
         let harness = try LayoutHarness()
-        harness.onData("release.json", "{}", status: 404)
-        harness.onAPI("today.json", #"{ "date": "2026-10-26", "events": [], "sources": [] }"#)
-        let today = try await harness.client.today()
-        #expect(today.events.isEmpty)
-        #expect(harness.apiPaths == ["/api/v1/today.json"])
-        #expect(harness.dataPaths == ["/v2/release.json"])
+        harness.onData("today.json", #"{ "date": "2026-10-26", "events": [], "sources": [] }"#)
+        #expect(try await harness.client.today().events.isEmpty)
+        #expect(harness.dataPaths == ["/v2/today.json"])
     }
 
-    @Test func fallsBackWhenTheCDNIsDown() async throws {
+    @Test func aDownCDNFailsWithoutCallingAnyOtherAddress() async throws {
         let harness = try LayoutHarness()
-        harness.live()
         PublicDataStub.reply(.init(status: 503), to: "/v2/today.json", on: harness.data)
-        harness.onAPI("today.json", #"{ "date": "2026-10-26", "events": [], "sources": [] }"#)
-        #expect(try await harness.client.today().events.isEmpty)
-        #expect(harness.apiPaths == ["/api/v1/today.json"])
+        await #expect(throws: PublicDataError.unavailable) { try await harness.client.today() }
+        #expect(harness.dataPaths == ["/v2/today.json"])
     }
 }

@@ -2,13 +2,14 @@
 
 > O Fiscal é um app gratuito para iPhone e iPad que mostra o que os representantes brasileiros fazem com o voto de quem os elegeu: presença, votações, projetos, gastos e campanhas de quem governa e legisla, do vereador ao presidente, com a fonte oficial e a data ao lado de cada número. Fato, não opinião: não toma partido, não dá nota a ninguém e explica quando algo é estimado.
 
-- Abas: Feed (o que aconteceu, por data, de quem a pessoa segue e o que é relevante, com o destaque do momento e a apuração ao vivo nas eleições no topo, e a tela de quem a pessoa segue pelo filtro Seguindo), Votações (o que foi decidido, com o placar por partido), Dinheiro (quanto custa um mandato, a cota parlamentar e quem financia as campanhas), Região (quem governa a cidade, o estado e o país, nos 5.570 municípios) e Fiscalizar (busca, investigações sugeridas e a Memória com eleições passadas).
-- Apuração: números do TSE em tempo real, com Atividade ao Vivo, Dynamic Island e widget; porcentagens sobre os votos válidos.
+- Abas: Feed (o que aconteceu, por data, de quem a pessoa segue e o que é relevante, com o destaque do momento e a apuração nas eleições no topo, e a tela de quem a pessoa segue pelo filtro Seguindo), Votações (o que foi decidido, com o placar por partido), Dinheiro (quanto custa um mandato, a cota parlamentar e quem financia as campanhas), Região (quem governa a cidade, o estado e o país, nos 5.570 municípios) e Fiscalizar (busca, investigações sugeridas e a Memória com eleições passadas).
+- Apuração: números oficiais do TSE durante a contagem, nas telas do app; porcentagens sobre os votos válidos.
+- Alertas: o destaque do momento numa Atividade ao Vivo e, se a pessoa ligar, numa notificação, uma vez por dia. O próprio aparelho escolhe o destaque e o horário, sem enviar nada a um servidor.
 - Meu apoio: até 5 pessoas de qualquer cargo e até 5 causas, opcionais, numa linha do tempo por data, só com fatos. Não muda a ordem de nenhuma outra tela. Fica só no aparelho, fora do iCloud, do backup e das notificações, e pode ser apagado.
 - Compartilhar: cartazes para Stories, feed ou mensagem, de uma pessoa, votação, nota, mês de gastos ou proposta, com obras de arte brasileiras em domínio público ou sob licença livre e a fonte do dado.
 - Fontes: Câmara dos Deputados, Senado Federal, TSE, IBGE, Receita Federal, ANP, Ipeadata, Planalto, assembleias legislativas e Projeto Comprova.
 - Preço: grátis, sem assinatura, sem compras no app e sem anúncio.
-- Privacidade: sem conta, sem cadastro e sem rastreamento; rótulo da App Store "Identificadores › ID do dispositivo, não vinculado a você, para a funcionalidade do app". O app baixa arquivos públicos iguais para todo mundo e só envia o código de notificação da Atividade ao Vivo da apuração e dos destaques, com App Attest.
+- Privacidade: sem conta, sem cadastro e sem rastreamento. Os dados públicos vêm de arquivos iguais para todo mundo, publicados na Cloudflare, e o app não envia código do aparelho nem chave a nenhum servidor.
 - Plataformas: iPhone e iPad com iOS 26 ou iPadOS 26 ou mais novo. Só em português do Brasil.
 - Independência: não é ligado a nenhum governo, partido ou candidato. Feito por Rafael Escaleira (byescaleira). Suporte: support@byescaleira.com.
 
