@@ -1,3 +1,4 @@
+import ByescaleiraEffects
 import FeatureCore
 import FiscalDesignSystem
 import FiscalDomain
@@ -24,6 +25,7 @@ public struct ProfileScreen: View {
             .toolbar(removing: .title)
         #endif
         .task(id: session.generation) { await profile.load() }
+        .task { try? await EffectsWarmUp.compile() }
         .errorAlert($profile.error)
     }
 }

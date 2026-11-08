@@ -72,6 +72,7 @@ O repositório segue o SPDD (Structured-Prompt-Driven Development, do [open-spdd
 | `scripts/audit.sh` | Auditoria do pacote (pula enquanto não houver o `FiscalAudit`) |
 | `scripts/simulator.sh acquire\|release <udid>`, `status` | Reserva, devolve e lista simuladores (limite de 2) |
 | `scripts/icons.sh`, `python3 scripts/animations.py` | Ícone e animações Lottie |
+| `python3 -I scripts/landscape-icons.py [FiscalIcon…]` | Gera os `.icon` com paisagem (principal, Amazônia e temas); depois, `scripts/icons.sh` para as prévias. Nunca edite esses `.icon` à mão |
 | `python3 -I scripts/art.py check\|fetch` | Checa a licença e baixa o acervo em domínio público (`art-credits.json`, `Art.xcassets`) |
 | `node scripts/site-server.mjs` | Site e ponte em `http://127.0.0.1:4173` |
 | `cd server && go vet ./... && go test ./...` | Servidor Go (carga, API da apuração e publicação no Pages); o `verify.sh` usa a versão do Go do `server/go.mod` |

@@ -1,3 +1,4 @@
+import ByescaleiraEffects
 import FeatureCore
 import FiscalDesignSystem
 import FiscalDomain
@@ -9,6 +10,7 @@ public struct FeedScreen<RaceHero: View>: View {
     @Environment(FiscalNavigation.self) private var navigation: FiscalNavigation?
     @Environment(FollowingBadge.self) private var badge: FollowingBadge?
     @Environment(FollowController.self) private var follow: FollowController?
+    @Environment(LikeController.self) private var like: LikeController?
     @Environment(\.scenePhase) private var scenePhase
     @ReducesMotion private var reduceMotion
     private let raceHero: (Race) -> RaceHero
@@ -44,11 +46,18 @@ public struct FeedScreen<RaceHero: View>: View {
         .emphasisTitle("Feed")
         .toolbar { FeedToolbar() }
         .refreshable { await feed.load() }
+        .task { try? await EffectsWarmUp.compile() }
         .task(id: session.generation) {
             await feed.load()
             await feed.watchRaces()
         }
         .onChange(of: feed.newCount, initial: true) { _, count in badge?.count = count }
+        .onChange(of: feed.items, initial: true) { _, items in
+            like?.showing(
+                Dictionary(
+                    items.compactMap { item in Route.destination(for: item).map { (item.id, $0) } },
+                    uniquingKeysWith: { first, _ in first }))
+        }
         .onChange(of: follow?.followed) { _, slugs in
             guard let slugs else { return }
             Task { await feed.followsChanged(to: slugs) }
@@ -68,8 +77,15 @@ private struct FeedToolbar: ToolbarContent {
 
     var body: some ToolbarContent {
         ToolbarItem(placement: .primaryAction) {
-            Button("My Support", systemImage: "heart") { open(.support, in: section) }
-                .tint(Color.primary)
+            Menu {
+                Button("My Support", systemImage: "heart") { open(.support, in: section) }
+                Button("Liked Items", systemImage: "heart.text.square") {
+                    open(.liked, in: section)
+                }
+            } label: {
+                Label("My Support and Liked Items", systemImage: "heart")
+            }
+            .tint(Color.primary)
         }
         FixedToolbarSpacer(placement: .primaryAction)
         ToolbarItem(placement: .primaryAction) {

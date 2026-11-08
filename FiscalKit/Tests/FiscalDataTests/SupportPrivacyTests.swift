@@ -23,12 +23,13 @@ struct SupportPrivacyTests {
     }
 
     @Test func theSupportModelIsOnlyInTheLocalStore() async throws {
-        let synced = FiscalSchemaV4.cloudModels.map { String(describing: $0) }
+        let synced = FiscalSchemaV5.cloudModels.map { String(describing: $0) }
         #expect(!synced.contains("SupportEntity"))
         #expect(!synced.contains("LensEntity"))
+        #expect(!synced.contains("LikeEntity"))
         #expect(
-            FiscalSchemaV4.deviceModels.map { String(describing: $0) } == [
-                "SupportEntity", "LensEntity",
+            FiscalSchemaV5.deviceModels.map { String(describing: $0) } == [
+                "SupportEntity", "LensEntity", "LikeEntity",
             ])
     }
 

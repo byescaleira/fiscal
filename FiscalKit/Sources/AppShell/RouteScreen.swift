@@ -1,5 +1,6 @@
 import FeatureContent
 import FeatureCore
+import FeatureFeed
 import FeatureLiveResults
 import FeatureMemory
 import FeatureMoney
@@ -98,6 +99,7 @@ struct RouteScreen: View {
                 ShareScreen()
             }
         case .support: SupportDestination()
+        case .liked: FeedLikedScreen()
         case .content(let content):
             ModelHost(ContentDetailModel(content: content)) { ContentDetailScreen() }
         case .highlight(let id):

@@ -108,13 +108,18 @@ private struct FeedCardHeader: View {
         if dynamicTypeSize.isAccessibilitySize {
             VStack(alignment: .leading, spacing: .spaceXS) {
                 who
-                day.allowsHitTesting(false).accessibilityHidden(true)
+                HStack(spacing: .spaceS) {
+                    day.allowsHitTesting(false).accessibilityHidden(true)
+                    Spacer(minLength: .spaceS)
+                    heart
+                }
             }
         } else {
             HStack(spacing: .spaceS) {
                 who
                 Spacer(minLength: .spaceS)
                 day.allowsHitTesting(false).accessibilityHidden(true)
+                heart
             }
         }
     }
@@ -181,6 +186,12 @@ private struct FeedCardHeader: View {
             .foregroundStyle(item.isFollowing ? AnyShapeStyle(tint) : AnyShapeStyle(.secondary))
             .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
             .fixedSize(horizontal: false, vertical: true)
+    }
+
+    private var heart: some View {
+        FeedLikeButton(id: item.id, party: person?.party) {
+            LikedItem(item: item, likedAt: .now)
+        }
     }
 
     private var day: some View {
