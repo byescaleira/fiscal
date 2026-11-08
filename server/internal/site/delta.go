@@ -69,6 +69,10 @@ func (s *Stager) StageDelta(kind string, paths, changed []string) (Release, erro
 		os.RemoveAll(tmp)
 		return rel, err
 	}
+	if s.Detached {
+		s.logf("site %s staged from %s without moving ready", name, prevName)
+		return rel, nil
+	}
 	if err := s.point(name); err != nil {
 		return rel, err
 	}

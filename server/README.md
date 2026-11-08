@@ -181,7 +181,7 @@ Roda como job que sai (imagem `fiscal-ingest`, perfil `jobs` do `compose.yaml`, 
 | `-once live` | Os trabalhos `hot` e `destaques` em seguida, a partir do snapshot da última fase. Sem snapshot (ou com o de versão anterior à 2, de antes do pseudônimo com chave), pula até a próxima fase |
 | `-once` ou `-once full` | Carga completa de todas as fontes numa execução (primeira carga ou manutenção) |
 | sem modo | O agendador antigo de longa duração, só para desenvolvimento |
-| `-site status`, `-site rollback [-to <nome>]` | Mostra a release pronta ou aponta `site/ready` para a anterior. O rollback pega o `ingest.lock` (espera até `INGEST_LOCK_WAIT`, depois sai com 75 sem mudar nada); o status não espera |
+| `-site status`, `-site rollback [-to <nome>]`, `-site publish-held` | Mostra a release pronta e os caminhos retidos pela conferência, aponta `site/ready` para a anterior ou publica a cópia retida. O rollback pega o `ingest.lock` (espera até `INGEST_LOCK_WAIT`, depois sai com 75 sem mudar nada); o status não espera |
 | `-allow-drop` | Aceita, nesta execução, uma release com mais de `SITE_MAX_DROP` a menos de arquivos ou pessoas |
 | `-config-check` | Valida a configuração e sai |
 
@@ -226,7 +226,7 @@ Sem nenhum arquivo mudado, nenhuma release nova é criada. A carga não toca em 
 - **Fontes de ligação** (`camara`, `senado`, `assembleias`, `tse`). Restauram o resto do banco como antes, mas mantêm os arquivos de cidades (`DATA_DIR/city-paths.json`) e a Memória. Os anos de assembleia fora do cache não são buscados por esses trabalhos.
 - **Manifesto** (`DATA_DIR/v1-manifest.json`). Guarda o caminho e o hash de cada arquivo do preparo, ignorando o `generatedAt`. Só o que mudou é regravado, e a lista do que mudou (`pending`, que sobrevive a uma queda) vai para o stager.
 - **Release por delta.** `site.StageDelta` liga por link físico os pacotes da release anterior que não mudaram e remonta só pessoa, município, índice de cidade, pacote de votações ou arquivo avulso afetados. A validação relê só o que foi reescrito, mas as checagens estruturais continuam completas. Com o manifesto recém-criado, a primeira release é completa.
-- **Verificação semanal (`memoria`).** Roda o caminho incremental e depois a reconstrução completa do banco (cidades e Memória incluídas, release completa), e compara o preparo e as duas releases. O resultado vai para `DATA_DIR/consistency.json`; divergência registra `ALERT consistency` e sai com código 3.
+- **Verificação semanal (`memoria`).** Roda o caminho incremental e depois a reconstrução completa do banco (cidades e Memória incluídas, release completa), e compara o preparo e as duas releases. O resultado vai para `DATA_DIR/consistency.json`; A reconstrução roda numa cópia do preparo (`public/check`) e monta a release sem mover o `ready`. Divergência registra `ALERT consistency`, guarda os caminhos em `held` e sai com código 3, que avisa no celular; nada da cópia sai antes de `-site publish-held`.
 
 Tudo o que é lido fica guardado no banco SQLite (`STORE_PATH`), com histórico, e os arquivos são gerados a partir dele; detalhes em [Banco da carga](#banco-da-carga-fiscaldb).
 
