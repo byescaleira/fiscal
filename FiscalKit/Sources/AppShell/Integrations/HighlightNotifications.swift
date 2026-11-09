@@ -85,7 +85,11 @@ extension HighlightBoard {
         }
 
         func cancel() async {
-            center.removePendingNotificationRequests(withIdentifiers: [Self.identifier])
+            let identifiers = [Self.identifier]
+            await Task.detached(priority: .utility) {
+                UNUserNotificationCenter.current()
+                    .removePendingNotificationRequests(withIdentifiers: identifiers)
+            }.value
         }
     }
 
