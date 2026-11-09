@@ -4,63 +4,52 @@ import FiscalDomain
 import SwiftUI
 
 struct RaceCompactCard: View {
-    @Environment(LiveResultsModel.self) private var results
     let race: Race
 
     var body: some View {
         let summary = RaceSummary(race: race)
-        NavigationLink {
-            RaceDetailScreen(raceID: race.id).environment(results)
-        } label: {
-            VStack(alignment: .leading, spacing: .spaceM) {
-                RaceCompactHeader(summary: summary)
-                if summary.isDuel {
-                    RaceDuel(summary: summary)
-                } else {
-                    RaceStandings(
-                        contenders: summary.compactContenders, cut: summary.majorityCut,
-                        showsVotes: false)
-                    if let hidden = summary.hiddenText {
-                        Text(verbatim: hidden)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+        RouteLink(.race(id: race.id), showsChevron: false) {
+            HStack(spacing: .spaceM) {
+                VStack(alignment: .leading, spacing: .spaceM) {
+                    RaceCompactHeader(summary: summary)
+                    if summary.isDuel {
+                        RaceDuel(summary: summary)
+                    } else {
+                        RaceStandings(
+                            contenders: summary.compactContenders, cut: summary.majorityCut,
+                            showsVotes: false)
+                        if let hidden = summary.hiddenText {
+                            Text(verbatim: hidden)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
                     }
+                    RaceCompactFooter(summary: summary)
                 }
-                RaceCompactFooter(summary: summary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                RouteChevron()
             }
             .padding(.spaceL)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.groupedRow, in: .rect(cornerRadius: .radiusGroup))
+            .background(.plainRow, in: .rect(cornerRadius: .radiusGroup))
             .contentShape(.rect(cornerRadius: .radiusGroup))
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(
-            Text(verbatim: "\(summary.accessibilityLabel), \(summary.ballotAccessibility)")
-        )
+        .accessibilityLabel(Text(verbatim: summary.cardAccessibility))
         .accessibilityHint(Text("Shows every candidate and the blank and null votes"))
-        .contextMenu {
-            if results.showsFollow(race) {
-                Button {
-                    Task { await results.toggle(race) }
-                } label: {
-                    Label(
-                        results.isFollowing(race) ? "Stop Following" : "Follow on Lock Screen",
-                        systemImage: results.isFollowing(race) ? "lock.slash" : "lock.iphone")
-                }
-            }
-        }
     }
 }
 
 private struct RaceCompactHeader: View {
-    @Environment(LiveResultsModel.self) private var results
     let summary: RaceSummary
 
     var body: some View {
         HStack(alignment: .center, spacing: .spaceM) {
-            Text(verbatim: summary.race.uf.uppercased())
-                .font(.subheadline.weight(.heavy).width(.condensed))
+            Text(verbatim: summary.monogram)
+                .font(.emphasis(.subheadline, weight: .heavy))
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
                 .foregroundStyle(.secondary)
                 .frame(width: .badgeM, height: .badgeM)
                 .background(.subtleFill, in: .rect(cornerRadius: .radiusS))
@@ -68,29 +57,24 @@ private struct RaceCompactHeader: View {
                 Text(verbatim: summary.scope)
                     .font(.headline)
                     .lineLimit(1)
-                Text(verbatim: "\(summary.office) · \(summary.roundText)")
+                Text(verbatim: summary.officeLine)
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
             Spacer(minLength: .spaceS)
-            if results.isFollowing(summary.race) {
-                Image(systemName: "lock.iphone")
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(.secondary)
-            }
             RaceStatusBadge(summary: summary)
         }
     }
 }
 
 struct RaceStatusBadge: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     let summary: RaceSummary
 
     var body: some View {
         if summary.race.final {
             Label("Final", systemImage: "checkmark.seal.fill")
-                .font(.caption.weight(.bold))
+                .font(.chipLabel)
                 .foregroundStyle(Color.retroTeal)
                 .labelStyle(.titleAndIcon)
         } else if summary.hasStarted {
@@ -101,7 +85,7 @@ struct RaceStatusBadge: View {
                     .contentTransition(
                         reduceMotion
                             ? .identity : .numericText(value: summary.race.sections.percent))
-                ProgressBar(value: summary.countedFraction, color: .retroTeal)
+                RaceCountBar(value: summary.countedFraction, color: .retroTeal)
                     .frame(width: .badgeL)
             }
         } else {
@@ -132,7 +116,7 @@ private struct RaceDuel: View {
 }
 
 private struct RaceDuelSide: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     let contender: RaceSummary.Contender
     let trailing: Bool
 
@@ -141,7 +125,7 @@ private struct RaceDuelSide: View {
             if !trailing { portrait }
             VStack(alignment: trailing ? .trailing : .leading, spacing: .spaceHairline) {
                 Text(verbatim: contender.percent)
-                    .font(.amountTitle.width(.condensed))
+                    .font(.amountTitle)
                     .monospacedDigit()
                     .contentTransition(
                         reduceMotion ? .identity : .numericText(value: contender.candidate.percent)
@@ -185,34 +169,32 @@ struct RaceCandidatePortrait: View {
                     .font(.icon(.xs, weight: .bold))
                     .symbolRenderingMode(.palette)
                     .foregroundStyle(.white, Color.retroTeal)
-                    .symbolEffect(.bounce, value: contender.candidate.elected)
+                    .quietBounce(value: contender.candidate.elected)
             }
         }
     }
 }
 
 private struct RaceDuelSplit: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     let summary: RaceSummary
 
     var body: some View {
         let share = summary.splitShare
         let first = PartyPalette.of(party: summary.sides.first?.candidate.party ?? "", fallback: 0)
         let second = PartyPalette.of(party: summary.sides.last?.candidate.party ?? "", fallback: 1)
-        GeometryReader { proxy in
-            HStack(spacing: .spaceHairline) {
-                Capsule()
-                    .fill(
-                        summary.hasStarted ? first.primary : Color.secondary.opacity(.opacityFill)
-                    )
-                    .frame(width: max(.spaceS, (proxy.size.width - .spaceHairline) * share))
-                Capsule()
-                    .fill(
-                        summary.hasStarted ? second.primary : Color.secondary.opacity(.opacityFill))
-            }
-        }
-        .frame(height: .spaceXS)
-        .animation(reduceMotion ? nil : .smooth(duration: 1), value: share)
+        TallyChart(
+            segments: [
+                TallyChart.Segment(
+                    id: "first", title: summary.sides.first?.candidate.name ?? "", value: share,
+                    color: summary.hasStarted ? first.primary : .secondary.opacity(.opacityFill)),
+                TallyChart.Segment(
+                    id: "second", title: summary.sides.last?.candidate.name ?? "",
+                    value: 1 - share,
+                    color: summary.hasStarted ? second.primary : .secondary.opacity(.opacityFill)),
+            ], height: .spaceXS
+        )
+        .animation(reduceMotion ? nil : .chartReveal(0), value: share)
         .accessibilityHidden(true)
     }
 }

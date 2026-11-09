@@ -9,24 +9,20 @@ struct VoteSupportSection: View {
     var body: some View {
         let ballots = vote.supportedBallots
         if !ballots.isEmpty {
-            Section {
+            ContentBlock(
+                title: Text("How the people you support voted"),
+                footer: [
+                    String(
+                        appLocalized:
+                            "Only who you support and who was on this roll call. Who you support stays on this device."
+                    )
+                ]
+            ) {
                 if let headline = vote.supportedHeadline {
                     Text(verbatim: headline)
                         .font(.headline)
-                        .padding(.vertical, .space2XS)
                 }
-                ForEach(ballots) { BallotRow(ballot: $0, size: .badgeL) }
-            } header: {
-                AdaptiveRow(spacing: .spaceS) {
-                    Text("How the people you support voted").sectionTitle()
-                    Spacer(minLength: .spaceS)
-                    LensBadge()
-                }
-                .textCase(nil)
-            } footer: {
-                Text(
-                    "Only who you support and who was on this roll call. Who you support stays on this iPhone."
-                )
+                ForEach(ballots) { BallotRow(ballot: $0, size: .badgeL).privacySensitive() }
             }
         }
     }
@@ -37,7 +33,13 @@ struct VoteRepresentativesSection: View {
 
     var body: some View {
         if let people = vote.representatives {
-            Section {
+            ContentBlock(
+                title: Text(verbatim: vote.representativesTitle),
+                footer: [
+                    String(
+                        appLocalized: "The state you chose in Region. Names in alphabetical order.")
+                ]
+            ) {
                 if people.isEmpty {
                     Label(
                         "None of your state's representatives is on this roll call.",
@@ -47,10 +49,6 @@ struct VoteRepresentativesSection: View {
                 } else {
                     ForEach(people) { BallotRow(ballot: $0, size: .badgeL) }
                 }
-            } header: {
-                Text(verbatim: vote.representativesTitle).sectionTitle()
-            } footer: {
-                Text("The state you chose in Mine. Names in alphabetical order.")
             }
         }
     }
@@ -68,22 +66,7 @@ struct VoteBallotsSection: View {
         }
         .railSection()
         Section {
-            if let party = vote.party {
-                Button {
-                    vote.select(party: nil)
-                } label: {
-                    HStack(spacing: .spaceS) {
-                        Text("Showing only")
-                        PartyMark(party)
-                        Spacer(minLength: .spaceS)
-                        Image(systemName: "xmark.circle")
-                            .foregroundStyle(.secondary)
-                    }
-                    .contentShape(.rect)
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(Text("Remove the party filter \(party)"))
-            }
+            BallotPartyFilter()
             let ballots = vote.ballots
             if ballots.isEmpty {
                 Text(verbatim: vote.ballotsEmptyText).foregroundStyle(.secondary)
@@ -106,7 +89,11 @@ private struct BallotRow: View {
 
     var body: some View {
         if let slug = ballot.slug {
-            RouteLink(.person(slug: slug)) { content(slug: slug) }
+            HStack(spacing: .spaceS) {
+                RouteLink(.person(slug: slug)) { content(slug: slug) }
+                FollowButton(slug: slug, name: ballot.name)
+            }
+            .followActions(slug: slug, name: ballot.name)
         } else {
             content(slug: ballot.id)
         }
@@ -126,36 +113,64 @@ private struct BallotRow: View {
                 }
             }
             Spacer(minLength: .spaceS)
-            BallotMark(text: ballot.vote, choice: BallotChoice(vote: ballot.vote))
+            BallotMark(
+                text: ballot.vote, choice: BallotChoice(vote: ballot.vote), showsKnownText: false)
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: vote.ballotAccessibility(ballot)))
     }
 }
 
-private struct BallotMark: View {
+struct BallotPartyFilter: View {
+    @Environment(VoteDetailModel.self) private var vote
+
+    var body: some View {
+        if let party = vote.party {
+            Button {
+                vote.select(party: nil)
+            } label: {
+                HStack(spacing: .spaceS) {
+                    Text("Showing only")
+                    PartyMark(party)
+                    Spacer(minLength: .spaceS)
+                    Image(systemName: "xmark.circle")
+                        .foregroundStyle(.secondary)
+                }
+                .contentShape(.rect)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(Text("Remove the party filter \(party)"))
+        }
+    }
+}
+
+struct BallotMark: View {
     @ScaledMetric(relativeTo: .caption) private var diameter: CGFloat = .badgeS
     let text: String
     let choice: BallotChoice?
+    var showsKnownText = true
 
     var body: some View {
         let color = choice?.color ?? .secondary
         HStack(spacing: .spaceS) {
-            Text(verbatim: text)
-                .font(.chipLabel)
-                .foregroundStyle(color)
-                .lineLimit(1)
+            if showsKnownText || choice == nil {
+                Text(verbatim: text)
+                    .font(.chipLabel)
+                    .foregroundStyle(color)
+                    .lineLimit(1)
+            }
             Image(systemName: choice?.symbol ?? "circle.dotted")
                 .font(.chipLabel)
                 .foregroundStyle(color)
                 .frame(width: diameter, height: diameter)
                 .background(color.opacity(.opacityTint), in: .circle)
+                .accessibilityHidden(true)
         }
         .fixedSize()
     }
 }
 
-private struct BallotFilterPills: View {
+struct BallotFilterPills: View {
     @Environment(VoteDetailModel.self) private var vote
 
     var body: some View {
@@ -192,6 +207,8 @@ private struct BallotFilterPill: View {
                     .monospacedDigit()
                     .opacity(isSelected ? 1 : .opacitySoft * 2)
             }
+            .lineLimit(1)
+            .fixedSize()
             .foregroundStyle(isSelected ? AnyShapeStyle(.white) : AnyShapeStyle(color))
             .padding(.horizontal, .spaceM)
             .padding(.vertical, .spaceS)

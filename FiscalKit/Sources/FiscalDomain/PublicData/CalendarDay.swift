@@ -20,7 +20,7 @@ public struct CalendarDay: Codable, Hashable, Comparable, Sendable, CustomString
         self.init(year: year, month: month, day: day)
     }
 
-    public init(_ date: Date, calendar: Calendar = FiscalCalendar.current) {
+    public init(_ date: Date, calendar: Calendar = GregorianCalendar.current) {
         let components = calendar.dateComponents([.year, .month, .day], from: date)
         year = components.year ?? 1
         month = components.month ?? 1
@@ -46,7 +46,7 @@ public struct CalendarDay: Codable, Hashable, Comparable, Sendable, CustomString
         String(format: "%04d-%02d-%02d", year, month, day)
     }
 
-    public func date(in calendar: Calendar = FiscalCalendar.current) -> Date {
+    public func date(in calendar: Calendar = GregorianCalendar.current) -> Date {
         calendar.date(from: DateComponents(year: year, month: month, day: day)) ?? .distantPast
     }
 

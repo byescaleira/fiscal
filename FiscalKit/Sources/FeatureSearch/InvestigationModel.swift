@@ -20,11 +20,12 @@ public final class InvestigationModel {
     public private(set) var suggestions: [InvestigationSuggestion] = []
     public private(set) var highlights: [Highlight] = []
     public private(set) var followed: [PersonCard] = []
-    public private(set) var lens: Lens?
+    public internal(set) var renaming: Investigation?
+    public var renameText = ""
+    var titleEdit: TitleEdit?
     @ObservationIgnored var index = SearchIndex()
     @ObservationIgnored var recent: [VoteSummary] = []
     @ObservationIgnored private let service: (any PublicDataService)?
-    @ObservationIgnored private let lensRepository: (any LensRepository)?
     @ObservationIgnored private let follows: (any FollowRepository)?
     @ObservationIgnored let repository: (any InvestigationRepository)?
     @ObservationIgnored let legacy: DeviceInvestigations?
@@ -32,17 +33,16 @@ public final class InvestigationModel {
     @ObservationIgnored let now: @Sendable () -> Date
     @ObservationIgnored let homeUF: String?
     @ObservationIgnored let planner: InvestigationPlanner
+    @ObservationIgnored private let requests = PublicDataRequests()
     private var revision = 0
 
     public init(
-        service: (any PublicDataService)?, lens: (any LensRepository)? = nil,
-        follows: (any FollowRepository)? = nil,
+        service: (any PublicDataService)?, follows: (any FollowRepository)? = nil,
         repository: (any InvestigationRepository)? = nil, homeUF: String? = nil,
         legacy: DeviceInvestigations? = DeviceInvestigations(), usesModel: Bool = true,
         now: @escaping @Sendable () -> Date = { .now }
     ) {
         self.service = service
-        lensRepository = lens
         self.follows = follows
         self.homeUF = homeUF
         self.repository = repository
@@ -89,7 +89,6 @@ public final class InvestigationModel {
 
     public func load() async {
         await loadSaved()
-        lens = try? await lensRepository?.lens()
         followed = (try? await follows?.followed())?.map(\.card) ?? []
         if highlights.isEmpty, let list = try? await service?.highlights() {
             highlights = list.items
@@ -175,9 +174,11 @@ public final class InvestigationModel {
         let engine = InvestigationEngine(service: service)
         let pieces = investigation.pieces
         let recent = recent
-        phase = await PublicDataPhase.settle(after: phase) {
+        phase = await PublicDataPhase.settle(after: phase, in: requests) {
             let evidence = try await engine.evidence(for: pieces, recent: recent)
-            board = InvestigationLinks(pieces: pieces, evidence: evidence).board()
+            return InvestigationLinks(pieces: pieces, evidence: evidence).board()
+        } apply: { loaded in
+            board = loaded
             writing = nil
         }
         guard phase == .loaded, let conclusion = board.conclusion,

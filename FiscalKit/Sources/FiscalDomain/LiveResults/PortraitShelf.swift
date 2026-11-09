@@ -9,8 +9,16 @@ public enum PortraitShelf {
     }
 
     public static func url(for slug: String) -> URL? {
-        FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: HomePlace.appGroup)?
+        guard isSafe(slug) else { return nil }
+        return AppGroup.containerURL?
             .appending(path: "portraits", directoryHint: .isDirectory)
             .appending(path: "\(slug).png")
+    }
+
+    static func isSafe(_ slug: String) -> Bool {
+        !slug.isEmpty
+            && slug.unicodeScalars.allSatisfy {
+                ("a"..."z").contains($0) || ("0"..."9").contains($0) || $0 == "-"
+            }
     }
 }

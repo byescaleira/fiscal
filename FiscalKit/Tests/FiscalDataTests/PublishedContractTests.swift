@@ -7,7 +7,6 @@ import Testing
 @Suite(.enabled(if: ProcessInfo.processInfo.environment["FISCAL_PUBLISHED_CONTRACT"] == "1"))
 struct PublishedContractTests {
     private let client = PublicDataClient(
-        baseURL: URL(string: "https://fiscal.byescaleira.com/api").unsafelyUnwrapped,
         dataURL: URL(string: "https://dados.fiscal.byescaleira.com").unsafelyUnwrapped,
         session: URLSession(configuration: .ephemeral))
 

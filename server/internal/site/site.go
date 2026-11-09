@@ -87,23 +87,16 @@ type Release struct {
 	Buckets     map[string]int `json:"buckets"`
 	Base        string         `json:"base,omitempty"`
 	Rebuilt     int            `json:"rebuilt"`
-	Origin      *Origin        `json:"origin,omitempty"`
-}
-
-type Origin struct {
-	First     []string `json:"first"`
-	OnMissing []string `json:"onMissing"`
-	MaxAge    int      `json:"maxAge"`
 }
 
 type Stager struct {
-	Staging string
-	Root    string
-	Keep    int
-	Rules   Rules
-	Origin  *Origin
-	Now     func() time.Time
-	Logger  *log.Logger
+	Staging  string
+	Root     string
+	Keep     int
+	Rules    Rules
+	Now      func() time.Time
+	Logger   *log.Logger
+	Detached bool
 }
 
 func (s *Stager) now() time.Time {
@@ -313,12 +306,31 @@ func (s *Stager) Stage(kind string, paths []string) (Release, error) {
 		os.RemoveAll(tmp)
 		return rel, err
 	}
+	if s.Detached {
+		s.logf("site %s staged without moving ready: files=%d logical=%d people=%d", name, rel.Files, rel.Logical, rel.People)
+		return rel, nil
+	}
 	if err := s.point(name); err != nil {
 		return rel, err
 	}
 	s.prune(name)
 	s.logf("site %s ready: files=%d logical=%d people=%d", name, rel.Files, rel.Logical, rel.People)
 	return rel, nil
+}
+
+func (s *Stager) Promote(name string) error {
+	if !ValidName(name) {
+		return fmt.Errorf("promote: invalid site %q", name)
+	}
+	if _, err := ReadRelease(filepath.Join(s.sites(), name)); err != nil {
+		return fmt.Errorf("promote: %s: %w", name, err)
+	}
+	if err := s.point(name); err != nil {
+		return err
+	}
+	s.prune(name)
+	s.logf("site %s ready", name)
+	return nil
 }
 
 func (s *Stager) clearTemp() {
@@ -387,7 +399,7 @@ func (s *Stager) build(tmp, name, kind string, paths []string, indexed map[strin
 }
 
 func (s *Stager) newRelease(name, kind string, logical, people int) Release {
-	return Release{Release: name, Kind: kind, Layout: Layout, GeneratedAt: s.now().UTC().Format(time.RFC3339), Logical: logical, People: people, Buckets: map[string]int{CityPeopleIndex.Dir: CityPeopleIndex.Count, VoteBundles.Dir: VoteBundles.Count}, Origin: s.Origin}
+	return Release{Release: name, Kind: kind, Layout: Layout, GeneratedAt: s.now().UTC().Format(time.RFC3339), Logical: logical, People: people, Buckets: map[string]int{CityPeopleIndex.Dir: CityPeopleIndex.Count, VoteBundles.Dir: VoteBundles.Count}}
 }
 
 func (s *Stager) finish(tmp string, rel Release, rebuilt int) (Release, error) {

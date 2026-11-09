@@ -194,7 +194,7 @@ export function flagsPage({ environment, flags, remote, error, readAt, message, 
       return `<form class="row flag" method="post" action="/admin/flags"${environment === 'production' ? ' data-confirm="Gravar esta flag em Produção?"' : ''}>
 <input type="hidden" name="env" value="${environment}">
 <input type="hidden" name="name" value="${h(flag.name)}">
-<div class="flag-head"><div><strong>${h(flag.title)}</strong><div class="footnote"><code>${h(flag.name)}</code> · padrão do app: ${flag.defaultValue ? 'ligado' : 'desligado'}</div></div>
+<div class="flag-head"><div><strong>${h(flag.title)}</strong>${flag.description ? `<p class="flag-description">${h(flag.description)}</p>` : ''}<div class="footnote"><code>${h(flag.name)}</code> · padrão do app: ${flag.defaultValue ? 'ligado' : 'desligado'}</div></div>
 <label class="switch"><input type="checkbox" name="isOn" role="switch"${isOn ? ' checked' : ''}${remote ? '' : ' disabled'}><span aria-hidden="true"></span><span class="visually-hidden">Ligado</span></label></div>
 <div class="flag-rollout"><label for="rollout-${h(flag.name)}" class="footnote">Rollout</label><input id="rollout-${h(flag.name)}" type="range" name="rollout" min="0" max="100" step="1" value="${rollout}"${remote ? '' : ' disabled'}><output for="rollout-${h(flag.name)}">${rollout}%</output></div>
 <div class="flag-actions">${remoteChip}<span class="spacer"></span>${value ? `<button class="button quiet small-quiet" type="submit" name="action" value="reset"${remote ? '' : ' disabled'}>Usar padrão</button>` : ''}<button class="button small-solid" type="submit" name="action" value="save"${remote ? '' : ' disabled'}>Salvar</button></div>

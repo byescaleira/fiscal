@@ -34,6 +34,9 @@ for part in $only; do
 done
 want() { case " $only " in *" $1 "*) return 0 ;; *) return 1 ;; esac; }
 sha="$(git -C "$project_root" rev-parse --short=12 HEAD)"
+marketing="$(sed -n 's/.*MARKETING_VERSION = \([0-9][0-9.]*\);.*/\1/p' "$project_root/Fiscal/Fiscal.xcodeproj/project.pbxproj" | head -n 1)"
+version="$(git -C "$project_root" describe --tags --match 'v[0-9]*' --exact-match 2>/dev/null | sed 's/^v//' || true)"
+[ -n "$version" ] || version="${marketing:-0.0.0}+$sha"
 if [ -n "$(git -C "$project_root" status --porcelain -- server scripts/server-deploy.sh)" ]; then
   echo "server/ tem mudanças sem commit; faça o commit antes do deploy." >&2
   [ "$apply" = 1 ] && exit 1
@@ -46,7 +49,7 @@ run() {
 remote_run() {
   if [ "$apply" = 1 ]; then ssh -o BatchMode=yes -o ConnectTimeout=15 "$host" "$1"; else plan "ssh $host '$1'"; fi
 }
-echo "Fiscal deploy $sha -> $host:$remote (linux/$goarch)"
+echo "Fiscal deploy $version ($sha) -> $host:$remote (linux/$goarch)"
 [ "$apply" = 1 ] || echo "Modo plano (sem --apply): nada é executado."
 echo "1. Compilar no Mac (sem compilar na VPS)"
 run rm -rf "$stage"
@@ -55,15 +58,16 @@ for target in "server:liveresults-server" "ingest:fiscal-ingest" "pages:fiscal-p
   pkg="${target%%:*}"
   bin="${target##*:}"
   if [ "$apply" = 1 ]; then
-    (cd "$server" && GOTOOLCHAIN=go1.26.10 CGO_ENABLED=0 GOOS=linux GOARCH="$goarch" go build -trimpath -ldflags="-s -w" -o "$stage/bin/$bin" "./cmd/$pkg")
+    (cd "$server" && GOTOOLCHAIN=go1.26.10 CGO_ENABLED=0 GOOS=linux GOARCH="$goarch" go build -trimpath -ldflags="-s -w -X main.version=$version" -o "$stage/bin/$bin" "./cmd/$pkg")
   else
-    plan "(cd server && GOTOOLCHAIN=go1.26.10 CGO_ENABLED=0 GOOS=linux GOARCH=$goarch go build -trimpath -ldflags='-s -w' -o .dist/$sha/bin/$bin ./cmd/$pkg)"
+    plan "(cd server && GOTOOLCHAIN=go1.26.10 CGO_ENABLED=0 GOOS=linux GOARCH=$goarch go build -trimpath -ldflags='-s -w -X main.version=$version' -o .dist/$sha/bin/$bin ./cmd/$pkg)"
   fi
 done
 run cp "$server"/deploy/docker/*.Dockerfile "$stage/docker/"
 run cp "$server"/deploy/systemd/* "$stage/systemd/"
 run cp "$server/compose.yaml" "$stage/compose.yaml"
 run cp "$server/deploy/promote-image.sh" "$stage/promote-image.sh"
+run cp "$server/deploy/fiscal-load-alert.sh" "$stage/fiscal-load-alert.sh"
 echo "2. Enviar binários, Dockerfiles, compose e units (sem tocar em .env, secrets/, data/, ingest-data/, public/)"
 remote_run "mkdir -p $remote/builds/$sha"
 run rsync -a --delete "$stage/" "$host:$remote/builds/$sha/"
@@ -80,6 +84,7 @@ promote() {
 if want units; then
   echo "4. compose.yaml e units"
   remote_run "cd $remote && cp -p compose.yaml compose.yaml.bak.$sha 2>/dev/null; install -m 0644 builds/$sha/compose.yaml compose.yaml && mkdir -p pages-data && chown 1000:1000 pages-data && chmod 700 pages-data"
+  remote_run "install -m 0755 $remote/builds/$sha/fiscal-load-alert.sh $remote/fiscal-load-alert.sh"
   remote_run "install -m 0644 $remote/builds/$sha/systemd/* /etc/systemd/system/ && systemctl daemon-reload"
   remote_run "docker rm -f fiscal-ingest 2>/dev/null || true"
   remote_run "for t in /etc/systemd/system/fiscal-phase-*.timer /etc/systemd/system/fiscal-live.timer; do [ -e \$t ] || continue; systemctl disable --now \$(basename \$t); rm -f \$t; done; rm -f /etc/systemd/system/fiscal-live.service; systemctl daemon-reload"

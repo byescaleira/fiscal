@@ -1,40 +1,15 @@
+import FeatureCore
 import FiscalDesignSystem
 import SwiftUI
 
-public enum ShareFormat: String, CaseIterable, Identifiable, Sendable {
-    case stories, feed, message
+public typealias ShareFormat = ByescaleiraUI.ShareFormat
 
-    public var id: String { rawValue }
-
+extension ShareFormat {
     public var raceRowLimit: Int {
         switch self {
         case .stories: 8
         case .feed: 5
         case .message: 3
-        }
-    }
-
-    public var title: LocalizedStringKey {
-        switch self {
-        case .stories: "Stories"
-        case .feed: "Feed"
-        case .message: "Message"
-        }
-    }
-
-    public var ratio: String {
-        switch self {
-        case .stories: "9:16"
-        case .feed: "4:5"
-        case .message: "1:1"
-        }
-    }
-
-    public var size: CGSize {
-        switch self {
-        case .stories: CGSize(width: .shareCanvasWidth, height: .shareStoriesHeight)
-        case .feed: CGSize(width: .shareCanvasWidth, height: .shareFeedHeight)
-        case .message: CGSize(width: .shareCanvasWidth, height: .shareMessageHeight)
         }
     }
 
@@ -121,8 +96,4 @@ public enum ShareFormat: String, CaseIterable, Identifiable, Sendable {
     public var compareRows: Int { self == .message ? 2 : SharePoster.compareLimit }
 
     public var showsCode: Bool { self != .message }
-
-    public func pixels(scale: CGFloat) -> CGSize {
-        CGSize(width: size.width * scale, height: size.height * scale)
-    }
 }

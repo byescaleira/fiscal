@@ -22,6 +22,7 @@ public struct ExplainerOutput: Equatable, Sendable {
 
 public actor Explainer {
     public static let shared = Explainer()
+    public static let fixed = Explainer(usesModel: false)
     public static let cacheLimit = 200
     public static let responseTokenLimit = 220
     public static let language = Locale(identifier: "pt_BR")

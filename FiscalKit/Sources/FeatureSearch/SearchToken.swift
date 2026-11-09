@@ -10,7 +10,7 @@ public enum SearchToken: Hashable, Identifiable, Sendable {
     public var id: String {
         switch self {
         case .place(let place): "place-\(place.code)"
-        case .party(let party): "party-\(SearchText.fold(party))"
+        case .party(let party): "party-\(party.searchFolded)"
         case .theme(let theme): "theme-\(theme.rawValue)"
         case .electedAwaiting: "elected-awaiting"
         }
@@ -38,7 +38,7 @@ public enum SearchToken: Hashable, Identifiable, Sendable {
     func admits(_ card: PersonCard) -> Bool {
         switch self {
         case .place(let place): card.uf == place.uf || card.uf == "br"
-        case .party(let party): SearchText.fold(card.party) == SearchText.fold(party)
+        case .party(let party): card.party.searchFolded == party.searchFolded
         case .theme: false
         case .electedAwaiting: card.status == .electedAwaiting
         }

@@ -1,12 +1,15 @@
+import FeatureContent
 import FeatureCore
-import FeatureLens
+import FeatureFeed
 import FeatureLiveResults
 import FeatureMemory
 import FeatureMoney
 import FeatureProfile
+import FeatureRegion
 import FeatureSearch
 import FeatureSettings
 import FeatureShare
+import FeatureSupport
 import FeatureVotes
 import FiscalDesignSystem
 import FiscalDomain
@@ -22,24 +25,50 @@ struct RouteScreen: View {
         case .person(let slug):
             ModelHost(
                 ProfileModel(
-                    slug: slug, service: data, follows: session.repositories.follows,
-                    lens: session.repositories.lens)
+                    slug: slug, service: data, follows: session.repositories.follows)
             ) {
                 ProfileScreen()
             }
         case .vote(let id):
             ModelHost(
                 VoteDetailModel(
-                    id: id, service: data, lens: session.repositories.lens,
+                    id: id, service: data, support: session.repositories.support,
                     homeUF: HomePlace.chosenUF(in: .standard))
             ) {
                 VoteDetailScreen()
+            }
+        case .voteBallots(let id, let party):
+            ModelHost(VoteDetailModel(id: id, service: data, party: party)) {
+                VoteBallotsScreen()
+            }
+        case .agenda:
+            ModelHost(VotesModel(service: data)) { VotesAgendaScreen() }
+        case .following:
+            ModelHost(
+                FollowingModel(
+                    service: data,
+                    follows: FiscalServices.shared.feedFollows(session.repositories.follows))
+            ) {
+                FollowingScreen()
             }
         case .expenses(let slug, let year):
             ModelHost(ExpensesModel(slug: slug, year: year, service: data)) { ExpensesScreen() }
         case .compare(let slugs):
             ModelHost(CompareModel(slugs: slugs, service: data)) { CompareScreen() }
-        case .races: ModelHost(FiscalServices.shared.liveResults()) { LiveResultsScreen() }
+        case .races: LiveResultsScreen()
+        case .race(let id): RaceDetailScreen(raceID: id)
+        case .roster(let title, let people):
+            RegionRosterScreen(roster: RegionRoster(title: title, people: people))
+        case .spenders(let title, let spenders, let year):
+            ModelHost(MoneyModel(service: data)) {
+                MoneySpendersDestination(title: title, spenders: spenders, year: year)
+            }
+        case .awaiting:
+            ModelHost(
+                MemoryModel(service: data, races: FiscalServices.shared.liveResultsService())
+            ) {
+                AwaitingDestination()
+            }
         case .memory:
             ModelHost(
                 MemoryModel(service: data, races: FiscalServices.shared.liveResultsService())
@@ -53,11 +82,10 @@ struct RouteScreen: View {
         case .period(let id): ModelHost(PeriodModel(id: id, service: data)) { PeriodScreen() }
         case .studyGuide(let id):
             ModelHost(StudyGuideModel(id: id, service: data)) { StudyGuideScreen() }
-        case .lens: LensDestination()
         case .artists: ArtistsDestination()
         case .settings:
             SettingsScreen(service: data) {
-                LensDestination()
+                SupportDestination()
             } artists: {
                 ArtistsDestination()
             }
@@ -66,33 +94,57 @@ struct RouteScreen: View {
                 ShareModel(
                     subject: subject, service: data,
                     races: FiscalServices.shared.liveResultsService(),
-                    lens: session.repositories.lens)
+                    follows: session.repositories.follows)
             ) {
                 ShareScreen()
             }
+        case .support: SupportDestination()
+        case .liked: FeedLikedScreen()
+        case .content(let content):
+            ModelHost(ContentDetailModel(content: content)) { ContentDetailScreen() }
+        case .highlight(let id):
+            ModelHost(ContentDetailModel(highlightID: id, service: data)) { ContentDetailScreen() }
         }
     }
 }
 
-private struct LensDestination: View {
-    @Environment(LensContext.self) private var lens
+private struct SupportDestination: View {
+    @Environment(SupportContext.self) private var support
     @Environment(SessionModel.self) private var session
 
     var body: some View {
+        let data = FiscalServices.shared.publicData()
         ModelHost(
-            LensModel(
-                context: lens, service: FiscalServices.shared.publicData(),
-                icons: SystemAppIconSwitcher(), follows: session.repositories.follows)
+            SupportModel(context: support, service: data, follows: session.repositories.follows)
         ) {
-            LensScreen()
+            SupportScreen(service: data, follows: session.repositories.follows)
         }
+    }
+}
+
+private struct MoneySpendersDestination: View {
+    @Environment(MoneyModel.self) private var money
+    let title: String
+    let spenders: [MoneyPlaces.Spender]
+    let year: Int?
+
+    var body: some View {
+        MoneySpendersScreen(title: title, spenders: spenders, year: year)
+            .task { await money.load() }
+    }
+}
+
+private struct AwaitingDestination: View {
+    @Environment(MemoryModel.self) private var memory
+
+    var body: some View {
+        AwaitingScreen()
+            .task { await memory.load() }
     }
 }
 
 private struct ArtistsDestination: View {
-    @Environment(SessionModel.self) private var session
-
     var body: some View {
-        ModelHost(ArtistsModel(lens: session.repositories.lens)) { ArtistsScreen() }
+        ModelHost(ArtistsModel()) { ArtistsScreen() }
     }
 }

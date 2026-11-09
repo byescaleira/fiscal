@@ -15,7 +15,7 @@ struct Release: Identifiable, Equatable {
     static var all: [Release] {
         [
             Release(
-                version: "1.0", headline: String(appLocalized: "The first version of Fiscal."),
+                version: "1.0.0", headline: String(appLocalized: "The first version of Fiscal."),
                 notes: ReleaseNote.firstVersion)
         ]
     }

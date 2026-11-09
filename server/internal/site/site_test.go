@@ -140,6 +140,10 @@ func TestStageBuildsTheGroupedLayout(t *testing.T) {
 	if onDisk.Release != rel.Release || onDisk.Files != rel.Files {
 		t.Fatalf("release.json = %+v", onDisk)
 	}
+	raw, err := os.ReadFile(filepath.Join(f.stage.Root, ReadyLink, Layout, ReleaseFile))
+	if err != nil || strings.Contains(string(raw), `"origin"`) {
+		t.Fatalf("release.json must not point the app to the origin: %s %v", raw, err)
+	}
 	if strings.Contains(Headers, ".gz") || !strings.Contains(Headers, "/v2/races.json") {
 		t.Fatal("headers")
 	}

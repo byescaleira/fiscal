@@ -43,10 +43,6 @@ extension ShareCardContent {
     public var isVictory: Bool { victory != nil }
 }
 
-extension ShareCard {
-    public var victory: ShareVictory? { content.victory }
-}
-
 extension ShareCardBuilder {
     func victory(_ race: Race, winner: RaceCandidate) -> ShareCardContent {
         let percent = RaceText.percent(winner.percent)

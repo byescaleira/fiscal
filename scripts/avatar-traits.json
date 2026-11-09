@@ -114753,6 +114753,63 @@
       "brows": "strong",
       "beard": "none",
       "glasses": "none"
+    },
+    {
+      "slug": "eliane-leal",
+      "name": "Eliane Leal",
+      "party": "PL",
+      "office": "viceGovernor",
+      "uf": "es",
+      "skin": 3,
+      "face": "oval",
+      "hair": "long",
+      "hairColor": "black",
+      "brows": "medium",
+      "beard": "none",
+      "glasses": "rectangle"
+    },
+    {
+      "slug": "gustavo-rocha",
+      "name": "Gustavo Rocha",
+      "party": "REPUBLICANOS",
+      "office": "viceGovernor",
+      "uf": "df",
+      "skin": 1,
+      "face": "long",
+      "hair": "swept",
+      "hairColor": "salt",
+      "brows": "medium",
+      "beard": "short",
+      "beardColor": "salt",
+      "glasses": "none"
+    },
+    {
+      "slug": "jessica-sales",
+      "name": "Jessica Sales",
+      "party": "MDB",
+      "office": "viceGovernor",
+      "uf": "ac",
+      "skin": 2,
+      "face": "oval",
+      "hair": "long",
+      "hairColor": "brown",
+      "brows": "medium",
+      "beard": "none",
+      "glasses": "none"
+    },
+    {
+      "slug": "larissa",
+      "name": "Larissa",
+      "party": "PSB",
+      "office": "viceGovernor",
+      "uf": "rn",
+      "skin": 3,
+      "face": "round",
+      "hair": "wavy",
+      "hairColor": "darkBrown",
+      "brows": "medium",
+      "beard": "none",
+      "glasses": "none"
     }
   ]
 }

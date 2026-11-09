@@ -190,8 +190,10 @@
             return PublicList(items: items, total: 30 + ShowcasePeople.seed(card.slug) % 40)
         }
 
+        static func nextSession(now: Date) -> Date { now.addingTimeInterval(2 * 86_400) }
+
         static func agenda(now: Date, empty: Bool) -> Agenda {
-            let next = now.addingTimeInterval(2 * 86_400)
+            let next = nextSession(now: now)
             let houses: [Agenda.HouseDay] =
                 empty
                 ? []
@@ -210,8 +212,7 @@
                                 status: "Aguardando parecer", themes: [.health], url: nil),
                         ]),
                     Agenda.HouseDay(
-                        house: .senado, inSession: false,
-                        nextSession: next.addingTimeInterval(86_400),
+                        house: .senado, inSession: false, nextSession: next,
                         items: [
                             AgendaItem(
                                 proposition: "PL 4012/2026",
@@ -219,7 +220,7 @@
                                 status: "Em votação", themes: [.education, .social], url: nil)
                         ]),
                 ]
-            return Agenda(date: CalendarDay(now), houses: houses)
+            return Agenda(date: CalendarDay(next), houses: houses)
         }
 
         static func ballot(for slug: String, voteID: String) -> String {

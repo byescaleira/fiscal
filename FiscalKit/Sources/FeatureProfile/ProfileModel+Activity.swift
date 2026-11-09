@@ -8,10 +8,12 @@ extension ProfileModel {
     public struct MonthBar: Identifiable, Equatable {
         public let month: Int
         public let label: String
+        public let name: String
         public let cents: Int
         public let value: String
 
         public var id: Int { month }
+        public var reais: Double { Double(cents) / 100 }
     }
 
     public struct CategoryLine: Identifiable, Equatable {
@@ -21,18 +23,14 @@ extension ProfileModel {
         public let count: Int
 
         public var id: String { category }
+        public var shareText: String { PublicFormat.percent(fraction) }
+        public var receiptsText: String {
+            String(appLocalized: "Receipts: \(PublicFormat.number(count))")
+        }
     }
 
     public var recentVotes: [PersonVote] {
         Array((votes?.items ?? []).sorted { $0.date > $1.date }.prefix(Self.recentLimit))
-    }
-
-    public var lastVote: PersonVote? { recentVotes.first }
-
-    public var lastVoteText: String? {
-        guard let vote = lastVote else { return nil }
-        return String(
-            appLocalized: "Last vote · \(vote.proposition) · \(shortDay(vote.date))")
     }
 
     public func ballot(_ vote: PersonVote) -> ProfileBallot { ProfileBallot(vote.vote) }
@@ -80,6 +78,21 @@ extension ProfileModel {
         )
     }
 
+    public func shareRoute(for vote: PersonVote) -> Route {
+        .share(.personVote(slug: slug, year: year, voteID: vote.voteId))
+    }
+
+    public func shareRoute(for proposal: Proposal) -> Route {
+        .share(.proposal(slug: slug, year: year, id: proposal.id))
+    }
+
+    public func proposalRoute(_ proposal: Proposal) -> Route {
+        .content(
+            ContentDetail(
+                proposal: proposal, effect: proposalStatus(proposal), person: nil,
+                sourceLine: sourceText(for: ["proposals"])))
+    }
+
     public func proposalStatus(_ proposal: Proposal) -> String? {
         switch proposal.canBecomeLaw {
         case true?: String(appLocalized: "Can become law")
@@ -103,24 +116,43 @@ extension ProfileModel {
     public var expensesTotal: String { PublicFormat.money(cents: expenses?.totalCents) }
 
     public var monthBars: [MonthBar] {
+        guard let expenses, !expenses.byMonth.isEmpty else { return [] }
+        let byMonth = Dictionary(
+            expenses.byMonth.map { ($0.month, $0.cents) }, uniquingKeysWith: +)
         let symbols = monthSymbols
-        return (expenses?.byMonth ?? []).sorted { $0.month < $1.month }.map { total in
+        let names = fullMonthSymbols
+        return (1...12).map { month in
             MonthBar(
-                month: total.month,
-                label: symbols.indices.contains(total.month - 1)
-                    ? symbols[total.month - 1] : String(total.month),
-                cents: total.cents, value: PublicFormat.money(cents: total.cents))
+                month: month,
+                label: symbols.indices.contains(month - 1) ? symbols[month - 1] : String(month),
+                name: names.indices.contains(month - 1) ? names[month - 1] : String(month),
+                cents: byMonth[month] ?? 0, value: PublicFormat.money(cents: byMonth[month]))
         }
     }
 
-    public var highlightedMonth: Int? { monthBars.max(by: { $0.cents < $1.cents })?.month }
+    public var highlightedMonth: Int? {
+        monthBars.filter { $0.cents > 0 }.max(by: { $0.cents < $1.cents })?.month
+    }
+
+    public var monthAverageReais: Double? {
+        let values = (expenses?.byMonth ?? []).map(\.cents)
+        guard !values.isEmpty else { return nil }
+        return Double(values.reduce(0, +)) / Double(values.count) / 100
+    }
+
+    public var yearText: String { String(expenseYear) }
+
+    public var expensesSectionTitle: String {
+        String(appLocalized: "Office Allowance in \(yearText)")
+    }
+
+    public var expensesRoute: Route { .expenses(slug: slug, year: expenseYear) }
 
     public var expenseHeadline: String? {
-        guard let top = monthBars.max(by: { $0.cents < $1.cents }) else { return nil }
-        let name =
-            fullMonthSymbols.indices.contains(top.month - 1)
-            ? fullMonthSymbols[top.month - 1] : top.label
-        return String(appLocalized: "Biggest month in \(String(year)): \(name), \(top.value)")
+        guard let top = monthBars.first(where: { $0.month == highlightedMonth }) else {
+            return nil
+        }
+        return String(appLocalized: "Biggest month in \(yearText): \(top.name), \(top.value)")
     }
 
     public var categoryLines: [CategoryLine] {
@@ -130,30 +162,6 @@ extension ProfileModel {
                 category: $0.category, value: PublicFormat.compactMoney(cents: $0.cents),
                 fraction: Double($0.cents) / Double(expenses.totalCents), count: $0.count)
         }
-    }
-
-    public var expenseItems: [Expense] {
-        (expenses?.items ?? []).sorted { ($0.month, $0.cents) > ($1.month, $1.cents) }
-    }
-
-    public func expenseDetail(_ expense: Expense) -> String {
-        let month =
-            fullMonthSymbols.indices.contains(expense.month - 1)
-            ? fullMonthSymbols[expense.month - 1] : String(expense.month)
-        return [expense.category, month, expense.document.map(Self.formattedDocument)]
-            .compactMap(\.self).joined(separator: " · ")
-    }
-
-    public static func formattedDocument(_ document: String) -> String {
-        let digits = Array(document.filter(\.isNumber))
-        guard digits.count == 14 else { return document }
-        let text = String(digits)
-        func part(_ from: Int, _ to: Int) -> Substring {
-            text[
-                text.index(
-                    text.startIndex, offsetBy: from)..<text.index(text.startIndex, offsetBy: to)]
-        }
-        return "\(part(0, 2)).\(part(2, 5)).\(part(5, 8))/\(part(8, 12))-\(part(12, 14))"
     }
 
     private var monthSymbols: [String] {

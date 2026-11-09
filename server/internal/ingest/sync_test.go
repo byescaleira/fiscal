@@ -2,16 +2,21 @@ package ingest
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"io"
+	"io/fs"
 	"log"
+	"maps"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 	"time"
 
+	"liveresults/internal/datastore"
 	"liveresults/internal/publicdata"
+	"liveresults/internal/publish"
 	"liveresults/internal/site"
 )
 
@@ -148,6 +153,199 @@ func TestVerifyFindsNoDivergenceBetweenIncrementalAndFullRebuild(t *testing.T) {
 	if c.Full == "" || c.Incremental == "" || c.Staging != 0 || c.Site != 0 {
 		t.Fatalf("consistency = %+v", c)
 	}
+	if current, _ := h.in.site.CurrentName(); current != c.Full {
+		t.Fatalf("ready = %s, want the full rebuild %s", current, c.Full)
+	}
+	if _, err := os.Stat(checkRoot(h.in.cfg.PublicDir)); !errors.Is(err, fs.ErrNotExist) {
+		t.Fatalf("a check that matches must not stay: %v", err)
+	}
+}
+
+func tamperSnapshot(t *testing.T, in *Ingest) {
+	t.Helper()
+	if err := in.LoadSnapshot(); err != nil {
+		t.Fatal(err)
+	}
+	in.mu.Lock()
+	for _, p := range in.dataset.People {
+		for i := range p.Roles {
+			p.Roles[i].Party = "TESTE"
+		}
+	}
+	in.mu.Unlock()
+	if err := in.SaveSnapshot(); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func indexHas(t *testing.T, path, text string) bool {
+	t.Helper()
+	data, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return strings.Contains(string(data), text)
+}
+
+func TestADivergentCheckLeavesTheStagingAndTheSiteUntilPublishedByHand(t *testing.T) {
+	h := newSyncHarness(t)
+	h.run("senado")
+	tamperSnapshot(t, h.in)
+	h.clock = h.clock.Add(time.Minute)
+	outs, err := h.in.RunJob(context.Background(), "memoria", h.hooks())
+	if !errors.Is(err, ErrDivergence) || len(outs) != 1 {
+		t.Fatalf("memoria: %v %+v", err, outs)
+	}
+	c, ok, err := ReadConsistency(h.in.cfg.DataDir)
+	if err != nil || !ok || c.Staging == 0 || c.Site == 0 || len(c.Held) == 0 {
+		t.Fatalf("consistency: %v %v %+v", ok, err, c)
+	}
+	if current, _ := h.in.site.CurrentName(); current != c.Incremental {
+		t.Fatalf("ready = %s, want the incremental %s", current, c.Incremental)
+	}
+	staged := filepath.Join(h.in.cfg.PublicDir, "v1", "index", "people.json")
+	if !indexHas(t, staged, "TESTE") {
+		t.Fatal("the staging area must keep what is published")
+	}
+	if _, err := os.Stat(filepath.Join(checkRoot(h.in.cfg.PublicDir), "v1", "index", "people.json")); err != nil {
+		t.Fatalf("the check must stay for publish-held: %v", err)
+	}
+	h.clock = h.clock.Add(time.Minute)
+	h.run("destaques")
+	current, _ := h.in.site.CurrentName()
+	if !indexHas(t, filepath.Join(h.in.site.Dir(current), "v2", "index", "people.json"), "TESTE") {
+		t.Fatal("a later derived job must not publish the check by itself")
+	}
+	h.clock = h.clock.Add(time.Minute)
+	rel, skipped, err := PublishHeld(h.in.cfg.DataDir, h.in.cfg.PublicDir, h.in.site)
+	if err != nil || skipped != 0 {
+		t.Fatalf("publish held: %v (skipped %d)", err, skipped)
+	}
+	if current, _ := h.in.site.CurrentName(); current != rel.Release {
+		t.Fatalf("ready = %s, want %s", current, rel.Release)
+	}
+	if indexHas(t, filepath.Join(h.in.site.Dir(rel.Release), "v2", "index", "people.json"), "TESTE") || indexHas(t, staged, "TESTE") {
+		t.Fatal("publishing must carry the check into the staging area and the site")
+	}
+	c, _, err = ReadConsistency(h.in.cfg.DataDir)
+	if err != nil || len(c.Held) != 0 || c.Released != rel.Release {
+		t.Fatalf("after publishing: %v %+v", err, c)
+	}
+	if _, err := os.Stat(checkRoot(h.in.cfg.PublicDir)); !errors.Is(err, fs.ErrNotExist) {
+		t.Fatalf("the check must be gone after publishing: %v", err)
+	}
+}
+
+func TestADivergenceWithoutAnIncrementalPassKeepsTheReadySite(t *testing.T) {
+	h := newSyncHarness(t)
+	first := h.run("senado").Release
+	if err := os.Remove(h.in.SnapshotPath()); err != nil {
+		t.Fatal(err)
+	}
+	m, err := h.in.manifest()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tree := publish.NewTree(filepath.Join(h.in.cfg.PublicDir, "v1"))
+	tree.UseManifest(m)
+	if err := tree.Write("index/people.json", []byte(`{"items":[],"note":"TESTE"}`)); err != nil {
+		t.Fatal(err)
+	}
+	if err := m.Save(); err != nil {
+		t.Fatal(err)
+	}
+	h.clock = h.clock.Add(time.Minute)
+	if _, err := h.in.RunJob(context.Background(), "memoria", h.hooks()); !errors.Is(err, ErrDivergence) {
+		t.Fatalf("memoria: %v", err)
+	}
+	if current, _ := h.in.site.CurrentName(); current != first {
+		t.Fatalf("ready = %s, want %s: a check without an incremental pass must not move it", current, first)
+	}
+}
+
+func TestPublishHeldNeedsAHeldCheck(t *testing.T) {
+	st := &site.Stager{Staging: t.TempDir(), Root: t.TempDir()}
+	if _, _, err := PublishHeld(t.TempDir(), t.TempDir(), st); err == nil {
+		t.Fatal("without a held check there is nothing to publish")
+	}
+}
+
+func TestMovingTheCheckKeepsAPathThatChangedAgain(t *testing.T) {
+	dir := t.TempDir()
+	root, public := filepath.Join(dir, "check"), filepath.Join(dir, "public")
+	manifest := func(name string, entries map[string]string) *publish.Manifest {
+		m, err := publish.LoadManifest(filepath.Join(dir, name))
+		if err != nil {
+			t.Fatal(err)
+		}
+		for p, h := range entries {
+			m.Adopt(p, h)
+		}
+		return m
+	}
+	for _, p := range []string{"a.json", "c.json"} {
+		if err := os.MkdirAll(filepath.Join(root, "v1"), 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(filepath.Join(root, "v1", p), []byte(p), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	base := manifest("base.json", map[string]string{"a.json": "1", "b.json": "1", "d.json": "1"})
+	checked := manifest("checked.json", map[string]string{"a.json": "2", "b.json": "2", "c.json": "3"})
+	main := manifest("main.json", map[string]string{"a.json": "1", "b.json": "9", "d.json": "1"})
+	skipped, err := moveChecked(root, public, base, checked, main)
+	if err != nil || skipped != 1 {
+		t.Fatalf("skipped = %d, %v", skipped, err)
+	}
+	for p, want := range map[string]string{"a.json": "2", "b.json": "9", "c.json": "3"} {
+		if got, _ := main.Get(p); got != want {
+			t.Errorf("%s = %q, want %q", p, got, want)
+		}
+	}
+	if _, ok := main.Get("d.json"); ok {
+		t.Error("a path the check removed must leave the manifest")
+	}
+	if data, err := os.ReadFile(filepath.Join(public, "v1", "a.json")); err != nil || string(data) != "a.json" {
+		t.Fatalf("a.json was not moved: %v", err)
+	}
+}
+
+func TestRepeatedStoreKeysEndTheJobAsADivergence(t *testing.T) {
+	h := newSyncHarness(t)
+	db, err := datastore.Open(filepath.Join(t.TempDir(), "fiscal.db"), func() time.Time { return h.clock })
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { db.Close() })
+	h.in.UseStore(db)
+	data, err := os.ReadFile(h.get.routes["/despesas_ceaps/2026"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	var rows []map[string]any
+	if err := json.Unmarshal(data, &rows); err != nil || len(rows) == 0 {
+		t.Fatalf("fixture: %v", err)
+	}
+	repeated := maps.Clone(rows[0])
+	repeated["valorReembolsado"] = 1.5
+	data, err = json.Marshal(append(rows, repeated))
+	if err != nil {
+		t.Fatal(err)
+	}
+	path := filepath.Join(t.TempDir(), "ceaps.json")
+	if err := os.WriteFile(path, data, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	h.get.routes["/despesas_ceaps/2026"] = path
+	h.clock = h.clock.Add(time.Minute)
+	outs, err := h.in.RunJob(context.Background(), "senado", h.hooks())
+	if !errors.Is(err, ErrDivergence) || len(outs) != 1 || !errors.Is(outs[0].Err, ErrDivergence) {
+		t.Fatalf("a repeated key must end as a divergence: %v %+v", err, outs)
+	}
+	if outs[0].Release == "" {
+		t.Fatalf("the data read from the source still goes out: %+v", outs[0])
+	}
 }
 
 func TestOverlayJobsReuseTheSnapshotInsteadOfRestoringEverySource(t *testing.T) {
@@ -244,7 +442,7 @@ func TestFirstSyncAssumesTheDataIsCurrentInsteadOfRunningEverything(t *testing.T
 	}
 }
 
-func TestADivergentRebuildLeavesTheIncrementalReleasePublished(t *testing.T) {
+func TestADetachedStageDoesNotMoveTheReadySite(t *testing.T) {
 	h := newSyncHarness(t)
 	first := h.run("senado").Release
 	h.clock = h.clock.Add(time.Minute)
@@ -252,12 +450,19 @@ func TestADivergentRebuildLeavesTheIncrementalReleasePublished(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	rebuilt, err := h.in.site.Stage("memoria", m.Paths())
+	detached := *h.in.site
+	detached.Detached = true
+	rebuilt, err := detached.Stage("memoria", m.Paths())
 	if err != nil || rebuilt.Release == first {
 		t.Fatalf("stage: %v %s", err, rebuilt.Release)
 	}
-	h.in.keepPublished(first)
 	if current, _ := h.in.site.CurrentName(); current != first {
-		t.Fatalf("ready = %s, want the incremental %s", current, first)
+		t.Fatalf("ready = %s, want %s", current, first)
+	}
+	if err := h.in.site.Promote(rebuilt.Release); err != nil {
+		t.Fatal(err)
+	}
+	if current, _ := h.in.site.CurrentName(); current != rebuilt.Release {
+		t.Fatalf("ready = %s after promote", current)
 	}
 }

@@ -1,3 +1,4 @@
+import FeatureCore
 import FeatureSettings
 import FiscalData
 import FiscalDomain
@@ -26,9 +27,9 @@ public final class OfflineDataCenter {
             model = nil
             return
         }
-        let coordinator = OfflinePackCoordinator(updater: updater) {
-            await OfflineDataCenter.request()
-        }
+        let coordinator = OfflinePackCoordinator(
+            updater: updater, report: { await OfflineDataCenter.record($0) },
+            request: { await OfflineDataCenter.request() })
         self.coordinator = coordinator
         model = OfflineDataModel(service: coordinator)
     }
@@ -38,9 +39,21 @@ public final class OfflineDataCenter {
         await model?.load()
     }
 
-    public func refreshInBackground() async {
+    public func refreshInBackground(store: AppReleaseStore = .shared) async {
+        guard Self.refreshesInBackground(store: store) else { return }
         scheduleBackgroundRefresh()
         _ = try? await coordinator?.refresh()
+        await HighlightAlertCenter.shared.refreshInBackground()
+    }
+
+    static func refreshesInBackground(store: AppReleaseStore) -> Bool {
+        !store.blocks
+    }
+
+    func cancelBackgroundRefresh() {
+        #if os(iOS) || os(visionOS)
+            BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: Self.refreshIdentifier)
+        #endif
     }
 
     public func scheduleBackgroundRefresh() {
@@ -52,6 +65,13 @@ public final class OfflineDataCenter {
         #endif
     }
 
+    static func record(_ result: Result<OfflinePackSummary, any Error>) {
+        switch result {
+        case .success(let summary): FiscalEvents.offlinePack(files: summary.files).log()
+        case .failure(let error): FiscalEvents.networkError(for: error)?.log()
+        }
+    }
+
     nonisolated static func request() async -> OfflinePackRequest {
         let place = UserDefaults.standard.string(forKey: HomePlace.mineKey)
         guard
@@ -60,8 +80,6 @@ public final class OfflineDataCenter {
         else { return OfflinePackRequest(placeCode: place) }
         let repositories = database.repositories
         let followed = (try? await repositories.follows.followed()) ?? []
-        let supported = (try? await repositories.lens.lens())?.supported ?? []
-        return OfflinePackRequest(
-            followed: followed.map(\.card.slug), supported: supported, placeCode: place)
+        return OfflinePackRequest(followed: followed.map(\.card.slug), placeCode: place)
     }
 }

@@ -15,7 +15,7 @@ struct HighlightKicker: View {
         .font(.caption2.weight(.heavy))
         .foregroundStyle(.secondary)
         .lineLimit(1)
-        .minimumScaleFactor(0.8)
+        .minimumScaleFactor(.widgetLabelShrink)
     }
 }
 
@@ -41,23 +41,19 @@ struct HighlightUncertainty: View {
                 .font(.caption2)
                 .foregroundStyle(.secondary)
                 .lineLimit(isShort ? 1 : 2)
-                .minimumScaleFactor(0.85)
+                .minimumScaleFactor(.widgetTextShrink)
         }
     }
 }
 
 struct HighlightWho: View {
     let board: HighlightBoard
-    var showsPortrait = true
+    var readsShelf = false
 
     var body: some View {
         HStack(spacing: .spaceS) {
-            if showsPortrait, let name = board.personName, board.hasPerson {
-                PersonPortrait(
-                    slug: board.personSlug ?? "", name: name, party: board.party ?? "",
-                    size: .badgeS
-                )
-                .widgetAccentable()
+            if let name = board.personName, board.hasPerson {
+                HighlightPhoto(board: board, name: name, readsShelf: readsShelf)
             }
             VStack(alignment: .leading, spacing: 0) {
                 if let name = board.personName, board.hasPerson {
@@ -69,13 +65,42 @@ struct HighlightWho: View {
                     .foregroundStyle(.secondary)
             }
             .lineLimit(1)
-            .minimumScaleFactor(0.85)
+            .minimumScaleFactor(.widgetTextShrink)
             Spacer(minLength: .spaceXS)
             if let party = board.party, !party.isEmpty {
                 PartyMark(party)
                     .widgetAccentable()
             }
         }
+    }
+}
+
+private struct HighlightPhoto: View {
+    let board: HighlightBoard
+    let name: String
+    let readsShelf: Bool
+
+    var body: some View {
+        if readsShelf, let image = shelved {
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFill()
+                .frame(width: .badgeS, height: .badgeS)
+                .clipShape(.circle)
+                .accessibilityHidden(true)
+        } else {
+            PersonPortrait(
+                slug: board.personSlug ?? "", name: name, party: board.party ?? "", size: .badgeS
+            )
+            .widgetAccentable()
+        }
+    }
+
+    private var shelved: UIImage? {
+        guard let slug = board.personSlug, let url = PortraitShelf.url(for: slug) else {
+            return nil
+        }
+        return UIImage(contentsOfFile: url.path(percentEncoded: false))
     }
 }
 
@@ -88,7 +113,7 @@ struct HighlightSmall: View {
             Text(verbatim: board.title)
                 .font(.subheadline.weight(.semibold))
                 .lineLimit(5)
-                .minimumScaleFactor(0.85)
+                .minimumScaleFactor(.widgetTextShrink)
             Spacer(minLength: 0)
             HStack(spacing: .space2XS) {
                 if let party = board.party, !party.isEmpty {
@@ -97,7 +122,7 @@ struct HighlightSmall: View {
                 Text(verbatim: board.personName ?? board.subtitle)
                     .font(.caption.weight(.bold))
                     .lineLimit(1)
-                    .minimumScaleFactor(0.8)
+                    .minimumScaleFactor(.widgetLabelShrink)
             }
             HighlightWeightText(board: board)
             HighlightUncertainty(board: board, isShort: true)
@@ -121,7 +146,7 @@ struct HighlightMedium: View {
             Text(verbatim: board.title)
                 .font(.headline)
                 .lineLimit(3)
-                .minimumScaleFactor(0.85)
+                .minimumScaleFactor(.widgetTextShrink)
             HighlightUncertainty(board: board, isShort: true)
             Spacer(minLength: 0)
             HighlightWho(board: board)
@@ -146,7 +171,7 @@ struct HighlightLarge: View {
                 Text(verbatim: deck.lead.title)
                     .font(.headline)
                     .lineLimit(5)
-                    .minimumScaleFactor(0.85)
+                    .minimumScaleFactor(.widgetTextShrink)
                 SegmentedBar(
                     count: Relevance.segments, value: deck.lead.relevance.filledSegments,
                     color: .retroTeal
@@ -210,7 +235,7 @@ struct HighlightRectangular: View {
                 Image(systemName: "scalemass")
                 Text(verbatim: board.kicker)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.8)
+                    .minimumScaleFactor(.widgetLabelShrink)
                 Spacer(minLength: .space2XS)
                 Text(verbatim: board.relevance.shortTitle)
             }

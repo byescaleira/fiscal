@@ -9,11 +9,13 @@ import Testing
 struct InvestigationSavedTests {
     private let date = Date(timeIntervalSince1970: 1_792_917_720)
 
-    private func legacy(_ list: [Investigation]) throws -> DeviceInvestigations {
-        let defaults = try #require(UserDefaults(suiteName: "investigations-\(UUID().uuidString)"))
-        defaults.set(
-            try PublicDataCoding.encoder().encode(list), forKey: DeviceInvestigations.key)
-        return DeviceInvestigations(defaults: defaults)
+    private func legacy(_ list: [Investigation], key: String = DeviceInvestigations.key) throws
+        -> DeviceInvestigations
+    {
+        let suite = "investigations-\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: suite))
+        defaults.set(try PublicDataCoding.encoder().encode(list), forKey: key)
+        return DeviceInvestigations(suiteName: suite)
     }
 
     private func store() throws -> any InvestigationRepository {
@@ -68,6 +70,41 @@ struct InvestigationSavedTests {
         await editor.saving?.value
         await reader.loadSaved()
         #expect(reader.saved.map(\.id) == [first.id])
+    }
+
+    @Test func theOldDeviceKeyMovesToTheFiscalKey() async throws {
+        let repository = try store()
+        let old = Investigation(question: "Old key", createdAt: date, updatedAt: date)
+        let device = try legacy([old], key: DeviceInvestigations.legacyKey)
+        #expect(device.load().map(\.id) == [old.id])
+        let model = model(repository, legacy: device)
+        await model.loadSaved()
+        #expect(model.saved.map(\.id) == [old.id])
+        #expect(device.load().isEmpty)
+    }
+
+    @Test func renamingAndTheTitleLiveInTheModel() async throws {
+        let repository = try store()
+        let investigation = Investigation(question: "First", createdAt: date, updatedAt: date)
+        let model = model(repository, after: 60)
+        model.persist(investigation)
+        model.startRenaming(investigation)
+        #expect(model.isRenaming)
+        #expect(model.renameText == "First")
+        model.renameText = "Renamed"
+        model.commitRenaming()
+        #expect(!model.isRenaming)
+        #expect(model.saved.first?.question == "Renamed")
+
+        await model.open(try #require(model.saved.first))
+        #expect(model.title == "Renamed")
+        #expect(!model.editTitle("Typed"))
+        #expect(model.title == "Typed")
+        #expect(model.editTitle("Typed\n"))
+        #expect(model.title == "Typed")
+        model.commitTitle()
+        #expect(model.current?.question == "Typed")
+        #expect(model.saved.first?.question == "Typed")
     }
 
     @Test func clearingAnInvestigationRemovesItFromTheStore() async throws {

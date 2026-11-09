@@ -113,7 +113,7 @@ struct SharePosterTests {
     }
 
     @Test func longFiguresShrinkToFitAndShortOnesKeepTheirSize() {
-        for format in ShareFormat.allCases {
+        for format in FeatureShare.ShareFormat.allCases {
             #expect(format.figureSize(format.heroSize, for: "98%") == format.heroSize)
             let long = format.figureSize(format.heroSize, for: "R$ 386.637,50")
             #expect(long < format.heroSize)

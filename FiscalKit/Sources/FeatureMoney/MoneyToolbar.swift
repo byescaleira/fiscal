@@ -17,7 +17,7 @@ struct MoneyToolbar: ToolbarContent {
 
 private struct MoneyScopeMenu: View {
     @Environment(MoneyModel.self) private var money
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
 
     var body: some View {
         Menu {
@@ -42,7 +42,7 @@ private struct MoneyScopeMenu: View {
             }
             .font(.subheadline.weight(.semibold))
             .foregroundStyle(Color.primary)
-            .symbolEffect(.bounce, value: money.scopeUF)
+            .quietBounce(value: money.scopeUF)
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(Text("Place"))
             .accessibilityValue(Text(verbatim: money.scopeName))

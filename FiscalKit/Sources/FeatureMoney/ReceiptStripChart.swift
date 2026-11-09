@@ -4,7 +4,7 @@ import FiscalDomain
 import SwiftUI
 
 struct ReceiptStripChart: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @ScaledMetric(relativeTo: .caption) private var height: CGFloat = .chartCompactHeight
     @State private var revealed = false
     @State private var scrubbed: Double?
@@ -89,7 +89,7 @@ struct ReceiptStripChart: View {
         .sensoryFeedback(.selection, trigger: selected?.id)
         .frame(height: height)
         .onAppear {
-            withAnimation(reduceMotion ? nil : .smooth(duration: 1)) { revealed = true }
+            withAnimation(reduceMotion ? nil : .chartReveal(0)) { revealed = true }
         }
     }
 

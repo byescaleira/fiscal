@@ -26,7 +26,7 @@ struct UpdateRecommendation: ViewModifier {
     }
 
     private var isFree: Bool {
-        launch.isDismissed && navigation.guide == nil
+        launch.isDismissed && navigation.isFree
     }
 
     private func dismissed() {

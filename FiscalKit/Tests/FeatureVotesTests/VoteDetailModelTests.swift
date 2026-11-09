@@ -41,11 +41,11 @@ struct VoteDetailModelTests {
     private let now = Date(timeIntervalSince1970: 1_792_917_720)
 
     private func loaded(
-        _ id: String = "camara-18732026", lens: Lens? = nil, homeUF: String? = nil
+        _ id: String = "camara-18732026", support: SupportChoice? = nil, homeUF: String? = nil
     ) async -> VoteDetailModel {
         let model = VoteDetailModel(
             id: id, service: ShowcasePublicData(scenario: .normal, now: now),
-            lens: StoredLens(value: lens), homeUF: homeUF)
+            support: ShowcaseSupportRepository(support: support), homeUF: homeUF)
         await model.load()
         return model
     }
@@ -136,15 +136,24 @@ struct VoteDetailModelTests {
         #expect(vote.headline.contains("49"))
     }
 
-    @Test func theLensOnlyMarksTheTopics() async {
-        let vote = await loaded(
-            lens: Lens(themes: [.economy, .health, .security], supported: ["lula"]))
-        #expect(vote.themes == [.economy, .taxes])
-        #expect(vote.showsLensBadge)
-        #expect(vote.yesText == "412")
-        let other = await loaded(
-            lens: Lens(themes: [.health, .security, .culture], supported: ["lula"]))
-        #expect(!other.showsLensBadge)
+    @Test func theTopicsKeepTheOrderOfTheVote() async {
+        let plain = await loaded()
+        let supporting = await loaded(support: SupportChoice(causes: [.health, .taxes]))
+        #expect(plain.themes == plain.vote?.themes)
+        #expect(supporting.themes == plain.themes)
+        #expect(supporting.yesText == plain.yesText)
+    }
+
+    @Test func theBallotsOfWhoYouSupportFollowTheOrderOfTheChoice() async throws {
+        let plain = await loaded()
+        #expect(plain.supportedBallots.isEmpty)
+        #expect(plain.supportedHeadline == nil)
+        let slugs = plain.ballots.compactMap(\.slug)
+        let first = try #require(slugs.first)
+        let last = try #require(slugs.last)
+        let vote = await loaded(support: SupportChoice(people: [last, first]))
+        #expect(vote.supportedBallots.map(\.slug) == [last, first])
+        #expect(vote.ballots.count == plain.ballots.count)
     }
 
     @Test func aBallotWithoutSlugAndAMissingTallyStayHonest() async {
@@ -168,6 +177,66 @@ struct VoteDetailModelTests {
         #expect(vote.partyRows.first?.yes == 1)
         #expect(vote.plainSummary == nil)
         #expect(vote.officialSummary == "Texto oficial")
+    }
+
+    private static func summary(nominal: Bool, tally: VoteSummary.Tally) -> VoteSummary {
+        VoteSummary(
+            id: "camara-1", house: .camara, date: CalendarDay(Date(timeIntervalSince1970: 0)),
+            time: nil, proposition: "PL 1/2026", kind: nil, summary: "Texto", plainSummary: nil,
+            themes: [], result: nil, approved: true, nominal: nominal, tally: tally)
+    }
+
+    private func model(
+        nominal: Bool, tally: VoteSummary.Tally, people: [VoteDetail.Ballot]
+    ) async -> VoteDetailModel {
+        let detail = VoteDetail(
+            vote: Self.summary(nominal: nominal, tally: tally), quorum: nil, guidance: [],
+            parties: [], people: people, sources: [])
+        let vote = VoteDetailModel(id: "camara-1", service: SingleVote(detail: detail))
+        await vote.load()
+        return vote
+    }
+
+    private static let ballot = VoteDetail.Ballot(
+        slug: "ana-souza", name: "Ana Souza", party: "PT", uf: "sp", vote: "Sim")
+
+    @Test func aNominalVoteHasChaptersAndTheListOfVotes() async {
+        let vote = await model(
+            nominal: true, tally: VoteSummary.Tally(yes: 1, no: 0, others: 1),
+            people: [Self.ballot])
+        #expect(vote.hasScore)
+        #expect(vote.chapters == [.change, .parties, .ballots])
+        #expect(vote.ballotsRoute == .voteBallots(id: "camara-1", party: nil))
+        #expect(vote.ballotsRoute(party: "PT") == .voteBallots(id: "camara-1", party: "PT"))
+        #expect(vote.symbolicText == nil)
+        #expect(vote.noNamesText == nil)
+        #expect(vote.compactScore == "1 × 0")
+        #expect(vote.othersText == String(appLocalized: "\(1) other votes"))
+    }
+
+    @Test func aVoiceVoteHasNoScoreNoDashAndNoListOfVotes() async {
+        let vote = await model(
+            nominal: false, tally: VoteSummary.Tally(yes: nil, no: nil, others: nil), people: [])
+        #expect(!vote.hasScore)
+        #expect(vote.chapters == [.change])
+        #expect(vote.ballotsRoute == nil)
+        #expect(vote.symbolicText != nil)
+        #expect(vote.compactScore == nil)
+        #expect(vote.othersText == nil)
+    }
+
+    @Test func aNominalVoteWithoutNamesSaysSoAndOffersNoList() async {
+        let vote = await model(
+            nominal: true, tally: VoteSummary.Tally(yes: 10, no: 5, others: 0), people: [])
+        #expect(vote.hasScore)
+        #expect(vote.ballotsRoute == nil)
+        #expect(vote.noNamesText != nil)
+        #expect(vote.chapters == [.change])
+    }
+
+    @Test func thePartyStartsSelectedWhenTheListOpensFromARow() {
+        let vote = VoteDetailModel(id: "camara-1", service: nil, party: "PT")
+        #expect(vote.party == "PT")
     }
 
     @Test func aMissingVoteSaysSo() async {

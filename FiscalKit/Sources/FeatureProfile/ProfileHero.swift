@@ -1,44 +1,47 @@
+import ByescaleiraEffects
 import FeatureCore
 import FiscalDesignSystem
 import FiscalDomain
 import SwiftUI
 
-struct ProfileHeroSection: View {
+struct ProfileHero: View {
     @Environment(ProfileModel.self) private var profile
 
     var body: some View {
-        Section {
-        } header: {
-            if let person = profile.profile {
-                ProfileHero(person: person)
-                    .listRowInsets(EdgeInsets())
-                    .textCase(nil)
-            }
+        if let person = profile.profile {
+            ProfileHeroCard(person: person)
         }
     }
 }
 
-private struct ProfileHero: View {
+private struct ProfileHeroCard: View {
     @Environment(ProfileModel.self) private var profile
     let person: Profile
 
     var body: some View {
         VStack(spacing: .spaceL) {
-            HStack(spacing: .spaceS) {
+            AdaptiveStack(spacing: .spaceS) {
                 PartyMark(person.party)
                 Spacer(minLength: .spaceS)
                 if let status = profile.statusText {
                     Chip(status, color: profile.isInOffice ? .primary : .warning, shape: .capsule)
+                        .lineLimit(1)
+                        .fixedSize()
                 }
             }
-            PersonPortrait(
-                slug: person.slug, name: person.name, party: person.party, size: .medallion,
-                expression: profile.hasJustFollowed ? .wave : nil
-            )
-            .overlay(Circle().strokeBorder(.white, lineWidth: .space2XS))
+            ProfileHeroWindow(party: person.party) {
+                PersonPortrait(
+                    slug: person.slug, name: person.name, party: person.party, size: .medallion,
+                    expression: profile.hasJustFollowed ? .wave : nil
+                )
+                .overlay(Circle().strokeBorder(.white, lineWidth: .space2XS))
+            }
+            Text("Fiscal Illustration")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
             VStack(spacing: .spaceXS) {
                 Text(verbatim: person.name)
-                    .font(.amountHero)
+                    .font(.titleLarge)
                     .minimumScaleFactor(0.7)
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityAddTraits(.isHeader)
@@ -54,46 +57,92 @@ private struct ProfileHero: View {
             .multilineTextAlignment(.center)
             .accessibilityElement(children: .combine)
             ProfileHeroActions()
-            if let vote = profile.lastVote {
-                ProfileLastVote(vote: vote)
-            }
         }
         .foregroundStyle(.primary)
         .padding(.spaceXL)
         .frame(maxWidth: .infinity)
         .background {
-            PartyBackdrop(party: person.party).clipShape(.rect(cornerRadius: .radiusGroup))
+            PartyBackdrop(party: person.party)
+                .clipShape(.rect(cornerRadius: .radiusGroup - .collectibleFrame))
         }
+        .modifier(ProfileHeroCollectible())
         .environment(\.colorScheme, .dark)
-        .padding(.bottom, .spaceS)
+    }
+}
+
+private struct ProfileHeroCollectible: ViewModifier {
+    @State private var reader = TiltReader()
+    @State private var isOnScreen = true
+
+    func body(content: Content) -> some View {
+        content
+            .collectibleFrame(tilt: reader.tilt, cornerRadius: .radiusGroup)
+            .cardTurn(reader.tilt)
+            .environment(reader)
+            .background {
+                if isOnScreen {
+                    Color.clear.tiltReading(reader)
+                }
+            }
+            .onScrollVisibilityChange { isOnScreen = $0 }
+    }
+}
+
+private struct ProfileHeroWindow<Portrait: View>: View {
+    let party: String
+    @ViewBuilder let portrait: Portrait
+
+    var body: some View {
+        portrait
+            .padding(.vertical, .spaceL)
+            .frame(maxWidth: .infinity)
+            .background {
+                PartyBackdrop(party: party)
+                    .overlay { ProfileHeroWindowFoil() }
+            }
+            .clipShape(.rect(cornerRadius: .radiusM))
+            .overlay {
+                RoundedRectangle(cornerRadius: .radiusM)
+                    .strokeBorder(.white.opacity(.opacitySoft), lineWidth: .space2XS)
+            }
+    }
+}
+
+private struct ProfileHeroWindowFoil: View {
+    @Environment(TiltReader.self) private var reader
+
+    var body: some View {
+        HolographicFoil(tilt: reader.tilt, style: .sparkle)
     }
 }
 
 private struct ProfileHeroActions: View {
     @Environment(ProfileModel.self) private var profile
     @Environment(SessionModel.self) private var session
+    @Environment(FollowController.self) private var follow: FollowController?
     @Environment(\.open) private var open
     @Environment(\.navigationSection) private var section
 
     var body: some View {
         AdaptiveRow(spacing: .spaceM) {
-            if profile.canFollow {
+            if let follow, let card = profile.followCard {
+                let isFollowing = follow.isFollowing(card.slug)
                 Button {
-                    Task {
-                        await profile.toggleFollow()
-                        session.reload()
-                    }
+                    Task { await toggle(card, with: follow) }
                 } label: {
                     Label(
-                        profile.isFollowing ? LocalizedStringKey("Following") : "Follow",
-                        systemImage: profile.isFollowing ? "checkmark" : "plus"
+                        isFollowing ? LocalizedStringKey("Following") : "Follow",
+                        systemImage: isFollowing ? "checkmark" : "plus"
                     )
                     .lineLimit(1)
                     .minimumScaleFactor(.opacitySoft * 2)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
                 .heroGlassButton()
-                .sensoryFeedback(.selection, trigger: profile.isFollowing)
+                .accessibilityLabel(
+                    isFollowing ? Text("Unfollow \(card.name)") : Text("Follow \(card.name)")
+                )
+                .sensoryFeedback(.success, trigger: isFollowing)
             }
             if let route = profile.shareRoute {
                 Button {
@@ -109,34 +158,12 @@ private struct ProfileHeroActions: View {
         }
         .fixedSize(horizontal: false, vertical: true)
     }
-}
 
-private struct ProfileLastVote: View {
-    @Environment(ProfileModel.self) private var profile
-    let vote: PersonVote
-
-    var body: some View {
-        HStack(alignment: .center, spacing: .spaceM) {
-            Capsule()
-                .fill(.white)
-                .frame(width: .space2XS)
-                .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: .space2XS) {
-                if let text = profile.lastVoteText {
-                    Text(verbatim: text).font(.caption.weight(.semibold)).foregroundStyle(
-                        .secondary)
-                }
-                Text(verbatim: vote.summary)
-                    .font(.footnote)
-                    .lineLimit(2)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            BallotChip(ballot: profile.ballot(vote))
-        }
-        .padding(.spaceM)
-        .fixedSize(horizontal: false, vertical: true)
-        .background(Color.white.opacity(.opacityFill), in: .rect(cornerRadius: .radiusM))
-        .accessibilityElement(children: .combine)
+    private func toggle(_ card: PersonCard, with follow: FollowController) async {
+        let isFollowing = await follow.toggle(card)
+        profile.followChanged(to: isFollowing)
+        session.reload()
+        FollowController.announce(name: card.name, isFollowing: isFollowing)
     }
 }
 

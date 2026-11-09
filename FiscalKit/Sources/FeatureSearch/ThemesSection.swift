@@ -26,13 +26,8 @@ struct ThemesSection: View {
                 ThemeLinkRows()
             }
         } header: {
-            VStack(alignment: .leading, spacing: .spaceXS) {
-                Text(search.isLensAdapted ? "Your topics" : "Topics").sectionTitle()
-                if search.showsLensBadge {
-                    LensBadge()
-                }
-            }
-            .textCase(nil)
+            Text("Topics").sectionTitle()
+                .textCase(nil)
         } footer: {
             VStack(alignment: .leading, spacing: .space2XS) {
                 if search.themeActivity?.hasVotes == true {

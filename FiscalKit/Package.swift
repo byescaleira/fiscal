@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "FiscalKit",
     defaultLocalization: "pt-BR",
-    platforms: [.iOS("27.0"), .macOS("27.0"), .visionOS("27.0")],
+    platforms: [.iOS("26.0"), .macOS("26.0"), .visionOS("26.0")],
     products: [
         .library(
             name: "FiscalWidgetKit", targets: ["FiscalDomain", "FiscalData", "FiscalDesignSystem"]),
@@ -13,12 +13,22 @@ let package = Package(
             targets: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureSettings", "AppShell"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/airbnb/lottie-spm.git", from: "4.5.0")
+        .package(url: "https://github.com/byescaleira/byescaleira-kit.git", from: "0.12.0"),
+        .package(url: "https://github.com/airbnb/lottie-spm.git", from: "4.5.0"),
     ],
     targets: [
-        .target(name: "FiscalDomain"),
+        .target(
+            name: "FiscalDomain",
+            dependencies: [.product(name: "ByescaleiraFoundation", package: "byescaleira-kit")]),
         .target(name: "FiscalData", dependencies: ["FiscalDomain"]),
-        .target(name: "FiscalDesignSystem", resources: [.copy("Fonts")]),
+        .target(
+            name: "FiscalDesignSystem",
+            dependencies: [
+                .product(name: "ByescaleiraAccessibility", package: "byescaleira-kit"),
+                .product(name: "ByescaleiraPlatform", package: "byescaleira-kit"),
+                .product(name: "ByescaleiraDesign", package: "byescaleira-kit"),
+                .product(name: "ByescaleiraCharts", package: "byescaleira-kit"),
+            ]),
         .target(
             name: "FiscalResource",
             resources: [
@@ -30,6 +40,8 @@ let package = Package(
             name: "FeatureCore",
             dependencies: [
                 "FiscalDomain", "FiscalDesignSystem", "FiscalResource",
+                .product(name: "ByescaleiraUI", package: "byescaleira-kit"),
+                .product(name: "ByescaleiraAnimation", package: "byescaleira-kit"),
                 .product(name: "Lottie", package: "lottie-spm"),
             ]),
         .target(
@@ -39,19 +51,28 @@ let package = Package(
             name: "FeatureLiveResults",
             dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
         .target(
-            name: "FeatureToday",
-            dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
+            name: "FeatureFeed",
+            dependencies: [
+                "FiscalDomain", "FiscalDesignSystem", "FeatureCore",
+                .product(name: "ByescaleiraEffects", package: "byescaleira-kit"),
+            ]),
         .target(
-            name: "FeatureMine",
+            name: "FeatureRegion",
             dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
         .target(
             name: "FeatureProfile",
-            dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
+            dependencies: [
+                "FiscalDomain", "FiscalDesignSystem", "FeatureCore",
+                .product(name: "ByescaleiraEffects", package: "byescaleira-kit"),
+            ]),
         .target(
             name: "FeatureVotes",
             dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
         .target(
             name: "FeatureMoney",
+            dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
+        .target(
+            name: "FeatureContent",
             dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
         .target(
             name: "FeatureSearch",
@@ -60,7 +81,7 @@ let package = Package(
             name: "FeatureMemory",
             dependencies: ["FiscalDomain", "FiscalDesignSystem", "FeatureCore"]),
         .target(
-            name: "FeatureLens",
+            name: "FeatureSupport",
             dependencies: ["FiscalDomain", "FiscalDesignSystem", "FiscalResource", "FeatureCore"]),
         .target(
             name: "FeatureShare",
@@ -72,9 +93,9 @@ let package = Package(
             name: "AppShell",
             dependencies: [
                 "FiscalDomain", "FiscalData", "FiscalDesignSystem", "FiscalResource", "FeatureCore",
-                "FeatureGuides", "FeatureLiveResults", "FeatureSettings", "FeatureToday",
-                "FeatureMine", "FeatureProfile", "FeatureVotes", "FeatureMoney", "FeatureSearch",
-                "FeatureLens", "FeatureShare", "FeatureMemory",
+                "FeatureGuides", "FeatureLiveResults", "FeatureSettings", "FeatureFeed",
+                "FeatureRegion", "FeatureProfile", "FeatureVotes", "FeatureMoney", "FeatureSearch",
+                "FeatureSupport", "FeatureShare", "FeatureMemory", "FeatureContent",
             ]),
         .testTarget(name: "FiscalDomainTests", dependencies: ["FiscalDomain"]),
         .testTarget(name: "FiscalDataTests", dependencies: ["FiscalDomain", "FiscalData"]),
@@ -93,11 +114,11 @@ let package = Package(
             name: "FeatureLiveResultsTests",
             dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureLiveResults"]),
         .testTarget(
-            name: "FeatureTodayTests",
-            dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureToday"]),
+            name: "FeatureFeedTests",
+            dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureFeed"]),
         .testTarget(
-            name: "FeatureMineTests",
-            dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureMine"]),
+            name: "FeatureRegionTests",
+            dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureRegion"]),
         .testTarget(
             name: "FeatureProfileTests",
             dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureProfile"]),
@@ -108,29 +129,34 @@ let package = Package(
             name: "FeatureMoneyTests",
             dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureMoney"]),
         .testTarget(
+            name: "FeatureContentTests",
+            dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureContent"]),
+        .testTarget(
             name: "FeatureSearchTests",
             dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureSearch"]),
         .testTarget(
             name: "FeatureMemoryTests",
             dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureMemory"]),
         .testTarget(
-            name: "FeatureLensTests",
-            dependencies: [
-                "FiscalDomain", "FiscalData", "FiscalDesignSystem", "FiscalResource", "FeatureCore",
-                "FeatureLens",
-            ]),
+            name: "FeatureSupportTests",
+            dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureSupport"]),
         .testTarget(
             name: "FeatureShareTests",
             dependencies: [
-                "FiscalDomain", "FiscalData", "FiscalResource", "FeatureCore", "FeatureShare",
+                "FiscalDomain", "FiscalData", "FiscalDesignSystem", "FiscalResource", "FeatureCore",
+                "FeatureShare",
             ]),
         .testTarget(
             name: "FeatureSettingsTests",
-            dependencies: ["FiscalDomain", "FiscalData", "FeatureCore", "FeatureSettings"]),
+            dependencies: [
+                "FiscalDomain", "FiscalData", "FiscalDesignSystem", "FeatureCore",
+                "FeatureSettings",
+            ]),
         .testTarget(
             name: "AppShellTests",
             dependencies: [
-                "FiscalDomain", "FiscalData", "FiscalResource", "FeatureCore", "AppShell",
+                "FiscalDomain", "FiscalData", "FiscalResource", "FeatureCore", "FeatureLiveResults",
+                "AppShell",
             ]),
     ]
 )

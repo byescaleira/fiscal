@@ -28,13 +28,27 @@ _Uma subseção por arquivo de `docs/specs/`. Escreva só a diferença; o texto 
 - **Adicionado:** _regra ou mecânica nova, com os números exatos._
 - **Alterado:** _regra antiga → regra nova._
 - **Removido:** _regra que deixa de valer e por quê._
+- **Renomeado:** _nome antigo → nome novo._
+
+## Critérios de aceite
+
+_Em EARS, um `Requirement` por regra com gatilho e resposta que vira teste; cada um com pelo menos um cenário com valores concretos. Seção só descritiva não precisa._
+
+### Requirement: <nome curto>
+
+WHEN <gatilho> THE SYSTEM SHALL <resposta observável>.
+
+#### Scenario: <caso>
+
+- **WHEN** _<ação ou estado concreto, com valores>_
+- **THEN** _<resultado observável, com valores>_
 
 ## Impacto
 
-- **Targets:** _`FiscalDomain`, `FiscalData`, `Feature<Nome>`, `AppShell`, app, widgets, site, ponte, admin._
+- **Targets:** _`FiscalDomain`, `FiscalData`, `Feature<Nome>`, `AppShell`, app, widgets, site, ponte, admin, servidor (`server/`)._
 - **Dados:** _schema novo, migração, CloudKit (Development e Production)._
-- **Textos:** _chaves novas nos 10 idiomas, no app e no site._
-- **Flags e loja:** _`FeatureFlag`, Pro, App Store Connect._
+- **Textos:** _chaves novas em inglês com a tradução pt-BR, no app e no site ([ADR 0003](../../adr/0003-portuguese-only.md))._
+- **Flags e loja:** _`FeatureFlag`, flags remotas do admin, App Store Connect, rótulo de privacidade._
 
 ## Decisões pendentes
 

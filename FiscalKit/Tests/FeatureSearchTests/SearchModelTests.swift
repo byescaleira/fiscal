@@ -23,13 +23,12 @@ struct SearchModelTests {
     private let now = Date(timeIntervalSince1970: 1_792_917_720)
 
     private func model(
-        _ scenario: PublicDataScenario = .normal, lens: (any LensRepository)? = nil,
+        _ scenario: PublicDataScenario = .normal,
         recents: MemoryRecentSearches = MemoryRecentSearches()
     ) -> SearchModel {
         let now = now
         return SearchModel(
-            service: ShowcasePublicData(scenario: scenario, now: now), lens: lens,
-            recents: recents)
+            service: ShowcasePublicData(scenario: scenario, now: now), recents: recents)
     }
 
     @Test func searchesOnlyWithTextOrAFilter() {
@@ -145,6 +144,18 @@ struct SearchModelTests {
         #expect(search.recents.isEmpty)
     }
 
+    @Test func theRecentSearchesMoveToTheFiscalKey() throws {
+        let suite = "recent-\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: suite))
+        defaults.set(["Kim"], forKey: DeviceRecentSearches.legacyKey)
+        let store = DeviceRecentSearches(suiteName: suite)
+        #expect(store.load() == ["Kim"])
+        #expect(defaults.stringArray(forKey: DeviceRecentSearches.key) == ["Kim"])
+        #expect(defaults.object(forKey: DeviceRecentSearches.legacyKey) == nil)
+        store.save([])
+        #expect(store.load().isEmpty)
+    }
+
     @Test func recentSearchesStayShortAndUnique() {
         var searches: [String] = []
         for name in ["a", "Lula", "lula", "PT", "PL", "SP", "MG", "BA", "RJ"] {
@@ -153,26 +164,10 @@ struct SearchModelTests {
         #expect(searches == ["RJ", "BA", "MG", "SP", "PL", "PT"])
     }
 
-    @Test func theLensOrdersTopicsAndSuggestions() async throws {
-        let repositories = try FiscalDatabase.open(inMemory: true).repositories
-        let plain = model(lens: repositories.lens)
-        await plain.load()
-        #expect(plain.themes == SearchModel.defaultThemes)
-        #expect(!plain.isLensAdapted)
-        #expect(!plain.comparesFirst)
-        try await repositories.lens.save(
-            Lens(themes: [.environment, .health, .rights], prefersNotToSay: true))
-        let impartial = model(lens: repositories.lens)
-        await impartial.load()
-        #expect(impartial.themes == [.environment, .health, .rights])
-        #expect(impartial.isLensAdapted)
-        #expect(impartial.comparesFirst)
-        try await repositories.lens.save(
-            Lens(themes: [.taxes, .security, .economy], supported: ["lula"]))
-        let right = model(lens: repositories.lens)
-        await right.load()
-        #expect(!right.comparesFirst)
-        #expect(right.suggestions == impartial.suggestions)
+    @Test func theTopicsAreTheDefaultOnes() async {
+        let search = model()
+        await search.load()
+        #expect(search.themes == SearchModel.defaultThemes)
     }
 
     @Test func suggestsComparisonsWithinTheSameOfficeAndState() async {

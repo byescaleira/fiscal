@@ -13,6 +13,7 @@ struct RaceSummary: Hashable, Sendable {
 
         var id: String { candidate.number }
         var slug: String { candidate.portraitSlug }
+        var nameKicker: String { candidate.name.uppercased(with: .app) }
     }
 
     struct Ballot: Hashable, Sendable, Identifiable {
@@ -82,9 +83,25 @@ struct RaceSummary: Hashable, Sendable {
         return race.hasStarted ? String(appLocalized: "Live") : String(appLocalized: "Today")
     }
 
+    var statusKicker: String { statusText.uppercased(with: .app) }
+
+    var statusSymbol: String { isDecided ? "checkmark.seal" : "dot.radiowaves.left.and.right" }
+
+    var isCounting: Bool { race.hasStarted && !isDecided }
+
+    var monogram: String { race.uf.uppercased(with: .app) }
+
+    var officeLine: String { "\(office) · \(roundText)" }
+
     var countedFraction: Double { min(max(race.sections.percent / 100, 0), 1) }
 
     var countedText: String { RaceText.shortPercent(race.sections.percent) }
+
+    var centerText: String { race.final ? String(appLocalized: "Final") : countedText }
+
+    var stackedCountText: String {
+        race.final ? statusText : String(appLocalized: "\(countedText) counted")
+    }
 
     var sectionsText: String {
         RaceText.sections(counted: race.sections.counted, total: race.sections.total)
@@ -179,6 +196,15 @@ struct RaceSummary: Hashable, Sendable {
         }
     }
 
+    var ballotFooter: String? {
+        ballots.isEmpty
+            ? nil
+            : String(
+                appLocalized:
+                    "Blank and null votes don't count toward the valid votes, which decide the race."
+            )
+    }
+
     var ballotLine: String {
         let parts = ballots.filter { $0.kind != .valid }
         guard !parts.isEmpty else {
@@ -198,5 +224,11 @@ struct RaceSummary: Hashable, Sendable {
     var accessibilityLabel: String {
         ([title, roundText, statusText] + sides.map(\.accessibility) + [marginText, sourceText])
             .joined(separator: ", ")
+    }
+
+    var cardAccessibility: String { "\(accessibilityLabel), \(ballotAccessibility)" }
+
+    var winnerAccessibility: String {
+        [title, winner?.candidate.name, winnerText].compactMap(\.self).joined(separator: ", ")
     }
 }

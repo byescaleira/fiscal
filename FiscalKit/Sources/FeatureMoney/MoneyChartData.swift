@@ -53,6 +53,7 @@ public struct YearPoint: Identifiable, Equatable, Sendable {
     public var reais: Double { Double(cents) / 100 }
     public var value: String { PublicFormat.compactMoney(cents: cents) }
     public var fullValue: String { PublicFormat.money(cents: cents) }
+    public var yearText: String { String(year) }
 }
 
 public struct ReceiptPoint: Identifiable, Equatable, Sendable {

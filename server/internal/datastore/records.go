@@ -423,7 +423,7 @@ func (s *Store) PutCities(ctx context.Context, run int64, source string, cities 
 			for _, p := range c.Officials {
 				key := PersonKey(p)
 				r := p.Primary()
-				if err := b.put(tableCityOfficials, source, c.Code+"|"+key, []any{c.Code, key, nullable(r.Office), nullable(r.Party), nil}, item[publicdata.Person]{Person: key, City: c.Code, Item: stripped(p)}); err != nil {
+				if err := b.put(tableCityOfficials, source, c.Code+"|"+key+"|"+r.Office, []any{c.Code, key, nullable(r.Office), nullable(r.Party), nil}, item[publicdata.Person]{Person: key, City: c.Code, Item: stripped(p)}); err != nil {
 					return err
 				}
 			}

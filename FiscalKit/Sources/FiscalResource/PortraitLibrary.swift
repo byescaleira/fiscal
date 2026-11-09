@@ -73,13 +73,8 @@ public struct PortraitLibrary: Sendable {
         people.keys.sorted()
     }
 
-    public func traits(for slug: String, party: String) -> Traits? {
-        guard let traits = people[slug], Self.sameParty(traits.party, party) else { return nil }
-        return traits
-    }
-
-    public static func sameParty(_ first: String, _ second: String) -> Bool {
-        partyKey(first) == partyKey(second)
+    public func traits(for slug: String) -> Traits? {
+        people[slug]
     }
 
     public static func partyKey(_ party: String) -> String {

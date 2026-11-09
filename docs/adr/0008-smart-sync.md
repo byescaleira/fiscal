@@ -2,7 +2,7 @@
 
 - **Estado:** Aceito (em produção desde 2026-10-26)
 - **Data:** 2026-10-26
-- **Mudança:** [`app-1.0`](../changes/app-1.0/proposal.md)
+- **Mudança:** [`app-1.0`](../changes/archive/2026-10-29-app-1.0/proposal.md)
 
 ## Contexto
 
@@ -37,12 +37,14 @@ O que foi medido em 26/10, na VPS (4 vCPU, 16 GB) e no Mac com os dados reais co
    - **Manifesto de hashes** (`DATA_DIR/v1-manifest.json`). Guarda o caminho e o hash de cada arquivo do preparo, sem o `generatedAt`. Só o que mudou é gravado (com o `.gz`), e a lista do que mudou alimenta o stager. As mudanças ainda não publicadas sobrevivem a uma queda.
    - **Release por delta** (`site.StageDelta`). Os pacotes que não mudaram viram links físicos da release anterior, e só os pacotes afetados são remontados: pessoa, município, índice de cidade, pacote de votações e arquivo avulso. A validação relê só o que foi reescrito; as checagens estruturais (índice ⇄ perfis, `meta.counts`, teto de arquivos, trava de queda) continuam completas.
    - **Classificação de temas** com índice por prefixo e memória por texto. O `Build` caiu de 146 s para 13 s, com resultado idêntico em 431.881 textos reais.
-   - **Verificação semanal** (`memoria`, quarta 00:20). Roda primeiro o caminho incremental e depois a reconstrução completa do banco, com montagem completa da release. Compara o preparo e as duas releases arquivo por arquivo, sem `meta.json` e `history/*`, e grava `DATA_DIR/consistency.json`. Qualquer divergência registra `ALERT consistency` no log e sai com código 3. A release incremental continua publicada até alguém conferir a completa e publicá-la com `-site rollback -to`; o `fiscal-pages` roda mesmo com o código 3.
+   - **Verificação semanal** (`memoria`, quarta 00:20). Roda primeiro o caminho incremental e depois a reconstrução completa do banco, com montagem completa da release. Compara o preparo e as duas releases arquivo por arquivo, sem `meta.json` e `history/*`, e grava `DATA_DIR/consistency.json`. Qualquer divergência registra `ALERT consistency` no log e sai com código 3. O preparo e a release no ar continuam como estavam até alguém conferir a cópia e publicá-la com `-site publish-held`; o `fiscal-pages` roda mesmo com o código 3.
 4. **Publicação no Pages dentro de um orçamento mensal.**
    - **Teto.** `PAGES_MAX_DEPLOYS_PER_MONTH` (padrão 450, abaixo dos 500 do Free, com folga para rollback).
    - **Espaçamento.** As releases de rotina esperam `tempo até o fim do mês ÷ deploys restantes` (cerca de 96 min no começo do mês). As quentes esperam também `PAGES_DATA_INTERVAL`. `full`, `memoria`, rollback, `-force` e mudança na apuração saem na hora.
    - **Cada deploy envia só os arquivos alterados.** O `wrangler` deduplica por hash, e a troca continua atômica e validada.
    - **O quente direto da origem.** O `release.json` ganha `origin: { first, onMissing, maxAge }`. O app lê `today.json`, `agenda/today.json` e `votes/recent.json` primeiro no `api/v1` da VPS (Caddy, do disco, `max-age=30`) e cai para o Pages se a VPS falhar. Uma votação de hoje que ainda não está no pacote do Pages (404) vem da origem. `HOT_FROM_ORIGIN=0` tira o campo no próximo deploy e devolve tudo ao Pages, sem versão nova do app.
+   - **Atualização de 03/11/2026 ([FSC-017](../../spdd/prompt/FSC-017-202611031133-[Feat]-current-party-and-load-alert.md)).** O quente saiu da origem por decisão do usuário: a VPS não aguentaria 50 milhões de usuários ativos, com cerca de 17 mil pedidos por segundo em pico (estimativa). `HOT_FROM_ORIGIN` passa a 0 por padrão, e `PAGES_DATA_INTERVAL` vira o atraso do quente, de 10 minutos na VPS. O app continua recorrendo à VPS só se o Pages falhar.
+   - **Atualização de 07/11/2026 ([FSC-020](../../spdd/prompt/FSC-020-202611042045-[Feat]-app-reads-only-from-cdn-and-local-alerts.md), [ADR 0028](0028-app-reads-only-from-cdn-and-local-alerts.md)).** O app lê só o Pages, sem reserva na VPS. O campo `origin` do `release.json` e o `HOT_FROM_ORIGIN` saíram do código; na VPS, isso vale depois do deploy da FSC-020.
    - **Se o Direct Upload não contar no limite.** Com `PAGES_MAX_DEPLOYS_PER_MONTH=9000` e `PAGES_DATA_INTERVAL=10m`, o Pages acompanha o quente sozinho, e o `HOT_FROM_ORIGIN` pode ir para 0.
 5. **Systemd.** `fiscal-sync.timer` e `fiscal-sync.service` substituem os 10 timers de fase e o `fiscal-live.timer`. O `fiscal-phase@<trabalho>.service` passa a forçar um trabalho à mão (`-job`), e o `fiscal-pages.timer` continua só para dia de eleição.
 
@@ -71,7 +73,7 @@ O que foi medido em 26/10, na VPS (4 vCPU, 16 GB) e no Mac com os dados reais co
   - **Conferir no painel se o Direct Upload conta.** Em Account Home › Workers & Pages › Plans, ver o uso de builds depois de alguns deploys e ajustar `PAGES_MAX_DEPLOYS_PER_MONTH` e `HOT_FROM_ORIGIN`.
   - **Caddy.** O bloco `@hot` (runbook, seção 7) com `max-age=30` deve entrar antes do `@data`.
   - **Pico na VPS.** O quente na origem põe três arquivos pequenos de volta na VPS; acompanhar a carga do Caddy em pico. A saída é `HOT_FROM_ORIGIN=0`.
-  - **Alerta de consistência.** Precisa de olho humano: `systemctl --failed` e `DATA_DIR/consistency.json`.
+  - **Alerta de consistência.** Precisa de olho humano: `DATA_DIR/consistency.json`. Desde 08/11/2026, a reconstrução roda numa cópia do preparo sem mover o `ready`; com divergência, a cópia fica retida, avisa no celular, e só `-site publish-held` a publica.
 - **Mudam junto.**
   - `PublicDataClient`/`PublicDataRoute` no app (leitura do `origin`).
   - `scripts/server-deploy.sh` (liga o `fiscal-sync.timer` e remove os timers antigos).

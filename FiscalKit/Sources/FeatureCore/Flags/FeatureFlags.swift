@@ -5,14 +5,21 @@ import SwiftUI
 
 @MainActor @Observable
 public final class FeatureFlags {
+    nonisolated public static let prefix = "fiscal"
+
     public private(set) var remote: [String: RemoteFlag]
-    public private(set) var overrides: [String: Bool]
+    public let overrides: FlagOverrides
     public let bucket: Int
     @ObservationIgnored private let defaults: UserDefaults
     @ObservationIgnored private let source: (any RemoteFlagSource)?
 
-    public init(defaults: UserDefaults = .standard, source: (any RemoteFlagSource)? = nil) {
+    public init(
+        defaults: UserDefaults = .standard,
+        overrides: FlagOverrides = FlagOverrides(prefix: FeatureFlags.prefix),
+        source: (any RemoteFlagSource)? = nil
+    ) {
         self.defaults = defaults
+        self.overrides = overrides
         self.source = source
         let installID = defaults.string(forKey: Key.installID) ?? UUID().uuidString
         defaults.set(installID, forKey: Key.installID)
@@ -21,18 +28,25 @@ public final class FeatureFlags {
             (defaults.data(forKey: Key.remote)).flatMap {
                 try? JSONDecoder().decode([String: RemoteFlag].self, from: $0)
             } ?? [:]
-        overrides = defaults.dictionary(forKey: Key.overrides) as? [String: Bool] ?? [:]
     }
 
     public func isOn(_ flag: FeatureFlag) -> Bool {
-        if let value = overrides[flag.rawValue] { return value }
-        if let value = remote[flag.rawValue] { return value.isOn && bucket < value.rollout }
-        return flag.defaultValue
+        if let value = overrides.value(for: flag.rawValue) { return value }
+        return remoteValue(flag.rawValue) ?? flag.defaultValue
+    }
+
+    public func remoteValue(_ key: String) -> Bool? {
+        remote[key].map { $0.isOn && bucket < $0.rollout }
+    }
+
+    public var definitions: [FlagDefinition] {
+        FeatureFlag.allCases.map {
+            FlagDefinition(key: $0.rawValue, title: $0.title, defaultValue: $0.defaultValue)
+        }
     }
 
     public func override(_ flag: FeatureFlag, _ value: Bool?) {
-        overrides[flag.rawValue] = value
-        defaults.set(overrides, forKey: Key.overrides)
+        overrides.set(value, for: flag.rawValue)
     }
 
     public func refresh() async {
@@ -53,7 +67,6 @@ public final class FeatureFlags {
     private enum Key {
         static let installID = "fiscal.flags.installID"
         static let remote = "fiscal.flags.remote"
-        static let overrides = "fiscal.flags.overrides"
     }
 }
 

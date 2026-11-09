@@ -5,6 +5,7 @@ import SwiftUI
 
 public struct VotesScreen: View {
     @Environment(VotesModel.self) private var votes
+    @ReducesMotion private var reduceMotion
 
     public init() {}
 
@@ -13,8 +14,9 @@ public struct VotesScreen: View {
             phase: votes.phase, isEmpty: votes.isEmpty, retry: { await votes.load() }
         ) {
             AdaptiveList {
-                VotesAgendaSection()
-                VotesHighlightsSection()
+                if let line = votes.agendaLine {
+                    VotesAgendaLine(line: line)
+                }
                 if votes.showsNoMatch {
                     VotesNoMatchSection()
                 }
@@ -22,7 +24,7 @@ public struct VotesScreen: View {
                     VotesDaySection(day: day)
                 }
             }
-            .animation(.smooth, value: votes.days)
+            .animation(reduceMotion ? nil : .smooth, value: votes.days)
         } empty: {
             VotesEmptyState()
         }
@@ -35,31 +37,6 @@ public struct VotesScreen: View {
         .sensoryFeedback(.selection, trigger: votes.theme)
         .refreshable { await votes.load() }
         .task { await votes.load() }
-    }
-}
-
-private struct VotesHighlightsSection: View {
-    @Environment(VotesModel.self) private var votes
-
-    var body: some View {
-        if votes.showsLensBadge, !votes.highlights.isEmpty {
-            Section {
-                ForEach(votes.highlights) { vote in
-                    RouteLink(.vote(id: vote.id)) { VoteHighlightRow(vote: vote) }
-                }
-            } header: {
-                AdaptiveRow(spacing: .spaceS) {
-                    Text("In Your Topics").sectionTitle()
-                    Spacer(minLength: .spaceS)
-                    LensBadge()
-                }
-                .textCase(nil)
-            } footer: {
-                Text(
-                    "Your lens picks which votes come first. The numbers are the same for everyone."
-                )
-            }
-        }
     }
 }
 
@@ -89,14 +66,17 @@ struct DayHeader: View {
     let accessibility: String
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
-            Text(verbatim: number)
-                .font(.titleLarge)
-                .monospacedDigit()
-                .foregroundStyle(.primary)
-            Text(verbatim: title)
-                .font(.emphasis(.title3, weight: .semibold))
-                .foregroundStyle(.primary)
+        AdaptiveRow(spacing: .spaceS) {
+            HStack(alignment: .firstTextBaseline, spacing: .spaceS) {
+                Text(verbatim: number)
+                    .font(.titleLarge)
+                    .monospacedDigit()
+                    .foregroundStyle(.primary)
+                    .fixedSize()
+                Text(verbatim: title)
+                    .font(.emphasis(.title3, weight: .semibold))
+                    .foregroundStyle(.primary)
+            }
             Text(verbatim: detail)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
@@ -143,6 +123,6 @@ private struct VotesEmptyState: View {
                 "Absent", symbol: BallotChoice.absent.symbol, color: BallotChoice.absent.color)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.groupedBackground)
+        .background(.plainBackground)
     }
 }

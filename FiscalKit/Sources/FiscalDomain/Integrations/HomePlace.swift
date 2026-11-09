@@ -1,8 +1,8 @@
 import Foundation
 
 public struct HomePlace: Sendable {
-    public static let appGroup = "group.com.byescaleira"
-    public static let mineKey = "FiscalMinePlace"
+    public static let mineKey = "fiscal.mine.place"
+    static let legacyMineKey = "FiscalMinePlace"
     static let ufKey = "fiscal.widgets.uf"
     static let scenarioKey = "fiscal.widgets.scenario"
 
@@ -20,7 +20,7 @@ public struct HomePlace: Sendable {
 
     private let suiteName: String?
 
-    public init(suiteName: String? = HomePlace.appGroup) {
+    public init(suiteName: String? = AppGroup.identifier) {
         self.suiteName = suiteName
     }
 
@@ -57,6 +57,16 @@ public struct HomePlace: Sendable {
         } else {
             defaults?.removeObject(forKey: Self.scenarioKey)
         }
+        return true
+    }
+
+    @discardableResult
+    public static func migrateLegacyKeys(in defaults: UserDefaults) -> Bool {
+        guard let legacy = defaults.string(forKey: legacyMineKey) else { return false }
+        if defaults.string(forKey: mineKey) == nil {
+            defaults.set(legacy, forKey: mineKey)
+        }
+        defaults.removeObject(forKey: legacyMineKey)
         return true
     }
 

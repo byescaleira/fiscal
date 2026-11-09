@@ -1,8 +1,8 @@
 # 0007. Dados públicos no Cloudflare Pages, carga em fases na VPS atual e App Attest no registro
 
-- **Estado:** Proposto; os itens 4 (carga em fases) e 5 (publicação) foram substituídos por [0008](0008-smart-sync.md)
+- **Estado:** Aceito (2026-10-29); os itens 4 (carga em fases) e 5 (publicação) foram substituídos por [0008](0008-smart-sync.md); a reserva do item 1 (o `v1` da VPS para o app), os pushes e a leitura de `api/v1/races` do item 6 e o item 7 (App Attest no registro) foram substituídos por [0028](0028-app-reads-only-from-cdn-and-local-alerts.md)
 - **Data:** 2026-10-26
-- **Mudança:** [`app-1.0`](../changes/app-1.0/proposal.md)
+- **Mudança:** [`app-1.0`](../changes/archive/2026-10-29-app-1.0/proposal.md)
 
 ## Contexto
 
@@ -112,7 +112,7 @@ Fatos conferidos em 2026-10-26:
   - Medir o pico de memória da primeira fase (`docker stats`). Se passar de 1,2 GB, o job morre sem efeito, e `INGEST_MEM_LIMIT` sobe.
   - Manter o orçamento de 18.000 arquivos. A próxima alavanca, se precisar, é agrupar `places/{uf}` ou as listas por ano em pacotes.
 - **Mudam junto.**
-  - Contrato do app: `PublicDataClient` lê `FiscalDataURL` + `v2` quando `v2/release.json` diz `layout: v2`, e cai para `FiscalAPIURL` + `v1` antes disso ou com o Pages fora.
+  - Contrato do app: `PublicDataClient` lê `FiscalDataURL` + `v2` quando `v2/release.json` diz `layout: v2`, e cai para `FiscalAPIURL` + `v1` antes disso ou com o Pages fora. Desde o [ADR 0028](0028-app-reads-only-from-cdn-and-local-alerts.md), o app lê só `FiscalDataURL` + `v2`, sem reserva.
   - O ADR [0002](0002-static-first-server.md) (CDN na frente) passa a ser cumprido por este.
 - **Pendências.**
   - O entitlement `com.apple.developer.devicecheck.appattest-environment` não foi adicionado. Sem ele, builds de desenvolvimento usam o ambiente `development`, que o servidor recusa por padrão (`APPATTEST_ALLOW_DEVELOPMENT=0`) e trata como "sem asserção".

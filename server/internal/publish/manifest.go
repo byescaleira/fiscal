@@ -157,6 +157,14 @@ func (m *Manifest) set(rel, hash string, changed bool) {
 	}
 }
 
+func (m *Manifest) Adopt(rel, hash string) {
+	m.set(rel, hash, true)
+}
+
+func (m *Manifest) Forget(rel string) {
+	m.remove(rel)
+}
+
 func (m *Manifest) keep(rel string) {
 	m.mu.Lock()
 	defer m.mu.Unlock()

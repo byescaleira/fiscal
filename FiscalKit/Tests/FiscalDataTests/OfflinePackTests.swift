@@ -4,6 +4,7 @@ import Testing
 
 @testable import FiscalData
 
+@Suite(.timeLimit(.minutes(1)))
 struct OfflinePackTests {
     private static let today = #"{ "date": "2026-10-26", "events": [], "sources": [] }"#
     private static let state =
@@ -71,9 +72,9 @@ struct OfflinePackTests {
         #expect(OfflinePackPlan.representatives(in: [place]) == ["governador", "senadora"])
     }
 
-    @Test func ordersPeopleAlphabeticallyWithoutRevealingSupportThenRepresentativesWithALimit() {
+    @Test func ordersPeopleAlphabeticallyThenRepresentativesWithALimit() {
         let request = OfflinePackRequest(
-            followed: ["seguida", "apoiada", "../segredo", "Maiuscula"], supported: ["apoiada"])
+            followed: ["seguida", "apoiada", "../segredo", "Maiuscula"])
         #expect(
             OfflinePackPlan.people(for: request, representatives: ["governador", "seguida"])
                 == ["apoiada", "seguida", "governador"])
@@ -109,17 +110,17 @@ struct OfflinePackTests {
         let harness = try Harness()
         harness.publishBasics()
         let summary = try await harness.updater.refresh(
-            OfflinePackRequest(followed: ["seguida"], supported: ["apoiada"], placeCode: "sp"))
-        #expect(summary.people == 4)
-        #expect(summary.files == 6)
+            OfflinePackRequest(followed: ["seguida"], placeCode: "sp"))
+        #expect(summary.people == 3)
+        #expect(summary.files == 5)
         #expect(summary.updatedAt == Date(timeIntervalSince1970: 1_793_000_000))
         #expect(await harness.store.manifest.release == "r1")
-        #expect(await harness.store.data(for: "people/apoiada.json") != nil)
+        #expect(await harness.store.data(for: "people/apoiada.json") == nil)
         #expect(await harness.store.data(for: "people/deputada.json") == nil)
         let people = harness.paths.filter { $0.hasPrefix("/v2/people/") }
         #expect(
             people == [
-                "/v2/people/apoiada.json", "/v2/people/seguida.json", "/v2/people/governador.json",
+                "/v2/people/seguida.json", "/v2/people/governador.json",
                 "/v2/people/senadora.json",
             ])
     }
@@ -157,7 +158,7 @@ struct OfflinePackTests {
         let harness = try Harness()
         harness.publishBasics()
         try await harness.updater.refresh(
-            OfflinePackRequest(followed: ["seguida"], supported: ["apoiada"]))
+            OfflinePackRequest(followed: ["seguida", "apoiada"]))
         #expect(await harness.store.data(for: "people/apoiada.json") != nil)
         let summary = try await harness.updater.refresh(
             OfflinePackRequest(followed: ["seguida"]))
@@ -210,18 +211,31 @@ struct OfflinePackTests {
             .init(failure: .notConnectedToInternet), to: "/v2/release.json", on: harness.host)
         PublicDataStub.reply(
             .init(failure: .notConnectedToInternet), to: "/v2/today.json", on: harness.host)
-        let api = PublicDataStub.makeHost()
-        PublicDataStub.fallback(.init(failure: .notConnectedToInternet), on: api)
         let notice = OfflineNotice()
         let client = PublicDataClient(
-            baseURL: try #require(URL(string: "https://\(api)/api")),
-            dataURL: URL(string: "https://\(harness.host)"), session: harness.session,
+            dataURL: try #require(URL(string: "https://\(harness.host)")), session: harness.session,
             offline: harness.store, notice: notice)
         let today = try await client.today()
         #expect(today.events.isEmpty)
         #expect(notice.state == .offline(Date(timeIntervalSince1970: 1_793_000_000)))
         await #expect(throws: PublicDataError.offline) { try await client.money() }
         await #expect(throws: PublicDataError.offline) { try await client.profile(slug: "ninguem") }
+    }
+
+    @Test func aFailingCDNFallsBackToThePackWithoutAnotherAddress() async throws {
+        let harness = try Harness()
+        harness.publishBasics()
+        try await harness.updater.refresh(OfflinePackRequest())
+        PublicDataStub.fallback(.init(failure: .notConnectedToInternet), on: harness.host)
+        PublicDataStub.reply(
+            .init(status: 503), to: "/v2/today.json", on: harness.host)
+        let notice = OfflineNotice()
+        let client = PublicDataClient(
+            dataURL: try #require(URL(string: "https://\(harness.host)")), session: harness.session,
+            offline: harness.store, notice: notice)
+        let today = try await client.today()
+        #expect(today.events.isEmpty)
+        #expect(notice.state == .offline(Date(timeIntervalSince1970: 1_793_000_000)))
     }
 
     @Test func showsTheOldestSavedDateUntilTheConnectionReturns() {
@@ -244,5 +258,30 @@ struct OfflinePackTests {
         await coordinator.refreshIfDue(every: 600)
         #expect(harness.paths.filter { $0 == "/v2/release.json" }.count == 1)
         #expect(await coordinator.erase() == .empty)
+    }
+
+    @Test func reportsTheResultOfEachRefresh() async throws {
+        let harness = try Harness()
+        harness.publishBasics()
+        let reports = Reports()
+        let coordinator = OfflinePackCoordinator(
+            updater: harness.updater, report: { await reports.add($0) },
+            request: { OfflinePackRequest() })
+        let summary = try await coordinator.refresh()
+        harness.on("release.json", "{}", status: 403)
+        await #expect(throws: (any Error).self) { try await coordinator.refresh() }
+
+        let results = await reports.results
+        #expect(results.count == 2)
+        #expect(try results.first?.get() == summary)
+        #expect(results.last.map { if case .failure = $0 { true } else { false } } == true)
+    }
+}
+
+private actor Reports {
+    private(set) var results: [Result<OfflinePackSummary, any Error>] = []
+
+    func add(_ result: Result<OfflinePackSummary, any Error>) {
+        results.append(result)
     }
 }

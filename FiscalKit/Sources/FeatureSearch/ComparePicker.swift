@@ -10,23 +10,27 @@ struct ComparePicker: View {
         @Bindable var compare = compare
         NavigationStack {
             List {
-                Section {
-                    ChosenStrip()
-                        .listRowBackground(Color.clear)
-                        .listRowInsets(EdgeInsets())
-                } footer: {
-                    Text(verbatim: compare.choiceText)
-                }
-                Section {
-                    if compare.people.isEmpty {
-                        ProgressView("Loading").frame(maxWidth: .infinity)
-                    } else {
-                        ForEach(compare.pickerResults) { PickerRow(card: $0) }
+                Group {
+                    Section {
+                        ChosenStrip()
+                            .listRowBackground(Color.clear)
+                            .listRowInsets(EdgeInsets())
+                    } footer: {
+                        Text(verbatim: compare.choiceText)
                     }
-                } footer: {
-                    Text("In alphabetical order.")
+                    Section {
+                        if compare.people.isEmpty {
+                            ProgressView("Loading").frame(maxWidth: .infinity)
+                        } else {
+                            ForEach(compare.pickerResults) { PickerRow(card: $0) }
+                        }
+                    } footer: {
+                        Text("In alphabetical order.")
+                    }
                 }
+                .surfaceRows()
             }
+            .listSurface()
             .navigationTitle("Choose people")
             #if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
@@ -53,7 +57,6 @@ private struct ChosenStrip: View {
             Text("vs")
                 .font(.emphasis(.title3, weight: .heavy))
                 .foregroundStyle(.secondary)
-                .accessibilityHidden(true)
             slot(1, chosen: chosen)
         }
         .padding(.vertical, .spaceL)
@@ -91,7 +94,7 @@ private struct ChosenSlot: View {
                         .accessibilityHidden(true)
                 }
                 Text(verbatim: card.name)
-                    .font(.headline)
+                    .font(.titleMedium)
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
                     .foregroundStyle(Color.primary)

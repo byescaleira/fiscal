@@ -8,18 +8,19 @@ struct ProfileVotesSection: View {
 
     var body: some View {
         if !profile.recentVotes.isEmpty {
-            Section {
+            ContentBlock(
+                title: Text("Recent Votes"),
+                footer: [profile.votesTotalText, profile.sourceText(for: ["votes"])]
+            ) {
                 ForEach(profile.recentVotes) { vote in
+                    let share = profile.shareRoute(for: vote)
                     RouteLink(.vote(id: vote.voteId)) {
                         ProfileVoteRow(vote: vote)
                     }
                     .accessibilityLabel(Text(verbatim: profile.voteAccessibility(vote)))
+                    .profileRowShare(share, label: Text("Share the vote on \(vote.heading)"))
+                    .shareItemMenu(share, label: Text("Share This Vote"))
                 }
-            } header: {
-                Text("Recent Votes").sectionTitle()
-            } footer: {
-                ProfileFooter(
-                    lines: [profile.votesTotalText, profile.sourceText(for: ["votes"])])
             }
         }
     }
@@ -30,27 +31,28 @@ private struct ProfileVoteRow: View {
     let vote: PersonVote
 
     var body: some View {
-        HStack(alignment: .top, spacing: .spaceM) {
-            Text(verbatim: profile.shortDay(vote.date))
-                .font(.caption.weight(.bold))
-                .monospacedDigit()
-                .foregroundStyle(.secondary)
-                .frame(width: .badgeL, alignment: .leading)
-            VStack(alignment: .leading, spacing: .space2XS) {
-                Text(verbatim: vote.heading)
+        VStack(alignment: .leading, spacing: .spaceXS) {
+            AdaptiveRow(spacing: .spaceS) {
+                Text(verbatim: "\(profile.shortDay(vote.date)) · \(vote.heading)")
                     .font(.caption.weight(.semibold))
+                    .monospacedDigit()
                     .foregroundStyle(.secondary)
-                Text(verbatim: vote.summary)
-                    .font(.subheadline)
-                    .lineLimit(3)
+                Spacer(minLength: 0)
+                BallotChip(ballot: profile.ballot(vote))
+            }
+            Text(verbatim: vote.summary)
+                .font(.subheadline)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+            HStack {
                 if let guidance = profile.guidanceText(vote) {
                     Text(verbatim: guidance).font(.caption).foregroundStyle(.tertiary)
                 }
+                Spacer(minLength: .badgeL)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            BallotChip(ballot: profile.ballot(vote))
+            .frame(minHeight: .badgeL)
         }
-        .padding(.vertical, .space2XS)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -59,19 +61,19 @@ struct ProfileProposalsSection: View {
 
     var body: some View {
         if !profile.recentProposals.isEmpty {
-            Section {
+            ContentBlock(
+                title: Text("Proposals"),
+                footer: [
+                    profile.proposalsTotalText, profile.plainSummaryNote,
+                    profile.sourceText(for: ["proposals"]),
+                ]
+            ) {
                 ForEach(profile.recentProposals) { proposal in
+                    let share = profile.shareRoute(for: proposal)
                     ProfileProposalRow(proposal: proposal)
+                        .profileRowShare(share, label: Text("Share \(proposal.reference)"))
+                        .shareItemMenu(share, label: Text("Share This Proposal"))
                 }
-            } header: {
-                Text("Proposals").sectionTitle()
-            } footer: {
-                ProfileFooter(
-                    lines: [
-                        profile.proposalsTotalText,
-                        profile.plainSummaryNote,
-                        profile.sourceText(for: ["proposals"]),
-                    ])
             }
         }
     }
@@ -82,43 +84,36 @@ private struct ProfileProposalRow: View {
     let proposal: Proposal
 
     var body: some View {
-        VStack(alignment: .leading, spacing: .spaceS) {
-            FlowLayout(spacing: .spaceXS) {
-                Text(verbatim: proposal.reference)
-                    .font(.chipLabel)
-                    .monospacedDigit()
-                    .foregroundStyle(.secondary)
-                if let status = profile.proposalStatus(proposal) {
-                    Chip(status, color: .secondary)
-                }
-                ForEach(proposal.themes) { theme in
-                    HStack(spacing: .space2XS) {
-                        Image(systemName: theme.symbol)
-                        Text(verbatim: theme.title)
+        RouteLink(profile.proposalRoute(proposal)) {
+            VStack(alignment: .leading, spacing: .spaceS) {
+                FlowLayout(spacing: .spaceXS) {
+                    Text(verbatim: proposal.reference)
+                        .font(.chipLabel)
+                        .monospacedDigit()
+                        .foregroundStyle(.secondary)
+                    if let status = profile.proposalStatus(proposal) {
+                        Chip(status, color: .secondary)
+                            .lineLimit(1)
+                            .fixedSize()
                     }
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .fixedSize()
+                    ForEach(proposal.themes) { theme in
+                        HStack(spacing: .space2XS) {
+                            Image(systemName: theme.symbol)
+                            Text(verbatim: theme.title)
+                        }
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize()
+                    }
                 }
+                Text(verbatim: proposal.plainSummary ?? proposal.summary)
+                    .font(.headline)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: .badgeL)
             }
-            Text(verbatim: proposal.plainSummary ?? proposal.summary)
-                .font(.headline)
-                .fixedSize(horizontal: false, vertical: true)
-            DisclosureGroup("Official summary") {
-                Text(verbatim: proposal.summary)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .textSelection(.enabled)
-            }
-            .font(.footnote)
-            if let url = proposal.url {
-                Link(destination: url) {
-                    Label("Open the Official Page", systemImage: "arrow.up.right.square")
-                }
-                .font(.footnote)
-            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(.vertical, .space2XS)
     }
 }
 
@@ -127,7 +122,10 @@ struct ProfileSpeechesSection: View {
 
     var body: some View {
         if !profile.recentSpeeches.isEmpty {
-            Section {
+            ContentBlock(
+                title: Text("Speeches"),
+                footer: [profile.speechesTotalText, profile.sourceText(for: ["speeches"])]
+            ) {
                 ForEach(Array(profile.recentSpeeches.enumerated()), id: \.offset) { _, speech in
                     VStack(alignment: .leading, spacing: .space2XS) {
                         Text(verbatim: "\(SourceFootnote.day(speech.date)) · \(speech.kind)")
@@ -135,32 +133,21 @@ struct ProfileSpeechesSection: View {
                             .foregroundStyle(.secondary)
                         Text(verbatim: speech.summary).font(.subheadline)
                         if let url = speech.url {
-                            Link(destination: url) {
-                                Label("Read the Speech", systemImage: "arrow.up.right.square")
-                            }
-                            .font(.footnote)
+                            ExternalLink("Read the Speech", destination: url)
+                                .font(.footnote)
                         }
                     }
-                    .padding(.vertical, .space2XS)
                 }
-            } header: {
-                Text("Speeches").sectionTitle()
-            } footer: {
-                ProfileFooter(
-                    lines: [profile.speechesTotalText, profile.sourceText(for: ["speeches"])])
             }
         }
     }
 }
 
-struct ProfileFooter: View {
-    let lines: [String?]
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: .space2XS) {
-            ForEach(Array(lines.compactMap(\.self).enumerated()), id: \.offset) { _, line in
-                Text(verbatim: line)
-            }
+extension View {
+    fileprivate func profileRowShare(_ route: Route, label: Text) -> some View {
+        overlay(alignment: .bottomTrailing) {
+            ShareItemButton(route, label: label)
+                .padding(.trailing, .spaceXL)
         }
     }
 }

@@ -24,7 +24,7 @@ private struct AboutPage: View {
 
 private struct AboutHeroSection: View {
     @Environment(SettingsModel.self) private var settings
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     @Environment(\.appTint) private var appTint
     @State private var isShown = false
 

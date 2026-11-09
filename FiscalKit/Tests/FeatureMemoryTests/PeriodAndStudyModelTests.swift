@@ -16,7 +16,10 @@ struct PeriodModelTests {
         #expect(model.period?.id == "vargas-era")
         #expect(model.previous?.id == "first-republic")
         #expect(model.next?.id == "new-republic")
-        #expect(model.presidentsLine == String(appLocalized: "1 head of government"))
+        #expect(model.presidentsLine == String(appLocalized: "\(1) heads of government"))
+        for indicator in model.period?.indicators ?? [] {
+            #expect(model.footnote(indicator).contains(indicator.note))
+        }
     }
 
     @Test func theEdgesHaveOnlyOneNeighbor() async throws {
@@ -68,6 +71,15 @@ struct StudyGuideModelTests {
         #expect(model.phase == .loaded)
         #expect(model.guide?.title == "How voting works")
         #expect(model.terms.count == 2)
+    }
+
+    @Test func numbersTheCardsAndQuestions() async throws {
+        let guide = try #require(try await loaded().guide)
+        #expect(guide.cardPosition(0) == "1/\(guide.cards.count)")
+        if let first = guide.quiz.first {
+            #expect(guide.questionTitle(0) == "1. \(first.question)")
+        }
+        #expect(guide.questionTitle(guide.quiz.count).isEmpty)
     }
 
     @Test func searchesTermsIgnoringAccentsAndCase() async throws {

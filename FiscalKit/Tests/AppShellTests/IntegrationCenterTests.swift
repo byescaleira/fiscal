@@ -43,7 +43,7 @@ struct IntegrationCenterTests {
             service: { service })
     }
 
-    @Test func indexesFollowedAndOpenedProfilesWithoutTheLens() async throws {
+    @Test func indexesFollowedAndOpenedProfilesWithoutTheSupport() async throws {
         let suite = "fiscal.tests.center.\(UUID().uuidString)"
         let defaults = try #require(UserDefaults(suiteName: suite))
         defer { defaults.removePersistentDomain(forName: suite) }
@@ -59,10 +59,10 @@ struct IntegrationCenterTests {
         #expect(index.all.count == 1)
         let entries = try #require(index.all.last)
         #expect(entries.map(\.id) == ["lula", "kim-kataguiri"])
-        let lensWords = ["support", "apoio", "lens", "lente"]
+        let supportWords = ["support", "apoio"]
         #expect(
             entries.allSatisfy { entry in
-                !lensWords.contains { word in entry.keywords.contains(word) }
+                !supportWords.contains { word in entry.keywords.contains(word) }
             })
     }
 

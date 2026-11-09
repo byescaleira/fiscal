@@ -52,5 +52,5 @@ public struct RepresentativesDigest: Hashable, Sendable {
         "\(person.name), \(person.officeTitle), \(person.party), \(ufText)"
     }
 
-    public var url: URL? { IntegrationLink.mine }
+    public var url: URL? { IntegrationLink.region }
 }

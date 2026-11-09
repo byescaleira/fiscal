@@ -8,7 +8,7 @@ struct AboutValuesSection: View {
         Section {
             SettingsLabel(
                 "Private by design",
-                detail: "No account to create. Your Lens never leaves this device.",
+                detail: "No account to create. Who you support never leaves this device.",
                 symbol: "lock", color: .retroDenim)
             SettingsLabel(
                 "Your iCloud, your call",
@@ -86,8 +86,8 @@ struct AboutLinksSection: View {
                     value: settings.info.number)
             }
             ForEach(Array(settings.info.links.enumerated()), id: \.element.id) { index, link in
-                Link(destination: link.url) {
-                    SettingsExternalLabel(
+                ExternalLink(destination: link.url) {
+                    SettingsLabel(
                         link.title, symbol: link.symbol,
                         color: index.isMultiple(of: 2) ? appTint : .companion)
                 }
@@ -104,8 +104,8 @@ private struct AboutRateRow: View {
 
     var body: some View {
         if let url = settings.info.reviewURL {
-            Link(destination: url) {
-                SettingsExternalLabel("Rate Fiscal", symbol: "star", color: appTint)
+            ExternalLink(destination: url) {
+                SettingsLabel("Rate Fiscal", symbol: "star", color: appTint)
             }
         }
     }
@@ -121,8 +121,8 @@ struct AboutCreditsSection: View {
                 detail: "Every message reaches the person who writes the code.", symbol: "person",
                 color: .retroMustard)
             if let url = about.lottieURL {
-                Link(destination: url) {
-                    SettingsExternalLabel(
+                ExternalLink(destination: url) {
+                    SettingsLabel(
                         "Lottie by Airbnb", detail: "Animations · Apache License 2.0",
                         symbol: "wand.and.sparkles", color: .retroPlum)
                 }

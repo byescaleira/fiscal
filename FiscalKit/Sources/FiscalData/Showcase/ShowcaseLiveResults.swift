@@ -23,11 +23,5 @@
             default: return scenario.races(step: step)
             }
         }
-
-        public func follow(raceID: String, pushToken: String, environment: PushEnvironment)
-            async throws
-        {}
-
-        public func unfollow(pushToken: String) async throws {}
     }
 #endif

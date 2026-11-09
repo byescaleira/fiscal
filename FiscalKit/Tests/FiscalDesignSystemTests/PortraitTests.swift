@@ -57,6 +57,20 @@ struct PortraitTests {
         #expect(request.expression == .wave)
     }
 
+    @Test func aSmallPortraitPlaysAskedGestureOnlyWhenItMayAnimate() {
+        let header = PersonPortrait(
+            slug: "lula", name: "Lula", party: "PT", size: .badgeL, gesture: .tilt,
+            animatesAtAnySize: true
+        ).request
+        #expect(header.isStill == MotionBudget.isConstrained)
+        #expect(header.gesture == (MotionBudget.isConstrained ? nil : .tilt))
+        let row = PersonPortrait(
+            slug: "lula", name: "Lula", party: "PT", size: .badgeL, gesture: .tilt
+        ).request
+        #expect(row.isStill)
+        #expect(row.gesture == nil)
+    }
+
     @Test func partyMarkPhasesReturnToRest() {
         let phases = PartyMarkPhase.allCases
         #expect(phases.first == .rest)

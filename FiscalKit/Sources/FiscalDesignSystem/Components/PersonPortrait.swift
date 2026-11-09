@@ -3,22 +3,27 @@ import SwiftUI
 public struct PersonPortrait: View {
     @Environment(\.portraitArtwork) private var artwork
     @Environment(\.portraitsAreStill) private var portraitsAreStill
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ReducesMotion private var reduceMotion
     private let slug: String
     private let name: String
     private let party: String
     private let size: CGFloat
     private let expression: PortraitExpression?
+    private let gesture: PortraitGesture?
+    private let animatesAtAnySize: Bool
 
     public init(
         slug: String, name: String, party: String, size: CGFloat = .badgeL,
-        expression: PortraitExpression? = nil
+        expression: PortraitExpression? = nil, gesture: PortraitGesture? = nil,
+        animatesAtAnySize: Bool = false
     ) {
         self.slug = slug
         self.name = name
         self.party = party
         self.size = size
         self.expression = expression
+        self.gesture = gesture
+        self.animatesAtAnySize = animatesAtAnySize
     }
 
     public var body: some View {
@@ -40,12 +45,12 @@ public struct PersonPortrait: View {
 
     var request: PortraitRequest {
         let isStill =
-            portraitsAreStill || reduceMotion || size < .portraitAnimated
-            || MotionBudget.isConstrained
+            portraitsAreStill || reduceMotion || MotionBudget.isConstrained
+            || (size < .portraitAnimated && !animatesAtAnySize)
         return PortraitRequest(
             slug: slug, party: party, isStill: isStill,
             expression: reduceMotion && !portraitsAreStill ? nil : expression,
-            allowsGestures: !isStill)
+            allowsGestures: !isStill, gesture: isStill ? nil : gesture)
     }
 
     var initials: String {
@@ -75,7 +80,7 @@ struct GenericPortrait: View {
                 .frame(width: size * Self.shouldersWidth, height: size * Self.shouldersHeight)
                 .offset(y: size * Self.shouldersDrop)
             Text(initials)
-                .font(.system(size: size * Self.initialsScale, weight: .bold, design: .rounded))
+                .font(.emphasis(fixed: size * Self.initialsScale, weight: .bold))
                 .foregroundStyle(.secondary)
                 .minimumScaleFactor(Self.minimumScale)
                 .offset(y: -size * Self.initialsLift)

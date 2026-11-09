@@ -43,7 +43,7 @@ public enum ElectionCalendar {
     ]
 
     public static func elections(
-        now: Date, calendar: Calendar = FiscalCalendar.current
+        now: Date, calendar: Calendar = GregorianCalendar.current
     ) -> [Election] {
         let today = CalendarDay(now, calendar: calendar)
         return schedule.map { entry in

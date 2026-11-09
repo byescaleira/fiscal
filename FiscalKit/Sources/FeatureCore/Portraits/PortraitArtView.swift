@@ -35,6 +35,9 @@ struct PortraitArtView: View {
                     settled = nil
                     gesture = nil
                 }
+                .onChange(of: request.gesture, initial: true) { _, asked in
+                    if let asked { gesture = asked }
+                }
                 .onScrollVisibilityChange { isVisible = $0 }
                 .onAppear { isVisible = true }
                 .onDisappear { isVisible = false }
@@ -75,10 +78,6 @@ struct PortraitArtView: View {
             delay = Double.random(in: Self.nextGesture)
         }
     }
-}
-
-enum PortraitGesture: String, CaseIterable {
-    case lookAround, tilt, browRaise, doubleBlink, settle
 }
 
 extension View {

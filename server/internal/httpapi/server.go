@@ -1,69 +1,28 @@
 package httpapi
 
 import (
-	"context"
-	"crypto/rand"
-	"crypto/sha256"
-	"crypto/subtle"
-	"encoding/hex"
 	"encoding/json"
-	"errors"
-	"io"
 	"log"
 	"net/http"
 	"strings"
 	"time"
-
-	"liveresults/internal/highlightalert"
-	"liveresults/internal/live"
-	"liveresults/internal/store"
-	"liveresults/internal/tse"
 )
 
 const (
-	maxBody      = 4 << 10
-	tokenMinLen  = 32
-	tokenMaxLen  = 400
 	livePrefix   = "/api/v1/live-activities/"
 	maxLoggedLen = 200
 )
 
-type Races interface {
-	Snapshot() ([]tse.Race, time.Time)
-	Race(id string) (tse.Race, bool)
-	PushRace(ctx context.Context, id string) (live.Stats, error)
-}
-
-type Registrations interface {
-	Put(r store.Registration) error
-	Delete(token string) bool
-}
-
 type Config struct {
-	Races         Races
-	Registrations Registrations
-	Highlights    Registrations
-	AdminToken    string
-	Attest        Attestor
-	AttestMode    string
-	Unattested    int
-	Limiter       *RateLimiter
-	Salt          []byte
-	Now           func() time.Time
-	Logger        *log.Logger
+	Now     func() time.Time
+	Logger  *log.Logger
+	Version string
 }
 
 type server struct {
-	races      Races
-	regs       Registrations
-	highlights Registrations
-	adminToken string
-	attest     Attestor
-	attestMode string
-	limiter    *RateLimiter
-	salt       []byte
-	now        func() time.Time
-	logger     *log.Logger
+	now     func() time.Time
+	logger  *log.Logger
+	version string
 }
 
 func New(c Config) http.Handler {
@@ -73,32 +32,12 @@ func New(c Config) http.Handler {
 	if c.Logger == nil {
 		c.Logger = log.Default()
 	}
-	if c.Limiter == nil {
-		c.Limiter = NewRateLimiter(c.Now, 120, 120)
+	if c.Version == "" {
+		c.Version = "dev"
 	}
-	if c.Unattested <= 0 {
-		c.Unattested = 10
-	}
-	c.Limiter.SetLimit(ClassUnattested, c.Unattested)
-	if c.AttestMode == "" {
-		c.AttestMode = AttestOptional
-	}
-	if len(c.Salt) == 0 {
-		c.Salt = make([]byte, 32)
-		rand.Read(c.Salt)
-	}
-	s := &server{races: c.Races, regs: c.Registrations, highlights: c.Highlights, adminToken: c.AdminToken, attest: c.Attest, attestMode: c.AttestMode, limiter: c.Limiter, salt: c.Salt, now: c.Now, logger: c.Logger}
+	s := &server{now: c.Now, logger: c.Logger, version: c.Version}
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/health", s.health)
-	mux.HandleFunc("GET /api/v1/races", s.limit(ClassRead, s.listRaces))
-	mux.HandleFunc("GET /api/v1/races/{id}", s.limit(ClassRead, s.getRace))
-	mux.HandleFunc("POST /api/v1/attest/challenge", s.limit(ClassWrite, s.challenge))
-	mux.HandleFunc("POST /api/v1/attest/keys", s.limit(ClassWrite, s.registerKey))
-	mux.HandleFunc("POST /api/v1/live-activities", s.limit(ClassWrite, s.attested(s.register)))
-	mux.HandleFunc("DELETE /api/v1/live-activities", s.limit(ClassWrite, s.attested(s.unregister)))
-	mux.HandleFunc("POST /api/v1/highlight-activities", s.limit(ClassWrite, s.attested(s.registerHighlights)))
-	mux.HandleFunc("DELETE /api/v1/highlight-activities", s.limit(ClassWrite, s.attested(s.unregisterHighlights)))
-	mux.HandleFunc("POST /api/v1/admin/push-test", s.limit(ClassWrite, s.pushTest))
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusNotFound, "not_found", "route not found")
 	})
@@ -174,17 +113,6 @@ func (s *server) recoverPanics(next http.Handler) http.Handler {
 	})
 }
 
-func (s *server) limit(class string, h http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		if !s.limiter.Allow(ClientIP(r), class) {
-			w.Header().Set("Retry-After", "60")
-			writeError(w, http.StatusTooManyRequests, "rate_limited", "too many requests")
-			return
-		}
-		h(w, r)
-	}
-}
-
 func writeJSON(w http.ResponseWriter, status int, v any) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(status)
@@ -201,216 +129,8 @@ func writeError(w http.ResponseWriter, status int, code, message string) {
 }
 
 func (s *server) health(w http.ResponseWriter, r *http.Request) {
-	writeJSON(w, http.StatusOK, map[string]bool{"ok": true})
-}
-
-func notReady(w http.ResponseWriter) {
-	w.Header().Set("Retry-After", "20")
-	writeError(w, http.StatusServiceUnavailable, "not_ready", "results not available yet")
-}
-
-func (s *server) listRaces(w http.ResponseWriter, r *http.Request) {
-	races, fetchedAt := s.races.Snapshot()
-	if len(races) == 0 {
-		notReady(w)
-		return
-	}
 	writeJSON(w, http.StatusOK, struct {
-		Races     []tse.Race `json:"races"`
-		FetchedAt string     `json:"fetchedAt"`
-	}{Races: races, FetchedAt: fetchedAt.UTC().Format(time.RFC3339)})
-}
-
-func (s *server) getRace(w http.ResponseWriter, r *http.Request) {
-	id := r.PathValue("id")
-	if !tse.KnownRace(id) {
-		writeError(w, http.StatusNotFound, "race_not_found", "race not found")
-		return
-	}
-	race, ok := s.races.Race(id)
-	if !ok {
-		notReady(w)
-		return
-	}
-	writeJSON(w, http.StatusOK, race)
-}
-
-func readBody(w http.ResponseWriter, r *http.Request, v any) bool {
-	data, err := io.ReadAll(http.MaxBytesReader(w, r.Body, maxBody))
-	if err != nil {
-		var tooLarge *http.MaxBytesError
-		if errors.As(err, &tooLarge) {
-			writeError(w, http.StatusRequestEntityTooLarge, "body_too_large", "body exceeds 4 KiB")
-			return false
-		}
-		writeError(w, http.StatusBadRequest, "bad_request", "could not read body")
-		return false
-	}
-	if err := json.Unmarshal(data, v); err != nil {
-		writeError(w, http.StatusUnprocessableEntity, "invalid_request", "body must be a JSON object")
-		return false
-	}
-	return true
-}
-
-func ValidToken(t string) bool {
-	if len(t) < tokenMinLen || len(t) > tokenMaxLen {
-		return false
-	}
-	for i := 0; i < len(t); i++ {
-		c := t[i]
-		if !(c >= '0' && c <= '9' || c >= 'a' && c <= 'f' || c >= 'A' && c <= 'F') {
-			return false
-		}
-	}
-	return true
-}
-
-func (s *server) register(w http.ResponseWriter, r *http.Request) {
-	var body struct {
-		RaceID      string `json:"raceId"`
-		PushToken   string `json:"pushToken"`
-		Environment string `json:"environment"`
-	}
-	if !readBody(w, r, &body) {
-		return
-	}
-	switch {
-	case !tse.KnownRace(body.RaceID):
-		writeError(w, http.StatusUnprocessableEntity, "invalid_request", "unknown raceId")
-		return
-	case !ValidToken(body.PushToken):
-		writeError(w, http.StatusUnprocessableEntity, "invalid_request", "pushToken must be 32 to 400 hexadecimal characters")
-		return
-	case body.Environment != "development" && body.Environment != "production":
-		writeError(w, http.StatusUnprocessableEntity, "invalid_request", "environment must be development or production")
-		return
-	}
-	err := s.regs.Put(store.Registration{RaceID: body.RaceID, PushToken: strings.ToLower(body.PushToken), Environment: body.Environment, Source: s.sourceKey(ClientIP(r))})
-	switch {
-	case err == nil:
-		w.WriteHeader(http.StatusNoContent)
-	case errors.Is(err, store.ErrBound):
-		writeError(w, http.StatusConflict, "token_bound_to_other_race", "pushToken is already registered for another race or environment")
-	case errors.Is(err, store.ErrSourceLimit):
-		writeError(w, http.StatusTooManyRequests, "too_many_registrations", "too many live registrations from this address")
-	case errors.Is(err, store.ErrCapacity):
-		writeError(w, http.StatusInsufficientStorage, "capacity_reached", "registration capacity reached")
-	default:
-		writeError(w, http.StatusInternalServerError, "internal_error", "internal error")
-	}
-}
-
-func (s *server) sourceKey(ip string) string {
-	h := sha256.New()
-	h.Write(s.salt)
-	h.Write([]byte(ip))
-	return hex.EncodeToString(h.Sum(nil)[:16])
-}
-
-func (s *server) unregister(w http.ResponseWriter, r *http.Request) {
-	var body struct {
-		PushToken string `json:"pushToken"`
-	}
-	if !readBody(w, r, &body) {
-		return
-	}
-	if !ValidToken(body.PushToken) {
-		writeError(w, http.StatusUnprocessableEntity, "invalid_request", "pushToken must be 32 to 400 hexadecimal characters")
-		return
-	}
-	s.regs.Delete(strings.ToLower(body.PushToken))
-	w.WriteHeader(http.StatusNoContent)
-}
-
-func (s *server) registerHighlights(w http.ResponseWriter, r *http.Request) {
-	if s.highlights == nil {
-		writeError(w, http.StatusNotFound, "not_found", "route not found")
-		return
-	}
-	var body struct {
-		PushToken   string `json:"pushToken"`
-		Environment string `json:"environment"`
-	}
-	if !readBody(w, r, &body) {
-		return
-	}
-	switch {
-	case !ValidToken(body.PushToken):
-		writeError(w, http.StatusUnprocessableEntity, "invalid_request", "pushToken must be 32 to 400 hexadecimal characters")
-		return
-	case body.Environment != "development" && body.Environment != "production":
-		writeError(w, http.StatusUnprocessableEntity, "invalid_request", "environment must be development or production")
-		return
-	}
-	err := s.highlights.Put(store.Registration{RaceID: highlightalert.Bucket, PushToken: strings.ToLower(body.PushToken), Environment: body.Environment, Source: s.sourceKey(ClientIP(r))})
-	switch {
-	case err == nil:
-		w.WriteHeader(http.StatusNoContent)
-	case errors.Is(err, store.ErrBound):
-		writeError(w, http.StatusConflict, "token_bound_to_other_environment", "pushToken is already registered for another environment")
-	case errors.Is(err, store.ErrSourceLimit):
-		writeError(w, http.StatusTooManyRequests, "too_many_registrations", "too many registrations from this address")
-	case errors.Is(err, store.ErrCapacity):
-		writeError(w, http.StatusInsufficientStorage, "capacity_reached", "registration capacity reached")
-	default:
-		writeError(w, http.StatusInternalServerError, "internal_error", "internal error")
-	}
-}
-
-func (s *server) unregisterHighlights(w http.ResponseWriter, r *http.Request) {
-	if s.highlights == nil {
-		writeError(w, http.StatusNotFound, "not_found", "route not found")
-		return
-	}
-	var body struct {
-		PushToken string `json:"pushToken"`
-	}
-	if !readBody(w, r, &body) {
-		return
-	}
-	if !ValidToken(body.PushToken) {
-		writeError(w, http.StatusUnprocessableEntity, "invalid_request", "pushToken must be 32 to 400 hexadecimal characters")
-		return
-	}
-	s.highlights.Delete(strings.ToLower(body.PushToken))
-	w.WriteHeader(http.StatusNoContent)
-}
-
-func (s *server) authorizedAdmin(r *http.Request) bool {
-	if s.adminToken == "" {
-		return false
-	}
-	return subtle.ConstantTimeCompare([]byte(r.Header.Get("Authorization")), []byte("Bearer "+s.adminToken)) == 1
-}
-
-func (s *server) pushTest(w http.ResponseWriter, r *http.Request) {
-	if s.adminToken == "" {
-		writeError(w, http.StatusNotFound, "not_found", "route not found")
-		return
-	}
-	if !s.authorizedAdmin(r) {
-		writeError(w, http.StatusUnauthorized, "unauthorized", "invalid token")
-		return
-	}
-	var body struct {
-		RaceID string `json:"raceId"`
-	}
-	if !readBody(w, r, &body) {
-		return
-	}
-	if !tse.KnownRace(body.RaceID) {
-		writeError(w, http.StatusUnprocessableEntity, "invalid_request", "unknown raceId")
-		return
-	}
-	stats, err := s.races.PushRace(r.Context(), body.RaceID)
-	if errors.Is(err, live.ErrNotReady) {
-		notReady(w)
-		return
-	}
-	if err != nil {
-		writeError(w, http.StatusInternalServerError, "internal_error", "internal error")
-		return
-	}
-	writeJSON(w, http.StatusOK, stats)
+		OK      bool   `json:"ok"`
+		Version string `json:"version"`
+	}{OK: true, Version: s.version})
 }

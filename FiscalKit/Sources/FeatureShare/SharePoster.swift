@@ -9,8 +9,7 @@ public struct SharePoster: Hashable, Sendable {
         case race(ShareRace)
         case versus([ShareFace], [ShareCompareRow])
         case highlight(ShareHighlight)
-        case victory(ShareVictory)
-        case investigation(ShareInvestigation)
+        case people([ShareFace])
     }
 
     public struct Fact: Hashable, Sendable, Identifiable {
@@ -30,8 +29,10 @@ public struct SharePoster: Hashable, Sendable {
     public let note: String?
     public let person: ShareFace?
     public let source: String
+    private let isCase: Bool
 
     public init(_ content: ShareCardContent) {
+        isCase = content.investigation != nil
         eyebrow = content.eyebrow
         source = content.source
         switch content.body {
@@ -50,10 +51,17 @@ public struct SharePoster: Hashable, Sendable {
             note = leading?.peerDetail
             person = content.faces.first
         case .vote(let tally):
-            headline = content.headline
-            hero = .tally(tally)
+            if tally.hasCount {
+                headline = content.headline
+                hero = .tally(tally)
+                note = tally.proposition.isEmpty ? nil : tally.proposition
+            } else {
+                headline = content.headline
+                hero = .place(
+                    [tally.name, tally.result].compactMap(\.self).joined(separator: ": "))
+                note = nil
+            }
             facts = []
-            note = tally.proposition.isEmpty ? nil : tally.proposition
             person = nil
         case .expenses(let spending):
             headline = nil
@@ -85,21 +93,65 @@ public struct SharePoster: Hashable, Sendable {
             headline = nil
             hero = .highlight(highlight)
             facts = []
-            note = [highlight.weight, highlight.uncertainty].compactMap(\.self)
-                .joined(separator: " · ")
+            let parts = [highlight.weight, highlight.shortUncertainty].compactMap(\.self)
+                .filter { !$0.isEmpty }
+            note = parts.isEmpty ? nil : parts.joined(separator: " · ")
             person = nil
         case .victory(let victory):
-            headline = nil
-            hero = .victory(victory)
+            headline = content.headline
+            hero = .figure(value: victory.percent, caption: victory.statement)
+            facts =
+                (victory.runnerUp.map { [Fact(value: $0.percent, label: $0.face.name)] } ?? [])
+                + victory.ballots.filter { $0.kind != .valid }.prefix(1).map {
+                    Fact(value: $0.percent, label: $0.title)
+                }
+            note = nil
+            person = victory.winner
+        case .investigation(let investigation):
+            headline = investigation.question
+            if let number = investigation.numbers.first {
+                hero = .figure(value: number.value, caption: number.label)
+                facts = Array(investigation.numbers.dropFirst())
+            } else {
+                hero = .place(investigation.conclusion)
+                facts = []
+            }
+            let parts =
+                investigation.numbers.isEmpty
+                ? [investigation.uncertainty]
+                : [investigation.conclusion, investigation.uncertainty]
+            note = parts.compactMap(\.self).joined(separator: " · ")
+            person = nil
+        case .following(let faces):
+            headline = content.headline
+            hero = .people(faces)
             facts = []
             note = nil
             person = nil
-        case .investigation(let investigation):
-            headline = nil
-            hero = .investigation(investigation)
-            facts = investigation.numbers
-            note = investigation.uncertainty
-            person = nil
+        case .receipt(let receipt):
+            headline = receipt.supplier
+            hero = .figure(value: receipt.amount, caption: receipt.context)
+            facts = [
+                Fact(value: receipt.category, label: String(appLocalized: "Kind of expense")),
+                Fact(value: receipt.period, label: String(appLocalized: "Month")),
+            ]
+            note = nil
+            person = content.faces.first
+        case .ballot(let ballot):
+            headline = ballot.summary
+            hero = .figure(value: ballot.vote, caption: ballot.proposition)
+            facts = [
+                Fact(value: ballot.date, label: String(appLocalized: "Date")),
+                ballot.result.map { Fact(value: $0, label: String(appLocalized: "Result")) },
+            ].compactMap(\.self)
+            note = nil
+            person = content.faces.first
+        case .proposal(let proposal):
+            headline = proposal.summary
+            hero = .place(proposal.reference)
+            facts = []
+            note = nil
+            person = content.faces.first
         }
     }
 
@@ -110,8 +162,8 @@ public struct SharePoster: Hashable, Sendable {
 
     public var noteIsEssential: Bool {
         switch hero {
-        case .race, .highlight, .investigation: true
-        case .figure, .place, .tally, .versus, .victory: false
+        case .race, .highlight: true
+        case .figure, .place, .tally, .versus, .people: isCase
         }
     }
 
@@ -143,8 +195,7 @@ extension SharePoster.Hero {
         case .highlight(let highlight):
             [highlight.title] + (highlight.person.map { [$0.name, $0.party] } ?? [])
                 + [highlight.place] + (highlight.tally.map { Self.tally($0).texts } ?? [])
-        case .victory(let victory): victory.texts
-        case .investigation(let investigation): investigation.texts
+        case .people(let faces): faces.flatMap { [$0.name, $0.party, $0.detail] }
         }
     }
 }

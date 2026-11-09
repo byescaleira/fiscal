@@ -78,7 +78,6 @@ struct AddPieceMenu: View {
 private struct CaseHeaderSection: View {
     @Environment(InvestigationModel.self) private var board
     @Environment(\.appTint) private var tint
-    @State private var text = ""
     @FocusState private var isFocused: Bool
 
     var body: some View {
@@ -93,28 +92,28 @@ private struct CaseHeaderSection: View {
                             .foregroundStyle(.secondary)
                     }
                 }
-                TextField("Name this investigation", text: $text, axis: .vertical)
+                TextField("Name this investigation", text: title, axis: .vertical)
                     .font(.titleLarge)
                     .foregroundStyle(Color.primary)
                     .lineLimit(1...4)
                     .focused($isFocused)
                     .submitLabel(.done)
-                    .onSubmit { board.rename(text) }
-                    .onChange(of: text) { _, value in
-                        guard value.contains("\n") else { return }
-                        text = value.replacing("\n", with: " ")
-                            .trimmingCharacters(in: .whitespaces)
-                        isFocused = false
-                    }
+                    .onSubmit { board.commitTitle() }
                     .onChange(of: isFocused) { _, focused in
-                        if !focused { board.rename(text) }
+                        if !focused { board.commitTitle() }
                     }
                 OriginBadge()
             }
             .textCase(nil)
             .padding(.bottom, .spaceS)
-            .onAppear { text = board.current?.question ?? "" }
-            .onChange(of: board.current?.id) { _, _ in text = board.current?.question ?? "" }
+        }
+    }
+
+    private var title: Binding<String> {
+        Binding {
+            board.title
+        } set: { text in
+            if board.editTitle(text) { isFocused = false }
         }
     }
 }
@@ -281,11 +280,16 @@ private struct CaseStateSection: View {
                     Button("Try Again") { Task { await board.refresh() } }
                         .font(.buttonLabel)
                 case .loaded:
-                    ContentUnavailableView(
-                        "No connection found", systemImage: "point.3.connected.trianglepath.dotted",
-                        description: Text(
+                    EmptyStateView(
+                        title: "No connection found",
+                        description:
                             "The published data doesn't link these pieces yet. Try adding a vote or a person."
-                        ))
+                    ) {
+                        Image(systemName: "point.3.connected.trianglepath.dotted")
+                            .font(.icon(.l))
+                            .foregroundStyle(.secondary)
+                            .accessibilityHidden(true)
+                    }
                 }
             }
         }

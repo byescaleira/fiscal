@@ -23,21 +23,22 @@ struct ArtistsModelTests {
         #expect(model.openLicense.allSatisfy { $0.works.allSatisfy { !$0.isPublicDomain } })
     }
 
-    @Test func theLensOnlyReordersTheCollections() async throws {
-        let repositories = try FiscalDatabase.open(inMemory: true).repositories
-        try await repositories.lens.save(
-            Lens(
-                themes: [.health, .taxes, .security], supported: ["lula"],
-                artCollection: "acervo-historico"))
-        let adapted = ArtistsModel(lens: repositories.lens)
-        await adapted.load()
-        let plain = ArtistsModel()
-        await plain.load()
-        #expect(adapted.collections.first?.id == "acervo-historico")
-        #expect(adapted.showsLensBadge)
-        #expect(!plain.showsLensBadge)
-        #expect(Set(adapted.collections) == Set(plain.collections))
-        #expect(adapted.workCount == plain.workCount)
+    @Test func theCollectionsKeepTheOrderOfTheCatalog() async throws {
+        let model = ArtistsModel()
+        await model.load()
+        let catalog = try #require(model.catalog)
+        #expect(model.collections == catalog.collections)
+    }
+
+    @Test func eachShelfRemembersItsCollection() async throws {
+        let model = ArtistsModel()
+        await model.load()
+        let sections = model.sections(on: .historical)
+        #expect(model.current(on: .historical) == sections.first)
+        let last = try #require(sections.last)
+        model.show(last.id, on: .historical)
+        #expect(model.current(on: .historical) == last)
+        #expect(model.current(on: .openLicense) == model.openLicense.first)
     }
 
     @Test func aMissingManifestIsAnHonestEmptyState() async {

@@ -1,3 +1,4 @@
+import ByescaleiraAccessibility
 import Charts
 import SwiftUI
 
@@ -26,7 +27,9 @@ public struct TallyChart: View {
         var id: String { segment.id }
     }
 
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    @Environment(\.liteMode) private var liteMode
+    private var reduceMotion: Bool { systemReduceMotion || liteMode.reducesMotion }
     @State private var revealed = false
     @State private var width: CGFloat = 0
     private let segments: [Segment]

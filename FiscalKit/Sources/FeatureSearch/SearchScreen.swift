@@ -5,6 +5,7 @@ import SwiftUI
 
 public struct SearchScreen: View {
     @Environment(SearchModel.self) private var search
+    @Environment(SessionModel.self) private var session
 
     public init() {}
 
@@ -32,7 +33,7 @@ public struct SearchScreen: View {
                 .environment(board)
         }
         .environment(board)
-        .task { await search.load() }
+        .task(id: session.generation) { await search.load() }
         .onChange(of: board.isBoardOpen) { _, isOpen in
             guard !isOpen else { return }
             Task { await board.loadSaved() }

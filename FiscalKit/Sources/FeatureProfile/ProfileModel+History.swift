@@ -9,15 +9,6 @@ extension ProfileModel {
         public let value: String
     }
 
-    public struct CoverageLine: Identifiable, Equatable {
-        public let kind: String
-        public let title: String
-        public let status: Profile.Coverage.Status
-        public let detail: String
-
-        public var id: String { kind }
-    }
-
     public var assetDeclarations: [Profile.AssetDeclaration] {
         (profile?.assets ?? []).sorted { $0.year > $1.year }
     }
@@ -70,14 +61,6 @@ extension ProfileModel {
         return [committee.role, since].compactMap(\.self).joined(separator: " · ")
     }
 
-    public var coverageLines: [CoverageLine] {
-        (profile?.coverage ?? []).map { item in
-            CoverageLine(
-                kind: item.kind, title: Self.coverageTitle(item.kind), status: item.status,
-                detail: coverageDetail(item))
-        }
-    }
-
     public var aboutLines: [InfoLine] {
         guard let profile else { return [] }
         var lines: [InfoLine] = []
@@ -89,30 +72,33 @@ extension ProfileModel {
         add("birth", String(appLocalized: "Born"), profile.birthDate.map(SourceFootnote.day))
         add("birthPlace", String(appLocalized: "Birthplace"), profile.birthPlace)
         add("education", String(appLocalized: "Education"), profile.education)
-        add(
-            "salary", String(appLocalized: "Monthly salary"),
-            profile.salary.map { PublicFormat.money(cents: $0.monthlyCents) })
-        add("law", String(appLocalized: "Set by"), profile.salary?.law)
+        if !profile.office.isLegislative { lines += salaryLines }
         add("email", String(appLocalized: "Email"), profile.contact?.email)
         add("phone", String(appLocalized: "Phone"), profile.contact?.phone)
         add("office", String(appLocalized: "Office"), profile.contact?.office)
         return lines
     }
 
+    public var salaryLines: [InfoLine] {
+        guard let salary = profile?.salary else { return [] }
+        let law = salary.law.map {
+            InfoLine(id: "law", title: String(appLocalized: "Set by"), value: $0)
+        }
+        return [
+            InfoLine(
+                id: "salary", title: String(appLocalized: "Monthly salary"),
+                value: PublicFormat.money(cents: salary.monthlyCents)),
+            law,
+        ].compactMap(\.self)
+    }
+
+    public var checkItems: [FactCheck] {
+        (checks?.items ?? []).sorted { $0.date > $1.date }
+    }
+
     private var civilNameValue: String? {
         guard let profile, let civil = profile.civilName, civil != profile.name else { return nil }
         return civil
-    }
-
-    private func coverageDetail(_ item: Profile.Coverage) -> String {
-        switch item.status {
-        case .available:
-            let source = item.source.flatMap { id in sources.first { $0.id == id }?.name }
-            return source.map { String(appLocalized: "Published by \($0)") }
-                ?? String(appLocalized: "Published")
-        case .notPublished: return String(appLocalized: "The house doesn't publish this")
-        case .notLoaded: return String(appLocalized: "Not loaded yet")
-        }
     }
 
     static func coverageTitle(_ kind: String) -> String {
@@ -123,6 +109,8 @@ extension ProfileModel {
         case "speeches": String(appLocalized: "Speeches")
         case "expenses": String(appLocalized: "Expenses")
         case "assets": String(appLocalized: "Declared assets")
+        case "campaigns": String(appLocalized: "Campaigns")
+        case "salary": String(appLocalized: "Salary")
         default: kind
         }
     }

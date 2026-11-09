@@ -18,7 +18,7 @@ struct ScoreSide: View {
                 .contentTransition(.numericText(value: Double(number ?? 0)))
                 .foregroundStyle(WidgetStyle.primary)
                 .lineLimit(1)
-                .minimumScaleFactor(0.5)
+                .minimumScaleFactor(.widgetHeroShrink)
             Label(title, systemImage: symbol)
                 .font(.caption2.weight(.heavy))
                 .foregroundStyle(WidgetStyle.secondary)
@@ -61,7 +61,7 @@ struct VoteSmall: View {
                 .font(.caption.weight(.bold))
                 .foregroundStyle(WidgetStyle.primary)
                 .lineLimit(1)
-                .minimumScaleFactor(0.8)
+                .minimumScaleFactor(.widgetLabelShrink)
             Text(verbatim: board.eyebrow)
                 .font(.caption2.weight(.heavy))
                 .foregroundStyle(WidgetStyle.secondary)
@@ -99,7 +99,7 @@ struct VoteBoardHeader: View {
                     OutcomeLabel(board: board)
                 }
                 .lineLimit(1)
-                .minimumScaleFactor(0.8)
+                .minimumScaleFactor(.widgetLabelShrink)
                 .layoutPriority(1)
                 Spacer(minLength: 0)
                 ScoreSide(board: board, side: .no)
@@ -173,7 +173,7 @@ private struct EarlierRow: View {
                 .monospacedDigit()
                 .foregroundStyle(WidgetStyle.primary)
                 .lineLimit(1)
-                .minimumScaleFactor(0.6)
+                .minimumScaleFactor(.widgetScoreShrink)
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: board.accessibilityText))
@@ -198,7 +198,7 @@ struct VoteRectangular: View {
             .font(.scoreboardCompact)
             .monospacedDigit()
             .lineLimit(1)
-            .minimumScaleFactor(0.6)
+            .minimumScaleFactor(.widgetScoreShrink)
             Label {
                 Text(verbatim: board.outcomeTitle)
             } icon: {
@@ -237,14 +237,14 @@ struct VoteCircular: View {
                     .font(.caption2.weight(.bold))
                     .widgetAccentable()
                 Text(verbatim: board.yesText)
-                    .font(.headline.width(.condensed))
+                    .font(.emphasis(.headline, weight: .bold))
                 Text(verbatim: board.noText)
-                    .font(.caption2.weight(.semibold).width(.condensed))
+                    .font(.emphasis(.caption2, weight: .semibold))
                     .foregroundStyle(.secondary)
             }
             .monospacedDigit()
             .lineLimit(1)
-            .minimumScaleFactor(0.6)
+            .minimumScaleFactor(.widgetScoreShrink)
             .padding(.space2XS)
         }
         .accessibilityElement(children: .ignore)

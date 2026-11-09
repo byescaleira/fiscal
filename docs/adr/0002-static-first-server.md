@@ -1,8 +1,8 @@
 # 0002. Servidor estático primeiro: tudo pronto, nada calculado por acesso
 
-- **Estado:** Aceito
+- **Estado:** Aceito; os itens 5 (push em escala, por canal) e 6 (registro de token como única escrita pública) foram substituídos por [0028](0028-app-reads-only-from-cdn-and-local-alerts.md): o app não recebe push nem registra token, e a VPS não tem escrita pública
 - **Data:** 2026-10-25
-- **Mudança:** [`live-results`](../changes/live-results/proposal.md)
+- **Mudança:** [`live-results`](../changes/archive/2026-10-29-live-results/proposal.md)
 
 ## Contexto
 

@@ -1,22 +1,26 @@
+import ByescaleiraAccessibility
 import SwiftUI
 
 public struct PartyMark: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    @Environment(\.liteMode) private var liteMode
     @Environment(\.partyMarksAreStill) private var partyMarksAreStill
     @State private var appearances = 0
     private let party: String
+    private let wraps: Bool
 
-    public init(_ party: String) {
+    public init(_ party: String, wraps: Bool = false) {
         self.party = party
+        self.wraps = wraps
     }
 
     public var body: some View {
         Group {
             if isStill {
-                PartyMarkChip(party: party, phase: .rest)
+                PartyMarkChip(party: party, phase: .rest, wraps: wraps)
             } else {
                 PhaseAnimator(PartyMarkPhase.allCases, trigger: appearances) { phase in
-                    PartyMarkChip(party: party, phase: phase)
+                    PartyMarkChip(party: party, phase: phase, wraps: wraps)
                 } animation: { phase in
                     phase.animation
                 }
@@ -28,7 +32,8 @@ public struct PartyMark: View {
     }
 
     var isStill: Bool {
-        reduceMotion || partyMarksAreStill || MotionBudget.isConstrained
+        systemReduceMotion || liteMode.reducesMotion || partyMarksAreStill
+            || MotionBudget.isConstrained
     }
 }
 
@@ -72,6 +77,7 @@ enum PartyMarkPhase: CaseIterable {
 struct PartyMarkChip: View {
     let party: String
     let phase: PartyMarkPhase
+    var wraps = false
 
     var body: some View {
         let palette = PartyPalette.of(party: party)
@@ -79,8 +85,9 @@ struct PartyMarkChip: View {
             .font(.chipLabel)
             .foregroundStyle(.white)
             .shadow(color: .black.opacity(.opacitySoft), radius: .spaceHairline)
-            .lineLimit(1)
-            .minimumScaleFactor(.opacitySoft * 2)
+            .lineLimit(wraps ? nil : 1)
+            .minimumScaleFactor(wraps ? 1 : .opacitySoft * 2)
+            .fixedSize(horizontal: false, vertical: wraps)
             .layoutPriority(1)
             .padding(.horizontal, .spaceS)
             .padding(.vertical, .space2XS)

@@ -5,7 +5,7 @@ Painel em `https://fiscal.byescaleira.com/admin` para flags remotas (CloudKit p�
 - Código: `src/` (Node 22, só `@simplewebauthn/server` como dependência, versão fixa com `package-lock.json`). Testes: `npm test` (precisa do `../bridge/server.mjs` ao lado, usado como ponte real nos testes).
 - Telas: Visão geral (estado da ponte e gráfico da última hora), Flags (Desenvolvimento e Produção), Versões (`AppRelease` por plataforma, Desenvolvimento e Produção; esquema em `docs/admin.md`), Ponte (pausa e limites), Registro.
 - Visual: usa o `/style.css` do site e só acrescenta `public/admin.css`.
-- Catálogo de flags: `src/flags.mjs` espelha o `enum FeatureFlag` do app (`FiscalKit/Sources/FeatureCore/Flags/FeatureFlag.swift`), com o mesmo nome, um título em pt-BR e o mesmo padrão. Flag nova no app entra no mesmo commit aqui; o admin recusa nomes que não conhece. O template já traz `guides` e `web` (a alavanca de carga do Fiscal na Web).
+- Catálogo de flags: `src/flags.mjs` espelha o `enum FeatureFlag` do app (`FiscalKit/Sources/FeatureCore/Flags/FeatureFlag.swift`), com o mesmo nome, um título e uma descrição em pt-BR e o mesmo padrão: `guides`, `partyIcons` (desligada), `liveResults`, `highlightAlerts` e `intelligence`. Flag nova no app entra no mesmo commit aqui; o admin recusa nomes que não conhece. A flag `web` do template volta junto com o Fiscal na Web, depois da 1.0.
 
 ## Como roda na VPS
 

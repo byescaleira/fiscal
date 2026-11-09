@@ -18,11 +18,6 @@ public struct HighlightActivityState: Codable, Hashable, Sendable {
     public var endDate: Date { Date(timeIntervalSince1970: endsAt) }
 }
 
-public protocol HighlightAlertService: Sendable {
-    func registerHighlights(pushToken: String, environment: PushEnvironment) async throws
-    func unregisterHighlights(pushToken: String) async throws
-}
-
 #if canImport(ActivityKit) && os(iOS)
     import ActivityKit
 
@@ -64,7 +59,8 @@ public protocol HighlightAlertService: Sendable {
         public init(highlight: Highlight) {
             let coverage = highlight.coverage
             self.init(
-                highlightId: highlight.id, kind: highlight.kind.rawValue, title: highlight.title,
+                highlightId: highlight.id, kind: highlight.kind.rawValue,
+                title: highlight.plainSummary ?? highlight.title,
                 subtitle: highlight.subtitle, date: highlight.date.description,
                 route: highlight.route, personName: highlight.person?.name,
                 personSlug: highlight.person?.slug, party: highlight.person?.party,

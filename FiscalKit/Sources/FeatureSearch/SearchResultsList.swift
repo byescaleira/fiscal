@@ -60,28 +60,33 @@ private struct PersonResultRow: View {
     let card: PersonCard
 
     var body: some View {
-        RouteLink(.person(slug: card.slug)) {
-            HStack(spacing: .spaceM) {
-                PersonPortrait(slug: card.slug, name: card.name, party: card.party, size: .badgeL)
-                VStack(alignment: .leading, spacing: .space2XS) {
-                    Text(verbatim: card.name).font(.rowTitle).foregroundStyle(Color.primary)
-                    AdaptiveStack(spacing: .spaceS) {
-                        PartyMark(card.party)
-                        Text(verbatim: search.detail(for: card))
-                            .font(.rowDetail)
-                            .foregroundStyle(.secondary)
-                    }
-                    if card.status != .inOffice {
-                        Text(verbatim: card.status.title)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+        HStack(spacing: .spaceS) {
+            RouteLink(.person(slug: card.slug)) {
+                HStack(spacing: .spaceM) {
+                    PersonPortrait(
+                        slug: card.slug, name: card.name, party: card.party, size: .badgeL)
+                    VStack(alignment: .leading, spacing: .space2XS) {
+                        Text(verbatim: card.name).font(.rowTitle).foregroundStyle(Color.primary)
+                        AdaptiveStack(spacing: .spaceS) {
+                            PartyMark(card.party)
+                            Text(verbatim: search.detail(for: card))
+                                .font(.rowDetail)
+                                .foregroundStyle(.secondary)
+                        }
+                        if card.status != .inOffice {
+                            Text(verbatim: card.status.title)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
+                .padding(.vertical, .space2XS)
+                .accessibilityElement(children: .combine)
             }
-            .padding(.vertical, .space2XS)
-            .accessibilityElement(children: .combine)
+            .simultaneousGesture(TapGesture().onEnded { search.record() })
+            FollowButton(card)
         }
-        .simultaneousGesture(TapGesture().onEnded { search.record() })
+        .followActions(card)
     }
 }
 
@@ -163,9 +168,15 @@ private struct SearchNoResults: View {
             ProgressView("Loading")
                 .frame(maxWidth: .infinity)
         } else if search.query.isEmpty {
-            ContentUnavailableView(
-                "Nothing here yet", systemImage: "magnifyingglass",
-                description: Text("Fiscal has no data for this filter in the latest update."))
+            EmptyStateView(
+                title: "Nothing here yet",
+                description: "Fiscal has no data for this filter in the latest update."
+            ) {
+                Image(systemName: "line.3.horizontal.decrease")
+                    .font(.icon(.l))
+                    .foregroundStyle(.secondary)
+                    .accessibilityHidden(true)
+            }
         } else {
             ContentUnavailableView.search(text: search.query)
         }

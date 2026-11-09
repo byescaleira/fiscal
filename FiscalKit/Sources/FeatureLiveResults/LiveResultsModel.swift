@@ -3,44 +3,28 @@ import FiscalDomain
 import Foundation
 import Observation
 
+enum RaceDetailPhase {
+    case loading, unavailable
+    case ready(RaceSummary)
+}
+
 @MainActor @Observable
 public final class LiveResultsModel {
     public private(set) var races: [Race] = []
     public private(set) var hasLoaded = false
     public private(set) var isOffline = false
-    public private(set) var following: Set<String> = []
-    public private(set) var changing: Set<String> = []
     public private(set) var announcement: String?
+    public private(set) var checkedRaceIDs: Set<String> = []
     public var error: FiscalError?
     @ObservationIgnored private let service: (any LiveResultsService)?
-    @ObservationIgnored private let activities: any RaceActivityTracking
-    @ObservationIgnored private let environment: PushEnvironment
     @ObservationIgnored private let interval: Duration
-    @ObservationIgnored private(set) var pending: [String: String] = [:]
-    @ObservationIgnored private var isFlushing = false
 
-    public init(
-        service: (any LiveResultsService)?, activities: any RaceActivityTracking,
-        environment: PushEnvironment, interval: Duration = .seconds(15)
-    ) {
+    public init(service: (any LiveResultsService)?, interval: Duration = .seconds(15)) {
         self.service = service
-        self.activities = activities
-        self.environment = environment
         self.interval = interval
-        activities.onToken = { [weak self] raceID, token in
-            self?.pending[token] = raceID
-            Task { await self?.flushPending() }
-        }
-        activities.onFinish = { [weak self] token in
-            self?.pending[token] = nil
-            Task { [service] in try? await service?.unfollow(pushToken: token) }
-            self?.following = activities.activeRaceIDs()
-        }
     }
 
     public var isConfigured: Bool { service != nil }
-
-    public var canFollow: Bool { activities.isAvailable }
 
     public var president: Race? { races.first { $0.office == .president } }
 
@@ -84,7 +68,26 @@ public final class LiveResultsModel {
         status = .all
     }
 
+    public var scopeText: String {
+        [region?.title ?? String(appLocalized: "All Regions"), status.title].joined(
+            separator: " · ")
+    }
+
     public func race(id: String) -> Race? { races.first { $0.id == id } }
+
+    func detailPhase(for id: String) -> RaceDetailPhase {
+        if let race = race(id: id) { return .ready(RaceSummary(race: race)) }
+        return checkedRaceIDs.contains(id) ? .unavailable : .loading
+    }
+
+    public func detailTitle(for id: String) -> String {
+        race(id: id).map(title) ?? ""
+    }
+
+    public func loadDetail(id: String) async {
+        if race(id: id) == nil { await refresh() }
+        checkedRaceIDs.insert(id)
+    }
 
     public func groupHeader(_ group: RaceGroup) -> String {
         "\(group.title) · \(group.races.count)"
@@ -93,8 +96,6 @@ public final class LiveResultsModel {
     public var isWaiting: Bool { hasLoaded && !races.contains(where: \.hasStarted) }
 
     public func run() async {
-        following = activities.activeRaceIDs()
-        activities.resume()
         while !Task.isCancelled {
             await refresh()
             try? await Task.sleep(for: interval)
@@ -106,68 +107,16 @@ public final class LiveResultsModel {
             hasLoaded = true
             return
         }
-        await flushPending()
         do {
             let fresh = try await service.races()
             announcement = Self.announcement(from: races, to: fresh)
             races = fresh
             hasLoaded = true
             isOffline = false
-            for race in fresh where following.contains(race.id) {
-                await activities.update(race)
-            }
-            following = activities.activeRaceIDs()
         } catch is CancellationError {} catch let error as URLError where error.code == .cancelled {
         } catch {
             isOffline = true
             hasLoaded = true
-        }
-    }
-
-    func flushPending() async {
-        guard let service, !isFlushing else { return }
-        isFlushing = true
-        defer { isFlushing = false }
-        for (token, raceID) in pending {
-            do {
-                try await service.follow(raceID: raceID, pushToken: token, environment: environment)
-                pending[token] = nil
-            } catch LiveResultsError.rejected {
-                pending[token] = nil
-                error = .invalidInput(
-                    String(
-                        appLocalized:
-                            "The server didn't accept this Live Activity. Try following again."))
-            } catch {}
-        }
-    }
-
-    public func isFollowing(_ race: Race) -> Bool { following.contains(race.id) }
-
-    public func canToggle(_ race: Race) -> Bool { !changing.contains(race.id) }
-
-    public func toggle(_ race: Race) async {
-        guard canToggle(race) else { return }
-        changing.insert(race.id)
-        defer { changing.remove(race.id) }
-        if following.contains(race.id) {
-            let tokens = await activities.end(raceID: race.id)
-            following.remove(race.id)
-            for token in tokens {
-                pending[token] = nil
-                try? await service?.unfollow(pushToken: token)
-            }
-        } else {
-            do {
-                try activities.start(race)
-                following.insert(race.id)
-            } catch {
-                self.error = .invalidInput(
-                    activities.isAvailable
-                        ? String(appLocalized: "Couldn't start the Live Activity. Try again.")
-                        : String(
-                            appLocalized: "Live Activities are turned off for Fiscal in Settings."))
-            }
         }
     }
 
@@ -215,32 +164,9 @@ public final class LiveResultsModel {
         return nil
     }
 
-    public var activitiesOffText: String? {
-        #if os(iOS)
-            canFollow
-                ? nil
-                : String(
-                    appLocalized:
-                        "Turn on Live Activities for Fiscal in Settings to follow a race on the Lock Screen."
-                )
-        #else
-            nil
-        #endif
-    }
-
     public func updatedText(_ race: Race) -> String? {
         guard let date = race.generatedAt else { return nil }
         return String(appLocalized: "TSE file from \(RaceText.time(date))")
-    }
-
-    public func showsFollow(_ race: Race) -> Bool {
-        canFollow && (!race.final || isFollowing(race))
-    }
-
-    public func followLabel(_ race: Race) -> String {
-        isFollowing(race)
-            ? String(appLocalized: "Stop following \(title(race))")
-            : String(appLocalized: "Follow \(title(race)) on the Lock Screen")
     }
 
     public func accessibilityLabel(_ candidate: RaceCandidate, in race: Race) -> String {
